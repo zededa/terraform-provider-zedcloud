@@ -1,4 +1,3 @@
-
 # Table Of Contents
 1. [Terraform Customer Documentation](#Terraform-Customer-Documentation)
 2. [Schema documentation](#Schema-documentation)
