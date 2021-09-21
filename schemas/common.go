@@ -49,9 +49,8 @@ var tagsSchema = &schema.Schema{
 
 var revisionSchema = &schema.Schema{
 	Type:        schema.TypeList,
-	Optional:    true,
+	Computed:    true,
 	Description: "System defined revision information of the object",
-	MaxItems:    1,
 	Elem:        objectRevisionSchema,
 }
 

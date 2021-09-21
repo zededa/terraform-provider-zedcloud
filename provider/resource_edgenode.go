@@ -99,7 +99,7 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 
 func rdConfigItems(d *schema.ResourceData) ([]*swagger_models.EDConfigItem, error) {
 	cfgItems := make([]*swagger_models.EDConfigItem, 0)
-	val, exists := d.GetOk("config_item")
+	val, exists := d.GetOk("config_items")
 	if !exists {
 		return cfgItems, nil
 	}
