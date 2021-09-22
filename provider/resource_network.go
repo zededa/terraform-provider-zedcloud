@@ -199,7 +199,7 @@ func createNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
-	errMsgPrefix := getErrMsgPrefix("App Instance", name, "", "Create")
+	errMsgPrefix := getErrMsgPrefix(name, "", "App Instance", "Create")
 	log.Printf("[INFO] Creating Network: %s", name)
 	cfg := &swagger_models.NetConfig{
 		Name: &name,
@@ -229,7 +229,7 @@ func updateNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("Network ", name, id, "Update")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Network ", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}

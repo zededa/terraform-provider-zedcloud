@@ -105,7 +105,7 @@ func updateEdgeAppResource(ctx context.Context, d *schema.ResourceData, meta int
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("Edge App", name, id, "Update")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Edge App", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
@@ -135,7 +135,7 @@ func deleteEdgeAppResource(ctx context.Context, d *schema.ResourceData, meta int
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("Edge App", name, id, "Delete")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Edge App", "Delete")
 	cfg, err := getEdgeApp(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s Failed to get EdgeApp. err: %s", errMsgPrefix, err.Error())

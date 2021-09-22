@@ -230,7 +230,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	client := (meta.(Client)).Client
 	id := rdEntryStr(d, "id")
 	name := rdEntryStr(d, "name")
-	errMsgPrefix := getErrMsgPrefix("Edge Node", name, id, "Update")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}

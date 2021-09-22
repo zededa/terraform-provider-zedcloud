@@ -146,7 +146,7 @@ func createNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
-	errMsgPrefix := getErrMsgPrefix("NetworkInstance", name, "", "Create")
+	errMsgPrefix := getErrMsgPrefix(name, "", "NetworkInstance", "Create")
 	if name == "" {
 		return diag.Errorf("%s \"name\" must be specified.", errMsgPrefix)
 	}
@@ -183,7 +183,7 @@ func updateNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("Network Instance", name, id, "Update")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Network Instance", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
@@ -214,7 +214,7 @@ func deleteNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("Network Instance", name, id, "Delete")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Network Instance", "Delete")
 	_, err := getNetInstConfig(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s Network Instance not found. err: %s",
