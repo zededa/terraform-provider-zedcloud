@@ -99,7 +99,7 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 
 func rdConfigItems(d *schema.ResourceData) ([]*swagger_models.EDConfigItem, error) {
 	cfgItems := make([]*swagger_models.EDConfigItem, 0)
-	val, exists := d.GetOk("config_item")
+	val, exists := d.GetOk("config_items")
 	if !exists {
 		return cfgItems, nil
 	}
@@ -230,7 +230,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	client := (meta.(Client)).Client
 	id := rdEntryStr(d, "id")
 	name := rdEntryStr(d, "name")
-	errMsgPrefix := getErrMsgPrefix("Edge Node", name, id, "Update")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}

@@ -97,7 +97,7 @@ func updateVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("VolumeInstance", name, id, "Update")
+	errMsgPrefix := getErrMsgPrefix(name, id, "VolumeInstance", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
@@ -123,7 +123,7 @@ func deleteVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("VolumeInstance", name, id, "Delete")
+	errMsgPrefix := getErrMsgPrefix(name, id, "VolumeInstance", "Delete")
 	cfg, err := getVolumeInstance(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s Failed to get VolumeInstance. err: %s", errMsgPrefix, err.Error())

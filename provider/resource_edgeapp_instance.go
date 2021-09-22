@@ -386,7 +386,7 @@ func createAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("App Instance", name, id, "Create")
+	errMsgPrefix := getErrMsgPrefix(name, id, "App Instance", "Create")
 	if client == nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, "nil Client")
 	}
@@ -418,7 +418,7 @@ func updateAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("App Instance", name, id, "Update")
+	errMsgPrefix := getErrMsgPrefix(name, id, "App Instance", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
@@ -453,7 +453,7 @@ func deleteAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("App Instance", name, id, "Delete")
+	errMsgPrefix := getErrMsgPrefix(name, id, "App Instance", "Delete")
 	cfg, err := getAppInstance(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())

@@ -110,7 +110,7 @@ func updateImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("Image", name, id, "Update")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
@@ -140,7 +140,7 @@ func deleteImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := getErrMsgPrefix("Image", name, id, "Delete")
+	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Delete")
 	cfg, err := getImage(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s Failed to get Image. err: %s", errMsgPrefix, err.Error())
