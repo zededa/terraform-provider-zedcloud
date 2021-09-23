@@ -111,7 +111,7 @@ var NetworkInstanceSchema = map[string]*schema.Schema{
 	// Rest of the fields must be in the alphabetical order of keys
 	"cluster_id": {
 		Type:        schema.TypeString,
-		Optional:    true,
+		Computed:    true,
 		Description: "ID of the Cluster in which the network instance is configured",
 	},
 	"device_default": {

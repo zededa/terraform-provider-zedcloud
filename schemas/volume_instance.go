@@ -42,11 +42,11 @@ var VolumeInstanceSchema = map[string]*schema.Schema{
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"accessmode": {
-		Type:        schema.TypeString,
-		Optional:    true,
+		Type:     schema.TypeString,
+		Optional: true,
 		Description: "Access mode. Valid Values: VOLUME_INSTANCE_ACCESS_MODE_INVALID, " +
-            "VOLUME_INSTANCE_ACCESS_MODE_READWRITE, VOLUME_INSTANCE_ACCESS_MODE_READONLY, " +
-            "VOLUME_INSTANCE_ACCESS_MODE_MULTIREAD_SINGLEWRITE",
+			"VOLUME_INSTANCE_ACCESS_MODE_READWRITE, VOLUME_INSTANCE_ACCESS_MODE_READONLY, " +
+			"VOLUME_INSTANCE_ACCESS_MODE_MULTIREAD_SINGLEWRITE",
 	},
 	"cleartext": {
 		Type:        schema.TypeBool,
@@ -55,7 +55,7 @@ var VolumeInstanceSchema = map[string]*schema.Schema{
 	},
 	"content_tree_id": {
 		Type:        schema.TypeString,
-		Optional:    true,
+		Computed:    true,
 		Description: "Content tree ID",
 	},
 	"device_id": {
@@ -70,7 +70,7 @@ var VolumeInstanceSchema = map[string]*schema.Schema{
 	},
 	"implicit": {
 		Type:        schema.TypeBool,
-		Optional:    true,
+		Computed:    true,
 		Description: "Flag to create implicit volumes",
 	},
 	"label": {

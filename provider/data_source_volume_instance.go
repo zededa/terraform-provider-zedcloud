@@ -82,6 +82,11 @@ func readVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interf
 		return diag.Errorf("[ERROR] VolumeInstance %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
 	}
+	if cfg.Implicit {
+		return diag.Errorf("[ERROR] VolumeInstance %s (id: %s) is an Implicit Volume. "+
+			"Implicit Volumes cannot be used as resources or data sources.",
+			name, id)
+	}
 	marshalData(d, flattenVolInstConfig(cfg))
 	return diags
 }

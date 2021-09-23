@@ -148,7 +148,7 @@ var netProxyConfigSchema = &schema.Resource{
 		"network_proxy": &schema.Schema{
 			Type:        schema.TypeBool,
 			Optional:    true,
-			Description: "Flag to enable Network proxy",
+			Description: "Use pacfile (Auto discover or manual upload)",
 		},
 		"network_proxy_certs": &schema.Schema{
 			Type:        schema.TypeList,
