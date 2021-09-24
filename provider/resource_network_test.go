@@ -106,18 +106,6 @@ var rdNetworkFullCfg = map[string]interface{}{
 			"type": "NETWORK_WIRELESS_TYPE_WIFI",
 			"wifi_cfg": []interface{}{
 				map[string]interface{}{
-					"crypto": []interface{}{
-						map[string]interface{}{
-							"identity": "sample identity",
-							"password": "Sample Identity",
-						},
-					},
-					"crypto_key": "Sample Crypto Key",
-					"encrypted_secrets": map[string]interface{}{
-						"secret1": "value1",
-						"secret2": "value2",
-						"secret3": "value3",
-					},
 					"identity":   "Sample Identity",
 					"key_scheme": "NETWORK_WIFIKEY_SCHEME_WPAPSK",
 					"priority":   10,

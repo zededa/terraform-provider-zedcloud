@@ -43,13 +43,6 @@ func rdMapNetCellularConfig(d map[string]interface{}) (interface{}, error) {
 	}, nil
 }
 
-func rdMapNetWifiConfigNetcryptoblock(d map[string]interface{}) (interface{}, error) {
-	return &swagger_models.NetWifiConfigNetcryptoblock{
-		Identity: rdEntryStr(d, "identity"),
-		Password: rdEntryStr(d, "password"),
-	}, nil
-}
-
 func rdMapNetWifiConfigSecrets(d map[string]interface{}) (interface{}, error) {
 	return &swagger_models.NetWifiConfigSecrets{
 		WiFiPasswd: rdEntryStr(d, "wifi_passwd"),
@@ -57,19 +50,12 @@ func rdMapNetWifiConfigSecrets(d map[string]interface{}) (interface{}, error) {
 }
 
 func rdMapNetWifiConfig(d map[string]interface{}) (interface{}, error) {
-	crypto, err := rdEntryStructPtr(d, "crypto", rdMapNetWifiConfigNetcryptoblock)
-	if err != nil {
-		return nil, err
-	}
 	keyScheme := swagger_models.NetworkWiFiKeyScheme(rdEntryStr(d, "key_scheme"))
 	secret, err := rdEntryStructPtr(d, "secret", rdMapNetWifiConfigSecrets)
 	if err != nil {
 		return nil, err
 	}
 	return &swagger_models.NetWifiConfig{
-		Crypto:           crypto.(*swagger_models.NetWifiConfigNetcryptoblock),
-		CryptoKey:        rdEntryStr(d, "crypto_key"),
-		EncryptedSecrets: rdEntryStrMap(d, "encrypted_secrets"),
 		Identity:         rdEntryStr(d, "identity"),
 		KeyScheme:        &keyScheme,
 		Priority:         rdEntryInt32(d, "priority"),

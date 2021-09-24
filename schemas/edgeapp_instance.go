@@ -511,6 +511,7 @@ var AppInstSchema = map[string]*schema.Schema{
 		Optional:    true,
 		Description: "IP Address of the Stats Collector module.",
 	},
+    /// Fix this similar to how we did Wifi
 	"crypto_key": {
 		Type:        schema.TypeString,
 		Optional:    true,

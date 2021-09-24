@@ -92,11 +92,9 @@ func flattenNetInstConfig(cfg *swagger_models.NetInstConfig) map[string]interfac
 		return map[string]interface{}{}
 	}
 	return map[string]interface{}{
-		"cluster_id":        cfg.ClusterID,
 		"description":       cfg.Description,
 		"device_default":    cfg.DeviceDefault,
 		"device_id":         ptrValStr(cfg.DeviceID),
-		"dhcp":              cfg.Dhcp,
 		"dns_list":          flattenStaticDNSList(cfg.DNSList),
 		"id":                cfg.ID,
 		"ip":                flattenDhcpServerConfig(cfg.IP),

@@ -125,11 +125,6 @@ var NetworkInstanceSchema = map[string]*schema.Schema{
 		Optional:    true,
 		Description: "ID of the device on which network instance is created",
 	},
-	"dhcp": {
-		Type:        schema.TypeBool,
-		Optional:    true,
-		Description: "Flag to enable / disable dhcp on this network instance",
-	},
 	"dns_list": {
 		Type:        schema.TypeList,
 		Optional:    true,
