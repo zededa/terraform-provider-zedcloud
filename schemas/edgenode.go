@@ -160,9 +160,9 @@ var EdgeNodeSchema = map[string]*schema.Schema{
 		Description: "Verion of EVE-OS image to be used by the Edge Node",
 	},
 	"interface": {
-		Type:        schema.TypeList,
+		Type:        schema.TypeSet,
 		Optional:    true,
-		Description: "System Interface list",
+		Description: "System Interface Set",
 		Elem:        SysInterfaceResourceSchema,
 	},
 	"memory": {

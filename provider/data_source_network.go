@@ -37,16 +37,6 @@ func getNetworkConfig(client *zedcloudapi.Client,
 	return rspData, nil
 }
 
-func flattenNetWifiConfigNetcryptoblock(cfg *swagger_models.NetWifiConfigNetcryptoblock) []interface{} {
-	if cfg == nil {
-		return []interface{}{}
-	}
-	return []interface{}{map[string]interface{}{
-		"identity": cfg.Identity,
-		"password": cfg.Password,
-	}}
-}
-
 func flattenNetWifiConfigSecrets(cfg *swagger_models.NetWifiConfigSecrets) []interface{} {
 	if cfg == nil {
 		return []interface{}{}
@@ -61,9 +51,6 @@ func flattenNetWifiConfig(cfg *swagger_models.NetWifiConfig) []interface{} {
 		return []interface{}{}
 	}
 	return []interface{}{map[string]interface{}{
-		"crypto":            flattenNetWifiConfigNetcryptoblock(cfg.Crypto),
-		"crypto_key":        cfg.CryptoKey,
-		"encrypted_secrets": flattenStringMap(cfg.EncryptedSecrets),
 		"identity":          cfg.Identity,
 		"key_scheme":        ptrValStr(cfg.KeyScheme),
 		"priority":          int(cfg.Priority),

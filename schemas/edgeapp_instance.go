@@ -32,7 +32,7 @@ var appInstDriveResourceSchema = &schema.Resource{
 		},
 		"imvolname": {
 			Type:     schema.TypeString,
-			Optional: true,
+			Computed: true,
 			Description: "Immutable Volume for this drive. Only one of imvolname " +
 				"and mvolname must be specified.",
 		},
@@ -48,7 +48,7 @@ var appInstDriveResourceSchema = &schema.Resource{
 		},
 		"mvolname": {
 			Type:     schema.TypeString,
-			Optional: true,
+			Computed: true,
 			Description: "Mutable Volume for this drive. Only one of imvolname " +
 				"and mvolname must be specified.",
 		},
@@ -503,7 +503,7 @@ var AppInstSchema = map[string]*schema.Schema{
 	},
 	"cluster_id": {
 		Type:        schema.TypeString,
-		Optional:    true,
+		Computed:    true,
 		Description: "ID of the Cluster",
 	},
 	"collect_stats_ip_addr": {
@@ -511,6 +511,7 @@ var AppInstSchema = map[string]*schema.Schema{
 		Optional:    true,
 		Description: "IP Address of the Stats Collector module.",
 	},
+    /// Fix this similar to how we did Wifi
 	"crypto_key": {
 		Type:        schema.TypeString,
 		Optional:    true,

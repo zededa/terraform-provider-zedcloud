@@ -28,7 +28,7 @@ var ImageSchema = map[string]*schema.Schema{
 	},
 	"image_error": {
 		Type:        schema.TypeString,
-		Optional:    true,
+		Computed:    true,
 		Description: "Image upload/uplink detailed error/status message",
 	},
 	"image_format": {

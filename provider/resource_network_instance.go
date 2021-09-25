@@ -119,11 +119,9 @@ func rdUpdateNetInstConfig(d *schema.ResourceData,
 	}
 	dhcpType := swagger_models.NetworkInstanceDhcpType(rdEntryStr(d, "type"))
 
-	cfg.ClusterID = rdEntryStr(d, "cluster_id")
 	cfg.Description = rdEntryStr(d, "description")
 	cfg.DeviceDefault = rdEntryBool(d, "device_default")
 	cfg.DeviceID = rdEntryStrPtrOrNil(d, "device_id")
-	cfg.Dhcp = rdEntryBool(d, "dhcp")
 	cfg.DNSList = dnsList
 	cfg.IP = dhcpServerCfg
 	cfg.Kind = &kind

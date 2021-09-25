@@ -17,46 +17,12 @@ var netWifiConfigSecretsSchema = &schema.Resource{
 	},
 }
 
-var netWifiConfigNetcryptoblockSchema = &schema.Resource{
-	Schema: map[string]*schema.Schema{
-		"identity": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Encrypted USERNAME if not empty",
-		},
-		"password": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Encrypted PASSWORD if not empty",
-		},
-	},
-}
 var netWifiConfigSchema = &schema.Resource{
 	Schema: map[string]*schema.Schema{
-		"crypto": &schema.Schema{
-			Type:        schema.TypeList,
-			Optional:    true,
-			Description: "Encrypted block",
-			Elem:        netWifiConfigNetcryptoblockSchema,
-			MaxItems:    1,
-		},
-		"crypto_key": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Key to be used for encrypting secrets",
-		},
-		"encrypted_secrets": {
-			Type:        schema.TypeMap,
-			Optional:    true,
-			Description: "List of encrypted secrets",
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-		},
 		"identity": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "WPA2 Enterprise user identity/username",
+			Description: "WPA2 Enterprise user identity/username. Use Value from Vault",
 		},
 		"key_scheme": {
 			Type:     schema.TypeString,
@@ -139,6 +105,19 @@ var netProxyServerSchema = &schema.Resource{
 }
 
 var netProxyConfigSchema = &schema.Resource{
+    Description: "netProxyConfig block is used to configure Network Proxy settings for "+
+        "the network. The following is a brief description of how to use the attributes "+
+        "in the block:\n" +
+        "1) If the proxy server requires certificates, set network_proxy_certs to carry the "+
+        "   certificated" +
+        "2) To have the EdgeNode auto discover pacfile, set network_proxy to True \n" +
+        "3) To Configure EdgeNode to download the pacfile from a specific URL:\n" +
+        "       a) set network_proxy = false\n" +
+        "       b) set network_proxy_url to the URL of the pac file\n" +
+        "4) To configure EdgeNode with the contents of the pacfile, set 'pacfile' " +
+        "       to content of the pacfile.\n" +
+        "5) To configure Proxy setting manually instead of using a pacfile, use the " +
+        "   'proxy' and 'exceptions' blocks",
 	Schema: map[string]*schema.Schema{
 		"exceptions": &schema.Schema{
 			Type:        schema.TypeString,
@@ -148,7 +127,7 @@ var netProxyConfigSchema = &schema.Resource{
 		"network_proxy": &schema.Schema{
 			Type:        schema.TypeBool,
 			Optional:    true,
-			Description: "Flag to enable Network proxy",
+			Description: "Enable WPAD (Web Proxy Auto Discovery) Protocol to discover and download PAC file.",
 		},
 		"network_proxy_certs": &schema.Schema{
 			Type:        schema.TypeList,
@@ -161,17 +140,18 @@ var netProxyConfigSchema = &schema.Resource{
 		"network_proxy_url": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "Network Proxy URL. Direct URL for wpad.dat download",
+			Description: "URL for wpad.dat file to be downloaded. Used when "+
+                "network_proxy is set to False.",
 		},
 		"pacfile": {
 			Type:        schema.TypeString,
 			Optional:    true,
-			Description: "Proxy configuration in a pacfile",
+			Description: "Proxy configuration in a pacfile. Used when network_proxy is set to False.",
 		},
 		"proxy": &schema.Schema{
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Net Proxy: protocol level proxies",
+			Description: "Net Proxy: protocol level proxies. Used when network_proxy is set to False.",
 			Elem:        netProxyServerSchema,
 		},
 	},

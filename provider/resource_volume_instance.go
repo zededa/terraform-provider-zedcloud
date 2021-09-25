@@ -45,7 +45,6 @@ func rdUpdateVolumeInstanceCfg(cfg *swagger_models.VolInstConfig, d *schema.Reso
 	cfg.Description = rdEntryStr(d, "description")
 	cfg.DeviceID = rdEntryStr(d, "device_id")
 	cfg.Image = rdEntryStr(d, "image")
-	cfg.Implicit = rdEntryBool(d, "implicit")
 	cfg.Label = rdEntryStr(d, "label")
 	cfg.Multiattach = rdEntryBool(d, "multiattach")
 	cfg.SizeBytes = rdEntryStr(d, "size_bytes")
@@ -69,8 +68,8 @@ func createVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
 	cfg := &swagger_models.VolInstConfig{
-		Name: name,
-        ProjectID: rdEntryStr(d, "project_id"),
+		Name:      name,
+		ProjectID: rdEntryStr(d, "project_id"),
 	}
 	err := rdUpdateVolumeInstanceCfg(cfg, d)
 	if err != nil {

@@ -111,7 +111,7 @@ var NetworkInstanceSchema = map[string]*schema.Schema{
 	// Rest of the fields must be in the alphabetical order of keys
 	"cluster_id": {
 		Type:        schema.TypeString,
-		Optional:    true,
+		Computed:    true,
 		Description: "ID of the Cluster in which the network instance is configured",
 	},
 	"device_default": {
@@ -124,11 +124,6 @@ var NetworkInstanceSchema = map[string]*schema.Schema{
 		Type:        schema.TypeString,
 		Optional:    true,
 		Description: "ID of the device on which network instance is created",
-	},
-	"dhcp": {
-		Type:        schema.TypeBool,
-		Optional:    true,
-		Description: "Flag to enable / disable dhcp on this network instance",
 	},
 	"dns_list": {
 		Type:        schema.TypeList,
