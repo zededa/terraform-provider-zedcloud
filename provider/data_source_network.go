@@ -37,25 +37,15 @@ func getNetworkConfig(client *zedcloudapi.Client,
 	return rspData, nil
 }
 
-func flattenNetWifiConfigSecrets(cfg *swagger_models.NetWifiConfigSecrets) []interface{} {
-	if cfg == nil {
-		return []interface{}{}
-	}
-	return []interface{}{map[string]interface{}{
-		"wifi_passwd": cfg.WiFiPasswd,
-	}}
-}
-
 func flattenNetWifiConfig(cfg *swagger_models.NetWifiConfig) []interface{} {
 	if cfg == nil {
 		return []interface{}{}
 	}
+	// Do not publish sensitive fields - "secret", identity
 	return []interface{}{map[string]interface{}{
-		"identity":          cfg.Identity,
-		"key_scheme":        ptrValStr(cfg.KeyScheme),
-		"priority":          int(cfg.Priority),
-		"secret":            flattenNetWifiConfigSecrets(cfg.Secret),
-		"wifi_ssid":         cfg.WifiSSID,
+		"key_scheme": ptrValStr(cfg.KeyScheme),
+		"priority":   int(cfg.Priority),
+		"wifi_ssid":  cfg.WifiSSID,
 	}}
 }
 

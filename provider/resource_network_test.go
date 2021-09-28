@@ -136,18 +136,35 @@ var efoNetworkFullCfg = map[string]interface{}{
 	"project_id":         rdNetworkFullCfg["project_id"],
 	"proxy":              rdNetworkFullCfg["proxy"],
 	"revision":           []interface{}{},
-	"wireless":           rdNetworkFullCfg["wireless"],
+	"wireless": []interface{}{
+		map[string]interface{}{
+			// In reality, we can have either Cellular cfg or wifi cfg depending
+			// on type - not both. But for unit test, lets populate both structures.
+			"cellular_cfg": []interface{}{
+				map[string]interface{}{
+					"apn": "Sample APN",
+				},
+			},
+			"type": "NETWORK_WIRELESS_TYPE_WIFI",
+			"wifi_cfg": []interface{}{
+				map[string]interface{}{
+					"key_scheme": "NETWORK_WIFIKEY_SCHEME_WPAPSK",
+					"priority":   10,
+					"wifi_ssid":  "Sample Wifi SSID",
+				},
+			},
+		},
+	},
 }
 
-
 var rdNetworkFirstLevelStructKeysAbsent = map[string]interface{}{
-	"name":        "SampleName",
-	"id":          "Sample ID",
-	"description": "Sample Description",
-	"title":       "Sample Title",
+	"name":               "SampleName",
+	"id":                 "Sample ID",
+	"description":        "Sample Description",
+	"title":              "Sample Title",
 	"enterprise_default": true,
-	"kind":       "NETWORK_KIND_V4",
-	"project_id": "sample-project-id",
+	"kind":               "NETWORK_KIND_V4",
+	"project_id":         "sample-project-id",
 }
 
 // efo - Expected Flattened Output
@@ -169,15 +186,15 @@ var efoNetworkFirstLevelStructKeysAbsent = map[string]interface{}{
 }
 
 var rdNetworkFirstLevelStructKeysEmpty = map[string]interface{}{
-	"name":        "SampleName",
-	"id":          "Sample ID",
-	"description": "Sample Description",
+	"name":               "SampleName",
+	"id":                 "Sample ID",
+	"description":        "Sample Description",
 	"dns_list":           []interface{}{},
-	"title":       "Sample Title",
+	"title":              "Sample Title",
 	"enterprise_default": true,
 	"ip":                 []interface{}{},
-	"kind":       "NETWORK_KIND_V4",
-	"project_id": "sample-project-id",
+	"kind":               "NETWORK_KIND_V4",
+	"project_id":         "sample-project-id",
 	"revision":           []interface{}{},
 	"wireless":           []interface{}{},
 }
@@ -199,6 +216,7 @@ var efoNetworkFirstLevelStructKeysEmpty = map[string]interface{}{
 	"revision":           []interface{}{},
 	"wireless":           []interface{}{},
 }
+
 // In each test case, call rdXXX to get the appropriate config struct,
 //  feed it to flattenXXX, verify output of flattenXXX is same as input
 func TestRDNetworkConfig(t *testing.T) {

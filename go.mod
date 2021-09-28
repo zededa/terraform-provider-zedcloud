@@ -14,3 +14,5 @@ require (
 	github.com/keybase/go-crypto v0.0.0-20161004153544-93f5b35093ba // indirect
 	github.com/zededa/zedcloud-api v0.0.2-alpha
 )
+
+// replace github.com/zededa/zedcloud-api => ../zedcloud-api
