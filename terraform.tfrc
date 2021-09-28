@@ -8,7 +8,7 @@ provider_installation {
   # verifications for this provider and forces Terraform to look for the
   # null provider plugin in the given directory.
   dev_overrides {
-    "hashicorp/zedcloud" = "$GOPATH/src/github.com/zededa/terraform-provider-zedcloud"
+    "hashicorp/zedcloud" = "<path-to-src-dir>/src/github.com/zededa/terraform-provider-zedcloud"
   }
 
   # For all other providers, install them directly from their origin provider

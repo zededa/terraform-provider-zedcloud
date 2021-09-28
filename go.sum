@@ -748,6 +748,10 @@ github.com/zededa/zedcloud-api v0.0.0-20210908014406-b8d8a334625e h1:tiUKumCtnfO
 github.com/zededa/zedcloud-api v0.0.0-20210908014406-b8d8a334625e/go.mod h1:7cRGSQt6E0shSY/3yKN42Nka4i1zVm2CMJ/V6B5DNuM=
 github.com/zededa/zedcloud-api v0.0.0-alpha h1:BDQyPCLg8ZLzd4957LE0ETbiagKg7fr7fgb0Nqi9OS4=
 github.com/zededa/zedcloud-api v0.0.0-alpha/go.mod h1:7cRGSQt6E0shSY/3yKN42Nka4i1zVm2CMJ/V6B5DNuM=
+github.com/zededa/zedcloud-api v0.0.1-alpha h1:y9GCwHWNxZuvmA0B/ZD1w6Dn/56bqktMFBKNj4kqXyI=
+github.com/zededa/zedcloud-api v0.0.1-alpha/go.mod h1:7cRGSQt6E0shSY/3yKN42Nka4i1zVm2CMJ/V6B5DNuM=
+github.com/zededa/zedcloud-api v0.0.2-alpha h1:073MaS8ufVQT5cnFYwQGjPC4H8SNalM18LSoc3Jwh1k=
+github.com/zededa/zedcloud-api v0.0.2-alpha/go.mod h1:7cRGSQt6E0shSY/3yKN42Nka4i1zVm2CMJ/V6B5DNuM=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=
 go.etcd.io/etcd/client/pkg/v3 v3.5.0/go.mod h1:IJHfcCEKxYu1Os13ZdwCwIUTUVGYTSAM3YSwc9/Ac1g=
 go.etcd.io/etcd/client/v2 v2.305.0/go.mod h1:h9puh54ZTgAKtEbut2oe9P4L/oqKCVB6xsXlzd7alYQ=
