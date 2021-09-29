@@ -511,11 +511,12 @@ var AppInstSchema = map[string]*schema.Schema{
 		Optional:    true,
 		Description: "IP Address of the Stats Collector module.",
 	},
-    /// Fix this similar to how we did Wifi
+	/// Fix this similar to how we did Wifi
 	"crypto_key": {
-		Type:        schema.TypeString,
-		Optional:    true,
-		Description: "Crypto Key for decrypting user secret information",
+		Type:     schema.TypeString,
+		Optional: true,
+		Description: "SENSITIVE. Crypto Key for decrypting user secret information. " +
+			"This field will not be published by terraform import command.",
 	},
 	"custom_config": {
 		Type:        schema.TypeList,
@@ -550,7 +551,8 @@ var AppInstSchema = map[string]*schema.Schema{
 		Elem: &schema.Schema{
 			Type: schema.TypeString,
 		},
-		Description: "Map of encrypted secrets",
+		Description: "SENSITIVE. Map of encrypted secrets" +
+			"This field will not be published by terraform import command.",
 	},
 	"interface": {
 		Type:        schema.TypeList,

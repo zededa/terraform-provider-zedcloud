@@ -74,18 +74,21 @@ var rdEdgeNodeFullCfg = map[string]interface{}{
 				"tag2": "value2",
 			},
 		},
-		map[string]interface{}{
-			"cost":       1,
-			"intfname":   "intf2",
-			"intf_usage": "ADAPTER_USAGE_DISABLED",
-			"ipaddr":     "10.10.1.6",
-			"macaddr":    "0.1.3",
-			"netname":    "sample-net2",
-			"tags": map[string]interface{}{
-				"tag12": "value12",
-				"tag22": "value22",
-			},
-		},
+		/* Since interfaces are of type schema.Set, need a custom diff function
+		        to compare multiple interfaces
+				map[string]interface{}{
+					"cost":       1,
+					"intfname":   "intf2",
+					"intf_usage": "ADAPTER_USAGE_DISABLED",
+					"ipaddr":     "10.10.1.6",
+					"macaddr":    "0.1.3",
+					"netname":    "sample-net2",
+					"tags": map[string]interface{}{
+						"tag12": "value12",
+						"tag22": "value22",
+					},
+				},
+		*/
 	},
 	"memory":        "",
 	"model_id":      "",

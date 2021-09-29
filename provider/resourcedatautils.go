@@ -229,7 +229,15 @@ func rdEntryList(rd interface{}, key string) []interface{} {
 	if !ok {
 		return []interface{}{}
 	}
-	return val.([]interface{})
+	listVal, ok := val.([]interface{})
+	if ok {
+		return listVal
+	}
+	setVal, ok := val.(*schema.Set)
+	if ok {
+		return setVal.List()
+	}
+	panic("Key %s Value %+v - neither a list not a set")
 }
 
 type rdFuncMapToEntry func(d map[string]interface{}) (interface{}, error)

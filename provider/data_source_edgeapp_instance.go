@@ -290,6 +290,7 @@ func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} 
 	if cfg.Activate != nil {
 		activate = *cfg.Activate
 	}
+	// Do not publish sensitive fields - crypto_key, encrypted_secrets
 	return map[string]interface{}{
 		"activate":              activate,
 		"app_id":                ptrValStr(cfg.AppID),
@@ -298,13 +299,11 @@ func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} 
 		"bundleversion":         cfg.Bundleversion,
 		"cluster_id":            cfg.ClusterID,
 		"collect_stats_ip_addr": cfg.CollectStatsIPAddr,
-		"crypto_key":            cfg.CryptoKey,
 		"custom_config":         flattenCustomConfig(cfg.CustomConfig),
 		"deployment_type":       ptrValStr(cfg.DeploymentType),
 		"description":           cfg.Description,
 		"device_id":             ptrValStr(cfg.DeviceID),
 		"drive":                 flattenDrives(cfg.Drives),
-		"encrypted_secrets":     flattenStringMap(cfg.EncryptedSecrets),
 		"id":                    cfg.ID,
 		"interface":             flattenAppInterfaces(cfg.Interfaces),
 		"is_secret_updated":     cfg.IsSecretUpdated,

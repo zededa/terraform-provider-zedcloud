@@ -185,9 +185,17 @@ func updateNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
+	if id == "" {
+		return diag.Errorf("%s err: %s",
+			errMsgPrefix, "id cannot be empty string for Update operation")
+	}
 	cfg, err := getNetInstConfig(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
+	}
+	if *cfg.Name != name {
+		return diag.Errorf("%s err: %s",
+			errMsgPrefix, "Name of an object cannot be changed")
 	}
 	err = rdUpdateNetInstConfig(d, cfg)
 	if err != nil {

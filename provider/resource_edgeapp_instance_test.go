@@ -19,13 +19,11 @@ var rdAppInstEmptyOutput = map[string]interface{}{
 	"bundleversion":         "",
 	"cluster_id":            "",
 	"collect_stats_ip_addr": "",
-	"crypto_key":            "",
 	"custom_config":         []interface{}{},
 	"deployment_type":       "",
 	"description":           "",
 	"device_id":             "",
 	"drive":                 []interface{}{},
-	"encrypted_secrets":     map[string]interface{}{},
 	"id":                    "",
 	"interface":             []interface{}{},
 	"is_secret_updated":     false,
@@ -252,12 +250,10 @@ var efoAppInstFullCfg = map[string]interface{}{
 	"bundleversion":         "", // Computed
 	"cluster_id":            rdAppInstFullCfg["cluster_id"],
 	"collect_stats_ip_addr": rdAppInstFullCfg["collect_stats_ip_addr"],
-	"crypto_key":            rdAppInstFullCfg["crypto_key"],
 	"custom_config":         rdAppInstFullCfg["custom_config"],
 	"deployment_type":       rdAppInstFullCfg["deployment_type"],
 	"device_id":             rdAppInstFullCfg["device_id"],
 	"drive":                 rdAppInstFullCfg["drive"],
-	"encrypted_secrets":     rdAppInstFullCfg["encrypted_secrets"],
 	"interface": []interface{}{
 		rdAppInstFullCfg["interface"].([]interface{})[0],
 		//rdAppInstFullCfg["interface"][1],
@@ -329,9 +325,9 @@ func TestRDAppInstConfig(t *testing.T) {
 		}
 		if diff := deep.Equal(out, c.expectedFlattenedOutput); diff != nil {
 			t.Fatalf("Test Failed: %s\n"+
-				"Error matching Flattened output and input.\n"+
+				"Error matching Flattened output and Expected output.\n"+
 				"Output: %#v\n"+
-				"Input : %#v\n"+
+				"Expected Output : %#v\n"+
 				"Diff: %#v", c.description, out, c.expectedFlattenedOutput, diff)
 		}
 	}

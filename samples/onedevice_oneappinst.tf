@@ -1,8 +1,30 @@
+// Set env variable TF_VAR_username to pass username to terraform plan/apply
+variable "username" {
+    description = "ZEDCloud username"
+    sensitive = true
+    type        = string
+}
+
+// Set env variable TF_VAR_password to pass password to terraform plan/apply
+variable "password" {
+    description = "ZEDCloud password"
+    sensitive = true
+    type        = string
+}
+
+// Set env variable TF_VAR_zedcloud_token to pass ZEDCloud API Token to
+// terraform plan/apply
+variable "zedcloud_token" {
+    description = "ZEDCloud API Token"
+    sensitive = true
+    type        = string
+}
+
 provider "zedcloud" {
-	zedcloud_url = ""
-    token = ""
-    username = ""
-    password = ""
+    zedcloud_url = ""
+    token = var.zedcloud_token
+    username = var.username
+    password = var.password
 }
 
 data "zedcloud_edgenode" "Sample-Device-Data" {

@@ -10,9 +10,10 @@ import (
 var netWifiConfigSecretsSchema = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"wifi_passwd": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Wifi Password",
+			Type:     schema.TypeString,
+			Optional: true,
+			Description: "SENSITIVE: Wifi Password. " +
+				"This field will not be published by terraform import",
 		},
 	},
 }
@@ -20,9 +21,10 @@ var netWifiConfigSecretsSchema = &schema.Resource{
 var netWifiConfigSchema = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"identity": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "WPA2 Enterprise user identity/username. Use Value from Vault",
+			Type:     schema.TypeString,
+			Optional: true,
+			Description: "SENSITIVE. WPA2 Enterprise user identity/username. Use Value from Vault. " +
+				"This field will not be published by terraform import",
 		},
 		"key_scheme": {
 			Type:     schema.TypeString,
@@ -36,10 +38,11 @@ var netWifiConfigSchema = &schema.Resource{
 			Description: "Priority of connection, default is 0",
 		},
 		"secret": &schema.Schema{
-			Type:        schema.TypeList,
-			Optional:    true,
-			Description: "List of wifi secrets (passwords)",
-			Elem:        netWifiConfigSecretsSchema,
+			Type:     schema.TypeList,
+			Optional: true,
+			Description: "SENSITIVE. List of wifi secrets (passwords). " +
+				"This field will not be published by terraform import command.",
+			Elem: netWifiConfigSecretsSchema,
 		},
 		"wifi_ssid": {
 			Type:        schema.TypeString,
@@ -105,19 +108,19 @@ var netProxyServerSchema = &schema.Resource{
 }
 
 var netProxyConfigSchema = &schema.Resource{
-    Description: "netProxyConfig block is used to configure Network Proxy settings for "+
-        "the network. The following is a brief description of how to use the attributes "+
-        "in the block:\n" +
-        "1) If the proxy server requires certificates, set network_proxy_certs to carry the "+
-        "   certificated" +
-        "2) To have the EdgeNode auto discover pacfile, set network_proxy to True \n" +
-        "3) To Configure EdgeNode to download the pacfile from a specific URL:\n" +
-        "       a) set network_proxy = false\n" +
-        "       b) set network_proxy_url to the URL of the pac file\n" +
-        "4) To configure EdgeNode with the contents of the pacfile, set 'pacfile' " +
-        "       to content of the pacfile.\n" +
-        "5) To configure Proxy setting manually instead of using a pacfile, use the " +
-        "   'proxy' and 'exceptions' blocks",
+	Description: "netProxyConfig block is used to configure Network Proxy settings for " +
+		"the network. The following is a brief description of how to use the attributes " +
+		"in the block:\n" +
+		"1) If the proxy server requires certificates, set network_proxy_certs to carry the " +
+		"   certificated" +
+		"2) To have the EdgeNode auto discover pacfile, set network_proxy to True \n" +
+		"3) To Configure EdgeNode to download the pacfile from a specific URL:\n" +
+		"       a) set network_proxy = false\n" +
+		"       b) set network_proxy_url to the URL of the pac file\n" +
+		"4) To configure EdgeNode with the contents of the pacfile, set 'pacfile' " +
+		"       to content of the pacfile.\n" +
+		"5) To configure Proxy setting manually instead of using a pacfile, use the " +
+		"   'proxy' and 'exceptions' blocks",
 	Schema: map[string]*schema.Schema{
 		"exceptions": &schema.Schema{
 			Type:        schema.TypeString,
@@ -138,10 +141,10 @@ var netProxyConfigSchema = &schema.Resource{
 			},
 		},
 		"network_proxy_url": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "URL for wpad.dat file to be downloaded. Used when "+
-                "network_proxy is set to False.",
+			Type:     schema.TypeString,
+			Optional: true,
+			Description: "URL for wpad.dat file to be downloaded. Used when " +
+				"network_proxy is set to False.",
 		},
 		"pacfile": {
 			Type:        schema.TypeString,
