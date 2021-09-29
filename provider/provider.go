@@ -11,34 +11,34 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-	zedcloudapi "github.com/zededa/zedcloud-api"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
+	zedcloudapi "github.com/zededa/zedcloud-api"
 )
 
 var DefaultZedcloudUrl = "https://zedcontrol.zededa.net"
 
 var ProviderSchema = &schema.Provider{
 	ConfigureContextFunc: providerConfigure,
-	Schema: zschemas.ProviderSchema,
+	Schema:               zschemas.ProviderSchema,
 
 	DataSourcesMap: map[string]*schema.Resource{
 		"zedcloud_edgeapp":          getEdgeAppDataSourceSchema(),
-		"zedcloud_edgeapp_instance":  getAppInstDataSourceSchema(),
+		"zedcloud_edgeapp_instance": getAppInstDataSourceSchema(),
 		"zedcloud_edgenode":         getEdgeNodeDataSourceSchema(),
 		"zedcloud_image":            getImageDataSourceSchema(),
 		"zedcloud_network":          getNetworkDataSourceSchema(),
 		"zedcloud_network_instance": getNetInstDataSourceSchema(),
-		"zedcloud_volume_instance": getVolumeInstanceDataSourceSchema(),
+		"zedcloud_volume_instance":  getVolumeInstanceDataSourceSchema(),
 	},
 
 	ResourcesMap: map[string]*schema.Resource{
 		"zedcloud_edgeapp":          getEdgeAppResourceSchema(),
-		"zedcloud_edgeapp_instance":  getAppInstResourceSchema(),
+		"zedcloud_edgeapp_instance": getAppInstResourceSchema(),
 		"zedcloud_edgenode":         getEdgeNodeResourceSchema(),
 		"zedcloud_image":            getImageResourceSchema(),
 		"zedcloud_network":          getNetworkResourceSchema(),
 		"zedcloud_network_instance": getNetInstResourceSchema(),
-		"zedcloud_volume_instance": getVolumeInstanceResourceSchema(),
+		"zedcloud_volume_instance":  getVolumeInstanceResourceSchema(),
 	},
 }
 
@@ -54,29 +54,8 @@ type Client struct {
 	Client   *zedcloudapi.Client
 }
 
-func getErrMsgPrefix(name, id, objectType, action string) string {
-	return fmt.Sprintf("[ERROR] %s %s ( id: %s) %s Failed.",
-		objectType, name, id, action)
-}
-
 func Provider() *schema.Provider {
 	return ProviderSchema
-}
-
-// marshalData is used to ensure the data is put into a format Terraform can output
-func marshalData(d *schema.ResourceData, vals map[string]interface{}) {
-	for k, v := range vals {
-		if k == "id" {
-			d.SetId(v.(string))
-		} else {
-			str, ok := v.(string)
-			if ok {
-				d.Set(k, str)
-			} else {
-				d.Set(k, v)
-			}
-		}
-	}
 }
 
 // providerConfigure parses the config into the Terraform provider meta object
@@ -107,9 +86,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 
 	providerClient := Client{
 		ZedcloudUrl: zedcloudUrl,
-		Token:    token,
-		Username: username,
-		Password: password,
+		Token:       token,
+		Username:    username,
+		Password:    password,
 	}
 	var err error
 	providerClient.Client, err = zedcloudapi.NewClient(zedcloudUrl, token, username, password)

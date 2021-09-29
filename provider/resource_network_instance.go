@@ -5,6 +5,7 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/schemas"
@@ -173,6 +174,26 @@ func createNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	return diags
 }
 
+func validateNetInstUpdateOperation(client *zedcloudapi.Client,
+	d *schema.ResourceData) (*swagger_models.NetInstConfig, error) {
+	if client == nil {
+		return nil, fmt.Errorf("nil Client")
+	}
+	id := rdEntryStr(d, "id")
+	if id == "" {
+		return nil, fmt.Errorf("id cannot be empty string for Update operation")
+	}
+	cfg, err := getNetInstConfig(client, "", id)
+	if err != nil {
+		return nil, err
+	}
+	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID, cfg.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+	return cfg, nil
+}
+
 // Update the Resource Group
 func updateNetInstResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// Warning or errors can be collected in a slice type
@@ -182,20 +203,9 @@ func updateNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Network Instance", "Update")
-	if client == nil {
-		return diag.Errorf("%s nil Client", errMsgPrefix)
-	}
-	if id == "" {
-		return diag.Errorf("%s err: %s",
-			errMsgPrefix, "id cannot be empty string for Update operation")
-	}
-	cfg, err := getNetInstConfig(client, name, id)
+	cfg, err := validateNetInstUpdateOperation(client, d)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
-	}
-	if *cfg.Name != name {
-		return diag.Errorf("%s err: %s",
-			errMsgPrefix, "Name of an object cannot be changed")
 	}
 	err = rdUpdateNetInstConfig(d, cfg)
 	if err != nil {
