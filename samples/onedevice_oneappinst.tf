@@ -41,12 +41,15 @@ resource "zedcloud_image" "TFR-app-image-1" {
     description = data.zedcloud_image.app-image-1.description
     image_arch = data.zedcloud_image.app-image-1.image_arch
     image_format = data.zedcloud_image.app-image-1.image_format
-    image_local = data.zedcloud_image.app-image-1.image_local
     image_rel_url = data.zedcloud_image.app-image-1.image_rel_url
     image_sha_256 = data.zedcloud_image.app-image-1.image_sha_256
     image_size_bytes = data.zedcloud_image.app-image-1.image_size_bytes
     image_type = data.zedcloud_image.app-image-1.image_type
     title = data.zedcloud_image.app-image-1.title
+}
+
+data "zedcloud_edgenode" "Data-Sample-Device" {
+    name = "TF-Sample-Device1"
 }
 
 resource "zedcloud_edgenode" "Sample-Device" {
@@ -67,9 +70,8 @@ resource "zedcloud_edgenode" "Sample-Device" {
     dev_location {
         city = "San Jose"
         country = "USA"
-        free_loc = ""
+        freeloc = ""
         hostname = "sample-device"
-        latlong = ""
         loc = ""
         org = "Zededa Engineering"
         postal = "95116"
@@ -80,11 +82,11 @@ resource "zedcloud_edgenode" "Sample-Device" {
     eve_image_version = "6.8.2-kvm-amd64"
 
     interface {
-      intf_name = "eth0"
+      intfname = "eth0"
       intf_usage = "ADAPTER_USAGE_MANAGEMENT"
     }
     interface {
-      intf_name = "eth1"
+      intfname = "eth1"
       intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
     }
     tags = {
@@ -181,19 +183,8 @@ resource "zedcloud_network" "TF-sample-network-full-cfg" {
         }
         type = ""
         wifi_cfg {
-            crypto {
-                identity = "test identity"
-                password = "test password"
-            }
-            crypto_key = ""
-            encrypted_secret {
-                "secret1" = "value1"
-                "secret2" = "value2"
-            }
-            identity = ""
             key_scheme = ""
             priority = 5
-            secret {}
             wifi_ssid = "TF-Test-Wifi-SSID"
         }
     }
@@ -229,7 +220,7 @@ resource "zedcloud_network_instance" "default-nwinst" {
     description = "edge-node-1-ni-default-nwinst"
     device_default = true
     port = "eth1"
-    device_id = zedcloud_edgenode.Sample-Device.id
+    device_id = data.zedcloud_edgenode.Data-Sample-Device.id
 }
 
 resource "zedcloud_network_instance" "TF-Sample-test-full" {
@@ -237,7 +228,7 @@ resource "zedcloud_network_instance" "TF-Sample-test-full" {
     title = "edge-node-1-ni-TF-Sample-test-full"
     description = "edge-node-1-ni-TF-Sample-test-full"
     device_default = true
-    device_id = zedcloud_edgenode.Sample-Device.id
+    device_id = data.zedcloud_edgenode.Data-Sample-Device.id
     dns_list {
         addrs = [
             "10.1.1.1",
@@ -273,7 +264,6 @@ resource "zedcloud_network_instance" "TF-Sample-test-full" {
     }
     kind = "NETWORK_INSTANCE_KIND_LOCAL"
     network_policy_id = "tft-test-network-policy-id"
-    oconfig = "tft-test-oconfig"
     port = "eth1"
     port_tags = {
         "port-tag1" = "port-tag-value-1"
@@ -298,11 +288,11 @@ resource "zedcloud_edgeapp_instance" "Sample-EdgeAppInstance" {
     //app_user_defined_version = "5"
     description = "TerraForm Sample App Instance - TESTING Update"
     device_id = zedcloud_edgenode.Sample-Device.id
-    interfaces {
+    interface {
         intfname = "indirect"
         netinstname = zedcloud_network_instance.default-nwinst.name
         acl {
-            matches {
+            match {
                 type = "ip"
                 value = "0.0.0.0/0"
             }
@@ -310,26 +300,26 @@ resource "zedcloud_edgeapp_instance" "Sample-EdgeAppInstance" {
             name = ""
         }
         acl {
-            matches {
+            match {
                 type = "protocol"
                 value = "tcp"
             }
-            matches {
+            match {
                 type = "lport"
                 value = "8022"
             }
-            matches {
+            match {
                 type = "ip"
                 value = "0.0.0.0/0"
             }
-            actions {
+            action {
                 drop = false
                 limit = false
-                limit_rate = 0
-                limit_unit = ""
-                limit_burst = 0
+                limitrate = 0
+                limitunit = ""
+                limitburst = 0
                 portmap = true
-                map_params {
+                mapparams {
                     port = 22
                 }
             }
@@ -356,9 +346,7 @@ resource "zedcloud_volume_instance" "TF-sample-vol-inst-RO-content-tree" {
     accessmode  = "VOLUME_INSTANCE_ACCESS_MODE_READONLY"
     description = "Immutable Volume"
     device_id   = "99999999-bbbb-aaaa-1111-bbbbbbbbbbbb"
-    id          = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
     image       = "alpine-base"
-    implicit    = true
     multiattach = false
     name        = "sample-volinst-1"
     project_id  = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"

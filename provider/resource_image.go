@@ -118,6 +118,10 @@ func updateImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
+	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID, "")
+	if err != nil {
+		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
+	}
 	log.Printf("[INFO] Updating Image: %s (ID: %s)", name, cfg.ID)
 	err = updateImageCfgFromResourceData(cfg, d)
 	if err != nil {

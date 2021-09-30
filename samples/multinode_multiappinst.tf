@@ -37,7 +37,7 @@ resource "zedcloud_edgenode" "sample-edge-node" {
     name = each.value
     title = format("Edge Node %s", each.value)
     description = format("Edge Node Description %s", each.value)
-    eveimage_version = "abc"
+    eve_image_version = "abc"
 }
 
 resource "zedcloud_network_instance" "default-nwinst" {
@@ -47,7 +47,7 @@ resource "zedcloud_network_instance" "default-nwinst" {
     description = format("Network Instance Description default-%s", each.value)
     device_default = true
     port = "eth0"
-    edgenode_id = zedcloud_edgenode.sample-edge-node[each.key].id
+    device_id = zedcloud_edgenode.sample-edge-node[each.key].id
 }
 
 resource "zedcloud_edgeapp" "TF-Test-ubuntu-all-ip" {
@@ -64,16 +64,15 @@ resource "zedcloud_edgeapp" "tftest-ubuntu-xenial" {
     description = "TFTest-ubuntu-xenial-16.04"
 }
 
-resource "zedcloud_edgeappinstance" "Sample-EdgeAppInstance" {
+resource "zedcloud_edgeapp_instance" "Sample-EdgeAppInstance" {
     for_each = local.node_list
     name = format("TF-Sample-EdgeAppInstance-%s", each.value)
     activate = false
-    edgeapp_type="VM"
-    edgeapp_id=zedcloud_edgeapp.TF-Test-ubuntu-all-ip.id
-    edgenode_id=zedcloud_edgenode.sample-edge-node[each.key].id
+    app_type = "APP_TYPE_VM"
+    app_id = zedcloud_edgeapp.TF-Test-ubuntu-all-ip.id
+    device_id=zedcloud_edgenode.sample-edge-node[each.key].id
     title="TerraForm Sample App Instance"
     description="TerraForm Sample App Instance"
-    network_instance=zedcloud_network_instance.default-nwinst[each.key].name
     depends_on = [
         zedcloud_edgeapp.TF-Test-ubuntu-all-ip,
         zedcloud_edgenode.sample-edge-node,

@@ -56,11 +56,11 @@ func rdMapNetWifiConfig(d map[string]interface{}) (interface{}, error) {
 		return nil, err
 	}
 	return &swagger_models.NetWifiConfig{
-		Identity:         rdEntryStr(d, "identity"),
-		KeyScheme:        &keyScheme,
-		Priority:         rdEntryInt32(d, "priority"),
-		Secret:           secret.(*swagger_models.NetWifiConfigSecrets),
-		WifiSSID:         rdEntryStr(d, "wifi_ssid"),
+		Identity:  rdEntryStr(d, "identity"),
+		KeyScheme: &keyScheme,
+		Priority:  rdEntryInt32(d, "priority"),
+		Secret:    secret.(*swagger_models.NetWifiConfigSecrets),
+		WifiSSID:  rdEntryStr(d, "wifi_ssid"),
 	}, nil
 }
 
@@ -225,6 +225,10 @@ func updateNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	}
 	if cfg == nil {
 		return diag.Errorf("%s Nil Config. Failed to find Network", errMsgPrefix)
+	}
+	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID, *cfg.ProjectID)
+	if err != nil {
+		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
 	log.Printf("[INFO] Found Network: %s (ID: %s)", name, cfg.ID)
 	err = rdToNetConfig(cfg, d)

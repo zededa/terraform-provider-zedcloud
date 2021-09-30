@@ -427,6 +427,10 @@ func updateAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	if cfg == nil {
 		return diag.Errorf("%s Failed to find App Instance", errMsgPrefix)
 	}
+	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID, *cfg.ProjectID)
+	if err != nil {
+		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
+	}
 	log.Printf("[INFO] Found AppInst: %s (ID: %s)", name, cfg.ID)
 	err = rdUpdateAppInstCfg(cfg, d)
 	if err != nil {

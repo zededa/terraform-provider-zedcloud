@@ -104,6 +104,10 @@ func updateVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
+	err = checkInvalidAttrForUpdate(d, cfg.Name, cfg.ID, cfg.ProjectID)
+	if err != nil {
+		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
+	}
 	log.Printf("[INFO] Updating VolumeInstance: %s (ID: %s)", name, cfg.ID)
 	client.XRequestIdPrefix = "TF-volumeInstance-update"
 	urlExtension := getVolumeInstanceUrl(name, id, "update")
