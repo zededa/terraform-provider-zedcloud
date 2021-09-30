@@ -36,6 +36,15 @@ var projectIdSchema = &schema.Schema{
 	Type:        schema.TypeString,
 	Optional:    true,
 	Description: "ID of the project to which the Object belongs",
+	DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+		if new == "" {
+			// If new is not specified - old one was published by get.
+			// This is the case of .tf not having the project id for the object,
+			// but zedcloud setting it - may be default project id.
+			return true
+		}
+		return false
+	},
 }
 
 var tagsSchema = &schema.Schema{
@@ -64,12 +73,12 @@ var zedcloudOpsCmdSchema = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"counter": {
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Computed:    true,
 			Description: "Operation Counter",
 		},
 		"ops_time": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "Timestamp: Operational time",
 		},
 	},
@@ -105,32 +114,32 @@ var objectRevisionSchema = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"created_at": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "The time, in milliseconds since the epoch, when the object was created",
 		},
 		"created_by": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "User who Created the object",
 		},
 		"curr": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "Current version of the object",
 		},
 		"prev": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "Prev version of the object",
 		},
 		"updated_at": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "The time, in milliseconds since the epoch, when the object was last updated",
 		},
 		"updated_by": {
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 			Description: "User who last updated the object",
 		},
 	},

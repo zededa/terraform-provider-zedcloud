@@ -239,7 +239,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 		return diag.Errorf("%s Failed to find Edge Node. err: %s",
 			errMsgPrefix, err.Error())
 	}
-	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID, *cfg.ProjectID)
+	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
