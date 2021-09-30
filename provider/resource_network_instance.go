@@ -187,7 +187,7 @@ func validateNetInstUpdateOperation(client *zedcloudapi.Client,
 	if err != nil {
 		return nil, err
 	}
-	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID, cfg.ProjectID)
+	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID)
 	if err != nil {
 		return nil, err
 	}

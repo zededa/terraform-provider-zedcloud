@@ -226,7 +226,7 @@ func updateNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	if cfg == nil {
 		return diag.Errorf("%s Nil Config. Failed to find Network", errMsgPrefix)
 	}
-	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID, *cfg.ProjectID)
+	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}

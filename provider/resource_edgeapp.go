@@ -113,7 +113,7 @@ func updateEdgeAppResource(ctx context.Context, d *schema.ResourceData, meta int
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
-	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID, "")
+	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}

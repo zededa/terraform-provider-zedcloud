@@ -29,23 +29,16 @@ func marshalData(d *schema.ResourceData, vals map[string]interface{}) {
 	}
 }
 
-func checkInvalidAttrForUpdate(d *schema.ResourceData, name, id, projectID string) error {
+func checkInvalidAttrForUpdate(d *schema.ResourceData, name, id string) error {
 	newName := rdEntryStr(d, "name")
 	if newName != name {
 		return fmt.Errorf("Name of an object cannot be changed. current: %s, new: %s",
-            name, newName)
+			name, newName)
 	}
 	idInState := rdEntryStr(d, "id")
 	if idInState != id {
-		return fmt.Errorf("ID of the object has Changed. Cannot update the object. " +
-            "ID in state: %s, ID of Object in Cloud: %s", idInState, id)
+		return fmt.Errorf("ID of the object has Changed. Cannot update the object. "+
+			"ID in state: %s, ID of Object in Cloud: %s", idInState, id)
 	}
-    if projectID != "" {
-        newProjectID := rdEntryStr(d, "project_id")
-        if newProjectID != projectID {
-            return fmt.Errorf("Project of an object cannot be changed. current: %s, new: %s",
-                projectID, newProjectID)
-        }
-    }
-    return nil
+	return nil
 }
