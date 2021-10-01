@@ -292,6 +292,7 @@ github.com/go-stack/stack v1.8.0 h1:5SgMzNM5HxrEjV0ww2lTmX6E2Izsfxas4+YHWRs3Lsk=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/go-test/deep v1.0.3 h1:ZrJSEWsXzPOxaZnFteGEfooLba+ju3FYIbOrS+rQd68=
 github.com/go-test/deep v1.0.3/go.mod h1:wGDj63lr65AM2AQyKZd/NYHGb0R+1RLqB8NKt3aSFNA=
+github.com/go-test/deep v1.0.7 h1:/VSMRlnY/JSyqxQUzQLKVMAskpY/NZKFA5j2P+0pP2M=
 github.com/go-test/deep v1.0.7/go.mod h1:QV8Hv/iy04NyLBxAdO9njL0iVPN1S4d/A3NVv1V36o8=
 github.com/gobuffalo/attrs v0.0.0-20190224210810-a9411de4debd h1:hSkbZ9XSyjyBirMeqSqUrK+9HboWrweVlzRNqoBi2d4=
 github.com/gobuffalo/attrs v0.0.0-20190224210810-a9411de4debd/go.mod h1:4duuawTqi2wkkpB4ePgWMaai6/Kc6WEz83bhFwpHzj0=
@@ -755,6 +756,8 @@ github.com/zededa/zedcloud-api v0.0.2-alpha h1:073MaS8ufVQT5cnFYwQGjPC4H8SNalM18
 github.com/zededa/zedcloud-api v0.0.2-alpha/go.mod h1:7cRGSQt6E0shSY/3yKN42Nka4i1zVm2CMJ/V6B5DNuM=
 github.com/zededa/zedcloud-api v0.0.3-alpha h1:IWioxwJDRvukMtOqfx+0cTKI+fH7gLvtCsqv9guIdt4=
 github.com/zededa/zedcloud-api v0.0.3-alpha/go.mod h1:XxkHfpQWthD7+11O8GRijym56Jq30pF4VS76sNuU56M=
+github.com/zededa/zedcloud-api v0.0.4-alpha h1://Jl0KLeQyXwQLboyrIn+gPYJqMfI3zsFJN7xIlj3zI=
+github.com/zededa/zedcloud-api v0.0.4-alpha/go.mod h1:XxkHfpQWthD7+11O8GRijym56Jq30pF4VS76sNuU56M=
 go.etcd.io/etcd/api/v3 v3.5.0/go.mod h1:cbVKeC6lCfl7j/8jBhAK6aIYO9XOjdptoxU/nLQcPvs=
 go.etcd.io/etcd/client/pkg/v3 v3.5.0/go.mod h1:IJHfcCEKxYu1Os13ZdwCwIUTUVGYTSAM3YSwc9/Ac1g=
 go.etcd.io/etcd/client/v2 v2.305.0/go.mod h1:h9puh54ZTgAKtEbut2oe9P4L/oqKCVB6xsXlzd7alYQ=

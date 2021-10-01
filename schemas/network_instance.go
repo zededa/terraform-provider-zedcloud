@@ -171,7 +171,7 @@ var NetworkInstanceSchema = map[string]*schema.Schema{
 			Type: schema.TypeString,
 		},
 	},
-	"project_id": projectIdSchema,
+	"project_id": projectIdComputedSchema,
 	"revision":   revisionSchema,
 	"tags":       tagsSchema,
 	"type": {

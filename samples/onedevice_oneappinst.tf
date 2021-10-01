@@ -291,50 +291,9 @@ resource "zedcloud_edgeapp_instance" "Sample-EdgeAppInstance" {
     interface {
         intfname = "indirect"
         netinstname = zedcloud_network_instance.default-nwinst.name
-        acl {
-            match {
-                type = "ip"
-                value = "0.0.0.0/0"
-            }
-            id = "1"
-            name = ""
-        }
-        acl {
-            match {
-                type = "protocol"
-                value = "tcp"
-            }
-            match {
-                type = "lport"
-                value = "8022"
-            }
-            match {
-                type = "ip"
-                value = "0.0.0.0/0"
-            }
-            action {
-                drop = false
-                limit = false
-                limitrate = 0
-                limitunit = ""
-                limitburst = 0
-                portmap = true
-                mapparams {
-                    port = 22
-                }
-            }
-            id = 2
-            name = ""
-        }
     }
     title = "TerraForm Sample App Instance"
     remote_console = true
-    vminfo {
-        cpus = 1
-        memory = 512
-        mode = "HV_HVM"
-        vnc = true
-    }
     depends_on = [
         zedcloud_edgeapp.ubuntu-all-ip,
         zedcloud_edgenode.Sample-Device,
@@ -349,7 +308,6 @@ resource "zedcloud_volume_instance" "TF-sample-vol-inst-RO-content-tree" {
     image       = "alpine-base"
     multiattach = false
     name        = "sample-volinst-1"
-    project_id  = "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
     size_bytes  = "140443648"
     title       = "Sample Title"
     type        = "VOLUME_INSTANCE_TYPE_CONTENT_TREE"
