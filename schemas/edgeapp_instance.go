@@ -407,7 +407,7 @@ var appInterfaceResourceSchema = &schema.Resource{
 		},
 		"acl": {
 			Type:        schema.TypeList,
-			Optional:    true,
+			Computed:    true,
 			Description: "App Access Control Lists on the Interface",
 			Elem:        appACEResourceSchema,
 		},
@@ -491,7 +491,7 @@ var AppInstSchema = map[string]*schema.Schema{
 	},
 	"app_type": {
 		Type:     schema.TypeString,
-		Optional: true,
+		Computed: true,
 		Description: "Type of Edge App - VM / Container etc. The following are valid values: " +
 			"APP_TYPE_UNSPECIFIED, APP_TYPE_VM, APP_TYPE_VM_RUNTIME, APP_TYPE_CONTAINER, " +
 			"APP_TYPE_MODULE",
@@ -527,12 +527,9 @@ var AppInstSchema = map[string]*schema.Schema{
 	},
 	"deployment_type": {
 		Type:     schema.TypeString,
-		Optional: true,
+		Computed: true,
 		Description: "Type of deployment for the app, eg: azure, k3s, standalone. " +
-			"The following are valid values: " +
-			"DEPLOYMENT_TYPE_UNSPECIFIED, DEPLOYMENT_TYPE_STAND_ALONE, DEPLOYMENT_TYPE_AZURE, " +
-			"DEPLOYMENT_TYPE_K3S, DEPLOYMENT_TYPE_AWS, DEPLOYMENT_TYPE_K3S_AZURE, " +
-			"DEPLOYMENT_TYPE_K3S_AWS",
+			"This comes from the App Manifest.",
 	},
 	"device_id": {
 		Type:        schema.TypeString,
@@ -606,9 +603,8 @@ var AppInstSchema = map[string]*schema.Schema{
 	},
 	"vminfo": {
 		Type:        schema.TypeList,
-		Optional:    true,
+		Computed:    true,
 		Description: "Virtual machine info",
 		Elem:        appInstVMResourceSchema,
-		MaxItems:    1,
 	},
 }

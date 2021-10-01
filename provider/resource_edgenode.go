@@ -278,14 +278,10 @@ func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	client.XRequestIdPrefix = "TF-edgenode-delete"
 	urlExtension := getEdgeNodeUrl(name, id, "delete")
 	rspData := &swagger_models.ZsrvResponse{}
-	resp, err := client.SendReq("delete", urlExtension, nil, rspData)
+	_, err := client.SendReq("delete", urlExtension, nil, rspData)
 	if err != nil {
 		return diag.Errorf("%s. Err: %s", errMsgPrefix, err.Error())
 	}
-	if resp.StatusCode == 200 {
-		log.Printf("[INFO] EdgeNode Delete Successful.")
-		return diags
-	}
-	return diag.Errorf("%s. Status: %s\n resp: %++v", errMsgPrefix, resp.Status,
-		resp)
+	log.Printf("[INFO] EdgeNode Delete Successful.")
+	return diags
 }

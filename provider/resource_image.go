@@ -69,6 +69,26 @@ func updateImageCfgFromResourceData(cfg *swagger_models.ImageConfig, d *schema.R
 	return nil
 }
 
+func uplinkImageResource(client *zedcloudapi.Client, name, id string) error {
+	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Uplink")
+	cfg, err := getImage(client, "", id)
+	if err != nil {
+		return fmt.Errorf("%s err: %s", errMsgPrefix, err.Error())
+	}
+	log.Printf("[INFO] Uplinking Image: %s", name)
+	urlExtension := getImageUrl(name, id, "uplink")
+	client.XRequestIdPrefix = "TF-image-uplink"
+	rspData := &swagger_models.ZsrvResponse{}
+	_, err = client.SendReq("PUT", urlExtension, cfg, rspData)
+	if err != nil {
+		deleteImageById(client, name, id)
+		return fmt.Errorf("%s Err: %s", errMsgPrefix, err.Error())
+	}
+	log.Printf("Image %s (ID: %s) Successfully Uplinked\n",
+		rspData.ObjectName, rspData.ObjectID)
+	return nil
+}
+
 // Create the Resource Group
 func createImageResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// Warning or errors can be collected in a slice type
@@ -77,8 +97,7 @@ func createImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := fmt.Sprintf("[ERROR] Image %s (id: %s) Create Failed.",
-		name, id)
+	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Create")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
@@ -98,6 +117,10 @@ func createImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	}
 	log.Printf("Image %s (ID: %s) Successfully created\n",
 		rspData.ObjectName, rspData.ObjectID)
+	// Uplink the image
+	if err = uplinkImageResource(client, name, rspData.ObjectID); err != nil {
+		return diag.Errorf("%s. ", err.Error())
+	}
 	d.SetId(rspData.ObjectID)
 	return diags
 }
@@ -137,6 +160,18 @@ func updateImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	return diags
 }
 
+func deleteImageById(client *zedcloudapi.Client, name, id string) error {
+	client.XRequestIdPrefix = "TF-image-delete"
+	urlExtension := getImageUrl("", id, "delete")
+	rspData := &swagger_models.ZsrvResponse{}
+	_, err := client.SendReq("DELETE", urlExtension, nil, rspData)
+	if err != nil {
+		return err
+	}
+	log.Printf("[INFO] Image %s(id:%s) Delete Successful.", name, id)
+	return nil
+}
+
 // Delete the Resource Group
 func deleteImageResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// Warning or errors can be collected in a slice type
@@ -153,13 +188,9 @@ func deleteImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 		log.Printf("%s Unexpected Error. nil config", errMsgPrefix)
 		return diags
 	}
-	client.XRequestIdPrefix = "TF-image-delete"
-	urlExtension := getImageUrl(name, id, "delete")
-	rspData := &swagger_models.ZsrvResponse{}
-	_, err = client.SendReq("DELETE", urlExtension, nil, rspData)
+	err = deleteImageById(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s. Request Failed. err: %s", errMsgPrefix, err.Error())
 	}
-	log.Printf("[INFO] Image %s(id:%s) Delete Successful.", name, cfg.ID)
 	return diags
 }
