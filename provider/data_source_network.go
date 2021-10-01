@@ -16,7 +16,7 @@ import (
 )
 
 var NetworkDataSchema = &schema.Resource{
-	ReadContext: readNetwork,
+	ReadContext: readDataSourceNetwork,
 	Schema:      zschemas.NetworkSchema,
 	Description: "Schema for data source zedcloud_network. Must specify id or name",
 }
@@ -119,27 +119,32 @@ func flattenIPSpec(cfg *swagger_models.IPSpec) []interface{} {
 	}}
 }
 
-func flattenNetConfig(cfg *swagger_models.NetConfig) map[string]interface{} {
+func flattenNetConfig(cfg *swagger_models.NetConfig, computedOnly bool) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
-	return map[string]interface{}{
-		"description":        cfg.Description,
-		"dns_list":           flattenStaticDNSList(cfg.DNSList),
-		"enterprise_default": cfg.EnterpriseDefault,
-		"id":                 cfg.ID,
-		"ip":                 flattenIPSpec(cfg.IP),
-		"kind":               ptrValStr(cfg.Kind),
-		"name":               ptrValStr(cfg.Name),
-		"project_id":         ptrValStr(cfg.ProjectID),
-		"proxy":              flattenNetProxyConfig(cfg.Proxy),
-		"revision":           flattenObjectRevision(cfg.Revision),
-		"title":              ptrValStr(cfg.Title),
-		"wireless":           flattenNetWirelessConfig(cfg.Wireless),
+	data := map[string]interface{}{
+		"id":       cfg.ID,
+		"revision": flattenObjectRevision(cfg.Revision),
 	}
+	if !computedOnly {
+		data["description"] = cfg.Description
+		data["dns_list"] = flattenStaticDNSList(cfg.DNSList)
+		data["enterprise_default"] = cfg.EnterpriseDefault
+		data["ip"] = flattenIPSpec(cfg.IP)
+		data["kind"] = ptrValStr(cfg.Kind)
+		data["name"] = ptrValStr(cfg.Name)
+		data["project_id"] = ptrValStr(cfg.ProjectID)
+		data["proxy"] = flattenNetProxyConfig(cfg.Proxy)
+		data["title"] = ptrValStr(cfg.Title)
+		data["wireless"] = flattenNetWirelessConfig(cfg.Wireless)
+	}
+	flattenedDataCheckKeys(zschemas.NetworkSchema, data, computedOnly)
+	return data
 }
 
-func readNetwork(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func readNetwork(ctx context.Context, d *schema.ResourceData, meta interface{},
+	resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -156,6 +161,10 @@ func readNetwork(ctx context.Context, d *schema.ResourceData, meta interface{}) 
 			name, id, err.Error())
 	}
 	// Take the Config and convert it to terraform object
-	marshalData(d, flattenNetConfig(cfg))
+	marshalData(d, flattenNetConfig(cfg, resource))
 	return diags
+}
+
+func readDataSourceNetwork(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readNetwork(ctx, d, meta, false)
 }

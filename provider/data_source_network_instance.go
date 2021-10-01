@@ -15,7 +15,7 @@ import (
 )
 
 var NetInstDataSourceSchema = &schema.Resource{
-	ReadContext: readNetInst,
+	ReadContext: readDataSourceNetInst,
 	Schema:      zschemas.NetworkInstanceSchema,
 	Description: "Schema for data source zedcloud_network_instance. Must specify " +
 		"id or name",
@@ -87,33 +87,40 @@ func flattenStaticDNSList(cfgList []*swagger_models.StaticDNSList) []interface{}
 	return entryList
 }
 
-func flattenNetInstConfig(cfg *swagger_models.NetInstConfig) map[string]interface{} {
+func flattenNetInstConfig(cfg *swagger_models.NetInstConfig,
+	computedOnly bool) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
-	return map[string]interface{}{
-		"description":       cfg.Description,
-		"device_default":    cfg.DeviceDefault,
-		"device_id":         ptrValStr(cfg.DeviceID),
-		"dns_list":          flattenStaticDNSList(cfg.DNSList),
-		"id":                cfg.ID,
-		"ip":                flattenDhcpServerConfig(cfg.IP),
-		"kind":              ptrValStr(cfg.Kind),
-		"name":              ptrValStr(cfg.Name),
-		"network_policy_id": cfg.NetworkPolicyID,
-		"opaque":            flattenNetInstOpaqueConfig(cfg.Opaque),
-		"port":              ptrValStr(cfg.Port),
-		"port_tags":         flattenStringMap(cfg.PortTags),
-		"project_id":        cfg.ProjectID,
-		"revision":          flattenObjectRevision(cfg.Revision),
-		"tags":              flattenStringMap(cfg.Tags),
-		"title":             ptrValStr(cfg.Title),
-		"type":              ptrValStr(cfg.Type),
+	data := map[string]interface{}{
+		"id":         cfg.ID,
+		"cluster_id": cfg.ClusterID,
+		"project_id": cfg.ProjectID,
+		"revision":   flattenObjectRevision(cfg.Revision),
 	}
+	if !computedOnly {
+		data["description"] = cfg.Description
+		data["device_default"] = cfg.DeviceDefault
+		data["device_id"] = ptrValStr(cfg.DeviceID)
+		data["dns_list"] = flattenStaticDNSList(cfg.DNSList)
+		data["ip"] = flattenDhcpServerConfig(cfg.IP)
+		data["kind"] = ptrValStr(cfg.Kind)
+		data["name"] = ptrValStr(cfg.Name)
+		data["network_policy_id"] = cfg.NetworkPolicyID
+		data["opaque"] = flattenNetInstOpaqueConfig(cfg.Opaque)
+		data["port"] = ptrValStr(cfg.Port)
+		data["port_tags"] = flattenStringMap(cfg.PortTags)
+		data["tags"] = flattenStringMap(cfg.Tags)
+		data["title"] = ptrValStr(cfg.Title)
+		data["type"] = ptrValStr(cfg.Type)
+	}
+	flattenedDataCheckKeys(zschemas.NetworkInstanceSchema, data, computedOnly)
+	return data
 }
 
 // Read the Resource Group
-func readNetInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func readNetInst(ctx context.Context, d *schema.ResourceData, meta interface{},
+	resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -134,6 +141,10 @@ func readNetInst(ctx context.Context, d *schema.ResourceData, meta interface{}) 
 		return diag.Errorf(errStr)
 	}
 	// Take the Config and convert it to terraform object
-	marshalData(d, flattenNetInstConfig(cfg))
+	marshalData(d, flattenNetInstConfig(cfg, resource))
 	return diags
+}
+
+func readDataSourceNetInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readNetInst(ctx, d, meta, false)
 }

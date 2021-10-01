@@ -18,7 +18,7 @@ var volumeInstanceUrlExtension = "volumes/instances"
 
 var VolumeInstanceResourceSchema = &schema.Resource{
 	CreateContext: createVolumeInstanceResource,
-	ReadContext:   readVolumeInstance,
+	ReadContext:   readResourceVolumeInstance,
 	UpdateContext: updateVolumeInstanceResource,
 	DeleteContext: deleteVolumeInstanceResource,
 	Schema:        schemas.VolumeInstanceSchema,
@@ -144,4 +144,8 @@ func deleteVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	}
 	log.Printf("[INFO] VolumeInstance %s(id:%s) Delete Successful.", name, cfg.ID)
 	return diags
+}
+
+func readResourceVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+    return readVolumeInstance(ctx, d, meta, true)
 }

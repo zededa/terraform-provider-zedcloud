@@ -124,7 +124,7 @@ func TestRDTImageConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenImageConfig(cfg)
+		out := flattenImageConfig(cfg, false)
 		err = verifyFlattenOutput(zschemas.ImageSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

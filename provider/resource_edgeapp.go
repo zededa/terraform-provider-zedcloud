@@ -20,7 +20,7 @@ var edgeAppUrlExtension = "apps"
 
 var EdgeAppResourceSchema = &schema.Resource{
 	CreateContext: createEdgeAppResource,
-	ReadContext:   readEdgeApp,
+	ReadContext:   readResourceEdgeApp,
 	UpdateContext: updateEdgeAppResource,
 	DeleteContext: deleteEdgeAppResource,
 	Schema:        schemas.EdgeAppSchema,
@@ -157,4 +157,7 @@ func deleteEdgeAppResource(ctx context.Context, d *schema.ResourceData, meta int
 	}
 	log.Printf("[INFO] Edge App %s(id:%s) Delete Successful.", name, cfg.ID)
 	return diags
+}
+func readResourceEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readEdgeApp(ctx, d, meta, true)
 }

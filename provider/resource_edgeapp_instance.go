@@ -18,7 +18,7 @@ var appInstUrlExtension = "apps/instances"
 
 var AppInstResourceSchema = &schema.Resource{
 	CreateContext: createAppInstResource,
-	ReadContext:   readAppInst,
+	ReadContext:   readResourceAppInst,
 	UpdateContext: updateAppInstResource,
 	DeleteContext: deleteAppInstResource,
 	Schema:        schemas.AppInstSchema,
@@ -470,4 +470,8 @@ func deleteAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	log.Printf("[INFO] App Instance %s (ID: %s) Delete Successful.",
 		*cfg.Name, cfg.ID)
 	return diags
+}
+
+func readResourceAppInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readAppInst(ctx, d, meta, true)
 }

@@ -491,7 +491,7 @@ var AppInstSchema = map[string]*schema.Schema{
 	},
 	"app_type": {
 		Type:     schema.TypeString,
-		Computed: true,
+		Optional: true,
 		Description: "Type of Edge App - VM / Container etc. The following are valid values: " +
 			"APP_TYPE_UNSPECIFIED, APP_TYPE_VM, APP_TYPE_VM_RUNTIME, APP_TYPE_CONTAINER, " +
 			"APP_TYPE_MODULE",
@@ -527,7 +527,7 @@ var AppInstSchema = map[string]*schema.Schema{
 	},
 	"deployment_type": {
 		Type:     schema.TypeString,
-		Computed: true,
+		Optional: true,
 		Description: "Type of deployment for the app, eg: azure, k3s, standalone. " +
 			"This comes from the App Manifest.",
 	},

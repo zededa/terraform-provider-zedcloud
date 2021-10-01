@@ -15,7 +15,7 @@ import (
 )
 
 var EdgeAppDataSourceSchema = &schema.Resource{
-	ReadContext: readEdgeApp,
+	ReadContext: readDataSourceEdgeApp,
 	Schema:      zschemas.EdgeAppSchema,
 	Description: "Schema for data source zedcloud_edgeapp. Must specify id or name",
 }
@@ -36,26 +36,31 @@ func getEdgeApp(client *zedcloudapi.Client,
 	return rspData, nil
 }
 
-func flattenEdgeAppConfig(cfg *swagger_models.App) map[string]interface{} {
-	return map[string]interface{}{
-		"name":                 ptrValStr(cfg.Name),
-		"id":                   cfg.ID,
-		"title":                ptrValStr(cfg.Title),
-		"description":          cfg.Description,
-		"cpus":                 int(cfg.Cpus),
-		"drives":               int(cfg.Drives),
-		"memory":               int(cfg.Memory),
-		"networks":             int(cfg.Networks),
-		"origin_type":          ptrValStr(cfg.OriginType),
-		"parent_detail":        flattenObjectParentDetail(cfg.ParentDetail),
-		"revision":             flattenObjectRevision(cfg.Revision),
-		"storage":              int(cfg.Storage),
-		"user_defined_version": cfg.UserDefinedVersion,
+func flattenEdgeAppConfig(cfg *swagger_models.App, computedOnly bool) map[string]interface{} {
+	data := map[string]interface{}{
+		"id":            cfg.ID,
+		"origin_type":   ptrValStr(cfg.OriginType),
+		"parent_detail": flattenObjectParentDetail(cfg.ParentDetail),
+		"revision":      flattenObjectRevision(cfg.Revision),
 	}
+	if !computedOnly {
+		data["name"] = ptrValStr(cfg.Name)
+		data["title"] = ptrValStr(cfg.Title)
+		data["description"] = cfg.Description
+		data["cpus"] = int(cfg.Cpus)
+		data["drives"] = int(cfg.Drives)
+		data["memory"] = int(cfg.Memory)
+		data["networks"] = int(cfg.Networks)
+		data["storage"] = int(cfg.Storage)
+		data["user_defined_version"] = cfg.UserDefinedVersion
+	}
+	flattenedDataCheckKeys(zschemas.EdgeAppSchema, data, computedOnly)
+	return data
 }
 
 // Read the Resource Group
-func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{},
+	resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -76,6 +81,10 @@ func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{}) 
 	}
 
 	// Take the Config and convert it to terraform object
-	marshalData(d, flattenEdgeAppConfig(cfg))
+	marshalData(d, flattenEdgeAppConfig(cfg, resource))
 	return diags
+}
+
+func readDataSourceEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readEdgeApp(ctx, d, meta, false)
 }

@@ -317,7 +317,7 @@ func TestRDAppInstConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenAppInstance(cfg)
+		out := flattenAppInstance(cfg, false)
 		err = verifyFlattenOutput(zschemas.AppInstSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

@@ -15,7 +15,7 @@ import (
 )
 
 var EdgeAppInstanceDataSourceSchema = &schema.Resource{
-	ReadContext: readAppInst,
+	ReadContext: readDataSourceAppInst,
 	Schema:      zschemas.AppInstSchema,
 	Description: "Schema for data source zedcloud_edgeapp_instance. Must specify " +
 		"id or name",
@@ -282,48 +282,50 @@ func flattenCustomConfig(cfg *swagger_models.CustomConfig) []interface{} {
 	}}
 }
 
-func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} {
+func flattenAppInstance(cfg *swagger_models.AppInstance,
+	computedOnly bool) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
-	activate := false
-	if cfg.Activate != nil {
-		activate = *cfg.Activate
-	}
 	// Do not publish sensitive fields - crypto_key, encrypted_secrets
-	return map[string]interface{}{
-		"activate":              activate,
-		"app_id":                ptrValStr(cfg.AppID),
-		"app_policy_id":         cfg.AppPolicyID,
-		"app_type":              ptrValStr(cfg.AppType),
-		"bundleversion":         cfg.Bundleversion,
-		"cluster_id":            cfg.ClusterID,
-		"collect_stats_ip_addr": cfg.CollectStatsIPAddr,
-		"custom_config":         flattenCustomConfig(cfg.CustomConfig),
-		"deployment_type":       ptrValStr(cfg.DeploymentType),
-		"description":           cfg.Description,
-		"device_id":             ptrValStr(cfg.DeviceID),
-		"drive":                 flattenDrives(cfg.Drives),
-		"id":                    cfg.ID,
-		"interface":             flattenAppInterfaces(cfg.Interfaces),
-		"is_secret_updated":     cfg.IsSecretUpdated,
-		"logs":                  flattenAppInstanceLogs(cfg.Logs),
-		"name":                  ptrValStr(cfg.Name),
-		"project_id":            ptrValStr(cfg.ProjectID),
-		"purge":                 flattenZedCloudOpsCmd(cfg.Purge),
-		"refresh":               flattenZedCloudOpsCmd(cfg.Refresh),
-		"remote_console":        cfg.RemoteConsole,
-		"restart":               flattenZedCloudOpsCmd(cfg.Restart),
-		"revision":              flattenObjectRevision(cfg.Revision),
-		"tags":                  flattenStringMap(cfg.Tags),
-		"title":                 ptrValStr(cfg.Title),
-		"user_defined_version":  cfg.UserDefinedVersion,
-		"vminfo":                flattenVM(cfg.Vminfo),
+	data := map[string]interface{}{
+		"bundleversion":        cfg.Bundleversion,
+		"cluster_id":           cfg.ClusterID,
+		"id":                   cfg.ID,
+		"is_secret_updated":    cfg.IsSecretUpdated,
+		"project_id":           ptrValStr(cfg.ProjectID),
+		"purge":                flattenZedCloudOpsCmd(cfg.Purge),
+		"refresh":              flattenZedCloudOpsCmd(cfg.Refresh),
+		"restart":              flattenZedCloudOpsCmd(cfg.Restart),
+		"revision":             flattenObjectRevision(cfg.Revision),
+		"user_defined_version": cfg.UserDefinedVersion,
+		"vminfo":               flattenVM(cfg.Vminfo),
 	}
+	if !computedOnly {
+		data["activate"] = ptrValBool(cfg.Activate)
+		data["app_id"] = ptrValStr(cfg.AppID)
+		data["app_policy_id"] = cfg.AppPolicyID
+		data["app_type"] =             ptrValStr(cfg.AppType)
+		data["collect_stats_ip_addr"] = cfg.CollectStatsIPAddr
+		data["custom_config"] = flattenCustomConfig(cfg.CustomConfig)
+		data["description"] = cfg.Description
+		data["deployment_type"] = ptrValStr(cfg.DeploymentType)
+		data["device_id"] = ptrValStr(cfg.DeviceID)
+		data["drive"] = flattenDrives(cfg.Drives)
+		data["interface"] = flattenAppInterfaces(cfg.Interfaces)
+		data["logs"] = flattenAppInstanceLogs(cfg.Logs)
+		data["name"] = ptrValStr(cfg.Name)
+		data["remote_console"] = cfg.RemoteConsole
+		data["tags"] = flattenStringMap(cfg.Tags)
+		data["title"] = ptrValStr(cfg.Title)
+	}
+	flattenedDataCheckKeys(zschemas.AppInstSchema, data, computedOnly)
+	return data
 }
 
 // Read the Resource Group
-func readAppInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func readAppInst(ctx context.Context, d *schema.ResourceData, meta interface{},
+	resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -344,6 +346,10 @@ func readAppInst(ctx context.Context, d *schema.ResourceData, meta interface{}) 
 	}
 
 	// Take the Config and convert it to terraform object
-	marshalData(d, flattenAppInstance(cfg))
+	marshalData(d, flattenAppInstance(cfg, resource))
 	return diags
+}
+
+func readDataSourceAppInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readAppInst(ctx, d, meta, false)
 }
