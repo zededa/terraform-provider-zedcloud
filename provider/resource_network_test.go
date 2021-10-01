@@ -217,6 +217,95 @@ var efoNetworkFirstLevelStructKeysEmpty = map[string]interface{}{
 	"wireless":           []interface{}{},
 }
 
+var rdNetwork2ndLevelStructsEmpty = map[string]interface{}{
+	"name":        "SampleName",
+	"id":          "Sample ID",
+	"description": "Sample Description",
+	"title":       "Sample Title",
+	"dns_list": []interface{}{
+		map[string]interface{}{
+			"addrs":    []interface{}{},
+			"hostname": "www.example.com",
+		},
+		map[string]interface{}{
+			"addrs":    []interface{}{},
+			"hostname": "www.example2.com",
+		},
+	},
+	"enterprise_default": true,
+	"ip": []interface{}{
+		map[string]interface{}{
+			"dhcp": "NETWORK_DHCP_TYPE_CLIENT",
+			"dhcp_range": []interface{}{},
+			"dns":     []interface{}{},
+			"domain":  "example.com",
+			"gateway": "10.10.1.1",
+			"mask":    "255.255.255.0",
+			"ntp":     "10.10.1.1",
+			"subnet":  "10.1.1.0/16",
+		},
+	},
+	"kind":       "NETWORK_KIND_V4",
+	"project_id": "sample-project-id",
+	"proxy": []interface{}{
+		map[string]interface{}{
+			"exceptions":          "exception1",
+			"network_proxy":       true,
+			"network_proxy_certs": []interface{}{},
+			"network_proxy_url":   "www.example.com",
+			"pacfile":             "testpacfile",
+			"proxy": []interface{}{},
+		},
+	},
+	"revision": []interface{}{map[string]interface{}{
+		"created_at": "2020-12-15T06:21:24Z",
+		"created_by": "sample@example.com",
+		"curr":       "1",
+		"updated_at": "2020-12-15T06:21:24Z",
+		"updated_by": "user@example.com",
+	}},
+	"wireless": []interface{}{
+		map[string]interface{}{
+			// In reality, we can have either Cellular cfg or wifi cfg depending
+			// on type - not both. But for unit test, lets populate both structures.
+			"cellular_cfg": []interface{}{},
+			"type": "NETWORK_WIRELESS_TYPE_WIFI",
+			"wifi_cfg": []interface{}{},
+		},
+	},
+}
+var efoNetwork2ndLevelStructsEmpty = map[string]interface{}{
+	"name":               rdNetworkFullCfg["name"],
+	"id":                 rdNetworkFullCfg["id"],
+	"description":        rdNetworkFullCfg["description"],
+	"title":              rdNetworkFullCfg["title"],
+	"dns_list":           rdNetworkFullCfg["dns_list"],
+	"enterprise_default": rdNetworkFullCfg["enterprise_default"],
+	"ip":                 rdNetworkFullCfg["ip"],
+	"kind":               rdNetworkFullCfg["kind"],
+	"project_id":         rdNetworkFullCfg["project_id"],
+	"proxy":              rdNetworkFullCfg["proxy"],
+	"revision":           []interface{}{},
+	"wireless": []interface{}{
+		map[string]interface{}{
+			// In reality, we can have either Cellular cfg or wifi cfg depending
+			// on type - not both. But for unit test, lets populate both structures.
+			"cellular_cfg": []interface{}{
+				map[string]interface{}{
+					"apn": "Sample APN",
+				},
+			},
+			"type": "NETWORK_WIRELESS_TYPE_WIFI",
+			"wifi_cfg": []interface{}{
+				map[string]interface{}{
+					"key_scheme": "NETWORK_WIFIKEY_SCHEME_WPAPSK",
+					"priority":   10,
+					"wifi_ssid":  "Sample Wifi SSID",
+				},
+			},
+		},
+	},
+}
 // In each test case, call rdXXX to get the appropriate config struct,
 //  feed it to flattenXXX, verify output of flattenXXX is same as input
 func TestRDNetworkConfig(t *testing.T) {
@@ -251,6 +340,14 @@ func TestRDNetworkConfig(t *testing.T) {
 			expectError:             false,
 			expectedFlattenedOutput: efoNetworkFirstLevelStructKeysEmpty,
 		},
+        /*
+		{
+			input:                   rdNetwork2ndLevelStructsEmpty,
+			description:             "2nd level keys Empty",
+			expectError:             false,
+			expectedFlattenedOutput: efoNetwork2ndLevelStructsEmpty,
+		},
+        */
 	}
 
 	for _, c := range cases {
@@ -286,7 +383,8 @@ func TestRDNetworkConfig(t *testing.T) {
 				"Error matching Flattened output and input.\n"+
 				"Output: %#v\n"+
 				"Input : %#v\n"+
-				"Diff: %#v", c.description, out, c.expectedFlattenedOutput, diff)
+				"Diff ( expected vs actual): %#v", c.description, out,
+                    c.expectedFlattenedOutput, diff)
 		}
 	}
 }
