@@ -51,33 +51,45 @@ func rdMapNetWifiConfigSecrets(d map[string]interface{}) (interface{}, error) {
 
 func rdMapNetWifiConfig(d map[string]interface{}) (interface{}, error) {
 	keyScheme := swagger_models.NetworkWiFiKeyScheme(rdEntryStr(d, "key_scheme"))
-	secret, err := rdEntryStructPtr(d, "secret", rdMapNetWifiConfigSecrets)
+	val, err := rdEntryStructPtr(d, "secret", rdMapNetWifiConfigSecrets)
 	if err != nil {
 		return nil, err
+	}
+	var secret *swagger_models.NetWifiConfigSecrets
+	if val != nil {
+		secret = val.(*swagger_models.NetWifiConfigSecrets)
 	}
 	return &swagger_models.NetWifiConfig{
 		Identity:  rdEntryStr(d, "identity"),
 		KeyScheme: &keyScheme,
 		Priority:  rdEntryInt32(d, "priority"),
-		Secret:    secret.(*swagger_models.NetWifiConfigSecrets),
+		Secret:    secret,
 		WifiSSID:  rdEntryStr(d, "wifi_ssid"),
 	}, nil
 }
 
 func rdMapNetWirelessConfig(d map[string]interface{}) (interface{}, error) {
-	cellularCfg, err := rdEntryStructPtr(d, "cellular_cfg", rdMapNetCellularConfig)
+	val, err := rdEntryStructPtr(d, "cellular_cfg", rdMapNetCellularConfig)
 	if err != nil {
 		return nil, err
+	}
+	var cellularCfg *swagger_models.NetCellularConfig
+	if val != nil {
+		cellularCfg = val.(*swagger_models.NetCellularConfig)
 	}
 	wirelessType := swagger_models.NetworkWirelessType(rdEntryStr(d, "type"))
-	wifiCfg, err := rdEntryStructPtr(d, "wifi_cfg", rdMapNetWifiConfig)
+	val, err = rdEntryStructPtr(d, "wifi_cfg", rdMapNetWifiConfig)
 	if err != nil {
 		return nil, err
 	}
+	var wifiCfg *swagger_models.NetWifiConfig
+	if val != nil {
+		wifiCfg = val.(*swagger_models.NetWifiConfig)
+	}
 	return &swagger_models.NetWirelessConfig{
-		CellularCfg: cellularCfg.(*swagger_models.NetCellularConfig),
+		CellularCfg: cellularCfg,
 		Type:        &wirelessType,
-		WifiCfg:     wifiCfg.(*swagger_models.NetWifiConfig),
+		WifiCfg:     wifiCfg,
 	}, nil
 }
 
@@ -120,13 +132,17 @@ func rdMapNetProxyConfig(d map[string]interface{}) (interface{}, error) {
 
 func rdMapIPSpec(d map[string]interface{}) (interface{}, error) {
 	dhcpType := swagger_models.NetworkDHCPType(rdEntryStr(d, "dhcp"))
-	dhcpRange, err := rdEntryStructPtr(d, "dhcp_range", rdMapDhcpIpRange)
+	val, err := rdEntryStructPtr(d, "dhcp_range", rdMapDhcpIpRange)
 	if err != nil {
 		return nil, err
 	}
+	var dhcpRange *swagger_models.DhcpIPRange
+	if val != nil {
+		dhcpRange = val.(*swagger_models.DhcpIPRange)
+	}
 	return &swagger_models.IPSpec{
 		Dhcp:      &dhcpType,
-		DhcpRange: dhcpRange.(*swagger_models.DhcpIPRange),
+		DhcpRange: dhcpRange,
 		DNS:       rdEntryStrList(d, "dns"),
 		Domain:    rdEntryStr(d, "domain"),
 		Gateway:   rdEntryStr(d, "gateway"),
