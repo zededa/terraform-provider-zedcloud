@@ -570,7 +570,7 @@ var AppInstSchema = map[string]*schema.Schema{
 		MaxItems:    1,
 		Description: "App Instance Logs related Configuration.",
 	},
-	"project_id": projectIdSchema,
+	"project_id": projectIdComputedSchema,
 	"purge": {
 		Type:        schema.TypeList,
 		Computed:    true,

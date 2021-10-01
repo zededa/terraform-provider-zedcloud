@@ -83,7 +83,7 @@ var VolumeInstanceSchema = map[string]*schema.Schema{
 		Optional:    true,
 		Description: "Flag to enable the volume to be attached to multiple app instances",
 	},
-	"project_id": projectIdSchema,
+	"project_id": projectIdComputedSchema,
 	"purge": {
 		Type:        schema.TypeList,
 		Computed:    true,

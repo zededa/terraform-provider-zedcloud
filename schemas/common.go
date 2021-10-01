@@ -47,6 +47,12 @@ var projectIdSchema = &schema.Schema{
 	},
 }
 
+var projectIdComputedSchema = &schema.Schema{
+	Type:        schema.TypeString,
+	Computed:    true,
+	Description: "ID of the project to which the Object belongs",
+}
+
 var tagsSchema = &schema.Schema{
 	Type:     schema.TypeMap,
 	Optional: true,
