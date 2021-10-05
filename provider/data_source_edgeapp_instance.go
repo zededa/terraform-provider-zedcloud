@@ -305,7 +305,7 @@ func flattenAppInstance(cfg *swagger_models.AppInstance,
 		data["activate"] = ptrValBool(cfg.Activate)
 		data["app_id"] = ptrValStr(cfg.AppID)
 		data["app_policy_id"] = cfg.AppPolicyID
-		data["app_type"] =             ptrValStr(cfg.AppType)
+		data["app_type"] = ptrValStr(cfg.AppType)
 		data["collect_stats_ip_addr"] = cfg.CollectStatsIPAddr
 		data["custom_config"] = flattenCustomConfig(cfg.CustomConfig)
 		data["description"] = cfg.Description
@@ -321,6 +321,17 @@ func flattenAppInstance(cfg *swagger_models.AppInstance,
 	}
 	flattenedDataCheckKeys(zschemas.AppInstSchema, data, computedOnly)
 	return data
+}
+
+func getAppInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
+	name, id string, resource bool) error {
+	cfg, err := getAppInstance(client, name, id)
+	if err != nil {
+		return fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
+			name, id, err.Error())
+	}
+	marshalData(d, flattenAppInstance(cfg, resource))
+	return nil
 }
 
 // Read the Resource Group
@@ -339,14 +350,10 @@ func readAppInst(ctx context.Context, d *schema.ResourceData, meta interface{},
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	cfg, err := getAppInstance(client, name, id)
+	err := getAppInstAndPublishData(client, d, name, id, resource)
 	if err != nil {
-		return diag.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
-			name, id, err.Error())
+		return diag.Errorf("%s", err.Error())
 	}
-
-	// Take the Config and convert it to terraform object
-	marshalData(d, flattenAppInstance(cfg, resource))
 	return diags
 }
 

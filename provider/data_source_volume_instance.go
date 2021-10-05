@@ -68,6 +68,22 @@ func flattenVolInstConfig(cfg *swagger_models.VolInstConfig, computedOnly bool) 
 	return data
 }
 
+func getVolumeInstanceAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
+	name, id string, resource bool) error {
+	cfg, err := getVolumeInstance(client, name, id)
+	if err != nil {
+		return fmt.Errorf("[ERROR] Volume Instance %s (id: %s) not found. Err: %s",
+			name, id, err.Error())
+	}
+	if cfg.Implicit {
+		return fmt.Errorf("[ERROR] VolumeInstance %s (id: %s) is an Implicit Volume. "+
+			"Implicit Volumes cannot be used as resources or data sources.",
+			name, id)
+	}
+	marshalData(d, flattenVolInstConfig(cfg, resource))
+	return nil
+}
+
 // Read the Resource Group
 func readVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interface{}, resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
@@ -83,17 +99,10 @@ func readVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interf
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	cfg, err := getVolumeInstance(client, name, id)
+	err := getVolumeInstanceAndPublishData(client, d, name, id, resource)
 	if err != nil {
-		return diag.Errorf("[ERROR] VolumeInstance %s (id: %s) not found. Err: %s",
-			name, id, err.Error())
+		return diag.Errorf("%s", err.Error())
 	}
-	if cfg.Implicit {
-		return diag.Errorf("[ERROR] VolumeInstance %s (id: %s) is an Implicit Volume. "+
-			"Implicit Volumes cannot be used as resources or data sources.",
-			name, id)
-	}
-	marshalData(d, flattenVolInstConfig(cfg, resource))
 	return diags
 }
 

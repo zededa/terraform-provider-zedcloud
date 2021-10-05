@@ -253,6 +253,11 @@ func createNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	log.Printf("Network %s (ID: %s) Successfully created\n",
 		rspData.ObjectName, rspData.ObjectID)
 	d.SetId(rspData.ObjectID)
+	err = getNetworkAndPublishData(client, d, name, rspData.ObjectID, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Network: %s (ID: %s) after "+
+			"creating it. Err: %s", name, rspData.ObjectID, err.Error())
+	}
 	return diags
 }
 
@@ -293,6 +298,11 @@ func updateNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
 	log.Printf("Network Update Successful")
+	err = getNetworkAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Network: %s (ID: %s) after "+
+			"updating it. Err: %s", name, cfg.ID, err.Error())
+	}
 	return diags
 }
 

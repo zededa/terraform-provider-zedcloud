@@ -118,6 +118,17 @@ func flattenNetInstConfig(cfg *swagger_models.NetInstConfig,
 	return data
 }
 
+func getNetInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
+	name, id string, resource bool) error {
+	cfg, err := getNetInstConfig(client, name, id)
+	if err != nil {
+		return fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
+			name, id, err.Error())
+	}
+	marshalData(d, flattenNetInstConfig(cfg, resource))
+	return nil
+}
+
 // Read the Resource Group
 func readNetInst(ctx context.Context, d *schema.ResourceData, meta interface{},
 	resource bool) diag.Diagnostics {
@@ -133,15 +144,11 @@ func readNetInst(ctx context.Context, d *schema.ResourceData, meta interface{},
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	cfg, err := getNetInstConfig(client, name, id)
+	err := getNetInstAndPublishData(client, d, name, id, resource)
 	if err != nil {
-		errStr := fmt.Sprintf("[ERROR] network instance %s (id: %s) not found. Err: %s",
-			name, id, err.Error())
-		log.Printf(errStr)
-		return diag.Errorf(errStr)
+		log.Printf(err.Error())
+		return diag.Errorf("%s", err.Error())
 	}
-	// Take the Config and convert it to terraform object
-	marshalData(d, flattenNetInstConfig(cfg, resource))
 	return diags
 }
 

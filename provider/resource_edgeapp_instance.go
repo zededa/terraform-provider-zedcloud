@@ -402,9 +402,15 @@ func createAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
+	id = rspData.ObjectID
 	log.Printf("App Instance %s (ID: %s) Successfully created\n",
-		rspData.ObjectName, rspData.ObjectID)
-	d.SetId(rspData.ObjectID)
+		rspData.ObjectName, id)
+	d.SetId(id)
+	err = getAppInstAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get App Instance: %s (ID: %s) after "+
+			"creating it. Err: %s", name, id, err.Error())
+	}
 	return diags
 }
 
@@ -445,6 +451,11 @@ func updateAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
 	log.Printf("App Instance %s (id: %s) update SUCCESS", name, cfg.ID)
+	err = getAppInstAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get App Instance: %s (ID: %s) after "+
+			"updating it. Err: %s", name, id, err.Error())
+	}
 	return diags
 }
 

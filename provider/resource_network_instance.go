@@ -179,7 +179,13 @@ func createNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	log.Printf("Network Instance %s (ID: %s) Successfully created\n",
 		rspData.ObjectName, rspData.ObjectID)
 
-	d.SetId(rspData.ObjectID)
+	id := rspData.ObjectID
+	d.SetId(id)
+	err = getNetInstAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Network Instance: %s (ID: %s) after "+
+			"creating it. Err: %s", name, id, err.Error())
+	}
 	return diags
 }
 
@@ -229,6 +235,11 @@ func updateNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
 	log.Printf("Network Instance Update Successful")
+	err = getNetInstAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Network Instance: %s (ID: %s) after "+
+			"updating it. Err: %s", name, id, err.Error())
+	}
 	return diags
 }
 

@@ -143,6 +143,17 @@ func flattenNetConfig(cfg *swagger_models.NetConfig, computedOnly bool) map[stri
 	return data
 }
 
+func getNetworkAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
+	name, id string, resource bool) error {
+	cfg, err := getNetworkConfig(client, name, id)
+	if err != nil {
+		return fmt.Errorf("[ERROR] Network %s (id: %s) not found. Err: %s",
+			name, id, err.Error())
+	}
+	marshalData(d, flattenNetConfig(cfg, resource))
+	return nil
+}
+
 func readNetwork(ctx context.Context, d *schema.ResourceData, meta interface{},
 	resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
@@ -155,13 +166,10 @@ func readNetwork(ctx context.Context, d *schema.ResourceData, meta interface{},
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	cfg, err := getNetworkConfig(client, name, id)
+	err := getNetworkAndPublishData(client, d, name, id, resource)
 	if err != nil {
-		return diag.Errorf("[ERROR] Network %s (id: %s) not found. Err: %s",
-			name, id, err.Error())
+		return diag.Errorf("%s", err.Error())
 	}
-	// Take the Config and convert it to terraform object
-	marshalData(d, flattenNetConfig(cfg, resource))
 	return diags
 }
 
