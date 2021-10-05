@@ -15,7 +15,7 @@ import (
 )
 
 var ImageDataSourceSchema = &schema.Resource{
-	ReadContext: readImage,
+	ReadContext: readDataSourceImage,
 	Schema:      zschemas.ImageSchema,
 	Description: "Schema for data source zedcloud_image. Must specify id or name",
 }
@@ -36,30 +36,34 @@ func getImage(client *zedcloudapi.Client,
 	return rspData, nil
 }
 
-func flattenImageConfig(cfg *swagger_models.ImageConfig) map[string]interface{} {
-	return map[string]interface{}{
-		"datastore_id":     ptrValStr(cfg.DatastoreID),
-		"description":      cfg.Description,
-		"id":               cfg.ID,
-		"image_arch":       ptrValStr(cfg.ImageArch),
-		"image_error":      cfg.ImageError,
-		"image_format":     ptrValStr(cfg.ImageFormat),
-		"image_local":      cfg.ImageLocal,
-		"image_rel_url":    cfg.ImageRelURL,
-		"image_sha_256":    cfg.ImageSha256,
-		"image_size_bytes": cfg.ImageSizeBytes,
-		"image_status":     ptrValStr(cfg.ImageStatus),
-		"image_type":       ptrValStr(cfg.ImageType),
-		"image_version":    cfg.ImageVersion,
-		"name":             ptrValStr(cfg.Name),
-		"origin_type":      ptrValStr(cfg.OriginType),
-		"revision":         flattenObjectRevision(cfg.Revision),
-		"title":            ptrValStr(cfg.Title),
+func flattenImageConfig(cfg *swagger_models.ImageConfig, computedOnly bool) map[string]interface{} {
+	data := map[string]interface{}{
+		"id":            cfg.ID,
+		"image_error":   cfg.ImageError,
+		"image_local":   cfg.ImageLocal,
+		"image_status":  ptrValStr(cfg.ImageStatus),
+		"image_version": cfg.ImageVersion,
+		"origin_type":   ptrValStr(cfg.OriginType),
+		"revision":      flattenObjectRevision(cfg.Revision),
 	}
+	if !computedOnly {
+		data["datastore_id"] = ptrValStr(cfg.DatastoreID)
+		data["description"] = cfg.Description
+		data["image_arch"] = ptrValStr(cfg.ImageArch)
+		data["image_format"] = ptrValStr(cfg.ImageFormat)
+		data["image_rel_url"] = cfg.ImageRelURL
+		data["image_sha_256"] = cfg.ImageSha256
+		data["image_size_bytes"] = cfg.ImageSizeBytes
+		data["image_type"] = ptrValStr(cfg.ImageType)
+		data["name"] = ptrValStr(cfg.Name)
+		data["title"] = ptrValStr(cfg.Title)
+	}
+	flattenedDataCheckKeys(zschemas.ImageSchema, data, computedOnly)
+	return data
 }
 
 // Read the Resource Group
-func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}, resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -79,7 +83,11 @@ func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}) di
 			name, id, err.Error())
 	}
 
-	// Take the Config and convert it to terraform object
-	marshalData(d, flattenImageConfig(cfg))
+	// For resources, publish only computed fields
+	marshalData(d, flattenImageConfig(cfg, resource))
 	return diags
+}
+
+func readDataSourceImage(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readImage(ctx, d, meta, false)
 }

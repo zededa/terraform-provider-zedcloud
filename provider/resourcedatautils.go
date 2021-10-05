@@ -26,6 +26,13 @@ func ptrValStr(ptr interface{}) string {
 	return fmt.Sprintf("%v", value.Elem())
 }
 
+func ptrValBool(ptr *bool) bool {
+	if ptr == nil {
+		return false
+	}
+	return *ptr
+}
+
 // rdEntryByKey
 //  Params:
 //    rd - Resource Data. Must be *schema.ResourceData OR map[string]interface{}

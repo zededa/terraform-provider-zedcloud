@@ -13,7 +13,7 @@ import (
 )
 
 var EdgeNodeDataSourceSchema = &schema.Resource{
-	ReadContext: readEdgeNode,
+	ReadContext: readDataSourceEdgeNode,
 	Schema:      zschemas.EdgeNodeSchema,
 	Description: "Schema for data source zedcloud_edgenode. Must specify id or name",
 }
@@ -66,7 +66,7 @@ func flattenEDConfigItems(cfgList []*swagger_models.EDConfigItem) map[string]int
 	return dataMap
 }
 
-func flattenDeviceConfig(cfg *swagger_models.DeviceConfig) map[string]interface{} {
+func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) map[string]interface{} {
 	eveImageVersion := ""
 	for _, image := range cfg.BaseImage {
 		if image.Activate {
@@ -75,36 +75,42 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig) map[string]interface{
 		}
 	}
 
-	return map[string]interface{}{
-		"adminstate":        ptrValStr(cfg.AdminState),
-		"asset_id":          cfg.AssetID,
-		"client_ip":         cfg.ClientIP,
-		"cluster_id":        cfg.ClusterID,
-		"config_items":      flattenEDConfigItems(cfg.ConfigItem),
-		"cpu":               int(cfg.CPU),
-		"description":       cfg.Description,
-		"dev_location":      flattenGeoLocation(cfg.DevLocation),
-		"eve_image_version": eveImageVersion,
-		"id":                cfg.ID,
-		"interface":         flattenSysInterfaces(cfg.Interfaces),
-		"memory":            int(cfg.Memory),
-		"model_id":          ptrValStr(cfg.ModelID),
-		"name":              ptrValStr(cfg.Name),
-		"project_id":        ptrValStr(cfg.ProjectID),
-		"reset_counter":     int(cfg.ResetCounter),
-		"reset_time":        cfg.ResetTime,
-		"revision":          flattenObjectRevision(cfg.Revision),
-		"serialno":          cfg.Serialno,
-		"storage":           int(cfg.Storage),
-		"tags":              flattenStringMap(cfg.Tags),
-		"thread":            int(cfg.Storage),
-		"title":             ptrValStr(cfg.Title),
-		"utype":             ptrValStr(cfg.Utype),
+	data := map[string]interface{}{
+		"adminstate":    ptrValStr(cfg.AdminState),
+		"cluster_id":    cfg.ClusterID,
+		"cpu":           int(cfg.CPU),
+		"id":            cfg.ID,
+		"memory":        int(cfg.Memory),
+		"model_id":      ptrValStr(cfg.ModelID),
+		"project_id":    ptrValStr(cfg.ProjectID),
+		"reset_counter": int(cfg.ResetCounter),
+		"reset_time":    cfg.ResetTime,
+		"revision":      flattenObjectRevision(cfg.Revision),
+		"serialno":      cfg.Serialno,
+		"storage":       int(cfg.Storage),
+		"thread":        int(cfg.Storage),
+		"utype":         ptrValStr(cfg.Utype),
 	}
+	if !computedOnly {
+		data["asset_id"] = cfg.AssetID
+		data["client_ip"] = cfg.ClientIP
+		data["config_items"] = flattenEDConfigItems(cfg.ConfigItem)
+		data["description"] = cfg.Description
+		data["dev_location"] = flattenGeoLocation(cfg.DevLocation)
+		data["eve_image_version"] = eveImageVersion
+		data["interface"] = flattenSysInterfaces(cfg.Interfaces)
+		data["name"] = ptrValStr(cfg.Name)
+		data["project_id"] = ptrValStr(cfg.ProjectID)
+		data["tags"] = flattenStringMap(cfg.Tags)
+		data["title"] = ptrValStr(cfg.Title)
+	}
+	flattenedDataCheckKeys(zschemas.EdgeNodeSchema, data, computedOnly)
+	return data
 }
 
 // Read the Resource Group
-func readEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func readEdgeNode(ctx context.Context, d *schema.ResourceData,
+	meta interface{}, resource bool) diag.Diagnostics {
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
@@ -125,6 +131,10 @@ func readEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{})
 			name, id, err.Error())
 	}
 	// Take the Config and convert it to terraform object
-	marshalData(d, flattenDeviceConfig(cfg))
+	marshalData(d, flattenDeviceConfig(cfg, resource))
 	return diags
+}
+
+func readDataSourceEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readEdgeNode(ctx, d, meta, true)
 }

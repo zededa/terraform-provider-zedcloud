@@ -19,7 +19,7 @@ var networkUrlExtension = "networks"
 
 var NetworkResourceSchema = &schema.Resource{
 	CreateContext: createNetworkResource,
-	ReadContext:   readNetwork,
+	ReadContext:   readResourceNetwork,
 	UpdateContext: updateNetworkResource,
 	DeleteContext: deleteNetworkResource,
 	Schema:        schemas.NetworkSchema,
@@ -49,6 +49,11 @@ func rdMapNetWifiConfigSecrets(d map[string]interface{}) (interface{}, error) {
 	}, nil
 }
 
+func networkWiFiKeySchemePtr(strVal string) *swagger_models.NetworkWiFiKeyScheme {
+	val := swagger_models.NetworkWiFiKeyScheme(strVal)
+	return &val
+}
+
 func rdMapNetWifiConfig(d map[string]interface{}) (interface{}, error) {
 	keyScheme := swagger_models.NetworkWiFiKeyScheme(rdEntryStr(d, "key_scheme"))
 	val, err := rdEntryStructPtr(d, "secret", rdMapNetWifiConfigSecrets)
@@ -68,6 +73,11 @@ func rdMapNetWifiConfig(d map[string]interface{}) (interface{}, error) {
 	}, nil
 }
 
+func networkWirelessTypePtr(strVal string) *swagger_models.NetworkWirelessType {
+	val := swagger_models.NetworkWirelessType(strVal)
+	return &val
+}
+
 func rdMapNetWirelessConfig(d map[string]interface{}) (interface{}, error) {
 	val, err := rdEntryStructPtr(d, "cellular_cfg", rdMapNetCellularConfig)
 	if err != nil {
@@ -77,7 +87,6 @@ func rdMapNetWirelessConfig(d map[string]interface{}) (interface{}, error) {
 	if val != nil {
 		cellularCfg = val.(*swagger_models.NetCellularConfig)
 	}
-	wirelessType := swagger_models.NetworkWirelessType(rdEntryStr(d, "type"))
 	val, err = rdEntryStructPtr(d, "wifi_cfg", rdMapNetWifiConfig)
 	if err != nil {
 		return nil, err
@@ -88,9 +97,24 @@ func rdMapNetWirelessConfig(d map[string]interface{}) (interface{}, error) {
 	}
 	return &swagger_models.NetWirelessConfig{
 		CellularCfg: cellularCfg,
-		Type:        &wirelessType,
+		Type:        networkWirelessTypePtr(rdEntryStr(d, "type")),
 		WifiCfg:     wifiCfg,
 	}, nil
+}
+func rdMapNetWirelessConfigOrNil(d *schema.ResourceData) (*swagger_models.NetWirelessConfig, error) {
+	val, err := rdEntryStructPtr(d, "wireless", rdMapNetWirelessConfig)
+	if err != nil {
+		return nil, err
+	}
+	if val == nil {
+		return nil, nil
+	}
+	return val.(*swagger_models.NetWirelessConfig), nil
+}
+
+func networkProxyProtoPtr(strVal string) *swagger_models.NetworkProxyProto {
+	val := swagger_models.NetworkProxyProto(strVal)
+	return &val
 }
 
 func rdMapNetProxyServer(d map[string]interface{}, key string) (
@@ -99,10 +123,9 @@ func rdMapNetProxyServer(d map[string]interface{}, key string) (
 	if val, exists := d[key]; exists {
 		for _, v := range val.([]interface{}) {
 			entry := v.(map[string]interface{})
-			proto := swagger_models.NetworkProxyProto(rdEntryStr(entry, "proto"))
 			proxyList = append(proxyList, &swagger_models.NetProxyServer{
 				Port:   rdEntryInt64(entry, "port"),
-				Proto:  &proto,
+				Proto:  networkProxyProtoPtr(rdEntryStr(entry, "proto")),
 				Server: rdEntryStr(entry, "server"),
 			})
 		}
@@ -130,18 +153,29 @@ func rdMapNetProxyConfig(d map[string]interface{}) (interface{}, error) {
 	}, nil
 }
 
-func rdMapIPSpec(d map[string]interface{}) (interface{}, error) {
-	dhcpType := swagger_models.NetworkDHCPType(rdEntryStr(d, "dhcp"))
-	val, err := rdEntryStructPtr(d, "dhcp_range", rdMapDhcpIpRange)
+func rdMapNetProxyConfigOrNil(d *schema.ResourceData) (*swagger_models.NetProxyConfig, error) {
+	val, err := rdEntryStructPtr(d, "proxy", rdMapNetProxyConfig)
 	if err != nil {
 		return nil, err
 	}
-	var dhcpRange *swagger_models.DhcpIPRange
-	if val != nil {
-		dhcpRange = val.(*swagger_models.DhcpIPRange)
+	if val == nil {
+		return nil, nil
+	}
+	return val.(*swagger_models.NetProxyConfig), nil
+}
+
+func networkDHCPTypePtr(strVal string) *swagger_models.NetworkDHCPType {
+	val := swagger_models.NetworkDHCPType(strVal)
+	return &val
+}
+
+func rdMapIPSpec(d map[string]interface{}) (interface{}, error) {
+	dhcpRange, err := rdMapDhcpIpRangeOrNil(d)
+	if err != nil {
+		return nil, err
 	}
 	return &swagger_models.IPSpec{
-		Dhcp:      &dhcpType,
+		Dhcp:      networkDHCPTypePtr(rdEntryStr(d, "dhcp")),
 		DhcpRange: dhcpRange,
 		DNS:       rdEntryStrList(d, "dns"),
 		Domain:    rdEntryStr(d, "domain"),
@@ -150,6 +184,21 @@ func rdMapIPSpec(d map[string]interface{}) (interface{}, error) {
 		Ntp:       rdEntryStr(d, "ntp"),
 		Subnet:    rdEntryStr(d, "subnet"),
 	}, nil
+}
+func rdMapIPSpecOrNil(d *schema.ResourceData) (*swagger_models.IPSpec, error) {
+	val, err := rdEntryStructPtr(d, "ip", rdMapIPSpec)
+	if err != nil {
+		return nil, err
+	}
+	if val == nil {
+		return nil, nil
+	}
+	return val.(*swagger_models.IPSpec), nil
+}
+
+func networkKindPtr(strVal string) *swagger_models.NetworkKind {
+	val := swagger_models.NetworkKind(strVal)
+	return &val
 }
 
 func rdToNetConfig(cfg *swagger_models.NetConfig, d *schema.ResourceData) error {
@@ -160,36 +209,20 @@ func rdToNetConfig(cfg *swagger_models.NetConfig, d *schema.ResourceData) error 
 		return err
 	}
 	cfg.EnterpriseDefault = rdEntryBool(d, "enterprise_default")
-	val, err := rdEntryStructPtr(d, "ip", rdMapIPSpec)
+	cfg.IP, err = rdMapIPSpecOrNil(d)
 	if err != nil {
 		return err
 	}
-	if val == nil {
-		cfg.IP = nil
-	} else {
-		cfg.IP = val.(*swagger_models.IPSpec)
-	}
-	kind := swagger_models.NetworkKind(rdEntryStr(d, "kind"))
-	cfg.Kind = &kind
+	cfg.Kind = networkKindPtr(rdEntryStr(d, "kind"))
 	cfg.ProjectID = rdEntryStrPtrOrNil(d, "project_id")
-	val, err = rdEntryStructPtr(d, "proxy", rdMapNetProxyConfig)
+	cfg.Proxy, err = rdMapNetProxyConfigOrNil(d)
 	if err != nil {
 		return err
-	}
-	if val == nil {
-		cfg.Proxy = nil
-	} else {
-		cfg.Proxy = val.(*swagger_models.NetProxyConfig)
 	}
 	cfg.Title = rdEntryStrPtrOrNil(d, "title")
-	val, err = rdEntryStructPtr(d, "wireless", rdMapNetWirelessConfig)
+	cfg.Wireless, err = rdMapNetWirelessConfigOrNil(d)
 	if err != nil {
 		return err
-	}
-	if val == nil {
-		cfg.Wireless = nil
-	} else {
-		cfg.Wireless = val.(*swagger_models.NetWirelessConfig)
 	}
 	return nil
 }
@@ -220,6 +253,11 @@ func createNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	log.Printf("Network %s (ID: %s) Successfully created\n",
 		rspData.ObjectName, rspData.ObjectID)
 	d.SetId(rspData.ObjectID)
+	err = getNetworkAndPublishData(client, d, name, rspData.ObjectID, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Network: %s (ID: %s) after "+
+			"creating it. Err: %s", name, rspData.ObjectID, err.Error())
+	}
 	return diags
 }
 
@@ -260,6 +298,11 @@ func updateNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
 	log.Printf("Network Update Successful")
+	err = getNetworkAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Network: %s (ID: %s) after "+
+			"updating it. Err: %s", name, cfg.ID, err.Error())
+	}
 	return diags
 }
 
@@ -285,4 +328,8 @@ func deleteNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	}
 	log.Printf("[INFO] Network %s ( ID: %s) Delete Successful.", name, id)
 	return diags
+}
+
+func readResourceNetwork(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readNetwork(ctx, d, meta, true)
 }

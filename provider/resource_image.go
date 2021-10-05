@@ -18,7 +18,7 @@ var imageUrlExtension = "apps/images"
 
 var ImageResourceSchema = &schema.Resource{
 	CreateContext: createImageResource,
-	ReadContext:   readImage,
+	ReadContext:   readResourceImage,
 	UpdateContext: updateImageResource,
 	DeleteContext: deleteImageResource,
 	Schema:        schemas.ImageSchema,
@@ -193,4 +193,8 @@ func deleteImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 		return diag.Errorf("%s. Request Failed. err: %s", errMsgPrefix, err.Error())
 	}
 	return diags
+}
+
+func readResourceImage(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+    return readImage(ctx, d, meta, true)
 }

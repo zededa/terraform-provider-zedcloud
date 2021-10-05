@@ -20,7 +20,7 @@ var deviceUrlExtension = "devices"
 
 var EdgeNodeResourceSchema = &schema.Resource{
 	CreateContext: createEdgeNodeResource,
-	ReadContext:   readEdgeNode,
+	ReadContext:   readResourceEdgeNode,
 	UpdateContext: updateEdgeNodeResource,
 	DeleteContext: deleteEdgeNodeResource,
 	Schema:        zschemas.EdgeNodeSchema,
@@ -284,4 +284,8 @@ func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	}
 	log.Printf("[INFO] EdgeNode Delete Successful.")
 	return diags
+}
+
+func readResourceEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readEdgeNode(ctx, d, meta, true)
 }

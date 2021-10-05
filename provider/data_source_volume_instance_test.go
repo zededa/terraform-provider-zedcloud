@@ -116,7 +116,10 @@ func TestFlattenVolInstConfig(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		out := flattenVolInstConfig(c.input)
+		// The routine itself has verification for computed fields.
+		// so no need to verify the output for the "computedOnly" call
+		flattenVolInstConfig(c.input, true) // computedOnly
+		out := flattenVolInstConfig(c.input, false)
 		err := verifyFlattenOutput(zschemas.VolumeInstanceSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

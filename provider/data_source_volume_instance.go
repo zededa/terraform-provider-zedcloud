@@ -15,7 +15,7 @@ import (
 )
 
 var VolumeInstanceDataSourceSchema = &schema.Resource{
-	ReadContext: readVolumeInstance,
+	ReadContext: readDataSourceVolumeInstance,
 	Schema:      zschemas.VolumeInstanceSchema,
 	Description: "Schema for data source zedcloud_volume_instance. Must specify " +
 		"id or name",
@@ -37,33 +37,55 @@ func getVolumeInstance(client *zedcloudapi.Client,
 	return rspData, nil
 }
 
-func flattenVolInstConfig(cfg *swagger_models.VolInstConfig) map[string]interface{} {
+func flattenVolInstConfig(cfg *swagger_models.VolInstConfig, computedOnly bool) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
-	return map[string]interface{}{
-		"accessmode":      ptrValStr(cfg.Accessmode),
-		"cleartext":       cfg.Cleartext,
+
+	// Publish Compute Only Fields by Default.
+	data := map[string]interface{}{
 		"content_tree_id": cfg.ContentTreeID,
-		"description":     cfg.Description,
-		"device_id":       cfg.DeviceID,
 		"id":              cfg.ID,
-		"image":           cfg.Image,
 		"implicit":        cfg.Implicit,
-		"label":           cfg.Label,
-		"multiattach":     cfg.Multiattach,
-		"name":            cfg.Name,
 		"project_id":      cfg.ProjectID,
 		"purge":           flattenZedCloudOpsCmd(cfg.Purge),
 		"revision":        flattenObjectRevision(cfg.Revision),
-		"size_bytes":      cfg.SizeBytes,
-		"title":           cfg.Title,
-		"type":            ptrValStr(cfg.Type),
 	}
+	if !computedOnly {
+		data["accessmode"] = ptrValStr(cfg.Accessmode)
+		data["cleartext"] = cfg.Cleartext
+		data["description"] = cfg.Description
+		data["device_id"] = cfg.DeviceID
+		data["image"] = cfg.Image
+		data["label"] = cfg.Label
+		data["multiattach"] = cfg.Multiattach
+		data["name"] = cfg.Name
+		data["size_bytes"] = cfg.SizeBytes
+		data["title"] = cfg.Title
+		data["type"] = ptrValStr(cfg.Type)
+	}
+	flattenedDataCheckKeys(zschemas.VolumeInstanceSchema, data, computedOnly)
+	return data
+}
+
+func getVolumeInstanceAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
+	name, id string, resource bool) error {
+	cfg, err := getVolumeInstance(client, name, id)
+	if err != nil {
+		return fmt.Errorf("[ERROR] Volume Instance %s (id: %s) not found. Err: %s",
+			name, id, err.Error())
+	}
+	if cfg.Implicit {
+		return fmt.Errorf("[ERROR] VolumeInstance %s (id: %s) is an Implicit Volume. "+
+			"Implicit Volumes cannot be used as resources or data sources.",
+			name, id)
+	}
+	marshalData(d, flattenVolInstConfig(cfg, resource))
+	return nil
 }
 
 // Read the Resource Group
-func readVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func readVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interface{}, resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -77,16 +99,13 @@ func readVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interf
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	cfg, err := getVolumeInstance(client, name, id)
+	err := getVolumeInstanceAndPublishData(client, d, name, id, resource)
 	if err != nil {
-		return diag.Errorf("[ERROR] VolumeInstance %s (id: %s) not found. Err: %s",
-			name, id, err.Error())
+		return diag.Errorf("%s", err.Error())
 	}
-	if cfg.Implicit {
-		return diag.Errorf("[ERROR] VolumeInstance %s (id: %s) is an Implicit Volume. "+
-			"Implicit Volumes cannot be used as resources or data sources.",
-			name, id)
-	}
-	marshalData(d, flattenVolInstConfig(cfg))
 	return diags
+}
+
+func readDataSourceVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readVolumeInstance(ctx, d, meta, false)
 }

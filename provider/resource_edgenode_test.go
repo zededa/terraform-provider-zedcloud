@@ -187,7 +187,7 @@ func TestRDEdgeNodeConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenDeviceConfig(cfg)
+		out := flattenDeviceConfig(cfg, false)
 		err = verifyFlattenOutput(zschemas.EdgeNodeSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

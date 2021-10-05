@@ -5,6 +5,7 @@ package provider
 
 import (
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/zedcloud-api/swagger_models"
 )
 
@@ -61,4 +62,31 @@ func flattenZedCloudOpsCmd(entry interface{}) []interface{} {
 		"counter":  int(object.Counter),
 		"ops_time": fmt.Sprintf("%v", object.OpsTime),
 	}}
+}
+
+func flattenedDataCheckKeys(schemaMap map[string]*schema.Schema,
+	data map[string]interface{},
+	computedOnly bool) {
+	// Verify all keys published in data re computed fields.
+	for k, _ := range data {
+		schemaEntry, ok := schemaMap[k]
+		if !ok {
+			panic(fmt.Errorf("Flattened Key %s doesn't exist in Schema", k))
+		}
+		if !schemaEntry.Computed && computedOnly {
+			panic(fmt.Errorf("Non-Computed Key %s Flattened", k))
+		}
+	}
+	// Verify all fields in the schema are published
+	for k, v := range schemaMap {
+		_, ok := data[k]
+		if !ok {
+			if v.Computed {
+				// Computed fields must always be piblished.
+				panic(fmt.Errorf("Computed Key %s not flattened", k))
+			}
+			// Sensitive keys are not published for data sources.
+			// So can't really assert for missing keys
+		}
+	}
 }

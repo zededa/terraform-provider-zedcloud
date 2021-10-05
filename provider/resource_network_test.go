@@ -235,14 +235,14 @@ var rdNetwork2ndLevelStructsEmpty = map[string]interface{}{
 	"enterprise_default": true,
 	"ip": []interface{}{
 		map[string]interface{}{
-			"dhcp": "NETWORK_DHCP_TYPE_CLIENT",
+			"dhcp":       "NETWORK_DHCP_TYPE_CLIENT",
 			"dhcp_range": []interface{}{},
-			"dns":     []interface{}{},
-			"domain":  "example.com",
-			"gateway": "10.10.1.1",
-			"mask":    "255.255.255.0",
-			"ntp":     "10.10.1.1",
-			"subnet":  "10.1.1.0/16",
+			"dns":        []interface{}{},
+			"domain":     "example.com",
+			"gateway":    "10.10.1.1",
+			"mask":       "255.255.255.0",
+			"ntp":        "10.10.1.1",
+			"subnet":     "10.1.1.0/16",
 		},
 	},
 	"kind":       "NETWORK_KIND_V4",
@@ -254,7 +254,7 @@ var rdNetwork2ndLevelStructsEmpty = map[string]interface{}{
 			"network_proxy_certs": []interface{}{},
 			"network_proxy_url":   "www.example.com",
 			"pacfile":             "testpacfile",
-			"proxy": []interface{}{},
+			"proxy":               []interface{}{},
 		},
 	},
 	"revision": []interface{}{map[string]interface{}{
@@ -269,8 +269,8 @@ var rdNetwork2ndLevelStructsEmpty = map[string]interface{}{
 			// In reality, we can have either Cellular cfg or wifi cfg depending
 			// on type - not both. But for unit test, lets populate both structures.
 			"cellular_cfg": []interface{}{},
-			"type": "NETWORK_WIRELESS_TYPE_WIFI",
-			"wifi_cfg": []interface{}{},
+			"type":         "NETWORK_WIRELESS_TYPE_WIFI",
+			"wifi_cfg":     []interface{}{},
 		},
 	},
 }
@@ -306,6 +306,7 @@ var efoNetwork2ndLevelStructsEmpty = map[string]interface{}{
 		},
 	},
 }
+
 // In each test case, call rdXXX to get the appropriate config struct,
 //  feed it to flattenXXX, verify output of flattenXXX is same as input
 func TestRDNetworkConfig(t *testing.T) {
@@ -340,14 +341,14 @@ func TestRDNetworkConfig(t *testing.T) {
 			expectError:             false,
 			expectedFlattenedOutput: efoNetworkFirstLevelStructKeysEmpty,
 		},
-        /*
-		{
-			input:                   rdNetwork2ndLevelStructsEmpty,
-			description:             "2nd level keys Empty",
-			expectError:             false,
-			expectedFlattenedOutput: efoNetwork2ndLevelStructsEmpty,
-		},
-        */
+		/*
+			{
+				input:                   rdNetwork2ndLevelStructsEmpty,
+				description:             "2nd level keys Empty",
+				expectError:             false,
+				expectedFlattenedOutput: efoNetwork2ndLevelStructsEmpty,
+			},
+		*/
 	}
 
 	for _, c := range cases {
@@ -372,7 +373,7 @@ func TestRDNetworkConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenNetConfig(cfg)
+		out := flattenNetConfig(cfg, false)
 		err = verifyFlattenOutput(zschemas.NetworkSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",
@@ -384,7 +385,7 @@ func TestRDNetworkConfig(t *testing.T) {
 				"Output: %#v\n"+
 				"Input : %#v\n"+
 				"Diff ( expected vs actual): %#v", c.description, out,
-                    c.expectedFlattenedOutput, diff)
+				c.expectedFlattenedOutput, diff)
 		}
 	}
 }

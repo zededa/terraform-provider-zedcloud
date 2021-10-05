@@ -18,7 +18,7 @@ var netInstUrlExtension = "netinsts"
 
 var NetInstResourceSchema = &schema.Resource{
 	CreateContext: createNetInstResource,
-	ReadContext:   readNetInst,
+	ReadContext:   readResourceNetInst,
 	UpdateContext: updateNetInstResource,
 	DeleteContext: deleteNetInstResource,
 	Schema:        schemas.NetworkInstanceSchema,
@@ -60,14 +60,21 @@ func rdMapDhcpIpRange(d map[string]interface{}) (interface{}, error) {
 	}, nil
 }
 
-func resourceDataMapToDhcpServerConfig(d map[string]interface{}) (interface{}, error) {
+func rdMapDhcpIpRangeOrNil(d interface{}) (*swagger_models.DhcpIPRange, error) {
 	val, err := rdEntryStructPtr(d, "dhcp_range", rdMapDhcpIpRange)
 	if err != nil {
 		return nil, err
 	}
-	var dhcpRange *swagger_models.DhcpIPRange
-	if val != nil {
-		dhcpRange = val.(*swagger_models.DhcpIPRange)
+	if val == nil {
+		return nil, nil
+	}
+	return val.(*swagger_models.DhcpIPRange), nil
+}
+
+func resourceDataMapToDhcpServerConfig(d map[string]interface{}) (interface{}, error) {
+	dhcpRange, err := rdMapDhcpIpRangeOrNil(d)
+	if err != nil {
+		return nil, err
 	}
 	return &swagger_models.DhcpServerConfig{
 		DhcpRange: dhcpRange,
@@ -78,15 +85,17 @@ func resourceDataMapToDhcpServerConfig(d map[string]interface{}) (interface{}, e
 		Ntp:       rdEntryStr(d, "ntp"),
 		Subnet:    rdEntryStr(d, "subnet"),
 	}, nil
-
 }
 
 func resourceDataToDhcpServerConfig(d *schema.ResourceData) (*swagger_models.DhcpServerConfig, error) {
 	val, err := rdEntryStructPtr(d, "ip", resourceDataMapToDhcpServerConfig)
+	if err != nil {
+		return nil, err
+	}
 	if val == nil {
 		return nil, nil
 	}
-	return val.(*swagger_models.DhcpServerConfig), err
+	return val.(*swagger_models.DhcpServerConfig), nil
 }
 
 func resourceDataToStaticDNSList(d *schema.ResourceData) ([]*swagger_models.StaticDNSList, error) {
@@ -170,7 +179,13 @@ func createNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	log.Printf("Network Instance %s (ID: %s) Successfully created\n",
 		rspData.ObjectName, rspData.ObjectID)
 
-	d.SetId(rspData.ObjectID)
+	id := rspData.ObjectID
+	d.SetId(id)
+	err = getNetInstAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Network Instance: %s (ID: %s) after "+
+			"creating it. Err: %s", name, id, err.Error())
+	}
 	return diags
 }
 
@@ -220,6 +235,11 @@ func updateNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
 	log.Printf("Network Instance Update Successful")
+	err = getNetInstAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Network Instance: %s (ID: %s) after "+
+			"updating it. Err: %s", name, id, err.Error())
+	}
 	return diags
 }
 
@@ -245,4 +265,7 @@ func deleteNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	}
 	log.Printf("[INFO] Network Instance %s ( ID: %s) Delete Successful.", name, id)
 	return diags
+}
+func readResourceNetInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	return readNetInst(ctx, d, meta, true)
 }
