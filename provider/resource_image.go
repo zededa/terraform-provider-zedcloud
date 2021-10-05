@@ -115,13 +115,18 @@ func createImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	if err != nil {
 		return diag.Errorf("%s Err: %s", errMsgPrefix, err.Error())
 	}
-	log.Printf("Image %s (ID: %s) Successfully created\n",
-		rspData.ObjectName, rspData.ObjectID)
+	id = rspData.ObjectID
+	log.Printf("Image %s (ID: %s) Successfully created\n", rspData.ObjectName, id)
 	// Uplink the image
-	if err = uplinkImageResource(client, name, rspData.ObjectID); err != nil {
+	if err = uplinkImageResource(client, name, id); err != nil {
 		return diag.Errorf("%s. ", err.Error())
 	}
-	d.SetId(rspData.ObjectID)
+	d.SetId(id)
+	err = getImageAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Image: %s (ID: %s) after "+
+			"creating it. Err: %s", name, id, err.Error())
+	}
 	return diags
 }
 
@@ -156,6 +161,11 @@ func updateImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	_, err = client.SendReq("PUT", urlExtension, cfg, rspData)
 	if err != nil {
 		return diag.Errorf("%s Request Failed. err: %s", errMsgPrefix, err.Error())
+	}
+	err = getImageAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get Image: %s (ID: %s) after "+
+			"updating it. Err: %s", name, id, err.Error())
 	}
 	return diags
 }
@@ -196,5 +206,5 @@ func deleteImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 }
 
 func readResourceImage(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-    return readImage(ctx, d, meta, true)
+	return readImage(ctx, d, meta, true)
 }

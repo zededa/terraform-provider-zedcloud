@@ -62,6 +62,17 @@ func flattenImageConfig(cfg *swagger_models.ImageConfig, computedOnly bool) map[
 	return data
 }
 
+func getImageAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
+	name, id string, resource bool) error {
+	cfg, err := getImage(client, name, id)
+	if err != nil {
+		return fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
+			name, id, err.Error())
+	}
+	marshalData(d, flattenImageConfig(cfg, resource))
+	return nil
+}
+
 // Read the Resource Group
 func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}, resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
@@ -77,14 +88,10 @@ func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}, re
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	cfg, err := getImage(client, name, id)
+	err := getImageAndPublishData(client, d, name, id, resource)
 	if err != nil {
-		return diag.Errorf("[ERROR] Image %s (id: %s) not found. Err: %s",
-			name, id, err.Error())
+		return diag.Errorf("%s", err.Error())
 	}
-
-	// For resources, publish only computed fields
-	marshalData(d, flattenImageConfig(cfg, resource))
 	return diags
 }
 

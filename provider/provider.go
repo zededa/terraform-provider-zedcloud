@@ -22,6 +22,7 @@ var ProviderSchema = &schema.Provider{
 	Schema:               zschemas.ProviderSchema,
 
 	DataSourcesMap: map[string]*schema.Resource{
+		"zedcloud_datastore":        getDataStoreDataSourceSchema(),
 		"zedcloud_edgeapp":          getEdgeAppDataSourceSchema(),
 		"zedcloud_edgeapp_instance": getAppInstDataSourceSchema(),
 		"zedcloud_edgenode":         getEdgeNodeDataSourceSchema(),
