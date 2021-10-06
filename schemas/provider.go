@@ -8,21 +8,27 @@ import (
 )
 
 var ProviderSchema = map[string]*schema.Schema{
-    "zedcloud_url": {
-        Type:     schema.TypeString,
-        Optional: true,
-    },
-
-    "token": {
-        Type:     schema.TypeString,
-        Optional: true,
-    },
-    "username": {
-        Type:     schema.TypeString,
-        Optional: true,
-    },
-    "password": {
-        Type:     schema.TypeString,
-        Optional: true,
-    },
+	"zedcloud_url": {
+		Type:        schema.TypeString,
+		Optional:    true,
+		Description: "ZEDCloud url. Ex: https://zedcontrol.zededa.net",
+	},
+	"token": {
+		Type:     schema.TypeString,
+		Optional: true,
+		Description: "API token to be used to login to ZEDCloud. " +
+			"One of token OR username/password must be specified.",
+	},
+	"username": {
+		Type:     schema.TypeString,
+		Optional: true,
+		Description: "Username to be used to login to ZEDCloud. " +
+			"One of token OR username/password must be specified.",
+	},
+	"password": {
+		Type:     schema.TypeString,
+		Optional: true,
+		Description: "password to be used to login to ZEDCloud. " +
+			"One of token OR username/password must be specified.",
+	},
 }
