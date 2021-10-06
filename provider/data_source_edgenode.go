@@ -67,6 +67,9 @@ func flattenEDConfigItems(cfgList []*swagger_models.EDConfigItem) map[string]int
 }
 
 func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) map[string]interface{} {
+	if cfg == nil {
+		return map[string]interface{}{}
+	}
 	eveImageVersion := ""
 	for _, image := range cfg.BaseImage {
 		if image.Activate {
@@ -88,7 +91,7 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) ma
 		"revision":      flattenObjectRevision(cfg.Revision),
 		"serialno":      cfg.Serialno,
 		"storage":       int(cfg.Storage),
-		"thread":        int(cfg.Storage),
+		"thread":        int(cfg.Thread),
 		"utype":         ptrValStr(cfg.Utype),
 	}
 	if !computedOnly {

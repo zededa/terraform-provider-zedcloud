@@ -91,7 +91,7 @@ func TestRDTImageConfig(t *testing.T) {
 		{
 			input:                   map[string]interface{}{},
 			description:             "Empty RD",
-			expectError:             true,
+			expectError:             false,
 			expectedFlattenedOutput: rdImageEmptyOutput,
 		},
 		{

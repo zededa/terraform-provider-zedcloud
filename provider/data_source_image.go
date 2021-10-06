@@ -37,6 +37,9 @@ func getImage(client *zedcloudapi.Client,
 }
 
 func flattenImageConfig(cfg *swagger_models.ImageConfig, computedOnly bool) map[string]interface{} {
+	if cfg == nil {
+		return map[string]interface{}{}
+	}
 	data := map[string]interface{}{
 		"id":            cfg.ID,
 		"image_error":   cfg.ImageError,
