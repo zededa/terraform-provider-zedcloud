@@ -6,4 +6,6 @@ libzapi/swagger_client/libzapi_client_network.go.bkp
 libzapi/swagger_client/libzapi_client_storage.go.bkp
 libzapi/swagger_client/libzapi_client_user.go.bkp
 libzapi/swagger_client/libzapi_client_node.go.bkp
-
+*.log
+*.tfstate
+*.backup
