@@ -44,7 +44,6 @@ func flattenVolInstConfig(cfg *swagger_models.VolInstConfig, computedOnly bool) 
 
 	// Publish Compute Only Fields by Default.
 	data := map[string]interface{}{
-		"content_tree_id": cfg.ContentTreeID,
 		"id":              cfg.ID,
 		"implicit":        cfg.Implicit,
 		"project_id":      cfg.ProjectID,
@@ -54,6 +53,7 @@ func flattenVolInstConfig(cfg *swagger_models.VolInstConfig, computedOnly bool) 
 	if !computedOnly {
 		data["accessmode"] = ptrValStr(cfg.Accessmode)
 		data["cleartext"] = cfg.Cleartext
+		data["content_tree_id"] = cfg.ContentTreeID
 		data["description"] = cfg.Description
 		data["device_id"] = cfg.DeviceID
 		data["image"] = cfg.Image
