@@ -15,6 +15,18 @@ func strPtr(val string) *string {
 	return &val
 }
 
+func int64Ptr(val int64) *int64 {
+    return &val
+}
+
+func int32Ptr(val int32) *int32 {
+    return &val
+}
+
+func boolPtr(val bool) *bool {
+    return &val
+}
+
 func ptrValStr(ptr interface{}) string {
 	value := reflect.ValueOf(ptr)
 	if value.Type().Kind() != reflect.Ptr {

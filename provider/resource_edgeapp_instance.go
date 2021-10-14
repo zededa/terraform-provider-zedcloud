@@ -5,7 +5,6 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/schemas"
@@ -35,20 +34,32 @@ func getAppInstResourceSchema() *schema.Resource {
 func getAppInstUrl(name, id, urlType string) string {
 	return zedcloudapi.UrlForObjectRequest(appInstUrlExtension, name, id, urlType)
 }
+func hvModePtr(strVal string) *swagger_models.HvMode {
+    val := swagger_models.HvMode(strVal)
+    return &val
+}
+
+func variableFileEncodingPtr(strVal string) *swagger_models.VariableFileEncoding {
+    val := swagger_models.VariableFileEncoding(strVal)
+    return &val
+}
+
+func variableVariableFormatPtr(strVal string) *swagger_models.VariableVariableFormat {
+    val := swagger_models.VariableVariableFormat(strVal)
+    return &val
+}
 
 func rdAppInstVariableGroupVariable(
 	d map[string]interface{}) (*swagger_models.VariableGroupVariable, error) {
-	variable := swagger_models.VariableGroupVariable{}
-	variable.Default = rdEntryStr(d, "default")
-	encode := swagger_models.VariableFileEncoding(rdEntryStr(d, "encode"))
-	variable.Encode = &encode
-	format := swagger_models.VariableVariableFormat(rdEntryStr(d, "format"))
-	variable.Format = &format
-	variable.Label = rdEntryStrPtrOrNil(d, "label")
-	variable.MaxLength = rdEntryStr(d, "max_length")
-	variable.Name = rdEntryStrPtrOrNil(d, "name")
-
-	variable.Options = make([]*swagger_models.VariableOptionVal, 0)
+    variable := swagger_models.VariableGroupVariable{
+        Default: rdEntryStr(d, "default"),
+        Encode: variableFileEncodingPtr(rdEntryStr(d, "encode")),
+        Format: variableVariableFormatPtr(rdEntryStr(d, "format")),
+        Label: rdEntryStrPtrOrNil(d, "label"),
+        MaxLength: rdEntryStr(d, "max_length"),
+        Name: rdEntryStrPtrOrNil(d, "name"),
+        Options: make([]*swagger_models.VariableOptionVal, 0),
+    }
 	options := rdEntryList(d, "option")
 	for _, option := range options {
 		optionVal := swagger_models.VariableOptionVal{}
@@ -64,11 +75,15 @@ func rdAppInstVariableGroupVariable(
 	return &variable, nil
 }
 
+func variableGroupConditionOperatorPtr(strVal string) *swagger_models.VariableGroupConditionOperator {
+    val := swagger_models.VariableGroupConditionOperator(strVal)
+    return &val
+}
+
 func rdAppInstCustomVariableConditionEntry(d map[string]interface{}) (interface{}, error) {
 	vgc := swagger_models.VariableGroupCondition{}
 	vgc.Name = rdEntryStr(d, "name")
-	operator := swagger_models.VariableGroupConditionOperator(rdEntryStr(d, "operator"))
-	vgc.Operator = &operator
+	vgc.Operator = variableGroupConditionOperatorPtr(rdEntryStr(d, "operator"))
 	vgc.Value = rdEntryStr(d, "value")
 	return &vgc, nil
 }
@@ -126,51 +141,19 @@ func rdAppInstCustomConfig(d map[string]interface{}) (interface{}, error) {
 	return &customConfig, nil
 }
 
-func rdAppInstVmInfoEntry(d map[string]interface{}) (interface{}, error) {
-	mode := swagger_models.HvMode(rdEntryStr(d, "mode"))
-	if mode == "" {
-		return nil, fmt.Errorf("Vm Mode cannot be empty string")
-	}
-	return &swagger_models.VM{
-		Cpus:       rdEntryInt64PtrOrNil(d, "cpus"),
-		Memory:     rdEntryInt64PtrOrNil(d, "memory"),
-		Mode:       &mode,
-		Vnc:        rdEntryBool(d, "vnc"),
-		VncDisplay: rdEntryInt64(d, "vnc_display"),
-	}, nil
-}
-
-func rdAppInstVmInfo(d *schema.ResourceData) (*swagger_models.VM, error) {
-	val, err := rdEntryStructPtr(d, "vminfo", rdAppInstVmInfoEntry)
-	if val == nil || err != nil {
-		return nil, err
-	}
-	return val.(*swagger_models.VM), nil
-}
-
-func rdAppInstIntfAclMatches(d map[string]interface{}) (
-	[]*swagger_models.AppACEMatch, error) {
-	val := rdEntryList(d, "match")
-	matchList := make([]*swagger_models.AppACEMatch, 0)
-	for _, dataEntry := range val {
-		matchData := dataEntry.(map[string]interface{})
-		matchEntry := &swagger_models.AppACEMatch{}
-		matchEntry.Type = rdEntryStrPtrOrNil(matchData, "type")
-		matchEntry.Value = rdEntryStrPtrOrNil(matchData, "value")
-		matchList = append(matchList, matchEntry)
-	}
-	return matchList, nil
+func ioTypePtr(strVal string) *swagger_models.IoType {
+    val := swagger_models.IoType(strVal)
+    return &val
 }
 
 func rdAppInstIntfIO(d map[string]interface{}) (
 	*swagger_models.PhyAdapter, error) {
 
 	entryFunc := func(d map[string]interface{}) (interface{}, error) {
-		iotype := swagger_models.IoType(rdEntryStr(d, "type"))
 		return &swagger_models.PhyAdapter{
 			Name: rdEntryStr(d, "name"),
 			Tags: rdEntryStrMap(d, "tags"),
-			Type: &iotype,
+			Type: ioTypePtr(rdEntryStr(d, "type")),
 		}, nil
 	}
 	val, err := rdEntryStructPtr(d, "io", entryFunc)
@@ -180,89 +163,11 @@ func rdAppInstIntfIO(d map[string]interface{}) (
 	return val.(*swagger_models.PhyAdapter), nil
 }
 
-func rdAppInstIntfAclActionMapParams(d map[string]interface{}) (
-	*swagger_models.AppMapParams, error) {
-
-	entryFunc := func(d map[string]interface{}) (interface{}, error) {
-		return &swagger_models.AppMapParams{
-			Port: rdEntryInt64PtrOrNil(d, "port"),
-		}, nil
-	}
-
-	val, err := rdEntryStructPtr(d, "mapparams", entryFunc)
-	if val == nil || err != nil {
-		return nil, err
-	}
-	return val.(*swagger_models.AppMapParams), nil
-}
-
-func rdAppInstIntfAclActionEntry(d map[string]interface{}) (*swagger_models.AppACEAction, error) {
-	actionEntry := &swagger_models.AppACEAction{}
-	actionEntry.Drop = rdEntryBool(d, "drop")
-	actionEntry.Limit = rdEntryBool(d, "limit")
-	actionEntry.Limitburst = rdEntryInt64PtrOrNil(d, "limitburst")
-	actionEntry.Limitrate = rdEntryInt64PtrOrNil(d, "limitrate")
-	actionEntry.Limitunit = rdEntryStrPtrOrNil(d, "limitunit")
-	var err error
-	actionEntry.Mapparams, err = rdAppInstIntfAclActionMapParams(d)
-	if err != nil {
-		return nil, err
-	}
-	actionEntry.Portmap = rdEntryBool(d, "portmap")
-	return actionEntry, nil
-}
-
-func rdAppInstIntfAclActions(d map[string]interface{}) ([]*swagger_models.AppACEAction, error) {
-	actionList := make([]*swagger_models.AppACEAction, 0)
-	actions := rdEntryList(d, "action")
-	for _, val := range actions {
-		actionEntry, err := rdAppInstIntfAclActionEntry(val.(map[string]interface{}))
-		if err != nil {
-			return nil, err
-		}
-		actionList = append(actionList, actionEntry)
-	}
-	return actionList, nil
-}
-
-func rdAppInstIntfAclEntry(d map[string]interface{}) (*swagger_models.AppACE, error) {
-	var err error
-	aclEntry := &swagger_models.AppACE{}
-	aclEntry.Actions, err = rdAppInstIntfAclActions(d)
-	if err != nil {
-		return nil, err
-	}
-	aclEntry.ID = rdEntryInt32PtrOrNil(d, "id")
-	aclEntry.Matches, err = rdAppInstIntfAclMatches(d)
-	if err != nil {
-		return nil, err
-	}
-	aclEntry.Name = rdEntryStrPtrOrNil(d, "name")
-	return aclEntry, nil
-}
-
-func rdAppInstIntfAcls(d map[string]interface{}) ([]*swagger_models.AppACE, error) {
-	aclList := make([]*swagger_models.AppACE, 0)
-	acls := rdEntryList(d, "acl")
-	for _, val := range acls {
-		aclEntry, err := rdAppInstIntfAclEntry(val.(map[string]interface{}))
-		if err != nil {
-			return nil, err
-		}
-		aclList = append(aclList, aclEntry)
-	}
-	return aclList, nil
-}
-
 func rdAppInstInterfaceEntry(d map[string]interface{}) (
 	*swagger_models.AppInterface, error) {
 	intf := &swagger_models.AppInterface{}
 	var err error
 	intf.AccessVlanID = rdEntryInt64(d, "access_vlan_id")
-	intf.Acls, err = rdAppInstIntfAcls(d)
-	if err != nil {
-		return nil, err
-	}
 	intf.DefaultNetInstance = rdEntryBool(d, "default_net_instance")
 	intf.Intfname = rdEntryStrPtrOrNil(d, "intfname")
 	intf.Io, err = rdAppInstIntfIO(d)
@@ -327,12 +232,21 @@ func rdAppInstLogs(d map[string]interface{}) (interface{}, error) {
 	}, nil
 }
 
+func deploymentTypePtr(strVal string) *swagger_models.DeploymentType {
+    val := swagger_models.DeploymentType(strVal)
+    return &val
+}
+
+func appTypePtr(strVal string) *swagger_models.AppType {
+    val := swagger_models.AppType(strVal)
+    return &val
+}
+
 func rdUpdateAppInstCfg(cfg *swagger_models.AppInstance, d *schema.ResourceData) error {
 	cfg.Activate = rdEntryBoolPtrOrNil(d, "activate")
 	cfg.AppID = rdEntryStrPtrOrNil(d, "app_id")
 	cfg.AppPolicyID = rdEntryStr(d, "app_policy_id")
-	appType := swagger_models.AppType(rdEntryStr(d, "app_type"))
-	cfg.AppType = &appType
+	cfg.AppType = appTypePtr(rdEntryStr(d, "app_type"))
 	cfg.Bundleversion = rdEntryStr(d, "bundleversion")
 	cfg.ClusterID = rdEntryStr(d, "cluster_id")
 	cfg.CollectStatsIPAddr = rdEntryStr(d, "collect_stats_ip_addr")
@@ -345,9 +259,7 @@ func rdUpdateAppInstCfg(cfg *swagger_models.AppInstance, d *schema.ResourceData)
 	if val != nil {
 		cfg.CustomConfig = val.(*swagger_models.CustomConfig)
 	}
-	deploymentType := swagger_models.DeploymentType(
-		rdEntryStr(d, "deployment_type"))
-	cfg.DeploymentType = &deploymentType
+	cfg.DeploymentType = deploymentTypePtr(rdEntryStr(d, "deployment_type"))
 	cfg.Description = rdEntryStr(d, "description")
 	cfg.DeviceID = rdEntryStrPtrOrNil(d, "device_id")
 	cfg.Drives = rdAppInstDrives(d)
@@ -369,10 +281,6 @@ func rdUpdateAppInstCfg(cfg *swagger_models.AppInstance, d *schema.ResourceData)
 	cfg.Tags = rdEntryStrMap(d, "tags")
 	cfg.Title = rdEntryStrPtrOrNil(d, "title")
 	cfg.UserDefinedVersion = rdEntryStr(d, "user_defined_version")
-	cfg.Vminfo, err = rdAppInstVmInfo(d)
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

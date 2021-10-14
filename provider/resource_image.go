@@ -36,36 +36,41 @@ func getImageUrl(name, id, urlType string) string {
 	return zedcloudapi.UrlForObjectRequest(imageUrlExtension, name, id, urlType)
 }
 
+func modelArchTypePtr(strVal string) *swagger_models.ModelArchType {
+	val := swagger_models.ModelArchType(strVal)
+	return &val
+}
+
+func configFormatPtr(strVal string) *swagger_models.ConfigFormat {
+	val := swagger_models.ConfigFormat(strVal)
+	return &val
+}
+
+func imageTypePtr(strVal string) *swagger_models.ImageType {
+	val := swagger_models.ImageType(strVal)
+	return &val
+}
+
+func imageStatusPtr(strVal string) *swagger_models.ImageStatus {
+	val := swagger_models.ImageStatus(strVal)
+	return &val
+}
+
+func originPtr(strVal string) *swagger_models.Origin {
+	val := swagger_models.Origin(strVal)
+	return &val
+}
+
 func updateImageCfgFromResourceData(cfg *swagger_models.ImageConfig, d *schema.ResourceData) error {
-
 	cfg.DatastoreID = rdEntryStrPtrOrNil(d, "datastore_id")
-	if cfg.DatastoreID == nil {
-		return fmt.Errorf("datastore_id must be specified. It cannot be an empty string.")
-	}
 	cfg.Description = rdEntryStr(d, "description")
-
-	imageArch := swagger_models.ModelArchType(rdEntryStr(d, "image_arch"))
-	if imageArch == "" {
-		return fmt.Errorf("image_arch must be specified. It cannot be an empty string.")
-	}
-	cfg.ImageArch = &imageArch
-
-	imageFormat := swagger_models.ConfigFormat(rdEntryStr(d, "image_format"))
-	if imageFormat == "" {
-		return fmt.Errorf("image_format must be specified. It cannot be an empty string.")
-	}
-	cfg.ImageFormat = &imageFormat
-
+	cfg.ImageArch = modelArchTypePtr(rdEntryStr(d, "image_arch"))
+	cfg.ImageFormat = configFormatPtr(rdEntryStr(d, "image_format"))
 	cfg.ImageRelURL = rdEntryStr(d, "image_rel_url")
 	cfg.ImageSha256 = rdEntryStr(d, "image_sha_256")
 	cfg.ImageSizeBytes = rdEntryStr(d, "image_size_bytes")
-	imageType := swagger_models.ImageType(rdEntryStr(d, "image_type"))
-	cfg.ImageType = &imageType
-
+	cfg.ImageType = imageTypePtr(rdEntryStr(d, "image_type"))
 	cfg.Title = rdEntryStrPtrOrNil(d, "title")
-	if cfg.Title == nil {
-		return fmt.Errorf("title must be specified. It cannot be an empty string.")
-	}
 	return nil
 }
 

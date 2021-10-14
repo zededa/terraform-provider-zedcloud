@@ -26,18 +26,28 @@ func flattenStringMap(entryMap map[string]string) map[string]interface{} {
 }
 
 func flattenObjectRevision(entry interface{}) []interface{} {
+	if entry == nil {
+		return []interface{}{}
+	}
 	object := entry.(*swagger_models.ObjectRevision)
 	if object == nil {
 		return []interface{}{}
 	}
-	return []interface{}{map[string]interface{}{
-		"created_at": fmt.Sprintf("%+v", object.CreatedAt),
+	data := map[string]interface{}{
+		"created_at": "",
 		"created_by": ptrValStr(object.CreatedBy),
 		"curr":       ptrValStr(object.Curr),
 		"prev":       object.Prev,
-		"updated_at": fmt.Sprintf("%s", object.UpdatedAt),
+		"updated_at": "",
 		"updated_by": ptrValStr(object.UpdatedBy),
-	}}
+	}
+	if object.CreatedAt != nil {
+		data["created_at"] = fmt.Sprintf("%+v", object.CreatedAt)
+	}
+	if object.UpdatedAt != nil {
+		data["updated_at"] = fmt.Sprintf("%+v", object.UpdatedAt)
+	}
+	return []interface{}{data}
 }
 
 func flattenObjectParentDetail(entry interface{}) []interface{} {

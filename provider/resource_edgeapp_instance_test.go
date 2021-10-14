@@ -255,8 +255,33 @@ var efoAppInstFullCfg = map[string]interface{}{
 	"device_id":             rdAppInstFullCfg["device_id"],
 	"drive":                 rdAppInstFullCfg["drive"],
 	"interface": []interface{}{
-		rdAppInstFullCfg["interface"].([]interface{})[0],
-		//rdAppInstFullCfg["interface"][1],
+		map[string]interface{}{
+			"access_vlan_id": 2,
+			// Acls Can't be configured - so read only. CfgUpdate will not have them.
+			"acl":                  []interface{}{},
+			"default_net_instance": false,
+			"directattach":         false,
+			"intfname":             "eth1",
+			"io": []interface{}{
+				map[string]interface{}{
+					"name": "eth1",
+					"tags": map[string]interface{}{
+						"phytag1": "phytag-val1",
+						"phytag2": "phytag-val2",
+						"phytag3": "phytag-val3",
+					},
+					"type": "IO_TYPE_ETH",
+				},
+			},
+			"ipaddr":      "10.10.1.1",
+			"macaddr":     "a.b.c",
+			"netinstname": "sample-netinst",
+			"netinsttag": map[string]interface{}{
+				"nitag1": "nitag-val1",
+				"nitag2": "nitag-val2",
+				"nitag3": "nitag-val3",
+			},
+		},
 	},
 	"is_secret_updated":    false,
 	"logs":                 rdAppInstFullCfg["logs"],
@@ -268,7 +293,8 @@ var efoAppInstFullCfg = map[string]interface{}{
 	"revision":             []interface{}{}, // Computed
 	"tags":                 rdAppInstFullCfg["tags"],
 	"user_defined_version": rdAppInstFullCfg["user_defined_version"],
-	"vminfo":               rdAppInstFullCfg["vminfo"],
+	// vminfo is not set in the config.
+	"vminfo": []interface{}{},
 }
 
 // In each test case, call rdXXX to get the appropriate config struct,
@@ -328,7 +354,7 @@ func TestRDAppInstConfig(t *testing.T) {
 				"Error matching Flattened output and Expected output.\n"+
 				"Output: %#v\n"+
 				"Expected Output : %#v\n"+
-				"Diff: %#v", c.description, out, c.expectedFlattenedOutput, diff)
+				"Diff Actual vs. Expected: %#v", c.description, out, c.expectedFlattenedOutput, diff)
 		}
 	}
 }

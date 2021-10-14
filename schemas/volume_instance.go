@@ -55,7 +55,7 @@ var VolumeInstanceSchema = map[string]*schema.Schema{
 	},
 	"content_tree_id": {
 		Type:        schema.TypeString,
-		Computed:    true,
+		Optional:    true,
 		Description: "Content tree ID",
 	},
 	"device_id": {

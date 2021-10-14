@@ -65,6 +65,11 @@ func cfgBaseosForEveVersionStr(eve_image_version string) []*swagger_models.BaseO
 	}}
 }
 
+func adminStatePtr(strVal string) *swagger_models.AdminState {
+	val := swagger_models.AdminState(strVal)
+	return &val
+}
+
 func edgeNodeUpdateBaseOs(client *zedcloudapi.Client, cfg *swagger_models.DeviceConfig,
 	eve_image_version string) error {
 	// BaseImage is supposed to have only one entry. If there are multiple,
@@ -160,6 +165,11 @@ func setDeviceLocation(cfg *swagger_models.DeviceConfig, d *schema.ResourceData)
 	}
 	cfg.DevLocation = &cfgLocation
 	return nil
+}
+
+func adapterUsagePtr(strVal string) *swagger_models.AdapterUsage {
+	val := swagger_models.AdapterUsage(strVal)
+	return &val
 }
 
 func setSystemInterface(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) error {
