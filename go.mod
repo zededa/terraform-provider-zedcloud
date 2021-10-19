@@ -12,7 +12,7 @@ require (
 	github.com/go-test/deep v1.0.7
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.7.0
 	github.com/keybase/go-crypto v0.0.0-20161004153544-93f5b35093ba // indirect
-	github.com/zededa/zedcloud-api v0.0.4-alpha
+	github.com/zededa/zedcloud-api v0.0.5-alpha
 )
 
 // replace github.com/zededa/zedcloud-api => ../zedcloud-api
