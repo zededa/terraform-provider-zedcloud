@@ -200,16 +200,38 @@ func setSystemInterface(cfg *swagger_models.DeviceConfig, d *schema.ResourceData
 	return nil
 }
 
-func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) error {
+func setAdminState(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, create bool) error {
+	strVal := rdEntryStr(d, "adminstate_config")
+	switch strVal {
+	case "ADMIN_STATE_ACTIVE":
+	case "ADMIN_STATE_INACTIVE":
+		break
+	default:
+		return fmt.Errorf("adminstate_config must be specified and be one of " +
+			"ADMIN_STATE_ACTIVE, ADMIN_STATE_INACTIVE")
+	}
+	if !create {
+		// Device Update. If adminstate_config is ACTIVE and the device is
+		// already in Registered state, do not change Admin State
+		if strVal == "ADMIN_STATE_ACTIVE" && cfg.AdminState != nil &&
+			*cfg.AdminState == swagger_models.AdminStateADMINSTATEREGISTERED {
+			return nil
+		}
+	}
+	adminstate := swagger_models.AdminState(strVal)
+	cfg.AdminState = &adminstate
+	return nil
+}
+
+func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, create bool) error {
+	var err error
+	cfg.Description = rdEntryStr(d, "description")
+	cfg.Title = rdEntryStrPtrOrNil(d, "title")
+
+	setAdminState(cfg, d, create)
 	cfg.AssetID = rdEntryStr(d, "asset_id")
 	cfg.ClientIP = rdEntryStr(d, "client_ip")
 	cfg.ClusterID = rdEntryStr(d, "cluster_id")
-	cfg.Description = rdEntryStr(d, "description")
-	eve_image_version := rdEntryStr(d, "eve_image_version")
-	if eve_image_version == "" {
-		return fmt.Errorf("eve_image_version must be specified.")
-	}
-	var err error
 	cfg.ConfigItem, err = rdConfigItems(d)
 	if err != nil {
 		return err
@@ -218,12 +240,42 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) er
 	if err != nil {
 		return err
 	}
+	eve_image_version := rdEntryStr(d, "eve_image_version")
+	if eve_image_version == "" {
+		return fmt.Errorf("eve_image_version must be specified.")
+	}
+	if create {
+		// EVE image version is set here only during create. Eve Image change is
+		// handled differently during update
+		cfg.BaseImage = cfgBaseosForEveVersionStr(rdEntryStr(d, "eve_image_version"))
+	}
 	err = setSystemInterface(cfg, d)
 	if err != nil {
 		return err
 	}
+	if create {
+		// model id and project id will be set only during create.
+		cfg.ModelID = rdEntryStrPtrOrNil(d, "model_id")
+		if cfg.ModelID == nil || *cfg.ModelID == "" {
+			return fmt.Errorf("model_id must be specified for the EdgeNode.")
+		}
+		cfg.Obkey = rdEntryStr(d, "onboard_key")
+	}
+	projectIdPtr := rdEntryStrPtrOrNil(d, "project_id")
+	if create {
+		if projectIdPtr == nil || *projectIdPtr == "" {
+			return fmt.Errorf("project_id must be specified for the EdgeNode.")
+		}
+		cfg.ProjectID = projectIdPtr
+	} else {
+		if cfg.ProjectID != nil && *cfg.ProjectID == *projectIdPtr {
+			// Update. Project cannot be changed
+			return fmt.Errorf("project_id cannot be changed after EdgeNode is "+
+				"created. Current: %s, New: %s", *cfg.ProjectID, *projectIdPtr)
+		}
+	}
+	cfg.Serialno = rdEntryStr(d, "serialno")
 	cfg.Tags = rdEntryStrMap(d, "tags")
-	cfg.Title = rdEntryStrPtrOrNil(d, "title")
 	return nil
 }
 
@@ -241,12 +293,10 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	cfg := &swagger_models.DeviceConfig{
 		Name: &name,
 	}
-	err := rdDeviceConfig(cfg, d)
+	err := rdDeviceConfig(cfg, d, true)
 	if err != nil {
 		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
 	}
-	// Set BaseImage when creating device.
-	cfg.BaseImage = cfgBaseosForEveVersionStr(rdEntryStr(d, "eve_image_version"))
 	log.Printf("[INFO] Creating EdgeNode: %s", name)
 	client.XRequestIdPrefix = "TF-edgenode-create"
 	rspData := &swagger_models.ZsrvResponse{}
@@ -290,7 +340,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 			"Object in zedcontrol is not same as expected by Terraform.",
 			errMsgPrefix, id, cfg.ID)
 	}
-	err = rdDeviceConfig(cfg, d)
+	err = rdDeviceConfig(cfg, d, false)
 	if err != nil {
 		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
 	}
