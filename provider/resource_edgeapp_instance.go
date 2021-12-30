@@ -67,10 +67,7 @@ func rdAppInstVariableGroupVariable(
 		optionVal.Value = rdEntryStr(option, "value")
 		variable.Options = append(variable.Options, &optionVal)
 	}
-
-	variable.ProcessInput = rdEntryStr(d, "process_input")
 	variable.Required = rdEntryBool(d, "required")
-	variable.Type = rdEntryStr(d, "type")
 	variable.Value = rdEntryStr(d, "value")
 	return &variable, nil
 }

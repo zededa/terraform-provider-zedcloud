@@ -228,9 +228,7 @@ func flattenVariableGroupVariables(cfgList []*swagger_models.VariableGroupVariab
 			"max_length":    cfg.MaxLength,
 			"name":          ptrValStr(cfg.Name),
 			"option":        flattenVariableOptionVals(cfg.Options),
-			"process_input": cfg.ProcessInput,
 			"required":      cfg.Required,
-			"type":          cfg.Type,
 			"value":         cfg.Value,
 		}
 		entryList = append(entryList, entry)

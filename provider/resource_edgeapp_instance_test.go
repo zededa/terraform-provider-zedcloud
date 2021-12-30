@@ -86,9 +86,7 @@ var rdAppInstFullCfg = map[string]interface{}{
 									"value": "v1",
 								},
 							},
-							"process_input": "sample process input",
 							"required":      true,
-							"type":          "sample type",
 							"value":         "sample value",
 						},
 					},
@@ -346,8 +344,8 @@ func TestRDAppInstConfig(t *testing.T) {
 		out := flattenAppInstance(cfg, false)
 		err = verifyFlattenOutput(zschemas.AppInstSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
-			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",
-				c.description, err.Error())
+			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s\nout: %++v",
+				c.description, err.Error(), out)
 		}
 		if diff := deep.Equal(out, c.expectedFlattenedOutput); diff != nil {
 			t.Fatalf("Test Failed: %s\n"+
