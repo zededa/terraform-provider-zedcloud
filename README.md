@@ -14,6 +14,14 @@ For Customer documentation, see [Terraform Provider ZEDCloud](https://app.gitboo
 2. [Resources](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/resources)
 3. [Data Sources](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/data-sources)
 
+## Generating Schema documentation
+Use the follong command from the terraform-provider-zedcloud directory to generate
+schema documentation:
+
+```
+go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs
+```
+
 # Directory Structure:
 ## provider
 This directory has the actual code for the provider. It has the the following files:

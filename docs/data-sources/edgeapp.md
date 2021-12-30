@@ -27,7 +27,6 @@ Schema for data source zedcloud_edgeapp. Must specify id or name
 - **manifest_file** (String) Location of Edge Application Manifest file (JSON format)
 - **memory** (Number) Memory to be assigned to an App Instance of this App
 - **networks** (Number) Number of Networks required by the App
-- **revision** (Block List, Max: 1) System defined revision information of the object (see [below for nested schema](#nestedblock--revision))
 - **storage** (Number) Amount of Storage required for App Instance of this App
 - **title** (String) User defined title of the object. title can be changed any time.
 - **user_defined_version** (String) User defined version of the edge-app
@@ -37,19 +36,7 @@ Schema for data source zedcloud_edgeapp. Must specify id or name
 - **id** (String) System defined unique Id of the Object
 - **origin_type** (String) Origin of object
 - **parent_detail** (List of Object) Details of Parent Object (see [below for nested schema](#nestedatt--parent_detail))
-
-<a id="nestedblock--revision"></a>
-### Nested Schema for `revision`
-
-Optional:
-
-- **created_at** (String) The time, in milliseconds since the epoch, when the object was created
-- **created_by** (String) User who Created the object
-- **curr** (String) Current version of the object
-- **prev** (String) Prev version of the object
-- **updated_at** (String) The time, in milliseconds since the epoch, when the object was last updated
-- **updated_by** (String) User who last updated the object
-
+- **revision** (List of Object) System defined revision information of the object (see [below for nested schema](#nestedatt--revision))
 
 <a id="nestedatt--parent_detail"></a>
 ### Nested Schema for `parent_detail`
@@ -60,5 +47,18 @@ Read-Only:
 - **reference_exists** (Boolean)
 - **update_available** (Boolean)
 - **version_of_parent_object** (Number)
+
+
+<a id="nestedatt--revision"></a>
+### Nested Schema for `revision`
+
+Read-Only:
+
+- **created_at** (String)
+- **created_by** (String)
+- **curr** (String)
+- **prev** (String)
+- **updated_at** (String)
+- **updated_by** (String)
 
 

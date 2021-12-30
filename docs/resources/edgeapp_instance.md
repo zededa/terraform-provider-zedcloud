@@ -25,33 +25,33 @@ description: |-
 - **app_id** (String) ID of the Edge APP to be used.
 - **app_policy_id** (String) ID of the associated App Policy Object
 - **app_type** (String) Type of Edge App - VM / Container etc. The following are valid values: APP_TYPE_UNSPECIFIED, APP_TYPE_VM, APP_TYPE_VM_RUNTIME, APP_TYPE_CONTAINER, APP_TYPE_MODULE
-- **cluster_id** (String) ID of the Cluster
 - **collect_stats_ip_addr** (String) IP Address of the Stats Collector module.
-- **crypto_key** (String) Crypto Key for decrypting user secret information
+- **crypto_key** (String) SENSITIVE. Crypto Key for decrypting user secret information. This field will not be published by terraform import command.
 - **custom_config** (Block List, Max: 1) Application initialization script template in cloud-config format and user specified values (see [below for nested schema](#nestedblock--custom_config))
-- **deployment_type** (String) Type of deployment for the app, eg: azure, k3s, standalone. The following are valid values: DEPLOYMENT_TYPE_UNSPECIFIED, DEPLOYMENT_TYPE_STAND_ALONE, DEPLOYMENT_TYPE_AZURE, DEPLOYMENT_TYPE_K3S, DEPLOYMENT_TYPE_AWS, DEPLOYMENT_TYPE_K3S_AZURE, DEPLOYMENT_TYPE_K3S_AWS
+- **deployment_type** (String) Type of deployment for the app, eg: azure, k3s, standalone. This comes from the App Manifest.
 - **description** (String) Detailed description of the Object
 - **device_id** (String) Edge Node id where the App Instance is deployed.
 - **drive** (Block List) List of Drive configurations (see [below for nested schema](#nestedblock--drive))
-- **encrypted_secrets** (Map of String) Map of encrypted secrets
+- **encrypted_secrets** (Map of String) SENSITIVE. Map of encrypted secretsThis field will not be published by terraform import command.
 - **interface** (Block List) Interface Configuration for the App Instance (see [below for nested schema](#nestedblock--interface))
 - **logs** (Block List, Max: 1) App Instance Logs related Configuration. (see [below for nested schema](#nestedblock--logs))
-- **project_id** (String) ID of the project to which the Object belongs
 - **remote_console** (Boolean) Enable ( true ) / Disable (false ) Remote Console for the Edge App Instance
-- **revision** (Block List, Max: 1) System defined revision information of the object (see [below for nested schema](#nestedblock--revision))
 - **tags** (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3
 - **title** (String) User defined title of the object. title can be changed any time.
-- **vminfo** (Block List, Max: 1) Virtual machine info (see [below for nested schema](#nestedblock--vminfo))
 
 ### Read-Only
 
 - **bundleversion** (String) Version of Edge App the instance is referring to
+- **cluster_id** (String) ID of the Cluster
 - **id** (String) System defined unique Id of the Object
 - **is_secret_updated** (Boolean) This field tells whether user secrets has updated or not, especially the custom config
+- **project_id** (String) ID of the project to which the Object belongs
 - **purge** (List of Object) Purge counter: ZedCloudOpsCmd (see [below for nested schema](#nestedatt--purge))
 - **refresh** (List of Object) Refresh counter: ZedCloudOpsCmd (see [below for nested schema](#nestedatt--refresh))
 - **restart** (List of Object) Restart counter: ZedCloudOpsCmd (see [below for nested schema](#nestedatt--restart))
+- **revision** (List of Object) System defined revision information of the object (see [below for nested schema](#nestedatt--revision))
 - **user_defined_version** (String) Edge app UserDefinedVersion this instance is running with
+- **vminfo** (List of Object) Virtual machine info (see [below for nested schema](#nestedatt--vminfo))
 
 <a id="nestedblock--custom_config"></a>
 ### Nested Schema for `custom_config`
@@ -98,9 +98,7 @@ Optional:
 - **max_length** (String) Max length of the variable
 - **name** (String) Name of Variable Group Variable
 - **option** (Block List) Variable Options (see [below for nested schema](#nestedblock--custom_config--variable_group--variable--option))
-- **process_input** (String) Process input
 - **required** (Boolean) Flag indicates if this is a required variable
-- **type** (String) Type of variable group variable.
 - **value** (String) Value of variable group variable.
 
 <a id="nestedblock--custom_config--variable_group--variable--option"></a>
@@ -124,14 +122,17 @@ Optional:
 - **drvtype** (String) Type of Drive. Valid Values: UNSPECIFIED, CDROM, HDD, NET, HDD_EMPTY. HDD_EMPTY is to allocate the empty disk of maxsizebytes specified
 - **ignorepurge** (Boolean) Don't purge this drive as part of purge command for mutable volumes
 - **imagename** (String) Name of Image Object used for the drive.
-- **imvolname** (String) Immutable Volume for this drive. Only one of imvolname and mvolname must be specified.
 - **maxsize** (Number) Drive maximum size
 - **mountpath** (String) Mount Path for the drive in the App Instance
-- **mvolname** (String) Mutable Volume for this drive. Only one of imvolname and mvolname must be specified.
 - **preserve** (Boolean) Preserve the drive even when all app instances using it are deleted
 - **readonly** (Boolean) ReadOnly Flag. If set, drive is mounted as readonly by app instance.
 - **target** (String) Target drive
 - **volumelabel** (String) User defined volume to use for this drive
+
+Read-Only:
+
+- **imvolname** (String) Immutable Volume for this drive. Only one of imvolname and mvolname must be specified.
+- **mvolname** (String) Mutable Volume for this drive. Only one of imvolname and mvolname must be specified.
 
 
 <a id="nestedblock--interface"></a>
@@ -140,7 +141,6 @@ Optional:
 Optional:
 
 - **access_vlan_id** (Number) Access port vlan id. app interface with access vlan id zero will be treated as trunk port. valid vlan id range: 2 - 4093
-- **acl** (Block List) App Access Control Lists on the Interface (see [below for nested schema](#nestedblock--interface--acl))
 - **default_net_instance** (Boolean) Use the project default Network Instance for this interface.
 - **intfname** (String) Name of the Interface as specified in the Edge App
 - **io** (Block List, Max: 1) Physical Adapter to be matched for interface assignment. Applicable only when "directattach" flag is true (see [below for nested schema](#nestedblock--interface--io))
@@ -151,49 +151,8 @@ Optional:
 
 Read-Only:
 
+- **acl** (List of Object) App Access Control Lists on the Interface (see [below for nested schema](#nestedatt--interface--acl))
 - **directattach** (Boolean) Comes from manifest during app create. If true, Assign the interface to the App Instance.
-
-<a id="nestedblock--interface--acl"></a>
-### Nested Schema for `interface.acl`
-
-Optional:
-
-- **action** (Block List) Access Control Entry (ACE) actions (see [below for nested schema](#nestedblock--interface--acl--action))
-- **id** (Number) ACE id
-- **match** (Block List) ACE Match (see [below for nested schema](#nestedblock--interface--acl--match))
-- **name** (String) User defined name of ACE
-
-<a id="nestedblock--interface--acl--action"></a>
-### Nested Schema for `interface.acl.action`
-
-Optional:
-
-- **drop** (Boolean) ACE drop flag
-- **limit** (Boolean) ACE limit flag
-- **limitburst** (Number) ACE limit burst
-- **limitrate** (Number) ACE limit rate
-- **limitunit** (String) ACE limit unit
-- **mapparams** (Block List, Max: 1) Application map params (see [below for nested schema](#nestedblock--interface--acl--action--mapparams))
-- **portmap** (Boolean) Application port map flag
-
-<a id="nestedblock--interface--acl--action--mapparams"></a>
-### Nested Schema for `interface.acl.action.portmap`
-
-Optional:
-
-- **port** (Number) Application port
-
-
-
-<a id="nestedblock--interface--acl--match"></a>
-### Nested Schema for `interface.acl.match`
-
-Optional:
-
-- **type** (String) Type of Match
-- **value** (String) Value of Match
-
-
 
 <a id="nestedblock--interface--io"></a>
 ### Nested Schema for `interface.io`
@@ -205,6 +164,48 @@ Optional:
 - **type** (String) IoType specifies the type of the Input output of the Edge Node / App Instance. Valid Values: IO_TYPE_UNSPECIFIED, IO_TYPE_ETH, IO_TYPE_USB, IO_TYPE_COM, IO_TYPE_AUDIO, IO_TYPE_WLAN, IO_TYPE_WWAN, IO_TYPE_HDMI, IO_TYPE_LTE, IO_TYPE_OTHER
 
 
+<a id="nestedatt--interface--acl"></a>
+### Nested Schema for `interface.acl`
+
+Read-Only:
+
+- **action** (List of Object) (see [below for nested schema](#nestedobjatt--interface--acl--action))
+- **id** (Number)
+- **match** (List of Object) (see [below for nested schema](#nestedobjatt--interface--acl--match))
+- **name** (String)
+
+<a id="nestedobjatt--interface--acl--action"></a>
+### Nested Schema for `interface.acl.action`
+
+Read-Only:
+
+- **drop** (Boolean)
+- **limit** (Boolean)
+- **limitburst** (Number)
+- **limitrate** (Number)
+- **limitunit** (String)
+- **mapparams** (List of Object) (see [below for nested schema](#nestedobjatt--interface--acl--action--mapparams))
+- **portmap** (Boolean)
+
+<a id="nestedobjatt--interface--acl--action--mapparams"></a>
+### Nested Schema for `interface.acl.action.portmap`
+
+Read-Only:
+
+- **port** (Number)
+
+
+
+<a id="nestedobjatt--interface--acl--match"></a>
+### Nested Schema for `interface.acl.match`
+
+Read-Only:
+
+- **type** (String)
+- **value** (String)
+
+
+
 
 <a id="nestedblock--logs"></a>
 ### Nested Schema for `logs`
@@ -212,31 +213,6 @@ Optional:
 Optional:
 
 - **access** (Boolean) Flag to enable (true) / disable (false) sending of logs generated by app instance to ZEDCloud.
-
-
-<a id="nestedblock--revision"></a>
-### Nested Schema for `revision`
-
-Optional:
-
-- **created_at** (String) The time, in milliseconds since the epoch, when the object was created
-- **created_by** (String) User who Created the object
-- **curr** (String) Current version of the object
-- **prev** (String) Prev version of the object
-- **updated_at** (String) The time, in milliseconds since the epoch, when the object was last updated
-- **updated_by** (String) User who last updated the object
-
-
-<a id="nestedblock--vminfo"></a>
-### Nested Schema for `vminfo`
-
-Optional:
-
-- **cpus** (Number) Number of cpus assigned to app instance
-- **memory** (Number) Memory assigned to app instance
-- **mode** (String) Mode of VM. Applicable to App Instance of type VM. Valid Values: HV_PV, HV_HVM, HV_FML, HV_NOHYPER, HV_LEGACY
-- **vnc** (Boolean) Enable VNC connections to the App Instance
-- **vnc_display** (Number) VNC number to be assigned for the App Instance
 
 
 <a id="nestedatt--purge"></a>
@@ -264,5 +240,30 @@ Read-Only:
 
 - **counter** (Number)
 - **ops_time** (String)
+
+
+<a id="nestedatt--revision"></a>
+### Nested Schema for `revision`
+
+Read-Only:
+
+- **created_at** (String)
+- **created_by** (String)
+- **curr** (String)
+- **prev** (String)
+- **updated_at** (String)
+- **updated_by** (String)
+
+
+<a id="nestedatt--vminfo"></a>
+### Nested Schema for `vminfo`
+
+Read-Only:
+
+- **cpus** (Number)
+- **memory** (Number)
+- **mode** (String)
+- **vnc** (Boolean)
+- **vnc_display** (Number)
 
 

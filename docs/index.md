@@ -17,7 +17,7 @@ description: |-
 
 ### Optional
 
-- **password** (String)
-- **token** (String)
-- **username** (String)
-- **zedcloud_url** (String)
+- **password** (String) password to be used to login to ZEDCloud. One of token OR username/password must be specified.
+- **token** (String) API token to be used to login to ZEDCloud. One of token OR username/password must be specified.
+- **username** (String) Username to be used to login to ZEDCloud. One of token OR username/password must be specified.
+- **zedcloud_url** (String) ZEDCloud url. Ex: https://zedcontrol.zededa.net
