@@ -91,7 +91,7 @@ var rdEdgeNodeFullCfg = map[string]interface{}{
 		*/
 	},
 	"memory":        "",
-	"model_id":      "",
+	"model_id":      "Test Model",
 	"project_id":    "sample-project",
 	"reset_counter": 10,
 	"reset_time":    "sample-time",
@@ -128,12 +128,12 @@ var efoEdgeNodeFullCfg = map[string]interface{}{
 	"eve_image_version": rdEdgeNodeFullCfg["eve_image_version"],
 	"interface":         rdEdgeNodeFullCfg["interface"],
 	"memory":            0,
-	"model_id":          "",
-	"project_id":        "",
+	"model_id":          rdEdgeNodeFullCfg["model_id"],
+	"project_id":        rdEdgeNodeFullCfg["project_id"],
 	"reset_counter":     0,
 	"reset_time":        "",
 	"revision":          []interface{}{},
-	"serialno":          "",
+	"serialno":          rdEdgeNodeFullCfg["serialno"],
 	"storage":           0,
 	"tags":              rdEdgeNodeFullCfg["tags"],
 	"thread":            0,
@@ -174,7 +174,7 @@ func TestRDEdgeNodeConfig(t *testing.T) {
 		cfg.Name = &name
 		cfg.ID, ok = c.input["id"].(string)
 		cfg.BaseImage = cfgBaseosForEveVersionStr(rdEntryStr(rd, "eve_image_version"))
-		err := rdDeviceConfig(cfg, rd)
+		err := rdDeviceConfig(cfg, rd, true)
 		if err != nil {
 			if !c.expectError {
 				t.Fatalf("Test Failed: %s\n"+

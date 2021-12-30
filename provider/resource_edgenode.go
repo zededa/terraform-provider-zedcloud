@@ -97,11 +97,6 @@ func edgeNodeUpdateBaseOs(client *zedcloudapi.Client, cfg *swagger_models.Device
 	return nil
 }
 
-// Create the Edge Node
-func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return diag.Errorf("[ERROR] terraform-provider-zededa does not support Creation of Edge Nodes")
-}
-
 func rdConfigItems(d *schema.ResourceData) ([]*swagger_models.EDConfigItem, error) {
 	cfgItems := make([]*swagger_models.EDConfigItem, 0)
 	val, exists := d.GetOk("config_items")
@@ -232,9 +227,46 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) er
 	return nil
 }
 
+// Create the Edge Node
+func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	client := (meta.(Client)).Client
+	name := rdEntryStr(d, "name")
+	id := rdEntryStr(d, "id")
+	errMsgPrefix := getErrMsgPrefix(name, id, "EdgeNode", "Create")
+	if client == nil {
+		return diag.Errorf("%s err: %s", errMsgPrefix, "nil Client")
+	}
+	cfg := &swagger_models.DeviceConfig{
+		Name: &name,
+	}
+	err := rdDeviceConfig(cfg, d)
+	if err != nil {
+		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
+	}
+	// Set BaseImage when creating device.
+	cfg.BaseImage = cfgBaseosForEveVersionStr(rdEntryStr(d, "eve_image_version"))
+	log.Printf("[INFO] Creating EdgeNode: %s", name)
+	client.XRequestIdPrefix = "TF-edgenode-create"
+	rspData := &swagger_models.ZsrvResponse{}
+	_, err = client.SendReq("POST", deviceUrlExtension, cfg, rspData)
+	if err != nil {
+		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
+	}
+	id = rspData.ObjectID
+	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", rspData.ObjectName, id)
+	d.SetId(id)
+	err = getEdgeNodeAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get EdgeNode: %s (ID: %s) after "+
+			"creating it. Err: %s", name, id, err.Error())
+	}
+	return diags
+}
+
 // Update the Resource Group
 func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -271,20 +303,22 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	if err != nil {
 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
 	}
+	err = getEdgeNodeAndPublishData(client, d, name, id, true)
+	if err != nil {
+		return diag.Errorf("%s", err.Error())
+	}
 	log.Printf("[INFO] EdgeNode %s (ID: %s) Update Successful.", name, cfg.ID)
 	return diags
 }
 
 // Delete the Resource Group
 func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := fmt.Sprintf("[ERROR] Edge Node %s ( id: %s) Delete Failed.",
-		name, id)
+	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Delete")
 	client.XRequestIdPrefix = "TF-edgenode-delete"
 	urlExtension := getEdgeNodeUrl(name, id, "delete")
 	rspData := &swagger_models.ZsrvResponse{}

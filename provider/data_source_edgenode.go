@@ -5,11 +5,12 @@ package provider
 
 import (
 	"context"
+	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
+	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
 )
 
 var EdgeNodeDataSourceSchema = &schema.Resource{
@@ -22,6 +23,28 @@ var EdgeNodeDataSourceSchema = &schema.Resource{
 func getEdgeNodeDataSourceSchema() *schema.Resource {
 	// Use the same schema for data source as well.
 	return EdgeNodeDataSourceSchema
+}
+
+func getEdgeNode(client *zedcloudapi.Client,
+	name, id string) (*swagger_models.DeviceConfig, error) {
+	rspData := &swagger_models.DeviceConfig{}
+	err := client.GetObj(deviceUrlExtension, name, id, false, rspData)
+	if err != nil {
+		return nil, fmt.Errorf("[ERROR] FAILED to get EdgeNode %s ( id: %s). Err: %s",
+			name, id, err.Error())
+	}
+	return rspData, nil
+}
+
+func getEdgeNodeAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
+	name, id string, resource bool) error {
+	cfg, err := getEdgeNode(client, name, id)
+	if err != nil {
+		return fmt.Errorf("[ERROR] EdgeNode %s (id: %s) not found. Err: %s",
+			name, id, err.Error())
+	}
+	marshalData(d, flattenDeviceConfig(cfg, resource))
+	return nil
 }
 
 func flattenGeoLocation(entry interface{}) []interface{} {
@@ -84,12 +107,9 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) ma
 		"cpu":           int(cfg.CPU),
 		"id":            cfg.ID,
 		"memory":        int(cfg.Memory),
-		"model_id":      ptrValStr(cfg.ModelID),
-		"project_id":    ptrValStr(cfg.ProjectID),
 		"reset_counter": int(cfg.ResetCounter),
 		"reset_time":    cfg.ResetTime,
 		"revision":      flattenObjectRevision(cfg.Revision),
-		"serialno":      cfg.Serialno,
 		"storage":       int(cfg.Storage),
 		"thread":        int(cfg.Thread),
 		"utype":         ptrValStr(cfg.Utype),
@@ -102,8 +122,10 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) ma
 		data["dev_location"] = flattenGeoLocation(cfg.DevLocation)
 		data["eve_image_version"] = eveImageVersion
 		data["interface"] = flattenSysInterfaces(cfg.Interfaces)
+		data["model_id"] = ptrValStr(cfg.ModelID)
 		data["name"] = ptrValStr(cfg.Name)
 		data["project_id"] = ptrValStr(cfg.ProjectID)
+		data["serialno"] = cfg.Serialno
 		data["tags"] = flattenStringMap(cfg.Tags)
 		data["title"] = ptrValStr(cfg.Title)
 	}
@@ -127,14 +149,10 @@ func readEdgeNode(ctx context.Context, d *schema.ResourceData,
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	cfg, err := getEdgeNodeConfig(client, name, id)
+	err := getEdgeNodeAndPublishData(client, d, name, id, resource)
 	if err != nil {
-		log.Printf("[ERROR] Failed to read config. Error: %s", err.Error())
-		return diag.Errorf("[ERROR] edge node %s ( id: %s) not found. Err: %s",
-			name, id, err.Error())
+		return diag.Errorf("%s", err.Error())
 	}
-	// Take the Config and convert it to terraform object
-	marshalData(d, flattenDeviceConfig(cfg, resource))
 	return diags
 }
 
