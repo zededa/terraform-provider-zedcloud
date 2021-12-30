@@ -172,20 +172,10 @@ var variableGroupVariableResourceSchema = &schema.Resource{
 			Elem:        variableOptionValResourceSchema,
 			Description: "Variable Options",
 		},
-		"process_input": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Process input",
-		},
 		"required": {
 			Type:        schema.TypeBool,
 			Optional:    true,
 			Description: "Flag indicates if this is a required variable",
-		},
-		"type": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Type of variable group variable.",
 		},
 		"value": {
 			Type:        schema.TypeString,

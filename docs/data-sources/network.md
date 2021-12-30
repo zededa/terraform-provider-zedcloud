@@ -28,13 +28,13 @@ Schema for data source zedcloud_network. Must specify id or name
 - **kind** (String) Kind of network. Valid Values: NETWORK_KIND_V4, NETWORK_KIND_V6
 - **project_id** (String) ID of the project to which the Object belongs
 - **proxy** (Block List) Proxy configuration for the network (see [below for nested schema](#nestedblock--proxy))
-- **revision** (Block List, Max: 1) System defined revision information of the object (see [below for nested schema](#nestedblock--revision))
 - **title** (String) User defined title of the object. title can be changed any time.
 - **wireless** (Block List) Wireless (Wifi / Cellular) Configuration for the Network (see [below for nested schema](#nestedblock--wireless))
 
 ### Read-Only
 
 - **id** (String) System defined unique Id of the Object
+- **revision** (List of Object) System defined revision information of the object (see [below for nested schema](#nestedatt--revision))
 
 <a id="nestedblock--dns_list"></a>
 ### Nested Schema for `dns_list`
@@ -75,11 +75,11 @@ Optional:
 Optional:
 
 - **exceptions** (String) Proxy exceptions
-- **network_proxy** (Boolean) Flag to enable Network proxy
+- **network_proxy** (Boolean) Enable WPAD (Web Proxy Auto Discovery) Protocol to discover and download PAC file.
 - **network_proxy_certs** (List of String) List of Network Proxy Certificates
-- **network_proxy_url** (String) Network Proxy URL. Direct URL for wpad.dat download
-- **pacfile** (String) Proxy configuration in a pacfile
-- **proxy** (Block List) Net Proxy: protocol level proxies (see [below for nested schema](#nestedblock--proxy--proxy))
+- **network_proxy_url** (String) URL for wpad.dat file to be downloaded. Used when network_proxy is set to False.
+- **pacfile** (String) Proxy configuration in a pacfile. Used when network_proxy is set to False.
+- **proxy** (Block List) Net Proxy: protocol level proxies. Used when network_proxy is set to False. (see [below for nested schema](#nestedblock--proxy--proxy))
 
 <a id="nestedblock--proxy--proxy"></a>
 ### Nested Schema for `proxy.proxy`
@@ -90,19 +90,6 @@ Optional:
 - **proto** (String) Net Proxy proto. Valid Values: NETWORK_PROXY_PROTO_HTTP, NETWORK_PROXY_PROTO_HTTPS, NETWORK_PROXY_PROTO_SOCKS, NETWORK_PROXY_PROTO_FTP, NETWORK_PROXY_PROTO_OTHER
 - **server** (String) Net Proxy Server
 
-
-
-<a id="nestedblock--revision"></a>
-### Nested Schema for `revision`
-
-Optional:
-
-- **created_at** (String) The time, in milliseconds since the epoch, when the object was created
-- **created_by** (String) User who Created the object
-- **curr** (String) Current version of the object
-- **prev** (String) Prev version of the object
-- **updated_at** (String) The time, in milliseconds since the epoch, when the object was last updated
-- **updated_by** (String) User who last updated the object
 
 
 <a id="nestedblock--wireless"></a>
@@ -127,29 +114,32 @@ Optional:
 
 Optional:
 
-- **crypto** (Block List, Max: 1) Encrypted block (see [below for nested schema](#nestedblock--wireless--wifi_cfg--crypto))
-- **crypto_key** (String) Key to be used for encrypting secrets
-- **encrypted_secrets** (Map of String) List of encrypted secrets
-- **identity** (String) WPA2 Enterprise user identity/username
+- **identity** (String) SENSITIVE. WPA2 Enterprise user identity/username. Use Value from Vault. This field will not be published by terraform import
 - **key_scheme** (String) Key management scheme. Valid Values: NETWORK_WIFIKEY_SCHEME_WPAPSK, NETWORK_WIFIKEY_SCHEME_WPAEAPPSK
 - **priority** (Number) Priority of connection, default is 0
-- **secret** (Block List) List of wifi secrets (passwords) (see [below for nested schema](#nestedblock--wireless--wifi_cfg--secret))
+- **secret** (Block List) SENSITIVE. List of wifi secrets (passwords). This field will not be published by terraform import command. (see [below for nested schema](#nestedblock--wireless--wifi_cfg--secret))
 - **wifi_ssid** (String) WIFI SSID
-
-<a id="nestedblock--wireless--wifi_cfg--crypto"></a>
-### Nested Schema for `wireless.wifi_cfg.crypto`
-
-Optional:
-
-- **identity** (String) Encrypted USERNAME if not empty
-- **password** (String) Encrypted PASSWORD if not empty
-
 
 <a id="nestedblock--wireless--wifi_cfg--secret"></a>
 ### Nested Schema for `wireless.wifi_cfg.secret`
 
 Optional:
 
-- **wifi_passwd** (String) Wifi Password
+- **wifi_passwd** (String) SENSITIVE: Wifi Password. This field will not be published by terraform import
+
+
+
+
+<a id="nestedatt--revision"></a>
+### Nested Schema for `revision`
+
+Read-Only:
+
+- **created_at** (String)
+- **created_by** (String)
+- **curr** (String)
+- **prev** (String)
+- **updated_at** (String)
+- **updated_by** (String)
 
 

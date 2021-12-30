@@ -27,8 +27,7 @@ Schema for data source zedcloud_edgenode. Must specify id or name
 - **description** (String) Detailed description of the Object
 - **dev_location** (Block List) User specified geo location (see [below for nested schema](#nestedblock--dev_location))
 - **eve_image_version** (String) Verion of EVE-OS image to be used by the Edge Node
-- **interface** (Block List) System Interface list (see [below for nested schema](#nestedblock--interface))
-- **revision** (Block List, Max: 1) System defined revision information of the object (see [below for nested schema](#nestedblock--revision))
+- **interface** (Block Set) System Interface Set (see [below for nested schema](#nestedblock--interface))
 - **tags** (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3
 - **title** (String) User defined title of the object. title can be changed any time.
 
@@ -43,6 +42,7 @@ Schema for data source zedcloud_edgenode. Must specify id or name
 - **project_id** (String) ID of the project to which the Object belongs
 - **reset_counter** (Number) Reset Counter Value
 - **reset_time** (String) Edge Node Last Reset Time
+- **revision** (List of Object) System defined revision information of the object (see [below for nested schema](#nestedatt--revision))
 - **serialno** (String) Edge Node serial number
 - **storage** (Number) Device storage in GBs
 - **thread** (Number) Threads
@@ -78,16 +78,16 @@ Optional:
 - **tags** (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3
 
 
-<a id="nestedblock--revision"></a>
+<a id="nestedatt--revision"></a>
 ### Nested Schema for `revision`
 
-Optional:
+Read-Only:
 
-- **created_at** (String) The time, in milliseconds since the epoch, when the object was created
-- **created_by** (String) User who Created the object
-- **curr** (String) Current version of the object
-- **prev** (String) Prev version of the object
-- **updated_at** (String) The time, in milliseconds since the epoch, when the object was last updated
-- **updated_by** (String) User who last updated the object
+- **created_at** (String)
+- **created_by** (String)
+- **curr** (String)
+- **prev** (String)
+- **updated_at** (String)
+- **updated_by** (String)
 
 

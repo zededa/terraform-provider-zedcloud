@@ -24,33 +24,33 @@ Schema for data source zedcloud_image. Must specify id or name
 - **datastore_id** (String) Datastore Id where image binary is located
 - **description** (String) Detailed description of the Object
 - **image_arch** (String) Image Architecture. Valid Values: AMD64, ARM64
-- **image_error** (String) Image upload/uplink detailed error/status message
 - **image_format** (String) Image binary format. Valid Values: FmtUnknown, RAW, QCOW, QCOW2, VHD, VMDK, OVA, VHDX, CONTAINER
 - **image_rel_url** (String) Image relative path w.r.t. Datastore
 - **image_sha_256** (String) Image checksum in SHA256 format
 - **image_size_bytes** (String) Image size in KBytes.
 - **image_type** (String) IMAGE_TYPE_EVE, IMAGE_TYPE_APPLICATION, IMAGE_TYPE_EVEPRIVATE
-- **revision** (Block List, Max: 1) System defined revision information of the object (see [below for nested schema](#nestedblock--revision))
 - **title** (String) User defined title of the object. title can be changed any time.
 
 ### Read-Only
 
 - **id** (String) System defined unique Id of the Object
+- **image_error** (String) Image upload/uplink detailed error/status message
 - **image_local** (String) Internal image location.
 - **image_status** (String) Image status
 - **image_version** (String) System defined Version of the Object
 - **origin_type** (String) Origin type of image, Valid Values: ORIGIN_UNSPECIFIED, ORIGIN_IMPORTED, ORIGIN_LOCAL, ORIGIN_GLOBAL
+- **revision** (List of Object) System defined revision information of the object (see [below for nested schema](#nestedatt--revision))
 
-<a id="nestedblock--revision"></a>
+<a id="nestedatt--revision"></a>
 ### Nested Schema for `revision`
 
-Optional:
+Read-Only:
 
-- **created_at** (String) The time, in milliseconds since the epoch, when the object was created
-- **created_by** (String) User who Created the object
-- **curr** (String) Current version of the object
-- **prev** (String) Prev version of the object
-- **updated_at** (String) The time, in milliseconds since the epoch, when the object was last updated
-- **updated_by** (String) User who last updated the object
+- **created_at** (String)
+- **created_by** (String)
+- **curr** (String)
+- **prev** (String)
+- **updated_at** (String)
+- **updated_by** (String)
 
 
