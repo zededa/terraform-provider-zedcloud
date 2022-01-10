@@ -97,11 +97,6 @@ func edgeNodeUpdateBaseOs(client *zedcloudapi.Client, cfg *swagger_models.Device
 	return nil
 }
 
-// Create the Edge Node
-func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return diag.Errorf("[ERROR] terraform-provider-zededa does not support Creation of Edge Nodes")
-}
-
 func rdConfigItems(d *schema.ResourceData) ([]*swagger_models.EDConfigItem, error) {
 	cfgItems := make([]*swagger_models.EDConfigItem, 0)
 	val, exists := d.GetOk("config_items")
@@ -205,16 +200,38 @@ func setSystemInterface(cfg *swagger_models.DeviceConfig, d *schema.ResourceData
 	return nil
 }
 
-func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) error {
+func setAdminState(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, create bool) error {
+	strVal := rdEntryStr(d, "adminstate_config")
+	switch strVal {
+	case "ADMIN_STATE_ACTIVE":
+	case "ADMIN_STATE_INACTIVE":
+		break
+	default:
+		return fmt.Errorf("adminstate_config must be specified and be one of " +
+			"ADMIN_STATE_ACTIVE, ADMIN_STATE_INACTIVE")
+	}
+	if !create {
+		// Device Update. If adminstate_config is ACTIVE and the device is
+		// already in Registered state, do not change Admin State
+		if strVal == "ADMIN_STATE_ACTIVE" && cfg.AdminState != nil &&
+			*cfg.AdminState == swagger_models.AdminStateADMINSTATEREGISTERED {
+			return nil
+		}
+	}
+	adminstate := swagger_models.AdminState(strVal)
+	cfg.AdminState = &adminstate
+	return nil
+}
+
+func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, create bool) error {
+	var err error
+	cfg.Description = rdEntryStr(d, "description")
+	cfg.Title = rdEntryStrPtrOrNil(d, "title")
+
+	setAdminState(cfg, d, create)
 	cfg.AssetID = rdEntryStr(d, "asset_id")
 	cfg.ClientIP = rdEntryStr(d, "client_ip")
 	cfg.ClusterID = rdEntryStr(d, "cluster_id")
-	cfg.Description = rdEntryStr(d, "description")
-	eve_image_version := rdEntryStr(d, "eve_image_version")
-	if eve_image_version == "" {
-		return fmt.Errorf("eve_image_version must be specified.")
-	}
-	var err error
 	cfg.ConfigItem, err = rdConfigItems(d)
 	if err != nil {
 		return err
@@ -223,18 +240,83 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) er
 	if err != nil {
 		return err
 	}
+	eve_image_version := rdEntryStr(d, "eve_image_version")
+	if eve_image_version == "" {
+		return fmt.Errorf("eve_image_version must be specified.")
+	}
+	if create {
+		// EVE image version is set here only during create. Eve Image change is
+		// handled differently during update
+		cfg.BaseImage = cfgBaseosForEveVersionStr(rdEntryStr(d, "eve_image_version"))
+	}
 	err = setSystemInterface(cfg, d)
 	if err != nil {
 		return err
 	}
+	if create {
+		// model id and project id will be set only during create.
+		cfg.ModelID = rdEntryStrPtrOrNil(d, "model_id")
+		if cfg.ModelID == nil || *cfg.ModelID == "" {
+			return fmt.Errorf("model_id must be specified for the EdgeNode.")
+		}
+		cfg.Obkey = rdEntryStr(d, "onboard_key")
+	}
+	projectIdPtr := rdEntryStrPtrOrNil(d, "project_id")
+	if create {
+		if projectIdPtr == nil || *projectIdPtr == "" {
+			return fmt.Errorf("project_id must be specified for the EdgeNode.")
+		}
+		cfg.ProjectID = projectIdPtr
+	} else {
+		if cfg.ProjectID != nil && *cfg.ProjectID == *projectIdPtr {
+			// Update. Project cannot be changed
+			return fmt.Errorf("project_id cannot be changed after EdgeNode is "+
+				"created. Current: %s, New: %s", *cfg.ProjectID, *projectIdPtr)
+		}
+	}
+	cfg.Serialno = rdEntryStr(d, "serialno")
 	cfg.Tags = rdEntryStrMap(d, "tags")
-	cfg.Title = rdEntryStrPtrOrNil(d, "title")
 	return nil
+}
+
+// Create the Edge Node
+func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	client := (meta.(Client)).Client
+	name := rdEntryStr(d, "name")
+	id := rdEntryStr(d, "id")
+	errMsgPrefix := getErrMsgPrefix(name, id, "EdgeNode", "Create")
+	if client == nil {
+		return diag.Errorf("%s err: %s", errMsgPrefix, "nil Client")
+	}
+	cfg := &swagger_models.DeviceConfig{
+		Name: &name,
+	}
+	err := rdDeviceConfig(cfg, d, true)
+	if err != nil {
+		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
+	}
+	log.Printf("[INFO] Creating EdgeNode: %s", name)
+	client.XRequestIdPrefix = "TF-edgenode-create"
+	rspData := &swagger_models.ZsrvResponse{}
+	_, err = client.SendReq("POST", deviceUrlExtension, cfg, rspData)
+	if err != nil {
+		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
+	}
+	id = rspData.ObjectID
+	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", rspData.ObjectName, id)
+	d.SetId(id)
+	err = getEdgeNodeAndPublishData(client, d, name, id, true)
+	if err != nil {
+		log.Printf("***[ERROR]- Failed to get EdgeNode: %s (ID: %s) after "+
+			"creating it. Err: %s", name, id, err.Error())
+	}
+	return diags
 }
 
 // Update the Resource Group
 func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -258,7 +340,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 			"Object in zedcontrol is not same as expected by Terraform.",
 			errMsgPrefix, id, cfg.ID)
 	}
-	err = rdDeviceConfig(cfg, d)
+	err = rdDeviceConfig(cfg, d, false)
 	if err != nil {
 		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
 	}
@@ -271,20 +353,22 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	if err != nil {
 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
 	}
+	err = getEdgeNodeAndPublishData(client, d, name, id, true)
+	if err != nil {
+		return diag.Errorf("%s", err.Error())
+	}
 	log.Printf("[INFO] EdgeNode %s (ID: %s) Update Successful.", name, cfg.ID)
 	return diags
 }
 
 // Delete the Resource Group
 func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := fmt.Sprintf("[ERROR] Edge Node %s ( id: %s) Delete Failed.",
-		name, id)
+	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Delete")
 	client.XRequestIdPrefix = "TF-edgenode-delete"
 	urlExtension := getEdgeNodeUrl(name, id, "delete")
 	rspData := &swagger_models.ZsrvResponse{}

@@ -116,9 +116,17 @@ var EdgeNodeSchema = map[string]*schema.Schema{
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"adminstate": {
-		Type:        schema.TypeString,
-		Computed:    true,
-		Description: "Administrative state of device",
+		Type:     schema.TypeString,
+		Computed: true,
+		Description: "Current Administrative state of device. Apart from " +
+			"states specified in adminstate_config field, this can also be in " +
+			"ADMIN_STATE_REGISTERED (Device is Active and registered)",
+	},
+	"adminstate_config": {
+		Type:     schema.TypeString,
+		Optional: true,
+		Description: "Administrative state of device. Required field. " +
+			"Valid Values to configure: ADMIN_STATE_ACTIVE, ADMIN_STATE_INACTIVE",
 	},
 	"asset_id": {
 		Type:        schema.TypeString,
@@ -172,15 +180,17 @@ var EdgeNodeSchema = map[string]*schema.Schema{
 	},
 	"model_id": {
 		Type:        schema.TypeString,
-		Computed:    true,
+		Optional:    true,
 		Description: "ID of device model object for the Edge Node",
 	},
-	// Project ID for the device cannot be changed. Since the device is created
-	//  in ZEDCloud, set Computed=true for project_id. This is different from
-	//  other objects.
+	"onboard_key": &schema.Schema{
+		Type:        schema.TypeString,
+		Optional:    true,
+		Description: "Onboard Key for the device",
+	},
 	"project_id": &schema.Schema{
 		Type:        schema.TypeString,
-		Computed:    true,
+		Optional:    true,
 		Description: "ID of the project to which the Object belongs",
 	},
 	"reset_counter": {
@@ -196,7 +206,7 @@ var EdgeNodeSchema = map[string]*schema.Schema{
 	"revision": revisionSchema,
 	"serialno": {
 		Type:        schema.TypeString,
-		Computed:    true,
+		Optional:    true,
 		Description: "Edge Node serial number",
 	},
 	"storage": {
@@ -208,7 +218,7 @@ var EdgeNodeSchema = map[string]*schema.Schema{
 	"thread": {
 		Type:        schema.TypeInt,
 		Computed:    true,
-		Description: "Threads",
+		Description: "Number of Threads",
 	},
 	"utype": {
 		Type:        schema.TypeString,
