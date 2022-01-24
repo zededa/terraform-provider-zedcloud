@@ -12,6 +12,7 @@ import (
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
 	"log"
+	"strconv"
 )
 
 var EdgeAppDataSourceSchema = &schema.Resource{
@@ -36,7 +37,217 @@ func getEdgeApp(client *zedcloudapi.Client,
 	return rspData, nil
 }
 
-func flattenEdgeAppConfig(cfg *swagger_models.App, computedOnly bool) map[string]interface{} {
+func flattenAppResources(cfgList []*swagger_models.Resource) []interface{} {
+	entryList := make([]interface{}, 0)
+	for _, cfg := range cfgList {
+		entryList = append(entryList, map[string]interface{}{
+			"name":  cfg.Name,
+			"value": cfg.Value,
+		})
+	}
+	return entryList
+}
+
+func flattenAppAuthor(cfg *swagger_models.Author) []interface{} {
+	if cfg == nil {
+		return []interface{}{}
+	}
+	return []interface{}{map[string]interface{}{
+		"company": cfg.Company,
+		"email":   cfg.Email,
+		"user":    cfg.User,
+		"website": cfg.Website,
+	}}
+}
+
+func flattenAppModule(cfg *swagger_models.ModuleDetail) []interface{} {
+	if cfg == nil {
+		return []interface{}{}
+	}
+	return []interface{}{map[string]interface{}{
+		"environment": flattenStringMap(cfg.Environment),
+		"module_type": ptrValStr(cfg.ModuleType),
+		"routes":      flattenStringMap(cfg.Routes),
+		"twin_detail": cfg.TwinDetail,
+	}}
+}
+
+func flattenAppInterfaceAclMatches(cfgList []*swagger_models.Match) []interface{} {
+	entryList := make([]interface{}, 0)
+	for _, cfg := range cfgList {
+		entryList = append(entryList, map[string]interface{}{
+			"type":  cfg.Type,
+			"value": cfg.Value,
+		})
+	}
+	return entryList
+}
+
+func flattenAppInterfaceAclActionMapParams(
+	cfg *swagger_models.MapParams) []interface{} {
+	if cfg == nil {
+		return []interface{}{}
+	}
+	return []interface{}{map[string]interface{}{
+		"port": cfg.AppPort,
+	}}
+}
+
+func flattenAppInterfaceAclActionLimitParams(
+	cfg *swagger_models.LimitParams) []interface{} {
+	if cfg == nil {
+		return []interface{}{}
+	}
+	return []interface{}{map[string]interface{}{
+		"limitburst": cfg.Limitburst,
+		"limitrate":  cfg.Limitrate,
+		"limitunit":  cfg.Limitunit,
+	}}
+}
+func flattenAppInterfaceAclActions(cfgList []*swagger_models.ACLAction) []interface{} {
+	entryList := make([]interface{}, 0)
+	for _, cfg := range cfgList {
+		entryList = append(entryList, map[string]interface{}{
+			"drop":        cfg.Drop,
+			"limit":       cfg.Limit,
+			"limit_param": flattenAppInterfaceAclActionLimitParams(cfg.LimitValue),
+			"portmap":     cfg.Portmap,
+			"mapparam":    flattenAppInterfaceAclActionMapParams(cfg.Portmapto),
+		})
+	}
+	return entryList
+}
+
+func flattenAppInterfaceAcls(cfgList []*swagger_models.ACL) []interface{} {
+	entryList := make([]interface{}, 0)
+	for _, cfg := range cfgList {
+		entryList = append(entryList, map[string]interface{}{
+			"action": flattenAppInterfaceAclActions(cfg.Actions),
+			"match":  flattenAppInterfaceAclMatches(cfg.Matches),
+			"name":   cfg.Name,
+		})
+	}
+	return entryList
+}
+
+func flattenAppInterfaces(cfgList []*swagger_models.Interface) []interface{} {
+	entryList := make([]interface{}, 0)
+	for _, cfg := range cfgList {
+		entryList = append(entryList, map[string]interface{}{
+			"acl":          flattenAppInterfaceAcls(cfg.Acls),
+			"directattach": cfg.Directattach,
+			"name":         cfg.Name,
+			"optional":     cfg.Optional,
+			"privateip":    cfg.Privateip,
+			"type":         cfg.Type,
+		})
+	}
+	return entryList
+}
+
+func flattenAppImageParams(cfgList []*swagger_models.Param) []interface{} {
+	entryList := make([]interface{}, 0)
+	for _, cfg := range cfgList {
+		entryList = append(entryList, map[string]interface{}{
+			"name":  cfg.Name,
+			"value": cfg.Value,
+		})
+	}
+	return entryList
+}
+
+func appImageMaxSize(cfg *swagger_models.VMManifestImage) int {
+	maxsizeStr := cfg.Maxsize
+	if maxsizeStr == "" {
+		maxsizeStr = "0"
+	}
+	maxsize, err := strconv.Atoi(maxsizeStr)
+	if err != nil {
+		log.Printf("[ERROR] Error in flattening AppImage %s - Invalid maxsize (%s)",
+			cfg.Imagename, cfg.Maxsize)
+	}
+	return maxsize
+}
+
+func flattenAppImages(cfgList []*swagger_models.VMManifestImage) []interface{} {
+	entryList := make([]interface{}, 0)
+	for _, cfg := range cfgList {
+
+		entryList = append(entryList, map[string]interface{}{
+			"cleartext":   cfg.Cleartext,
+			"drvtype":     cfg.Drvtype,
+			"ignorepurge": cfg.Ignorepurge,
+			"imagename":   cfg.Imagename,
+			"maxsize":     appImageMaxSize(cfg),
+			"mountpath":   cfg.Mountpath,
+			"param":       flattenAppImageParams(cfg.Params),
+			"preserve":    cfg.Preserve,
+			"readonly":    cfg.Readonly,
+			"target":      cfg.Target,
+			"volumelabel": cfg.Volumelabel,
+		})
+	}
+	return entryList
+}
+
+func flattenDescDetails(cfg *swagger_models.Details) []interface{} {
+	if cfg == nil {
+		return []interface{}{}
+	}
+	return []interface{}{map[string]interface{}{
+		"agreement_list": flattenStringMap(cfg.AgreementList),
+		"app_category":   ptrValStr(cfg.AppCategory),
+		"category":       ptrValStr(cfg.Category),
+		"license_list":   flattenStringMap(cfg.LicenseList),
+		"logo":           flattenStringMap(cfg.Logo),
+		"os":             cfg.Os,
+		"support":        cfg.Support,
+	}}
+}
+
+func flattenContainerDetail(cfg *swagger_models.ContainerDetail) []interface{} {
+	if cfg == nil {
+		return []interface{}{}
+	}
+	return []interface{}{map[string]interface{}{
+		"container_create_option": cfg.ContainerCreateOption,
+	}}
+}
+
+func flattenUserDataTemplate(cfg *swagger_models.UserDataTemplate) []interface{} {
+	if cfg == nil {
+		return []interface{}{}
+	}
+	return []interface{}{map[string]interface{}{
+		"custom_config": flattenCustomConfig(cfg.CustomConfig),
+	}}
+}
+
+func flattenVmManifest(cfg *swagger_models.VMManifest) []interface{} {
+	if cfg == nil {
+		return []interface{}{}
+	}
+	return []interface{}{map[string]interface{}{
+		"apptype":          ptrValStr(cfg.AppType),
+		"configuration":    flattenUserDataTemplate(cfg.Configuration),
+		"container_detail": flattenContainerDetail(cfg.ContainerDetail),
+		"deployment_type":  ptrValStr(cfg.DeploymentType),
+		"desc_detail":      flattenDescDetails(cfg.Desc),
+		"description":      cfg.Description,
+		"display_name":     cfg.DisplayName,
+		"enablevnc":        cfg.Enablevnc,
+		"image":            flattenAppImages(cfg.Images),
+		"interface":        flattenAppInterfaces(cfg.Interfaces),
+		"module":           flattenAppModule(cfg.Module),
+		"name":             cfg.Name,
+		"owner":            flattenAppAuthor(cfg.Owner),
+		"resource":         flattenAppResources(cfg.Resources),
+		"vmmode":           ptrValStr(cfg.Vmmode),
+	}}
+}
+
+func flattenEdgeAppConfig(cfg *swagger_models.App,
+	computedOnly, manifestConfigured bool) map[string]interface{} {
 	data := map[string]interface{}{
 		"id":            cfg.ID,
 		"origin_type":   ptrValStr(cfg.OriginType),
@@ -49,6 +260,9 @@ func flattenEdgeAppConfig(cfg *swagger_models.App, computedOnly bool) map[string
 		data["description"] = cfg.Description
 		data["cpus"] = int(cfg.Cpus)
 		data["drives"] = int(cfg.Drives)
+		if manifestConfigured {
+			data["manifest"] = flattenVmManifest(cfg.ManifestJSON)
+		}
 		data["memory"] = int(cfg.Memory)
 		data["networks"] = int(cfg.Networks)
 		data["storage"] = int(cfg.Storage)
@@ -81,7 +295,10 @@ func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{},
 	}
 
 	// Take the Config and convert it to terraform object
-	marshalData(d, flattenEdgeAppConfig(cfg, resource))
+	// Special case for manifest / manifest_file
+	manifestConfigured, _ := rdEntryByKey(d, "manifest")
+	flattenedData := flattenEdgeAppConfig(cfg, resource, manifestConfigured)
+	marshalData(d, flattenedData)
 	return diags
 }
 

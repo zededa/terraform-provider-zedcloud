@@ -151,7 +151,7 @@ func flattenPhyAdapter(cfg *swagger_models.PhyAdapter) []interface{} {
 	}}
 }
 
-func flattenAppInterfaces(cfgList []*swagger_models.AppInterface) []interface{} {
+func flattenAppInstInterfaces(cfgList []*swagger_models.AppInterface) []interface{} {
 	entryList := make([]interface{}, 0)
 	for _, cfg := range cfgList {
 		entry := map[string]interface{}{
@@ -221,15 +221,15 @@ func flattenVariableGroupVariables(cfgList []*swagger_models.VariableGroupVariab
 			format = string(*cfg.Format)
 		}
 		entry := map[string]interface{}{
-			"default":       cfg.Default,
-			"encode":        encode,
-			"format":        format,
-			"label":         ptrValStr(cfg.Label),
-			"max_length":    cfg.MaxLength,
-			"name":          ptrValStr(cfg.Name),
-			"option":        flattenVariableOptionVals(cfg.Options),
-			"required":      cfg.Required,
-			"value":         cfg.Value,
+			"default":    cfg.Default,
+			"encode":     encode,
+			"format":     format,
+			"label":      ptrValStr(cfg.Label),
+			"max_length": cfg.MaxLength,
+			"name":       ptrValStr(cfg.Name),
+			"option":     flattenVariableOptionVals(cfg.Options),
+			"required":   cfg.Required,
+			"value":      cfg.Value,
 		}
 		entryList = append(entryList, entry)
 	}
@@ -310,7 +310,7 @@ func flattenAppInstance(cfg *swagger_models.AppInstance,
 		data["deployment_type"] = ptrValStr(cfg.DeploymentType)
 		data["device_id"] = ptrValStr(cfg.DeviceID)
 		data["drive"] = flattenDrives(cfg.Drives)
-		data["interface"] = flattenAppInterfaces(cfg.Interfaces)
+		data["interface"] = flattenAppInstInterfaces(cfg.Interfaces)
 		data["logs"] = flattenAppInstanceLogs(cfg.Logs)
 		data["name"] = ptrValStr(cfg.Name)
 		data["remote_console"] = cfg.RemoteConsole

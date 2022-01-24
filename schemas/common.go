@@ -150,3 +150,18 @@ var objectRevisionSchema = &schema.Resource{
 		},
 	},
 }
+
+var nameValueEntrySchema = &schema.Resource{
+	Schema: map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Name of the entry",
+		},
+		"value": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "Value of the entry",
+		},
+    },
+}
