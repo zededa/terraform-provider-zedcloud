@@ -115,6 +115,7 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) ma
 		"utype":         ptrValStr(cfg.Utype),
 	}
 	if !computedOnly {
+		data["adminstate_config"] = ptrValStr(cfg.AdminState)
 		data["asset_id"] = cfg.AssetID
 		data["client_ip"] = cfg.ClientIP
 		data["config_items"] = flattenEDConfigItems(cfg.ConfigItem)

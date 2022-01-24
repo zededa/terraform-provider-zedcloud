@@ -13,6 +13,7 @@ import (
 
 var rdEdgeNodeEmptyOutput = map[string]interface{}{
 	"adminstate":        "",
+	"adminstate_config": "",
 	"asset_id":          "",
 	"client_ip":         "",
 	"cluster_id":        "",
@@ -39,14 +40,15 @@ var rdEdgeNodeEmptyOutput = map[string]interface{}{
 }
 
 var rdEdgeNodeFullCfg = map[string]interface{}{
-	"name":         "sample-EdgeNode",
-	"id":           "SAMPLE-EdgeNode-ID",
-	"description":  "SAMPLE EdgeNode DESCRIPTION",
-	"title":        "sample-title 2",
-	"asset_id":     "Sample Asset ID",
-	"client_ip":    "10.10.1.1",
-	"cluster_id":   "sample-cluster-id",
-	"config_items": map[string]interface{}{},
+	"name":              "sample-EdgeNode",
+	"id":                "SAMPLE-EdgeNode-ID",
+	"description":       "SAMPLE EdgeNode DESCRIPTION",
+	"title":             "sample-title 2",
+	"adminstate_config": "ADMIN_STATE_ACTIVE",
+	"asset_id":          "Sample Asset ID",
+	"client_ip":         "10.10.1.1",
+	"cluster_id":        "sample-cluster-id",
+	"config_items":      map[string]interface{}{},
 	"dev_location": []interface{}{
 		map[string]interface{}{
 			"city":        "sample-city",
@@ -118,7 +120,8 @@ var efoEdgeNodeFullCfg = map[string]interface{}{
 	"id":                rdEdgeNodeFullCfg["id"],
 	"description":       rdEdgeNodeFullCfg["description"],
 	"title":             rdEdgeNodeFullCfg["title"],
-	"adminstate":        "",
+	"adminstate":        rdEdgeNodeFullCfg["adminstate_config"],
+	"adminstate_config": rdEdgeNodeFullCfg["adminstate_config"],
 	"asset_id":          rdEdgeNodeFullCfg["asset_id"],
 	"client_ip":         rdEdgeNodeFullCfg["client_ip"],
 	"cluster_id":        rdEdgeNodeFullCfg["cluster_id"],
