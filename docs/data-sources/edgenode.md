@@ -21,6 +21,7 @@ Schema for data source zedcloud_edgenode. Must specify id or name
 
 ### Optional
 
+- **adminstate_config** (String) Administrative state of device. Required field. Valid Values to configure: ADMIN_STATE_ACTIVE, ADMIN_STATE_INACTIVE
 - **asset_id** (String) Device asset ID
 - **client_ip** (String) Client IP
 - **config_items** (Map of String) EVE Runtime Configuration Properties
@@ -28,24 +29,25 @@ Schema for data source zedcloud_edgenode. Must specify id or name
 - **dev_location** (Block List) User specified geo location (see [below for nested schema](#nestedblock--dev_location))
 - **eve_image_version** (String) Verion of EVE-OS image to be used by the Edge Node
 - **interface** (Block Set) System Interface Set (see [below for nested schema](#nestedblock--interface))
+- **model_id** (String) ID of device model object for the Edge Node
+- **onboard_key** (String) Onboard Key for the device
+- **project_id** (String) ID of the project to which the Object belongs
+- **serialno** (String) Edge Node serial number
 - **tags** (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3
 - **title** (String) User defined title of the object. title can be changed any time.
 
 ### Read-Only
 
-- **adminstate** (String) Administrative state of device
+- **adminstate** (String) Current Administrative state of device. Apart from states specified in adminstate_config field, this can also be in ADMIN_STATE_REGISTERED (Device is Active and registered)
 - **cluster_id** (String) ID of the Cluster to which the Edge Node belongs.
 - **cpu** (Number) CPU (configured values)
 - **id** (String) System defined unique Id of the Object
 - **memory** (Number) Device memory in MBs
-- **model_id** (String) ID of device model object for the Edge Node
-- **project_id** (String) ID of the project to which the Object belongs
 - **reset_counter** (Number) Reset Counter Value
 - **reset_time** (String) Edge Node Last Reset Time
 - **revision** (List of Object) System defined revision information of the object (see [below for nested schema](#nestedatt--revision))
-- **serialno** (String) Edge Node serial number
 - **storage** (Number) Device storage in GBs
-- **thread** (Number) Threads
+- **thread** (Number) Number of Threads
 - **utype** (String) Device Model Archecture Type
 
 <a id="nestedblock--dev_location"></a>
