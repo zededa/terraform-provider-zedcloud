@@ -228,7 +228,10 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, cr
 	cfg.Description = rdEntryStr(d, "description")
 	cfg.Title = rdEntryStrPtrOrNil(d, "title")
 
-	setAdminState(cfg, d, create)
+	err = setAdminState(cfg, d, create)
+	if err != nil {
+		return err
+	}
 	cfg.AssetID = rdEntryStr(d, "asset_id")
 	cfg.ClientIP = rdEntryStr(d, "client_ip")
 	cfg.ClusterID = rdEntryStr(d, "cluster_id")
@@ -243,11 +246,6 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, cr
 	eve_image_version := rdEntryStr(d, "eve_image_version")
 	if eve_image_version == "" {
 		return fmt.Errorf("eve_image_version must be specified.")
-	}
-	if create {
-		// EVE image version is set here only during create. Eve Image change is
-		// handled differently during update
-		cfg.BaseImage = cfgBaseosForEveVersionStr(rdEntryStr(d, "eve_image_version"))
 	}
 	err = setSystemInterface(cfg, d)
 	if err != nil {
@@ -297,7 +295,7 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	if err != nil {
 		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
 	}
-	log.Printf("[INFO] Creating EdgeNode: %s", name)
+    log.Printf("[INFO] Creating EdgeNode: %s", name)
 	client.XRequestIdPrefix = "TF-edgenode-create"
 	rspData := &swagger_models.ZsrvResponse{}
 	_, err = client.SendReq("POST", deviceUrlExtension, cfg, rspData)
@@ -307,6 +305,20 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	id = rspData.ObjectID
 	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", rspData.ObjectName, id)
 	d.SetId(id)
+
+	// Get Edgenode Config and update BaseOs.
+	cfg, err = getEdgeNodeConfig(client, name, id)
+	if err != nil {
+		return diag.Errorf("%s Failed to find Edge Node. err: %s",
+			errMsgPrefix, err.Error())
+	}
+	err = edgeNodeUpdateBaseOs(client, cfg, rdEntryStr(d, "eve_image_version"))
+	if err != nil {
+		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
+	}
+
+	// Get Edge node config and publish the latest version. This is mainly to
+	// published the computed fields. Object rev. changes for every update
 	err = getEdgeNodeAndPublishData(client, d, name, id, true)
 	if err != nil {
 		log.Printf("***[ERROR]- Failed to get EdgeNode: %s (ID: %s) after "+
@@ -372,7 +384,7 @@ func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	client.XRequestIdPrefix = "TF-edgenode-delete"
 	urlExtension := getEdgeNodeUrl(name, id, "delete")
 	rspData := &swagger_models.ZsrvResponse{}
-	_, err := client.SendReq("delete", urlExtension, nil, rspData)
+	_, err := client.SendReq("DELETE", urlExtension, nil, rspData)
 	if err != nil {
 		return diag.Errorf("%s. Err: %s", errMsgPrefix, err.Error())
 	}
