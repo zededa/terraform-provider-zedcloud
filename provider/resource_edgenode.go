@@ -70,6 +70,28 @@ func adminStatePtr(strVal string) *swagger_models.AdminState {
 	return &val
 }
 
+func edgeNodeUpdateAdminState(client *zedcloudapi.Client, d *schema.ResourceData,
+	id string) error {
+	cfg, err := getEdgeNodeConfig(client, "", id)
+	if err != nil {
+		return fmt.Errorf("Failed to find Edge Node to set Admin state. err: %s",
+			err.Error())
+	}
+	var action string
+	action, err = setAdminState(cfg, d)
+	if err != nil {
+		return fmt.Errorf("Failed to set Admin state in Config. err: %s", err.Error())
+	}
+	if action == "" {
+		return nil
+	}
+	_, err = edgeNodeSendPutReq(client, cfg, action)
+	if err != nil {
+		return fmt.Errorf("Failed to set Admin state. Err: %s", err.Error())
+	}
+	return nil
+}
+
 func edgeNodeUpdateBaseOs(client *zedcloudapi.Client, cfg *swagger_models.DeviceConfig,
 	eve_image_version string) error {
 	// BaseImage is supposed to have only one entry. If there are multiple,
@@ -86,13 +108,15 @@ func edgeNodeUpdateBaseOs(client *zedcloudapi.Client, cfg *swagger_models.Device
 	// BaseOs update is Special case - Publish Config followed by ApplyConfig
 	_, err := edgeNodeSendPutReq(client, cfg, "publish")
 	if err != nil {
-		return fmt.Errorf("BaseOsImage Publish failed. Err: %s", err.Error())
+		return fmt.Errorf("BaseOsImage Publish failed. eve_image_version: %s, Err: %s",
+			eve_image_version, err.Error())
 	}
 	// We need to apply the configuration
 	rsp, err := edgeNodeSendPutReq(client, cfg, "apply")
 	// Ignore HTTP_STATUS_CONFLICT
 	if err != nil && rsp.StatusCode != http.StatusConflict {
-		return fmt.Errorf("BaseOsUpdate Apply request failed. Err: %s", err.Error())
+		return fmt.Errorf("BaseOsUpdate Apply request failed. eve_image_version: %s, "+
+			"Err: %s.", eve_image_version, err.Error())
 	}
 	return nil
 }
@@ -200,27 +224,41 @@ func setSystemInterface(cfg *swagger_models.DeviceConfig, d *schema.ResourceData
 	return nil
 }
 
-func setAdminState(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, create bool) error {
+func checkAdminStateValue(d *schema.ResourceData) (string, error) {
 	strVal := rdEntryStr(d, "adminstate_config")
 	switch strVal {
 	case "ADMIN_STATE_ACTIVE":
+		return "activate", nil
 	case "ADMIN_STATE_INACTIVE":
-		break
+		return "deactivate", nil
 	default:
-		return fmt.Errorf("adminstate_config must be specified and be one of " +
+		return "", fmt.Errorf("adminstate_config must be specified and be one of " +
 			"ADMIN_STATE_ACTIVE, ADMIN_STATE_INACTIVE")
 	}
-	if !create {
-		// Device Update. If adminstate_config is ACTIVE and the device is
-		// already in Registered state, do not change Admin State
-		if strVal == "ADMIN_STATE_ACTIVE" && cfg.AdminState != nil &&
+}
+
+func setAdminState(cfg *swagger_models.DeviceConfig,
+	d *schema.ResourceData) (string, error) {
+	action, err := checkAdminStateValue(d)
+	if err != nil {
+		return "", err
+	}
+	strVal := rdEntryStr(d, "adminstate_config")
+	adminstate := swagger_models.AdminState(strVal)
+	if cfg.AdminState != nil {
+		if adminstate == *cfg.AdminState {
+			// Admin State same as configured value - no action needed.
+			return "", nil
+		}
+		// If adminstate_config is ACTIVE and the device is already in
+		// Registered state. No action needed.
+		if strVal == "ADMIN_STATE_ACTIVE" &&
 			*cfg.AdminState == swagger_models.AdminStateADMINSTATEREGISTERED {
-			return nil
+			return "", nil
 		}
 	}
-	adminstate := swagger_models.AdminState(strVal)
 	cfg.AdminState = &adminstate
-	return nil
+	return action, nil
 }
 
 func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, create bool) error {
@@ -228,7 +266,7 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, cr
 	cfg.Description = rdEntryStr(d, "description")
 	cfg.Title = rdEntryStrPtrOrNil(d, "title")
 
-	err = setAdminState(cfg, d, create)
+	_, err = checkAdminStateValue(d)
 	if err != nil {
 		return err
 	}
@@ -266,7 +304,7 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, cr
 		}
 		cfg.ProjectID = projectIdPtr
 	} else {
-		if cfg.ProjectID != nil && *cfg.ProjectID == *projectIdPtr {
+		if cfg.ProjectID != nil && *cfg.ProjectID != *projectIdPtr {
 			// Update. Project cannot be changed
 			return fmt.Errorf("project_id cannot be changed after EdgeNode is "+
 				"created. Current: %s, New: %s", *cfg.ProjectID, *projectIdPtr)
@@ -295,7 +333,8 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	if err != nil {
 		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
 	}
-    log.Printf("[INFO] Creating EdgeNode: %s", name)
+
+	log.Printf("[INFO] Creating EdgeNode: %s", name)
 	client.XRequestIdPrefix = "TF-edgenode-create"
 	rspData := &swagger_models.ZsrvResponse{}
 	_, err = client.SendReq("POST", deviceUrlExtension, cfg, rspData)
@@ -315,6 +354,13 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	err = edgeNodeUpdateBaseOs(client, cfg, rdEntryStr(d, "eve_image_version"))
 	if err != nil {
 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
+	}
+
+	// Activating / De-Activating the device requires activate / deactivate call
+	err = edgeNodeUpdateAdminState(client, d, id)
+	if err != nil {
+		return diag.Errorf("%s Failed to update Admin state. Err: %s",
+			errMsgPrefix, err.Error())
 	}
 
 	// Get Edge node config and publish the latest version. This is mainly to
@@ -362,6 +408,10 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 			errMsgPrefix, err.Error())
 	}
 	err = edgeNodeUpdateBaseOs(client, cfg, rdEntryStr(d, "eve_image_version"))
+	if err != nil {
+		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
+	}
+	err = edgeNodeUpdateAdminState(client, d, id)
 	if err != nil {
 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
 	}
