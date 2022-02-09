@@ -44,6 +44,7 @@ var rdEdgeNodeFullCfg = map[string]interface{}{
 	"id":                "SAMPLE-EdgeNode-ID",
 	"description":       "SAMPLE EdgeNode DESCRIPTION",
 	"title":             "sample-title 2",
+	"adminstate":        "",
 	"adminstate_config": "ADMIN_STATE_ACTIVE",
 	"asset_id":          "Sample Asset ID",
 	"client_ip":         "10.10.1.1",
@@ -116,12 +117,13 @@ var rdEdgeNodeFullCfg = map[string]interface{}{
 
 // efo - Expected Flattened Output
 var efoEdgeNodeFullCfg = map[string]interface{}{
-	"name":              rdEdgeNodeFullCfg["name"],
-	"id":                rdEdgeNodeFullCfg["id"],
-	"description":       rdEdgeNodeFullCfg["description"],
-	"title":             rdEdgeNodeFullCfg["title"],
-	"adminstate":        rdEdgeNodeFullCfg["adminstate_config"],
-	"adminstate_config": rdEdgeNodeFullCfg["adminstate_config"],
+	"name":        rdEdgeNodeFullCfg["name"],
+	"id":          rdEdgeNodeFullCfg["id"],
+	"description": rdEdgeNodeFullCfg["description"],
+	"title":       rdEdgeNodeFullCfg["title"],
+	"adminstate":  "",
+	// adminstate config is not set in rdDeviceConfig - so ignoring this field.
+	"adminstate_config": "",
 	"asset_id":          rdEdgeNodeFullCfg["asset_id"],
 	"client_ip":         rdEdgeNodeFullCfg["client_ip"],
 	"cluster_id":        rdEdgeNodeFullCfg["cluster_id"],
