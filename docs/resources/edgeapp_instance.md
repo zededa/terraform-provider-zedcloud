@@ -18,6 +18,8 @@ description: |-
 ### Required
 
 - **name** (String) User defined name of the object. Must be unique across the enterprise. Once object is created, name can’t be changed
+- **deployment_type** (String) Type of deployment for the app, eg: "DEPLOYMENT_TYPE_STAND_ALONE", "DEPLOYMENT_TYPE_AZURE", "DEPLOYMENT_TYPE_K3S".
+
 
 ### Optional
 
@@ -28,7 +30,6 @@ description: |-
 - **collect_stats_ip_addr** (String) IP Address of the Stats Collector module.
 - **crypto_key** (String) SENSITIVE. Crypto Key for decrypting user secret information. This field will not be published by terraform import command.
 - **custom_config** (Block List, Max: 1) Application initialization script template in cloud-config format and user specified values (see [below for nested schema](#nestedblock--custom_config))
-- **deployment_type** (String) Type of deployment for the app, eg: azure, k3s, standalone. This comes from the App Manifest.
 - **description** (String) Detailed description of the Object
 - **device_id** (String) Edge Node id where the App Instance is deployed.
 - **drive** (Block List) List of Drive configurations (see [below for nested schema](#nestedblock--drive))

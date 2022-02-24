@@ -1,0 +1,203 @@
+{
+    "acKind": "PodManifest",
+    "acVersion": "1.2.0",
+    "name": "dgraph-zero",
+    "displayName": "",
+    "description": "",
+    "owner": {
+        "user": "Solutions-Zededa",
+        "group": "",
+        "company": "",
+        "website": "www.zededa.com",
+        "email": "solutions@zededa.com"
+    },
+    "desc": {
+        "category": "",
+        "os": "",
+        "appCategory": "APP_CATEGORY_NETWORKING",
+        "logo": {},
+        "screenshotList": {},
+        "licenseList": {},
+        "support": "",
+        "agreementList": {}
+    },
+    "images": [
+        {
+            "imagename": "dgraph-zero",
+            "maxsize": "0",
+            "preserve": false,
+            "target": "",
+            "drvtype": "",
+            "params": [],
+            "readonly": false,
+            "volumelabel": "",
+            "ignorepurge": true,
+            "cleartext": false,
+            "mountpath": ""
+        },
+        {
+            "imagename": "",
+            "maxsize": "0",
+            "preserve": false,
+            "target": "",
+            "drvtype": "",
+            "params": [],
+            "readonly": false,
+            "volumelabel": "zero",
+            "ignorepurge": true,
+            "cleartext": false,
+            "mountpath": "/dgraph"
+        }
+    ],
+    "interfaces": [
+        {
+            "name": "eth0",
+            "type": "",
+            "optional": false,
+            "directattach": false,
+            "privateip": false,
+            "acls": [
+                {
+                    "matches": [
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [],
+                    "name": ""
+                },
+                {
+                    "matches": [
+                        {
+                            "type": "host",
+                            "value": ""
+                        }
+                    ],
+                    "actions": [],
+                    "name": ""
+                },
+                {
+                    "matches": [
+                        {
+                            "type": "protocol",
+                            "value": "tcp"
+                        },
+                        {
+                            "type": "lport",
+                            "value": "5080"
+                        },
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "drop": false,
+                            "limit": false,
+                            "limitValue": null,
+                            "limitrate": 0,
+                            "limitunit": "",
+                            "limitburst": 0,
+                            "portmap": true,
+                            "portmapto": {
+                                "appPort": 5080
+                            }
+                        }
+                    ],
+                    "name": ""
+                },
+                {
+                    "matches": [
+                        {
+                            "type": "protocol",
+                            "value": "tcp"
+                        },
+                        {
+                            "type": "lport",
+                            "value": "6080"
+                        },
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "drop": false,
+                            "limit": false,
+                            "limitValue": null,
+                            "limitrate": 0,
+                            "limitunit": "",
+                            "limitburst": 0,
+                            "portmap": true,
+                            "portmapto": {
+                                "appPort": 6080
+                            }
+                        }
+                    ],
+                    "name": ""
+                }
+            ]
+        }
+    ],
+    "permissions": [],
+    "vmmode": "HV_PV",
+    "enablevnc": true,
+    "resources": [
+        {
+            "name": "resourceType",
+            "value": "Small"
+        },
+        {
+            "name": "cpus",
+            "value": "1"
+        },
+        {
+            "name": "memory",
+            "value": "1048576.00"
+        }
+    ],
+    "configuration": {
+        "customConfig": {
+            "name": "Custom_config",
+            "add": true,
+            "override": false,
+            "allowStorageResize": false,
+            "fieldDelimiter": "###",
+            "template": "SVA9IyMjSVAjIyM=",
+            "variableGroups": [
+                {
+                    "name": "Default Group 1",
+                    "variables": [
+                        {
+                            "type": "",
+                            "name": "IP",
+                            "label": "IP",
+                            "maxLength": "",
+                            "required": true,
+                            "default": "localhost",
+                            "processInput": "",
+                            "value": "",
+                            "format": "VARIABLE_FORMAT_TEXT",
+                            "encode": "FILE_ENCODING_UNSPECIFIED",
+                            "options": []
+                        }
+                    ],
+                    "required": true,
+                    "condition": null
+                }
+            ]
+        }
+    },
+    "containerDetail": null,
+    "module": {
+        "twinDetail": "",
+        "routes": {},
+        "environment": {},
+        "moduleType": "MODULE_TYPE_UNSPECIFIED"
+    },
+    "appType": "APP_TYPE_CONTAINER",
+    "deploymentType": "DEPLOYMENT_TYPE_STAND_ALONE"
+}

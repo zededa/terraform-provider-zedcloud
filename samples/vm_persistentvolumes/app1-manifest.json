@@ -1,0 +1,132 @@
+{
+    "acKind": "VMManifest",
+    "acVersion": "1.2.0",
+    "name": "testapp",
+    "displayName": "",
+    "description": "testapp",
+    "owner": {
+        "user": "zededa",
+        "group": "",
+        "company": "zededa",
+        "website": "www.zededa.com",
+        "email": "zededa@zededa.com"
+    },
+    "desc": {
+        "category": "",
+        "os": "",
+        "appCategory": "APP_CATEGORY_DATA_ANALYTICS",
+        "logo": {},
+        "screenshotList": {},
+        "licenseList": {},
+        "support": "",
+        "agreementList": {}
+    },
+    "images": [
+        {
+            "imagename": "",
+            "maxsize": "31457280",
+            "preserve": false,
+            "target": "Disk",
+            "drvtype": "HDD",
+            "params": [],
+            "readonly": false,
+            "volumelabel": "test",
+            "ignorepurge": true,
+            "cleartext": false,
+            "mountpath": ""
+        }
+    ],
+    "interfaces": [
+        {
+            "name": "eth0",
+            "type": "",
+            "optional": false,
+            "directattach": false,
+            "privateip": false,
+            "acls": [
+                {
+                    "matches": [
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [],
+                    "name": ""
+                },
+                {
+                    "matches": [
+                        {
+                            "type": "protocol",
+                            "value": "tcp"
+                        },
+                        {
+                            "type": "lport",
+                            "value": "9098"
+                        },
+                        {
+                            "type": "ip",
+                            "value": "0.0.0.0/0"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "drop": false,
+                            "limit": false,
+                            "limitValue": null,
+                            "limitrate": 0,
+                            "limitunit": "",
+                            "limitburst": 0,
+                            "portmap": true,
+                            "portmapto": {
+                                "appPort": 22
+                            }
+                        }
+                    ],
+                    "name": ""
+                }
+            ]
+        }
+    ],
+    "permissions": [],
+    "vmmode": "HV_HVM",
+    "enablevnc": false,
+    "resources": [
+        {
+            "name": "resourceType",
+            "value": "Typical"
+        },
+        {
+            "name": "cpus",
+            "value": "2"
+        },
+        {
+            "name": "memory",
+            "value": "1048576.00"
+        },
+        {
+            "name": "storage",
+            "value": "104857600.00"
+        }
+    ],
+    "configuration": {
+        "customConfig": {
+            "name": "",
+            "add": false,
+            "override": false,
+            "allowStorageResize": false,
+            "fieldDelimiter": "",
+            "template": "",
+            "variableGroups": []
+        }
+    },
+    "containerDetail": null,
+    "module": {
+        "twinDetail": "",
+        "routes": {},
+        "environment": {},
+        "moduleType": "MODULE_TYPE_UNSPECIFIED"
+    },
+    "appType": "APP_TYPE_VM",
+    "deploymentType": "DEPLOYMENT_TYPE_STAND_ALONE"
+}
