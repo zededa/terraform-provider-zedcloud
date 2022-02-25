@@ -165,8 +165,8 @@
             "add": true,
             "override": false,
             "allowStorageResize": false,
-            "fieldDelimiter": "###",
-            "template": "SVA9IyMjSVAjIyM=",
+            "fieldDelimiter": "<delimeter>",
+            "template": "<template>",
             "variableGroups": [
                 {
                     "name": "Default Group 1",
