@@ -40,6 +40,7 @@ var ouputAppInstEmpty = map[string]interface{}{
 }
 
 func appInstFullCfg() *swagger_models.AppInstance {
+	deploymentTypePtr, _ := deploymentTypePtr("DEPLOYMENT_TYPE_STAND_ALONE")
 	return &swagger_models.AppInstance{
 		Name:               strPtr("SampleName"),
 		ID:                 "Sample ID",
@@ -91,7 +92,7 @@ func appInstFullCfg() *swagger_models.AppInstance {
 				},
 			},
 		},
-		DeploymentType: deploymentTypePtr("STANDALONE"),
+		DeploymentType: deploymentTypePtr,
 		DeviceID:       strPtr("Sample Device ID"),
 		Drives: []*swagger_models.Drive{
 			&swagger_models.Drive{
@@ -247,15 +248,15 @@ var outputAppInstFullCfg = map[string]interface{}{
 									"value": "Sample Value",
 								},
 							},
-							"required":      true,
-							"value":         "Sample Value",
+							"required": true,
+							"value":    "Sample Value",
 						},
 					},
 				},
 			},
 		},
 	},
-	"deployment_type": "STANDALONE",
+	"deployment_type": "DEPLOYMENT_TYPE_STAND_ALONE",
 	"device_id":       "Sample Device ID",
 	"drive": []interface{}{
 		map[string]interface{}{

@@ -35,31 +35,31 @@ func getAppInstUrl(name, id, urlType string) string {
 	return zedcloudapi.UrlForObjectRequest(appInstUrlExtension, name, id, urlType)
 }
 func hvModePtr(strVal string) *swagger_models.HvMode {
-    val := swagger_models.HvMode(strVal)
-    return &val
+	val := swagger_models.HvMode(strVal)
+	return &val
 }
 
 func variableFileEncodingPtr(strVal string) *swagger_models.VariableFileEncoding {
-    val := swagger_models.VariableFileEncoding(strVal)
-    return &val
+	val := swagger_models.VariableFileEncoding(strVal)
+	return &val
 }
 
 func variableVariableFormatPtr(strVal string) *swagger_models.VariableVariableFormat {
-    val := swagger_models.VariableVariableFormat(strVal)
-    return &val
+	val := swagger_models.VariableVariableFormat(strVal)
+	return &val
 }
 
 func rdAppInstVariableGroupVariable(
 	d map[string]interface{}) (*swagger_models.VariableGroupVariable, error) {
-    variable := swagger_models.VariableGroupVariable{
-        Default: rdEntryStr(d, "default"),
-        Encode: variableFileEncodingPtr(rdEntryStr(d, "encode")),
-        Format: variableVariableFormatPtr(rdEntryStr(d, "format")),
-        Label: rdEntryStrPtrOrNil(d, "label"),
-        MaxLength: rdEntryStr(d, "max_length"),
-        Name: rdEntryStrPtrOrNil(d, "name"),
-        Options: make([]*swagger_models.VariableOptionVal, 0),
-    }
+	variable := swagger_models.VariableGroupVariable{
+		Default:   rdEntryStr(d, "default"),
+		Encode:    variableFileEncodingPtr(rdEntryStr(d, "encode")),
+		Format:    variableVariableFormatPtr(rdEntryStr(d, "format")),
+		Label:     rdEntryStrPtrOrNil(d, "label"),
+		MaxLength: rdEntryStr(d, "max_length"),
+		Name:      rdEntryStrPtrOrNil(d, "name"),
+		Options:   make([]*swagger_models.VariableOptionVal, 0),
+	}
 	options := rdEntryList(d, "option")
 	for _, option := range options {
 		optionVal := swagger_models.VariableOptionVal{}
@@ -73,8 +73,8 @@ func rdAppInstVariableGroupVariable(
 }
 
 func variableGroupConditionOperatorPtr(strVal string) *swagger_models.VariableGroupConditionOperator {
-    val := swagger_models.VariableGroupConditionOperator(strVal)
-    return &val
+	val := swagger_models.VariableGroupConditionOperator(strVal)
+	return &val
 }
 
 func rdAppInstCustomVariableConditionEntry(d map[string]interface{}) (interface{}, error) {
@@ -139,8 +139,8 @@ func rdAppInstCustomConfig(d map[string]interface{}) (interface{}, error) {
 }
 
 func ioTypePtr(strVal string) *swagger_models.IoType {
-    val := swagger_models.IoType(strVal)
-    return &val
+	val := swagger_models.IoType(strVal)
+	return &val
 }
 
 func rdAppInstIntfIO(d map[string]interface{}) (
@@ -229,14 +229,20 @@ func rdAppInstLogs(d map[string]interface{}) (interface{}, error) {
 	}, nil
 }
 
-func deploymentTypePtr(strVal string) *swagger_models.DeploymentType {
-    val := swagger_models.DeploymentType(strVal)
-    return &val
+func deploymentTypePtr(strVal string) (*swagger_models.DeploymentType, error) {
+	if strVal == "" {
+		strVal = "DEPLOYMENT_TYPE_UNSPECIFIED"
+	}
+	val := swagger_models.DeploymentType(strVal)
+	if err := val.Validate(nil); err != nil {
+		return nil, err
+	}
+	return &val, nil
 }
 
 func appTypePtr(strVal string) *swagger_models.AppType {
-    val := swagger_models.AppType(strVal)
-    return &val
+	val := swagger_models.AppType(strVal)
+	return &val
 }
 
 func rdUpdateAppInstCfg(cfg *swagger_models.AppInstance, d *schema.ResourceData) error {
@@ -256,7 +262,10 @@ func rdUpdateAppInstCfg(cfg *swagger_models.AppInstance, d *schema.ResourceData)
 	if val != nil {
 		cfg.CustomConfig = val.(*swagger_models.CustomConfig)
 	}
-	cfg.DeploymentType = deploymentTypePtr(rdEntryStr(d, "deployment_type"))
+	cfg.DeploymentType, err = deploymentTypePtr(rdEntryStr(d, "deployment_type"))
+	if err != nil {
+		return err
+	}
 	cfg.Description = rdEntryStr(d, "description")
 	cfg.DeviceID = rdEntryStrPtrOrNil(d, "device_id")
 	cfg.Drives = rdAppInstDrives(d)

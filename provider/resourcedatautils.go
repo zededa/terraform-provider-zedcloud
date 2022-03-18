@@ -16,15 +16,15 @@ func strPtr(val string) *string {
 }
 
 func int64Ptr(val int64) *int64 {
-    return &val
+	return &val
 }
 
 func int32Ptr(val int32) *int32 {
-    return &val
+	return &val
 }
 
 func boolPtr(val bool) *bool {
-    return &val
+	return &val
 }
 
 func ptrValStr(ptr interface{}) string {
@@ -57,7 +57,7 @@ func rdEntryByKey(rd interface{}, key string) (bool, interface{}) {
 	if ok {
 		val, ok := d.GetOk(key)
 		if ok {
-			// Key not present in Resource Data
+			// Key present in Resource Data
 			return true, val
 		}
 		return false, nil
