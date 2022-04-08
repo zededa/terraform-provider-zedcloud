@@ -35,7 +35,7 @@ var appACLActionLimitParamsSchema = &schema.Resource{
 			Description: "Rate limit in ACL rule",
 		},
 		"limitunit": {
-			Type:        schema.TypeInt,
+			Type:        schema.TypeString,
 			Optional:    true,
 			Description: "Rate limit unit in ACL rule",
 		},

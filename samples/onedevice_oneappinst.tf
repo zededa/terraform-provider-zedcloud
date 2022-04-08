@@ -202,6 +202,14 @@ resource "zedcloud_edgeapp" "ubuntu-all-ip" {
     user_defined_version = "1.1"
 }
 
+resource "zedcloud_edgeapp" "ubuntu-all-ip" {
+    name = "ubuntu-all-ip"
+    title = "ubuntu-all-ip"
+    description = "ubuntu-all-ip"
+    manifest_file = "./TFTest-ubuntu-xenial-16.04.json"
+    user_defined_version = "1.1"
+}
+
 resource "zedcloud_edgeapp" "tftest-ubuntu-xenial" {
     name = "TFTest-ubuntu-xenial-16.04"
     description = "TFTest-ubuntu-xenial-16.04"

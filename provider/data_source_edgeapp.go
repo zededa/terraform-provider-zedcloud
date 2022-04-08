@@ -295,8 +295,12 @@ func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{},
 	}
 
 	// Take the Config and convert it to terraform object
-	// Special case for manifest / manifest_file
-	manifestConfigured, _ := rdEntryByKey(d, "manifest")
+	// Special case for manifest / manifest_file. They will be in the resource data
+	// only for Resource - not data sources
+	manifestConfigured := false
+	if resource {
+		manifestConfigured, _ = rdEntryByKey(d, "manifest")
+	}
 	flattenedData := flattenEdgeAppConfig(cfg, resource, manifestConfigured)
 	marshalData(d, flattenedData)
 	return diags
