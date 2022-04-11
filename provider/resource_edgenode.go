@@ -304,7 +304,15 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, cr
 		}
 		cfg.ProjectID = projectIdPtr
 	} else {
-		if cfg.ProjectID != nil && *cfg.ProjectID != *projectIdPtr {
+		// Change of Project for a device is NOT supported with Update operation.
+		// Check if the configured project is different from the config we got
+		// from Cloud. If different - error out.
+		// If project_id is not configured, ignore the check. We cannot verify
+		// the case of device created with project_id set to non-default project,
+		// but changed to remove set the project_id to empty, though this also is
+		// not supported. Such an update request would be rejected by ZEDCloud.
+		if projectIdPtr != nil && cfg.ProjectID != nil &&
+			*cfg.ProjectID != *projectIdPtr {
 			// Update. Project cannot be changed
 			return fmt.Errorf("project_id cannot be changed after EdgeNode is "+
 				"created. Current: %s, New: %s", *cfg.ProjectID, *projectIdPtr)

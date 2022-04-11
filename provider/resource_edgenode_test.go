@@ -11,6 +11,14 @@ import (
 	"testing"
 )
 
+func copyMap(originalMap map[string]interface{}) map[string]interface{} {
+	newMap := make(map[string]interface{})
+	for k, v := range originalMap {
+		newMap[k] = v
+	}
+	return newMap
+}
+
 var rdEdgeNodeEmptyOutput = map[string]interface{}{
 	"adminstate":        "",
 	"adminstate_config": "",
@@ -145,11 +153,49 @@ var efoEdgeNodeFullCfg = map[string]interface{}{
 	"utype":             "",
 }
 
+var rdEdgeNodeNilProjectId = map[string]interface{}{
+	"name":              "sample-EdgeNode",
+	"id":                "SAMPLE-EdgeNode-ID",
+	"adminstate":        "",
+	"adminstate_config": "ADMIN_STATE_ACTIVE",
+	"eve_image_version": "6.8.2-kvm-amd64",
+	"interface":         []interface{}{},
+	"model_id":          "Test Model",
+}
+
+func rdEdgeNodeNilProjectIdOutput() map[string]interface{} {
+	newMap := copyMap(rdEdgeNodeEmptyOutput)
+	newMap["eve_image_version"] = rdEdgeNodeNilProjectId["eve_image_version"]
+	newMap["id"] = rdEdgeNodeNilProjectId["id"]
+	newMap["interface"] = rdEdgeNodeNilProjectId["interface"]
+	newMap["name"] = rdEdgeNodeNilProjectId["name"]
+	return newMap
+}
+
+var rdEdgeNodeEmptyProjectId = map[string]interface{}{
+	"name":              "sample-EdgeNode",
+	"id":                "SAMPLE-EdgeNode-ID",
+	"adminstate":        "",
+	"adminstate_config": "ADMIN_STATE_ACTIVE",
+	"eve_image_version": "6.8.2-kvm-amd64",
+	"interface":         []interface{}{},
+	"model_id":          "Test Model",
+	"project_id":        "",
+}
+
+func rdEdgeNodeUpdateProjectIdToNilOutput() map[string]interface{} {
+	newMap := copyMap(rdEdgeNodeNilProjectIdOutput())
+	newMap["project_id"] = "SampleProjectID"
+	return newMap
+}
+
 // In each test case, call rdXXX to get the appropriate config struct,
 //  feed it to flattenXXX, verify output of flattenXXX is same as input
 func TestRDEdgeNodeConfig(t *testing.T) {
 	cases := []struct {
 		input                   map[string]interface{}
+		update                  bool
+		update_project_id       bool
 		description             string
 		expectError             bool
 		expectedFlattenedOutput map[string]interface{}
@@ -167,6 +213,27 @@ func TestRDEdgeNodeConfig(t *testing.T) {
 			expectError:             false,
 			expectedFlattenedOutput: efoEdgeNodeFullCfg,
 		},
+		{
+			input:                   rdEdgeNodeNilProjectId,
+			description:             "Nil Project Create",
+			expectError:             true,
+			expectedFlattenedOutput: rdEdgeNodeNilProjectIdOutput(),
+		},
+		{
+			input:                   rdEdgeNodeNilProjectId,
+			description:             "Update non-nil project id to Nil",
+			expectError:             false,
+			update:                  true,
+			update_project_id:       true,
+			expectedFlattenedOutput: rdEdgeNodeUpdateProjectIdToNilOutput(),
+		},
+		{
+			input:                   rdEdgeNodeEmptyProjectId,
+			description:             "Empty Project Update",
+			expectError:             false,
+			update:                  true,
+			expectedFlattenedOutput: rdEdgeNodeNilProjectIdOutput(),
+		},
 	}
 
 	for _, c := range cases {
@@ -179,18 +246,23 @@ func TestRDEdgeNodeConfig(t *testing.T) {
 		cfg.Name = &name
 		cfg.ID, ok = c.input["id"].(string)
 		cfg.BaseImage = cfgBaseosForEveVersionStr(rdEntryStr(rd, "eve_image_version"))
-		err := rdDeviceConfig(cfg, rd, true)
+		if c.update_project_id {
+			project_id := "SampleProjectID"
+			cfg.ProjectID = &project_id
+		}
+		err := rdDeviceConfig(cfg, rd, !c.update)
 		if err != nil {
 			if !c.expectError {
 				t.Fatalf("Test Failed: %s\n"+
 					"Unexpected error from updateEdgeNodeCfgFromResourceData.\n"+
 					"Error: %+v\n", c.description, err.Error())
 			}
-		} else {
-			if c.expectError {
-				t.Fatalf("Test Failed: %s. Expecting Error, but did not get one",
-					c.description)
-			}
+			// No point in continuing cfg is invalid
+			continue
+		}
+		if c.expectError {
+			t.Fatalf("Test Failed: %s. Expecting Error, but did not get one",
+				c.description)
 		}
 		out := flattenDeviceConfig(cfg, false)
 		err = verifyFlattenOutput(zschemas.EdgeNodeSchema, out, c.expectAllSchemaKeys)
@@ -202,7 +274,7 @@ func TestRDEdgeNodeConfig(t *testing.T) {
 			t.Fatalf("Test Failed: %s\n"+
 				"Error matching Flattened output and input.\n"+
 				"Output: %#v\n"+
-				"Input : %#v\n"+
+				"expectedFlattenedOutput : %#v\n"+
 				"Diff: %#v", c.description, out, c.expectedFlattenedOutput, diff)
 		}
 	}
