@@ -76,7 +76,7 @@ func updateImageCfgFromResourceData(cfg *swagger_models.ImageConfig, d *schema.R
 
 func uplinkImageResource(client *zedcloudapi.Client, name, id string) error {
 	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Uplink")
-	cfg, err := getImage(client, "", id)
+	cfg, err, _ := getImage(client, "", id)
 	if err != nil {
 		return fmt.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
@@ -147,7 +147,7 @@ func updateImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
-	cfg, err := getImage(client, name, id)
+	cfg, err, _ := getImage(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
@@ -195,8 +195,12 @@ func deleteImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Delete")
-	cfg, err := getImage(client, name, id)
+	cfg, err, httpRsp := getImage(client, name, id)
 	if err != nil {
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("%s Not Found", errMsgPrefix)
+			return diags
+		}
 		return diag.Errorf("%s Failed to get Image. err: %s", errMsgPrefix, err.Error())
 	}
 	if cfg == nil {

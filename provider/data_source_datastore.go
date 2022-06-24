@@ -11,6 +11,8 @@ import (
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
+	"log"
+	"net/http"
 )
 
 var dataStoreUrlExtension = "datastores"
@@ -27,14 +29,14 @@ func getDataStoreDataSourceSchema() *schema.Resource {
 }
 
 func getDataStore(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.DatastoreInfo, error) {
+	name, id string) (*swagger_models.DatastoreInfo, error, *http.Response) {
 	rspData := &swagger_models.DatastoreInfo{}
-	err := client.GetObj(dataStoreUrlExtension, name, id, false, rspData)
+	httpResp, err := client.GetObj(dataStoreUrlExtension, name, id, false, rspData)
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR] FAILED to get DataStore %s ( id: %s). Err: %s",
-			name, id, err.Error())
+			name, id, err.Error()), httpResp
 	}
-	return rspData, nil
+	return rspData, nil, httpResp
 }
 
 func flattenDatastoreInfo(cfg *swagger_models.DatastoreInfo, computedOnly bool) map[string]interface{} {
@@ -50,10 +52,16 @@ func flattenDatastoreInfo(cfg *swagger_models.DatastoreInfo, computedOnly bool) 
 
 func getDataStoreAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 	name, id string, resource bool) error {
-	cfg, err := getDataStore(client, name, id)
+	cfg, err, httpRsp := getDataStore(client, name, id)
 	if err != nil {
-		return fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
+		err = fmt.Errorf("[ERROR] DataStore %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("PROVIDER:  REMOVED DataStore %s (id: %s) from State", id, name)
+			schema.RemoveFromState(d, nil)
+			return nil
+		}
+		return err
 	}
 	marshalData(d, flattenDatastoreInfo(cfg, resource))
 	return nil

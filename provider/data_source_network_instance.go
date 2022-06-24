@@ -12,6 +12,7 @@ import (
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
 	"log"
+	"net/http"
 )
 
 var NetInstDataSourceSchema = &schema.Resource{
@@ -27,14 +28,14 @@ func getNetInstDataSourceSchema() *schema.Resource {
 }
 
 func getNetInstConfig(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.NetInstConfig, error) {
+	name, id string) (*swagger_models.NetInstConfig, error, *http.Response) {
 	rspData := &swagger_models.NetInstConfig{}
-	err := client.GetObj(netInstUrlExtension, name, id, false, rspData)
+	httpResp, err := client.GetObj(netInstUrlExtension, name, id, false, rspData)
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR] FAILED to get NetInst %s ( id: %s). Err: %s",
-			name, id, err.Error())
+			name, id, err.Error()), httpResp
 	}
-	return rspData, nil
+	return rspData, nil, httpResp
 }
 
 func flattenNetInstOpaqueConfig(cfg *swagger_models.NetInstOpaqueConfig) []interface{} {
@@ -120,10 +121,16 @@ func flattenNetInstConfig(cfg *swagger_models.NetInstConfig,
 
 func getNetInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 	name, id string, resource bool) error {
-	cfg, err := getNetInstConfig(client, name, id)
+	cfg, err, httpRsp := getNetInstConfig(client, name, id)
 	if err != nil {
-		return fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
+		err = fmt.Errorf("[ERROR] Network Instance %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("PROVIDER:  REMOVED Network Instance %s (id: %s) from State", id, name)
+			schema.RemoveFromState(d, nil)
+			return nil
+		}
+		return err
 	}
 	marshalData(d, flattenNetInstConfig(cfg, resource))
 	return nil

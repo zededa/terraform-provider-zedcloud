@@ -106,7 +106,7 @@ func updateVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
-	cfg, err := getVolumeInstance(client, name, id)
+	cfg, err, _ := getVolumeInstance(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
@@ -138,8 +138,12 @@ func deleteVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "VolumeInstance", "Delete")
-	cfg, err := getVolumeInstance(client, name, id)
+	cfg, err, httpRsp := getVolumeInstance(client, name, id)
 	if err != nil {
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("%s Not Found", errMsgPrefix)
+			return diags
+		}
 		return diag.Errorf("%s Failed to get VolumeInstance. err: %s", errMsgPrefix, err.Error())
 	}
 	if cfg == nil {

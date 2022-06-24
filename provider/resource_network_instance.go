@@ -198,7 +198,7 @@ func validateNetInstUpdateOperation(client *zedcloudapi.Client,
 	if id == "" {
 		return nil, fmt.Errorf("id cannot be empty string for Update operation")
 	}
-	cfg, err := getNetInstConfig(client, "", id)
+	cfg, err, _ := getNetInstConfig(client, "", id)
 	if err != nil {
 		return nil, err
 	}
@@ -251,8 +251,12 @@ func deleteNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Network Instance", "Delete")
-	_, err := getNetInstConfig(client, name, id)
+	_, err, httpRsp := getNetInstConfig(client, name, id)
 	if err != nil {
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("%s Not Found", errMsgPrefix)
+			return diags
+		}
 		return diag.Errorf("%s Network Instance not found. err: %s",
 			errMsgPrefix, err.Error())
 	}
