@@ -12,6 +12,7 @@ import (
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
 	"log"
+	"net/http"
 )
 
 var EdgeAppInstanceDataSourceSchema = &schema.Resource{
@@ -27,14 +28,14 @@ func getAppInstDataSourceSchema() *schema.Resource {
 }
 
 func getAppInstance(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.AppInstance, error) {
+	name, id string) (*swagger_models.AppInstance, error, *http.Response) {
 	rspData := &swagger_models.AppInstance{}
-	err := client.GetObj(appInstUrlExtension, name, id, false, rspData)
+	httpResp, err := client.GetObj(appInstUrlExtension, name, id, false, rspData)
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR] FAILED to get AppInst %s ( id: %s). Err: %s",
-			name, id, err.Error())
+			name, id, err.Error()), httpResp
 	}
-	return rspData, nil
+	return rspData, nil, httpResp
 }
 
 func flattenVM(vm *swagger_models.VM) []interface{} {
@@ -323,10 +324,16 @@ func flattenAppInstance(cfg *swagger_models.AppInstance,
 
 func getAppInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 	name, id string, resource bool) error {
-	cfg, err := getAppInstance(client, name, id)
+	cfg, err, httpRsp := getAppInstance(client, name, id)
 	if err != nil {
-		return fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
+		err = fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("PROVIDER:  REMOVED App Instance %s (id: %s) from State", id, name)
+			schema.RemoveFromState(d, nil)
+			return nil
+		}
+		return err
 	}
 	marshalData(d, flattenAppInstance(cfg, resource))
 	return nil

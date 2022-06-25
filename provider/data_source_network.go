@@ -13,6 +13,7 @@ import (
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
 	"log"
+	"net/http"
 )
 
 var NetworkDataSchema = &schema.Resource{
@@ -27,14 +28,14 @@ func getNetworkDataSourceSchema() *schema.Resource {
 }
 
 func getNetworkConfig(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.NetConfig, error) {
+	name, id string) (*swagger_models.NetConfig, error, *http.Response) {
 	rspData := &swagger_models.NetConfig{}
-	err := client.GetObj(networkUrlExtension, name, id, false, rspData)
+	httpRsp, err := client.GetObj(networkUrlExtension, name, id, false, rspData)
 	if err != nil {
-		return nil, fmt.Errorf("[ERROR] FAILED to get Network %s ( id: %s). Err: %s",
+		err = fmt.Errorf("[ERROR] FAILED to get Network %s ( id: %s). Err: %s",
 			name, id, err.Error())
 	}
-	return rspData, nil
+	return rspData, err, httpRsp
 }
 
 func flattenNetWifiConfig(cfg *swagger_models.NetWifiConfig) []interface{} {
@@ -145,10 +146,16 @@ func flattenNetConfig(cfg *swagger_models.NetConfig, computedOnly bool) map[stri
 
 func getNetworkAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 	name, id string, resource bool) error {
-	cfg, err := getNetworkConfig(client, name, id)
+	cfg, err, httpRsp := getNetworkConfig(client, name, id)
 	if err != nil {
-		return fmt.Errorf("[ERROR] Network %s (id: %s) not found. Err: %s",
+		err = fmt.Errorf("[ERROR] Network %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("PROVIDER:  REMOVED Network %s (id: %s) from State", id, name)
+			schema.RemoveFromState(d, nil)
+			return nil
+		}
+		return err
 	}
 	marshalData(d, flattenNetConfig(cfg, resource))
 	return nil

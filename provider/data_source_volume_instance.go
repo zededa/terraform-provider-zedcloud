@@ -12,6 +12,7 @@ import (
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
 	"log"
+	"net/http"
 )
 
 var VolumeInstanceDataSourceSchema = &schema.Resource{
@@ -27,14 +28,14 @@ func getVolumeInstanceDataSourceSchema() *schema.Resource {
 }
 
 func getVolumeInstance(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.VolInstConfig, error) {
+	name, id string) (*swagger_models.VolInstConfig, error, *http.Response) {
 	rspData := &swagger_models.VolInstConfig{}
-	err := client.GetObj(volumeInstanceUrlExtension, name, id, false, rspData)
+	httpResp, err := client.GetObj(volumeInstanceUrlExtension, name, id, false, rspData)
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR] FAILED to get VolumeInstance %s ( id: %s). Err: %s",
-			name, id, err.Error())
+			name, id, err.Error()), httpResp
 	}
-	return rspData, nil
+	return rspData, nil, httpResp
 }
 
 func flattenVolInstConfig(cfg *swagger_models.VolInstConfig, computedOnly bool) map[string]interface{} {
@@ -44,11 +45,11 @@ func flattenVolInstConfig(cfg *swagger_models.VolInstConfig, computedOnly bool) 
 
 	// Publish Compute Only Fields by Default.
 	data := map[string]interface{}{
-		"id":              cfg.ID,
-		"implicit":        cfg.Implicit,
-		"project_id":      cfg.ProjectID,
-		"purge":           flattenZedCloudOpsCmd(cfg.Purge),
-		"revision":        flattenObjectRevision(cfg.Revision),
+		"id":         cfg.ID,
+		"implicit":   cfg.Implicit,
+		"project_id": cfg.ProjectID,
+		"purge":      flattenZedCloudOpsCmd(cfg.Purge),
+		"revision":   flattenObjectRevision(cfg.Revision),
 	}
 	if !computedOnly {
 		data["accessmode"] = ptrValStr(cfg.Accessmode)
@@ -70,10 +71,16 @@ func flattenVolInstConfig(cfg *swagger_models.VolInstConfig, computedOnly bool) 
 
 func getVolumeInstanceAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 	name, id string, resource bool) error {
-	cfg, err := getVolumeInstance(client, name, id)
+	cfg, err, httpRsp := getVolumeInstance(client, name, id)
 	if err != nil {
-		return fmt.Errorf("[ERROR] Volume Instance %s (id: %s) not found. Err: %s",
+		err = fmt.Errorf("[ERROR] Volume Instance %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("PROVIDER:  REMOVED Volume Instance %s (id: %s) from State", id, name)
+			schema.RemoveFromState(d, nil)
+			return nil
+		}
+		return err
 	}
 	if cfg.Implicit {
 		return fmt.Errorf("[ERROR] VolumeInstance %s (id: %s) is an Implicit Volume. "+

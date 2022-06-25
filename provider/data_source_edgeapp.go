@@ -12,6 +12,7 @@ import (
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
 	"log"
+	"net/http"
 	"strconv"
 )
 
@@ -27,14 +28,14 @@ func getEdgeAppDataSourceSchema() *schema.Resource {
 }
 
 func getEdgeApp(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.App, error) {
+	name, id string) (*swagger_models.App, error, *http.Response) {
 	rspData := &swagger_models.App{}
-	err := client.GetObj(edgeAppUrlExtension, name, id, false, rspData)
+	httpResp, err := client.GetObj(edgeAppUrlExtension, name, id, false, rspData)
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR] FAILED to get EdgeApp %s ( id: %s). Err: %s",
-			name, id, err.Error())
+			name, id, err.Error()), httpResp
 	}
-	return rspData, nil
+	return rspData, nil, httpResp
 }
 
 func flattenAppResources(cfgList []*swagger_models.Resource) []interface{} {
@@ -288,8 +289,13 @@ func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{},
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	cfg, err := getEdgeApp(client, name, id)
+	cfg, err, httpResp := getEdgeApp(client, name, id)
 	if err != nil {
+		if httpResp != nil && zedcloudapi.IsObjectNotFound(httpResp) {
+			log.Printf("PROVIDER:  REMOVED Network %s (id: %s) from State", id, name)
+			schema.RemoveFromState(d, nil)
+			return diags
+		}
 		return diag.Errorf("[ERROR] Edge App %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
 	}

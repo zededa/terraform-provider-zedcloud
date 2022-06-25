@@ -11,6 +11,8 @@ import (
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
+	"log"
+	"net/http"
 )
 
 var EdgeNodeDataSourceSchema = &schema.Resource{
@@ -26,22 +28,28 @@ func getEdgeNodeDataSourceSchema() *schema.Resource {
 }
 
 func getEdgeNode(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.DeviceConfig, error) {
+	name, id string) (*swagger_models.DeviceConfig, error, *http.Response) {
 	rspData := &swagger_models.DeviceConfig{}
-	err := client.GetObj(deviceUrlExtension, name, id, false, rspData)
+	httpResp, err := client.GetObj(deviceUrlExtension, name, id, false, rspData)
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR] FAILED to get EdgeNode %s ( id: %s). Err: %s",
-			name, id, err.Error())
+			name, id, err.Error()), httpResp
 	}
-	return rspData, nil
+	return rspData, nil, httpResp
 }
 
 func getEdgeNodeAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 	name, id string, resource bool) error {
-	cfg, err := getEdgeNode(client, name, id)
+	cfg, err, httpRsp := getEdgeNode(client, name, id)
 	if err != nil {
-		return fmt.Errorf("[ERROR] EdgeNode %s (id: %s) not found. Err: %s",
+		err = fmt.Errorf("[ERROR] EdgeNode %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("PROVIDER:  REMOVED EdgeNode %s (id: %s) from State", id, name)
+			schema.RemoveFromState(d, nil)
+			return nil
+		}
+		return err
 	}
 	marshalData(d, flattenDeviceConfig(cfg, resource))
 	return nil

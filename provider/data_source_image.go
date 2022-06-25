@@ -12,6 +12,7 @@ import (
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
 	"log"
+	"net/http"
 )
 
 var ImageDataSourceSchema = &schema.Resource{
@@ -26,14 +27,14 @@ func getImageDataSourceSchema() *schema.Resource {
 }
 
 func getImage(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.ImageConfig, error) {
+	name, id string) (*swagger_models.ImageConfig, error, *http.Response) {
 	rspData := &swagger_models.ImageConfig{}
-	err := client.GetObj(imageUrlExtension, name, id, false, rspData)
+	httpResp, err := client.GetObj(imageUrlExtension, name, id, false, rspData)
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR] FAILED to get Image %s ( id: %s). Err: %s",
-			name, id, err.Error())
+			name, id, err.Error()), httpResp
 	}
-	return rspData, nil
+	return rspData, nil, httpResp
 }
 
 func flattenImageConfig(cfg *swagger_models.ImageConfig, computedOnly bool) map[string]interface{} {
@@ -67,10 +68,16 @@ func flattenImageConfig(cfg *swagger_models.ImageConfig, computedOnly bool) map[
 
 func getImageAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 	name, id string, resource bool) error {
-	cfg, err := getImage(client, name, id)
+	cfg, err, httpRsp := getImage(client, name, id)
 	if err != nil {
-		return fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
+		err = fmt.Errorf("[ERROR] Image %s (id: %s) not found. Err: %s",
 			name, id, err.Error())
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("PROVIDER:  REMOVED Image %s (id: %s) from State", id, name)
+			schema.RemoveFromState(d, nil)
+			return nil
+		}
+		return err
 	}
 	marshalData(d, flattenImageConfig(cfg, resource))
 	return nil

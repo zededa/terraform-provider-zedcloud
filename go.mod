@@ -13,7 +13,7 @@ require (
 	github.com/hashicorp/terraform-plugin-docs v0.5.1 // indirect
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.7.0
 	github.com/keybase/go-crypto v0.0.0-20161004153544-93f5b35093ba // indirect
-	github.com/zededa/zedcloud-api v1.0.0
+	github.com/zededa/zedcloud-api v1.0.1
 )
 
 // replace github.com/zededa/zedcloud-api => ../zedcloud-api

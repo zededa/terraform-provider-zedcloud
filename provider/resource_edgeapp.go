@@ -523,7 +523,7 @@ func updateEdgeAppResource(ctx context.Context, d *schema.ResourceData,
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
-	cfg, err := getEdgeApp(client, name, id)
+	cfg, err, _ := getEdgeApp(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
@@ -555,8 +555,12 @@ func deleteEdgeAppResource(ctx context.Context, d *schema.ResourceData,
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Edge App", "Delete")
-	cfg, err := getEdgeApp(client, name, id)
+	cfg, err, httpRsp := getEdgeApp(client, name, id)
 	if err != nil {
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("PROVIDER:  EdgeApp %s (id: %s) Not Found", id, name)
+			return diags
+		}
 		return diag.Errorf("%s Failed to get EdgeApp. err: %s", errMsgPrefix, err.Error())
 	}
 	if cfg == nil {

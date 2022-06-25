@@ -273,7 +273,7 @@ func updateNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
-	cfg, err := getNetworkConfig(client, name, id)
+	cfg, err, _ := getNetworkConfig(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
@@ -315,8 +315,12 @@ func deleteNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	id := rdEntryStr(d, "id")
 	errMsgPrefix := fmt.Sprintf("[ERROR] Network %s ( id: %s) Delete Failed.",
 		name, id)
-	_, err := getNetworkConfig(client, name, id)
+	_, err, httpRsp := getNetworkConfig(client, name, id)
 	if err != nil {
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("%s Not Found", errMsgPrefix)
+			return diags
+		}
 		return diag.Errorf("%s Network not found. err: %s",
 			errMsgPrefix, err.Error())
 	}

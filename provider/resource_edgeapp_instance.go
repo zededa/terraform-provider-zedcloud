@@ -340,7 +340,7 @@ func updateAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
-	cfg, err := getAppInstance(client, name, id)
+	cfg, err, _ := getAppInstance(client, name, id)
 	if err != nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
@@ -381,8 +381,12 @@ func deleteAppInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "App Instance", "Delete")
-	cfg, err := getAppInstance(client, name, id)
+	cfg, err, httpRsp := getAppInstance(client, name, id)
 	if err != nil {
+		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
+			log.Printf("%s Not Found", errMsgPrefix)
+			return diags
+		}
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
 	client.XRequestIdPrefix = "TF-appinst-delete"

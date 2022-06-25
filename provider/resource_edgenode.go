@@ -41,7 +41,7 @@ func getEdgeNodeResourceSchema() *schema.Resource {
 func getEdgeNodeConfig(client *zedcloudapi.Client,
 	name, id string) (*swagger_models.DeviceConfig, error) {
 	rspData := &swagger_models.DeviceConfig{}
-	err := client.GetObj(deviceUrlExtension, name, id, false, rspData)
+	_, err := client.GetObj(deviceUrlExtension, name, id, false, rspData)
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR] FAILED to get edge node %s ( id: %s). Err: %s",
 			name, id, err.Error())
