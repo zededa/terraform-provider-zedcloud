@@ -175,6 +175,9 @@ func flattenAppInstInterfaces(cfgList []*swagger_models.AppInterface) []interfac
 func flattenDrives(cfgList []*swagger_models.Drive) []interface{} {
 	entryList := make([]interface{}, 0)
 	for _, cfg := range cfgList {
+		if cfg.Imvolname != "" {
+			continue
+		}
 		maxsize := 0
 		if cfg.Maxsize != nil {
 			maxsize = int(*cfg.Maxsize)
@@ -281,8 +284,7 @@ func flattenCustomConfig(cfg *swagger_models.CustomConfig) []interface{} {
 	}}
 }
 
-func flattenAppInstance(cfg *swagger_models.AppInstance,
-	computedOnly bool) map[string]interface{} {
+func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
@@ -300,30 +302,28 @@ func flattenAppInstance(cfg *swagger_models.AppInstance,
 		"user_defined_version": cfg.UserDefinedVersion,
 		"vminfo":               flattenVM(cfg.Vminfo),
 	}
-	if !computedOnly {
-		data["activate"] = ptrValBool(cfg.Activate)
-		data["app_id"] = ptrValStr(cfg.AppID)
-		data["app_policy_id"] = cfg.AppPolicyID
-		data["app_type"] = ptrValStr(cfg.AppType)
-		data["collect_stats_ip_addr"] = cfg.CollectStatsIPAddr
-		data["custom_config"] = flattenCustomConfig(cfg.CustomConfig)
-		data["description"] = cfg.Description
-		data["deployment_type"] = ptrValStr(cfg.DeploymentType)
-		data["device_id"] = ptrValStr(cfg.DeviceID)
-		data["drive"] = flattenDrives(cfg.Drives)
-		data["interface"] = flattenAppInstInterfaces(cfg.Interfaces)
-		data["logs"] = flattenAppInstanceLogs(cfg.Logs)
-		data["name"] = ptrValStr(cfg.Name)
-		data["remote_console"] = cfg.RemoteConsole
-		data["tags"] = flattenStringMap(cfg.Tags)
-		data["title"] = ptrValStr(cfg.Title)
-	}
-	flattenedDataCheckKeys(zschemas.AppInstSchema, data, computedOnly)
+	data["activate"] = ptrValBool(cfg.Activate)
+	data["app_id"] = ptrValStr(cfg.AppID)
+	data["app_policy_id"] = cfg.AppPolicyID
+	data["app_type"] = ptrValStr(cfg.AppType)
+	data["collect_stats_ip_addr"] = cfg.CollectStatsIPAddr
+	data["custom_config"] = flattenCustomConfig(cfg.CustomConfig)
+	data["description"] = cfg.Description
+	data["deployment_type"] = ptrValStr(cfg.DeploymentType)
+	data["device_id"] = ptrValStr(cfg.DeviceID)
+	data["drive"] = flattenDrives(cfg.Drives)
+	data["interface"] = flattenAppInstInterfaces(cfg.Interfaces)
+	data["logs"] = flattenAppInstanceLogs(cfg.Logs)
+	data["name"] = ptrValStr(cfg.Name)
+	data["remote_console"] = cfg.RemoteConsole
+	data["tags"] = flattenStringMap(cfg.Tags)
+	data["title"] = ptrValStr(cfg.Title)
+	flattenedDataCheckKeys(zschemas.AppInstSchema, data)
 	return data
 }
 
 func getAppInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string, resource bool) error {
+	name, id string) error {
 	cfg, err, httpRsp := getAppInstance(client, name, id)
 	if err != nil {
 		err = fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
@@ -335,15 +335,14 @@ func getAppInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData
 		}
 		return err
 	}
-	marshalData(d, flattenAppInstance(cfg, resource))
+	marshalData(d, flattenAppInstance(cfg))
 	return nil
 }
 
 // Read the Resource Group
-func readAppInst(ctx context.Context, d *schema.ResourceData, meta interface{},
-	resource bool) diag.Diagnostics {
+func readAppInst(ctx context.Context, d *schema.ResourceData,
+	meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-
 	client := (meta.(Client)).Client
 	id := rdEntryStr(d, "id")
 	name := rdEntryStr(d, "name")
@@ -355,7 +354,7 @@ func readAppInst(ctx context.Context, d *schema.ResourceData, meta interface{},
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	err := getAppInstAndPublishData(client, d, name, id, resource)
+	err := getAppInstAndPublishData(client, d, name, id)
 	if err != nil {
 		return diag.Errorf("%s", err.Error())
 	}
@@ -363,5 +362,5 @@ func readAppInst(ctx context.Context, d *schema.ResourceData, meta interface{},
 }
 
 func readDataSourceAppInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readAppInst(ctx, d, meta, false)
+	return readAppInst(ctx, d, meta)
 }

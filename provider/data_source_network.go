@@ -140,7 +140,7 @@ func flattenNetConfig(cfg *swagger_models.NetConfig, computedOnly bool) map[stri
 		data["title"] = ptrValStr(cfg.Title)
 		data["wireless"] = flattenNetWirelessConfig(cfg.Wireless)
 	}
-	flattenedDataCheckKeys(zschemas.NetworkSchema, data, computedOnly)
+	flattenedDataCheckKeys(zschemas.NetworkSchema, data)
 	return data
 }
 

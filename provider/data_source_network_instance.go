@@ -115,7 +115,7 @@ func flattenNetInstConfig(cfg *swagger_models.NetInstConfig,
 		data["title"] = ptrValStr(cfg.Title)
 		data["type"] = ptrValStr(cfg.Type)
 	}
-	flattenedDataCheckKeys(zschemas.NetworkInstanceSchema, data, computedOnly)
+	flattenedDataCheckKeys(zschemas.NetworkInstanceSchema, data)
 	return data
 }
 

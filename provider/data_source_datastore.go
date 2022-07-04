@@ -46,7 +46,7 @@ func flattenDatastoreInfo(cfg *swagger_models.DatastoreInfo, computedOnly bool) 
 	if !computedOnly {
 		data["name"] = ptrValStr(cfg.Name)
 	}
-	flattenedDataCheckKeys(zschemas.DataStoreSchema, data, computedOnly)
+	flattenedDataCheckKeys(zschemas.DataStoreSchema, data)
 	return data
 }
 

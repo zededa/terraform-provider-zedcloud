@@ -138,7 +138,7 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) ma
 		data["tags"] = flattenStringMap(cfg.Tags)
 		data["title"] = ptrValStr(cfg.Title)
 	}
-	flattenedDataCheckKeys(zschemas.EdgeNodeSchema, data, computedOnly)
+	flattenedDataCheckKeys(zschemas.EdgeNodeSchema, data)
 	return data
 }
 

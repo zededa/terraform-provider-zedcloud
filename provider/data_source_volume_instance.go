@@ -65,7 +65,7 @@ func flattenVolInstConfig(cfg *swagger_models.VolInstConfig, computedOnly bool) 
 		data["title"] = cfg.Title
 		data["type"] = ptrValStr(cfg.Type)
 	}
-	flattenedDataCheckKeys(zschemas.VolumeInstanceSchema, data, computedOnly)
+	flattenedDataCheckKeys(zschemas.VolumeInstanceSchema, data)
 	return data
 }
 

@@ -269,7 +269,7 @@ func flattenEdgeAppConfig(cfg *swagger_models.App,
 		data["storage"] = int(cfg.Storage)
 		data["user_defined_version"] = cfg.UserDefinedVersion
 	}
-	flattenedDataCheckKeys(zschemas.EdgeAppSchema, data, computedOnly)
+	flattenedDataCheckKeys(zschemas.EdgeAppSchema, data)
 	return data
 }
 

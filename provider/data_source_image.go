@@ -62,7 +62,7 @@ func flattenImageConfig(cfg *swagger_models.ImageConfig, computedOnly bool) map[
 		data["name"] = ptrValStr(cfg.Name)
 		data["title"] = ptrValStr(cfg.Title)
 	}
-	flattenedDataCheckKeys(zschemas.ImageSchema, data, computedOnly)
+	flattenedDataCheckKeys(zschemas.ImageSchema, data)
 	return data
 }
 
