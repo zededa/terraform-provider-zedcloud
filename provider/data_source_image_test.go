@@ -12,69 +12,69 @@ import (
 )
 
 var ouputImageEmpty = map[string]interface{}{
-	"id":            "",
-	"image_error":   "",
-	"image_local":   "",
-	"image_status":  "",
-	"image_version": "",
-	"origin_type":   "",
-	"revision":    []interface{}{},
-	"datastore_id": "",
-	"description": "",
-	"image_arch": "",
-	"image_format": "",
-	"image_rel_url": "",
-	"image_sha_256": "",
+	"id":               "",
+	"image_error":      "",
+	"image_local":      "",
+	"image_status":     "",
+	"image_version":    "",
+	"origin_type":      "",
+	"revision":         []interface{}{},
+	"datastore_id":     "",
+	"description":      "",
+	"image_arch":       "",
+	"image_format":     "",
+	"image_rel_url":    "",
+	"image_sha_256":    "",
 	"image_size_bytes": "",
-	"image_type": "",
-	"name": "",
-	"title": "",
+	"image_type":       "",
+	"name":             "",
+	"title":            "",
 }
 
 var inputImageFullCfg = &swagger_models.ImageConfig{
-    DatastoreID: strPtr("test datastore id"),
-    Description: "test description",
-    ID: "sample id",
-    ImageArch: modelArchTypePtr("test image arch"),
-    ImageError: "sample error",
-    ImageFormat: configFormatPtr("RAW"),
-    ImageLocal: "Sample local",
-    ImageRelURL: "sample rel url",
-    ImageSha256: "Sample SHA",
-    ImageSizeBytes: "0",
-    ImageStatus: imageStatusPtr("Ready"),
-    ImageType: imageTypePtr("IMAGE_TYPE_APPLICATION"),
-    ImageVersion: "Sample Version",
-    Name: strPtr("Sample Name"),
-    OriginType: originPtr("ORIGIN_IMPORTED"),
-    Revision: &swagger_models.ObjectRevision{
-        CreatedAt: "2020-12-15T06:21:24Z",
-        CreatedBy: strPtr("sample@example.com"),
-        Curr:      strPtr("1"),
-        Prev:      "0",
-        UpdatedAt: "2020-12-15T06:21:24Z",
-        UpdatedBy: strPtr("user@example.com"),
-    },
-    Title: strPtr("Sample Title"),
+	DatastoreID:    strPtr("test datastore id"),
+	Description:    "test description",
+	ID:             "sample id",
+	ImageArch:      modelArchTypePtr("test image arch"),
+	ImageError:     "sample error",
+	ImageFormat:    configFormatPtr("RAW"),
+	ImageLocal:     "Sample local",
+	ImageRelURL:    "sample rel url",
+	ImageSha256:    "Sample SHA",
+	ImageSizeBytes: "0",
+	ImageStatus:    imageStatusPtr("Ready"),
+	ImageType:      imageTypePtr("IMAGE_TYPE_APPLICATION"),
+	ImageVersion:   "Sample Version",
+	Name:           strPtr("Sample Name"),
+	OriginType:     originPtr("ORIGIN_IMPORTED"),
+	Revision: &swagger_models.ObjectRevision{
+		CreatedAt: "2020-12-15T06:21:24Z",
+		CreatedBy: strPtr("sample@example.com"),
+		Curr:      strPtr("1"),
+		Prev:      "0",
+		UpdatedAt: "2020-12-15T06:21:24Z",
+		UpdatedBy: strPtr("user@example.com"),
+	},
+	Title: strPtr("Sample Title"),
 }
 
 var outputImageFullCfg = map[string]interface{}{
-    "datastore_id": "test datastore id",
-	"description":  "test description",
-	"id":        "sample id",
-    "image_arch": "test image arch",
-    "image_error": "sample error",
-    "image_format": "RAW",
-    "image_local": "Sample local",
-    "image_rel_url": "sample rel url",
-    "image_sha_256":"Sample SHA",
-    "image_size_bytes": "0",
-    "image_status": "Ready",
-    "image_type": "IMAGE_TYPE_APPLICATION",
-    "image_version": "Sample Version",
-	"name":      "Sample Name",
-    "origin_type": "ORIGIN_IMPORTED",
-    "revision": []interface{}{map[string]interface{}{
+	"datastore_id":     "test datastore id",
+	"description":      "test description",
+	"id":               "sample id",
+	"image_arch":       "test image arch",
+	"image_error":      "sample error",
+	"image_format":     "RAW",
+	"image_local":      "Sample local",
+	"image_rel_url":    "sample rel url",
+	"image_sha_256":    "Sample SHA",
+	"image_size_bytes": "0",
+	"image_status":     "Ready",
+	"image_type":       "IMAGE_TYPE_APPLICATION",
+	"image_version":    "Sample Version",
+	"name":             "Sample Name",
+	"origin_type":      "ORIGIN_IMPORTED",
+	"revision": []interface{}{map[string]interface{}{
 		"created_at": "2020-12-15T06:21:24Z",
 		"created_by": "sample@example.com",
 		"curr":       "1",
@@ -82,7 +82,7 @@ var outputImageFullCfg = map[string]interface{}{
 		"updated_at": "2020-12-15T06:21:24Z",
 		"updated_by": "user@example.com",
 	}},
-    "title": "Sample Title",
+	"title": "Sample Title",
 }
 
 func TestFlattenImageConfig(t *testing.T) {
@@ -110,10 +110,7 @@ func TestFlattenImageConfig(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		// The routine itself has verification for computed fields.
-		// so no need to verify the output for the "computedOnly" call
-		flattenImageConfig(c.input, true) // computedOnly
-		out := flattenImageConfig(c.input, false)
+		out := flattenImageConfig(c.input)
 		err := verifyFlattenOutput(zschemas.ImageSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

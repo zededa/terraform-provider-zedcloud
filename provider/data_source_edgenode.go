@@ -39,7 +39,7 @@ func getEdgeNode(client *zedcloudapi.Client,
 }
 
 func getEdgeNodeAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string, resource bool) error {
+	name, id string) error {
 	cfg, err, httpRsp := getEdgeNode(client, name, id)
 	if err != nil {
 		err = fmt.Errorf("[ERROR] EdgeNode %s (id: %s) not found. Err: %s",
@@ -51,7 +51,7 @@ func getEdgeNodeAndPublishData(client *zedcloudapi.Client, d *schema.ResourceDat
 		}
 		return err
 	}
-	marshalData(d, flattenDeviceConfig(cfg, resource))
+	marshalData(d, flattenDeviceConfig(cfg))
 	return nil
 }
 
@@ -97,7 +97,7 @@ func flattenEDConfigItems(cfgList []*swagger_models.EDConfigItem) map[string]int
 	return dataMap
 }
 
-func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) map[string]interface{} {
+func flattenDeviceConfig(cfg *swagger_models.DeviceConfig) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
@@ -122,29 +122,27 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig, computedOnly bool) ma
 		"thread":        int(cfg.Thread),
 		"utype":         ptrValStr(cfg.Utype),
 	}
-	if !computedOnly {
-		data["adminstate_config"] = ptrValStr(cfg.AdminState)
-		data["asset_id"] = cfg.AssetID
-		data["client_ip"] = cfg.ClientIP
-		data["config_items"] = flattenEDConfigItems(cfg.ConfigItem)
-		data["description"] = cfg.Description
-		data["dev_location"] = flattenGeoLocation(cfg.DevLocation)
-		data["eve_image_version"] = eveImageVersion
-		data["interface"] = flattenSysInterfaces(cfg.Interfaces)
-		data["model_id"] = ptrValStr(cfg.ModelID)
-		data["name"] = ptrValStr(cfg.Name)
-		data["project_id"] = ptrValStr(cfg.ProjectID)
-		data["serialno"] = cfg.Serialno
-		data["tags"] = flattenStringMap(cfg.Tags)
-		data["title"] = ptrValStr(cfg.Title)
-	}
+	data["adminstate_config"] = ptrValStr(cfg.AdminState)
+	data["asset_id"] = cfg.AssetID
+	data["client_ip"] = cfg.ClientIP
+	data["config_items"] = flattenEDConfigItems(cfg.ConfigItem)
+	data["description"] = cfg.Description
+	data["dev_location"] = flattenGeoLocation(cfg.DevLocation)
+	data["eve_image_version"] = eveImageVersion
+	data["interface"] = flattenSysInterfaces(cfg.Interfaces)
+	data["model_id"] = ptrValStr(cfg.ModelID)
+	data["name"] = ptrValStr(cfg.Name)
+	data["project_id"] = ptrValStr(cfg.ProjectID)
+	data["serialno"] = cfg.Serialno
+	data["tags"] = flattenStringMap(cfg.Tags)
+	data["title"] = ptrValStr(cfg.Title)
 	flattenedDataCheckKeys(zschemas.EdgeNodeSchema, data)
 	return data
 }
 
 // Read the Resource Group
 func readEdgeNode(ctx context.Context, d *schema.ResourceData,
-	meta interface{}, resource bool) diag.Diagnostics {
+	meta interface{}) diag.Diagnostics {
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
@@ -158,7 +156,7 @@ func readEdgeNode(ctx context.Context, d *schema.ResourceData,
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	err := getEdgeNodeAndPublishData(client, d, name, id, resource)
+	err := getEdgeNodeAndPublishData(client, d, name, id)
 	if err != nil {
 		return diag.Errorf("%s", err.Error())
 	}
@@ -166,5 +164,5 @@ func readEdgeNode(ctx context.Context, d *schema.ResourceData,
 }
 
 func readDataSourceEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readEdgeNode(ctx, d, meta, true)
+	return readEdgeNode(ctx, d, meta)
 }

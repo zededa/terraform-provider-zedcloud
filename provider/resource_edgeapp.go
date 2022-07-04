@@ -579,5 +579,5 @@ func deleteEdgeAppResource(ctx context.Context, d *schema.ResourceData,
 }
 func readResourceEdgeApp(ctx context.Context, d *schema.ResourceData,
 	meta interface{}) diag.Diagnostics {
-	return readEdgeApp(ctx, d, meta, true)
+	return readEdgeApp(ctx, d, meta)
 }

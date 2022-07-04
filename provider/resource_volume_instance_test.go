@@ -128,7 +128,7 @@ func TestRDVolumeInstanceConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenVolInstConfig(cfg, false)
+		out := flattenVolInstConfig(cfg)
 		err = verifyFlattenOutput(zschemas.VolumeInstanceSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

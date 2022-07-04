@@ -120,7 +120,7 @@ func flattenIPSpec(cfg *swagger_models.IPSpec) []interface{} {
 	}}
 }
 
-func flattenNetConfig(cfg *swagger_models.NetConfig, computedOnly bool) map[string]interface{} {
+func flattenNetConfig(cfg *swagger_models.NetConfig) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
@@ -128,24 +128,22 @@ func flattenNetConfig(cfg *swagger_models.NetConfig, computedOnly bool) map[stri
 		"id":       cfg.ID,
 		"revision": flattenObjectRevision(cfg.Revision),
 	}
-	if !computedOnly {
-		data["description"] = cfg.Description
-		data["dns_list"] = flattenStaticDNSList(cfg.DNSList)
-		data["enterprise_default"] = cfg.EnterpriseDefault
-		data["ip"] = flattenIPSpec(cfg.IP)
-		data["kind"] = ptrValStr(cfg.Kind)
-		data["name"] = ptrValStr(cfg.Name)
-		data["project_id"] = ptrValStr(cfg.ProjectID)
-		data["proxy"] = flattenNetProxyConfig(cfg.Proxy)
-		data["title"] = ptrValStr(cfg.Title)
-		data["wireless"] = flattenNetWirelessConfig(cfg.Wireless)
-	}
+	data["description"] = cfg.Description
+	data["dns_list"] = flattenStaticDNSList(cfg.DNSList)
+	data["enterprise_default"] = cfg.EnterpriseDefault
+	data["ip"] = flattenIPSpec(cfg.IP)
+	data["kind"] = ptrValStr(cfg.Kind)
+	data["name"] = ptrValStr(cfg.Name)
+	data["project_id"] = ptrValStr(cfg.ProjectID)
+	data["proxy"] = flattenNetProxyConfig(cfg.Proxy)
+	data["title"] = ptrValStr(cfg.Title)
+	data["wireless"] = flattenNetWirelessConfig(cfg.Wireless)
 	flattenedDataCheckKeys(zschemas.NetworkSchema, data)
 	return data
 }
 
 func getNetworkAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string, resource bool) error {
+	name, id string) error {
 	cfg, err, httpRsp := getNetworkConfig(client, name, id)
 	if err != nil {
 		err = fmt.Errorf("[ERROR] Network %s (id: %s) not found. Err: %s",
@@ -157,12 +155,12 @@ func getNetworkAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData
 		}
 		return err
 	}
-	marshalData(d, flattenNetConfig(cfg, resource))
+	marshalData(d, flattenNetConfig(cfg))
 	return nil
 }
 
-func readNetwork(ctx context.Context, d *schema.ResourceData, meta interface{},
-	resource bool) diag.Diagnostics {
+func readNetwork(ctx context.Context, d *schema.ResourceData,
+	meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -173,7 +171,7 @@ func readNetwork(ctx context.Context, d *schema.ResourceData, meta interface{},
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	err := getNetworkAndPublishData(client, d, name, id, resource)
+	err := getNetworkAndPublishData(client, d, name, id)
 	if err != nil {
 		return diag.Errorf("%s", err.Error())
 	}
@@ -181,5 +179,5 @@ func readNetwork(ctx context.Context, d *schema.ResourceData, meta interface{},
 }
 
 func readDataSourceNetwork(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readNetwork(ctx, d, meta, false)
+	return readNetwork(ctx, d, meta)
 }

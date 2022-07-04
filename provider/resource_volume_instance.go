@@ -86,7 +86,7 @@ func createVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 		rspData.ObjectName, rspData.ObjectID)
 	id = rspData.ObjectID
 	d.SetId(id)
-	err = getVolumeInstanceAndPublishData(client, d, name, id, true)
+	err = getVolumeInstanceAndPublishData(client, d, name, id)
 	if err != nil {
 		log.Printf("***[ERROR]- Failed to get VolumeInstance: %s (ID: %s) after "+
 			"creating it. Err: %s", name, id, err.Error())
@@ -122,7 +122,7 @@ func updateVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.Errorf("%s Request Failed. err: %s", errMsgPrefix, err.Error())
 	}
-	err = getVolumeInstanceAndPublishData(client, d, name, id, true)
+	err = getVolumeInstanceAndPublishData(client, d, name, id)
 	if err != nil {
 		log.Printf("***[ERROR]- Failed to get VolumeInstance: %s (ID: %s) after "+
 			"updating it. Err: %s", name, id, err.Error())
@@ -162,5 +162,5 @@ func deleteVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 }
 
 func readResourceVolumeInstance(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readVolumeInstance(ctx, d, meta, true)
+	return readVolumeInstance(ctx, d, meta)
 }

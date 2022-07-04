@@ -144,7 +144,7 @@ func TestRDEdgeAppConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenEdgeAppConfig(cfg, false, false)
+		out := flattenEdgeAppConfig(cfg, false)
 		err = verifyFlattenOutput(zschemas.EdgeAppSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

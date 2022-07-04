@@ -402,10 +402,7 @@ func TestFlattenAppInstance(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		// The routine itself has verification for computed fields.
-		// so no need to verify the output for the "computedOnly" call
-		flattenAppInstance(c.input, true) // computedOnly
-		out := flattenAppInstance(c.input, false)
+		out := flattenAppInstance(c.input)
 		if diff := deep.Equal(out, c.expected); diff != nil {
 			t.Fatalf("Test Failed: %s\n"+
 				"Error matching Flattened output and input.\n"+

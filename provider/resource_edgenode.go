@@ -373,7 +373,7 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 
 	// Get Edge node config and publish the latest version. This is mainly to
 	// published the computed fields. Object rev. changes for every update
-	err = getEdgeNodeAndPublishData(client, d, name, id, true)
+	err = getEdgeNodeAndPublishData(client, d, name, id)
 	if err != nil {
 		log.Printf("***[ERROR]- Failed to get EdgeNode: %s (ID: %s) after "+
 			"creating it. Err: %s", name, id, err.Error())
@@ -423,7 +423,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	if err != nil {
 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
 	}
-	err = getEdgeNodeAndPublishData(client, d, name, id, true)
+	err = getEdgeNodeAndPublishData(client, d, name, id)
 	if err != nil {
 		return diag.Errorf("%s", err.Error())
 	}
@@ -451,5 +451,5 @@ func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 }
 
 func readResourceEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readEdgeNode(ctx, d, meta, true)
+	return readEdgeNode(ctx, d, meta)
 }

@@ -179,10 +179,7 @@ func TestFlattenNetInstConfig(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		// The routine itself has verification for computed fields.
-		// so no need to verify the output for the "computedOnly" call
-		flattenNetInstConfig(c.input, true) // computedOnly
-		out := flattenNetInstConfig(c.input, false)
+		out := flattenNetInstConfig(c.input)
 		if diff := deep.Equal(out, c.expected); diff != nil {
 			t.Fatalf("Test Failed: %s\n"+
 				"Error matching Flattened output and input.\n"+
