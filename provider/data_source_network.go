@@ -63,6 +63,11 @@ func flattenNetWirelessConfig(cfg *swagger_models.NetWirelessConfig) []interface
 	if cfg == nil {
 		return []interface{}{}
 	}
+	if cfg.Type != nil && *cfg.Type == "NETWORK_WIRELESS_TYPE_UNSPECIFIED" {
+		// Ideally, ZEDCloud should not send this block in GETConfig API.
+		// Till that is fixed in ZEDCloud, handle it in provider
+		return []interface{}{}
+	}
 	return []interface{}{map[string]interface{}{
 		"cellular_cfg": flattenNetCellularConfig(cfg.CellularCfg),
 		"type":         ptrValStr(cfg.Type),
@@ -92,6 +97,11 @@ func flattenNetProxyServerList(cfgList []*swagger_models.NetProxyServer) []inter
 
 func flattenNetProxyConfig(cfg *swagger_models.NetProxyConfig) []interface{} {
 	if cfg == nil {
+		return []interface{}{}
+	}
+	if !cfg.NetworkProxy {
+		// Ideally, ZEDCloud should not send this block in GETConfig API.
+		// Till that is fixed in ZEDCloud, handle it in provider
 		return []interface{}{}
 	}
 	return []interface{}{map[string]interface{}{

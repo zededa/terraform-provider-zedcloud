@@ -21,7 +21,7 @@ var rdImageEmptyOutput = map[string]interface{}{
 	"image_local":      "",
 	"image_rel_url":    "",
 	"image_sha_256":    "",
-	"image_size_bytes": "",
+	"image_size_bytes": "0",
 	"image_status":     "",
 	"image_type":       "",
 	"image_version":    "",
