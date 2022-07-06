@@ -127,7 +127,7 @@ func createImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 		return diag.Errorf("%s. ", err.Error())
 	}
 	d.SetId(id)
-	err = getImageAndPublishData(client, d, name, id, true)
+	err = getImageAndPublishData(client, d, name, id)
 	if err != nil {
 		log.Printf("***[ERROR]- Failed to get Image: %s (ID: %s) after "+
 			"creating it. Err: %s", name, id, err.Error())
@@ -167,7 +167,7 @@ func updateImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	if err != nil {
 		return diag.Errorf("%s Request Failed. err: %s", errMsgPrefix, err.Error())
 	}
-	err = getImageAndPublishData(client, d, name, id, true)
+	err = getImageAndPublishData(client, d, name, id)
 	if err != nil {
 		log.Printf("***[ERROR]- Failed to get Image: %s (ID: %s) after "+
 			"updating it. Err: %s", name, id, err.Error())
@@ -215,5 +215,5 @@ func deleteImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 }
 
 func readResourceImage(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readImage(ctx, d, meta, true)
+	return readImage(ctx, d, meta)
 }

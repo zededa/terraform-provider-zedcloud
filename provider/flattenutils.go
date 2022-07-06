@@ -75,16 +75,12 @@ func flattenZedCloudOpsCmd(entry interface{}) []interface{} {
 }
 
 func flattenedDataCheckKeys(schemaMap map[string]*schema.Schema,
-	data map[string]interface{},
-	computedOnly bool) {
+	data map[string]interface{}) {
 	// Verify all keys published in data re computed fields.
 	for k, _ := range data {
-		schemaEntry, ok := schemaMap[k]
+		_, ok := schemaMap[k]
 		if !ok {
 			panic(fmt.Errorf("Flattened Key %s doesn't exist in Schema", k))
-		}
-		if !schemaEntry.Computed && computedOnly {
-			panic(fmt.Errorf("Non-Computed Key %s Flattened", k))
 		}
 	}
 	// Verify all fields in the schema are published

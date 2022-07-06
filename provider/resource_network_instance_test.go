@@ -165,7 +165,7 @@ func TestRDNetworkInstanceConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenNetInstConfig(cfg, false)
+		out := flattenNetInstConfig(cfg)
 		err = verifyFlattenOutput(zschemas.NetworkInstanceSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

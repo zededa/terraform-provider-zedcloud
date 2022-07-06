@@ -21,7 +21,7 @@ var rdImageEmptyOutput = map[string]interface{}{
 	"image_local":      "",
 	"image_rel_url":    "",
 	"image_sha_256":    "",
-	"image_size_bytes": "",
+	"image_size_bytes": "0",
 	"image_status":     "",
 	"image_type":       "",
 	"image_version":    "",
@@ -124,7 +124,7 @@ func TestRDTImageConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenImageConfig(cfg, false)
+		out := flattenImageConfig(cfg)
 		err = verifyFlattenOutput(zschemas.ImageSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",

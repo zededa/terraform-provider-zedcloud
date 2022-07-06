@@ -181,7 +181,7 @@ func createNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 
 	id := rspData.ObjectID
 	d.SetId(id)
-	err = getNetInstAndPublishData(client, d, name, id, true)
+	err = getNetInstAndPublishData(client, d, name, id)
 	if err != nil {
 		log.Printf("***[ERROR]- Failed to get Network Instance: %s (ID: %s) after "+
 			"creating it. Err: %s", name, id, err.Error())
@@ -235,7 +235,7 @@ func updateNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
 	}
 	log.Printf("Network Instance Update Successful")
-	err = getNetInstAndPublishData(client, d, name, id, true)
+	err = getNetInstAndPublishData(client, d, name, id)
 	if err != nil {
 		log.Printf("***[ERROR]- Failed to get Network Instance: %s (ID: %s) after "+
 			"updating it. Err: %s", name, id, err.Error())
@@ -271,5 +271,5 @@ func deleteNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	return diags
 }
 func readResourceNetInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readNetInst(ctx, d, meta, true)
+	return readNetInst(ctx, d, meta)
 }

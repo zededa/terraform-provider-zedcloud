@@ -39,19 +39,17 @@ func getDataStore(client *zedcloudapi.Client,
 	return rspData, nil, httpResp
 }
 
-func flattenDatastoreInfo(cfg *swagger_models.DatastoreInfo, computedOnly bool) map[string]interface{} {
+func flattenDatastoreInfo(cfg *swagger_models.DatastoreInfo) map[string]interface{} {
 	data := map[string]interface{}{
 		"id": cfg.ID,
+		"name": ptrValStr(cfg.Name),
 	}
-	if !computedOnly {
-		data["name"] = ptrValStr(cfg.Name)
-	}
-	flattenedDataCheckKeys(zschemas.DataStoreSchema, data, computedOnly)
+	flattenedDataCheckKeys(zschemas.DataStoreSchema, data)
 	return data
 }
 
 func getDataStoreAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string, resource bool) error {
+	name, id string) error {
 	cfg, err, httpRsp := getDataStore(client, name, id)
 	if err != nil {
 		err = fmt.Errorf("[ERROR] DataStore %s (id: %s) not found. Err: %s",
@@ -63,12 +61,12 @@ func getDataStoreAndPublishData(client *zedcloudapi.Client, d *schema.ResourceDa
 		}
 		return err
 	}
-	marshalData(d, flattenDatastoreInfo(cfg, resource))
+	marshalData(d, flattenDatastoreInfo(cfg))
 	return nil
 }
 
 // Read the Resource Group
-func readDataStore(ctx context.Context, d *schema.ResourceData, meta interface{}, resource bool) diag.Diagnostics {
+func readDataStore(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -81,7 +79,7 @@ func readDataStore(ctx context.Context, d *schema.ResourceData, meta interface{}
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, " +
 			"but no definition was found.")
 	}
-	err := getDataStoreAndPublishData(client, d, name, id, resource)
+	err := getDataStoreAndPublishData(client, d, name, id)
 	if err != nil {
 		return diag.Errorf("%s", err.Error())
 	}
@@ -89,5 +87,5 @@ func readDataStore(ctx context.Context, d *schema.ResourceData, meta interface{}
 }
 
 func readDataSourceDataStore(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readDataStore(ctx, d, meta, false)
+	return readDataStore(ctx, d, meta)
 }

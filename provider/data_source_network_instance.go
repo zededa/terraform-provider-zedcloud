@@ -88,8 +88,7 @@ func flattenStaticDNSList(cfgList []*swagger_models.StaticDNSList) []interface{}
 	return entryList
 }
 
-func flattenNetInstConfig(cfg *swagger_models.NetInstConfig,
-	computedOnly bool) map[string]interface{} {
+func flattenNetInstConfig(cfg *swagger_models.NetInstConfig) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
@@ -99,28 +98,26 @@ func flattenNetInstConfig(cfg *swagger_models.NetInstConfig,
 		"project_id": cfg.ProjectID,
 		"revision":   flattenObjectRevision(cfg.Revision),
 	}
-	if !computedOnly {
-		data["description"] = cfg.Description
-		data["device_default"] = cfg.DeviceDefault
-		data["device_id"] = ptrValStr(cfg.DeviceID)
-		data["dns_list"] = flattenStaticDNSList(cfg.DNSList)
-		data["ip"] = flattenDhcpServerConfig(cfg.IP)
-		data["kind"] = ptrValStr(cfg.Kind)
-		data["name"] = ptrValStr(cfg.Name)
-		data["network_policy_id"] = cfg.NetworkPolicyID
-		data["opaque"] = flattenNetInstOpaqueConfig(cfg.Opaque)
-		data["port"] = ptrValStr(cfg.Port)
-		data["port_tags"] = flattenStringMap(cfg.PortTags)
-		data["tags"] = flattenStringMap(cfg.Tags)
-		data["title"] = ptrValStr(cfg.Title)
-		data["type"] = ptrValStr(cfg.Type)
-	}
-	flattenedDataCheckKeys(zschemas.NetworkInstanceSchema, data, computedOnly)
+	data["description"] = cfg.Description
+	data["device_default"] = cfg.DeviceDefault
+	data["device_id"] = ptrValStr(cfg.DeviceID)
+	data["dns_list"] = flattenStaticDNSList(cfg.DNSList)
+	data["ip"] = flattenDhcpServerConfig(cfg.IP)
+	data["kind"] = ptrValStr(cfg.Kind)
+	data["name"] = ptrValStr(cfg.Name)
+	data["network_policy_id"] = cfg.NetworkPolicyID
+	data["opaque"] = flattenNetInstOpaqueConfig(cfg.Opaque)
+	data["port"] = ptrValStr(cfg.Port)
+	data["port_tags"] = flattenStringMap(cfg.PortTags)
+	data["tags"] = flattenStringMap(cfg.Tags)
+	data["title"] = ptrValStr(cfg.Title)
+	data["type"] = ptrValStr(cfg.Type)
+	flattenedDataCheckKeys(zschemas.NetworkInstanceSchema, data)
 	return data
 }
 
 func getNetInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string, resource bool) error {
+	name, id string) error {
 	cfg, err, httpRsp := getNetInstConfig(client, name, id)
 	if err != nil {
 		err = fmt.Errorf("[ERROR] Network Instance %s (id: %s) not found. Err: %s",
@@ -132,13 +129,13 @@ func getNetInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData
 		}
 		return err
 	}
-	marshalData(d, flattenNetInstConfig(cfg, resource))
+	marshalData(d, flattenNetInstConfig(cfg))
 	return nil
 }
 
 // Read the Resource Group
-func readNetInst(ctx context.Context, d *schema.ResourceData, meta interface{},
-	resource bool) diag.Diagnostics {
+func readNetInst(ctx context.Context, d *schema.ResourceData,
+	meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -151,7 +148,7 @@ func readNetInst(ctx context.Context, d *schema.ResourceData, meta interface{},
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	err := getNetInstAndPublishData(client, d, name, id, resource)
+	err := getNetInstAndPublishData(client, d, name, id)
 	if err != nil {
 		log.Printf(err.Error())
 		return diag.Errorf("%s", err.Error())
@@ -160,5 +157,5 @@ func readNetInst(ctx context.Context, d *schema.ResourceData, meta interface{},
 }
 
 func readDataSourceNetInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readNetInst(ctx, d, meta, false)
+	return readNetInst(ctx, d, meta)
 }

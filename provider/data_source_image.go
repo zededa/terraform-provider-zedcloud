@@ -37,7 +37,7 @@ func getImage(client *zedcloudapi.Client,
 	return rspData, nil, httpResp
 }
 
-func flattenImageConfig(cfg *swagger_models.ImageConfig, computedOnly bool) map[string]interface{} {
+func flattenImageConfig(cfg *swagger_models.ImageConfig) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
@@ -50,24 +50,22 @@ func flattenImageConfig(cfg *swagger_models.ImageConfig, computedOnly bool) map[
 		"origin_type":   ptrValStr(cfg.OriginType),
 		"revision":      flattenObjectRevision(cfg.Revision),
 	}
-	if !computedOnly {
-		data["datastore_id"] = ptrValStr(cfg.DatastoreID)
-		data["description"] = cfg.Description
-		data["image_arch"] = ptrValStr(cfg.ImageArch)
-		data["image_format"] = ptrValStr(cfg.ImageFormat)
-		data["image_rel_url"] = cfg.ImageRelURL
-		data["image_sha_256"] = cfg.ImageSha256
-		data["image_size_bytes"] = cfg.ImageSizeBytes
-		data["image_type"] = ptrValStr(cfg.ImageType)
-		data["name"] = ptrValStr(cfg.Name)
-		data["title"] = ptrValStr(cfg.Title)
-	}
-	flattenedDataCheckKeys(zschemas.ImageSchema, data, computedOnly)
+	data["datastore_id"] = ptrValStr(cfg.DatastoreID)
+	data["description"] = cfg.Description
+	data["image_arch"] = ptrValStr(cfg.ImageArch)
+	data["image_format"] = ptrValStr(cfg.ImageFormat)
+	data["image_rel_url"] = cfg.ImageRelURL
+	data["image_sha_256"] = cfg.ImageSha256
+	data["image_size_bytes"] = cfg.ImageSizeBytes
+	data["image_type"] = ptrValStr(cfg.ImageType)
+	data["name"] = ptrValStr(cfg.Name)
+	data["title"] = ptrValStr(cfg.Title)
+	flattenedDataCheckKeys(zschemas.ImageSchema, data)
 	return data
 }
 
 func getImageAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string, resource bool) error {
+	name, id string) error {
 	cfg, err, httpRsp := getImage(client, name, id)
 	if err != nil {
 		err = fmt.Errorf("[ERROR] Image %s (id: %s) not found. Err: %s",
@@ -79,12 +77,12 @@ func getImageAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 		}
 		return err
 	}
-	marshalData(d, flattenImageConfig(cfg, resource))
+	marshalData(d, flattenImageConfig(cfg))
 	return nil
 }
 
 // Read the Resource Group
-func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}, resource bool) diag.Diagnostics {
+func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -98,7 +96,7 @@ func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}, re
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	err := getImageAndPublishData(client, d, name, id, resource)
+	err := getImageAndPublishData(client, d, name, id)
 	if err != nil {
 		return diag.Errorf("%s", err.Error())
 	}
@@ -106,5 +104,5 @@ func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}, re
 }
 
 func readDataSourceImage(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readImage(ctx, d, meta, false)
+	return readImage(ctx, d, meta)
 }

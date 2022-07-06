@@ -248,34 +248,32 @@ func flattenVmManifest(cfg *swagger_models.VMManifest) []interface{} {
 }
 
 func flattenEdgeAppConfig(cfg *swagger_models.App,
-	computedOnly, manifestConfigured bool) map[string]interface{} {
+	manifestConfigured bool) map[string]interface{} {
 	data := map[string]interface{}{
 		"id":            cfg.ID,
 		"origin_type":   ptrValStr(cfg.OriginType),
 		"parent_detail": flattenObjectParentDetail(cfg.ParentDetail),
 		"revision":      flattenObjectRevision(cfg.Revision),
 	}
-	if !computedOnly {
-		data["name"] = ptrValStr(cfg.Name)
-		data["title"] = ptrValStr(cfg.Title)
-		data["description"] = cfg.Description
-		data["cpus"] = int(cfg.Cpus)
-		data["drives"] = int(cfg.Drives)
-		if manifestConfigured {
-			data["manifest"] = flattenVmManifest(cfg.ManifestJSON)
-		}
-		data["memory"] = int(cfg.Memory)
-		data["networks"] = int(cfg.Networks)
-		data["storage"] = int(cfg.Storage)
-		data["user_defined_version"] = cfg.UserDefinedVersion
+	data["name"] = ptrValStr(cfg.Name)
+	data["title"] = ptrValStr(cfg.Title)
+	data["description"] = cfg.Description
+	data["cpus"] = int(cfg.Cpus)
+	data["drives"] = int(cfg.Drives)
+	if manifestConfigured {
+		data["manifest"] = flattenVmManifest(cfg.ManifestJSON)
 	}
-	flattenedDataCheckKeys(zschemas.EdgeAppSchema, data, computedOnly)
+	data["memory"] = int(cfg.Memory)
+	data["networks"] = int(cfg.Networks)
+	data["storage"] = int(cfg.Storage)
+	data["user_defined_version"] = cfg.UserDefinedVersion
+	flattenedDataCheckKeys(zschemas.EdgeAppSchema, data)
 	return data
 }
 
 // Read the Resource Group
-func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{},
-	resource bool) diag.Diagnostics {
+func readEdgeApp(ctx context.Context, d *schema.ResourceData,
+	meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
@@ -303,11 +301,11 @@ func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{},
 	// Take the Config and convert it to terraform object
 	// Special case for manifest / manifest_file
 	manifestConfigured, _ := rdEntryByKey(d, "manifest")
-	flattenedData := flattenEdgeAppConfig(cfg, resource, manifestConfigured)
+	flattenedData := flattenEdgeAppConfig(cfg, manifestConfigured)
 	marshalData(d, flattenedData)
 	return diags
 }
 
 func readDataSourceEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readEdgeApp(ctx, d, meta, false)
+	return readEdgeApp(ctx, d, meta)
 }

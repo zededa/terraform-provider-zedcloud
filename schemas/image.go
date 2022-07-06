@@ -56,6 +56,7 @@ var ImageSchema = map[string]*schema.Schema{
 		Type:        schema.TypeString,
 		Optional:    true,
 		Description: "Image size in KBytes.",
+		Default:     "0",
 	},
 	"image_status": {
 		Type:        schema.TypeString,
