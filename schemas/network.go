@@ -59,6 +59,12 @@ var netCellularConfigSchema = &schema.Resource{
 			Optional:    true,
 			Description: "APN string",
 		},
+		"location_tracking": {
+			Type:     schema.TypeBool,
+			Optional: true,
+			Description: "Cellular modules on edge nodes will only send GPS " +
+				"data when this boolean flag is enabled",
+		},
 	},
 }
 

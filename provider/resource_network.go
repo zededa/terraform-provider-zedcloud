@@ -39,7 +39,8 @@ func getNetworkUrl(name, id, urlType string) string {
 
 func rdMapNetCellularConfig(d map[string]interface{}) (interface{}, error) {
 	return &swagger_models.NetCellularConfig{
-		APN: rdEntryStr(d, "apn"),
+		APN:              rdEntryStr(d, "apn"),
+		LocationTracking: rdEntryBool(d, "location_tracking"),
 	}, nil
 }
 

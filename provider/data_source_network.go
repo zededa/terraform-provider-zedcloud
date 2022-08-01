@@ -55,7 +55,8 @@ func flattenNetCellularConfig(cfg *swagger_models.NetCellularConfig) []interface
 		return []interface{}{}
 	}
 	return []interface{}{map[string]interface{}{
-		"apn": cfg.APN,
+		"apn":               cfg.APN,
+		"location_tracking": cfg.LocationTracking,
 	}}
 }
 
