@@ -20,7 +20,6 @@ var rdAppInstEmptyOutput = map[string]interface{}{
 	"cluster_id":            "",
 	"collect_stats_ip_addr": "",
 	"custom_config":         []interface{}{},
-	"deployment_type":       "DEPLOYMENT_TYPE_UNSPECIFIED",
 	"description":           "",
 	"device_id":             "",
 	"drive":                 []interface{}{},
@@ -94,7 +93,6 @@ var rdAppInstFullCfg = map[string]interface{}{
 			},
 		},
 	},
-	"deployment_type": "DEPLOYMENT_TYPE_STAND_ALONE",
 	"device_id":       "sample-device-id",
 	"drive":           []interface{}{},
 	"encrypted_secrets": map[string]interface{}{
@@ -249,7 +247,6 @@ var efoAppInstFullCfg = map[string]interface{}{
 	"cluster_id":            rdAppInstFullCfg["cluster_id"],
 	"collect_stats_ip_addr": rdAppInstFullCfg["collect_stats_ip_addr"],
 	"custom_config":         rdAppInstFullCfg["custom_config"],
-	"deployment_type":       rdAppInstFullCfg["deployment_type"],
 	"device_id":             rdAppInstFullCfg["device_id"],
 	"drive":                 rdAppInstFullCfg["drive"],
 	"interface": []interface{}{
