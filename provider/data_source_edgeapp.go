@@ -229,21 +229,22 @@ func flattenVmManifest(cfg *swagger_models.VMManifest) []interface{} {
 		return []interface{}{}
 	}
 	return []interface{}{map[string]interface{}{
-		"apptype":          ptrValStr(cfg.AppType),
-		"configuration":    flattenUserDataTemplate(cfg.Configuration),
-		"container_detail": flattenContainerDetail(cfg.ContainerDetail),
-		"deployment_type":  ptrValStr(cfg.DeploymentType),
-		"desc_detail":      flattenDescDetails(cfg.Desc),
-		"description":      cfg.Description,
-		"display_name":     cfg.DisplayName,
-		"enablevnc":        cfg.Enablevnc,
-		"image":            flattenAppImages(cfg.Images),
-		"interface":        flattenAppInterfaces(cfg.Interfaces),
-		"module":           flattenAppModule(cfg.Module),
-		"name":             cfg.Name,
-		"owner":            flattenAppAuthor(cfg.Owner),
-		"resource":         flattenAppResources(cfg.Resources),
-		"vmmode":           ptrValStr(cfg.Vmmode),
+		"apptype":                ptrValStr(cfg.AppType),
+		"configuration":          flattenUserDataTemplate(cfg.Configuration),
+		"container_detail":       flattenContainerDetail(cfg.ContainerDetail),
+		"deployment_type":        ptrValStr(cfg.DeploymentType),
+		"desc_detail":            flattenDescDetails(cfg.Desc),
+		"description":            cfg.Description,
+		"display_name":           cfg.DisplayName,
+		"enablevnc":              cfg.Enablevnc,
+		"image":                  flattenAppImages(cfg.Images),
+		"interface":              flattenAppInterfaces(cfg.Interfaces),
+		"module":                 flattenAppModule(cfg.Module),
+		"name":                   cfg.Name,
+		"owner":                  flattenAppAuthor(cfg.Owner),
+		"resource":               flattenAppResources(cfg.Resources),
+		"start_delay_in_seconds": cfg.StartDelayInSeconds,
+		"vmmode":                 ptrValStr(cfg.Vmmode),
 	}}
 }
 

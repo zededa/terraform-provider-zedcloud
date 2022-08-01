@@ -429,6 +429,14 @@ var appManifestSchema = &schema.Resource{
 			Description: "Hardware resource requirement (CPU, Memory, Storage) for the app",
 			Elem:        nameValueEntrySchema,
 		},
+		"start_delay_in_seconds": {
+			Type:     schema.TypeInt,
+			Optional: true,
+			Description: "start delay is the time in seconds EVE-OS should wait after " +
+				"boot before starting the application instance. App Instance can " +
+				"overwrite the value",
+			Default: 0,
+		},
 		"vmmode": {
 			Type:        schema.TypeString,
 			Optional:    true,

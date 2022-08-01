@@ -456,6 +456,7 @@ func rdAppManifest(rd *schema.ResourceData) (*swagger_models.VMManifest, error) 
 	if err != nil {
 		return nil, err
 	}
+	cfg.StartDelayInSeconds = rdEntryInt64(d, "start_delay_in_seconds")
 	cfg.Vmmode = rdEntryStrPtrOrNil(d, "vmmode")
 	return &cfg, nil
 }

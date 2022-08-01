@@ -280,6 +280,7 @@ func rdUpdateAppInstCfg(cfg *swagger_models.AppInstance, d *schema.ResourceData)
 	}
 	cfg.ProjectID = rdEntryStrPtrOrNil(d, "project_id")
 	cfg.RemoteConsole = rdEntryBool(d, "remote_console")
+	cfg.StartDelayInSeconds = rdEntryInt64(d, "start_delay_in_seconds")
 	cfg.Tags = rdEntryStrMap(d, "tags")
 	cfg.Title = rdEntryStrPtrOrNil(d, "title")
 	cfg.UserDefinedVersion = rdEntryStr(d, "user_defined_version")

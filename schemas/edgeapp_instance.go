@@ -433,7 +433,15 @@ var AppInstSchema = map[string]*schema.Schema{
 		Description: "Restart counter: ZedCloudOpsCmd",
 	},
 	"revision": revisionSchema,
-	"tags":     tagsSchema,
+	"start_delay_in_seconds": {
+		Type:     schema.TypeInt,
+		Optional: true,
+		Description: "start delay is the time in seconds EVE should wait after " +
+			"boot before starting the application instance. If not specified, " +
+			"the value will be inherited from the corresponding App Manifest.",
+		Default: 0,
+	},
+	"tags": tagsSchema,
 	"user_defined_version": {
 		Type:        schema.TypeString,
 		Computed:    true,

@@ -315,6 +315,7 @@ func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} 
 	data["logs"] = flattenAppInstanceLogs(cfg.Logs)
 	data["name"] = ptrValStr(cfg.Name)
 	data["remote_console"] = cfg.RemoteConsole
+	data["start_delay_in_seconds"] = cfg.StartDelayInSeconds
 	data["tags"] = flattenStringMap(cfg.Tags)
 	data["title"] = ptrValStr(cfg.Title)
 	flattenedDataCheckKeys(zschemas.AppInstSchema, data)
