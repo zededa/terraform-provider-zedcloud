@@ -262,10 +262,6 @@ func rdUpdateAppInstCfg(cfg *swagger_models.AppInstance, d *schema.ResourceData)
 	if val != nil {
 		cfg.CustomConfig = val.(*swagger_models.CustomConfig)
 	}
-	cfg.DeploymentType, err = deploymentTypePtr(rdEntryStr(d, "deployment_type"))
-	if err != nil {
-		return err
-	}
 	cfg.Description = rdEntryStr(d, "description")
 	cfg.DeviceID = rdEntryStrPtrOrNil(d, "device_id")
 	cfg.Drives = rdAppInstDrives(d)

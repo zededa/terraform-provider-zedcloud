@@ -361,8 +361,13 @@ var AppInstSchema = map[string]*schema.Schema{
 	"deployment_type": {
 		Type:     schema.TypeString,
 		Optional: true,
-		Description: "Type of deployment for the app, eg: azure, k3s, standalone. " +
-			"This comes from the App Manifest.",
+		Deprecated: "OBSOLETE. Field Ignored by terraform-provider-zedcloud. " +
+			"This will be removed in Future versions.",
+		Description: "OBSOLETE. Field Ignored by terraform-provider-zedcloud. " +
+			"This will be removed in Future versions.",
+		DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+			return true
+		},
 	},
 	"device_id": {
 		Type:        schema.TypeString,

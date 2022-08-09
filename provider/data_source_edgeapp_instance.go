@@ -309,7 +309,6 @@ func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} 
 	data["collect_stats_ip_addr"] = cfg.CollectStatsIPAddr
 	data["custom_config"] = flattenCustomConfig(cfg.CustomConfig)
 	data["description"] = cfg.Description
-	data["deployment_type"] = ptrValStr(cfg.DeploymentType)
 	data["device_id"] = ptrValStr(cfg.DeviceID)
 	data["drive"] = flattenDrives(cfg.Drives)
 	data["interface"] = flattenAppInstInterfaces(cfg.Interfaces)
