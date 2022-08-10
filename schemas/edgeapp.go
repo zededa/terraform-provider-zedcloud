@@ -434,6 +434,11 @@ var appManifestSchema = &schema.Resource{
 			Optional:    true,
 			Description: "VM mode for VM-based app",
 		},
+		"cpu_pinning_enabled": {
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: "Enable CpuPinning",
+		},
 	},
 }
 

@@ -199,5 +199,6 @@
         "moduleType": "MODULE_TYPE_UNSPECIFIED"
     },
     "appType": "APP_TYPE_CONTAINER",
-    "deploymentType": "DEPLOYMENT_TYPE_STAND_ALONE"
+    "deploymentType": "DEPLOYMENT_TYPE_STAND_ALONE",
+    "cpuPinningEnabled": false
 }
