@@ -24,7 +24,8 @@ description: |-
 - **cpus** (Number) Number of CPUs to be assigned to an App Instance of this app
 - **description** (String) Detailed description of the Object
 - **drives** (Number) Number of drives required for an App Instance of this App
-- **manifest_file** (String) Location of Edge Application Manifest file (JSON format)
+- **manifest** (Block List) App Manifest definition. Only one of manifest or manifest_file must be specified. (see [below for nested schema](#nestedblock--manifest))
+- **manifest_file** (String) Location of Edge Application Manifest file (JSON format). Only one of manifest or manifest_file must be specified.
 - **memory** (Number) Memory to be assigned to an App Instance of this App
 - **networks** (Number) Number of Networks required by the App
 - **storage** (Number) Amount of Storage required for App Instance of this App
@@ -37,6 +38,239 @@ description: |-
 - **origin_type** (String) Origin of object
 - **parent_detail** (List of Object) Details of Parent Object (see [below for nested schema](#nestedatt--parent_detail))
 - **revision** (List of Object) System defined revision information of the object (see [below for nested schema](#nestedatt--revision))
+
+<a id="nestedblock--manifest"></a>
+### Nested Schema for `manifest`
+
+Optional:
+
+- **apptype** (String) bundle type. Valid values are: APP_TYPE_VM, APP_TYPE_VM_RUNTIME, APP_TYPE_CONTAINER, APP_TYPE_MODULE
+- **configuration** (Block List) Custom Config for the APP to be provided for each instance (see [below for nested schema](#nestedblock--manifest--configuration))
+- **container_detail** (Block List) Container specific details. Create options direct the  creation of the Docker container (see [below for nested schema](#nestedblock--manifest--container_detail))
+- **cpu_pinning_enabled** (Boolean) Enable CpuPinning
+- **deployment_type** (String) type of deployment for the app. Valid Values: DEPLOYMENT_TYPE_STAND_ALONE, DEPLOYMENT_TYPE_AZURE, DEPLOYMENT_TYPE_K3S, DEPLOYMENT_TYPE_AWS, DEPLOYMENT_TYPE_K3S_AZUREDEPLOYMENT_TYPE_K3S_AWS
+- **desc_detail** (Block List) Meta data for the App for the Zededa App Marketplace like agreements, category etc (see [below for nested schema](#nestedblock--manifest--desc_detail))
+- **description** (String) Description of the App
+- **display_name** (String) Display name of the App
+- **enablevnc** (Boolean) Enable VNC for the app
+- **image** (Block List) Images used by the app (see [below for nested schema](#nestedblock--manifest--image))
+- **interface** (Block List) I/O adapter settings (see [below for nested schema](#nestedblock--manifest--interface))
+- **module** (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--manifest--module))
+- **name** (String) Unique name of app manifest, should match object name
+- **owner** (Block List) Information about Author of the App (see [below for nested schema](#nestedblock--manifest--owner))
+- **resource** (Block List) Hardware resource requirement (CPU, Memory, Storage) for the app (see [below for nested schema](#nestedblock--manifest--resource))
+- **vmmode** (String) VM mode for VM-based app
+
+<a id="nestedblock--manifest--configuration"></a>
+### Nested Schema for `manifest.configuration`
+
+Optional:
+
+- **custom_config** (Block List) User data template. (see [below for nested schema](#nestedblock--manifest--configuration--custom_config))
+
+<a id="nestedblock--manifest--configuration--custom_config"></a>
+### Nested Schema for `manifest.configuration.custom_config`
+
+Optional:
+
+- **add** (Boolean) Add Custom Config
+- **allow_storage_resize** (Boolean) Allow storage resize
+- **field_delimiter** (String) Field delimiter
+- **name** (String) User Defined name of Custom Config
+- **override** (Boolean) Override
+- **template** (String) Template
+- **variable_group** (Block List) Variable group (see [below for nested schema](#nestedblock--manifest--configuration--custom_config--variable_group))
+
+<a id="nestedblock--manifest--configuration--custom_config--variable_group"></a>
+### Nested Schema for `manifest.configuration.custom_config.variable_group`
+
+Optional:
+
+- **condition** (Block List, Max: 1) Condition (see [below for nested schema](#nestedblock--manifest--configuration--custom_config--variable_group--condition))
+- **name** (String) Name of Variable group
+- **required** (Boolean) Indicates if this is a required condition
+- **variable** (Block List) List of variables (see [below for nested schema](#nestedblock--manifest--configuration--custom_config--variable_group--variable))
+
+<a id="nestedblock--manifest--configuration--custom_config--variable_group--condition"></a>
+### Nested Schema for `manifest.configuration.custom_config.variable_group.condition`
+
+Optional:
+
+- **name** (String) Name of variable group condition
+- **operator** (String) Condition Operator
+- **value** (String) Value
+
+
+<a id="nestedblock--manifest--configuration--custom_config--variable_group--variable"></a>
+### Nested Schema for `manifest.configuration.custom_config.variable_group.variable`
+
+Optional:
+
+- **default** (String) Default value for the Variable Group Variable
+- **encode** (String) Encoding Type. Valid Values: FILE_ENCODING_UNSPECIFIED, FILE_ENCODING_BASE64
+- **format** (String) Format of the Variable. Valid Values: VARIABLE_FORMAT_UNSPECIFIED, VARIABLE_FORMAT_TEXT, VARIABLE_FORMAT_NUMBER, VARIABLE_FORMAT_FILE, VARIABLE_FORMAT_DROPDOWN, VARIABLE_FORMAT_BOOLEAN, VARIABLE_FORMAT_PASSWORD
+- **label** (String) Label
+- **max_length** (String) Max length of the variable
+- **name** (String) Name of Variable Group Variable
+- **option** (Block List) Variable Options (see [below for nested schema](#nestedblock--manifest--configuration--custom_config--variable_group--variable--option))
+- **required** (Boolean) Flag indicates if this is a required variable
+- **value** (String) Value of variable group variable.
+
+<a id="nestedblock--manifest--configuration--custom_config--variable_group--variable--option"></a>
+### Nested Schema for `manifest.configuration.custom_config.variable_group.variable.value`
+
+Optional:
+
+- **label** (String) Label of option
+- **value** (String) Value of option
+
+
+
+
+
+
+<a id="nestedblock--manifest--container_detail"></a>
+### Nested Schema for `manifest.container_detail`
+
+Optional:
+
+- **container_create_option** (String) Base64 encoded container specific details. Create options direct the creation of the Docker container
+
+
+<a id="nestedblock--manifest--desc_detail"></a>
+### Nested Schema for `manifest.desc_detail`
+
+Optional:
+
+- **agreement_list** (Map of String) Agreement List the the users of the App need to sign.
+- **app_category** (String) Edge application category. The following are valid values: APP_CATEGORY_OPERATING_SYSTEM, APP_CATEGORY_INDUSTRIAL, APP_CATEGORY_EDGE_APPLICATION, APP_CATEGORY_NETWORKING, APP_CATEGORY_SECURITY, APP_CATEGORY_DATA_ANALYTICS, APP_CATEGORY_CLOUD_APPLICATION, APP_CATEGORY_DEVOPS, APP_CATEGORY_OTHERS,
+- **category** (String) Type of the Edge application
+- **license_list** (Map of String) List of Licenses
+- **logo** (Map of String) Application Logo
+- **os** (String) Edge application's Operating System
+- **support** (String) Support information for the Application
+
+
+<a id="nestedblock--manifest--image"></a>
+### Nested Schema for `manifest.image`
+
+Optional:
+
+- **cleartext** (Boolean) cleartext
+- **drvtype** (String) Type of Module. Valid Values are: CDROM, HDD, NET
+- **ignorepurge** (Boolean) Ignore Purge command for the App.
+- **imagename** (String) Name of the image
+- **maxsize** (Number) maxsize of the image
+- **mountpath** (String) mountpath of the image inside the application instance
+- **param** (Block List) params for the Application (see [below for nested schema](#nestedblock--manifest--image--param))
+- **preserve** (Boolean) Preserve the application image during purge
+- **readonly** (Boolean) The image is readonly
+- **target** (String) enum: Disk, Kernel, Initrd, RamDisk
+- **volumelabel** (String) volumelabel
+
+<a id="nestedblock--manifest--image--param"></a>
+### Nested Schema for `manifest.image.param`
+
+Optional:
+
+- **name** (String) Name of the entry
+- **value** (String) Value of the entry
+
+
+
+<a id="nestedblock--manifest--interface"></a>
+### Nested Schema for `manifest.interface`
+
+Optional:
+
+- **acl** (Block List) Traffic access control rules for this interface. Applicable only when directattach flag is false. (see [below for nested schema](#nestedblock--manifest--interface--acl))
+- **directattach** (Boolean) If true, a physical adapter is assigned to the edge application directly. If false, a network instance is assigned to the edge application
+- **name** (String) Interface name used by the edge application
+- **optional** (Boolean) Indicates if the interface is optional for edge application.
+- **privateip** (Boolean) If true, DHCP network can't be assigned and user needs to provide a static IP address.
+- **type** (String) Physical Adapter type for this interface. Applicable only when directattach flag is true.
+
+<a id="nestedblock--manifest--interface--acl"></a>
+### Nested Schema for `manifest.interface.acl`
+
+Optional:
+
+- **action** (Block List) Chain of actions to be taken on matching network traffic (see [below for nested schema](#nestedblock--manifest--interface--acl--action))
+- **match** (Block List) Network traffic matching criteria consistngs of one or more of source IP address, destination IP address, protocol, source port and destination port (see [below for nested schema](#nestedblock--manifest--interface--acl--match))
+- **name** (String) Name of the Access Control List
+
+<a id="nestedblock--manifest--interface--acl--action"></a>
+### Nested Schema for `manifest.interface.acl.name`
+
+Optional:
+
+- **drop** (Boolean) Drop action on ACL rule
+- **limit** (Boolean) Limit action on ACL rule
+- **limit_param** (Block List) Only valid if limit flag is set. Parameters for Limit action. (see [below for nested schema](#nestedblock--manifest--interface--acl--name--limit_param))
+- **mapparam** (Block List, Max: 1) only valid if PortMap is set to true. Device to app port mapping for incoming ACL rule (see [below for nested schema](#nestedblock--manifest--interface--acl--name--mapparam))
+- **portmap** (Boolean) Enable device to app port mapping for incoming ACL rule, implicitly added by ZedUI code
+
+<a id="nestedblock--manifest--interface--acl--name--limit_param"></a>
+### Nested Schema for `manifest.interface.acl.name.limit_param`
+
+Optional:
+
+- **limitburst** (Number) Rate limit burst in ACL rule
+- **limitrate** (Number) Rate limit in ACL rule
+- **limitunit** (Number) Rate limit unit in ACL rule
+
+
+<a id="nestedblock--manifest--interface--acl--name--mapparam"></a>
+### Nested Schema for `manifest.interface.acl.name.mapparam`
+
+Optional:
+
+- **port** (Number) Application port
+
+
+
+<a id="nestedblock--manifest--interface--acl--match"></a>
+### Nested Schema for `manifest.interface.acl.name`
+
+Optional:
+
+- **type** (String) Type of Match. Allowed values are host, protocol, fport
+- **value** (String) Value to match
+
+
+
+
+<a id="nestedblock--manifest--module"></a>
+### Nested Schema for `manifest.module`
+
+Optional:
+
+- **environment** (Map of String) Environment
+- **module_type** (String) Type of Module. Valid Values are: MODULE_TYPE_SYSTEM_DEFINED, MODULE_TYPE_CUSTOM
+- **routes** (Map of String) Routes
+- **twin_detail** (String) Base64 encoded module twin details, desired properties  of the module will be updated to reflect these values
+
+
+<a id="nestedblock--manifest--owner"></a>
+### Nested Schema for `manifest.owner`
+
+Optional:
+
+- **company** (String) Company of the developer
+- **email** (String) Contact email of the developer company
+- **user** (String) Name of the developer
+- **website** (String) Website of the developer company
+
+
+<a id="nestedblock--manifest--resource"></a>
+### Nested Schema for `manifest.resource`
+
+Optional:
+
+- **name** (String) Name of the entry
+- **value** (String) Value of the entry
+
+
 
 <a id="nestedatt--parent_detail"></a>
 ### Nested Schema for `parent_detail`
