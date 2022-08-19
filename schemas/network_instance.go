@@ -22,24 +22,6 @@ var netInstOpaqueConfigSchema = &schema.Resource{
 	},
 }
 
-var staticDNSListSchema = &schema.Resource{
-	Schema: map[string]*schema.Schema{
-		"addrs": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			Description: "Addresses",
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-		},
-		"hostname": {
-			Type:        schema.TypeString,
-			Optional:    true,
-			Description: "Host name",
-		},
-	},
-}
-
 var dhcpIpRangeSchema = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"end": {
@@ -129,7 +111,7 @@ var NetworkInstanceSchema = map[string]*schema.Schema{
 		Type:        schema.TypeList,
 		Optional:    true,
 		Description: "List of Static DNS entries",
-		Elem:        staticDNSListSchema,
+		Elem:        StaticDNSEntryResourceSchema,
 	},
 	"ip": {
 		Type:        schema.TypeList,
