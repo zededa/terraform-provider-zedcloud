@@ -201,90 +201,16 @@ func flattenDrives(cfgList []*swagger_models.Drive) []interface{} {
 	return entryList
 }
 
-func flattenVariableOptionVals(cfgList []*swagger_models.VariableOptionVal) []interface{} {
-	entryList := make([]interface{}, 0)
-	for _, cfg := range cfgList {
-		entry := map[string]interface{}{
-			"label": cfg.Label,
-			"value": cfg.Value,
-		}
-		entryList = append(entryList, entry)
-	}
-	return entryList
-}
-
-func flattenVariableGroupVariables(cfgList []*swagger_models.VariableGroupVariable) []interface{} {
-	entryList := make([]interface{}, 0)
-	for _, cfg := range cfgList {
-		encode := ""
-		if cfg.Encode != nil {
-			encode = string(*cfg.Encode)
-		}
-		format := ""
-		if cfg.Format != nil {
-			format = string(*cfg.Format)
-		}
-		entry := map[string]interface{}{
-			"default":    cfg.Default,
-			"encode":     encode,
-			"format":     format,
-			"label":      ptrValStr(cfg.Label),
-			"max_length": cfg.MaxLength,
-			"name":       ptrValStr(cfg.Name),
-			"option":     flattenVariableOptionVals(cfg.Options),
-			"required":   cfg.Required,
-			"value":      cfg.Value,
-		}
-		entryList = append(entryList, entry)
-	}
-	return entryList
-}
-
-func flattenVariableGroupCondition(cfg *swagger_models.VariableGroupCondition) []interface{} {
-	if cfg == nil {
-		return []interface{}{}
-	}
-	operator := ""
-	if cfg.Operator != nil {
-		operator = string(*cfg.Operator)
-	}
-	return []interface{}{map[string]interface{}{
-		"name":     cfg.Name,
-		"operator": operator,
-		"value":    cfg.Value,
-	}}
-}
-
-func flattenCustomConfigVariableGroups(cfgList []*swagger_models.CustomConfigVariableGroup) []interface{} {
-	entryList := make([]interface{}, 0)
-	for _, cfg := range cfgList {
-		entry := map[string]interface{}{
-			"condition": flattenVariableGroupCondition(cfg.Condition),
-			"name":      cfg.Name,
-			"required":  cfg.Required,
-			"variable":  flattenVariableGroupVariables(cfg.Variables),
-		}
-		entryList = append(entryList, entry)
-	}
-	return entryList
-}
-
 func flattenCustomConfig(cfg *swagger_models.CustomConfig) []interface{} {
 	if cfg == nil {
 		return []interface{}{}
 	}
 	return []interface{}{map[string]interface{}{
-		"add":                  cfg.Add,
-		"allow_storage_resize": cfg.AllowStorageResize,
-		"field_delimiter":      cfg.FieldDelimiter,
-		"name":                 cfg.Name,
-		"override":             cfg.Override,
-		"template":             cfg.Template,
-		"variable_group":       flattenCustomConfigVariableGroups(cfg.VariableGroups),
+		"add": cfg.Add,
 	}}
 }
 
-func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} {
+func flattenAppInstance(cfg *swagger_models.AppInstance, resource bool) map[string]interface{} {
 	if cfg == nil {
 		return map[string]interface{}{}
 	}
@@ -307,7 +233,11 @@ func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} 
 	data["app_policy_id"] = cfg.AppPolicyID
 	data["app_type"] = ptrValStr(cfg.AppType)
 	data["collect_stats_ip_addr"] = cfg.CollectStatsIPAddr
-	data["custom_config"] = flattenCustomConfig(cfg.CustomConfig)
+	if !resource {
+		// Do not flatten secrets for resources. ZEDCloud doesn't return
+		// details of secrets. So cfg is the source of truth for secrets.
+		data["custom_config"] = flattenCustomConfig(cfg.CustomConfig)
+	}
 	data["description"] = cfg.Description
 	data["device_id"] = ptrValStr(cfg.DeviceID)
 	data["drive"] = flattenDrives(cfg.Drives)
@@ -322,7 +252,7 @@ func flattenAppInstance(cfg *swagger_models.AppInstance) map[string]interface{} 
 }
 
 func getAppInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string) error {
+	name, id string, resource bool) error {
 	cfg, err, httpRsp := getAppInstance(client, name, id)
 	if err != nil {
 		err = fmt.Errorf("[ERROR] App Instance %s (id: %s) not found. Err: %s",
@@ -334,13 +264,13 @@ func getAppInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData
 		}
 		return err
 	}
-	marshalData(d, flattenAppInstance(cfg))
+	marshalData(d, flattenAppInstance(cfg, resource))
 	return nil
 }
 
 // Read the Resource Group
 func readAppInst(ctx context.Context, d *schema.ResourceData,
-	meta interface{}) diag.Diagnostics {
+	meta interface{}, resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := (meta.(Client)).Client
 	id := rdEntryStr(d, "id")
@@ -353,7 +283,7 @@ func readAppInst(ctx context.Context, d *schema.ResourceData,
 	if (id == "") && (name == "") {
 		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
 	}
-	err := getAppInstAndPublishData(client, d, name, id)
+	err := getAppInstAndPublishData(client, d, name, id, resource)
 	if err != nil {
 		return diag.Errorf("%s", err.Error())
 	}
@@ -361,5 +291,5 @@ func readAppInst(ctx context.Context, d *schema.ResourceData,
 }
 
 func readDataSourceAppInst(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readAppInst(ctx, d, meta)
+	return readAppInst(ctx, d, meta, false)
 }
