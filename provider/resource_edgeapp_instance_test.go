@@ -19,7 +19,6 @@ var rdAppInstEmptyOutput = map[string]interface{}{
 	"bundleversion":         "",
 	"cluster_id":            "",
 	"collect_stats_ip_addr": "",
-	"custom_config":         []interface{}{},
 	"description":           "",
 	"device_id":             "",
 	"drive":                 []interface{}{},
@@ -93,8 +92,8 @@ var rdAppInstFullCfg = map[string]interface{}{
 			},
 		},
 	},
-	"device_id":       "sample-device-id",
-	"drive":           []interface{}{},
+	"device_id": "sample-device-id",
+	"drive":     []interface{}{},
 	"encrypted_secrets": map[string]interface{}{
 		"secret1": "secret-value1",
 		"secret2": "secret-value2",
@@ -246,7 +245,6 @@ var efoAppInstFullCfg = map[string]interface{}{
 	"bundleversion":         "", // Computed
 	"cluster_id":            rdAppInstFullCfg["cluster_id"],
 	"collect_stats_ip_addr": rdAppInstFullCfg["collect_stats_ip_addr"],
-	"custom_config":         rdAppInstFullCfg["custom_config"],
 	"device_id":             rdAppInstFullCfg["device_id"],
 	"drive":                 rdAppInstFullCfg["drive"],
 	"interface": []interface{}{
@@ -338,7 +336,7 @@ func TestRDAppInstConfig(t *testing.T) {
 					c.description)
 			}
 		}
-		out := flattenAppInstance(cfg)
+		out := flattenAppInstance(cfg, true)
 		err = verifyFlattenOutput(zschemas.AppInstSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s\nout: %++v",

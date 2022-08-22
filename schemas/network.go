@@ -213,9 +213,9 @@ var ipSpecResourceSchema = &schema.Resource{
 var StaticDNSEntryResourceSchema = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"addrs": &schema.Schema{
-			Type:        schema.TypeList,
+			Type:        schema.TypeSet,
 			Optional:    true,
-			Description: "List of IP addresses for the specified hostname",
+			Description: "Set of IP addresses for the specified hostname",
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},

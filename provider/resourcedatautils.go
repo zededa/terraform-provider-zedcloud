@@ -192,6 +192,25 @@ func rdEntryStrList(rd interface{}, key string) []string {
 	return strList
 }
 
+// rdEntryStrSet
+//  Converts the specified entry of type []interface{} from ResourceData
+//      into []string
+// Params:
+//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
+//      type will cause a Panic
+func rdEntryStrSet(rd interface{}, key string) []string {
+	strList := make([]string, 0)
+	ok, val := rdEntryByKey(rd, key)
+	if !ok {
+		return strList
+	}
+	rdList := (val.(*schema.Set)).List()
+	for _, val := range rdList {
+		strList = append(strList, val.(string))
+	}
+	return strList
+}
+
 // rdEntryStrMap
 //  Converts the specified entry of type map[string]interface{} from ResourceData
 //      into map[string]string

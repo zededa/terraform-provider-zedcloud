@@ -104,7 +104,7 @@ func resourceDataToStaticDNSList(d *schema.ResourceData) ([]*swagger_models.Stat
 	for _, entry := range data {
 		dataEntry := entry.(map[string]interface{})
 		dnsEntry := &swagger_models.StaticDNSList{
-			Addrs:    rdEntryStrList(dataEntry, "addrs"),
+			Addrs:    rdEntryStrSet(dataEntry, "addrs"),
 			Hostname: rdEntryStr(dataEntry, "hostname"),
 		}
 		dnsList = append(dnsList, dnsEntry)

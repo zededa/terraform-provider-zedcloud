@@ -90,7 +90,7 @@ func appInstFullCfg() *swagger_models.AppInstance {
 				},
 			},
 		},
-		DeviceID:       strPtr("Sample Device ID"),
+		DeviceID: strPtr("Sample Device ID"),
 		Drives: []*swagger_models.Drive{
 			&swagger_models.Drive{
 				Cleartext:   true,
@@ -213,47 +213,9 @@ var outputAppInstFullCfg = map[string]interface{}{
 	"cluster_id":            "Sample Cluster ID",
 	"collect_stats_ip_addr": "10.1.1.10",
 	"custom_config": []interface{}{
-		map[string]interface{}{
-			"add":                  true,
-			"allow_storage_resize": true,
-			"field_delimiter":      ",",
-			"name":                 "Sample Custom Config",
-			"override":             true,
-			"template":             "Sample Template",
-			"variable_group": []interface{}{
-				map[string]interface{}{
-					"condition": []interface{}{
-						map[string]interface{}{
-							"name":     "SampleVGCondition",
-							"operator": "Sample Operator",
-							"value":    "Sample Operator Value",
-						},
-					},
-					"name":     "Sample VG NAME",
-					"required": true,
-					"variable": []interface{}{
-						map[string]interface{}{
-							"default":    "Sample Default Value",
-							"encode":     "Sample Encoding",
-							"format":     "Sample Format",
-							"label":      "Sample label",
-							"max_length": "10",
-							"name":       "Sample VGV Name",
-							"option": []interface{}{
-								map[string]interface{}{
-									"label": "Sample Label",
-									"value": "Sample Value",
-								},
-							},
-							"required": true,
-							"value":    "Sample Value",
-						},
-					},
-				},
-			},
-		},
+		map[string]interface{}{"add": true},
 	},
-	"device_id":       "Sample Device ID",
+	"device_id": "Sample Device ID",
 	"drive": []interface{}{
 		map[string]interface{}{
 			"cleartext":   true,
@@ -398,7 +360,7 @@ func TestFlattenAppInstance(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		out := flattenAppInstance(c.input)
+		out := flattenAppInstance(c.input, false)
 		if diff := deep.Equal(out, c.expected); diff != nil {
 			t.Fatalf("Test Failed: %s\n"+
 				"Error matching Flattened output and input.\n"+
