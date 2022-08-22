@@ -28,7 +28,7 @@ Schema for data source zedcloud_edgeapp_instance. Must specify id or name
 - **collect_stats_ip_addr** (String) IP Address of the Stats Collector module.
 - **crypto_key** (String) SENSITIVE. Crypto Key for decrypting user secret information. This field will not be published by terraform import command.
 - **custom_config** (Block List, Max: 1) Application initialization script template in cloud-config format and user specified values (see [below for nested schema](#nestedblock--custom_config))
-- **deployment_type** (String) Type of deployment for the app, eg: azure, k3s, standalone. This comes from the App Manifest.
+- **deployment_type** (String, Deprecated) OBSOLETE. Field Ignored by terraform-provider-zedcloud. This will be removed in Future versions.
 - **description** (String) Detailed description of the Object
 - **device_id** (String) Edge Node id where the App Instance is deployed.
 - **drive** (Block List) List of Drive configurations (see [below for nested schema](#nestedblock--drive))

@@ -47,8 +47,8 @@ Schema for data source zedcloud_network_instance. Must specify id or name
 
 Optional:
 
-- **addrs** (List of String) Addresses
-- **hostname** (String) Host name
+- **addrs** (Set of String) Set of IP addresses for the specified hostname
+- **hostname** (String) DNS Host name
 
 
 <a id="nestedblock--ip"></a>
