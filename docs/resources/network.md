@@ -41,7 +41,7 @@ description: |-
 
 Optional:
 
-- **addrs** (List of String) List of IP addresses for the specified hostname
+- **addrs** (Set of String) Set of IP addresses for the specified hostname
 - **hostname** (String) DNS Host name
 
 
