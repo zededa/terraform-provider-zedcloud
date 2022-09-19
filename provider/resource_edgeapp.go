@@ -14,6 +14,7 @@ import (
 	"github.com/zededa/zedcloud-api/swagger_models"
 	"io/ioutil"
 	"log"
+	"strconv"
 )
 
 var edgeAppUrlExtension = "apps"
@@ -304,7 +305,7 @@ func rdAppManifestImagesEntry(d map[string]interface{}) (
 	cfg.Drvtype = rdEntryStr(d, "drvtype")
 	cfg.Ignorepurge = rdEntryBool(d, "ignorepurge")
 	cfg.Imagename = rdEntryStr(d, "imagename")
-	cfg.Maxsize = rdEntryStr(d, "maxsize")
+	cfg.Maxsize = strconv.FormatInt(rdEntryInt64(d, "maxsize"), 10)
 	cfg.Mountpath = rdEntryStr(d, "mountpath")
 	cfg.Params, err = rdAppManifestImageParams(d)
 	if err != nil {
@@ -399,21 +400,8 @@ func rdAppManifestUserDataTemplate(d map[string]interface{}) (
 	return val.(*swagger_models.UserDataTemplate), nil
 }
 
-func rdAppManifest(rd *schema.ResourceData) (*swagger_models.VMManifest, error) {
-	// Manifest can come through manifest or manifest_file.
-	// Only one of them must be specified.
-	ok, val := rdEntryByKey(rd, "manifest")
-	if !ok {
-		// Key manifest not present in Resource Data. Check for manifest_file
-		return rdEntryAppManifestFromFile(rd)
-	}
-	ok, _ = rdEntryByKey(rd, "manifest_file")
-	if ok {
-		return nil, fmt.Errorf("Both manifest and manifest_file are specified. " +
-			"Only one of them must be specified.")
-	}
+func rdAppManifestEntry(d map[string]interface{}) (interface{}, error) {
 	var err error
-	d := val.(map[string]interface{})
 	cfg := swagger_models.VMManifest{}
 	cfg.AppType = appTypePtr(rdEntryStr(d, "apptype"))
 	cfg.Configuration, err = rdAppManifestUserDataTemplate(d)
@@ -460,6 +448,26 @@ func rdAppManifest(rd *schema.ResourceData) (*swagger_models.VMManifest, error) 
 	return &cfg, nil
 }
 
+func rdAppManifest(rd *schema.ResourceData) (*swagger_models.VMManifest, error) {
+	// Manifest can come through manifest or manifest_file.
+	// Only one of them must be specified.
+	ok, val := rdEntryByKey(rd, "manifest")
+	if !ok {
+		// Key manifest not present in Resource Data. Check for manifest_file
+		return rdEntryAppManifestFromFile(rd)
+	}
+	ok, _ = rdEntryByKey(rd, "manifest_file")
+	if ok {
+		return nil, fmt.Errorf("Both manifest and manifest_file are specified. " +
+			"Only one of them must be specified.")
+	}
+	val, err := rdEntryStructPtr(rd, "manifest", rdAppManifestEntry)
+	if val == nil || err != nil {
+		return nil, err
+	}
+	return val.(*swagger_models.VMManifest), nil
+}
+
 func rdUpdateAppCfg(cfg *swagger_models.App, d *schema.ResourceData) error {
 	cfg.Title = rdEntryStrPtrOrNil(d, "title")
 	cfg.Description = rdEntryStr(d, "description")
@@ -485,7 +493,7 @@ func createEdgeAppResource(ctx context.Context, d *schema.ResourceData,
 	client := (meta.(Client)).Client
 	name := rdEntryStr(d, "name")
 	id := rdEntryStr(d, "id")
-	errMsgPrefix := fmt.Sprintf("[ERROR] App Instance %s (id: %s) Create Failed.",
+	errMsgPrefix := fmt.Sprintf("[ERROR] Edge App %s (id: %s) Create Failed.",
 		name, id)
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
@@ -502,6 +510,8 @@ func createEdgeAppResource(ctx context.Context, d *schema.ResourceData,
 	rspData := &swagger_models.ZsrvResponse{}
 	_, err = client.SendReq("POST", edgeAppUrlExtension, cfg, rspData)
 	if err != nil {
+		log.Printf("[ERROR] Edge App Create Failed: %s, %s Err: %s",
+			name, errMsgPrefix, err.Error())
 		return diag.Errorf("%s Err: %s", errMsgPrefix, err.Error())
 	}
 	log.Printf("Edge App %s (ID: %s) Successfully created\n",

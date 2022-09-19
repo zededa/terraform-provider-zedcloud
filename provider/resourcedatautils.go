@@ -275,7 +275,7 @@ func rdEntryList(rd interface{}, key string) []interface{} {
 	if ok {
 		return setVal.List()
 	}
-	panic("Key %s Value %+v - neither a list not a set")
+	panic("Key %s Value %+v - neither a list nor a set")
 }
 
 type rdFuncMapToEntry func(d map[string]interface{}) (interface{}, error)
