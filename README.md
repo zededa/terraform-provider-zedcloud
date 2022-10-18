@@ -55,7 +55,7 @@ files needed to test the provider.
         1. This downloads the swagger files and generates client code.
         2. This needs to be done only once in your workspace, until there is a new
             version of the API
-2. Do a make in the top level directory to generate the terraform-provider-zededa binary
+2. Do a make in the top level directory to generate the terraform-provider-zedcloud binary
 
 # Setting up Terraform to use terraform-provider-zededa for Developers
 
