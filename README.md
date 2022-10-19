@@ -15,7 +15,7 @@ For Customer documentation, see [Terraform Provider ZEDCloud](https://app.gitboo
 3. [Data Sources](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/data-sources)
 
 ## Generating Schema documentation
-Use the follong command from the terraform-provider-zedcloud directory to generate
+Use the following command from the terraform-provider-zedcloud directory to generate
 schema documentation:
 
 ```
