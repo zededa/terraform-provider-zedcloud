@@ -5,6 +5,7 @@ package provider
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/zedcloud-api/swagger_models"
 )
@@ -35,11 +36,11 @@ func flattenObjectRevision(entry interface{}) []interface{} {
 	}
 	data := map[string]interface{}{
 		"created_at": "",
-		"created_by": ptrValStr(object.CreatedBy),
-		"curr":       ptrValStr(object.Curr),
+		"created_by": strPtrVal(object.CreatedBy),
+		"curr":       strPtrVal(object.Curr),
 		"prev":       object.Prev,
 		"updated_at": "",
-		"updated_by": ptrValStr(object.UpdatedBy),
+		"updated_by": strPtrVal(object.UpdatedBy),
 	}
 	if object.CreatedAt != nil {
 		data["created_at"] = fmt.Sprintf("%+v", object.CreatedAt)
@@ -74,25 +75,24 @@ func flattenZedCloudOpsCmd(entry interface{}) []interface{} {
 	}}
 }
 
-func flattenedDataCheckKeys(schemaMap map[string]*schema.Schema,
-	data map[string]interface{}) {
-	// Verify all keys published in data re computed fields.
-	for k, _ := range data {
+func checkIfAllKeysExist(schemaMap map[string]*schema.Schema, data map[string]interface{}) error {
+	// verify all keys published in data re computed fields
+	for k := range data {
 		_, ok := schemaMap[k]
 		if !ok {
-			panic(fmt.Errorf("Flattened Key %s doesn't exist in Schema", k))
+			return fmt.Errorf("Flattened Key %s doesn't exist in Schema", k)
 		}
 	}
-	// Verify all fields in the schema are published
+	// verify all fields in the schema are published
 	for k, v := range schemaMap {
 		_, ok := data[k]
 		if !ok {
 			if v.Computed {
-				// Computed fields must always be piblished.
-				panic(fmt.Errorf("Computed Key %s not flattened", k))
+				// computed fields must always be published
+				return fmt.Errorf("Computed Key %s not flattened", k)
 			}
-			// Sensitive keys are not published for data sources.
-			// So can't really assert for missing keys
+			// we can not check for sensitive keys since they are not published for data sources
 		}
 	}
+	return nil
 }
