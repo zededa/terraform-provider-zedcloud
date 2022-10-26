@@ -85,10 +85,10 @@ var dhcpServerConfigSchema = &schema.Resource{
 var NetworkInstanceSchema = map[string]*schema.Schema{
 	// Keep the following common fields at the top of schema definitions for all
 	//  objects.
-	"name":        nameSchema,
-	"id":          idSchema,
-	"description": descriptionSchema,
-	"title":       titleSchema,
+	"name":        name,
+	"id":          id,
+	"description": description,
+	"title":       title,
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"cluster_id": {
@@ -153,9 +153,9 @@ var NetworkInstanceSchema = map[string]*schema.Schema{
 			Type: schema.TypeString,
 		},
 	},
-	"project_id": projectIdComputedSchema,
-	"revision":   revisionSchema,
-	"tags":       tagsSchema,
+	"project_id": projectIDComputed,
+	"revision":   revision,
+	"tags":       tags,
 	"type": {
 		Type:     schema.TypeString,
 		Optional: true,

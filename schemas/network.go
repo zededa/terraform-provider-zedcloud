@@ -231,10 +231,10 @@ var StaticDNSEntryResourceSchema = &schema.Resource{
 var NetworkSchema = map[string]*schema.Schema{
 	// Keep the following common fields at the top of schema definitions for all
 	//  objects.
-	"name":        nameSchema,
-	"id":          idSchema,
-	"description": descriptionSchema,
-	"title":       titleSchema,
+	"name":        name,
+	"id":          id,
+	"description": description,
+	"title":       title,
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"dns_list": &schema.Schema{
@@ -260,14 +260,14 @@ var NetworkSchema = map[string]*schema.Schema{
 		Optional:    true,
 		Description: "Kind of network. Valid Values: NETWORK_KIND_V4, NETWORK_KIND_V6",
 	},
-	"project_id": projectIdSchema,
+	"project_id": projectID,
 	"proxy": {
 		Type:        schema.TypeList,
 		Optional:    true,
 		Description: "Proxy configuration for the network",
 		Elem:        netProxyConfigSchema,
 	},
-	"revision": revisionSchema,
+	"revision": revision,
 	"wireless": {
 		Type:        schema.TypeList,
 		Optional:    true,

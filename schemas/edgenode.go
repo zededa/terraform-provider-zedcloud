@@ -101,7 +101,7 @@ var SysInterfaceResourceSchema = &schema.Resource{
 			Optional:    true,
 			Description: "Name of network object attached to the interface",
 		},
-		"tags": tagsSchema,
+		"tags": tags,
 	},
 }
 
@@ -109,10 +109,10 @@ var SysInterfaceResourceSchema = &schema.Resource{
 var EdgeNodeSchema = map[string]*schema.Schema{
 	// Keep the following common fields at the top of schema definitions for all
 	//  objects.
-	"name":        nameSchema,
-	"id":          idSchema,
-	"description": descriptionSchema,
-	"title":       titleSchema,
+	"name":        name,
+	"id":          id,
+	"description": description,
+	"title":       title,
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"adminstate": {
@@ -203,7 +203,7 @@ var EdgeNodeSchema = map[string]*schema.Schema{
 		Computed:    true,
 		Description: "Edge Node Last Reset Time",
 	},
-	"revision": revisionSchema,
+	"revision": revision,
 	"serialno": {
 		Type:        schema.TypeString,
 		Optional:    true,
@@ -214,7 +214,7 @@ var EdgeNodeSchema = map[string]*schema.Schema{
 		Computed:    true,
 		Description: "Device storage in GBs",
 	},
-	"tags": tagsSchema,
+	"tags": tags,
 	"thread": {
 		Type:        schema.TypeInt,
 		Computed:    true,

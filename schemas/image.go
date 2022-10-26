@@ -10,10 +10,10 @@ import (
 var ImageSchema = map[string]*schema.Schema{
 	// Keep the following common fields at the top of schema definitions for all
 	//  objects.
-	"name":        nameSchema,
-	"id":          idSchema,
-	"description": descriptionSchema,
-	"title":       titleSchema,
+	"name":        name,
+	"id":          id,
+	"description": description,
+	"title":       title,
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"datastore_id": {
@@ -79,5 +79,5 @@ var ImageSchema = map[string]*schema.Schema{
 		Description: "Origin type of image, Valid Values: ORIGIN_UNSPECIFIED, " +
 			"ORIGIN_IMPORTED, ORIGIN_LOCAL, ORIGIN_GLOBAL",
 	},
-	"revision": revisionSchema,
+	"revision": revision,
 }

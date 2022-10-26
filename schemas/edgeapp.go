@@ -261,7 +261,7 @@ var manifestImageSchema = &schema.Resource{
 			Type:        schema.TypeList,
 			Optional:    true,
 			Description: "params for the Application",
-			Elem:        nameValueEntrySchema,
+			Elem:        nameValueEntry,
 		},
 		"preserve": {
 			Type:        schema.TypeBool,
@@ -427,7 +427,7 @@ var appManifestSchema = &schema.Resource{
 			Type:        schema.TypeList,
 			Optional:    true,
 			Description: "Hardware resource requirement (CPU, Memory, Storage) for the app",
-			Elem:        nameValueEntrySchema,
+			Elem:        nameValueEntry,
 		},
 		"vmmode": {
 			Type:        schema.TypeString,
@@ -440,10 +440,10 @@ var appManifestSchema = &schema.Resource{
 var EdgeAppSchema = map[string]*schema.Schema{
 	// Keep the following common fields at the top of schema definitions for all
 	//  objects.
-	"name":        nameSchema,
-	"id":          idSchema,
-	"description": descriptionSchema,
-	"title":       titleSchema,
+	"name":        name,
+	"id":          id,
+	"description": description,
+	"title":       title,
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"cpus": {
@@ -488,9 +488,9 @@ var EdgeAppSchema = map[string]*schema.Schema{
 		Type:        schema.TypeList,
 		Computed:    true,
 		Description: "Details of Parent Object",
-		Elem:        objectParentDetailSchema,
+		Elem:        objectParentDetail,
 	},
-	"revision": revisionSchema,
+	"revision": revision,
 	"storage": {
 		Type:        schema.TypeInt,
 		Optional:    true,

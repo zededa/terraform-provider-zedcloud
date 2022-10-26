@@ -4,8 +4,9 @@
 package schemas
 
 import (
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func volInstTypeValuesStr() string {
@@ -35,10 +36,10 @@ func volInstAccessModeValuesStr() string {
 var VolumeInstanceSchema = map[string]*schema.Schema{
 	// Keep the following common fields at the top of schema definitions for all
 	//  objects.
-	"name":        nameSchema,
-	"id":          idSchema,
-	"description": descriptionSchema,
-	"title":       titleSchema,
+	"name":        name,
+	"id":          id,
+	"description": description,
+	"title":       title,
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"accessmode": {
@@ -83,14 +84,14 @@ var VolumeInstanceSchema = map[string]*schema.Schema{
 		Optional:    true,
 		Description: "Flag to enable the volume to be attached to multiple app instances",
 	},
-	"project_id": projectIdComputedSchema,
+	"project_id": projectIDComputed,
 	"purge": {
 		Type:        schema.TypeList,
 		Computed:    true,
-		Elem:        zedcloudOpsCmdSchema,
+		Elem:        zedcloudOpsCmd,
 		Description: "Purge Counter information",
 	},
-	"revision": revisionSchema,
+	"revision": revision,
 	"size_bytes": {
 		Type:        schema.TypeString,
 		Optional:    true,

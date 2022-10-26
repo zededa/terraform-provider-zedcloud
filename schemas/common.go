@@ -13,26 +13,26 @@ const (
 		"values are case sensitive with max_length 256 and min_length 3"
 )
 
-var descriptionSchema = &schema.Schema{
+var description = &schema.Schema{
 	Type:        schema.TypeString,
 	Optional:    true,
 	Description: "Detailed description of the Object",
 }
 
-var idSchema = &schema.Schema{
+var id = &schema.Schema{
 	Type:        schema.TypeString,
 	Computed:    true,
-	Description: "System defined unique Id of the Object",
+	Description: "System defined unique ID of the Object",
 }
 
-var nameSchema = &schema.Schema{
+var name = &schema.Schema{
 	Type:     schema.TypeString,
 	Required: true,
 	Description: "User defined name of the object. Must be unique across the enterprise. " +
 		"Once object is created, name can’t be changed",
 }
 
-var projectIdSchema = &schema.Schema{
+var projectID = &schema.Schema{
 	Type:        schema.TypeString,
 	Optional:    true,
 	Description: "ID of the project to which the Object belongs",
@@ -47,13 +47,13 @@ var projectIdSchema = &schema.Schema{
 	},
 }
 
-var projectIdComputedSchema = &schema.Schema{
+var projectIDComputed = &schema.Schema{
 	Type:        schema.TypeString,
 	Computed:    true,
 	Description: "ID of the project to which the Object belongs",
 }
 
-var tagsSchema = &schema.Schema{
+var tags = &schema.Schema{
 	Type:     schema.TypeMap,
 	Optional: true,
 	Elem: &schema.Schema{
@@ -62,20 +62,20 @@ var tagsSchema = &schema.Schema{
 	Description: tagsDescription,
 }
 
-var revisionSchema = &schema.Schema{
+var revision = &schema.Schema{
 	Type:        schema.TypeList,
 	Computed:    true,
 	Description: "System defined revision information of the object",
-	Elem:        objectRevisionSchema,
+	Elem:        objectRevision,
 }
 
-var titleSchema = &schema.Schema{
+var title = &schema.Schema{
 	Type:        schema.TypeString,
 	Optional:    true,
 	Description: "User defined title of the object. title can be changed any time.",
 }
 
-var zedcloudOpsCmdSchema = &schema.Resource{
+var zedcloudOpsCmd = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"counter": {
 			Type:        schema.TypeInt,
@@ -90,7 +90,7 @@ var zedcloudOpsCmdSchema = &schema.Resource{
 	},
 }
 
-var objectParentDetailSchema = &schema.Resource{
+var objectParentDetail = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"id_of_parent": {
 			Type:        schema.TypeString,
@@ -116,7 +116,7 @@ var objectParentDetailSchema = &schema.Resource{
 	},
 }
 
-var objectRevisionSchema = &schema.Resource{
+var objectRevision = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"created_at": {
 			Type:        schema.TypeString,
@@ -151,7 +151,7 @@ var objectRevisionSchema = &schema.Resource{
 	},
 }
 
-var nameValueEntrySchema = &schema.Resource{
+var nameValueEntry = &schema.Resource{
 	Schema: map[string]*schema.Schema{
 		"name": {
 			Type:        schema.TypeString,

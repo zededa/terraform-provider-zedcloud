@@ -10,6 +10,6 @@ import (
 var DataStoreSchema = map[string]*schema.Schema{
 	// Keep the following common fields at the top of schema definitions for all
 	//  objects.
-	"name": nameSchema,
-	"id":   idSchema,
+	"name": name,
+	"id":   id,
 }

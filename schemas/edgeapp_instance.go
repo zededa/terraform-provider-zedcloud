@@ -218,7 +218,7 @@ var phyAdapterResourceSchema = &schema.Resource{
 			Optional:    true,
 			Description: "Physical Adapter name",
 		},
-		"tags": tagsSchema,
+		"tags": tags,
 		"type": {
 			Type:     schema.TypeString,
 			Optional: true,
@@ -300,10 +300,10 @@ var appInterfaceResourceSchema = &schema.Resource{
 var AppInstSchema = map[string]*schema.Schema{
 	// Keep the following common fields at the top of schema definitions for all
 	//  objects.
-	"name":        nameSchema,
-	"id":          idSchema,
-	"description": descriptionSchema,
-	"title":       titleSchema,
+	"name":        name,
+	"id":          id,
+	"description": description,
+	"title":       title,
 
 	// Rest of the fields must be in the alphabetical order of keys
 	"activate": {
@@ -408,18 +408,18 @@ var AppInstSchema = map[string]*schema.Schema{
 		MaxItems:    1,
 		Description: "App Instance Logs related Configuration.",
 	},
-	"project_id": projectIdComputedSchema,
+	"project_id": projectIDComputed,
 	"purge": {
 		Type:        schema.TypeList,
 		Computed:    true,
 		Description: "Purge counter: ZedCloudOpsCmd",
-		Elem:        zedcloudOpsCmdSchema,
+		Elem:        zedcloudOpsCmd,
 	},
 	"refresh": {
 		Type:        schema.TypeList,
 		Computed:    true,
 		Description: "Refresh counter: ZedCloudOpsCmd",
-		Elem:        zedcloudOpsCmdSchema,
+		Elem:        zedcloudOpsCmd,
 	},
 	"remote_console": {
 		Type:        schema.TypeBool,
@@ -429,11 +429,11 @@ var AppInstSchema = map[string]*schema.Schema{
 	"restart": {
 		Type:        schema.TypeList,
 		Computed:    true,
-		Elem:        zedcloudOpsCmdSchema,
+		Elem:        zedcloudOpsCmd,
 		Description: "Restart counter: ZedCloudOpsCmd",
 	},
-	"revision": revisionSchema,
-	"tags":     tagsSchema,
+	"revision": revision,
+	"tags":     tags,
 	"user_defined_version": {
 		Type:        schema.TypeString,
 		Computed:    true,
