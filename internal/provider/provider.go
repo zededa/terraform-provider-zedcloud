@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
+	"github.com/zededa/terraform-provider-zedcloud/internal/datasources"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 )
@@ -22,8 +23,8 @@ func Provider() *schema.Provider {
 		ConfigureContextFunc: configure,
 		Schema:               zschemas.ProviderSchema,
 		DataSourcesMap: map[string]*schema.Resource{
-			"zedcloud_datastore":        dataSourceDataStore(),
-			"zedcloud_edgeapp":          getEdgeAppDataSourceSchema(),
+			"zedcloud_datastore":        datasources.NewDataStore(),
+			"zedcloud_edgeapp":          datasources.NewEdgeApp(),
 			"zedcloud_edgeapp_instance": getAppInstDataSourceSchema(),
 			"zedcloud_edgenode":         getEdgeNodeDataSourceSchema(),
 			"zedcloud_image":            getImageDataSourceSchema(),
