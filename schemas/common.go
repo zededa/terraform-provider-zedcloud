@@ -36,8 +36,8 @@ var projectIdSchema = &schema.Schema{
 	Type:        schema.TypeString,
 	Optional:    true,
 	Description: "ID of the project to which the Object belongs",
-	DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-		if new == "" {
+	DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+		if newVal == "" {
 			// If new is not specified - old one was published by get.
 			// This is the case of .tf not having the project id for the object,
 			// but zedcloud setting it - may be default project id.
@@ -163,5 +163,5 @@ var nameValueEntrySchema = &schema.Resource{
 			Optional:    true,
 			Description: "Value of the entry",
 		},
-    },
+	},
 }
