@@ -6,13 +6,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
-	"net/http"
 )
 
 var EdgeAppInstanceDataSourceSchema = &schema.Resource{
@@ -77,8 +78,8 @@ func flattenAppACEMatches(cfgList []*swagger_models.AppACEMatch) []interface{} {
 	entryList := make([]interface{}, 0)
 	for _, cfg := range cfgList {
 		entry := map[string]interface{}{
-			"type":  ptrValStr(cfg.Type),
-			"value": ptrValStr(cfg.Value),
+			"type":  strPtrVal(cfg.Type),
+			"value": strPtrVal(cfg.Value),
 		}
 		entryList = append(entryList, entry)
 	}
@@ -110,7 +111,7 @@ func flattenAppACEActions(cfgList []*swagger_models.AppACEAction) []interface{} 
 			"limit":      cfg.Limit,
 			"limitburst": limitburst,
 			"limitrate":  limitrate,
-			"limitunit":  ptrValStr(cfg.Limitunit),
+			"limitunit":  strPtrVal(cfg.Limitunit),
 			"mapparams":  flattenAppMapParams(cfg.Mapparams),
 			"portmap":    cfg.Portmap,
 		}
@@ -130,7 +131,7 @@ func flattenAppACEs(cfgList []*swagger_models.AppACE) []interface{} {
 			"action": flattenAppACEActions(cfg.Actions),
 			"id":     id,
 			"match":  flattenAppACEMatches(cfg.Matches),
-			"name":   ptrValStr(cfg.Name),
+			"name":   strPtrVal(cfg.Name),
 		}
 		entryList = append(entryList, entry)
 	}
@@ -160,11 +161,11 @@ func flattenAppInstInterfaces(cfgList []*swagger_models.AppInterface) []interfac
 			"acl":                  flattenAppACEs(cfg.Acls),
 			"default_net_instance": cfg.DefaultNetInstance,
 			"directattach":         cfg.Directattach,
-			"intfname":             ptrValStr(cfg.Intfname),
+			"intfname":             strPtrVal(cfg.Intfname),
 			"io":                   flattenPhyAdapter(cfg.Io),
-			"ipaddr":               ptrValStr(cfg.Ipaddr),
-			"macaddr":              ptrValStr(cfg.Macaddr),
-			"netinstname":          ptrValStr(cfg.Netinstname),
+			"ipaddr":               strPtrVal(cfg.Ipaddr),
+			"macaddr":              strPtrVal(cfg.Macaddr),
+			"netinstname":          strPtrVal(cfg.Netinstname),
 			"netinsttag":           flattenStringMap(cfg.Netinsttag),
 		}
 		entryList = append(entryList, entry)
@@ -184,16 +185,16 @@ func flattenDrives(cfgList []*swagger_models.Drive) []interface{} {
 		}
 		entry := map[string]interface{}{
 			"cleartext":   cfg.Cleartext,
-			"drvtype":     ptrValStr(cfg.Drvtype),
+			"drvtype":     strPtrVal(cfg.Drvtype),
 			"ignorepurge": cfg.Ignorepurge,
-			"imagename":   ptrValStr(cfg.Imagename),
+			"imagename":   strPtrVal(cfg.Imagename),
 			"imvolname":   cfg.Imvolname,
 			"maxsize":     maxsize,
 			"mountpath":   cfg.Mountpath,
 			"mvolname":    cfg.Mvolname,
 			"preserve":    cfg.Preserve,
 			"readonly":    cfg.Readonly,
-			"target":      ptrValStr(cfg.Target),
+			"target":      strPtrVal(cfg.Target),
 			"volumelabel": cfg.Volumelabel,
 		}
 		entryList = append(entryList, entry)
@@ -220,7 +221,7 @@ func flattenAppInstance(cfg *swagger_models.AppInstance, resource bool) map[stri
 		"cluster_id":           cfg.ClusterID,
 		"id":                   cfg.ID,
 		"is_secret_updated":    cfg.IsSecretUpdated,
-		"project_id":           ptrValStr(cfg.ProjectID),
+		"project_id":           strPtrVal(cfg.ProjectID),
 		"purge":                flattenZedCloudOpsCmd(cfg.Purge),
 		"refresh":              flattenZedCloudOpsCmd(cfg.Refresh),
 		"restart":              flattenZedCloudOpsCmd(cfg.Restart),
@@ -229,9 +230,9 @@ func flattenAppInstance(cfg *swagger_models.AppInstance, resource bool) map[stri
 		"vminfo":               flattenVM(cfg.Vminfo),
 	}
 	data["activate"] = ptrValBool(cfg.Activate)
-	data["app_id"] = ptrValStr(cfg.AppID)
+	data["app_id"] = strPtrVal(cfg.AppID)
 	data["app_policy_id"] = cfg.AppPolicyID
-	data["app_type"] = ptrValStr(cfg.AppType)
+	data["app_type"] = strPtrVal(cfg.AppType)
 	data["collect_stats_ip_addr"] = cfg.CollectStatsIPAddr
 	if !resource {
 		// Do not flatten secrets for resources. ZEDCloud doesn't return
@@ -239,15 +240,15 @@ func flattenAppInstance(cfg *swagger_models.AppInstance, resource bool) map[stri
 		data["custom_config"] = flattenCustomConfig(cfg.CustomConfig)
 	}
 	data["description"] = cfg.Description
-	data["device_id"] = ptrValStr(cfg.DeviceID)
+	data["device_id"] = strPtrVal(cfg.DeviceID)
 	data["drive"] = flattenDrives(cfg.Drives)
 	data["interface"] = flattenAppInstInterfaces(cfg.Interfaces)
 	data["logs"] = flattenAppInstanceLogs(cfg.Logs)
-	data["name"] = ptrValStr(cfg.Name)
+	data["name"] = strPtrVal(cfg.Name)
 	data["remote_console"] = cfg.RemoteConsole
 	data["tags"] = flattenStringMap(cfg.Tags)
-	data["title"] = ptrValStr(cfg.Title)
-	flattenedDataCheckKeys(zschemas.AppInstSchema, data)
+	data["title"] = strPtrVal(cfg.Title)
+	checkIfAllKeysExist(zschemas.AppInstSchema, data)
 	return data
 }
 
@@ -264,7 +265,7 @@ func getAppInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData
 		}
 		return err
 	}
-	marshalData(d, flattenAppInstance(cfg, resource))
+	setLocalState(d, flattenAppInstance(cfg, resource))
 	return nil
 }
 
@@ -273,8 +274,8 @@ func readAppInst(ctx context.Context, d *schema.ResourceData,
 	meta interface{}, resource bool) diag.Diagnostics {
 	var diags diag.Diagnostics
 	client := (meta.(Client)).Client
-	id := rdEntryStr(d, "id")
-	name := rdEntryStr(d, "name")
+	id := getStr(d, "id")
+	name := getStr(d, "name")
 
 	if client == nil {
 		return diag.Errorf("nil Client.")

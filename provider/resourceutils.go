@@ -5,16 +5,17 @@ package provider
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func getErrMsgPrefix(name, id, objectType, action string) string {
-	return fmt.Sprintf("[ERROR] %s %s ( id: %s) %s Failed.",
-		objectType, name, id, action)
+	return fmt.Sprintf("[ERROR] %s %s ( id: %s) %s Failed.", objectType, name, id, action)
 }
 
-// marshalData is used to ensure the data is put into a format Terraform can output
-func marshalData(d *schema.ResourceData, vals map[string]interface{}) {
+// setLocalState is used to ensure the data is put into a format Terraform can output
+func setLocalState(d *schema.ResourceData, vals map[string]interface{}) {
 	for k, v := range vals {
 		if k == "id" {
 			d.SetId(v.(string))
@@ -30,15 +31,22 @@ func marshalData(d *schema.ResourceData, vals map[string]interface{}) {
 }
 
 func checkInvalidAttrForUpdate(d *schema.ResourceData, name, id string) error {
-	newName := rdEntryStr(d, "name")
+	newName := getStr(d, "name")
 	if newName != name {
-		return fmt.Errorf("Name of an object cannot be changed. current: %s, new: %s",
-			name, newName)
+		return fmt.Errorf("Name of an object cannot be changed. current: %s, new: %s", name, newName)
 	}
-	idInState := rdEntryStr(d, "id")
+	idInState := getStr(d, "id")
 	if idInState != id {
-		return fmt.Errorf("ID of the object has Changed. Cannot update the object. "+
-			"ID in state: %s, ID of Object in Cloud: %s", idInState, id)
+		return fmt.Errorf(
+			"ID of the object has Changed. Cannot update the object. ID in state: %s, ID of Object in Cloud: %s",
+			idInState,
+			id,
+		)
 	}
 	return nil
+}
+
+func removeFromLocalState(d *schema.ResourceData, resourceType, id, name string) {
+	log.Printf("remove %s %s from state (id=%s)", resourceType, name, id)
+	schema.RemoveFromState(d, nil)
 }

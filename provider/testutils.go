@@ -5,6 +5,7 @@ package provider
 
 import (
 	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -22,7 +23,7 @@ func doVerifyFlattenOutput(objSchema map[string]*schema.Schema,
 	errStr := ""
 	if checkAllKeysPresent {
 		if len(output) != len(objSchema) {
-			for k, _ := range objSchema {
+			for k := range objSchema {
 				if _, ok := output[k]; !ok {
 					errStr += fmt.Sprintf("Key (%s) not present in Key Chain: %s\n",
 						k, parentKeys)
@@ -88,7 +89,8 @@ func doVerifyFlattenOutput(objSchema map[string]*schema.Schema,
 	return errStr
 }
 
-func verifyFlattenOutput(objSchema map[string]*schema.Schema,
+func verifyFlattenOutput(
+	objSchema map[string]*schema.Schema,
 	output map[string]interface{},
 	checkAllKeysPresent bool) error {
 	errStr := doVerifyFlattenOutput(objSchema, output, checkAllKeysPresent, "")

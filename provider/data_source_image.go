@@ -6,13 +6,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
-	"net/http"
 )
 
 var ImageDataSourceSchema = &schema.Resource{
@@ -45,22 +46,22 @@ func flattenImageConfig(cfg *swagger_models.ImageConfig) map[string]interface{} 
 		"id":            cfg.ID,
 		"image_error":   cfg.ImageError,
 		"image_local":   cfg.ImageLocal,
-		"image_status":  ptrValStr(cfg.ImageStatus),
+		"image_status":  strPtrVal(cfg.ImageStatus),
 		"image_version": cfg.ImageVersion,
-		"origin_type":   ptrValStr(cfg.OriginType),
+		"origin_type":   strPtrVal(cfg.OriginType),
 		"revision":      flattenObjectRevision(cfg.Revision),
 	}
-	data["datastore_id"] = ptrValStr(cfg.DatastoreID)
+	data["datastore_id"] = strPtrVal(cfg.DatastoreID)
 	data["description"] = cfg.Description
-	data["image_arch"] = ptrValStr(cfg.ImageArch)
-	data["image_format"] = ptrValStr(cfg.ImageFormat)
+	data["image_arch"] = strPtrVal(cfg.ImageArch)
+	data["image_format"] = strPtrVal(cfg.ImageFormat)
 	data["image_rel_url"] = cfg.ImageRelURL
 	data["image_sha_256"] = cfg.ImageSha256
 	data["image_size_bytes"] = cfg.ImageSizeBytes
-	data["image_type"] = ptrValStr(cfg.ImageType)
-	data["name"] = ptrValStr(cfg.Name)
-	data["title"] = ptrValStr(cfg.Title)
-	flattenedDataCheckKeys(zschemas.ImageSchema, data)
+	data["image_type"] = strPtrVal(cfg.ImageType)
+	data["name"] = strPtrVal(cfg.Name)
+	data["title"] = strPtrVal(cfg.Title)
+	checkIfAllKeysExist(zschemas.ImageSchema, data)
 	return data
 }
 
@@ -77,7 +78,7 @@ func getImageAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
 		}
 		return err
 	}
-	marshalData(d, flattenImageConfig(cfg))
+	setLocalState(d, flattenImageConfig(cfg))
 	return nil
 }
 
@@ -86,8 +87,8 @@ func readImage(ctx context.Context, d *schema.ResourceData, meta interface{}) di
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	id := rdEntryStr(d, "id")
-	name := rdEntryStr(d, "name")
+	id := getStr(d, "id")
+	name := getStr(d, "name")
 
 	if client == nil {
 		return diag.Errorf("nil Client.")

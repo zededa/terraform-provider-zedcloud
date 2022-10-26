@@ -4,11 +4,12 @@
 package provider
 
 import (
+	"testing"
+
 	"github.com/go-test/deep"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"testing"
 )
 
 var rdVolumeInstanceEmptyOutput = map[string]interface{}{
@@ -59,7 +60,8 @@ var rdVolumeInstanceFullCfg = map[string]interface{}{
 
 // efo - Expected Flattened Output
 // Computed fields will how up as empty - Kets will be there, but values will
-//  be empty
+//
+//	be empty
 var efoVolumeInstanceFullCfg = map[string]interface{}{
 	"accessmode":      rdVolumeInstanceFullCfg["accessmode"],
 	"cleartext":       rdVolumeInstanceFullCfg["cleartext"],
@@ -81,7 +83,8 @@ var efoVolumeInstanceFullCfg = map[string]interface{}{
 }
 
 // In each test case, call rdXXX to get the appropriate config struct,
-//  feed it to flattenXXX, verify output of flattenXXX is same as input
+//
+//	feed it to flattenXXX, verify output of flattenXXX is same as input
 func TestRDVolumeInstanceConfig(t *testing.T) {
 	cases := []struct {
 		description             string
@@ -113,8 +116,8 @@ func TestRDVolumeInstanceConfig(t *testing.T) {
 			name = ""
 		}
 		cfg.Name = name
-		cfg.ID = rdEntryStr(c.input, "id")
-		cfg.ProjectID = rdEntryStr(c.input, "project_id")
+		cfg.ID = getStr(c.input, "id")
+		cfg.ProjectID = getStr(c.input, "project_id")
 		err := rdUpdateVolumeInstanceCfg(cfg, rd)
 		if err != nil {
 			if !c.expectError {

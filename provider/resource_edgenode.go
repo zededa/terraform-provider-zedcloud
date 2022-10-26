@@ -6,10 +6,11 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"log"
 	"net/http"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
@@ -143,7 +144,7 @@ func rdConfigItems(d *schema.ResourceData) ([]*swagger_models.EDConfigItem, erro
 }
 
 func setDeviceLocation(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) error {
-	locationInfo := rdEntryList(d, "dev_location")
+	locationInfo := getList(d, "dev_location")
 	if len(locationInfo) == 0 {
 		// Location Info not specified.
 		cfg.DevLocation = nil
@@ -192,7 +193,7 @@ func adapterUsagePtr(strVal string) *swagger_models.AdapterUsage {
 }
 
 func setSystemInterface(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) error {
-	interfaceArray := rdEntryList(d, "interface")
+	interfaceArray := getList(d, "interface")
 	cfg.Interfaces = make([]*swagger_models.SysInterface, 0)
 	for _, val := range interfaceArray {
 		entry := val.(map[string]interface{})
@@ -218,14 +219,14 @@ func setSystemInterface(cfg *swagger_models.DeviceConfig, d *schema.ResourceData
 		if val, ok := entry["netname"]; ok {
 			intf.Netname = val.(string)
 		}
-		intf.Tags = rdEntryStrMap(entry, "tags")
+		intf.Tags = getStrMap(entry, "tags")
 		cfg.Interfaces = append(cfg.Interfaces, &intf)
 	}
 	return nil
 }
 
 func checkAdminStateValue(d *schema.ResourceData) (string, error) {
-	strVal := rdEntryStr(d, "adminstate_config")
+	strVal := getStr(d, "adminstate_config")
 	switch strVal {
 	case "ADMIN_STATE_ACTIVE":
 		return "activate", nil
@@ -243,7 +244,7 @@ func setAdminState(cfg *swagger_models.DeviceConfig,
 	if err != nil {
 		return "", err
 	}
-	strVal := rdEntryStr(d, "adminstate_config")
+	strVal := getStr(d, "adminstate_config")
 	adminstate := swagger_models.AdminState(strVal)
 	if cfg.AdminState != nil {
 		if adminstate == *cfg.AdminState {
@@ -263,16 +264,16 @@ func setAdminState(cfg *swagger_models.DeviceConfig,
 
 func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, create bool) error {
 	var err error
-	cfg.Description = rdEntryStr(d, "description")
-	cfg.Title = rdEntryStrPtrOrNil(d, "title")
+	cfg.Description = getStr(d, "description")
+	cfg.Title = getStrPtrOrNil(d, "title")
 
 	_, err = checkAdminStateValue(d)
 	if err != nil {
 		return err
 	}
-	cfg.AssetID = rdEntryStr(d, "asset_id")
-	cfg.ClientIP = rdEntryStr(d, "client_ip")
-	cfg.ClusterID = rdEntryStr(d, "cluster_id")
+	cfg.AssetID = getStr(d, "asset_id")
+	cfg.ClientIP = getStr(d, "client_ip")
+	cfg.ClusterID = getStr(d, "cluster_id")
 	cfg.ConfigItem, err = rdConfigItems(d)
 	if err != nil {
 		return err
@@ -281,7 +282,7 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, cr
 	if err != nil {
 		return err
 	}
-	eve_image_version := rdEntryStr(d, "eve_image_version")
+	eve_image_version := getStr(d, "eve_image_version")
 	if eve_image_version == "" {
 		return fmt.Errorf("eve_image_version must be specified.")
 	}
@@ -291,13 +292,13 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, cr
 	}
 	if create {
 		// model id and project id will be set only during create.
-		cfg.ModelID = rdEntryStrPtrOrNil(d, "model_id")
+		cfg.ModelID = getStrPtrOrNil(d, "model_id")
 		if cfg.ModelID == nil || *cfg.ModelID == "" {
 			return fmt.Errorf("model_id must be specified for the EdgeNode.")
 		}
-		cfg.Obkey = rdEntryStr(d, "onboard_key")
+		cfg.Obkey = getStr(d, "onboard_key")
 	}
-	projectIdPtr := rdEntryStrPtrOrNil(d, "project_id")
+	projectIdPtr := getStrPtrOrNil(d, "project_id")
 	if create {
 		if projectIdPtr == nil || *projectIdPtr == "" {
 			return fmt.Errorf("project_id must be specified for the EdgeNode.")
@@ -318,8 +319,8 @@ func rdDeviceConfig(cfg *swagger_models.DeviceConfig, d *schema.ResourceData, cr
 				"created. Current: %s, New: %s", *cfg.ProjectID, *projectIdPtr)
 		}
 	}
-	cfg.Serialno = rdEntryStr(d, "serialno")
-	cfg.Tags = rdEntryStrMap(d, "tags")
+	cfg.Serialno = getStr(d, "serialno")
+	cfg.Tags = getStrMap(d, "tags")
 	return nil
 }
 
@@ -328,8 +329,8 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "EdgeNode", "Create")
 	if client == nil {
 		return diag.Errorf("%s err: %s", errMsgPrefix, "nil Client")
@@ -359,7 +360,7 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 		return diag.Errorf("%s Failed to find Edge Node. err: %s",
 			errMsgPrefix, err.Error())
 	}
-	err = edgeNodeUpdateBaseOs(client, cfg, rdEntryStr(d, "eve_image_version"))
+	err = edgeNodeUpdateBaseOs(client, cfg, getStr(d, "eve_image_version"))
 	if err != nil {
 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
 	}
@@ -386,8 +387,8 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	id := rdEntryStr(d, "id")
-	name := rdEntryStr(d, "name")
+	id := getStr(d, "id")
+	name := getStr(d, "name")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
@@ -415,7 +416,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 		return diag.Errorf("%s Update request failed. Err: %s",
 			errMsgPrefix, err.Error())
 	}
-	err = edgeNodeUpdateBaseOs(client, cfg, rdEntryStr(d, "eve_image_version"))
+	err = edgeNodeUpdateBaseOs(client, cfg, getStr(d, "eve_image_version"))
 	if err != nil {
 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
 	}
@@ -436,8 +437,8 @@ func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Delete")
 	client.XRequestIdPrefix = "TF-edgenode-delete"
 	urlExtension := getEdgeNodeUrl(name, id, "delete")

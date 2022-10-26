@@ -6,13 +6,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
-	"net/http"
 )
 
 var NetInstDataSourceSchema = &schema.Resource{
@@ -44,7 +45,7 @@ func flattenNetInstOpaqueConfig(cfg *swagger_models.NetInstOpaqueConfig) []inter
 	}
 	return []interface{}{map[string]interface{}{
 		"oconfig": cfg.Oconfig,
-		"type":    ptrValStr(cfg.Type),
+		"type":    strPtrVal(cfg.Type),
 	}}
 }
 
@@ -100,19 +101,19 @@ func flattenNetInstConfig(cfg *swagger_models.NetInstConfig) map[string]interfac
 	}
 	data["description"] = cfg.Description
 	data["device_default"] = cfg.DeviceDefault
-	data["device_id"] = ptrValStr(cfg.DeviceID)
+	data["device_id"] = strPtrVal(cfg.DeviceID)
 	data["dns_list"] = flattenStaticDNSList(cfg.DNSList)
 	data["ip"] = flattenDhcpServerConfig(cfg.IP)
-	data["kind"] = ptrValStr(cfg.Kind)
-	data["name"] = ptrValStr(cfg.Name)
+	data["kind"] = strPtrVal(cfg.Kind)
+	data["name"] = strPtrVal(cfg.Name)
 	data["network_policy_id"] = cfg.NetworkPolicyID
 	data["opaque"] = flattenNetInstOpaqueConfig(cfg.Opaque)
-	data["port"] = ptrValStr(cfg.Port)
+	data["port"] = strPtrVal(cfg.Port)
 	data["port_tags"] = flattenStringMap(cfg.PortTags)
 	data["tags"] = flattenStringMap(cfg.Tags)
-	data["title"] = ptrValStr(cfg.Title)
-	data["type"] = ptrValStr(cfg.Type)
-	flattenedDataCheckKeys(zschemas.NetworkInstanceSchema, data)
+	data["title"] = strPtrVal(cfg.Title)
+	data["type"] = strPtrVal(cfg.Type)
+	checkIfAllKeysExist(zschemas.NetworkInstanceSchema, data)
 	return data
 }
 
@@ -129,7 +130,7 @@ func getNetInstAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData
 		}
 		return err
 	}
-	marshalData(d, flattenNetInstConfig(cfg))
+	setLocalState(d, flattenNetInstConfig(cfg))
 	return nil
 }
 
@@ -139,8 +140,8 @@ func readNetInst(ctx context.Context, d *schema.ResourceData,
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	id := rdEntryStr(d, "id")
-	name := rdEntryStr(d, "name")
+	id := getStr(d, "id")
+	name := getStr(d, "name")
 	if client == nil {
 		return diag.Errorf("nil Client")
 	}

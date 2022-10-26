@@ -6,14 +6,15 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
+	"strconv"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
-	"net/http"
-	"strconv"
 )
 
 var EdgeAppDataSourceSchema = &schema.Resource{
@@ -67,7 +68,7 @@ func flattenAppModule(cfg *swagger_models.ModuleDetail) []interface{} {
 	}
 	return []interface{}{map[string]interface{}{
 		"environment": flattenStringMap(cfg.Environment),
-		"module_type": ptrValStr(cfg.ModuleType),
+		"module_type": strPtrVal(cfg.ModuleType),
 		"routes":      flattenStringMap(cfg.Routes),
 		"twin_detail": cfg.TwinDetail,
 	}}
@@ -197,8 +198,8 @@ func flattenDescDetails(cfg *swagger_models.Details) []interface{} {
 	}
 	return []interface{}{map[string]interface{}{
 		"agreement_list": flattenStringMap(cfg.AgreementList),
-		"app_category":   ptrValStr(cfg.AppCategory),
-		"category":       ptrValStr(cfg.Category),
+		"app_category":   strPtrVal(cfg.AppCategory),
+		"category":       strPtrVal(cfg.Category),
 		"license_list":   flattenStringMap(cfg.LicenseList),
 		"logo":           flattenStringMap(cfg.Logo),
 		"os":             cfg.Os,
@@ -229,10 +230,10 @@ func flattenVmManifest(cfg *swagger_models.VMManifest) []interface{} {
 		return []interface{}{}
 	}
 	return []interface{}{map[string]interface{}{
-		"apptype":          ptrValStr(cfg.AppType),
+		"apptype":          strPtrVal(cfg.AppType),
 		"configuration":    flattenUserDataTemplate(cfg.Configuration),
 		"container_detail": flattenContainerDetail(cfg.ContainerDetail),
-		"deployment_type":  ptrValStr(cfg.DeploymentType),
+		"deployment_type":  strPtrVal(cfg.DeploymentType),
 		"desc_detail":      flattenDescDetails(cfg.Desc),
 		"description":      cfg.Description,
 		"display_name":     cfg.DisplayName,
@@ -243,20 +244,19 @@ func flattenVmManifest(cfg *swagger_models.VMManifest) []interface{} {
 		"name":             cfg.Name,
 		"owner":            flattenAppAuthor(cfg.Owner),
 		"resource":         flattenAppResources(cfg.Resources),
-		"vmmode":           ptrValStr(cfg.Vmmode),
+		"vmmode":           strPtrVal(cfg.Vmmode),
 	}}
 }
 
-func flattenEdgeAppConfig(cfg *swagger_models.App,
-	manifestConfigured bool) map[string]interface{} {
+func flattenEdgeAppConfig(cfg *swagger_models.App, manifestConfigured bool) map[string]interface{} {
 	data := map[string]interface{}{
 		"id":            cfg.ID,
-		"origin_type":   ptrValStr(cfg.OriginType),
+		"origin_type":   strPtrVal(cfg.OriginType),
 		"parent_detail": flattenObjectParentDetail(cfg.ParentDetail),
 		"revision":      flattenObjectRevision(cfg.Revision),
 	}
-	data["name"] = ptrValStr(cfg.Name)
-	data["title"] = ptrValStr(cfg.Title)
+	data["name"] = strPtrVal(cfg.Name)
+	data["title"] = strPtrVal(cfg.Title)
 	data["description"] = cfg.Description
 	data["cpus"] = int(cfg.Cpus)
 	data["drives"] = int(cfg.Drives)
@@ -267,18 +267,17 @@ func flattenEdgeAppConfig(cfg *swagger_models.App,
 	data["networks"] = int(cfg.Networks)
 	data["storage"] = int(cfg.Storage)
 	data["user_defined_version"] = cfg.UserDefinedVersion
-	flattenedDataCheckKeys(zschemas.EdgeAppSchema, data)
+	checkIfAllKeysExist(zschemas.EdgeAppSchema, data)
 	return data
 }
 
 // Read the Resource Group
-func readEdgeApp(ctx context.Context, d *schema.ResourceData,
-	meta interface{}) diag.Diagnostics {
+func readEdgeApp(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	id := rdEntryStr(d, "id")
-	name := rdEntryStr(d, "name")
+	id := getStr(d, "id")
+	name := getStr(d, "name")
 
 	if client == nil {
 		return diag.Errorf("nil Client.")
@@ -300,9 +299,9 @@ func readEdgeApp(ctx context.Context, d *schema.ResourceData,
 
 	// Take the Config and convert it to terraform object
 	// Special case for manifest / manifest_file
-	manifestConfigured, _ := rdEntryByKey(d, "manifest")
+	manifestConfigured, _ := getByKey(d, "manifest")
 	flattenedData := flattenEdgeAppConfig(cfg, manifestConfigured)
-	marshalData(d, flattenedData)
+	setLocalState(d, flattenedData)
 	return diags
 }
 

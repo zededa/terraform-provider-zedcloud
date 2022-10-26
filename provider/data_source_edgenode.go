@@ -6,13 +6,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
-	"net/http"
 )
 
 var EdgeNodeDataSourceSchema = &schema.Resource{
@@ -51,7 +52,7 @@ func getEdgeNodeAndPublishData(client *zedcloudapi.Client, d *schema.ResourceDat
 		}
 		return err
 	}
-	marshalData(d, flattenDeviceConfig(cfg))
+	setLocalState(d, flattenDeviceConfig(cfg))
 	return nil
 }
 
@@ -79,7 +80,7 @@ func flattenSysInterfaces(cfgList []*swagger_models.SysInterface) []interface{} 
 		entryList = append(entryList, map[string]interface{}{
 			"cost":       int(intf.Cost),
 			"intfname":   intf.Intfname,
-			"intf_usage": ptrValStr(intf.IntfUsage),
+			"intf_usage": strPtrVal(intf.IntfUsage),
 			"ipaddr":     intf.Ipaddr,
 			"macaddr":    intf.Macaddr,
 			"netname":    intf.Netname,
@@ -110,7 +111,7 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig) map[string]interface{
 	}
 
 	data := map[string]interface{}{
-		"adminstate":    ptrValStr(cfg.AdminState),
+		"adminstate":    strPtrVal(cfg.AdminState),
 		"cluster_id":    cfg.ClusterID,
 		"cpu":           int(cfg.CPU),
 		"id":            cfg.ID,
@@ -120,9 +121,9 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig) map[string]interface{
 		"revision":      flattenObjectRevision(cfg.Revision),
 		"storage":       int(cfg.Storage),
 		"thread":        int(cfg.Thread),
-		"utype":         ptrValStr(cfg.Utype),
+		"utype":         strPtrVal(cfg.Utype),
 	}
-	data["adminstate_config"] = ptrValStr(cfg.AdminState)
+	data["adminstate_config"] = strPtrVal(cfg.AdminState)
 	data["asset_id"] = cfg.AssetID
 	data["client_ip"] = cfg.ClientIP
 	data["config_items"] = flattenEDConfigItems(cfg.ConfigItem)
@@ -130,13 +131,13 @@ func flattenDeviceConfig(cfg *swagger_models.DeviceConfig) map[string]interface{
 	data["dev_location"] = flattenGeoLocation(cfg.DevLocation)
 	data["eve_image_version"] = eveImageVersion
 	data["interface"] = flattenSysInterfaces(cfg.Interfaces)
-	data["model_id"] = ptrValStr(cfg.ModelID)
-	data["name"] = ptrValStr(cfg.Name)
-	data["project_id"] = ptrValStr(cfg.ProjectID)
+	data["model_id"] = strPtrVal(cfg.ModelID)
+	data["name"] = strPtrVal(cfg.Name)
+	data["project_id"] = strPtrVal(cfg.ProjectID)
 	data["serialno"] = cfg.Serialno
 	data["tags"] = flattenStringMap(cfg.Tags)
-	data["title"] = ptrValStr(cfg.Title)
-	flattenedDataCheckKeys(zschemas.EdgeNodeSchema, data)
+	data["title"] = strPtrVal(cfg.Title)
+	checkIfAllKeysExist(zschemas.EdgeNodeSchema, data)
 	return data
 }
 
@@ -147,8 +148,8 @@ func readEdgeNode(ctx context.Context, d *schema.ResourceData,
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	id := rdEntryStr(d, "id")
-	name := rdEntryStr(d, "name")
+	id := getStr(d, "id")
+	name := getStr(d, "name")
 
 	if client == nil {
 		return diag.Errorf("nil Client.")

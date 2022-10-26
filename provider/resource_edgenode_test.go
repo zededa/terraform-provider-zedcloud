@@ -4,11 +4,12 @@
 package provider
 
 import (
+	"testing"
+
 	"github.com/go-test/deep"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"testing"
 )
 
 func copyMap(originalMap map[string]interface{}) map[string]interface{} {
@@ -190,7 +191,8 @@ func rdEdgeNodeUpdateProjectIdToNilOutput() map[string]interface{} {
 }
 
 // In each test case, call rdXXX to get the appropriate config struct,
-//  feed it to flattenXXX, verify output of flattenXXX is same as input
+//
+//	feed it to flattenXXX, verify output of flattenXXX is same as input
 func TestRDEdgeNodeConfig(t *testing.T) {
 	cases := []struct {
 		input                   map[string]interface{}
@@ -245,7 +247,7 @@ func TestRDEdgeNodeConfig(t *testing.T) {
 		}
 		cfg.Name = &name
 		cfg.ID, ok = c.input["id"].(string)
-		cfg.BaseImage = cfgBaseosForEveVersionStr(rdEntryStr(rd, "eve_image_version"))
+		cfg.BaseImage = cfgBaseosForEveVersionStr(getStr(rd, "eve_image_version"))
 		if c.update_project_id {
 			project_id := "SampleProjectID"
 			cfg.ProjectID = &project_id

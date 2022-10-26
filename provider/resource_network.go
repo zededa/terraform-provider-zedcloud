@@ -6,13 +6,14 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
 )
 
 var networkUrlExtension = "networks"
@@ -39,13 +40,13 @@ func getNetworkUrl(name, id, urlType string) string {
 
 func rdMapNetCellularConfig(d map[string]interface{}) (interface{}, error) {
 	return &swagger_models.NetCellularConfig{
-		APN: rdEntryStr(d, "apn"),
+		APN: getStr(d, "apn"),
 	}, nil
 }
 
 func rdMapNetWifiConfigSecrets(d map[string]interface{}) (interface{}, error) {
 	return &swagger_models.NetWifiConfigSecrets{
-		WiFiPasswd: rdEntryStr(d, "wifi_passwd"),
+		WiFiPasswd: getStr(d, "wifi_passwd"),
 	}, nil
 }
 
@@ -55,8 +56,8 @@ func networkWiFiKeySchemePtr(strVal string) *swagger_models.NetworkWiFiKeyScheme
 }
 
 func rdMapNetWifiConfig(d map[string]interface{}) (interface{}, error) {
-	keyScheme := swagger_models.NetworkWiFiKeyScheme(rdEntryStr(d, "key_scheme"))
-	val, err := rdEntryStructPtr(d, "secret", rdMapNetWifiConfigSecrets)
+	keyScheme := swagger_models.NetworkWiFiKeyScheme(getStr(d, "key_scheme"))
+	val, err := getStructPtr(d, "secret", rdMapNetWifiConfigSecrets)
 	if err != nil {
 		return nil, err
 	}
@@ -65,11 +66,11 @@ func rdMapNetWifiConfig(d map[string]interface{}) (interface{}, error) {
 		secret = val.(*swagger_models.NetWifiConfigSecrets)
 	}
 	return &swagger_models.NetWifiConfig{
-		Identity:  rdEntryStr(d, "identity"),
+		Identity:  getStr(d, "identity"),
 		KeyScheme: &keyScheme,
-		Priority:  rdEntryInt32(d, "priority"),
+		Priority:  getInt32(d, "priority"),
 		Secret:    secret,
-		WifiSSID:  rdEntryStr(d, "wifi_ssid"),
+		WifiSSID:  getStr(d, "wifi_ssid"),
 	}, nil
 }
 
@@ -79,7 +80,7 @@ func networkWirelessTypePtr(strVal string) *swagger_models.NetworkWirelessType {
 }
 
 func rdMapNetWirelessConfig(d map[string]interface{}) (interface{}, error) {
-	val, err := rdEntryStructPtr(d, "cellular_cfg", rdMapNetCellularConfig)
+	val, err := getStructPtr(d, "cellular_cfg", rdMapNetCellularConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +88,7 @@ func rdMapNetWirelessConfig(d map[string]interface{}) (interface{}, error) {
 	if val != nil {
 		cellularCfg = val.(*swagger_models.NetCellularConfig)
 	}
-	val, err = rdEntryStructPtr(d, "wifi_cfg", rdMapNetWifiConfig)
+	val, err = getStructPtr(d, "wifi_cfg", rdMapNetWifiConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -97,12 +98,12 @@ func rdMapNetWirelessConfig(d map[string]interface{}) (interface{}, error) {
 	}
 	return &swagger_models.NetWirelessConfig{
 		CellularCfg: cellularCfg,
-		Type:        networkWirelessTypePtr(rdEntryStr(d, "type")),
+		Type:        networkWirelessTypePtr(getStr(d, "type")),
 		WifiCfg:     wifiCfg,
 	}, nil
 }
 func rdMapNetWirelessConfigOrNil(d *schema.ResourceData) (*swagger_models.NetWirelessConfig, error) {
-	val, err := rdEntryStructPtr(d, "wireless", rdMapNetWirelessConfig)
+	val, err := getStructPtr(d, "wireless", rdMapNetWirelessConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -124,9 +125,9 @@ func rdMapNetProxyServer(d map[string]interface{}, key string) (
 		for _, v := range val.([]interface{}) {
 			entry := v.(map[string]interface{})
 			proxyList = append(proxyList, &swagger_models.NetProxyServer{
-				Port:   rdEntryInt64(entry, "port"),
-				Proto:  networkProxyProtoPtr(rdEntryStr(entry, "proto")),
-				Server: rdEntryStr(entry, "server"),
+				Port:   getInt64(entry, "port"),
+				Proto:  networkProxyProtoPtr(getStr(entry, "proto")),
+				Server: getStr(entry, "server"),
 			})
 		}
 	}
@@ -134,7 +135,7 @@ func rdMapNetProxyServer(d map[string]interface{}, key string) (
 }
 
 func rdMapNetProxyConfig(d map[string]interface{}) (interface{}, error) {
-	certStrList := rdEntryStrList(d, "network_proxy_certs")
+	certStrList := getStrList(d, "network_proxy_certs")
 	certs := make([]strfmt.Base64, 0)
 	for _, certStr := range certStrList {
 		certs = append(certs, strfmt.Base64(certStr))
@@ -144,17 +145,17 @@ func rdMapNetProxyConfig(d map[string]interface{}) (interface{}, error) {
 		return nil, err
 	}
 	return &swagger_models.NetProxyConfig{
-		Exceptions:        rdEntryStr(d, "exceptions"),
-		NetworkProxy:      rdEntryBool(d, "network_proxy"),
+		Exceptions:        getStr(d, "exceptions"),
+		NetworkProxy:      getBool(d, "network_proxy"),
 		NetworkProxyCerts: certs,
-		NetworkProxyURL:   rdEntryStr(d, "network_proxy_url"),
-		Pacfile:           rdEntryStr(d, "pacfile"),
+		NetworkProxyURL:   getStr(d, "network_proxy_url"),
+		Pacfile:           getStr(d, "pacfile"),
 		Proxies:           proxies,
 	}, nil
 }
 
 func rdMapNetProxyConfigOrNil(d *schema.ResourceData) (*swagger_models.NetProxyConfig, error) {
-	val, err := rdEntryStructPtr(d, "proxy", rdMapNetProxyConfig)
+	val, err := getStructPtr(d, "proxy", rdMapNetProxyConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -175,18 +176,18 @@ func rdMapIPSpec(d map[string]interface{}) (interface{}, error) {
 		return nil, err
 	}
 	return &swagger_models.IPSpec{
-		Dhcp:      networkDHCPTypePtr(rdEntryStr(d, "dhcp")),
+		Dhcp:      networkDHCPTypePtr(getStr(d, "dhcp")),
 		DhcpRange: dhcpRange,
-		DNS:       rdEntryStrList(d, "dns"),
-		Domain:    rdEntryStr(d, "domain"),
-		Gateway:   rdEntryStr(d, "gateway"),
-		Mask:      rdEntryStr(d, "mask"),
-		Ntp:       rdEntryStr(d, "ntp"),
-		Subnet:    rdEntryStr(d, "subnet"),
+		DNS:       getStrList(d, "dns"),
+		Domain:    getStr(d, "domain"),
+		Gateway:   getStr(d, "gateway"),
+		Mask:      getStr(d, "mask"),
+		Ntp:       getStr(d, "ntp"),
+		Subnet:    getStr(d, "subnet"),
 	}, nil
 }
 func rdMapIPSpecOrNil(d *schema.ResourceData) (*swagger_models.IPSpec, error) {
-	val, err := rdEntryStructPtr(d, "ip", rdMapIPSpec)
+	val, err := getStructPtr(d, "ip", rdMapIPSpec)
 	if err != nil {
 		return nil, err
 	}
@@ -203,23 +204,23 @@ func networkKindPtr(strVal string) *swagger_models.NetworkKind {
 
 func rdToNetConfig(cfg *swagger_models.NetConfig, d *schema.ResourceData) error {
 	var err error
-	cfg.Description = rdEntryStr(d, "description")
+	cfg.Description = getStr(d, "description")
 	cfg.DNSList, err = resourceDataToStaticDNSList(d)
 	if err != nil {
 		return err
 	}
-	cfg.EnterpriseDefault = rdEntryBool(d, "enterprise_default")
+	cfg.EnterpriseDefault = getBool(d, "enterprise_default")
 	cfg.IP, err = rdMapIPSpecOrNil(d)
 	if err != nil {
 		return err
 	}
-	cfg.Kind = networkKindPtr(rdEntryStr(d, "kind"))
-	cfg.ProjectID = rdEntryStrPtrOrNil(d, "project_id")
+	cfg.Kind = networkKindPtr(getStr(d, "kind"))
+	cfg.ProjectID = getStrPtrOrNil(d, "project_id")
 	cfg.Proxy, err = rdMapNetProxyConfigOrNil(d)
 	if err != nil {
 		return err
 	}
-	cfg.Title = rdEntryStrPtrOrNil(d, "title")
+	cfg.Title = getStrPtrOrNil(d, "title")
 	cfg.Wireless, err = rdMapNetWirelessConfigOrNil(d)
 	if err != nil {
 		return err
@@ -233,7 +234,7 @@ func createNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
+	name := getStr(d, "name")
 	errMsgPrefix := getErrMsgPrefix(name, "", "App Instance", "Create")
 	log.Printf("[INFO] Creating Network: %s", name)
 	cfg := &swagger_models.NetConfig{
@@ -267,8 +268,8 @@ func updateNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Network ", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
@@ -311,8 +312,8 @@ func deleteNetworkResource(ctx context.Context, d *schema.ResourceData, meta int
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := fmt.Sprintf("[ERROR] Network %s ( id: %s) Delete Failed.",
 		name, id)
 	_, err, httpRsp := getNetworkConfig(client, name, id)

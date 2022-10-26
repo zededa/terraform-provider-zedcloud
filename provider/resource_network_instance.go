@@ -6,12 +6,13 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
 )
 
 var netInstUrlExtension = "netinsts"
@@ -37,16 +38,16 @@ func getNetInstUrl(name, id, urlType string) string {
 }
 
 func resourceDataMapToNetInstOpaqueConfig(d map[string]interface{}) (interface{}, error) {
-	oconfigType := swagger_models.OpaqueConfigType(rdEntryStr(d, "type"))
+	oconfigType := swagger_models.OpaqueConfigType(getStr(d, "type"))
 	return &swagger_models.NetInstOpaqueConfig{
-		Oconfig: rdEntryStr(d, "oconfig"),
+		Oconfig: getStr(d, "oconfig"),
 		Type:    &oconfigType,
 	}, nil
 }
 
 func resourceDataToNetInstOpaqueConfig(d *schema.ResourceData) (
 	*swagger_models.NetInstOpaqueConfig, error) {
-	val, err := rdEntryStructPtr(d, "opaque", resourceDataMapToNetInstOpaqueConfig)
+	val, err := getStructPtr(d, "opaque", resourceDataMapToNetInstOpaqueConfig)
 	if val == nil {
 		return nil, nil
 	}
@@ -55,13 +56,13 @@ func resourceDataToNetInstOpaqueConfig(d *schema.ResourceData) (
 
 func rdMapDhcpIpRange(d map[string]interface{}) (interface{}, error) {
 	return &swagger_models.DhcpIPRange{
-		End:   rdEntryStr(d, "end"),
-		Start: rdEntryStr(d, "start"),
+		End:   getStr(d, "end"),
+		Start: getStr(d, "start"),
 	}, nil
 }
 
 func rdMapDhcpIpRangeOrNil(d interface{}) (*swagger_models.DhcpIPRange, error) {
-	val, err := rdEntryStructPtr(d, "dhcp_range", rdMapDhcpIpRange)
+	val, err := getStructPtr(d, "dhcp_range", rdMapDhcpIpRange)
 	if err != nil {
 		return nil, err
 	}
@@ -78,17 +79,17 @@ func resourceDataMapToDhcpServerConfig(d map[string]interface{}) (interface{}, e
 	}
 	return &swagger_models.DhcpServerConfig{
 		DhcpRange: dhcpRange,
-		DNS:       rdEntryStrList(d, "dns"),
-		Domain:    rdEntryStr(d, "domain"),
-		Gateway:   rdEntryStr(d, "gateway"),
-		Mask:      rdEntryStr(d, "mask"),
-		Ntp:       rdEntryStr(d, "ntp"),
-		Subnet:    rdEntryStr(d, "subnet"),
+		DNS:       getStrList(d, "dns"),
+		Domain:    getStr(d, "domain"),
+		Gateway:   getStr(d, "gateway"),
+		Mask:      getStr(d, "mask"),
+		Ntp:       getStr(d, "ntp"),
+		Subnet:    getStr(d, "subnet"),
 	}, nil
 }
 
 func resourceDataToDhcpServerConfig(d *schema.ResourceData) (*swagger_models.DhcpServerConfig, error) {
-	val, err := rdEntryStructPtr(d, "ip", resourceDataMapToDhcpServerConfig)
+	val, err := getStructPtr(d, "ip", resourceDataMapToDhcpServerConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -100,12 +101,12 @@ func resourceDataToDhcpServerConfig(d *schema.ResourceData) (*swagger_models.Dhc
 
 func resourceDataToStaticDNSList(d *schema.ResourceData) ([]*swagger_models.StaticDNSList, error) {
 	dnsList := make([]*swagger_models.StaticDNSList, 0)
-	data := rdEntryList(d, "dns_list")
+	data := getList(d, "dns_list")
 	for _, entry := range data {
 		dataEntry := entry.(map[string]interface{})
 		dnsEntry := &swagger_models.StaticDNSList{
-			Addrs:    rdEntryStrSet(dataEntry, "addrs"),
-			Hostname: rdEntryStr(dataEntry, "hostname"),
+			Addrs:    getStrSet(dataEntry, "addrs"),
+			Hostname: getStr(dataEntry, "hostname"),
 		}
 		dnsList = append(dnsList, dnsEntry)
 	}
@@ -122,26 +123,26 @@ func rdUpdateNetInstConfig(d *schema.ResourceData,
 	if err != nil {
 		return err
 	}
-	kind := swagger_models.NetworkInstanceKind(rdEntryStr(d, "kind"))
+	kind := swagger_models.NetworkInstanceKind(getStr(d, "kind"))
 	opaque, err := resourceDataToNetInstOpaqueConfig(d)
 	if err != nil {
 		return err
 	}
-	dhcpType := swagger_models.NetworkInstanceDhcpType(rdEntryStr(d, "type"))
+	dhcpType := swagger_models.NetworkInstanceDhcpType(getStr(d, "type"))
 
-	cfg.Description = rdEntryStr(d, "description")
-	cfg.DeviceDefault = rdEntryBool(d, "device_default")
-	cfg.DeviceID = rdEntryStrPtrOrNil(d, "device_id")
+	cfg.Description = getStr(d, "description")
+	cfg.DeviceDefault = getBool(d, "device_default")
+	cfg.DeviceID = getStrPtrOrNil(d, "device_id")
 	cfg.DNSList = dnsList
 	cfg.IP = dhcpServerCfg
 	cfg.Kind = &kind
-	cfg.NetworkPolicyID = rdEntryStr(d, "network_policy_id")
+	cfg.NetworkPolicyID = getStr(d, "network_policy_id")
 	cfg.Opaque = opaque
-	cfg.Port = rdEntryStrPtrOrNil(d, "port")
-	cfg.PortTags = rdEntryStrMap(d, "port_tags")
-	cfg.ProjectID = rdEntryStr(d, "project_id")
-	cfg.Tags = rdEntryStrMap(d, "tags")
-	cfg.Title = rdEntryStrPtrOrNil(d, "title")
+	cfg.Port = getStrPtrOrNil(d, "port")
+	cfg.PortTags = getStrMap(d, "port_tags")
+	cfg.ProjectID = getStr(d, "project_id")
+	cfg.Tags = getStrMap(d, "tags")
+	cfg.Title = getStrPtrOrNil(d, "title")
 	cfg.Type = &dhcpType
 
 	return nil
@@ -153,7 +154,7 @@ func createNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
+	name := getStr(d, "name")
 	errMsgPrefix := getErrMsgPrefix(name, "", "NetworkInstance", "Create")
 	if name == "" {
 		return diag.Errorf("%s \"name\" must be specified.", errMsgPrefix)
@@ -194,7 +195,7 @@ func validateNetInstUpdateOperation(client *zedcloudapi.Client,
 	if client == nil {
 		return nil, fmt.Errorf("nil Client")
 	}
-	id := rdEntryStr(d, "id")
+	id := getStr(d, "id")
 	if id == "" {
 		return nil, fmt.Errorf("id cannot be empty string for Update operation")
 	}
@@ -215,8 +216,8 @@ func updateNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Network Instance", "Update")
 	cfg, err := validateNetInstUpdateOperation(client, d)
 	if err != nil {
@@ -248,8 +249,8 @@ func deleteNetInstResource(ctx context.Context, d *schema.ResourceData, meta int
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Network Instance", "Delete")
 	_, err, httpRsp := getNetInstConfig(client, name, id)
 	if err != nil {

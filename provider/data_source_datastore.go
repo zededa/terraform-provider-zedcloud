@@ -5,87 +5,85 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
-	zedcloudapi "github.com/zededa/zedcloud-api"
-	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
-	"net/http"
+	zedcloudAPI "github.com/zededa/zedcloud-api"
+	models "github.com/zededa/zedcloud-api/swagger_models"
 )
 
 var dataStoreUrlExtension = "datastores"
+var resourceType = "datastore"
 
-var DataStoreDataSourceSchema = &schema.Resource{
-	ReadContext: readDataSourceDataStore,
-	Schema:      zschemas.DataStoreSchema,
-	Description: "Schema for data source zedcloud_DataStore. Must specify id or name",
-}
-
-// The schema for a resource group data source
-func getDataStoreDataSourceSchema() *schema.Resource {
-	return DataStoreDataSourceSchema
-}
-
-func getDataStore(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.DatastoreInfo, error, *http.Response) {
-	rspData := &swagger_models.DatastoreInfo{}
-	httpResp, err := client.GetObj(dataStoreUrlExtension, name, id, false, rspData)
-	if err != nil {
-		return nil, fmt.Errorf("[ERROR] FAILED to get DataStore %s ( id: %s). Err: %s",
-			name, id, err.Error()), httpResp
+func dataSourceDataStore() *schema.Resource {
+	return &schema.Resource{
+		ReadContext: dataSourceDataStoreRead,
+		Schema:      zschemas.DataStore,
+		Description: "Schema for data source zedcloud_DataStore. Must specify id or name",
 	}
-	return rspData, nil, httpResp
 }
 
-func flattenDatastoreInfo(cfg *swagger_models.DatastoreInfo) map[string]interface{} {
-	data := map[string]interface{}{
-		"id": cfg.ID,
-		"name": ptrValStr(cfg.Name),
-	}
-	flattenedDataCheckKeys(zschemas.DataStoreSchema, data)
-	return data
-}
-
-func getDataStoreAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string) error {
-	cfg, err, httpRsp := getDataStore(client, name, id)
-	if err != nil {
-		err = fmt.Errorf("[ERROR] DataStore %s (id: %s) not found. Err: %s",
-			name, id, err.Error())
-		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
-			log.Printf("PROVIDER:  REMOVED DataStore %s (id: %s) from State", id, name)
-			schema.RemoveFromState(d, nil)
-			return nil
-		}
-		return err
-	}
-	marshalData(d, flattenDatastoreInfo(cfg))
-	return nil
-}
-
-// Read the Resource Group
-func readDataStore(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDataStoreRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	// warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	client := (meta.(Client)).Client
-	id := rdEntryStr(d, "id")
-	name := rdEntryStr(d, "name")
-	if client == nil {
-		return diag.Errorf("nil Client.")
+	id := getStr(d, "id")
+	name := getStr(d, "name")
+	if id == "" && name == "" {
+		return diag.Errorf("missing required fields \"id\" or \"name\" in resource data")
 	}
-	if (id == "") && (name == "") {
-		return diag.Errorf("The arguments \"id\" or \"name\" are required, " +
-			"but no definition was found.")
-	}
-	err := getDataStoreAndPublishData(client, d, name, id)
+
+	apiState, err := fetch(name, id, meta)
 	if err != nil {
-		return diag.Errorf("%s", err.Error())
+		// no object with this id exist in the api's state
+		var notFoundErr *ObjectNotFound
+		if errors.As(err, &notFoundErr) {
+			removeFromLocalState(d, resourceType, id, name)
+			return diag.FromErr(fmt.Errorf("[ERROR] could not find datastore %s (id=%s): %w", name, id, err))
+		}
+		return diag.FromErr(fmt.Errorf("[ERROR] could not fetch datastore %s (id=%s): %w", name, id, err))
 	}
+
+	flattenedAPIState, err := flatten(apiState)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf("[ERROR] could not flatten api state for datastore %s (id=%s): %w", name, id, err))
+	}
+
+	// we always need to set the state
+	setLocalState(d, flattenedAPIState)
+
 	return diags
 }
 
-func readDataSourceDataStore(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readDataStore(ctx, d, meta)
+func fetch(name, id string, meta interface{}) (*models.DatastoreInfo, error) {
+	client, ok := meta.(Client)
+	if !ok {
+		return nil, fmt.Errorf("expect meta to be of type %T but is %T", Client{}, meta)
+	}
+
+	responseData := &models.DatastoreInfo{}
+	resp, err := client.GetObj(dataStoreUrlExtension, name, id, false, responseData)
+	if err != nil {
+		return nil, err
+	}
+
+	if zedcloudAPI.IsObjectNotFound(resp) {
+		return nil, &ObjectNotFound{id}
+	}
+
+	return responseData, nil
+}
+
+func flatten(data *models.DatastoreInfo) (map[string]interface{}, error) {
+	flattened := map[string]interface{}{
+		"id":   data.ID,
+		"name": strPtrVal(data.Name),
+	}
+	if err := checkIfAllKeysExist(zschemas.DataStore, flattened); err != nil {
+		return nil, err
+	}
+	return flattened, nil
 }

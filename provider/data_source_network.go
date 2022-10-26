@@ -6,14 +6,15 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
-	"net/http"
 )
 
 var NetworkDataSchema = &schema.Resource{
@@ -44,7 +45,7 @@ func flattenNetWifiConfig(cfg *swagger_models.NetWifiConfig) []interface{} {
 	}
 	// Do not publish sensitive fields - "secret", identity
 	return []interface{}{map[string]interface{}{
-		"key_scheme": ptrValStr(cfg.KeyScheme),
+		"key_scheme": strPtrVal(cfg.KeyScheme),
 		"priority":   int(cfg.Priority),
 		"wifi_ssid":  cfg.WifiSSID,
 	}}
@@ -70,7 +71,7 @@ func flattenNetWirelessConfig(cfg *swagger_models.NetWirelessConfig) []interface
 	}
 	return []interface{}{map[string]interface{}{
 		"cellular_cfg": flattenNetCellularConfig(cfg.CellularCfg),
-		"type":         ptrValStr(cfg.Type),
+		"type":         strPtrVal(cfg.Type),
 		"wifi_cfg":     flattenNetWifiConfig(cfg.WifiCfg),
 	}}
 }
@@ -88,7 +89,7 @@ func flattenNetProxyServerList(cfgList []*swagger_models.NetProxyServer) []inter
 	for _, cfg := range cfgList {
 		entryList = append(entryList, map[string]interface{}{
 			"port":   int(cfg.Port),
-			"proto":  ptrValStr(cfg.Proto),
+			"proto":  strPtrVal(cfg.Proto),
 			"server": cfg.Server,
 		})
 	}
@@ -119,7 +120,7 @@ func flattenIPSpec(cfg *swagger_models.IPSpec) []interface{} {
 		return []interface{}{}
 	}
 	return []interface{}{map[string]interface{}{
-		"dhcp":       ptrValStr(cfg.Dhcp),
+		"dhcp":       strPtrVal(cfg.Dhcp),
 		"dhcp_range": flattenDhcpIPRange(cfg.DhcpRange),
 		"dns":        flattenStringList(cfg.DNS),
 		"domain":     cfg.Domain,
@@ -142,13 +143,13 @@ func flattenNetConfig(cfg *swagger_models.NetConfig) map[string]interface{} {
 	data["dns_list"] = flattenStaticDNSList(cfg.DNSList)
 	data["enterprise_default"] = cfg.EnterpriseDefault
 	data["ip"] = flattenIPSpec(cfg.IP)
-	data["kind"] = ptrValStr(cfg.Kind)
-	data["name"] = ptrValStr(cfg.Name)
-	data["project_id"] = ptrValStr(cfg.ProjectID)
+	data["kind"] = strPtrVal(cfg.Kind)
+	data["name"] = strPtrVal(cfg.Name)
+	data["project_id"] = strPtrVal(cfg.ProjectID)
 	data["proxy"] = flattenNetProxyConfig(cfg.Proxy)
-	data["title"] = ptrValStr(cfg.Title)
+	data["title"] = strPtrVal(cfg.Title)
 	data["wireless"] = flattenNetWirelessConfig(cfg.Wireless)
-	flattenedDataCheckKeys(zschemas.NetworkSchema, data)
+	checkIfAllKeysExist(zschemas.NetworkSchema, data)
 	return data
 }
 
@@ -165,7 +166,7 @@ func getNetworkAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData
 		}
 		return err
 	}
-	marshalData(d, flattenNetConfig(cfg))
+	setLocalState(d, flattenNetConfig(cfg))
 	return nil
 }
 
@@ -174,8 +175,8 @@ func readNetwork(ctx context.Context, d *schema.ResourceData,
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	id := rdEntryStr(d, "id")
-	name := rdEntryStr(d, "name")
+	id := getStr(d, "id")
+	name := getStr(d, "name")
 
 	log.Printf("PROVIDER:  readNetworkResource - id: %s, name: %s", id, name)
 	if (id == "") && (name == "") {

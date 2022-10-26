@@ -2,14 +2,18 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // This file has Utilities to convert Schema Resource Data Attributes to
-//  appropriate values ( string, string Ptr, Bool, BoolPtr, map[string]string etc)
+//
+//	appropriate values ( string, string Ptr, Bool, BoolPtr, map[string]string etc)
 package provider
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"reflect"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+// FIXME(fabian): remove all panics!
 
 func strPtr(val string) *string {
 	return &val
@@ -27,7 +31,7 @@ func boolPtr(val bool) *bool {
 	return &val
 }
 
-func ptrValStr(ptr interface{}) string {
+func strPtrVal(ptr interface{}) string {
 	value := reflect.ValueOf(ptr)
 	if value.Type().Kind() != reflect.Ptr {
 		panic(fmt.Errorf("Non-Ptr - Expecting a Ptr. %+v", ptr))
@@ -45,15 +49,16 @@ func ptrValBool(ptr *bool) bool {
 	return *ptr
 }
 
-// rdEntryByKey
-//  Params:
-//    rd - Resource Data. Must be *schema.ResourceData OR map[string]interface{}
-//    key - Key of Item
-//  Returns: (present, value)
-//    present - bool - true if item is present. False otherwise
-//    value - value of item if present, nil otherwise
-func rdEntryByKey(rd interface{}, key string) (bool, interface{}) {
-	d, ok := rd.(*schema.ResourceData)
+// getByKey
+//
+//	Params:
+//	  resourceData - Must be *schema.ResourceData OR map[string]interface{}
+//	  key - Key of Item
+//	Returns: (present, value)
+//	  present - bool - true if item is present. False otherwise
+//	  value - value of item if present, nil otherwise
+func getByKey(resourceData interface{}, key string) (bool, interface{}) {
+	d, ok := resourceData.(*schema.ResourceData)
 	if ok {
 		val, ok := d.GetOk(key)
 		if ok {
@@ -62,12 +67,15 @@ func rdEntryByKey(rd interface{}, key string) (bool, interface{}) {
 		}
 		return false, nil
 	}
-	// rd must be a map[string]interface{}
-	dmap, ok := rd.(map[string]interface{})
+	// resourceData must be a map[string]interface{}
+	dmap, ok := resourceData.(map[string]interface{})
 	if !ok {
 		// This is a bug - not a user mistake in .tf file. So panic
-		err := fmt.Errorf("Unexpected rd type (%+v). rd is expected to be of type "+
-			"*schema.ResourceData or map[string]interface{}", rd)
+		err := fmt.Errorf(
+			"expect resourceData of type %T or map[string]interface{} but got %T",
+			&schema.ResourceData{},
+			resourceData,
+		)
 		panic(err)
 	}
 	if val, ok := dmap[key]; ok {
@@ -76,68 +84,83 @@ func rdEntryByKey(rd interface{}, key string) (bool, interface{}) {
 	return false, nil
 }
 
-// rdEntryInt32
-//  Returns int32 value for the Specified key from ResourceData. If key doesn't exist,
-//      returns 0.
+// getInt32
+//
+//	Returns int32 value for the Specified key from ResourceData. If key doesn't exist,
+//	    returns 0.
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryInt32(rd interface{}, key string) int32 {
-	ok, val := rdEntryByKey(rd, key)
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getInt32(resourceData interface{}, key string) int32 {
+	ok, val := getByKey(resourceData, key)
 	if ok {
 		return int32(val.(int))
 	}
 	return 0
 }
 
-// rdEntryInt32PtrOrNil
-//  Returns int32Ptr value for the Specified key from ResourceData. If key doesn't exist,
-//      returns nil.
+// getInt32PtrOrNil
+//
+//	Returns int32Ptr value for the Specified key from ResourceData. If key doesn't exist,
+//	    returns nil.
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryInt32PtrOrNil(rd interface{}, key string) *int32 {
-	if ok, val := rdEntryByKey(rd, key); ok {
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getInt32PtrOrNil(resourceData interface{}, key string) *int32 {
+	if ok, val := getByKey(resourceData, key); ok {
 		intVal := int32(val.(int))
 		return &intVal
 	}
 	return nil
 }
 
-// rdEntryInt64
-//  Returns int64 value for the Specified key from ResourceData. If key doesn't exist,
-//      returns 0.
+// getInt64
+//
+//	Returns int64 value for the Specified key from ResourceData. If key doesn't exist,
+//	    returns 0.
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryInt64(rd interface{}, key string) int64 {
-	if ok, val := rdEntryByKey(rd, key); ok {
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getInt64(resourceData interface{}, key string) int64 {
+	if ok, val := getByKey(resourceData, key); ok {
 		return int64(val.(int))
 	}
 	return 0
 }
 
-// rdEntryInt64PtrOrNil
-//  Returns *int64 value for the Specified key from ResourceData. If key doesn't exist,
-//      returns ni  l.
+// getInt64PtrOrNil
+//
+//	Returns *int64 value for the Specified key from ResourceData. If key doesn't exist,
+//	    returns ni  l.
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryInt64PtrOrNil(rd interface{}, key string) *int64 {
-	if ok, val := rdEntryByKey(rd, key); ok {
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getInt64PtrOrNil(resourceData interface{}, key string) *int64 {
+	if ok, val := getByKey(resourceData, key); ok {
 		intVal := int64(val.(int))
 		return &intVal
 	}
 	return nil
 }
 
-// rdEntryUint64PtrOrNil
-//  Returns Uint64Ptr for the Specified key from ResourceData
+// getUint64PtrOrNil
+//
+//	Returns Uint64Ptr for the Specified key from ResourceData
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryUint64PtrOrNil(rd interface{}, key string) *uint64 {
-	ok, val := rdEntryByKey(rd, key)
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getUint64PtrOrNil(resourceData interface{}, key string) *uint64 {
+	ok, val := getByKey(resourceData, key)
 	if !ok {
 		return nil
 	}
@@ -145,28 +168,34 @@ func rdEntryUint64PtrOrNil(rd interface{}, key string) *uint64 {
 	return &uint64Val
 }
 
-// rdEntryStr
-//  Returns string value for the Specified key from ResourceData. If key doesn't exist,
-//      returns "".
+// getStr
+//
+//	Returns string value for the Specified key from ResourceData. If key doesn't exist,
+//	    returns "".
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryStr(rd interface{}, key string) string {
-	ok, val := rdEntryByKey(rd, key)
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getStr(resourceData interface{}, key string) string {
+	ok, val := getByKey(resourceData, key)
 	if ok {
 		return val.(string)
 	}
 	return ""
 }
 
-// rdEntryStrPtrOrNil
-//  Returns *string for the Specified key from ResourceData. If key doesn't exist,
-//      returns nil.
+// getStrPtrOrNil
+//
+//	Returns *string for the Specified key from ResourceData. If key doesn't exist,
+//	    returns nil.
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryStrPtrOrNil(rd interface{}, key string) *string {
-	ok, val := rdEntryByKey(rd, key)
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getStrPtrOrNil(resourceData interface{}, key string) *string {
+	ok, val := getByKey(resourceData, key)
 	if ok {
 		val := val.(string)
 		return &val
@@ -174,15 +203,18 @@ func rdEntryStrPtrOrNil(rd interface{}, key string) *string {
 	return nil
 }
 
-// rdEntryStrList
-//  Converts the specified entry of type []interface{} from ResourceData
-//      into []string
+// getStrList
+//
+//	Converts the specified entry of type []interface{} from ResourceData
+//	    into []string
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryStrList(rd interface{}, key string) []string {
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getStrList(resourceData interface{}, key string) []string {
 	strList := make([]string, 0)
-	ok, val := rdEntryByKey(rd, key)
+	ok, val := getByKey(resourceData, key)
 	if !ok {
 		return strList
 	}
@@ -192,15 +224,18 @@ func rdEntryStrList(rd interface{}, key string) []string {
 	return strList
 }
 
-// rdEntryStrSet
-//  Converts the specified entry of type []interface{} from ResourceData
-//      into []string
+// getStrSet
+//
+//	Converts the specified entry of type []interface{} from ResourceData
+//	    into []string
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryStrSet(rd interface{}, key string) []string {
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getStrSet(resourceData interface{}, key string) []string {
 	strList := make([]string, 0)
-	ok, val := rdEntryByKey(rd, key)
+	ok, val := getByKey(resourceData, key)
 	if !ok {
 		return strList
 	}
@@ -211,15 +246,18 @@ func rdEntryStrSet(rd interface{}, key string) []string {
 	return strList
 }
 
-// rdEntryStrMap
-//  Converts the specified entry of type map[string]interface{} from ResourceData
-//      into map[string]string
+// getStrMap
+//
+//	Converts the specified entry of type map[string]interface{} from ResourceData
+//	    into map[string]string
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryStrMap(rd interface{}, key string) map[string]string {
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getStrMap(resourceData interface{}, key string) map[string]string {
 	strMap := make(map[string]string)
-	ok, val := rdEntryByKey(rd, key)
+	ok, val := getByKey(resourceData, key)
 	if !ok {
 		return strMap
 	}
@@ -229,26 +267,32 @@ func rdEntryStrMap(rd interface{}, key string) map[string]string {
 	return strMap
 }
 
-// rdEntryBool
-//  Returns bool for the Specified key from ResourceData
+// getBool
+//
+//	Returns bool for the Specified key from ResourceData
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryBool(rd interface{}, key string) bool {
-	ok, val := rdEntryByKey(rd, key)
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getBool(resourceData interface{}, key string) bool {
+	ok, val := getByKey(resourceData, key)
 	if ok {
 		return val.(bool)
 	}
 	return false
 }
 
-// rdEntryBoolPtrOrNil
-//  Returns BoolPtr for the Specified key from ResourceData
+// getBoolPtrOrNil
+//
+//	Returns BoolPtr for the Specified key from ResourceData
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryBoolPtrOrNil(rd interface{}, key string) *bool {
-	ok, val := rdEntryByKey(rd, key)
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getBoolPtrOrNil(resourceData interface{}, key string) *bool {
+	ok, val := getByKey(resourceData, key)
 	if !ok {
 		return nil
 	}
@@ -256,14 +300,17 @@ func rdEntryBoolPtrOrNil(rd interface{}, key string) *bool {
 	return &boolVal
 }
 
-// rdEntryList
-//  Returns []interface{} for the Specified key from ResourceData
-//      If key doesn't exist, returns an empty list of type []interface{}
+// getList
+//
+//	Returns []interface{} for the Specified key from ResourceData
+//	    If key doesn't exist, returns an empty list of type []interface{}
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryList(rd interface{}, key string) []interface{} {
-	ok, val := rdEntryByKey(rd, key)
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getList(resourceData interface{}, key string) []interface{} {
+	ok, val := getByKey(resourceData, key)
 	if !ok {
 		return []interface{}{}
 	}
@@ -280,17 +327,20 @@ func rdEntryList(rd interface{}, key string) []interface{} {
 
 type rdFuncMapToEntry func(d map[string]interface{}) (interface{}, error)
 
-// rdEntryStructPtr
-//  This is suposed to be used to convert attributes that translate to a
-//  Ptr to some struct. The specified key, if present, is expected to have a value of
-//  []interface{} of length 1.
-//  Returns (interface{}, err) for the Specified key from ResourceData
-//      If key doesn't exist, returns nil
+// getStructPtr
+//
+//	This is suposed to be used to convert attributes that translate to a
+//	Ptr to some struct. The specified key, if present, is expected to have a value of
+//	[]interface{} of length 1.
+//	Returns (interface{}, err) for the Specified key from ResourceData
+//	    If key doesn't exist, returns nil
+//
 // Params:
-//  rd can be *schema.ResourceData OR map[string]interface{}. Any other
-//      type will cause a Panic
-func rdEntryStructPtr(rd interface{}, key string, entryFn rdFuncMapToEntry) (interface{}, error) {
-	ok, val := rdEntryByKey(rd, key)
+//
+//	resourceData can be *schema.ResourceData OR map[string]interface{}. Any other
+//	    type will cause a Panic
+func getStructPtr(resourceData interface{}, key string, entryFn rdFuncMapToEntry) (interface{}, error) {
+	ok, val := getByKey(resourceData, key)
 	if !ok {
 		return nil, nil
 	}

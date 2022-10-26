@@ -4,11 +4,12 @@
 package provider
 
 import (
+	"reflect"
+	"testing"
+
 	"github.com/go-test/deep"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"reflect"
-	"testing"
 )
 
 var ouputVolInstEmpty = map[string]interface{}{
@@ -119,8 +120,7 @@ func TestFlattenVolInstConfig(t *testing.T) {
 		out := flattenVolInstConfig(c.input)
 		err := verifyFlattenOutput(zschemas.VolumeInstanceSchema, out, c.expectAllSchemaKeys)
 		if err != nil {
-			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",
-				c.description, err.Error())
+			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s", c.description, err.Error())
 		}
 		if diff := deep.Equal(out, c.expected); diff != nil {
 			t.Fatalf("Test Failed: %s\n"+

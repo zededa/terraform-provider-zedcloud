@@ -6,12 +6,13 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
 )
 
 var volumeInstanceUrlExtension = "volumes/instances"
@@ -37,20 +38,22 @@ func getVolumeInstanceUrl(name, id, urlType string) string {
 }
 
 func rdUpdateVolumeInstanceCfg(cfg *swagger_models.VolInstConfig, d *schema.ResourceData) error {
-	accessMode := swagger_models.VolumeInstanceAccessMode(
-		rdEntryStr(d, "accessmode"))
+	accessMode := swagger_models.VolumeInstanceAccessMode(getStr(d, "accessmode"))
+
 	cfg.Accessmode = &accessMode
-	cfg.Cleartext = rdEntryBool(d, "cleartext")
-	cfg.ContentTreeID = rdEntryStr(d, "content_tree_id")
-	cfg.Description = rdEntryStr(d, "description")
-	cfg.DeviceID = rdEntryStr(d, "device_id")
-	cfg.Image = rdEntryStr(d, "image")
-	cfg.Label = rdEntryStr(d, "label")
-	cfg.Multiattach = rdEntryBool(d, "multiattach")
-	cfg.SizeBytes = rdEntryStr(d, "size_bytes")
-	cfg.Title = rdEntryStr(d, "title")
-	volType := swagger_models.VolumeInstanceType(rdEntryStr(d, "type"))
+	cfg.Cleartext = getBool(d, "cleartext")
+	cfg.ContentTreeID = getStr(d, "content_tree_id")
+	cfg.Description = getStr(d, "description")
+	cfg.DeviceID = getStr(d, "device_id")
+	cfg.Image = getStr(d, "image")
+	cfg.Label = getStr(d, "label")
+	cfg.Multiattach = getBool(d, "multiattach")
+	cfg.SizeBytes = getStr(d, "size_bytes")
+	cfg.Title = getStr(d, "title")
+
+	volType := swagger_models.VolumeInstanceType(getStr(d, "type"))
 	cfg.Type = &volType
+
 	return nil
 }
 
@@ -60,16 +63,15 @@ func createVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
-	errMsgPrefix := fmt.Sprintf("[ERROR] VolumeInstance %s (id: %s) Create Failed.",
-		name, id)
+	name := getStr(d, "name")
+	id := getStr(d, "id")
+	errMsgPrefix := fmt.Sprintf("[ERROR] VolumeInstance %s (id: %s) Create Failed.", name, id)
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
 	}
 	cfg := &swagger_models.VolInstConfig{
 		Name:      name,
-		ProjectID: rdEntryStr(d, "project_id"),
+		ProjectID: getStr(d, "project_id"),
 	}
 	err := rdUpdateVolumeInstanceCfg(cfg, d)
 	if err != nil {
@@ -82,14 +84,12 @@ func createVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return diag.Errorf("%s Err: %s", errMsgPrefix, err.Error())
 	}
-	log.Printf("VolumeInstance %s (ID: %s) Successfully created\n",
-		rspData.ObjectName, rspData.ObjectID)
+	log.Printf("VolumeInstance %s (ID: %s) Successfully created\n", rspData.ObjectName, rspData.ObjectID)
 	id = rspData.ObjectID
 	d.SetId(id)
 	err = getVolumeInstanceAndPublishData(client, d, name, id)
 	if err != nil {
-		log.Printf("***[ERROR]- Failed to get VolumeInstance: %s (ID: %s) after "+
-			"creating it. Err: %s", name, id, err.Error())
+		log.Printf("***[ERROR]- Failed to get VolumeInstance: %s (ID: %s) after creating it. Err: %s", name, id, err.Error())
 	}
 	return diags
 }
@@ -100,8 +100,8 @@ func updateVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "VolumeInstance", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
@@ -124,8 +124,7 @@ func updateVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	}
 	err = getVolumeInstanceAndPublishData(client, d, name, id)
 	if err != nil {
-		log.Printf("***[ERROR]- Failed to get VolumeInstance: %s (ID: %s) after "+
-			"updating it. Err: %s", name, id, err.Error())
+		log.Printf("***[ERROR]- Failed to get VolumeInstance: %s (ID: %s) after updating it. Err: %s", name, id, err.Error())
 	}
 	return diags
 }
@@ -135,8 +134,8 @@ func deleteVolumeInstanceResource(ctx context.Context, d *schema.ResourceData, m
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "VolumeInstance", "Delete")
 	cfg, err, httpRsp := getVolumeInstance(client, name, id)
 	if err != nil {

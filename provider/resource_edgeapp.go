@@ -7,14 +7,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"strconv"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"io/ioutil"
-	"log"
-	"strconv"
 )
 
 var edgeAppUrlExtension = "apps"
@@ -40,7 +41,7 @@ func getEdgeAppUrl(name, id, urlType string) string {
 }
 
 func rdEntryAppManifestFromFile(d *schema.ResourceData) (*swagger_models.VMManifest, error) {
-	manifest_file := rdEntryStr(d, "manifest_file")
+	manifest_file := getStr(d, "manifest_file")
 	if manifest_file == "" {
 		return nil, fmt.Errorf("One of manifest or manifest_file needs to be specified" +
 			" to create EdgeApp")
@@ -61,12 +62,12 @@ func rdEntryAppManifestFromFile(d *schema.ResourceData) (*swagger_models.VMManif
 func rdAppManifestResources(d map[string]interface{}) ([]*swagger_models.Resource, error) {
 	entryFunc := func(d map[string]interface{}) (*swagger_models.Resource, error) {
 		return &swagger_models.Resource{
-			Name:  rdEntryStr(d, "name"),
-			Value: rdEntryStr(d, "value"),
+			Name:  getStr(d, "name"),
+			Value: getStr(d, "value"),
 		}, nil
 	}
 	cfgList := make([]*swagger_models.Resource, 0)
-	rdList := rdEntryList(d, "resource")
+	rdList := getList(d, "resource")
 	if len(rdList) == 0 {
 		return cfgList, nil
 	}
@@ -84,13 +85,13 @@ func rdAppManifestResources(d map[string]interface{}) ([]*swagger_models.Resourc
 func rdAppManifestAuthor(d map[string]interface{}) (*swagger_models.Author, error) {
 	entryFunc := func(d map[string]interface{}) (interface{}, error) {
 		return &swagger_models.Author{
-			Company: rdEntryStr(d, "company"),
-			Email:   rdEntryStr(d, "email"),
-			User:    rdEntryStr(d, "user"),
-			Website: rdEntryStr(d, "website"),
+			Company: getStr(d, "company"),
+			Email:   getStr(d, "email"),
+			User:    getStr(d, "user"),
+			Website: getStr(d, "website"),
 		}, nil
 	}
-	val, err := rdEntryStructPtr(d, "owner", entryFunc)
+	val, err := getStructPtr(d, "owner", entryFunc)
 	if val == nil || err != nil {
 		return nil, err
 	}
@@ -110,16 +111,16 @@ func rdAppManifestModuleDetails(d map[string]interface{}) (
 	entryFunc := func(d map[string]interface{}) (interface{}, error) {
 		cfg := swagger_models.ModuleDetail{}
 		var err error
-		cfg.Environment = rdEntryStrMap(d, "environment")
-		cfg.ModuleType, err = appModuleTypePtr(rdEntryStr(d, "module_type"))
+		cfg.Environment = getStrMap(d, "environment")
+		cfg.ModuleType, err = appModuleTypePtr(getStr(d, "module_type"))
 		if err != nil {
 			return nil, err
 		}
-		cfg.Routes = rdEntryStrMap(d, "routes")
-		cfg.TwinDetail = rdEntryStr(d, "twin_detail")
+		cfg.Routes = getStrMap(d, "routes")
+		cfg.TwinDetail = getStr(d, "twin_detail")
 		return &cfg, nil
 	}
-	val, err := rdEntryStructPtr(d, "module", entryFunc)
+	val, err := getStructPtr(d, "module", entryFunc)
 	if val == nil || err != nil {
 		return nil, err
 	}
@@ -129,12 +130,12 @@ func rdAppManifestModuleDetails(d map[string]interface{}) (
 func rdAppManifestInterfaceAclMatches(d map[string]interface{}) ([]*swagger_models.Match, error) {
 	entryFunc := func(d map[string]interface{}) (*swagger_models.Match, error) {
 		return &swagger_models.Match{
-			Type:  rdEntryStr(d, "type"),
-			Value: rdEntryStr(d, "value"),
+			Type:  getStr(d, "type"),
+			Value: getStr(d, "value"),
 		}, nil
 	}
 	cfgList := make([]*swagger_models.Match, 0)
-	rdList := rdEntryList(d, "match")
+	rdList := getList(d, "match")
 	if len(rdList) == 0 {
 		return cfgList, nil
 	}
@@ -153,10 +154,10 @@ func rdAppManifestIntfAclActionMapParams(d map[string]interface{}) (
 	*swagger_models.MapParams, error) {
 	entryFunc := func(d map[string]interface{}) (interface{}, error) {
 		return &swagger_models.MapParams{
-			AppPort: rdEntryInt64(d, "port"),
+			AppPort: getInt64(d, "port"),
 		}, nil
 	}
-	val, err := rdEntryStructPtr(d, "mapparam", entryFunc)
+	val, err := getStructPtr(d, "mapparam", entryFunc)
 	if val == nil || err != nil {
 		return nil, err
 	}
@@ -167,12 +168,12 @@ func rdAppManifestIntfAclActionLimitParams(d map[string]interface{}) (
 	*swagger_models.LimitParams, error) {
 	entryFunc := func(d map[string]interface{}) (interface{}, error) {
 		return &swagger_models.LimitParams{
-			Limitburst: rdEntryInt64(d, "limitburst"),
-			Limitrate:  rdEntryInt64(d, "limitrate"),
-			Limitunit:  rdEntryStr(d, "limitunit"),
+			Limitburst: getInt64(d, "limitburst"),
+			Limitrate:  getInt64(d, "limitrate"),
+			Limitunit:  getStr(d, "limitunit"),
 		}, nil
 	}
-	val, err := rdEntryStructPtr(d, "limit_param", entryFunc)
+	val, err := getStructPtr(d, "limit_param", entryFunc)
 	if val == nil || err != nil {
 		return nil, err
 	}
@@ -184,18 +185,18 @@ func rdAppManifestInterfaceAclActions(d map[string]interface{}) (
 	entryFunc := func(d map[string]interface{}) (*swagger_models.ACLAction, error) {
 		cfg := swagger_models.ACLAction{}
 		var err error
-		cfg.Drop = rdEntryBool(d, "drop")
-		cfg.Limit = rdEntryBool(d, "limit")
+		cfg.Drop = getBool(d, "drop")
+		cfg.Limit = getBool(d, "limit")
 		cfg.LimitValue, err = rdAppManifestIntfAclActionLimitParams(d)
 		if err != nil {
 			return nil, err
 		}
-		cfg.Portmap = rdEntryBool(d, "portmap")
+		cfg.Portmap = getBool(d, "portmap")
 		cfg.Portmapto, err = rdAppManifestIntfAclActionMapParams(d)
 		return &cfg, nil
 	}
 	cfgList := make([]*swagger_models.ACLAction, 0)
-	rdList := rdEntryList(d, "action")
+	rdList := getList(d, "action")
 	if len(rdList) == 0 {
 		return cfgList, nil
 	}
@@ -222,11 +223,11 @@ func rdAppManifestInterfaceAcls(d map[string]interface{}) ([]*swagger_models.ACL
 		if err != nil {
 			return nil, err
 		}
-		cfg.Name = rdEntryStr(d, "name")
+		cfg.Name = getStr(d, "name")
 		return &cfg, nil
 	}
 	cfgList := make([]*swagger_models.ACL, 0)
-	rdList := rdEntryList(d, "acl")
+	rdList := getList(d, "acl")
 	if len(rdList) == 0 {
 		return cfgList, nil
 	}
@@ -249,17 +250,17 @@ func rdAppManifestInterfacesEntry(d map[string]interface{}) (
 	if err != nil {
 		return nil, err
 	}
-	cfg.Directattach = rdEntryBool(d, "ignorepurge")
-	cfg.Name = rdEntryStr(d, "imagename")
-	cfg.Optional = rdEntryBool(d, "preserve")
-	cfg.Privateip = rdEntryBool(d, "readonly")
-	cfg.Type = rdEntryStr(d, "target")
+	cfg.Directattach = getBool(d, "ignorepurge")
+	cfg.Name = getStr(d, "imagename")
+	cfg.Optional = getBool(d, "preserve")
+	cfg.Privateip = getBool(d, "readonly")
+	cfg.Type = getStr(d, "target")
 	return cfg, nil
 }
 
 func rdAppManifestInterfaces(d map[string]interface{}) ([]*swagger_models.Interface, error) {
 	cfgList := make([]*swagger_models.Interface, 0)
-	rdList := rdEntryList(d, "interface")
+	rdList := getList(d, "interface")
 	if len(rdList) == 0 {
 		return cfgList, nil
 	}
@@ -277,12 +278,12 @@ func rdAppManifestInterfaces(d map[string]interface{}) ([]*swagger_models.Interf
 func rdAppManifestImageParams(d map[string]interface{}) ([]*swagger_models.Param, error) {
 	entryFunc := func(d map[string]interface{}) (*swagger_models.Param, error) {
 		return &swagger_models.Param{
-			Name:  rdEntryStr(d, "name"),
-			Value: rdEntryStr(d, "value"),
+			Name:  getStr(d, "name"),
+			Value: getStr(d, "value"),
 		}, nil
 	}
 	cfgList := make([]*swagger_models.Param, 0)
-	rdList := rdEntryList(d, "param")
+	rdList := getList(d, "param")
 	if len(rdList) == 0 {
 		return cfgList, nil
 	}
@@ -301,26 +302,26 @@ func rdAppManifestImagesEntry(d map[string]interface{}) (
 	*swagger_models.VMManifestImage, error) {
 	cfg := swagger_models.VMManifestImage{}
 	var err error
-	cfg.Cleartext = rdEntryBool(d, "cleartext")
-	cfg.Drvtype = rdEntryStr(d, "drvtype")
-	cfg.Ignorepurge = rdEntryBool(d, "ignorepurge")
-	cfg.Imagename = rdEntryStr(d, "imagename")
-	cfg.Maxsize = strconv.FormatInt(rdEntryInt64(d, "maxsize"), 10)
-	cfg.Mountpath = rdEntryStr(d, "mountpath")
+	cfg.Cleartext = getBool(d, "cleartext")
+	cfg.Drvtype = getStr(d, "drvtype")
+	cfg.Ignorepurge = getBool(d, "ignorepurge")
+	cfg.Imagename = getStr(d, "imagename")
+	cfg.Maxsize = strconv.FormatInt(getInt64(d, "maxsize"), 10)
+	cfg.Mountpath = getStr(d, "mountpath")
 	cfg.Params, err = rdAppManifestImageParams(d)
 	if err != nil {
 		return nil, err
 	}
-	cfg.Preserve = rdEntryBool(d, "preserve")
-	cfg.Readonly = rdEntryBool(d, "readonly")
-	cfg.Target = rdEntryStr(d, "target")
-	cfg.Volumelabel = rdEntryStr(d, "volumelabel")
+	cfg.Preserve = getBool(d, "preserve")
+	cfg.Readonly = getBool(d, "readonly")
+	cfg.Target = getStr(d, "target")
+	cfg.Volumelabel = getStr(d, "volumelabel")
 	return &cfg, nil
 }
 
 func rdAppManifestImages(d map[string]interface{}) ([]*swagger_models.VMManifestImage, error) {
 	cfgList := make([]*swagger_models.VMManifestImage, 0)
-	rdList := rdEntryList(d, "image")
+	rdList := getList(d, "image")
 	if len(rdList) == 0 {
 		return cfgList, nil
 	}
@@ -346,21 +347,21 @@ func appCategoryPtr(strVal string) (*swagger_models.AppCategory, error) {
 func rdAppManifestDetailsEntry(d map[string]interface{}) (interface{}, error) {
 	var err error
 	cfg := swagger_models.Details{}
-	cfg.AgreementList = rdEntryStrMap(d, "agreement_list")
-	cfg.AppCategory, err = appCategoryPtr(rdEntryStr(d, "app_category"))
+	cfg.AgreementList = getStrMap(d, "agreement_list")
+	cfg.AppCategory, err = appCategoryPtr(getStr(d, "app_category"))
 	if err != nil {
 		return nil, err
 	}
-	cfg.Category = rdEntryStrPtrOrNil(d, "category")
-	cfg.LicenseList = rdEntryStrMap(d, "license_list")
-	cfg.Logo = rdEntryStrMap(d, "logo")
-	cfg.Os = rdEntryStr(d, "os")
-	cfg.Support = rdEntryStr(d, "support")
+	cfg.Category = getStrPtrOrNil(d, "category")
+	cfg.LicenseList = getStrMap(d, "license_list")
+	cfg.Logo = getStrMap(d, "logo")
+	cfg.Os = getStr(d, "os")
+	cfg.Support = getStr(d, "support")
 	return &cfg, nil
 }
 
 func rdAppManifestDetails(d map[string]interface{}) (*swagger_models.Details, error) {
-	val, err := rdEntryStructPtr(d, "desc_detail", rdAppManifestDetailsEntry)
+	val, err := getStructPtr(d, "desc_detail", rdAppManifestDetailsEntry)
 	if val == nil || err != nil {
 		return nil, err
 	}
@@ -371,10 +372,10 @@ func rdAppManifestContainerDetail(d map[string]interface{}) (
 	*swagger_models.ContainerDetail, error) {
 	entryFunc := func(d map[string]interface{}) (interface{}, error) {
 		cfg := swagger_models.ContainerDetail{}
-		cfg.ContainerCreateOption = rdEntryStr(d, "container_create_option")
+		cfg.ContainerCreateOption = getStr(d, "container_create_option")
 		return &cfg, nil
 	}
-	val, err := rdEntryStructPtr(d, "container_detail", entryFunc)
+	val, err := getStructPtr(d, "container_detail", entryFunc)
 	if val == nil || err != nil {
 		return nil, err
 	}
@@ -386,14 +387,14 @@ func rdAppManifestUserDataTemplate(d map[string]interface{}) (
 
 	entryFunc := func(d map[string]interface{}) (interface{}, error) {
 		cfg := swagger_models.UserDataTemplate{}
-		val, err := rdEntryStructPtr(d, "custom_config", rdAppInstCustomConfig)
+		val, err := getStructPtr(d, "custom_config", rdAppInstCustomConfig)
 		if val == nil || err != nil {
 			return nil, err
 		}
 		cfg.CustomConfig = val.(*swagger_models.CustomConfig)
 		return &cfg, nil
 	}
-	val, err := rdEntryStructPtr(d, "configuration", entryFunc)
+	val, err := getStructPtr(d, "configuration", entryFunc)
 	if val == nil || err != nil {
 		return nil, err
 	}
@@ -403,7 +404,7 @@ func rdAppManifestUserDataTemplate(d map[string]interface{}) (
 func rdAppManifestEntry(d map[string]interface{}) (interface{}, error) {
 	var err error
 	cfg := swagger_models.VMManifest{}
-	cfg.AppType = appTypePtr(rdEntryStr(d, "apptype"))
+	cfg.AppType = appTypePtr(getStr(d, "apptype"))
 	cfg.Configuration, err = rdAppManifestUserDataTemplate(d)
 	if err != nil {
 		return nil, err
@@ -412,7 +413,7 @@ func rdAppManifestEntry(d map[string]interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	cfg.DeploymentType, err = deploymentTypePtr(rdEntryStr(d, "deployment_type"))
+	cfg.DeploymentType, err = deploymentTypePtr(getStr(d, "deployment_type"))
 	if err != nil {
 		return nil, err
 	}
@@ -420,9 +421,9 @@ func rdAppManifestEntry(d map[string]interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	cfg.Description = rdEntryStr(d, "description")
-	cfg.DisplayName = rdEntryStr(d, "display_name")
-	cfg.Enablevnc = rdEntryBool(d, "enablevnc")
+	cfg.Description = getStr(d, "description")
+	cfg.DisplayName = getStr(d, "display_name")
+	cfg.Enablevnc = getBool(d, "enablevnc")
 	cfg.Images, err = rdAppManifestImages(d)
 	if err != nil {
 		return nil, err
@@ -435,7 +436,7 @@ func rdAppManifestEntry(d map[string]interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	cfg.Name = rdEntryStr(d, "name")
+	cfg.Name = getStr(d, "name")
 	cfg.Owner, err = rdAppManifestAuthor(d)
 	if err != nil {
 		return nil, err
@@ -444,24 +445,24 @@ func rdAppManifestEntry(d map[string]interface{}) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	cfg.Vmmode = rdEntryStrPtrOrNil(d, "vmmode")
+	cfg.Vmmode = getStrPtrOrNil(d, "vmmode")
 	return &cfg, nil
 }
 
 func rdAppManifest(rd *schema.ResourceData) (*swagger_models.VMManifest, error) {
 	// Manifest can come through manifest or manifest_file.
 	// Only one of them must be specified.
-	ok, val := rdEntryByKey(rd, "manifest")
+	ok, val := getByKey(rd, "manifest")
 	if !ok {
 		// Key manifest not present in Resource Data. Check for manifest_file
 		return rdEntryAppManifestFromFile(rd)
 	}
-	ok, _ = rdEntryByKey(rd, "manifest_file")
+	ok, _ = getByKey(rd, "manifest_file")
 	if ok {
 		return nil, fmt.Errorf("Both manifest and manifest_file are specified. " +
 			"Only one of them must be specified.")
 	}
-	val, err := rdEntryStructPtr(rd, "manifest", rdAppManifestEntry)
+	val, err := getStructPtr(rd, "manifest", rdAppManifestEntry)
 	if val == nil || err != nil {
 		return nil, err
 	}
@@ -469,30 +470,29 @@ func rdAppManifest(rd *schema.ResourceData) (*swagger_models.VMManifest, error) 
 }
 
 func rdUpdateAppCfg(cfg *swagger_models.App, d *schema.ResourceData) error {
-	cfg.Title = rdEntryStrPtrOrNil(d, "title")
-	cfg.Description = rdEntryStr(d, "description")
-	cfg.Cpus = rdEntryInt64(d, "cpus")
-	cfg.Drives = rdEntryInt64(d, "drives")
+	cfg.Title = getStrPtrOrNil(d, "title")
+	cfg.Description = getStr(d, "description")
+	cfg.Cpus = getInt64(d, "cpus")
+	cfg.Drives = getInt64(d, "drives")
 	manifestJSON, err := rdAppManifest(d)
 	if err != nil {
 		return err
 	}
 	cfg.ManifestJSON = manifestJSON
-	cfg.Networks = rdEntryInt64(d, "networks")
-	cfg.Storage = rdEntryInt64(d, "storage")
-	cfg.UserDefinedVersion = rdEntryStr(d, "user_defined_version")
+	cfg.Networks = getInt64(d, "networks")
+	cfg.Storage = getInt64(d, "storage")
+	cfg.UserDefinedVersion = getStr(d, "user_defined_version")
 	return nil
 }
 
 // Create the Resource Group
-func createEdgeAppResource(ctx context.Context, d *schema.ResourceData,
-	meta interface{}) diag.Diagnostics {
+func createEdgeAppResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := fmt.Sprintf("[ERROR] Edge App %s (id: %s) Create Failed.",
 		name, id)
 	if client == nil {
@@ -521,14 +521,13 @@ func createEdgeAppResource(ctx context.Context, d *schema.ResourceData,
 }
 
 // Update the Resource Group
-func updateEdgeAppResource(ctx context.Context, d *schema.ResourceData,
-	meta interface{}) diag.Diagnostics {
+func updateEdgeAppResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Edge App", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
@@ -562,8 +561,8 @@ func deleteEdgeAppResource(ctx context.Context, d *schema.ResourceData,
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Edge App", "Delete")
 	cfg, err, httpRsp := getEdgeApp(client, name, id)
 	if err != nil {

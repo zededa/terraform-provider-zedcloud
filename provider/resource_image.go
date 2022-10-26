@@ -6,12 +6,13 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	"github.com/zededa/zedcloud-api/swagger_models"
-	"log"
 )
 
 var imageUrlExtension = "apps/images"
@@ -62,15 +63,15 @@ func originPtr(strVal string) *swagger_models.Origin {
 }
 
 func updateImageCfgFromResourceData(cfg *swagger_models.ImageConfig, d *schema.ResourceData) error {
-	cfg.DatastoreID = rdEntryStrPtrOrNil(d, "datastore_id")
-	cfg.Description = rdEntryStr(d, "description")
-	cfg.ImageArch = modelArchTypePtr(rdEntryStr(d, "image_arch"))
-	cfg.ImageFormat = configFormatPtr(rdEntryStr(d, "image_format"))
-	cfg.ImageRelURL = rdEntryStr(d, "image_rel_url")
-	cfg.ImageSha256 = rdEntryStr(d, "image_sha_256")
-	cfg.ImageSizeBytes = rdEntryStr(d, "image_size_bytes")
-	cfg.ImageType = imageTypePtr(rdEntryStr(d, "image_type"))
-	cfg.Title = rdEntryStrPtrOrNil(d, "title")
+	cfg.DatastoreID = getStrPtrOrNil(d, "datastore_id")
+	cfg.Description = getStr(d, "description")
+	cfg.ImageArch = modelArchTypePtr(getStr(d, "image_arch"))
+	cfg.ImageFormat = configFormatPtr(getStr(d, "image_format"))
+	cfg.ImageRelURL = getStr(d, "image_rel_url")
+	cfg.ImageSha256 = getStr(d, "image_sha_256")
+	cfg.ImageSizeBytes = getStr(d, "image_size_bytes")
+	cfg.ImageType = imageTypePtr(getStr(d, "image_type"))
+	cfg.Title = getStrPtrOrNil(d, "title")
 	return nil
 }
 
@@ -100,8 +101,8 @@ func createImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Create")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
@@ -141,8 +142,8 @@ func updateImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	var diags diag.Diagnostics
 
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Update")
 	if client == nil {
 		return diag.Errorf("%s nil Client", errMsgPrefix)
@@ -192,8 +193,8 @@ func deleteImageResource(ctx context.Context, d *schema.ResourceData, meta inter
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 	client := (meta.(Client)).Client
-	name := rdEntryStr(d, "name")
-	id := rdEntryStr(d, "id")
+	name := getStr(d, "name")
+	id := getStr(d, "id")
 	errMsgPrefix := getErrMsgPrefix(name, id, "Image", "Delete")
 	cfg, err, httpRsp := getImage(client, name, id)
 	if err != nil {
