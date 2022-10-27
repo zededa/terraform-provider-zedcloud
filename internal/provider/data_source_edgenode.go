@@ -24,13 +24,13 @@ var resourceTypeEdgeNode = "EdgeNode"
 
 func newEdgeNodeDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: readEdgeNode,
+		ReadContext: readEdgeNodeDataSource,
 		Schema:      zschemas.EdgeNodeSchema,
 		Description: "Schema for data source zedcloud_edgenode. Must specify id or name",
 	}
 }
 
-func readEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func readEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	// required fields
