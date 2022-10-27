@@ -5,167 +5,195 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"log"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/zededa/terraform-provider-zedcloud/internal/client"
+	zerrors "github.com/zededa/terraform-provider-zedcloud/internal/errors"
 	"github.com/zededa/terraform-provider-zedcloud/internal/resourcedata"
+	"github.com/zededa/terraform-provider-zedcloud/internal/state"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	"github.com/zededa/terraform-provider-zedcloud/utils"
-	zedcloudapi "github.com/zededa/zedcloud-api"
-	"github.com/zededa/zedcloud-api/swagger_models"
+	zedcloudAPI "github.com/zededa/zedcloud-api"
+	models "github.com/zededa/zedcloud-api/swagger_models"
 )
 
-var EdgeNodeDataSourceSchema = &schema.Resource{
-	ReadContext: readDataSourceEdgeNode,
-	Schema:      zschemas.EdgeNodeSchema,
-	Description: "Schema for data source zedcloud_edgenode. Must specify id or name",
-}
+var resourceTypeEdgeNode = "EdgeNode"
 
-// The schema for a resource group data source
-func getEdgeNodeDataSourceSchema() *schema.Resource {
-	// Use the same schema for data source as well.
-	return EdgeNodeDataSourceSchema
-}
-
-func getEdgeNode(client *zedcloudapi.Client,
-	name, id string) (*swagger_models.DeviceConfig, error, *http.Response) {
-	rspData := &swagger_models.DeviceConfig{}
-	httpResp, err := client.GetObj(deviceUrlExtension, name, id, false, rspData)
-	if err != nil {
-		return nil, fmt.Errorf("[ERROR] FAILED to get EdgeNode %s ( id: %s). Err: %s",
-			name, id, err.Error()), httpResp
+func newEdgeNodeDataSource() *schema.Resource {
+	return &schema.Resource{
+		ReadContext: readEdgeNode,
+		Schema:      zschemas.EdgeNodeSchema,
+		Description: "Schema for data source zedcloud_edgenode. Must specify id or name",
 	}
-	return rspData, nil, httpResp
 }
 
-func getEdgeNodeAndPublishData(client *zedcloudapi.Client, d *schema.ResourceData,
-	name, id string) error {
-	cfg, err, httpRsp := getEdgeNode(client, name, id)
+func readEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	// required fields
+	id := resourcedata.GetStr(d, "id")
+	name := resourcedata.GetStr(d, "name")
+	if id == "" && name == "" {
+		return diag.Errorf("missing required fields \"id\" or \"name\" in resource data")
+	}
+
+	// fetch the object from zedcloud api
+	remoteState, err := fetchEdgeNode(name, id, meta)
 	if err != nil {
-		err = fmt.Errorf("[ERROR] EdgeNode %s (id: %s) not found. Err: %s",
-			name, id, err.Error())
-		if httpRsp != nil && zedcloudapi.IsObjectNotFound(httpRsp) {
-			log.Printf("PROVIDER:  REMOVED EdgeNode %s (id: %s) from State", id, name)
-			schema.RemoveFromState(d, nil)
-			return nil
+		// no object with this id exist in the api's state
+		var notFoundErr *zerrors.ObjectNotFound
+		if errors.As(err, &notFoundErr) {
+			// we need to remove it from local state
+			state.RemoveLocal(d, resourceTypeEdgeNode, id, name)
+			return diag.FromErr(fmt.Errorf(
+				"[ERROR] could not find %s %s (id=%s): %w",
+				resourceTypeEdgeNode,
+				name,
+				id,
+				err,
+			))
 		}
-		return err
+
+		// api error
+		return diag.FromErr(fmt.Errorf(
+			"[ERROR] could not fetch %s %s (id=%s): %w",
+			resourceTypeEdgeNode,
+			name,
+			id,
+			err,
+		))
 	}
-	marshalData(d, flattenDeviceConfig(cfg))
-	return nil
+
+	// flatten the api response into normalized terraform format
+	flattenedRemoteState, err := flattenEdgeNodeState(remoteState)
+	if err != nil {
+		return diag.FromErr(fmt.Errorf(
+			"[ERROR] could not flatten api state for %s %s (id=%s): %w",
+			resourceTypeEdgeNode,
+			name,
+			id,
+			err,
+		))
+	}
+
+	// we always need to set the state even in a read,
+	// the object could have been changed outside of terraform
+	state.SetLocal(d, flattenedRemoteState)
+
+	return diags
 }
 
-func flattenGeoLocation(entry interface{}) []interface{} {
-	loc := entry.(*swagger_models.GeoLocation)
-	if loc == nil {
-		return []interface{}{}
+func fetchEdgeNode(name, id string, meta interface{}) (*models.DeviceConfig, error) {
+	client, ok := meta.(client.Client)
+	if !ok {
+		return nil, fmt.Errorf("expect meta to be of type client.Client{} but is %T", meta)
 	}
-	return []interface{}{map[string]interface{}{
-		"city":        loc.City,
-		"country":     loc.Country,
-		"freeloc":     loc.Freeloc,
-		"hostname":    loc.Hostname,
-		"loc":         loc.Loc,
-		"org":         loc.Org,
-		"postal":      loc.Postal,
-		"region":      loc.Region,
-		"underlay_ip": loc.UnderlayIP,
-	}}
+
+	responseData := &models.DeviceConfig{}
+	resp, err := client.GetObj(deviceUrlExtension, name, id, false, responseData)
+	if err != nil {
+		return nil, err
+	}
+
+	if zedcloudAPI.IsObjectNotFound(resp) {
+		return nil, &zerrors.ObjectNotFound{id}
+	}
+
+	return responseData, nil
 }
 
-func flattenSysInterfaces(cfgList []*swagger_models.SysInterface) []interface{} {
-	entryList := make([]interface{}, 0)
-	for _, intf := range cfgList {
-		entryList = append(entryList, map[string]interface{}{
-			"cost":       int(intf.Cost),
-			"intfname":   intf.Intfname,
-			"intf_usage": utils.PtrValStr(intf.IntfUsage),
-			"ipaddr":     intf.Ipaddr,
-			"macaddr":    intf.Macaddr,
-			"netname":    intf.Netname,
-			"tags":       utils.FlattenStringMap(intf.Tags),
-		})
-	}
-	return entryList
-}
-
-func flattenEDConfigItems(cfgList []*swagger_models.EDConfigItem) map[string]interface{} {
-	dataMap := make(map[string]interface{})
-	for _, item := range cfgList {
-		dataMap[item.Key] = item.StringValue
-	}
-	return dataMap
-}
-
-func flattenDeviceConfig(cfg *swagger_models.DeviceConfig) map[string]interface{} {
-	if cfg == nil {
-		return map[string]interface{}{}
+func flattenEdgeNodeState(state *models.DeviceConfig) (map[string]interface{}, error) {
+	if state == nil {
+		return map[string]interface{}{}, nil
 	}
 	eveImageVersion := ""
-	for _, image := range cfg.BaseImage {
+	for _, image := range state.BaseImage {
 		if image.Activate {
 			eveImageVersion = *image.ImageName
 			break
 		}
 	}
 
-	data := map[string]interface{}{
-		"adminstate":    utils.PtrValStr(cfg.AdminState),
-		"cluster_id":    cfg.ClusterID,
-		"cpu":           int(cfg.CPU),
-		"id":            cfg.ID,
-		"memory":        int(cfg.Memory),
-		"reset_counter": int(cfg.ResetCounter),
-		"reset_time":    cfg.ResetTime,
-		"revision":      utils.FlattenObjectRevision(cfg.Revision),
-		"storage":       int(cfg.Storage),
-		"thread":        int(cfg.Thread),
-		"utype":         utils.PtrValStr(cfg.Utype),
+	flattened := map[string]interface{}{
+		"adminstate":    utils.PtrValStr(state.AdminState),
+		"cluster_id":    state.ClusterID,
+		"cpu":           int(state.CPU),
+		"id":            state.ID,
+		"memory":        int(state.Memory),
+		"reset_counter": int(state.ResetCounter),
+		"reset_time":    state.ResetTime,
+		"revision":      utils.FlattenObjectRevision(state.Revision),
+		"storage":       int(state.Storage),
+		"thread":        int(state.Thread),
+		"utype":         utils.PtrValStr(state.Utype),
 	}
-	data["adminstate_config"] = utils.PtrValStr(cfg.AdminState)
-	data["asset_id"] = cfg.AssetID
-	data["client_ip"] = cfg.ClientIP
-	data["config_items"] = flattenEDConfigItems(cfg.ConfigItem)
-	data["description"] = cfg.Description
-	data["dev_location"] = flattenGeoLocation(cfg.DevLocation)
-	data["eve_image_version"] = eveImageVersion
-	data["interface"] = flattenSysInterfaces(cfg.Interfaces)
-	data["model_id"] = utils.PtrValStr(cfg.ModelID)
-	data["name"] = utils.PtrValStr(cfg.Name)
-	data["project_id"] = utils.PtrValStr(cfg.ProjectID)
-	data["serialno"] = cfg.Serialno
-	data["tags"] = utils.FlattenStringMap(cfg.Tags)
-	data["title"] = utils.PtrValStr(cfg.Title)
-	utils.CheckIfAllKeysExist(zschemas.EdgeNodeSchema, data)
-	return data
+	flattened["adminstate_config"] = utils.PtrValStr(state.AdminState)
+	flattened["asset_id"] = state.AssetID
+	flattened["client_ip"] = state.ClientIP
+	flattened["config_items"] = flattenEDConfigItems(state.ConfigItem)
+	flattened["description"] = state.Description
+	flattened["dev_location"] = flattenGeoLocation(state.DevLocation)
+	flattened["eve_image_version"] = eveImageVersion
+	flattened["interface"] = flattenSysInterfaces(state.Interfaces)
+	flattened["model_id"] = utils.PtrValStr(state.ModelID)
+	flattened["name"] = utils.PtrValStr(state.Name)
+	flattened["project_id"] = utils.PtrValStr(state.ProjectID)
+	flattened["serialno"] = state.Serialno
+	flattened["tags"] = utils.FlattenStringMap(state.Tags)
+	flattened["title"] = utils.PtrValStr(state.Title)
+
+	if err := utils.CheckIfAllKeysExist(zschemas.EdgeNodeSchema, flattened); err != nil {
+		return nil, err
+	}
+
+	return flattened, nil
 }
 
-// Read the Resource Group
-func readEdgeNode(ctx context.Context, d *schema.ResourceData,
-	meta interface{}) diag.Diagnostics {
-	// Warning or errors can be collected in a slice type
-	var diags diag.Diagnostics
-
-	client := (meta.(Client)).Client
-	id := resourcedata.GetStr(d, "id")
-	name := resourcedata.GetStr(d, "name")
-
-	if client == nil {
-		return diag.Errorf("nil Client.")
+func flattenGeoLocation(entry interface{}) []interface{} {
+	loc, ok := entry.(*models.GeoLocation)
+	if !ok {
+		return []interface{}{}
 	}
-	if (id == "") && (name == "") {
-		return diag.Errorf("The arguments \"id\" or \"name\" are required, but no definition was found.")
+	if loc == nil {
+		return []interface{}{}
 	}
-	err := getEdgeNodeAndPublishData(client, d, name, id)
-	if err != nil {
-		return diag.Errorf("%s", err.Error())
-	}
-	return diags
+	return []interface{}{
+		map[string]interface{}{
+			"city":        loc.City,
+			"country":     loc.Country,
+			"freeloc":     loc.Freeloc,
+			"hostname":    loc.Hostname,
+			"loc":         loc.Loc,
+			"org":         loc.Org,
+			"postal":      loc.Postal,
+			"region":      loc.Region,
+			"underlay_ip": loc.UnderlayIP,
+		}}
 }
 
-func readDataSourceEdgeNode(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	return readEdgeNode(ctx, d, meta)
+func flattenSysInterfaces(interfaces []*models.SysInterface) []interface{} {
+	flattened := make([]interface{}, 0)
+	for _, sysInterface := range interfaces {
+		flattened = append(flattened, map[string]interface{}{
+			"cost":       int(sysInterface.Cost),
+			"intfname":   sysInterface.Intfname,
+			"intf_usage": utils.PtrValStr(sysInterface.IntfUsage),
+			"ipaddr":     sysInterface.Ipaddr,
+			"macaddr":    sysInterface.Macaddr,
+			"netname":    sysInterface.Netname,
+			"tags":       utils.FlattenStringMap(sysInterface.Tags),
+		})
+	}
+	return flattened
+}
+
+func flattenEDConfigItems(items []*models.EDConfigItem) map[string]interface{} {
+	flattened := make(map[string]interface{})
+	for _, item := range items {
+		flattened[item.Key] = item.StringValue
+	}
+	return flattened
 }
