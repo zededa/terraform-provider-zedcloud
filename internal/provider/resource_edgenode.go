@@ -5,19 +5,27 @@ package provider
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log"
+	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-	"github.com/zededa/terraform-provider-zedcloud/internal/errors"
+	"github.com/zededa/terraform-provider-zedcloud/internal/client"
+	zerrors "github.com/zededa/terraform-provider-zedcloud/internal/errors"
 	"github.com/zededa/terraform-provider-zedcloud/internal/resourcedata"
+	"github.com/zededa/terraform-provider-zedcloud/internal/state"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
 	models "github.com/zededa/zedcloud-api/swagger_models"
 )
 
-var deviceUrlExtension = "devices"
+const (
+	deviceUrlExtension   = "devices"
+	resourceTypeEdgeNode = "EdgeNode"
+)
 
 func getEdgeNodeUrl(name, id, urlType string) string {
 	return zedcloudapi.UrlForObjectRequest(deviceUrlExtension, name, id, urlType)
@@ -40,44 +48,64 @@ func newEdgeNodeResource() *schema.Resource {
 func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	// client, ok := meta.(*client.Client)
-	// if !ok {
-	// 	return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
-	// }
+	id := resourcedata.GetStr(d, "id") // FIXME: empty for create?
+	edgeNodeName := resourcedata.GetStr(d, "name")
 
-	id := resourcedata.GetStr(d, "id")
-
-	errMsgPrefix := errors.GetErrMsgPrefix(name, id, "EdgeNode", "Create")
+	log.Printf("[INFO] Creating EdgeNode: %s", edgeNodeName)
 
 	localState, err := getEdgeNodeState(d, true)
 	if err != nil {
-		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
+		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "create", err))
 	}
 
-	// log.Printf("[INFO] Creating EdgeNode: %s", name)
-	// // FIXME: why do we set a field to the client instance which is request scoped?
-	// client.XRequestIdPrefix = "TF-edgenode-create"
+	client, ok := meta.(*client.Client)
+	if !ok {
+		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
+	}
+	// FIXME: why do we set a field to the client instance which is request scoped?
+	client.XRequestIdPrefix = "TF-edgenode-create"
 
-	// rspData := &models.ZsrvResponse{}
-	// _, err = client.SendReq("POST", deviceUrlExtension, cfg, rspData)
-	// if err != nil {
-	// 	return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
-	// }
-	// id = rspData.ObjectID
+	response := &models.ZsrvResponse{}
+	_, err = client.SendReq("POST", deviceUrlExtension, localState, response)
+	if err != nil {
+		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "create", err))
+	}
 
-	// log.Printf("EdgeNode %s (ID: %s) Successfully created\n", rspData.ObjectName, id)
-	// d.SetId(id)
+	// we must update local state with the id of the newly created object
+	newEdgeNodeID := response.ObjectID
+	d.SetId(newEdgeNodeID)
 
-	// // Get Edgenode Config and update BaseOs.
-	// cfg, err = getEdgeNodeConfig(client, name, id)
-	// if err != nil {
-	// 	return diag.Errorf("%s Failed to find Edge Node. err: %s",
-	// 		errMsgPrefix, err.Error())
-	// }
-	// err = edgeNodeUpdateBaseOs(client, cfg, resourcedata.GetStr(d, "eve_image_version"))
-	// if err != nil {
-	// 	return diag.Errorf("%s %s", errMsgPrefix, err.Error())
-	// }
+	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", response.ObjectName, newEdgeNodeID)
+
+	// fetch EdgeNode state from zedcloud api with the new object's id to validate that is has been created
+	remoteState, err := fetchEdgeNodeState(edgeNodeName, newEdgeNodeID, meta)
+	if err != nil {
+		// no object with this id exist in the api's state
+		var notFoundErr *zerrors.ObjectNotFound
+		if errors.As(err, &notFoundErr) {
+			// we need to remove it from local state
+			state.RemoveLocal(d, resourceTypeEdgeNode, id, edgeNodeName)
+			return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "find", err))
+		}
+		// api error
+		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "fetch", err))
+	}
+
+	// update base image version in local state
+	newBaseOsVersion := getEdgeNodeBaseOs(remoteState, resourcedata.GetStr(d, "eve_image_version"))
+	localState.BaseImage = newBaseOsVersion
+
+	// set the new image version in remote state
+	if newBaseOsVersion != nil {
+		log.Printf(
+			"[TRACE]: Update BaseOsImage. ImageName: %s, Activate: %t",
+			*remoteState.BaseImage[0].ImageName,
+			remoteState.BaseImage[0].Activate,
+		)
+		if err := setEdgeNodeBaseOs(client, localState); err != nil {
+			return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "update base os for", err))
+		}
+	}
 
 	// // Activating / De-Activating the device requires activate / deactivate call
 	// err = edgeNodeUpdateAdminState(client, d, id)
@@ -290,33 +318,47 @@ func getSystemInterfaces(d *schema.ResourceData) ([]*models.SysInterface, error)
 	return interfaces, nil
 }
 
+// BaseImage is supposed to have only one entry. if there are multiple, reset the BaseOS config
+func getEdgeNodeBaseOs(remoteState *models.DeviceConfig, eveImageVersion string) []*models.BaseOSImage {
+	hasSingleBaseImage := remoteState.BaseImage != nil && len(remoteState.BaseImage) == 1
+	matchesEveVersion := *remoteState.BaseImage[0].ImageName == eveImageVersion
+	if hasSingleBaseImage && matchesEveVersion && remoteState.BaseImage[0].Activate {
+		// no update not required
+		return nil
+	}
+	return []*models.BaseOSImage{
+		{
+			ImageName: &eveImageVersion,
+			Version:   &eveImageVersion,
+			Activate:  true,
+		},
+	}
+}
+
+func setEdgeNodeBaseOs(client *client.Client, localState *models.DeviceConfig) error {
+	// BaseOs update is special case - publish config followed by apply
+	_, err := edgeNodeSendPutReq(client, localState, "publish")
+	if err != nil {
+		return err
+	}
+	rsp, err := edgeNodeSendPutReq(client, localState, "apply")
+	// ignore status code HTTP_STATUS_CONFLICT
+	if err != nil && rsp.StatusCode != http.StatusConflict {
+		return err
+	}
+	return nil
+}
+
+func edgeNodeSendPutReq(client *client.Client, localState *models.DeviceConfig, reqType string) (*http.Response, error) {
+	client.XRequestIdPrefix = "TF-edgenode-" + reqType
+	urlExtension := getEdgeNodeUrl(*localState.Name, localState.ID, reqType)
+	rspData := &models.ZsrvResponse{}
+	return client.SendReq("PUT", urlExtension, localState, rspData)
+}
+
 func readEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return readEdgeNodeDataSource(ctx, d, meta)
 }
-
-// func getEdgeNodeConfig(client *zedcloudapi.Client, name, id string) (*models.DeviceConfig, error) {
-// 	rspData := &models.DeviceConfig{}
-// 	_, err := client.GetObj(deviceUrlExtension, name, id, false, rspData)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("[ERROR] FAILED to get edge node %s ( id: %s). Err: %s", name, id, err.Error())
-// 	}
-// 	return rspData, nil
-// }
-
-// func edgeNodeSendPutReq(client *zedcloudapi.Client, cfg *models.DeviceConfig, reqType string) (*http.Response, error) {
-// 	client.XRequestIdPrefix = "TF-edgenode-" + reqType
-// 	urlExtension := getEdgeNodeUrl(*cfg.Name, cfg.ID, reqType)
-// 	rspData := &models.ZsrvResponse{}
-// 	return client.SendReq("PUT", urlExtension, cfg, rspData)
-// }
-
-// func cfgBaseosForEveVersionStr(eve_image_version string) []*models.BaseOSImage {
-// 	return []*models.BaseOSImage{&models.BaseOSImage{
-// 		ImageName: &eve_image_version,
-// 		Version:   &eve_image_version,
-// 		Activate:  true,
-// 	}}
-// }
 
 // func adminStatePtr(strVal string) *models.AdminState {
 // 	val := models.AdminState(strVal)
@@ -340,34 +382,6 @@ func readEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta inte
 // 	_, err = edgeNodeSendPutReq(client, cfg, action)
 // 	if err != nil {
 // 		return fmt.Errorf("Failed to set Admin state. Err: %s", err.Error())
-// 	}
-// 	return nil
-// }
-
-// func edgeNodeUpdateBaseOs(client *zedcloudapi.Client, cfg *models.DeviceConfig, eve_image_version string) error {
-// 	// BaseImage is supposed to have only one entry. If there are multiple,
-// 	// reset the BaseOS config
-// 	if cfg.BaseImage != nil && len(cfg.BaseImage) == 1 &&
-// 		*cfg.BaseImage[0].ImageName == eve_image_version &&
-// 		cfg.BaseImage[0].Activate {
-// 		// Baseos update not required
-// 		return nil
-// 	}
-// 	cfg.BaseImage = cfgBaseosForEveVersionStr(eve_image_version)
-// 	log.Printf("[TRACE]: Update BaseOsImage. ImageName: %s, Activate: %t",
-// 		*cfg.BaseImage[0].ImageName, cfg.BaseImage[0].Activate)
-// 	// BaseOs update is Special case - Publish Config followed by ApplyConfig
-// 	_, err := edgeNodeSendPutReq(client, cfg, "publish")
-// 	if err != nil {
-// 		return fmt.Errorf("BaseOsImage Publish failed. eve_image_version: %s, Err: %s",
-// 			eve_image_version, err.Error())
-// 	}
-// 	// We need to apply the configuration
-// 	rsp, err := edgeNodeSendPutReq(client, cfg, "apply")
-// 	// Ignore HTTP_STATUS_CONFLICT
-// 	if err != nil && rsp.StatusCode != http.StatusConflict {
-// 		return fmt.Errorf("BaseOsUpdate Apply request failed. eve_image_version: %s, "+
-// 			"Err: %s.", eve_image_version, err.Error())
 // 	}
 // 	return nil
 // }

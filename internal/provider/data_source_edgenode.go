@@ -20,8 +20,6 @@ import (
 	models "github.com/zededa/zedcloud-api/swagger_models"
 )
 
-var resourceTypeEdgeNode = "EdgeNode"
-
 func newEdgeNodeDataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: readEdgeNodeDataSource,
@@ -41,7 +39,7 @@ func readEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta in
 	}
 
 	// fetch the object from zedcloud api
-	remoteState, err := fetchEdgeNode(name, id, meta)
+	remoteState, err := fetchEdgeNodeState(name, id, meta)
 	if err != nil {
 		// no object with this id exist in the api's state
 		var notFoundErr *zerrors.ObjectNotFound
@@ -86,7 +84,7 @@ func readEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta in
 	return diags
 }
 
-func fetchEdgeNode(name, id string, meta interface{}) (*models.DeviceConfig, error) {
+func fetchEdgeNodeState(name, id string, meta interface{}) (*models.DeviceConfig, error) {
 	client, ok := meta.(client.Client)
 	if !ok {
 		return nil, fmt.Errorf("expect meta to be of type client.Client{} but is %T", meta)
