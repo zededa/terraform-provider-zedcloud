@@ -11,12 +11,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-	"github.com/zededa/terraform-provider-zedcloud/internal/datasources"
+	"github.com/zededa/terraform-provider-zedcloud/internal/client"
+	"github.com/zededa/terraform-provider-zedcloud/internal/resourcedata"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
-	zedcloudapi "github.com/zededa/zedcloud-api"
 )
-
-const defaultZedcloudUrl = "https://zedcontrol.zededa.net"
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -33,7 +31,7 @@ func Provider() *schema.Provider {
 			"zedcloud_volume_instance":  getVolumeInstanceDataSourceSchema(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"zedcloud_edgeapp":          getEdgeAppResourceSchema(),
+			"zedcloud_edgeapp":          resources.NewEdgeApp(),
 			"zedcloud_edgeapp_instance": getAppInstResourceSchema(),
 			"zedcloud_edgenode":         getEdgeNodeResourceSchema(),
 			"zedcloud_image":            getImageResourceSchema(),
@@ -44,44 +42,17 @@ func Provider() *schema.Provider {
 	}
 }
 
-// Token or Username and Password must be specified.
-type Client struct {
-	*zedcloudapi.Client
-	zedcloudURL string // https://zedcontrol.zededa.net
-	token       string // API Token
-	username    string
-	password    string
-}
-
 // configure parses the config into the Terraform provider meta object
 func configure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	token := getStr(d, "token")
-	username := getStr(d, "username")
-	password := getStr(d, "password")
-	zedcloudUrl := getStr(d, "zedcloud_url")
-	if zedcloudUrl == "" {
-		zedcloudUrl = defaultZedcloudUrl
-	}
+	token := resourcedata.GetStr(d, "token")
+	username := resourcedata.GetStr(d, "username")
+	password := resourcedata.GetStr(d, "password")
+	zedcloudUrl := resourcedata.GetStr(d, "zedcloud_url")
 
 	var diags diag.Diagnostics
-	if token != "" {
-		username = ""
-		password = ""
-		log.Println("enable authentication by token")
-	} else if username == "" && password == "" {
-		return nil, diag.Errorf("require either token or username and password")
-	}
-
-	apiClient, err := zedcloudapi.NewClient(zedcloudUrl, token, username, password)
+	client, err := client.NewClient(zedcloudUrl, token, username, password)
 	if err != nil {
-		return nil, diag.FromErr(fmt.Errorf("could not initialize api client: %w", err))
-	}
-	client := &Client{
-		Client:      apiClient,
-		zedcloudURL: zedcloudUrl,
-		token:       token,
-		username:    username,
-		password:    password,
+		return nil, diag.FromErr(fmt.Errorf("could not configure provider: %w", err))
 	}
 
 	log.Println("successfully configured provider")
