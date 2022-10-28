@@ -29,18 +29,23 @@ func newEdgeNodeDataSource() *schema.Resource {
 }
 
 func readEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
+	if err := getEdgeNodeDataSource(ctx, d, meta); err != nil {
+		return diag.FromErr(err)
+	}
+	return diag.Diagnostics{}
+}
 
+func getEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta interface{}) error {
 	// required fields
 	id := resourcedata.GetStr(d, "id")
 	name := resourcedata.GetStr(d, "name")
 	if id == "" && name == "" {
-		return diag.Errorf("missing required fields \"id\" or \"name\" in resource data")
+		return fmt.Errorf("missing required fields \"id\" or \"name\" in resource data")
 	}
 
 	apiClient, ok := meta.(*client.Client)
 	if !ok {
-		return diag.FromErr(fmt.Errorf("expect meta to be of type client.Client{} but is %T", meta))
+		return fmt.Errorf("expect meta to be of type client.Client{} but is %T", meta)
 	}
 
 	// fetch the object from zedcloud api
@@ -51,42 +56,42 @@ func readEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta in
 		if errors.As(err, &notFoundErr) {
 			// we need to remove it from local state
 			state.RemoveLocal(d, resourceTypeEdgeNode, id, name)
-			return diag.FromErr(fmt.Errorf(
+			return fmt.Errorf(
 				"[ERROR] could not find %s %s (id=%s): %w",
 				resourceTypeEdgeNode,
 				name,
 				id,
 				err,
-			))
+			)
 		}
 
 		// api error
-		return diag.FromErr(fmt.Errorf(
+		return fmt.Errorf(
 			"[ERROR] could not fetch %s %s (id=%s): %w",
 			resourceTypeEdgeNode,
 			name,
 			id,
 			err,
-		))
+		)
 	}
 
 	// flatten the api response into normalized terraform format
 	flattenedRemoteState, err := flattenEdgeNodeState(remoteState)
 	if err != nil {
-		return diag.FromErr(fmt.Errorf(
+		return fmt.Errorf(
 			"[ERROR] could not flatten api state for %s %s (id=%s): %w",
 			resourceTypeEdgeNode,
 			name,
 			id,
 			err,
-		))
+		)
 	}
 
 	// we always need to set the state even in a read,
 	// the object could have been changed outside of terraform
 	state.SetLocal(d, flattenedRemoteState)
 
-	return diags
+	return nil
 }
 
 func fetchEdgeNodeState(apiClient *client.Client, name, id string) (*models.DeviceConfig, error) {

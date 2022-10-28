@@ -108,17 +108,15 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	}
 
 	// Activating / De-Activating the device requires activate / deactivate call
-	err = edgeNodeUpdateAdminState(apiClient, d, id, edgeNodeName)
-	if err != nil {
+	if err := edgeNodeUpdateAdminState(apiClient, d, id, edgeNodeName); err != nil {
 		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "update admin state for", err))
 	}
 
-	// // Get Edge node config and publish the latest version. This is mainly to
-	// // published the computed fields. Object rev. changes for every update
-	// err = getEdgeNodeAndPublishData(client, d, name, id)
-	// if err != nil {
-	// 	log.Printf("***[ERROR]- Failed to get EdgeNode: %s (ID: %s) after creating it. Err: %s", name, id, err.Error())
-	// }
+	// get edge node config and publish the latest version. this is mainly to
+	// published the computed fields; object rev. changes for every update
+	if err := getEdgeNodeDataSource(ctx, d, meta); err != nil {
+		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "fetch after creating of", err))
+	}
 	return diags
 }
 
