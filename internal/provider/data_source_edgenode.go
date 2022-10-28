@@ -38,8 +38,13 @@ func readEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta in
 		return diag.Errorf("missing required fields \"id\" or \"name\" in resource data")
 	}
 
+	apiClient, ok := meta.(*client.Client)
+	if !ok {
+		return diag.FromErr(fmt.Errorf("expect meta to be of type client.Client{} but is %T", meta))
+	}
+
 	// fetch the object from zedcloud api
-	remoteState, err := fetchEdgeNodeState(name, id, meta)
+	remoteState, err := fetchEdgeNodeState(apiClient, name, id)
 	if err != nil {
 		// no object with this id exist in the api's state
 		var notFoundErr *zerrors.ObjectNotFound
@@ -84,14 +89,9 @@ func readEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta in
 	return diags
 }
 
-func fetchEdgeNodeState(name, id string, meta interface{}) (*models.DeviceConfig, error) {
-	client, ok := meta.(client.Client)
-	if !ok {
-		return nil, fmt.Errorf("expect meta to be of type client.Client{} but is %T", meta)
-	}
-
+func fetchEdgeNodeState(apiClient *client.Client, name, id string) (*models.DeviceConfig, error) {
 	responseData := &models.DeviceConfig{}
-	resp, err := client.GetObj(deviceUrlExtension, name, id, false, responseData)
+	resp, err := apiClient.GetObj(deviceUrlExtension, name, id, false, responseData)
 	if err != nil {
 		return nil, err
 	}

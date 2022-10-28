@@ -58,27 +58,27 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "create", err))
 	}
 
-	client, ok := meta.(*client.Client)
+	apiClient, ok := meta.(*client.Client)
 	if !ok {
 		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
 	}
 	// FIXME: why do we set a field to the client instance which is request scoped?
-	client.XRequestIdPrefix = "TF-edgenode-create"
+	apiClient.XRequestIdPrefix = "TF-edgenode-create"
 
 	response := &models.ZsrvResponse{}
-	_, err = client.SendReq("POST", deviceUrlExtension, localState, response)
+	_, err = apiClient.SendReq("POST", deviceUrlExtension, localState, response)
 	if err != nil {
 		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "create", err))
 	}
 
 	// we must update local state with the id of the newly created object
-	newEdgeNodeID := response.ObjectID
-	d.SetId(newEdgeNodeID)
+	id = response.ObjectID
+	d.SetId(id)
 
-	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", response.ObjectName, newEdgeNodeID)
+	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", response.ObjectName, id)
 
 	// fetch EdgeNode state from zedcloud api with the new object's id to validate that is has been created
-	remoteState, err := fetchEdgeNodeState(edgeNodeName, newEdgeNodeID, meta)
+	remoteState, err := fetchEdgeNodeState(apiClient, edgeNodeName, id)
 	if err != nil {
 		// no object with this id exist in the api's state
 		var notFoundErr *zerrors.ObjectNotFound
@@ -93,26 +93,25 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 
 	// update base image version in local state
 	newBaseOsVersion := getEdgeNodeBaseOs(remoteState, resourcedata.GetStr(d, "eve_image_version"))
-	localState.BaseImage = newBaseOsVersion
 
 	// set the new image version in remote state
 	if newBaseOsVersion != nil {
+		localState.BaseImage = newBaseOsVersion
 		log.Printf(
 			"[TRACE]: Update BaseOsImage. ImageName: %s, Activate: %t",
 			*remoteState.BaseImage[0].ImageName,
 			remoteState.BaseImage[0].Activate,
 		)
-		if err := setEdgeNodeBaseOs(client, localState); err != nil {
+		if err := setEdgeNodeBaseOs(apiClient, localState); err != nil {
 			return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "update base os for", err))
 		}
 	}
 
-	// // Activating / De-Activating the device requires activate / deactivate call
-	// err = edgeNodeUpdateAdminState(client, d, id)
-	// if err != nil {
-	// 	return diag.Errorf("%s Failed to update Admin state. Err: %s",
-	// 		errMsgPrefix, err.Error())
-	// }
+	// Activating / De-Activating the device requires activate / deactivate call
+	err = edgeNodeUpdateAdminState(apiClient, d, id, edgeNodeName)
+	if err != nil {
+		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "update admin state for", err))
+	}
 
 	// // Get Edge node config and publish the latest version. This is mainly to
 	// // published the computed fields. Object rev. changes for every update
@@ -356,63 +355,77 @@ func edgeNodeSendPutReq(client *client.Client, localState *models.DeviceConfig, 
 	return client.SendReq("PUT", urlExtension, localState, rspData)
 }
 
+func edgeNodeUpdateAdminState(apiClient *client.Client, d *schema.ResourceData, id, edgeNodeName string) error {
+	remoteState, err := fetchEdgeNodeState(apiClient, "", id)
+	if err != nil {
+		// no object with this id exist in the api's state
+		var notFoundErr *zerrors.ObjectNotFound
+		if errors.As(err, &notFoundErr) {
+			// we need to remove it from local state
+			state.RemoveLocal(d, resourceTypeEdgeNode, id, edgeNodeName)
+			return zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "find", err)
+		}
+		// api error
+		return zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "fetch", err)
+	}
+
+	var action string
+	action, err = setAdminState(remoteState, d)
+	if err != nil {
+		return zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "set local admin state for", err)
+	}
+	if action == "" {
+		return nil
+	}
+
+	_, err = edgeNodeSendPutReq(apiClient, remoteState, action)
+	if err != nil {
+		return zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "set remote admin state for", err)
+	}
+	return nil
+}
+
 func readEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	return readEdgeNodeDataSource(ctx, d, meta)
 }
 
-// func adminStatePtr(strVal string) *models.AdminState {
-// 	val := models.AdminState(strVal)
-// 	return &val
-// }
+func adminStatePtr(strVal string) *models.AdminState {
+	val := models.AdminState(strVal)
+	return &val
+}
 
-// func edgeNodeUpdateAdminState(client *zedcloudapi.Client, d *schema.ResourceData, id string) error {
-// 	cfg, err := getEdgeNodeConfig(client, "", id)
-// 	if err != nil {
-// 		return fmt.Errorf("Failed to find Edge Node to set Admin state. err: %s",
-// 			err.Error())
-// 	}
-// 	var action string
-// 	action, err = setAdminState(cfg, d)
-// 	if err != nil {
-// 		return fmt.Errorf("Failed to set Admin state in Config. err: %s", err.Error())
-// 	}
-// 	if action == "" {
-// 		return nil
-// 	}
-// 	_, err = edgeNodeSendPutReq(client, cfg, action)
-// 	if err != nil {
-// 		return fmt.Errorf("Failed to set Admin state. Err: %s", err.Error())
-// 	}
-// 	return nil
-// }
+func adapterUsagePtr(strVal string) *models.AdapterUsage {
+	val := models.AdapterUsage(strVal)
+	return &val
+}
 
-// func adapterUsagePtr(strVal string) *models.AdapterUsage {
-// 	val := models.AdapterUsage(strVal)
-// 	return &val
-// }
+func setAdminState(remoteState *models.DeviceConfig, d *schema.ResourceData) (string, error) {
+	action, err := getAdminStateValue(d)
+	if err != nil {
+		return "", err
+	}
 
-// func setAdminState(cfg *models.DeviceConfig, d *schema.ResourceData) (string, error) {
-// 	action, err := checkAdminStateValue(d)
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	strVal := resourcedata.GetStr(d, "adminstate_config")
-// 	adminstate := models.AdminState(strVal)
-// 	if cfg.AdminState != nil {
-// 		if adminstate == *cfg.AdminState {
-// 			// Admin State same as configured value - no action needed.
-// 			return "", nil
-// 		}
-// 		// If adminstate_config is ACTIVE and the device is already in
-// 		// Registered state. No action needed.
-// 		if strVal == "ADMIN_STATE_ACTIVE" &&
-// 			*cfg.AdminState == models.AdminStateADMINSTATEREGISTERED {
-// 			return "", nil
-// 		}
-// 	}
-// 	cfg.AdminState = &adminstate
-// 	return action, nil
-// }
+	strVal := resourcedata.GetStr(d, "adminstate_config")
+	localAdminState := models.AdminState(strVal)
+
+	remoteStateNotNil := remoteState.AdminState != nil
+	localEqualsRemote := localAdminState == *remoteState.AdminState
+
+	// admin state same as configured value - no action needed
+	if remoteStateNotNil && localEqualsRemote {
+		return "", nil
+	}
+
+	if remoteStateNotNil {
+		// adminstate_config is ACTIVE and the device is already in registered state
+		if strVal == "ADMIN_STATE_ACTIVE" && *remoteState.AdminState == models.AdminStateADMINSTATEREGISTERED {
+			return "", nil
+		}
+	}
+
+	remoteState.AdminState = &localAdminState
+	return action, nil
+}
 
 // Update the Resource Group
 // func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
