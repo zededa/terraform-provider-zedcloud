@@ -35,6 +35,7 @@ func readEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta in
 	return diag.Diagnostics{}
 }
 
+// this implicitly sets local state to match remote state
 func getEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta interface{}) error {
 	// required fields
 	id := resourcedata.GetStr(d, "id")
@@ -55,10 +56,10 @@ func getEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta int
 		var notFoundErr *zerrors.ObjectNotFound
 		if errors.As(err, &notFoundErr) {
 			// we need to remove it from local state
-			state.RemoveLocal(d, resourceTypeEdgeNode, id, name)
+			state.RemoveLocal(d, objectTypeEdgeNode, id, name)
 			return fmt.Errorf(
 				"[ERROR] could not find %s %s (id=%s): %w",
-				resourceTypeEdgeNode,
+				objectTypeEdgeNode,
 				name,
 				id,
 				err,
@@ -68,7 +69,7 @@ func getEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta int
 		// api error
 		return fmt.Errorf(
 			"[ERROR] could not fetch %s %s (id=%s): %w",
-			resourceTypeEdgeNode,
+			objectTypeEdgeNode,
 			name,
 			id,
 			err,
@@ -80,7 +81,7 @@ func getEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta int
 	if err != nil {
 		return fmt.Errorf(
 			"[ERROR] could not flatten api state for %s %s (id=%s): %w",
-			resourceTypeEdgeNode,
+			objectTypeEdgeNode,
 			name,
 			id,
 			err,

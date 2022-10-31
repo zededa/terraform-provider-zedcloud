@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/zededa/terraform-provider-zedcloud/internal/client"
+
 	zerrors "github.com/zededa/terraform-provider-zedcloud/internal/errors"
 	"github.com/zededa/terraform-provider-zedcloud/internal/resourcedata"
 	"github.com/zededa/terraform-provider-zedcloud/internal/state"
@@ -23,12 +24,12 @@ import (
 )
 
 const (
-	deviceUrlExtension   = "devices"
-	resourceTypeEdgeNode = "EdgeNode"
+	deviceUrlExtension = "devices"
+	objectTypeEdgeNode = "EdgeNode"
 )
 
-func getEdgeNodeUrl(name, id, urlType string) string {
-	return zedcloudapi.UrlForObjectRequest(deviceUrlExtension, name, id, urlType)
+func getEdgeNodeUrl(name, edgeNodeID, urlType string) string {
+	return zedcloudapi.UrlForObjectRequest(deviceUrlExtension, name, edgeNodeID, urlType)
 }
 
 func newEdgeNodeResource() *schema.Resource {
@@ -48,14 +49,14 @@ func newEdgeNodeResource() *schema.Resource {
 func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	id := resourcedata.GetStr(d, "id") // FIXME: empty for create?
+	edgeNodeID := resourcedata.GetStr(d, "edgeNodeID") // FIXME: empty for create?
 	edgeNodeName := resourcedata.GetStr(d, "name")
 
 	log.Printf("[INFO] Creating EdgeNode: %s", edgeNodeName)
 
-	localState, err := getEdgeNodeState(d, true)
+	localState, err := getEdgeNodeStateForCreation(d)
 	if err != nil {
-		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "create", err))
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "create", err))
 	}
 
 	apiClient, ok := meta.(*client.Client)
@@ -68,27 +69,27 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	response := &models.ZsrvResponse{}
 	_, err = apiClient.SendReq("POST", deviceUrlExtension, localState, response)
 	if err != nil {
-		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "create", err))
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "create", err))
 	}
 
 	// we must update local state with the id of the newly created object
-	id = response.ObjectID
-	d.SetId(id)
+	edgeNodeID = response.ObjectID
+	d.SetId(edgeNodeID)
 
-	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", response.ObjectName, id)
+	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", response.ObjectName, edgeNodeID)
 
 	// fetch EdgeNode state from zedcloud api with the new object's id to validate that is has been created
-	remoteState, err := fetchEdgeNodeState(apiClient, edgeNodeName, id)
+	remoteState, err := fetchEdgeNodeState(apiClient, edgeNodeName, edgeNodeID)
 	if err != nil {
 		// no object with this id exist in the api's state
 		var notFoundErr *zerrors.ObjectNotFound
 		if errors.As(err, &notFoundErr) {
 			// we need to remove it from local state
-			state.RemoveLocal(d, resourceTypeEdgeNode, id, edgeNodeName)
-			return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "find", err))
+			state.RemoveLocal(d, objectTypeEdgeNode, edgeNodeID, edgeNodeName)
+			return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "find", err))
 		}
 		// api error
-		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "fetch", err))
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "fetch", err))
 	}
 
 	// update base image version in local state
@@ -98,29 +99,43 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	if newBaseOsVersion != nil {
 		localState.BaseImage = newBaseOsVersion
 		log.Printf(
-			"[TRACE]: Update BaseOsImage. ImageName: %s, Activate: %t",
+			"[TRACE]: update the base os image to: %s, set activate to: %t",
 			*remoteState.BaseImage[0].ImageName,
 			remoteState.BaseImage[0].Activate,
 		)
 		if err := setEdgeNodeBaseOs(apiClient, localState); err != nil {
-			return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "update base os for", err))
+			return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update base os for", err))
 		}
 	}
 
-	// Activating / De-Activating the device requires activate / deactivate call
-	if err := edgeNodeUpdateAdminState(apiClient, d, id, edgeNodeName); err != nil {
-		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "update admin state for", err))
+	// activating / de-activating the device requires activate / deactivate call
+	if err := edgeNodeUpdateAdminState(apiClient, d, edgeNodeID, edgeNodeName); err != nil {
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update admin state for", err))
 	}
 
-	// get edge node config and publish the latest version. this is mainly to
-	// published the computed fields; object rev. changes for every update
+	// sync local state with the updated remote state. this fetches the remotely computed fields and ensures, the update
+	// was performed successfully
 	if err := getEdgeNodeDataSource(ctx, d, meta); err != nil {
-		return diag.FromErr(zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "fetch after creating of", err))
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "fetch after creating of", err))
 	}
 	return diags
 }
 
-func getEdgeNodeState(d *schema.ResourceData, create bool) (*models.DeviceConfig, error) {
+func getEdgeNodeStateForCreation(d *schema.ResourceData) (*models.DeviceConfig, error) {
+	if eveImageVersion := resourcedata.GetStr(d, "eve_image_version"); eveImageVersion == "" {
+		return nil, fmt.Errorf("eve_image_version must be specified.")
+	}
+
+	modelID := resourcedata.GetStrPtrOrNil(d, "model_id")
+	if modelID == nil || *modelID == "" {
+		return nil, fmt.Errorf("model_id must be specified for the EdgeNode.")
+	}
+
+	projectID := resourcedata.GetStrPtrOrNil(d, "project_id")
+	if projectID == nil || *projectID == "" {
+		return nil, fmt.Errorf("project_id must be specified for the EdgeNode.")
+	}
+
 	_, err := getAdminStateValue(d)
 	if err != nil {
 		return nil, err
@@ -136,49 +151,10 @@ func getEdgeNodeState(d *schema.ResourceData, create bool) (*models.DeviceConfig
 		return nil, err
 	}
 
-	if eveImageVersion := resourcedata.GetStr(d, "eve_image_version"); eveImageVersion == "" {
-		return nil, fmt.Errorf("eve_image_version must be specified.")
-	}
-
 	sysInterfaces, err := getSystemInterfaces(d)
 	if err != nil {
 		return nil, err
 	}
-
-	var modelID *string
-	var obkey string
-	projectID := resourcedata.GetStrPtrOrNil(d, "project_id")
-
-	// FIXME: move this to create remove crate flag?
-	if create {
-		// model id and project id will be set only during create.
-		modelID = resourcedata.GetStrPtrOrNil(d, "model_id")
-		if modelID == nil || *modelID == "" {
-			return nil, fmt.Errorf("model_id must be specified for the EdgeNode.")
-		}
-
-		if projectID == nil || *projectID == "" {
-			return nil, fmt.Errorf("project_id must be specified for the EdgeNode.")
-		}
-		obkey = resourcedata.GetStr(d, "onboard_key")
-	}
-
-	// FIXME: this needs to go to update only!
-	// else {
-	// 	// Change of Project for a device is NOT supported with Update operation.
-	// 	// Check if the configured project is different from the config we got
-	// 	// from Cloud. If different - error out.
-	// 	// If project_id is not configured, ignore the check. We cannot verify
-	// 	// the case of device created with project_id set to non-default project,
-	// 	// but changed to remove set the project_id to empty, though this also is
-	// 	// not supported. Such an update request would be rejected by ZEDCloud.
-	// 	if projectID != nil && state.ProjectID != nil &&
-	// 		*state.ProjectID != *projectID {
-	// 		// Update. Project cannot be changed
-	// 		return fmt.Errorf("project_id cannot be changed after EdgeNode is "+
-	// 			"created. Current: %s, New: %s", *state.ProjectID, *projectID)
-	// 	}
-	// }
 
 	return &models.DeviceConfig{
 		Name:        resourcedata.GetStrPtrOrNil(d, "name"),
@@ -191,11 +167,63 @@ func getEdgeNodeState(d *schema.ResourceData, create bool) (*models.DeviceConfig
 		DevLocation: deviceLocation,
 		Interfaces:  sysInterfaces,
 		ModelID:     modelID,
-		Obkey:       obkey,
+		Obkey:       resourcedata.GetStr(d, "onboard_key"),
 		ProjectID:   projectID,
 		Serialno:    resourcedata.GetStr(d, "serialno"),
 		Tags:        resourcedata.GetStrMap(d, "tags"),
 	}, nil
+}
+
+func getEdgeNodeStateForUpdate(remoteState *models.DeviceConfig, d *schema.ResourceData) (*models.DeviceConfig, error) {
+	if eveImageVersion := resourcedata.GetStr(d, "eve_image_version"); eveImageVersion == "" {
+		return nil, fmt.Errorf("eve_image_version must be specified.")
+	}
+
+	_, err := getAdminStateValue(d)
+	if err != nil {
+		return nil, err
+	}
+
+	configItems, err := getConfigItems(d)
+	if err != nil {
+		return nil, err
+	}
+
+	deviceLocation, err := getDeviceLocation(d)
+	if err != nil {
+		return nil, err
+	}
+
+	sysInterfaces, err := getSystemInterfaces(d)
+	if err != nil {
+		return nil, err
+	}
+
+	projectID := resourcedata.GetStrPtrOrNil(d, "project_id")
+	// Change of Project for a device is NOT supported with Update operation.
+	// Check if the configured project is different from the config we got
+	// from Cloud. If different - error out.
+	// If project_id is not configured, ignore the check. We cannot verify
+	// the case of device created with project_id set to non-default project,
+	// but changed to remove set the project_id to empty, though this also is
+	// not supported. Such an update request would be rejected by ZEDCloud.
+	if projectID != nil && remoteState.ProjectID != nil && *remoteState.ProjectID != *projectID {
+		return nil, fmt.Errorf("project_id cannot be changed after EdgeNode was created. remote: %s, local: %s", *remoteState.ProjectID, *projectID)
+	}
+
+	remoteState.Name = resourcedata.GetStrPtrOrNil(d, "name")
+	remoteState.Description = resourcedata.GetStr(d, "description")
+	remoteState.Title = resourcedata.GetStrPtrOrNil(d, "title")
+	remoteState.AssetID = resourcedata.GetStr(d, "asset_id")
+	remoteState.ClientIP = resourcedata.GetStr(d, "client_ip")
+	remoteState.ClusterID = resourcedata.GetStr(d, "cluster_id")
+	remoteState.ConfigItem = configItems
+	remoteState.DevLocation = deviceLocation
+	remoteState.Interfaces = sysInterfaces
+	remoteState.ProjectID = projectID
+	remoteState.Serialno = resourcedata.GetStr(d, "serialno")
+	remoteState.Tags = resourcedata.GetStrMap(d, "tags")
+	return remoteState, nil
 }
 
 func getAdminStateValue(d *schema.ResourceData) (string, error) {
@@ -315,18 +343,18 @@ func getSystemInterfaces(d *schema.ResourceData) ([]*models.SysInterface, error)
 	return interfaces, nil
 }
 
-// BaseImage is supposed to have only one entry. if there are multiple, reset the BaseOS config
-func getEdgeNodeBaseOs(remoteState *models.DeviceConfig, eveImageVersion string) []*models.BaseOSImage {
+// BaseImage is supposed to have only one entry. If there are multiple, reset the BaseOS config.
+func getEdgeNodeBaseOs(remoteState *models.DeviceConfig, localEVEVersion string) []*models.BaseOSImage {
 	hasSingleBaseImage := remoteState.BaseImage != nil && len(remoteState.BaseImage) == 1
-	matchesEveVersion := *remoteState.BaseImage[0].ImageName == eveImageVersion
+	matchesEveVersion := *remoteState.BaseImage[0].ImageName == localEVEVersion
 	if hasSingleBaseImage && matchesEveVersion && remoteState.BaseImage[0].Activate {
 		// no update not required
 		return nil
 	}
 	return []*models.BaseOSImage{
 		{
-			ImageName: &eveImageVersion,
-			Version:   &eveImageVersion,
+			ImageName: &localEVEVersion,
+			Version:   &localEVEVersion,
 			Activate:  true,
 		},
 	}
@@ -353,24 +381,24 @@ func edgeNodeSendPutReq(client *client.Client, localState *models.DeviceConfig, 
 	return client.SendReq("PUT", urlExtension, localState, rspData)
 }
 
-func edgeNodeUpdateAdminState(apiClient *client.Client, d *schema.ResourceData, id, edgeNodeName string) error {
-	remoteState, err := fetchEdgeNodeState(apiClient, "", id)
+func edgeNodeUpdateAdminState(apiClient *client.Client, d *schema.ResourceData, edgeNodeID, edgeNodeName string) error {
+	remoteState, err := fetchEdgeNodeState(apiClient, "", edgeNodeID)
 	if err != nil {
 		// no object with this id exist in the api's state
 		var notFoundErr *zerrors.ObjectNotFound
 		if errors.As(err, &notFoundErr) {
 			// we need to remove it from local state
-			state.RemoveLocal(d, resourceTypeEdgeNode, id, edgeNodeName)
-			return zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "find", err)
+			state.RemoveLocal(d, objectTypeEdgeNode, edgeNodeID, edgeNodeName)
+			return zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "find", err)
 		}
 		// api error
-		return zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "fetch", err)
+		return zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "fetch", err)
 	}
 
 	var action string
 	action, err = setAdminState(remoteState, d)
 	if err != nil {
-		return zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "set local admin state for", err)
+		return zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "set local admin state for", err)
 	}
 	if action == "" {
 		return nil
@@ -378,7 +406,7 @@ func edgeNodeUpdateAdminState(apiClient *client.Client, d *schema.ResourceData, 
 
 	_, err = edgeNodeSendPutReq(apiClient, remoteState, action)
 	if err != nil {
-		return zerrors.New(id, resourceTypeEdgeNode, edgeNodeName, "set remote admin state for", err)
+		return zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "set remote admin state for", err)
 	}
 	return nil
 }
@@ -425,55 +453,86 @@ func setAdminState(remoteState *models.DeviceConfig, d *schema.ResourceData) (st
 	return action, nil
 }
 
-// Update the Resource Group
-// func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
+func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 
-// 	client, ok := meta.(*client.Client)
-// 	if !ok {
-// 		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
-// 	}
-// 	id := resourcedata.GetStr(d, "id")
-// 	name := resourcedata.GetStr(d, "name")
-// 	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Update")
-// 	cfg, err := getEdgeNodeConfig(client, name, id)
-// 	if err != nil {
-// 		return diag.Errorf("%s Failed to find Edge Node. err: %s",
-// 			errMsgPrefix, err.Error())
-// 	}
-// 	err = checkInvalidAttrForUpdate(d, *cfg.Name, cfg.ID)
-// 	if err != nil {
-// 		return diag.Errorf("%s err: %s", errMsgPrefix, err.Error())
-// 	}
-// 	if cfg.ID != id {
-// 		return diag.Errorf("%s ID of edge node changed. Expected: %s, actual: %s. "+
-// 			"Object in zedcontrol is not same as expected by Terraform.",
-// 			errMsgPrefix, id, cfg.ID)
-// 	}
-// 	err = rdDeviceConfig(cfg, d, false)
-// 	if err != nil {
-// 		return diag.Errorf("%s Error: %s", errMsgPrefix, err.Error())
-// 	}
-// 	_, err = edgeNodeSendPutReq(client, cfg, "update")
-// 	if err != nil {
-// 		return diag.Errorf("%s Update request failed. Err: %s",
-// 			errMsgPrefix, err.Error())
-// 	}
-// 	err = edgeNodeUpdateBaseOs(client, cfg, resourcedata.GetStr(d, "eve_image_version"))
-// 	if err != nil {
-// 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
-// 	}
-// 	err = edgeNodeUpdateAdminState(client, d, id)
-// 	if err != nil {
-// 		return diag.Errorf("%s %s", errMsgPrefix, err.Error())
-// 	}
-// 	err = getEdgeNodeAndPublishData(client, d, name, id)
-// 	if err != nil {
-// 		return diag.Errorf("%s", err.Error())
-// 	}
-// 	log.Printf("[INFO] EdgeNode %s (ID: %s) Update Successful.", name, cfg.ID)
-// 	return diags
-// }
+	edgeNodeID := resourcedata.GetStr(d, "id")
+	edgeNodeName := resourcedata.GetStr(d, "name")
+
+	apiClient, ok := meta.(*client.Client)
+	if !ok {
+		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
+	}
+
+	// fetch EdgeNode state from zedcloud api with the new object's edgeNodeID to validate that is has been created
+	remoteState, err := fetchEdgeNodeState(apiClient, edgeNodeName, edgeNodeID)
+	if err != nil {
+		// no object with this edgeNodeID exist in the api's state
+		var notFoundErr *zerrors.ObjectNotFound
+		if errors.As(err, &notFoundErr) {
+			// we need to remove it from local state
+			state.RemoveLocal(d, objectTypeEdgeNode, edgeNodeID, edgeNodeName)
+			return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "find", err))
+		}
+		// api error
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "fetch", err))
+	}
+
+	// we cannot update if ID or name have changed
+	err = state.CheckInvalidAttrForUpdate(d, *remoteState.Name, remoteState.ID)
+	if err != nil {
+		return diag.FromErr(zerrors.New(
+			edgeNodeID,
+			objectTypeEdgeNode,
+			edgeNodeName,
+			"update, invalid attribute for",
+			err,
+		))
+	}
+
+	// we create the config from remote state and the updates in the local state, that we want to use to
+	// update the remote state
+	remoteStateForUpdate, err := getEdgeNodeStateForUpdate(remoteState, d)
+	if err != nil {
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update", err))
+	}
+
+	// update the remote state
+	if _, err := edgeNodeSendPutReq(apiClient, remoteStateForUpdate, "update"); err != nil {
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update", err))
+	}
+
+	// FIXME: why don't we update image version in the first update request?
+	// update base image version in local state
+	newBaseOsVersion := getEdgeNodeBaseOs(remoteState, resourcedata.GetStr(d, "eve_image_version"))
+
+	// set the new image version in remote state
+	if newBaseOsVersion != nil {
+		remoteStateForUpdate.BaseImage = newBaseOsVersion
+		log.Printf(
+			"[TRACE]: update the base os image to: %s, set activate to: %t",
+			*remoteState.BaseImage[0].ImageName,
+			remoteState.BaseImage[0].Activate,
+		)
+		if err := setEdgeNodeBaseOs(apiClient, remoteStateForUpdate); err != nil {
+			return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update base os for", err))
+		}
+	}
+
+	// activating / de-activating the device requires activate / deactivate call
+	if err := edgeNodeUpdateAdminState(apiClient, d, edgeNodeID, edgeNodeName); err != nil {
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update admin state for", err))
+	}
+
+	// sync local state with the updated remote state. this fetches the remotely computed fields and ensures, the update
+	// was performed successfully
+	if err := getEdgeNodeDataSource(ctx, d, meta); err != nil {
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "fetch after creating of", err))
+	}
+
+	log.Printf("[INFO] EdgeNode %s (ID: %s) Update Successful.", edgeNodeName, remoteState.ID)
+	return diags
+}
 
 // // Delete the Resource Group
 // func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -484,10 +543,10 @@ func setAdminState(remoteState *models.DeviceConfig, d *schema.ResourceData) (st
 // 		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
 // 	}
 // 	name := resourcedata.GetStr(d, "name")
-// 	id := resourcedata.GetStr(d, "id")
+// 	edgeNodeID := resourcedata.GetStr(d, "id")
 // 	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Delete")
 // 	client.XRequestIdPrefix = "TF-edgenode-delete"
-// 	urlExtension := getEdgeNodeUrl(name, id, "delete")
+// 	urlExtension := getEdgeNodeUrl(name, edgeNodeID, "delete")
 // 	rspData := &models.ZsrvResponse{}
 // 	_, err := client.SendReq("DELETE", urlExtension, nil, rspData)
 // 	if err != nil {
