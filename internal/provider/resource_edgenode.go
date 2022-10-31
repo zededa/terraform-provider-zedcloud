@@ -49,10 +49,10 @@ func newEdgeNodeResource() *schema.Resource {
 func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	edgeNodeID := resourcedata.GetStr(d, "edgeNodeID") // FIXME: empty for create?
+	edgeNodeID := ""
 	edgeNodeName := resourcedata.GetStr(d, "name")
 
-	log.Printf("[INFO] Creating EdgeNode: %s", edgeNodeName)
+	log.Printf("[INFO] creating EdgeNode: %s", edgeNodeName)
 
 	localState, err := getEdgeNodeStateForCreation(d)
 	if err != nil {
@@ -73,10 +73,11 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	}
 
 	// we must update local state with the id of the newly created object
+	edgeNodeName = response.ObjectName
 	edgeNodeID = response.ObjectID
 	d.SetId(edgeNodeID)
 
-	log.Printf("EdgeNode %s (ID: %s) Successfully created\n", response.ObjectName, edgeNodeID)
+	log.Printf("[INFO] EdgeNode %s created (id=%s) successfully\n", edgeNodeName, edgeNodeID)
 
 	// fetch EdgeNode state from zedcloud api with the new object's id to validate that is has been created
 	remoteState, err := fetchEdgeNodeState(apiClient, edgeNodeName, edgeNodeID)
@@ -122,6 +123,7 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 }
 
 func getEdgeNodeStateForCreation(d *schema.ResourceData) (*models.DeviceConfig, error) {
+	// FIXME: why does the original code not set it in the local state?
 	if eveImageVersion := resourcedata.GetStr(d, "eve_image_version"); eveImageVersion == "" {
 		return nil, fmt.Errorf("eve_image_version must be specified.")
 	}

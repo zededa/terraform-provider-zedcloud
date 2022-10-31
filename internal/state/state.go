@@ -27,23 +27,27 @@ func SetLocal(d *schema.ResourceData, vals map[string]interface{}) {
 	}
 }
 
-func CheckInvalidAttrForUpdate(d *schema.ResourceData, name, id string) error {
-	newName := resourcedata.GetStr(d, "name")
-	if newName != name {
-		return fmt.Errorf("Name of an object cannot be changed. current: %s, new: %s", name, newName)
-	}
-	idInState := resourcedata.GetStr(d, "id")
-	if idInState != id {
-		return fmt.Errorf(
-			"ID of the object has Changed. Cannot update the object. ID in state: %s, ID of Object in Cloud: %s",
-			idInState,
-			id,
-		)
-	}
-	return nil
-}
-
 func RemoveLocal(d *schema.ResourceData, resourceType, id, name string) {
 	log.Printf("remove %s %s from state (id=%s)", resourceType, name, id)
 	schema.RemoveFromState(d, nil)
+}
+
+func CheckInvalidAttrForUpdate(d *schema.ResourceData, remoteName, remoteID string) error {
+	localName := resourcedata.GetStr(d, "name")
+	if localName != remoteName {
+		return fmt.Errorf(
+			"cannot change name of object after creation, remote: %s, local: %s",
+			remoteName,
+			localName,
+		)
+	}
+	localID := resourcedata.GetStr(d, "id")
+	if localID != remoteID {
+		return fmt.Errorf(
+			"cannot update the object, ID of the object has changed. remote: %s, local: %s",
+			remoteID,
+			localID,
+		)
+	}
+	return nil
 }

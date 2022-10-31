@@ -4,13 +4,17 @@
 package provider
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"testing"
 
-	"github.com/go-test/deep"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/stretchr/testify/assert"
 	"github.com/zededa/terraform-provider-zedcloud/internal/resourcedata"
+	"github.com/zededa/terraform-provider-zedcloud/internal/test"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
-	"github.com/zededa/zedcloud-api/swagger_models"
+	"github.com/zededa/terraform-provider-zedcloud/utils"
+	models "github.com/zededa/zedcloud-api/swagger_models"
 )
 
 func copyMap(originalMap map[string]interface{}) map[string]interface{} {
@@ -76,6 +80,18 @@ var rdEdgeNodeFullCfg = map[string]interface{}{
 	"eve_image_version": "6.8.2-kvm-amd64",
 	"interface": []interface{}{
 		map[string]interface{}{
+			"cost":       1,
+			"intfname":   "intf2",
+			"intf_usage": "ADAPTER_USAGE_DISABLED",
+			"ipaddr":     "10.10.1.6",
+			"macaddr":    "0.1.3",
+			"netname":    "sample-net2",
+			"tags": map[string]interface{}{
+				"tag12": "value12",
+				"tag22": "value22",
+			},
+		},
+		map[string]interface{}{
 			"cost":       10,
 			"intfname":   "intf1",
 			"intf_usage": "ADAPTER_USAGE_MANAGEMENT",
@@ -87,21 +103,6 @@ var rdEdgeNodeFullCfg = map[string]interface{}{
 				"tag2": "value2",
 			},
 		},
-		/* Since interfaces are of type schema.Set, need a custom diff function
-		        to compare multiple interfaces
-				map[string]interface{}{
-					"cost":       1,
-					"intfname":   "intf2",
-					"intf_usage": "ADAPTER_USAGE_DISABLED",
-					"ipaddr":     "10.10.1.6",
-					"macaddr":    "0.1.3",
-					"netname":    "sample-net2",
-					"tags": map[string]interface{}{
-						"tag12": "value12",
-						"tag22": "value22",
-					},
-				},
-		*/
 	},
 	"memory":        "",
 	"model_id":      "Test Model",
@@ -126,6 +127,35 @@ var rdEdgeNodeFullCfg = map[string]interface{}{
 }
 
 // efo - Expected Flattened Output
+//
+//	var efoEdgeNodeFullCfg = map[string]interface{}{
+//		"name":        rdEdgeNodeFullCfg["name"],
+//		"id":          rdEdgeNodeFullCfg["id"],
+//		"description": rdEdgeNodeFullCfg["description"],
+//		"title":       rdEdgeNodeFullCfg["title"],
+//		"adminstate":  "",
+//		// adminstate config is not set in rdDeviceConfig - so ignoring this field.
+//		"adminstate_config": "",
+//		"asset_id":          rdEdgeNodeFullCfg["asset_id"],
+//		"client_ip":         rdEdgeNodeFullCfg["client_ip"],
+//		"cluster_id":        rdEdgeNodeFullCfg["cluster_id"],
+//		"config_items":      rdEdgeNodeFullCfg["config_items"],
+//		"cpu":               0,
+//		"dev_location":      rdEdgeNodeFullCfg["dev_location"],
+//		"eve_image_version": rdEdgeNodeFullCfg["eve_image_version"],
+//		"interface":         rdEdgeNodeFullCfg["interface"],
+//		"memory":            0,
+//		"model_id":          rdEdgeNodeFullCfg["model_id"],
+//		"project_id":        rdEdgeNodeFullCfg["project_id"],
+//		"reset_counter":     0,
+//		"reset_time":        "",
+//		"revision":          []interface{}{},
+//		"serialno":          rdEdgeNodeFullCfg["serialno"],
+//		"storage":           0,
+//		"tags":              rdEdgeNodeFullCfg["tags"],
+//		"thread":            0,
+//		"utype":             "",
+//	}
 var efoEdgeNodeFullCfg = map[string]interface{}{
 	"name":        rdEdgeNodeFullCfg["name"],
 	"id":          rdEdgeNodeFullCfg["id"],
@@ -191,94 +221,197 @@ func rdEdgeNodeUpdateProjectIdToNilOutput() map[string]interface{} {
 	return newMap
 }
 
-// In each test case, call rdXXX to get the appropriate config struct,
-//
-//	feed it to flattenXXX, verify output of flattenXXX is same as input
-func TestRDEdgeNodeConfig(t *testing.T) {
-	cases := []struct {
-		input                   map[string]interface{}
-		update                  bool
-		update_project_id       bool
-		description             string
-		expectError             bool
-		expectedFlattenedOutput map[string]interface{}
-		expectAllSchemaKeys     bool
-	}{
+type setupForFlatteningTests struct {
+	remoteStateFromTestdata *schema.ResourceData
+	expectedFlattenedState  map[string]interface{}
+}
+
+func setupFlatteningTest(t *testing.T) setupForFlatteningTests {
+	jsonInput, err := ioutil.ReadFile("./testdata/edge_node/input_flatten_complete.json")
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	var mockAPIResponseData map[string]interface{}
+	if err := json.Unmarshal(jsonInput, &mockAPIResponseData); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	// provide the test data (api-reponse) to be marshaled into the schema and transformed into resource
+	// data that represent the remote state
+	remoteStateFromTestdata := schema.TestResourceDataRaw(t, zschemas.EdgeNodeSchema, mockAPIResponseData)
+
+	jsonOutput, err := ioutil.ReadFile("./testdata/edge_node/output_flatten_complete.json")
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	var expectedFlattenedState map[string]interface{}
+	if err := json.Unmarshal(jsonOutput, &expectedFlattenedState); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	return setupForFlatteningTests{
+		remoteStateFromTestdata: remoteStateFromTestdata,
+		expectedFlattenedState:  test.MapItemsFloatToInt(expectedFlattenedState),
+	}
+}
+
+func TestEdgeNodeFlattening(t *testing.T) {
+	// apiResponseJSON, err := json.MarshalIndent(efoEdgeNodeFullCfg, "", "    ")
+	// if err != nil {
+	// 	t.Log(err)
+	// 	t.FailNow()
+	// }
+	// fmt.Println(string(apiResponseJSON))
+
+	setup := setupFlatteningTest(t)
+
+	// test
+	localState, err := getEdgeNodeStateForCreation(setup.remoteStateFromTestdata)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	// we need to set the ID we expect to be returned in the api repsonse
+	localState.ID = efoEdgeNodeFullCfg["id"].(string)
+	// FIXME: why don't we set the base image in local state/create request but check for its existence in d?
+	localEVEVersion := resourcedata.GetStr(setup.remoteStateFromTestdata, "eve_image_version")
+	localState.BaseImage = []*models.BaseOSImage{
 		{
-			input:                   map[string]interface{}{},
-			description:             "Empty RD",
-			expectError:             true,
-			expectedFlattenedOutput: rdEdgeNodeEmptyOutput,
-		},
-		{
-			input:                   rdEdgeNodeFullCfg,
-			description:             "Full Cfg Struct",
-			expectError:             false,
-			expectedFlattenedOutput: efoEdgeNodeFullCfg,
-		},
-		{
-			input:                   rdEdgeNodeNilProjectId,
-			description:             "Nil Project Create",
-			expectError:             true,
-			expectedFlattenedOutput: rdEdgeNodeNilProjectIdOutput(),
-		},
-		{
-			input:                   rdEdgeNodeNilProjectId,
-			description:             "Update non-nil project id to Nil",
-			expectError:             false,
-			update:                  true,
-			update_project_id:       true,
-			expectedFlattenedOutput: rdEdgeNodeUpdateProjectIdToNilOutput(),
-		},
-		{
-			input:                   rdEdgeNodeEmptyProjectId,
-			description:             "Empty Project Update",
-			expectError:             false,
-			update:                  true,
-			expectedFlattenedOutput: rdEdgeNodeNilProjectIdOutput(),
+			ImageName: &localEVEVersion,
+			Version:   &localEVEVersion,
+			Activate:  true,
 		},
 	}
 
-	for _, c := range cases {
-		rd := schema.TestResourceDataRaw(t, zschemas.EdgeNodeSchema, c.input)
-		cfg := &swagger_models.DeviceConfig{}
-		name, ok := c.input["name"].(string)
-		if !ok {
-			name = ""
-		}
-		cfg.Name = &name
-		cfg.ID, ok = c.input["id"].(string)
-		cfg.BaseImage = cfgBaseosForEveVersionStr(resourcedata.GetStr(rd, "eve_image_version"))
-		if c.update_project_id {
-			project_id := "SampleProjectID"
-			cfg.ProjectID = &project_id
-		}
-		err := rdDeviceConfig(cfg, rd, !c.update)
-		if err != nil {
-			if !c.expectError {
-				t.Fatalf("Test Failed: %s\n"+
-					"Unexpected error from updateEdgeNodeCfgFromResourceData.\n"+
-					"Error: %+v\n", c.description, err.Error())
-			}
-			// No point in continuing cfg is invalid
-			continue
-		}
-		if c.expectError {
-			t.Fatalf("Test Failed: %s. Expecting Error, but did not get one",
-				c.description)
-		}
-		out := flattenDeviceConfig(cfg)
-		err = verifyFlattenOutput(zschemas.EdgeNodeSchema, out, c.expectAllSchemaKeys)
-		if err != nil {
-			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s",
-				c.description, err.Error())
-		}
-		if diff := deep.Equal(out, c.expectedFlattenedOutput); diff != nil {
-			t.Fatalf("Test Failed: %s\n"+
-				"Error matching Flattened output and input.\n"+
-				"Output: %#v\n"+
-				"expectedFlattenedOutput : %#v\n"+
-				"Diff: %#v", c.description, out, c.expectedFlattenedOutput, diff)
-		}
+	flattenedState, err := flattenEdgeNodeState(localState)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
 	}
+
+	if err := utils.CheckIfAllKeysExist(zschemas.EdgeNodeSchema, flattenedState); err != nil {
+		t.Fatalf("errors in flatten output: %s", err.Error())
+	}
+
+	assert.Equal(t, setup.expectedFlattenedState, flattenedState)
+
+	//		if diff := deep.Equal(out, tt.expectedFlattenedOutput); diff != nil {
+	//			t.Fatalf("Test Failed: %s\n"+
+	//				"Error matching Flattened output and input.\n"+
+	//				"Output: %#v\n"+
+	//				"expectedFlattenedOutput : %#v\n"+
+	//				"Diff: %#v",
+	//				tt.description,
+	//				out,
+	//				tt.expectedFlattenedOutput,
+	//				diff)
+	//		}
+	//	}
 }
+
+// In each test case, call rdXXX to get the appropriate config struct,
+//
+//	feed it to flattenXXX, verify output of flattenXXX is same as input
+// func TestRDEdgeNodeConfig(t *testing.T) {
+// 	testCases := []struct {
+// 		input                   map[string]interface{}
+// 		update                  bool
+// 		update_project_id       bool
+// 		description             string
+// 		expectError             bool
+// 		expectedFlattenedOutput map[string]interface{}
+// 		expectAllSchemaKeys     bool
+// 	}{
+// 		{
+// 			input:                   map[string]interface{}{},
+// 			description:             "Empty RD",
+// 			expectError:             true,
+// 			expectedFlattenedOutput: rdEdgeNodeEmptyOutput,
+// 		},
+// 		{
+// 			input:                   rdEdgeNodeFullCfg,
+// 			description:             "Full Cfg Struct",
+// 			expectError:             false,
+// 			expectedFlattenedOutput: efoEdgeNodeFullCfg,
+// 		},
+// 		{
+// 			input:                   rdEdgeNodeNilProjectId,
+// 			description:             "Nil Project Create",
+// 			expectError:             true,
+// 			expectedFlattenedOutput: rdEdgeNodeNilProjectIdOutput(),
+// 		},
+// 		{
+// 			input:                   rdEdgeNodeNilProjectId,
+// 			description:             "Update non-nil project id to Nil",
+// 			expectError:             false,
+// 			update:                  true,
+// 			update_project_id:       true,
+// 			expectedFlattenedOutput: rdEdgeNodeUpdateProjectIdToNilOutput(),
+// 		},
+// 		{
+// 			input:                   rdEdgeNodeEmptyProjectId,
+// 			description:             "Empty Project Update",
+// 			expectError:             false,
+// 			update:                  true,
+// 			expectedFlattenedOutput: rdEdgeNodeNilProjectIdOutput(),
+// 		},
+// 	}
+
+// 	for _, tt := range testCases {
+// 		// provide the test data (api-reponse) to be marshaled into the schema
+// 		// and transformed into resource data that represent the remote state
+// 		remoteState := schema.TestResourceDataRaw(t, zschemas.EdgeNodeSchema, tt.input)
+
+// 		localState := &models.DeviceConfig{}
+// 		name, ok := tt.input["name"].(string)
+// 		if !ok {
+// 			name = ""
+// 		}
+
+// 		localState.Name = &name
+// 		localState.ID, ok = tt.input["id"].(string)
+
+// 		localState.BaseImage = cfgBaseosForEveVersionStr(resourcedata.GetStr(remoteState, "eve_image_version"))
+// 		if tt.update_project_id {
+// 			project_id := "SampleProjectID"
+// 			localState.ProjectID = &project_id
+// 		}
+
+// 		err := getEdgeNodeState(localState, remoteState, !tt.update)
+// 		if err != nil {
+// 			if !tt.expectError {
+// 				t.Fatalf("Test Failed: %s\n"+
+// 					"Unexpected error from updateEdgeNodeCfgFromResourceData.\n"+
+// 					"Error: %+v\n",
+// 					tt.description,
+// 					err.Error())
+// 			}
+// 			// No point in continuing cfg is invalid
+// 			continue
+// 		}
+// 		if tt.expectError {
+// 			t.Fatalf("Test Failed: %s. Expecting Error, but did not get one", tt.description)
+// 		}
+
+// 		out := flattenEdgeNodeState(localState)
+// 		if err := verifyFlattenOutput(zschemas.EdgeNodeSchema, out, tt.expectAllSchemaKeys);err != nil {
+// 			t.Fatalf("Test Failed: %s\n Errors in flatten output. Err: %s", tt.description, err.Error())
+// 		}
+
+// 		if diff := deep.Equal(out, tt.expectedFlattenedOutput); diff != nil {
+// 			t.Fatalf("Test Failed: %s\n"+
+// 				"Error matching Flattened output and input.\n"+
+// 				"Output: %#v\n"+
+// 				"expectedFlattenedOutput : %#v\n"+
+// 				"Diff: %#v",
+// 				tt.description,
+// 				out,
+// 				tt.expectedFlattenedOutput,
+// 				diff)
+// 		}
+// 	}
+// }

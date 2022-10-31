@@ -103,7 +103,7 @@ func fetchEdgeNodeState(apiClient *client.Client, name, id string) (*models.Devi
 	}
 
 	if zedcloudAPI.IsObjectNotFound(resp) {
-		return nil, &zerrors.ObjectNotFound{id}
+		return nil, &zerrors.ObjectNotFound{ID: id}
 	}
 
 	return responseData, nil
