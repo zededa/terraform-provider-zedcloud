@@ -36,9 +36,9 @@ func newEdgeNodeResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: createEdgeNodeResource,
 		ReadContext:   readEdgeNodeResource,
-		// UpdateContext: updateEdgeNodeResource,
-		// DeleteContext: deleteEdgeNodeResource,
-		Schema: zschemas.EdgeNodeSchema,
+		UpdateContext: updateEdgeNodeResource,
+		DeleteContext: deleteEdgeNodeResource,
+		Schema:        zschemas.EdgeNodeSchema,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -253,7 +253,7 @@ func getConfigItems(d *schema.ResourceData) ([]*models.EDConfigItem, error) {
 	for key, val := range itemsData {
 		strVal, ok := val.(string)
 		if !ok {
-			return configItems, fmt.Errorf("Value (%+v) for Config Item (%s) must be a valid string.", val, key)
+			return configItems, fmt.Errorf("Value (%+v) for config item (%s) must be a valid string.", val, key)
 		}
 		configItems = append(configItems, &models.EDConfigItem{
 			Key:         key,
@@ -530,28 +530,32 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "fetch after creating of", err))
 	}
 
-	log.Printf("[INFO] EdgeNode %s (ID: %s) Update Successful.", edgeNodeName, remoteState.ID)
+	log.Printf("[INFO] %s %s (id=%s) update successful", objectTypeEdgeNode, edgeNodeName, remoteStateForUpdate.ID)
 	return diags
 }
 
 // // Delete the Resource Group
-// func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
+func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 
-// 	client, ok := meta.(*client.Client)
-// 	if !ok {
-// 		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
-// 	}
-// 	name := resourcedata.GetStr(d, "name")
-// 	edgeNodeID := resourcedata.GetStr(d, "id")
-// 	errMsgPrefix := getErrMsgPrefix(name, id, "Edge Node", "Delete")
-// 	client.XRequestIdPrefix = "TF-edgenode-delete"
-// 	urlExtension := getEdgeNodeUrl(name, edgeNodeID, "delete")
-// 	rspData := &models.ZsrvResponse{}
-// 	_, err := client.SendReq("DELETE", urlExtension, nil, rspData)
-// 	if err != nil {
-// 		return diag.Errorf("%s. Err: %s", errMsgPrefix, err.Error())
-// 	}
-// 	log.Printf("[INFO] EdgeNode Delete Successful.")
-// 	return diags
-// }
+	edgeNodeName := resourcedata.GetStr(d, "name")
+	edgeNodeID := resourcedata.GetStr(d, "id")
+
+	apiClient, ok := meta.(*client.Client)
+	if !ok {
+		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
+	}
+	// FIXME: do not set request scoped field on object
+	apiClient.XRequestIdPrefix = "TF-edgenode-delete"
+
+	urlExtension := getEdgeNodeUrl(edgeNodeName, edgeNodeID, "delete")
+
+	rspData := &models.ZsrvResponse{}
+	_, err := apiClient.SendReq("DELETE", urlExtension, nil, rspData)
+	if err != nil {
+		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "delete", err))
+	}
+
+	log.Printf("[INFO] EdgeNode delete successfully")
+	return diags
+}
