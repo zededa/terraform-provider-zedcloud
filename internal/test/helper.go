@@ -1,7 +1,7 @@
 package test
 
 // In JSON all numbers are floats, this casts ints to int recursively.
-func MapItemsFloatToInt(m map[string]interface{}) map[string]interface{} {
+func FloatToInt(m map[string]interface{}) map[string]interface{} {
 	for k, v := range m {
 		switch v.(type) {
 		case float64:
@@ -10,7 +10,7 @@ func MapItemsFloatToInt(m map[string]interface{}) map[string]interface{} {
 				m[k] = int(v.(float64))
 			}
 		case map[string]interface{}:
-			m[k] = MapItemsFloatToInt(m[k].(map[string]interface{}))
+			m[k] = FloatToInt(m[k].(map[string]interface{}))
 		case []interface{}:
 			m[k] = sliceItemsFloatToInt(m[k].([]interface{}))
 		}
@@ -31,7 +31,7 @@ func sliceItemsFloatToInt(s []interface{}) []interface{} {
 				s[i] = int(v.(float64))
 			}
 		case map[string]interface{}:
-			s[i] = MapItemsFloatToInt(v.(map[string]interface{}))
+			s[i] = FloatToInt(v.(map[string]interface{}))
 		case []interface{}:
 			s[i] = sliceItemsFloatToInt(v.([]interface{}))
 		}

@@ -14,6 +14,11 @@ plugin:
 testacc:
 	TF_ACC=1 go test ./... -v $(TESTARGS) -timeout 120m
 
+# Run tests
+.PHONY: test
+test:
+	go test ./... -timeout 120m
+
 .PHONY: gen
 gen:
 	go generate
