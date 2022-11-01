@@ -1,0 +1,74 @@
+{
+    "adminstate": "",
+    "adminstate_config": "ADMIN_STATE_ACTIVE",
+    "asset_id": "Sample Asset ID",
+    "client_ip": "10.10.1.1",
+    "cluster_id": "sample-cluster-id",
+    "config_items": {},
+    "description": "SAMPLE EdgeNode DESCRIPTION",
+    "dev_location": [
+        {
+            "city": "sample-city",
+            "country": "sample-country",
+            "freeloc": "sample-freeloc",
+            "hostname": "sample-host",
+            "loc": "sample-loc",
+            "org": "sample-org",
+            "postal": "sample-postal",
+            "region": "sample-region",
+            "underlay_ip": "10.10.1.1"
+        }
+    ],
+    "eve_image_version": "6.8.2-kvm-amd64",
+    "id": "SAMPLE-EdgeNode-ID",
+    "interface": [
+        {
+            "cost": 10,
+            "intf_usage": "ADAPTER_USAGE_MANAGEMENT",
+            "intfname": "intf1",
+            "ipaddr": "10.10.1.5",
+            "macaddr": "0.1.2",
+            "netname": "sample-net",
+            "tags": {
+                "tag1": "value1",
+                "tag2": "value2"
+            }
+        },
+        {
+            "cost": 1,
+            "intf_usage": "ADAPTER_USAGE_DISABLED",
+            "intfname": "intf2",
+            "ipaddr": "10.10.1.6",
+            "macaddr": "0.1.3",
+            "netname": "sample-net2",
+            "tags": {
+                "tag12": "value12",
+                "tag22": "value22"
+            }
+        }
+    ],
+    "memory": "",
+    "model_id": "Test Model",
+    "name": "sample-EdgeNode",
+    "project_id": "sample-project",
+    "reset_counter": 10,
+    "reset_time": "sample-time",
+    "revision": [
+        {
+            "created_at": "2020-12-15T06:21:24Z",
+            "created_by": "sample@example.com",
+            "curr": "1",
+            "updated_at": "2020-12-15T06:21:24Z",
+            "updated_by": "user@example.com"
+        }
+    ],
+    "serialno": "sample-serial-no",
+    "storage": 100,
+    "tags": {
+        "edtag1": "edval1",
+        "edtag2": "edval2"
+    },
+    "thread": 2,
+    "title": "sample-title 2",
+    "utype": "AMD64"
+}

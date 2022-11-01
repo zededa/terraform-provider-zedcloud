@@ -125,17 +125,17 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 func getStateForEdgeNodeCreation(d *schema.ResourceData) (*models.DeviceConfig, error) {
 	// FIXME: why does the original code not set it in the local state?
 	if eveImageVersion := resourcedata.GetStr(d, "eve_image_version"); eveImageVersion == "" {
-		return nil, fmt.Errorf("eve_image_version must be specified.")
+		return nil, fmt.Errorf("missing field eve_image_version")
 	}
 
 	modelID := resourcedata.GetStrPtrOrNil(d, "model_id")
 	if modelID == nil || *modelID == "" {
-		return nil, fmt.Errorf("model_id must be specified for the EdgeNode.")
+		return nil, fmt.Errorf("missing field model_id")
 	}
 
 	projectID := resourcedata.GetStrPtrOrNil(d, "project_id")
 	if projectID == nil || *projectID == "" {
-		return nil, fmt.Errorf("project_id must be specified for the EdgeNode.")
+		return nil, fmt.Errorf("missing field project_id")
 	}
 
 	_, err := getAdminStateValue(d)
@@ -178,7 +178,7 @@ func getStateForEdgeNodeCreation(d *schema.ResourceData) (*models.DeviceConfig, 
 
 func getStateForEdgeNodeUpdate(remoteState *models.DeviceConfig, d *schema.ResourceData) (*models.DeviceConfig, error) {
 	if eveImageVersion := resourcedata.GetStr(d, "eve_image_version"); eveImageVersion == "" {
-		return nil, fmt.Errorf("eve_image_version must be specified.")
+		return nil, fmt.Errorf("missing eve_image_version")
 	}
 
 	_, err := getAdminStateValue(d)
@@ -201,7 +201,6 @@ func getStateForEdgeNodeUpdate(remoteState *models.DeviceConfig, d *schema.Resou
 		return nil, err
 	}
 
-	projectID := resourcedata.GetStrPtrOrNil(d, "project_id")
 	// Change of Project for a device is NOT supported with Update operation.
 	// Check if the configured project is different from the config we got
 	// from Cloud. If different - error out.
@@ -209,6 +208,7 @@ func getStateForEdgeNodeUpdate(remoteState *models.DeviceConfig, d *schema.Resou
 	// the case of device created with project_id set to non-default project,
 	// but changed to remove set the project_id to empty, though this also is
 	// not supported. Such an update request would be rejected by ZEDCloud.
+	projectID := resourcedata.GetStrPtrOrNil(d, "project_id")
 	if projectID != nil && remoteState.ProjectID != nil && *remoteState.ProjectID != *projectID {
 		return nil, fmt.Errorf("project_id cannot be changed after EdgeNode was created. remote: %s, local: %s", *remoteState.ProjectID, *projectID)
 	}
@@ -494,13 +494,13 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 
 	// we create the config from remote state and the updates in the local state, that we want to use to
 	// update the remote state
-	remoteStateForUpdate, err := getStateForEdgeNodeUpdate(remoteState, d)
+	stateForUpdatingRemote, err := getStateForEdgeNodeUpdate(remoteState, d)
 	if err != nil {
 		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update", err))
 	}
 
 	// update the remote state
-	if _, err := edgeNodeSendPutReq(apiClient, remoteStateForUpdate, "update"); err != nil {
+	if _, err := edgeNodeSendPutReq(apiClient, stateForUpdatingRemote, "update"); err != nil {
 		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update", err))
 	}
 
@@ -510,13 +510,13 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 
 	// set the new image version in remote state
 	if newBaseOsVersion != nil {
-		remoteStateForUpdate.BaseImage = newBaseOsVersion
+		stateForUpdatingRemote.BaseImage = newBaseOsVersion
 		log.Printf(
 			"[TRACE]: update the base os image to: %s, set activate to: %t",
 			*remoteState.BaseImage[0].ImageName,
 			remoteState.BaseImage[0].Activate,
 		)
-		if err := setEdgeNodeBaseOs(apiClient, remoteStateForUpdate); err != nil {
+		if err := setEdgeNodeBaseOs(apiClient, stateForUpdatingRemote); err != nil {
 			return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update base os for", err))
 		}
 	}
@@ -532,7 +532,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "fetch after creating of", err))
 	}
 
-	log.Printf("[INFO] %s %s (id=%s) update successful", objectTypeEdgeNode, edgeNodeName, remoteStateForUpdate.ID)
+	log.Printf("[INFO] %s %s (id=%s) update successful", objectTypeEdgeNode, edgeNodeName, stateForUpdatingRemote.ID)
 	return diags
 }
 

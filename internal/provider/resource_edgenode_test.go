@@ -6,6 +6,7 @@ package provider
 import (
 	"encoding/json"
 	"io/ioutil"
+	"path/filepath"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -222,12 +223,12 @@ func rdEdgeNodeUpdateProjectIdToNilOutput() map[string]interface{} {
 }
 
 type setupForFlatteningTests struct {
-	remoteStateFromTestdata *schema.ResourceData
-	expectedFlattenedState  map[string]interface{}
+	stateFromTestdata      *schema.ResourceData
+	expectedFlattenedState map[string]interface{}
 }
 
-func setupFlatteningTest(t *testing.T) setupForFlatteningTests {
-	jsonInput, err := ioutil.ReadFile("./testdata/edge_node/input_flatten_complete.json")
+func setupFlatteningTest(t *testing.T, input, output string) setupForFlatteningTests {
+	jsonInput, err := ioutil.ReadFile(filepath.Join("testdata", "edge_node", input))
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
@@ -241,7 +242,7 @@ func setupFlatteningTest(t *testing.T) setupForFlatteningTests {
 	// data that represent the remote state
 	remoteStateFromTestdata := schema.TestResourceDataRaw(t, zschemas.EdgeNodeSchema, mockAPIResponseData)
 
-	jsonOutput, err := ioutil.ReadFile("./testdata/edge_node/output_flatten_complete.json")
+	jsonOutput, err := ioutil.ReadFile(filepath.Join("testdata", "edge_node", output))
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
@@ -253,8 +254,8 @@ func setupFlatteningTest(t *testing.T) setupForFlatteningTests {
 	}
 
 	return setupForFlatteningTests{
-		remoteStateFromTestdata: remoteStateFromTestdata,
-		expectedFlattenedState:  test.MapItemsFloatToInt(expectedFlattenedState),
+		stateFromTestdata:      remoteStateFromTestdata,
+		expectedFlattenedState: test.MapItemsFloatToInt(expectedFlattenedState),
 	}
 }
 
@@ -267,19 +268,24 @@ func setupFlatteningTest(t *testing.T) setupForFlatteningTests {
 //
 // fmt.Println(string(apiResponseJSON))
 func TestEdgeNodeFlattening(t *testing.T) {
-	t.Run("flatten local state for edgenode creation", func(t *testing.T) {
-		setup := setupFlatteningTest(t)
+	t.Run("flatten local state for edge node creation", func(t *testing.T) {
+		t.Parallel()
 
-		localState, err := getStateForEdgeNodeCreation(setup.remoteStateFromTestdata)
+		input := "flatten/create/input_flatten_complete.json"
+		output := "flatten/create/output_flatten_complete.json"
+		setup := setupFlatteningTest(t, input, output)
+
+		localState, err := getStateForEdgeNodeCreation(setup.stateFromTestdata)
 		if err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
 
-		// we need to set the ID we expect to be returned in the api repsonse
+		// create request doesn't submit ID
 		localState.ID = efoEdgeNodeFullCfg["id"].(string)
+
 		// FIXME: why don't we set the base image in local state/create request but check for its existence in d?
-		localEVEVersion := resourcedata.GetStr(setup.remoteStateFromTestdata, "eve_image_version")
+		localEVEVersion := resourcedata.GetStr(setup.stateFromTestdata, "eve_image_version")
 		localState.BaseImage = []*models.BaseOSImage{
 			{
 				ImageName: &localEVEVersion,
@@ -300,6 +306,103 @@ func TestEdgeNodeFlattening(t *testing.T) {
 		}
 
 		assert.Equal(t, setup.expectedFlattenedState, flattenedState)
+	})
+	t.Run("flatten local state for edge node creation: missing eve_image_version", func(t *testing.T) {
+		t.Parallel()
+
+		input := "flatten/create/missing_eve_image.json"
+		output := "noop.json"
+		setup := setupFlatteningTest(t, input, output)
+
+		_, err := getStateForEdgeNodeCreation(setup.stateFromTestdata)
+		if !assert.Error(t, err) {
+			t.Log("expect due to missing eve_image_version")
+			t.FailNow()
+		}
+	})
+	t.Run("flatten local state for edge node creation: missing model_id", func(t *testing.T) {
+		t.Parallel()
+
+		input := "flatten/create/missing_model_id.json"
+		output := "noop.json"
+		setup := setupFlatteningTest(t, input, output)
+
+		_, err := getStateForEdgeNodeCreation(setup.stateFromTestdata)
+		if !assert.Error(t, err) {
+			t.Log("expect due to missing model_id")
+			t.FailNow()
+		}
+	})
+	t.Run("flatten local state for edge node creation: missing project_id", func(t *testing.T) {
+		t.Parallel()
+
+		input := "flatten/create/missing_project_id.json"
+		output := "noop.json"
+		setup := setupFlatteningTest(t, input, output)
+
+		_, err := getStateForEdgeNodeCreation(setup.stateFromTestdata)
+		if !assert.Error(t, err) {
+			t.Log("expect due to missing project_id")
+			t.FailNow()
+		}
+	})
+	t.Run("flatten local state for edge node update: no model_id", func(t *testing.T) {
+		t.Parallel()
+
+		input := "flatten/update/input_flatten_complete.json"
+		output := "flatten/update/output_flatten_complete.json"
+		setup := setupFlatteningTest(t, input, output)
+
+		remoteState := &models.DeviceConfig{
+			ID: efoEdgeNodeFullCfg["id"].(string),
+		}
+		stateForUpdatingRemote, err := getStateForEdgeNodeUpdate(remoteState, setup.stateFromTestdata)
+		if err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+
+		// create request doesn't submit ID
+		stateForUpdatingRemote.ID = efoEdgeNodeFullCfg["id"].(string)
+
+		// FIXME: why don't we set the base image in local state/create request but check for its existence in d?
+		localEVEVersion := resourcedata.GetStr(setup.stateFromTestdata, "eve_image_version")
+		stateForUpdatingRemote.BaseImage = []*models.BaseOSImage{
+			{
+				ImageName: &localEVEVersion,
+				Version:   &localEVEVersion,
+				Activate:  true,
+			},
+		}
+
+		flattenedState, err := flattenEdgeNodeState(stateForUpdatingRemote)
+		if err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+
+		if err := utils.CheckIfAllKeysExist(zschemas.EdgeNodeSchema, flattenedState); err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+
+		assert.Equal(t, setup.expectedFlattenedState, flattenedState)
+	})
+	t.Run("flatten local state for edge node update: missing eve_image_version", func(t *testing.T) {
+		t.Parallel()
+
+		input := "flatten/update/missing_eve_image.json"
+		output := "noop.json"
+		setup := setupFlatteningTest(t, input, output)
+
+		remoteState := &models.DeviceConfig{
+			ID: efoEdgeNodeFullCfg["id"].(string),
+		}
+		_, err := getStateForEdgeNodeUpdate(remoteState, setup.stateFromTestdata)
+		if !assert.Error(t, err) {
+			t.Log("expect due to missing eve_image_version")
+			t.FailNow()
+		}
 	})
 }
 
