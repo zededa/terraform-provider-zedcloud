@@ -54,7 +54,7 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 
 	log.Printf("[INFO] creating EdgeNode: %s", edgeNodeName)
 
-	localState, err := getEdgeNodeStateForCreation(d)
+	localState, err := getStateForEdgeNodeCreation(d)
 	if err != nil {
 		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "create", err))
 	}
@@ -122,7 +122,7 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	return diags
 }
 
-func getEdgeNodeStateForCreation(d *schema.ResourceData) (*models.DeviceConfig, error) {
+func getStateForEdgeNodeCreation(d *schema.ResourceData) (*models.DeviceConfig, error) {
 	// FIXME: why does the original code not set it in the local state?
 	if eveImageVersion := resourcedata.GetStr(d, "eve_image_version"); eveImageVersion == "" {
 		return nil, fmt.Errorf("eve_image_version must be specified.")
@@ -176,7 +176,7 @@ func getEdgeNodeStateForCreation(d *schema.ResourceData) (*models.DeviceConfig, 
 	}, nil
 }
 
-func getEdgeNodeStateForUpdate(remoteState *models.DeviceConfig, d *schema.ResourceData) (*models.DeviceConfig, error) {
+func getStateForEdgeNodeUpdate(remoteState *models.DeviceConfig, d *schema.ResourceData) (*models.DeviceConfig, error) {
 	if eveImageVersion := resourcedata.GetStr(d, "eve_image_version"); eveImageVersion == "" {
 		return nil, fmt.Errorf("eve_image_version must be specified.")
 	}
@@ -494,7 +494,7 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 
 	// we create the config from remote state and the updates in the local state, that we want to use to
 	// update the remote state
-	remoteStateForUpdate, err := getEdgeNodeStateForUpdate(remoteState, d)
+	remoteStateForUpdate, err := getStateForEdgeNodeUpdate(remoteState, d)
 	if err != nil {
 		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "update", err))
 	}

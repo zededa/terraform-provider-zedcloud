@@ -258,59 +258,49 @@ func setupFlatteningTest(t *testing.T) setupForFlatteningTests {
 	}
 }
 
+// apiResponseJSON, err := json.MarshalIndent(efoEdgeNodeFullCfg, "", "    ")
+//
+//	if err != nil {
+//		t.Log(err)
+//		t.FailNow()
+//	}
+//
+// fmt.Println(string(apiResponseJSON))
 func TestEdgeNodeFlattening(t *testing.T) {
-	// apiResponseJSON, err := json.MarshalIndent(efoEdgeNodeFullCfg, "", "    ")
-	// if err != nil {
-	// 	t.Log(err)
-	// 	t.FailNow()
-	// }
-	// fmt.Println(string(apiResponseJSON))
+	t.Run("flatten local state for edgenode creation", func(t *testing.T) {
+		setup := setupFlatteningTest(t)
 
-	setup := setupFlatteningTest(t)
+		localState, err := getStateForEdgeNodeCreation(setup.remoteStateFromTestdata)
+		if err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
 
-	// test
-	localState, err := getEdgeNodeStateForCreation(setup.remoteStateFromTestdata)
-	if err != nil {
-		t.Log(err)
-		t.FailNow()
-	}
+		// we need to set the ID we expect to be returned in the api repsonse
+		localState.ID = efoEdgeNodeFullCfg["id"].(string)
+		// FIXME: why don't we set the base image in local state/create request but check for its existence in d?
+		localEVEVersion := resourcedata.GetStr(setup.remoteStateFromTestdata, "eve_image_version")
+		localState.BaseImage = []*models.BaseOSImage{
+			{
+				ImageName: &localEVEVersion,
+				Version:   &localEVEVersion,
+				Activate:  true,
+			},
+		}
 
-	// we need to set the ID we expect to be returned in the api repsonse
-	localState.ID = efoEdgeNodeFullCfg["id"].(string)
-	// FIXME: why don't we set the base image in local state/create request but check for its existence in d?
-	localEVEVersion := resourcedata.GetStr(setup.remoteStateFromTestdata, "eve_image_version")
-	localState.BaseImage = []*models.BaseOSImage{
-		{
-			ImageName: &localEVEVersion,
-			Version:   &localEVEVersion,
-			Activate:  true,
-		},
-	}
+		flattenedState, err := flattenEdgeNodeState(localState)
+		if err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
 
-	flattenedState, err := flattenEdgeNodeState(localState)
-	if err != nil {
-		t.Log(err)
-		t.FailNow()
-	}
+		if err := utils.CheckIfAllKeysExist(zschemas.EdgeNodeSchema, flattenedState); err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
 
-	if err := utils.CheckIfAllKeysExist(zschemas.EdgeNodeSchema, flattenedState); err != nil {
-		t.Fatalf("errors in flatten output: %s", err.Error())
-	}
-
-	assert.Equal(t, setup.expectedFlattenedState, flattenedState)
-
-	//		if diff := deep.Equal(out, tt.expectedFlattenedOutput); diff != nil {
-	//			t.Fatalf("Test Failed: %s\n"+
-	//				"Error matching Flattened output and input.\n"+
-	//				"Output: %#v\n"+
-	//				"expectedFlattenedOutput : %#v\n"+
-	//				"Diff: %#v",
-	//				tt.description,
-	//				out,
-	//				tt.expectedFlattenedOutput,
-	//				diff)
-	//		}
-	//	}
+		assert.Equal(t, setup.expectedFlattenedState, flattenedState)
+	})
 }
 
 // In each test case, call rdXXX to get the appropriate config struct,
