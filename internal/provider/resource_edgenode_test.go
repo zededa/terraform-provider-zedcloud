@@ -83,7 +83,7 @@ func TestEdgeNodeFlattening(t *testing.T) {
 		}
 
 		// create request doesn't submit ID
-		localState.ID = efoEdgeNodeFullCfg["id"].(string)
+		localState.ID = setup.expectedFlattenedState["id"].(string)
 
 		// FIXME: why don't we set the base image in local state/create request but check for its existence in d?
 		localEVEVersion := resourcedata.GetStr(setup.stateFromTestdata, "eve_image_version")
@@ -155,7 +155,7 @@ func TestEdgeNodeFlattening(t *testing.T) {
 		setup := setupFlatteningTest(t, input, output)
 
 		remoteState := &models.DeviceConfig{
-			ID: efoEdgeNodeFullCfg["id"].(string),
+			ID: setup.expectedFlattenedState["id"].(string),
 		}
 		stateForUpdatingRemote, err := getStateForEdgeNodeUpdate(remoteState, setup.stateFromTestdata)
 		if err != nil {
@@ -164,7 +164,7 @@ func TestEdgeNodeFlattening(t *testing.T) {
 		}
 
 		// create request doesn't submit ID
-		stateForUpdatingRemote.ID = efoEdgeNodeFullCfg["id"].(string)
+		stateForUpdatingRemote.ID = setup.expectedFlattenedState["id"].(string)
 
 		// FIXME: why don't we set the base image in local state/create request but check for its existence in d?
 		localEVEVersion := resourcedata.GetStr(setup.stateFromTestdata, "eve_image_version")
@@ -196,9 +196,8 @@ func TestEdgeNodeFlattening(t *testing.T) {
 		output := "noop.json"
 		setup := setupFlatteningTest(t, input, output)
 
-		remoteState := &models.DeviceConfig{
-			ID: efoEdgeNodeFullCfg["id"].(string),
-		}
+		remoteState := &models.DeviceConfig{}
+
 		_, err := getStateForEdgeNodeUpdate(remoteState, setup.stateFromTestdata)
 		if !assert.Error(t, err) {
 			t.Log("expect due to missing eve_image_version")
@@ -213,13 +212,16 @@ func TestEdgeNodeFlattening(t *testing.T) {
 		setup := setupFlatteningTest(t, input, output)
 
 		remoteState := &models.DeviceConfig{
-			ID:        efoEdgeNodeFullCfg["id"].(string),
-			ProjectID: utils.StrPtr("updated_id"),
+			ProjectID: utils.StrPtr("test_id"),
 		}
+
+		// change project_id
+		changedID := "changed_id"
+		setup.stateFromTestdata.Set("project_id", &changedID)
 
 		_, err := getStateForEdgeNodeUpdate(remoteState, setup.stateFromTestdata)
 		if !assert.Error(t, err) {
-			t.Log("expect due to changed missing project_id")
+			t.Log("expect due to changed project_id")
 			t.FailNow()
 		}
 	})
@@ -231,7 +233,8 @@ func TestEdgeNodeFlattening(t *testing.T) {
 		setup := setupFlatteningTest(t, input, output)
 
 		remoteState := &models.DeviceConfig{
-			ID: efoEdgeNodeFullCfg["id"].(string),
+			ID:        setup.expectedFlattenedState["id"].(string),
+			ProjectID: utils.StrPtr("test_id"),
 		}
 
 		// set project_id to nil
@@ -244,7 +247,7 @@ func TestEdgeNodeFlattening(t *testing.T) {
 		}
 
 		// create request doesn't submit ID
-		stateForUpdatingRemote.ID = efoEdgeNodeFullCfg["id"].(string)
+		stateForUpdatingRemote.ID = setup.expectedFlattenedState["id"].(string)
 
 		// FIXME: why don't we set the base image in local state/create request but check for its existence in d?
 		localEVEVersion := resourcedata.GetStr(setup.stateFromTestdata, "eve_image_version")
