@@ -121,32 +121,32 @@ func flattenEdgeNodeState(state *models.DeviceConfig) (map[string]interface{}, e
 	}
 
 	flattened := map[string]interface{}{
-		"adminstate":    utils.PtrValStr(state.AdminState),
-		"cluster_id":    state.ClusterID,
-		"cpu":           int(state.CPU),
-		"id":            state.ID,
-		"memory":        int(state.Memory),
-		"reset_counter": int(state.ResetCounter),
-		"reset_time":    state.ResetTime,
-		"revision":      utils.FlattenObjectRevision(state.Revision),
-		"storage":       int(state.Storage),
-		"thread":        int(state.Thread),
-		"utype":         utils.PtrValStr(state.Utype),
+		"adminstate":        utils.PtrValStr(state.AdminState),
+		"cluster_id":        state.ClusterID,
+		"cpu":               int(state.CPU),
+		"id":                state.ID,
+		"memory":            int(state.Memory),
+		"reset_counter":     int(state.ResetCounter),
+		"reset_time":        state.ResetTime,
+		"revision":          utils.FlattenObjectRevision(state.Revision),
+		"storage":           int(state.Storage),
+		"thread":            int(state.Thread),
+		"utype":             utils.PtrValStr(state.Utype),
+		"adminstate_config": utils.PtrValStr(state.AdminState),
+		"asset_id":          state.AssetID,
+		"client_ip":         state.ClientIP,
+		"config_items":      flattenEDConfigItems(state.ConfigItem),
+		"description":       state.Description,
+		"dev_location":      flattenGeoLocation(state.DevLocation),
+		"eve_image_version": eveImageVersion,
+		"interface":         flattenSysInterfaces(state.Interfaces),
+		"model_id":          utils.PtrValStr(state.ModelID),
+		"name":              utils.PtrValStr(state.Name),
+		"project_id":        utils.PtrValStr(state.ProjectID),
+		"serialno":          state.Serialno,
+		"tags":              utils.FlattenStringMap(state.Tags),
+		"title":             utils.PtrValStr(state.Title),
 	}
-	flattened["adminstate_config"] = utils.PtrValStr(state.AdminState)
-	flattened["asset_id"] = state.AssetID
-	flattened["client_ip"] = state.ClientIP
-	flattened["config_items"] = flattenEDConfigItems(state.ConfigItem)
-	flattened["description"] = state.Description
-	flattened["dev_location"] = flattenGeoLocation(state.DevLocation)
-	flattened["eve_image_version"] = eveImageVersion
-	flattened["interface"] = flattenSysInterfaces(state.Interfaces)
-	flattened["model_id"] = utils.PtrValStr(state.ModelID)
-	flattened["name"] = utils.PtrValStr(state.Name)
-	flattened["project_id"] = utils.PtrValStr(state.ProjectID)
-	flattened["serialno"] = state.Serialno
-	flattened["tags"] = utils.FlattenStringMap(state.Tags)
-	flattened["title"] = utils.PtrValStr(state.Title)
 
 	if err := utils.CheckIfAllKeysExist(zschemas.EdgeNodeSchema, flattened); err != nil {
 		return nil, err
