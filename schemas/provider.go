@@ -12,23 +12,27 @@ var ProviderSchema = map[string]*schema.Schema{
 		Type:        schema.TypeString,
 		Optional:    true,
 		Description: "ZEDCloud url. Ex: https://zedcontrol.zededa.net",
+		DefaultFunc: schema.EnvDefaultFunc("ZEDCLOUD_URL", nil),
 	},
 	"token": {
 		Type:        schema.TypeString,
 		Optional:    true,
 		Sensitive:   true,
 		Description: "API token to be used to login to ZEDCloud. One of token OR username/password must be specified.",
+		DefaultFunc: schema.EnvDefaultFunc("ZEDCLOUD_AUTH_TOKEN", nil),
 	},
 	"username": {
 		Type:        schema.TypeString,
 		Optional:    true,
 		Sensitive:   true,
 		Description: "Username to be used to login to ZEDCloud. One of token OR username/password must be specified.",
+		DefaultFunc: schema.EnvDefaultFunc("ZEDCLOUD_USERNAME", nil),
 	},
 	"password": {
 		Type:        schema.TypeString,
 		Optional:    true,
 		Sensitive:   true,
 		Description: "Password to be used to login to ZEDCloud. One of token OR username/password must be specified.",
+		DefaultFunc: schema.EnvDefaultFunc("ZEDCLOUD_PASSWORD", nil),
 	},
 }

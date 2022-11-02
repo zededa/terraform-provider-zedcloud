@@ -10,13 +10,12 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider-zedcloud/internal/client"
 	zerrors "github.com/zededa/terraform-provider-zedcloud/internal/errors"
 	"github.com/zededa/terraform-provider-zedcloud/internal/resourcedata"
 	"github.com/zededa/terraform-provider-zedcloud/internal/state"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	"github.com/zededa/terraform-provider-zedcloud/utils"
-	zedcloudAPI "github.com/zededa/zedcloud-api"
+	zedCloudAPI "github.com/zededa/zedcloud-api"
 	models "github.com/zededa/zedcloud-api/swagger_models"
 )
 
@@ -44,9 +43,9 @@ func getEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta int
 		return fmt.Errorf("missing required fields \"id\" or \"name\" in resource data")
 	}
 
-	apiClient, ok := meta.(*client.Client)
+	apiClient, ok := meta.(*zedCloudAPI.Client)
 	if !ok {
-		return fmt.Errorf("expect meta to be of type client.Client{} but is %T", meta)
+		return fmt.Errorf("expect meta to be of type zedcloudapi.Client{} but is %T", meta)
 	}
 
 	// fetch the object from zedcloud api
@@ -95,14 +94,14 @@ func getEdgeNodeDataSource(ctx context.Context, d *schema.ResourceData, meta int
 	return nil
 }
 
-func fetchEdgeNodeState(apiClient *client.Client, name, id string) (*models.DeviceConfig, error) {
+func fetchEdgeNodeState(apiClient *zedCloudAPI.Client, name, id string) (*models.DeviceConfig, error) {
 	responseData := &models.DeviceConfig{}
 	resp, err := apiClient.GetObj(deviceUrlExtension, name, id, false, responseData)
 	if err != nil {
 		return nil, err
 	}
 
-	if zedcloudAPI.IsObjectNotFound(resp) {
+	if zedCloudAPI.IsObjectNotFound(resp) {
 		return nil, &zerrors.ObjectNotFound{ID: id}
 	}
 

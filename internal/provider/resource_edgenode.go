@@ -13,13 +13,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
-	"github.com/zededa/terraform-provider-zedcloud/internal/client"
-
 	zerrors "github.com/zededa/terraform-provider-zedcloud/internal/errors"
 	"github.com/zededa/terraform-provider-zedcloud/internal/resourcedata"
 	"github.com/zededa/terraform-provider-zedcloud/internal/state"
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
-	zedcloudapi "github.com/zededa/zedcloud-api"
+	zedCloudAPI "github.com/zededa/zedcloud-api"
 	models "github.com/zededa/zedcloud-api/swagger_models"
 )
 
@@ -29,7 +27,7 @@ const (
 )
 
 func getEdgeNodeUrl(name, edgeNodeID, urlType string) string {
-	return zedcloudapi.UrlForObjectRequest(deviceUrlExtension, name, edgeNodeID, urlType)
+	return zedCloudAPI.UrlForObjectRequest(deviceUrlExtension, name, edgeNodeID, urlType)
 }
 
 func newEdgeNodeResource() *schema.Resource {
@@ -59,9 +57,9 @@ func createEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 		return diag.FromErr(zerrors.New(edgeNodeID, objectTypeEdgeNode, edgeNodeName, "create", err))
 	}
 
-	apiClient, ok := meta.(*client.Client)
+	apiClient, ok := meta.(*zedCloudAPI.Client)
 	if !ok {
-		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
+		return diag.Errorf("expect meta to be of type zedcloudapi.Client{} but is %T", meta)
 	}
 	// FIXME: why do we set a field to the client instance which is request scoped?
 	apiClient.XRequestIdPrefix = "TF-edgenode-create"
@@ -362,7 +360,7 @@ func getEdgeNodeBaseOs(remoteState *models.DeviceConfig, localEVEVersion string)
 	}
 }
 
-func setEdgeNodeBaseOs(client *client.Client, localState *models.DeviceConfig) error {
+func setEdgeNodeBaseOs(client *zedCloudAPI.Client, localState *models.DeviceConfig) error {
 	// BaseOs update is special case - publish config followed by apply
 	_, err := edgeNodeSendPutReq(client, localState, "publish")
 	if err != nil {
@@ -376,14 +374,14 @@ func setEdgeNodeBaseOs(client *client.Client, localState *models.DeviceConfig) e
 	return nil
 }
 
-func edgeNodeSendPutReq(client *client.Client, localState *models.DeviceConfig, reqType string) (*http.Response, error) {
+func edgeNodeSendPutReq(client *zedCloudAPI.Client, localState *models.DeviceConfig, reqType string) (*http.Response, error) {
 	client.XRequestIdPrefix = "TF-edgenode-" + reqType
 	urlExtension := getEdgeNodeUrl(*localState.Name, localState.ID, reqType)
 	rspData := &models.ZsrvResponse{}
 	return client.SendReq("PUT", urlExtension, localState, rspData)
 }
 
-func edgeNodeUpdateAdminState(apiClient *client.Client, d *schema.ResourceData, edgeNodeID, edgeNodeName string) error {
+func edgeNodeUpdateAdminState(apiClient *zedCloudAPI.Client, d *schema.ResourceData, edgeNodeID, edgeNodeName string) error {
 	remoteState, err := fetchEdgeNodeState(apiClient, "", edgeNodeID)
 	if err != nil {
 		// no object with this id exist in the api's state
@@ -461,9 +459,9 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	edgeNodeID := resourcedata.GetStr(d, "id")
 	edgeNodeName := resourcedata.GetStr(d, "name")
 
-	apiClient, ok := meta.(*client.Client)
+	apiClient, ok := meta.(*zedCloudAPI.Client)
 	if !ok {
-		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
+		return diag.Errorf("expect meta to be of type zedcloudapi.Client{} but is %T", meta)
 	}
 
 	// fetch EdgeNode state from zedcloud api with the new object's edgeNodeID to validate that is has been created
@@ -536,16 +534,15 @@ func updateEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta in
 	return diags
 }
 
-// // Delete the Resource Group
 func deleteEdgeNodeResource(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	edgeNodeName := resourcedata.GetStr(d, "name")
 	edgeNodeID := resourcedata.GetStr(d, "id")
 
-	apiClient, ok := meta.(*client.Client)
+	apiClient, ok := meta.(*zedCloudAPI.Client)
 	if !ok {
-		return diag.Errorf("expect meta to be of type client.Client{} but is %T", meta)
+		return diag.Errorf("expect meta to be of type zedcloudapi.Client{} but is %T", meta)
 	}
 	// FIXME: do not set request scoped field on object
 	apiClient.XRequestIdPrefix = "TF-edgenode-delete"
