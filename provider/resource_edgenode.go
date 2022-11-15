@@ -6,10 +6,11 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"log"
 	"net/http"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
@@ -237,8 +238,10 @@ func checkAdminStateValue(d *schema.ResourceData) (string, error) {
 	}
 }
 
-func setAdminState(cfg *swagger_models.DeviceConfig,
-	d *schema.ResourceData) (string, error) {
+func setAdminState(cfg *swagger_models.DeviceConfig, d *schema.ResourceData) (string, error) {
+	if !d.HasChange("adminstate_config") {
+		return "", nil
+	}
 	action, err := checkAdminStateValue(d)
 	if err != nil {
 		return "", err
