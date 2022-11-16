@@ -60,7 +60,7 @@ func rdEntryByKey(rd interface{}, key string) (bool, interface{}) {
 			// Key present in Resource Data
 			return true, val
 		}
-		return false, nil
+		return false, val
 	}
 	// rd must be a map[string]interface{}
 	dmap, ok := rd.(map[string]interface{})
