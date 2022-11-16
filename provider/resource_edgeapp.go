@@ -39,6 +39,25 @@ func getEdgeAppUrl(name, id, urlType string) string {
 	return zedcloudapi.UrlForObjectRequest(edgeAppUrlExtension, name, id, urlType)
 }
 
+func acKindFromAppType(appType *swagger_models.AppType) (*string, error) {
+	if appType == nil {
+		return nil, nil
+	}
+	switch *appType {
+	case swagger_models.AppTypeAPPTYPEVM:
+		acKind := "VMManifest"
+		return &acKind, nil
+	case swagger_models.AppTypeAPPTYPECONTAINER:
+		acKind := "PodManifest"
+		return &acKind, nil
+	case swagger_models.AppTypeAPPTYPEMODULE:
+		acKind := "ModuleManifest"
+		return &acKind, nil
+	default:
+		return nil, fmt.Errorf("Invalid AppType: %+v", *appType)
+	}
+}
+
 func rdEntryAppManifestFromFile(d *schema.ResourceData) (*swagger_models.VMManifest, error) {
 	manifest_file := rdEntryStr(d, "manifest_file")
 	if manifest_file == "" {
@@ -404,6 +423,14 @@ func rdAppManifestEntry(d map[string]interface{}) (interface{}, error) {
 	var err error
 	cfg := swagger_models.VMManifest{}
 	cfg.AppType = appTypePtr(rdEntryStr(d, "apptype"))
+	cfg.AcKind, err = acKindFromAppType(cfg.AppType)
+	if err != nil {
+		return nil, err
+	}
+	cfg.AcVersion = rdEntryStrPtrOrNil(d, "acversion")
+	if cfg.AcVersion == nil {
+		cfg.AcVersion = strPtr("0.0")
+	}
 	cfg.Configuration, err = rdAppManifestUserDataTemplate(d)
 	if err != nil {
 		return nil, err

@@ -229,6 +229,7 @@ func flattenVmManifest(cfg *swagger_models.VMManifest) []interface{} {
 		return []interface{}{}
 	}
 	return []interface{}{map[string]interface{}{
+		"ac_version":       ptrValStr(cfg.AcVersion),
 		"apptype":          ptrValStr(cfg.AppType),
 		"configuration":    flattenUserDataTemplate(cfg.Configuration),
 		"container_detail": flattenContainerDetail(cfg.ContainerDetail),

@@ -345,6 +345,12 @@ var manifestAuthorSchema = &schema.Resource{
 
 var appManifestSchema = &schema.Resource{
 	Schema: map[string]*schema.Schema{
+		"ac_version": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     "0.0",
+			Description: "User Specified version string for the Application.",
+		},
 		"apptype": {
 			Type:     schema.TypeString,
 			Optional: true,
