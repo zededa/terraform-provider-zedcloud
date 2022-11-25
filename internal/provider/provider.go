@@ -55,6 +55,11 @@ func configure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.D
 		return nil, diag.FromErr(fmt.Errorf("could not configure provider: %w", err))
 	}
 
+	// httptransport "github.com/go-openapi/runtime/client"
+	// r := httptransport.New(apiclient.DefaultHost, apiclient.DefaultBasePath, apiclient.DefaultSchemes)
+	// r.DefaultAuthentication = httptransport.BearerToken(os.Getenv("API_ACCESS_TOKEN"))
+	// client := apiclient.New(r, strfmt.Default)
+
 	log.Println("successfully configured provider")
 	return client, diags
 }
