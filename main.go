@@ -10,7 +10,6 @@ import (
 	"flag"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/zededa/terraform-provider-zedcloud/internal/provider"
 )
 
 var (
@@ -25,7 +24,7 @@ func main() {
 	flag.Parse()
 
 	plugin.Serve(&plugin.ServeOpts{
-		Debug:        debugMode,
-		ProviderFunc: provider.Provider,
+		Debug: debugMode,
+		// ProviderFunc: provider.Provider,
 	})
 }

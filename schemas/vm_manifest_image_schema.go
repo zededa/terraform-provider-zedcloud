@@ -1,0 +1,192 @@
+package schemas
+
+import (
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/zededa/terraform-provider/models"
+)
+
+// Function to perform the following actions:
+// (1) Translate VMManifestImage resource data into a schema model struct that will sent to the LM API for resource creation/updating
+// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
+func VMManifestImageModel(d *schema.ResourceData) *models.VMManifestImage {
+	cleartext := d.Get("cleartext").(bool)
+	drvtype := d.Get("drvtype").(string)
+	ignorepurge := d.Get("ignorepurge").(bool)
+	imagename := d.Get("imagename").(string)
+	maxsize := d.Get("maxsize").(string)
+	mountpath := d.Get("mountpath").(string)
+	params := d.Get("params").([]*models.Param) // []*Param
+	preserve := d.Get("preserve").(bool)
+	readonly := d.Get("readonly").(bool)
+	target := d.Get("target").(string)
+	volumelabel := d.Get("volumelabel").(string)
+	return &models.VMManifestImage{
+		Cleartext:   cleartext,
+		Drvtype:     drvtype,
+		Ignorepurge: ignorepurge,
+		Imagename:   imagename,
+		Maxsize:     maxsize,
+		Mountpath:   mountpath,
+		Params:      params,
+		Preserve:    preserve,
+		Readonly:    readonly,
+		Target:      target,
+		Volumelabel: volumelabel,
+	}
+}
+
+func VMManifestImageModelFromMap(m map[string]interface{}) *models.VMManifestImage {
+	cleartext := m["cleartext"].(bool)
+	drvtype := m["drvtype"].(string)
+	ignorepurge := m["ignorepurge"].(bool)
+	imagename := m["imagename"].(string)
+	maxsize := m["maxsize"].(string)
+	mountpath := m["mountpath"].(string)
+	params := m["params"].([]*models.Param) // []*Param
+	preserve := m["preserve"].(bool)
+	readonly := m["readonly"].(bool)
+	target := m["target"].(string)
+	volumelabel := m["volumelabel"].(string)
+	return &models.VMManifestImage{
+		Cleartext:   cleartext,
+		Drvtype:     drvtype,
+		Ignorepurge: ignorepurge,
+		Imagename:   imagename,
+		Maxsize:     maxsize,
+		Mountpath:   mountpath,
+		Params:      params,
+		Preserve:    preserve,
+		Readonly:    readonly,
+		Target:      target,
+		Volumelabel: volumelabel,
+	}
+}
+
+// Update the underlying VMManifestImage resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
+func SetVMManifestImageResourceData(d *schema.ResourceData, m *models.VMManifestImage) {
+	d.Set("cleartext", m.Cleartext)
+	d.Set("drvtype", m.Drvtype)
+	d.Set("ignorepurge", m.Ignorepurge)
+	d.Set("imagename", m.Imagename)
+	d.Set("maxsize", m.Maxsize)
+	d.Set("mountpath", m.Mountpath)
+	d.Set("params", SetParamSubResourceData(m.Params))
+	d.Set("preserve", m.Preserve)
+	d.Set("readonly", m.Readonly)
+	d.Set("target", m.Target)
+	d.Set("volumelabel", m.Volumelabel)
+}
+
+// Iterate throught and update the VMManifestImage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+func SetVMManifestImageSubResourceData(m []*models.VMManifestImage) (d []*map[string]interface{}) {
+	for _, VMManifestImageModel := range m {
+		if VMManifestImageModel != nil {
+			properties := make(map[string]interface{})
+			properties["cleartext"] = VMManifestImageModel.Cleartext
+			properties["drvtype"] = VMManifestImageModel.Drvtype
+			properties["ignorepurge"] = VMManifestImageModel.Ignorepurge
+			properties["imagename"] = VMManifestImageModel.Imagename
+			properties["maxsize"] = VMManifestImageModel.Maxsize
+			properties["mountpath"] = VMManifestImageModel.Mountpath
+			properties["params"] = SetParamSubResourceData(VMManifestImageModel.Params)
+			properties["preserve"] = VMManifestImageModel.Preserve
+			properties["readonly"] = VMManifestImageModel.Readonly
+			properties["target"] = VMManifestImageModel.Target
+			properties["volumelabel"] = VMManifestImageModel.Volumelabel
+			d = append(d, &properties)
+		}
+	}
+	return
+}
+
+// Schema mapping representing the VMManifestImage resource defined in the Terraform configuration
+func VMManifestImageSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"cleartext": {
+			Description: `UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
+		"drvtype": {
+			Description: `UI map: AppEditPage:DrivesPane:Drive_Type_Field, AppDetailsPage:DrivesPane:Drive_Type_Field`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"ignorepurge": {
+			Description: `UI map: AppEditPage:DrivesPane:Ignorepurge, AppDetailsPage:DrivesPane:Ignorepurgee_Field`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
+		"imagename": {
+			Description: `UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"maxsize": {
+			Description: `UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"mountpath": {
+			Description: `UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"params": {
+			Description: ``,
+			Type:        schema.TypeList, //GoType: []*Param
+			Elem: &schema.Resource{
+				Schema: ParamSchema(),
+			},
+			ConfigMode: schema.SchemaConfigModeAttr,
+			Optional:   true,
+		},
+
+		"preserve": {
+			Description: `UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
+		"readonly": {
+			Description: ``,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
+		"target": {
+			Description: `UI map: AppEditPage:DrivesPane:Target_Field, AppDetailsPage:DrivesPane:Target_Field`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"volumelabel": {
+			Description: `UI map: AppEditPage:DrivesPane:Volume_Label, AppDetailsPage:DrivesPane:Volume_Label`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
+}
+
+// Retrieve property field names for updating the VMManifestImage resource
+func GetVMManifestImagePropertyFields() (t []string) {
+	return []string{
+		"cleartext",
+		"drvtype",
+		"ignorepurge",
+		"imagename",
+		"maxsize",
+		"mountpath",
+		"params",
+		"preserve",
+		"readonly",
+		"target",
+		"volumelabel",
+	}
+}

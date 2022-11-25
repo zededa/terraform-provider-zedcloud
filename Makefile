@@ -16,7 +16,7 @@ download-swagger:
 	test -n "$(SWAGGER_URL_BASE)"  # Make sure SWAGGER_URL_BASE is set
 	for f in $(SWAGGER_FILE_LIST); do \
 	 	echo "downloading file: $$f"; \
-		wget -O zapiservices/$$f $(SWAGGER_URL_BASE)/$$f; \
+		wget -O swagger/$$f $(SWAGGER_URL_BASE)/$$f; \
 	done
 
 swagger: swagger-install swagger-generate
@@ -30,9 +30,8 @@ swagger-generate:
 	for sw_file in $(SWAGGER_FILE_LIST); do \
 		docker run --rm --user $(shell id -u):$(shell id -g) -e GOPATH=$(HOME)/go:/go \
 			-v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger \
-			generate client -f zapiservices/$$sw_file -A zedcloudapi \
-			-c swagger_client -m swagger_models -a swagger_operations && \
-		mv swagger_client/zedcloudapi_client.go swagger_client/$(sw_file).go.bkp; \
+			generate client -f swagger/$$sw_file -A zedcloudapi \
+			-c swagger_client -m swagger_models -a swagger_operations
 	done
 	#Add CopyRight notice to the generated go files.
 	tools/addCopyright
@@ -44,9 +43,9 @@ gen:
 	docker run --rm --user $(shell id -u):$(shell id -g) \
 		-e GOPATH=$(HOME)/go:/go \
 		-v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger \
-		generate client -f zapiservices/zedge_node_service.swagger.json \
+		generate client -f swagger/zedge_node_service.swagger.json \
 		-A zedcloudapi \
-		-C default-client.yml
+		-C swagger/config.yml
 
 client:
 	cd zedcloud_client && go build
