@@ -1,0 +1,3867 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "ZEDEDA Diagnostics Service",
+        "description": "ZEDEDA Diagnostics Service is a helper service that provides insight into two things - cloud diagnostics data and edge diagnostics data. As part of Cloud Diagnostics, it allows insight into zedcontrol cluster. As part of Edge Diagnisticss, it collects monitoring data from the edge nodes and presents an aggregated timeline view of resource usage and health of edge nodes",
+        "termsOfService": "https://www.zededa.com/terms",
+        "version": "1.0",
+        "contact": {
+            "name": "ZEDEDA API Support",
+            "url": "https://www.zededa.com/support",
+            "email": "support@zededa.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "zedcontrol.zededa.net",
+    "basePath": "/api",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/v1/cloud/healthreport": {
+            "get": {
+                "summary": "Get Cloud services health report",
+                "description": "Get Cloud services health report.",
+                "operationId": "GetClusterHealthReport",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/HealthServiceResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                },
+                "parameters": [
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/v1/cloud/ping": {
+            "get": {
+                "summary": "Check Cloud reachability",
+                "description": "Check Cloud reachability by sending a ping message to API gateway. API gateway will echo back either \"pong\" or the id specified.",
+                "operationId": "checkClusterHealth",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PingMsgSendResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "pingId",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/cloud/ping/id/{pingId}": {
+            "get": {
+                "summary": "Check Cloud reachability",
+                "description": "Check Cloud reachability by sending a ping message to API gateway. API gateway will echo back either \"pong\" or the id specified.",
+                "operationId": "checkClusterHealth2",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PingMsgSendResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "pingId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/cloud/policies": {
+            "get": {
+                "summary": "Query Cloud policies",
+                "description": "Query policy records of latest version of Cloud policies.",
+                "operationId": "QueryCloudPolicies",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersionResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "policy",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fileURL",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.prev",
+                        "description": "Previous",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.curr",
+                        "description": "Current Database version of the record",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.createdBy",
+                        "description": "User data: Created By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.updatedBy",
+                        "description": "User data: Updated By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            },
+            "post": {
+                "operationId": "CreateCloudPolicyDocument",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersionResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "parameters": [
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ]
+            },
+            "put": {
+                "operationId": "MarkCloudPolicyLatest",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersionResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "parameters": [
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/v1/cloud/policies/id/{fileURL}": {
+            "get": {
+                "summary": "Get Cloud policy document",
+                "description": "Get policy document for specific version of Cloud policy.",
+                "operationId": "GetCloudPolicyDocument",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersionResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "fileURL",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "policy",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.prev",
+                        "description": "Previous",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.curr",
+                        "description": "Current Database version of the record",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.createdBy",
+                        "description": "User data: Created By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.updatedBy",
+                        "description": "User data: Updated By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            },
+            "delete": {
+                "operationId": "DeleteCloudPolicyDocument",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersionResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "fileURL",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "policy",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.prev",
+                        "description": "Previous",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.curr",
+                        "description": "Current Database version of the record",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.createdBy",
+                        "description": "User data: Created By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.updatedBy",
+                        "description": "User data: Updated By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ]
+            }
+        },
+        "/v1/cloud/policies/name/{policy}": {
+            "get": {
+                "summary": "Get Cloud policy latest version",
+                "description": "Get policy record for latest version of Cloud policy.",
+                "operationId": "GetCloudPolicy",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersionResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "policy",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fileURL",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.prev",
+                        "description": "Previous",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.curr",
+                        "description": "Current Database version of the record",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.createdBy",
+                        "description": "User data: Created By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.updatedBy",
+                        "description": "User data: Updated By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/cloud/policies/name/{policy}/{version}": {
+            "get": {
+                "summary": "Get Cloud policy specific version",
+                "description": "Get policy record for specific version of Cloud policy.",
+                "operationId": "GetCloudPolicyVersion",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersionResp"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "policy",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "version",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fileURL",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.prev",
+                        "description": "Previous",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.curr",
+                        "description": "Current Database version of the record",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.createdBy",
+                        "description": "User data: Created By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.updatedBy",
+                        "description": "User data: Updated By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/cloud/version": {
+            "get": {
+                "summary": "Get Cloud controller software version",
+                "description": "Get Cloud controller software version.",
+                "operationId": "GetClusterVersion",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/CloudVersionResp"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                },
+                "parameters": [
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
+        "/v1/devices/id/{id}/config": {
+            "get": {
+                "summary": "Get current Device twin configuration",
+                "description": "Get currentnext Device twin configuration for the edge node. Edge node has read this configuration when it queried Cloud controller last time.",
+                "operationId": "GetDeviceTwinConfig",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigServiceResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "system generated unique id for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            },
+            "put": {
+                "summary": "Re-generate device configuration",
+                "description": "Re-generate the device configuration. Edge node will get this configuration when it queries Cloud controller next time.",
+                "operationId": "RegenDeviceConfig",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "system generated unique id for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/devices/id/{id}/config/next": {
+            "get": {
+                "summary": "Get next Device twin configuration",
+                "description": "Get next Device twin configuration for the edge node. Edge node will get this configuration when it queries Cloud controller next time.",
+                "operationId": "GetDeviceTwinNextConfig",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigServiceResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "system generated unique id for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/devices/id/{id}/config/offline": {
+            "get": {
+                "summary": "Get offline Device twin configuration",
+                "description": "Get offline Device twin configuration for the edge node. Edge node will get this configuration when it queries Cloud controller next time.",
+                "operationId": "GetDeviceTwinOfflineNextConfig",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigServiceResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "system generated unique id for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/devices/name/{name}/config": {
+            "get": {
+                "summary": "Get current Device twin configuration",
+                "description": "Get currentnext Device twin configuration for the edge node. Edge node has read this configuration when it queried Cloud controller last time.",
+                "operationId": "GetDeviceTwinConfigByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigServiceResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "user defined device name for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/devices/name/{name}/config/next": {
+            "get": {
+                "summary": "Get next Device twin configuration",
+                "description": "Get next Device twin configuration for the edge node. Edge node will get this configuration when it queries Cloud controller next time.",
+                "operationId": "GetDeviceTwinNextConfigByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigServiceResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "user defined device name for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/devices/name/{name}/config/offline": {
+            "get": {
+                "summary": "Get offline Device twin configuration",
+                "description": "Get offline Device twin configuration for the edge node. Edge node will get this configuration when it queries Cloud controller next time.",
+                "operationId": "GetDeviceTwinOfflineConfigByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigServiceResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "user defined device name for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/events": {
+            "get": {
+                "summary": "Get events timeline",
+                "description": "Get aggregated events timeline",
+                "operationId": "GetEventsTimeline",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/EventQueryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "objname",
+                        "description": "Object name",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "enterpriseId",
+                        "description": "system generated unique id for an enterprise (deprecated) ",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "objid",
+                        "description": "Object id",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/events/timeSeries/{mType}": {
+            "get": {
+                "summary": "Get resource usage timeline",
+                "description": "Get the aggregated resource usage timeline as reported by the edge nodes and edge application instances.",
+                "operationId": "GetResourceMetricsTimeline",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/MetricQueryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "mType",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "METRIC_TYPE_UNSPECIFIED",
+                            "METRIC_TYPE_CPU_TOTAL",
+                            "METRIC_TYPE_CPU_USAGE",
+                            "METRIC_TYPE_MEMORY_TOTAL",
+                            "METRIC_TYPE_MEMORY_UTILIZATION",
+                            "METRIC_TYPE_NETWORK_TOTAL",
+                            "METRIC_TYPE_NETWORK_RATES",
+                            "METRIC_TYPE_EVENTS_COUNT",
+                            "METRIC_TYPE_STORAGE_UTILIZATION"
+                        ]
+                    },
+                    {
+                        "name": "objtype",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "OBJECT_TYPE_UNSPECIFIED",
+                            "OBJECT_TYPE_USER",
+                            "OBJECT_TYPE_EDGE_NODE",
+                            "OBJECT_TYPE_EDGE_APP",
+                            "OBJECT_TYPE_IMAGE",
+                            "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                            "OBJECT_TYPE_PROJECT",
+                            "OBJECT_TYPE_NETWORK",
+                            "OBJECT_TYPE_DATASTORE",
+                            "OBJECT_TYPE_SERVICE",
+                            "OBJECT_TYPE_SERVICE_INSTANCE",
+                            "OBJECT_TYPE_ENTERPRISE",
+                            "OBJECT_TYPE_ROLE",
+                            "OBJECT_TYPE_CREDENTIAL",
+                            "OBJECT_TYPE_NETWORK_INSTANCE",
+                            "OBJECT_TYPE_VOLUME_INSTANCE",
+                            "OBJECT_TYPE_REALM",
+                            "OBJECT_TYPE_AUTHPROFILE",
+                            "OBJECT_TYPE_POLICY",
+                            "OBJECT_TYPE_APP_POLICY",
+                            "OBJECT_TYPE_CLUSTER_INSTANCE",
+                            "OBJECT_TYPE_PLUGIN",
+                            "OBJECT_TYPE_DOC_POLICY",
+                            "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                            "OBJECT_TYPE_TAGS",
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                        ],
+                        "default": "OBJECT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "objname",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "startTime",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "endTime",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "interval",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "enterpriseId",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "objid",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/hello": {
+            "post": {
+                "summary": "Check Cloud services health",
+                "description": "Check Cloud services health by sending a hello name to microservice behind API Gateway. Microservice will echo back the name.",
+                "operationId": "checkMicroserviceHealth",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/HelloResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/HelloName"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/timeSeries/{mType}": {
+            "get": {
+                "summary": "Get resource usage timeline",
+                "description": "Get the aggregated resource usage timeline as reported by the edge nodes and edge application instances.",
+                "operationId": "GetResourceMetricsTimeline2",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/MetricQueryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "mType",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "METRIC_TYPE_UNSPECIFIED",
+                            "METRIC_TYPE_CPU_TOTAL",
+                            "METRIC_TYPE_CPU_USAGE",
+                            "METRIC_TYPE_MEMORY_TOTAL",
+                            "METRIC_TYPE_MEMORY_UTILIZATION",
+                            "METRIC_TYPE_NETWORK_TOTAL",
+                            "METRIC_TYPE_NETWORK_RATES",
+                            "METRIC_TYPE_EVENTS_COUNT",
+                            "METRIC_TYPE_STORAGE_UTILIZATION"
+                        ]
+                    },
+                    {
+                        "name": "objtype",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "OBJECT_TYPE_UNSPECIFIED",
+                            "OBJECT_TYPE_USER",
+                            "OBJECT_TYPE_EDGE_NODE",
+                            "OBJECT_TYPE_EDGE_APP",
+                            "OBJECT_TYPE_IMAGE",
+                            "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                            "OBJECT_TYPE_PROJECT",
+                            "OBJECT_TYPE_NETWORK",
+                            "OBJECT_TYPE_DATASTORE",
+                            "OBJECT_TYPE_SERVICE",
+                            "OBJECT_TYPE_SERVICE_INSTANCE",
+                            "OBJECT_TYPE_ENTERPRISE",
+                            "OBJECT_TYPE_ROLE",
+                            "OBJECT_TYPE_CREDENTIAL",
+                            "OBJECT_TYPE_NETWORK_INSTANCE",
+                            "OBJECT_TYPE_VOLUME_INSTANCE",
+                            "OBJECT_TYPE_REALM",
+                            "OBJECT_TYPE_AUTHPROFILE",
+                            "OBJECT_TYPE_POLICY",
+                            "OBJECT_TYPE_APP_POLICY",
+                            "OBJECT_TYPE_CLUSTER_INSTANCE",
+                            "OBJECT_TYPE_PLUGIN",
+                            "OBJECT_TYPE_DOC_POLICY",
+                            "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                            "OBJECT_TYPE_TAGS",
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                        ],
+                        "default": "OBJECT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "objname",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "startTime",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "endTime",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "interval",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "enterpriseId",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "objid",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "BriefHealth": {
+            "type": "object",
+            "properties": {
+                "serviceHealthStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        "CloudVersion": {
+            "type": "object",
+            "properties": {
+                "comp": {
+                    "type": "string"
+                },
+                "ver": {
+                    "type": "string"
+                }
+            }
+        },
+        "CloudVersionResp": {
+            "type": "object",
+            "properties": {
+                "version": {
+                    "$ref": "#/definitions/CloudVersion"
+                },
+                "result": {
+                    "$ref": "#/definitions/ZsrvResponse"
+                }
+            }
+        },
+        "CmdArg": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "description": "Command line argument: key"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Command line argument: value"
+                }
+            },
+            "description": "CmdArg store the passed command line key and values",
+            "title": "CmdArg is used to store the command line arguments"
+        },
+        "ConfigServiceResp": {
+            "type": "object",
+            "properties": {
+                "config": {
+                    "$ref": "#/definitions/configEdgeDevConfig"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "readAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "result": {
+                    "$ref": "#/definitions/ZsrvResponse"
+                },
+                "lastKnownStatus": {
+                    "$ref": "#/definitions/LastKnownStatus"
+                },
+                "pconfig": {
+                    "type": "string",
+                    "title": "protobuf stringified"
+                }
+            },
+            "title": "Edge Device Configuration Response to CLI/UI routed via Kafka"
+        },
+        "Cursor": {
+            "type": "object",
+            "properties": {
+                "pageToken": {
+                    "type": "string",
+                    "description": "Page Token"
+                },
+                "orderBy": {
+                    "type": "string",
+                    "description": "OrderBy helps in sorting the list response"
+                },
+                "pageNum": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Page Number"
+                },
+                "pageSize": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Defines the page size"
+                },
+                "totalPages": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Total number of pages to be fetched."
+                }
+            },
+            "description": "Cursor helps in filtering the various list response like edge-app bundle list, model list, bundle list etc. ",
+            "title": "Cursor is used as filter in list operation."
+        },
+        "DeviceCmdsSubType": {
+            "type": "string",
+            "enum": [
+                "DeviceNoOp",
+                "DeviceStart",
+                "DeviceStop",
+                "DeviceReboot",
+                "DeviceShutdown",
+                "DeviceUpdateOS",
+                "DeviceApplyOS",
+                "DeviceReset",
+                "DeviceAddOS",
+                "DeviceDropOS",
+                "DeviceOffboard",
+                "DeviceActivate",
+                "DeviceDeActivate"
+            ],
+            "default": "DeviceNoOp",
+            "title": "- DeviceNoOp: Device Operation: No Operation\n - DeviceStart: Device Operation: Start\n - DeviceStop: Device Operation: Stop\n - DeviceReboot: Device Operation: Reboot: Power cycle the device\n - DeviceShutdown: Device Operation: Shutdown- Power off the device\n - DeviceUpdateOS: Device Operation: Update OS- deprecated\n - DeviceApplyOS: Device Operation: Apply OS- Change Boot order of installed images\n - DeviceReset: Device Operation: Reset- Config reset to factory default\n - DeviceAddOS: Device Operation: Add OS- Install new image but don't change boot order\n - DeviceDropOS: Device Operation: Drop OS- Remove uninstalled image but don't change boot order\n - DeviceOffboard: Device Operation Type: offboard the device\n - DeviceActivate: Device Activate\n - DeviceDeActivate: Device Deactivate"
+        },
+        "EventQueryResponse": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/EventQueryResponseItem"
+                    },
+                    "description": "Event Query response list"
+                },
+                "next": {
+                    "type": "object",
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Cursor filter"
+                }
+            },
+            "description": "Event query response request payload",
+            "title": "Event query Response payload detail",
+            "required": [
+                "list",
+                "next"
+            ]
+        },
+        "EventQueryResponseItem": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "string",
+                    "description": "User name"
+                },
+                "project": {
+                    "type": "string",
+                    "description": "project name"
+                },
+                "device": {
+                    "type": "string",
+                    "description": "device name"
+                },
+                "instance": {
+                    "type": "string",
+                    "description": "instance name"
+                },
+                "severity": {
+                    "type": "string",
+                    "description": "severity: FIXME: should be ENUM"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Event description"
+                },
+                "timestamp": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "event timestamp"
+                },
+                "source": {
+                    "type": "object",
+                    "$ref": "#/definitions/EventSource",
+                    "description": "source"
+                },
+                "resource": {
+                    "type": "string",
+                    "description": "Event resources"
+                },
+                "eventType": {
+                    "type": "string",
+                    "description": "Event type"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Event tags"
+                },
+                "resourceName": {
+                    "type": "string",
+                    "description": "Event resources"
+                },
+                "json_data": {
+                    "type": "object",
+                    "description": "Event resources"
+                },
+                "clusterInstance": {
+                    "type": "string",
+                    "description": "clusterInstance name"
+                }
+            },
+            "description": "Event query response item payload",
+            "title": "Event query response item payload detail"
+        },
+        "EventSource": {
+            "type": "string",
+            "enum": [
+                "EVENT_SOURCE_UNSPECIFIED",
+                "EVENT_SOURCE_SYSTEM",
+                "EVENT_SOURCE_USER"
+            ],
+            "default": "EVENT_SOURCE_UNSPECIFIED",
+            "description": "- EVENT_SOURCE_UNSPECIFIED: Default\n - EVENT_SOURCE_SYSTEM: Event is generated as a result of status change reported by edge node / application\n - EVENT_SOURCE_USER: Event is generated as a result of an user's configuration action",
+            "title": "Source of events"
+        },
+        "HealthDesc": {
+            "type": "object",
+            "properties": {
+                "hostName": {
+                    "type": "string"
+                },
+                "envName": {
+                    "type": "string"
+                },
+                "serviceName": {
+                    "type": "string"
+                },
+                "serviceInstance": {
+                    "type": "string"
+                },
+                "briefHealth": {
+                    "$ref": "#/definitions/BriefHealth"
+                }
+            }
+        },
+        "HealthServiceResp": {
+            "type": "object",
+            "properties": {
+                "healthService": {
+                    "$ref": "#/definitions/HealthServiceSubType"
+                },
+                "hresult": {
+                    "$ref": "#/definitions/ZsrvResponse"
+                },
+                "healthDesc": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/HealthDesc"
+                    }
+                }
+            }
+        },
+        "HealthServiceSubType": {
+            "type": "string",
+            "enum": [
+                "Publisher",
+                "Subscriber"
+            ],
+            "default": "Publisher"
+        },
+        "HelloName": {
+            "type": "object",
+            "properties": {
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "cryptoKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "HelloResp": {
+            "type": "object",
+            "properties": {
+                "response": {
+                    "type": "string"
+                }
+            }
+        },
+        "LastKnownStatus": {
+            "type": "object",
+            "properties": {
+                "lastKnownStatusLine": {
+                    "type": "string"
+                },
+                "lastAttemptState": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "lastAttemptedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "MetricQueryResponse": {
+            "type": "object",
+            "properties": {
+                "threshold": {
+                    "$ref": "#/definitions/MetricThreshold"
+                },
+                "metricType": {
+                    "type": "string"
+                },
+                "xLabel": {
+                    "type": "string"
+                },
+                "yLabels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/MetricQueryResponseItem"
+                    }
+                }
+            }
+        },
+        "MetricQueryResponseItem": {
+            "type": "object",
+            "properties": {
+                "timestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                }
+            }
+        },
+        "MetricThreshold": {
+            "type": "object",
+            "properties": {
+                "yellow": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "red": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "MetricType": {
+            "type": "string",
+            "enum": [
+                "METRIC_TYPE_UNSPECIFIED",
+                "METRIC_TYPE_CPU_TOTAL",
+                "METRIC_TYPE_CPU_USAGE",
+                "METRIC_TYPE_MEMORY_TOTAL",
+                "METRIC_TYPE_MEMORY_UTILIZATION",
+                "METRIC_TYPE_NETWORK_TOTAL",
+                "METRIC_TYPE_NETWORK_RATES",
+                "METRIC_TYPE_EVENTS_COUNT",
+                "METRIC_TYPE_STORAGE_UTILIZATION"
+            ],
+            "default": "METRIC_TYPE_UNSPECIFIED"
+        },
+        "ObjectRevision": {
+            "type": "object",
+            "properties": {
+                "prev": {
+                    "type": "string",
+                    "description": "Previous"
+                },
+                "curr": {
+                    "type": "string",
+                    "description": "Current Database version of the record"
+                },
+                "createdAt": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "The time, in milliseconds since the epoch, when the record was created."
+                },
+                "createdBy": {
+                    "type": "string",
+                    "description": "User data: Created By"
+                },
+                "updatedAt": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "The time, in milliseconds since the epoch, when the record was last updated."
+                },
+                "updatedBy": {
+                    "type": "string",
+                    "description": "User data: Updated By"
+                }
+            },
+            "description": "ObjectRevision store the user details, who has doent the necessary operation like Create Operation or update operation",
+            "title": "ObjectRevision is used to store the user information.",
+            "required": [
+                "curr",
+                "createdAt",
+                "createdBy",
+                "updatedAt",
+                "updatedBy"
+            ]
+        },
+        "ObjectType": {
+            "type": "string",
+            "enum": [
+                "OBJECT_TYPE_UNSPECIFIED",
+                "OBJECT_TYPE_USER",
+                "OBJECT_TYPE_EDGE_NODE",
+                "OBJECT_TYPE_EDGE_APP",
+                "OBJECT_TYPE_IMAGE",
+                "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                "OBJECT_TYPE_PROJECT",
+                "OBJECT_TYPE_NETWORK",
+                "OBJECT_TYPE_DATASTORE",
+                "OBJECT_TYPE_SERVICE",
+                "OBJECT_TYPE_SERVICE_INSTANCE",
+                "OBJECT_TYPE_ENTERPRISE",
+                "OBJECT_TYPE_ROLE",
+                "OBJECT_TYPE_CREDENTIAL",
+                "OBJECT_TYPE_NETWORK_INSTANCE",
+                "OBJECT_TYPE_VOLUME_INSTANCE",
+                "OBJECT_TYPE_REALM",
+                "OBJECT_TYPE_AUTHPROFILE",
+                "OBJECT_TYPE_POLICY",
+                "OBJECT_TYPE_APP_POLICY",
+                "OBJECT_TYPE_CLUSTER_INSTANCE",
+                "OBJECT_TYPE_PLUGIN",
+                "OBJECT_TYPE_DOC_POLICY",
+                "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                "OBJECT_TYPE_TAGS",
+                "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+            ],
+            "default": "OBJECT_TYPE_UNSPECIFIED"
+        },
+        "PingMsgSendResp": {
+            "type": "object",
+            "properties": {
+                "pingId": {
+                    "type": "string",
+                    "format": "int64"
+                }
+            }
+        },
+        "PolicyDocVersion": {
+            "type": "object",
+            "properties": {
+                "policy": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                },
+                "fileURL": {
+                    "type": "string"
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision"
+                }
+            }
+        },
+        "PolicyDocVersionList": {
+            "type": "object",
+            "properties": {
+                "summary": {
+                    "$ref": "#/definitions/Summary"
+                },
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PolicyDocVersion"
+                    }
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor"
+                }
+            }
+        },
+        "PolicyDocVersionResp": {
+            "type": "object",
+            "properties": {
+                "result": {
+                    "$ref": "#/definitions/ZsrvResponse"
+                },
+                "pinfo": {
+                    "$ref": "#/definitions/PolicyDocVersion"
+                },
+                "plist": {
+                    "$ref": "#/definitions/PolicyDocVersionList"
+                }
+            }
+        },
+        "Summary": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "Summary description"
+                },
+                "total": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Total"
+                },
+                "values": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "description": "Summary is used to store the Summary details",
+            "title": "Summary is used to store the Summary details"
+        },
+        "WifiConfigcryptoblock": {
+            "type": "object",
+            "properties": {
+                "identity": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "ZcOpsStatus": {
+            "type": "string",
+            "enum": [
+                "OPS_STATUS_UNSPECIFIED",
+                "OPS_STATUS_PENDING",
+                "OPS_STATUS_ONGOING",
+                "OPS_STATUS_COMPLETE"
+            ],
+            "default": "OPS_STATUS_UNSPECIFIED",
+            "description": "- OPS_STATUS_PENDING: In rare cases, system may not start operation when it was requested. Client will be notified that operation is PENDING\n - OPS_STATUS_ONGOING: system will start the operation, but at the time response was generated, operation is still ONGOING.\n - OPS_STATUS_COMPLETE: Even if the result of the operations may result in failure, but the OpsStatus will marked COMPLETE for almost all cases.",
+            "title": "ZedCloud internal operation status"
+        },
+        "ZcOpsType": {
+            "type": "string",
+            "enum": [
+                "OPS_TYPE_UNSPECIFIED",
+                "OPS_TYPE_READ",
+                "OPS_TYPE_DELETE",
+                "OPS_TYPE_CREATE",
+                "OPS_TYPE_UPDATE",
+                "OPS_TYPE_LIST"
+            ],
+            "default": "OPS_TYPE_UNSPECIFIED",
+            "title": "ZedCloud internal operation type"
+        },
+        "ZsrvError": {
+            "type": "object",
+            "properties": {
+                "ec": {
+                    "$ref": "#/definitions/ZsrvErrorCode",
+                    "title": "Enumrated error code, describes more granular numerical\nvalue than just httpStatus"
+                },
+                "location": {
+                    "type": "string",
+                    "title": "Ignore: Internal field only"
+                },
+                "details": {
+                    "type": "string",
+                    "title": "Field captures string description of details"
+                }
+            }
+        },
+        "ZsrvErrorCode": {
+            "type": "string",
+            "enum": [
+                "zMsgErrorNone",
+                "zMsgSucess",
+                "NotFound",
+                "AlreadyExists",
+                "VersionMismatch",
+                "RangeError",
+                "LargeResult",
+                "IncompleteData",
+                "InvalidData",
+                "FunctionUnsupported",
+                "NoMemory",
+                "SendFailure",
+                "Timeout",
+                "BadReqBody",
+                "BadReqParam",
+                "InvalidFieldFormat",
+                "UrlNotFound",
+                "ApiVersionNotSupported",
+                "Unauthorized",
+                "Forbidden",
+                "Conflict",
+                "NotModified",
+                "DependencyConflict",
+                "JsonFmtError",
+                "ProtoFmtError",
+                "CertError",
+                "DataBaseConnection",
+                "DBError",
+                "zMsgAccepted",
+                "zMsgCreated",
+                "PreConditionFailed"
+            ],
+            "default": "zMsgErrorNone",
+            "description": "- zMsgErrorNone: common validation errors\n - IncompleteData: message had fields that weren't filled in\n - InvalidData: message contained the field that wasn't expected\n - FunctionUnsupported: this feature unavailable on this version of device\n - InvalidFieldFormat: message contained the field that wasn't correctly formatted\n - JsonFmtError: Marshal / Unmarshal errors\n - DataBaseConnection: generic DB error",
+            "title": "ZedCould internal error code"
+        },
+        "ZsrvResponse": {
+            "type": "object",
+            "properties": {
+                "operationType": {
+                    "$ref": "#/definitions/ZcOpsType",
+                    "title": "Describes one of the operations type : possible values\n                        Read/Delete/Create/Update/List"
+                },
+                "operationStatus": {
+                    "$ref": "#/definitions/ZcOpsStatus",
+                    "title": "if this is log running job"
+                },
+                "objectKind": {
+                    "type": "string",
+                    "title": "zedcloud object kind on which the operation was performed"
+                },
+                "objectId": {
+                    "type": "string",
+                    "title": "Unique value identifies the object that was operated on"
+                },
+                "objectName": {
+                    "type": "string",
+                    "title": "name of the object"
+                },
+                "objectRevision": {
+                    "type": "string",
+                    "title": "object revision post the operation, note Read operation\ndoesn't change the revision"
+                },
+                "objectType": {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                "operationTime": {
+                    "type": "string",
+                    "title": "time of operation"
+                },
+                "startTime": {
+                    "type": "string",
+                    "title": "total time taken by operations"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string",
+                    "title": "the operation is performed on behalf of this user"
+                },
+                "httpStatusCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "http response"
+                },
+                "httpStatusMsg": {
+                    "type": "string",
+                    "title": "summary of the error in text format"
+                },
+                "error": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ZsrvError"
+                    },
+                    "title": "one or more errors will be set if the operation failed\ni.e. httpStatusCode != 2xx"
+                }
+            }
+        },
+        "commonHashAlgorithm": {
+            "type": "string",
+            "enum": [
+                "HASH_ALGORITHM_INVALID",
+                "HASH_ALGORITHM_SHA256_16BYTES",
+                "HASH_ALGORITHM_SHA256_32BYTES"
+            ],
+            "default": "HASH_ALGORITHM_INVALID"
+        },
+        "commonPhyIoMemberUsage": {
+            "type": "string",
+            "enum": [
+                "PhyIoUsageNone",
+                "PhyIoUsageMgmtAndApps",
+                "PhyIoUsageShared",
+                "PhyIoUsageDedicated",
+                "PhyIoUsageDisabled",
+                "PhyIoUsageMgmtOnly"
+            ],
+            "default": "PhyIoUsageNone",
+            "description": "PhyIoMemberUsage - Indicates how each adaptor must be used by Eve.\n\n - PhyIoUsageMgmtAndApps: Used by both management and apps.\n - PhyIoUsageShared: Shared by multiple apps\n - PhyIoUsageDedicated: used by only one app\n - PhyIoUsageDisabled: Adapter Blocked. Do not use the Adapter.\n - PhyIoUsageMgmtOnly: Used for Management traffic only. Cannot be used by Apps."
+        },
+        "commonPhyIoType": {
+            "type": "string",
+            "enum": [
+                "PhyIoNoop",
+                "PhyIoNetEth",
+                "PhyIoUSB",
+                "PhyIoCOM",
+                "PhyIoAudio",
+                "PhyIoNetWLAN",
+                "PhyIoNetWWAN",
+                "PhyIoHDMI",
+                "PhyIoOther"
+            ],
+            "default": "PhyIoNoop"
+        },
+        "configACE": {
+            "type": "object",
+            "properties": {
+                "matches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configACEMatch"
+                    },
+                    "title": "multiple matches here is for various fields of 6 tuples\n for example\n    1) host=www.example.com & port=http\n    2) ip=8.8.8.8 & port=53 & proto=UDP"
+                },
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configACEAction"
+                    },
+                    "description": "Expect only single action...repeated here is\nfor future work."
+                },
+                "name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "dir": {
+                    "$ref": "#/definitions/configACEDirection"
+                }
+            }
+        },
+        "configACEAction": {
+            "type": "object",
+            "properties": {
+                "drop": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "limit": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "limit action, and its associated parameter"
+                },
+                "limitrate": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "limitunit": {
+                    "type": "string"
+                },
+                "limitburst": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "portmap": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "port map action, and its associated parameter"
+                },
+                "appPort": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "configACEDirection": {
+            "type": "string",
+            "enum": [
+                "BOTH",
+                "INGRESS",
+                "EGRESS"
+            ],
+            "default": "BOTH"
+        },
+        "configACEMatch": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "title": "FIXME: We should convert this to enum"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "configAdapter": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/commonPhyIoType"
+                },
+                "name": {
+                    "type": "string"
+                }
+            },
+            "description": "Adapter bundles corresponding to a subset of what is in ZioBundle\nWhen used by a NetworkInstanceConfig the name is the logicallabel\nfor the network adapter."
+        },
+        "configAddressType": {
+            "type": "string",
+            "enum": [
+                "First",
+                "IPV4",
+                "IPV6",
+                "CryptoIPV4",
+                "CryptoIPV6",
+                "Last"
+            ],
+            "default": "First"
+        },
+        "configAppInstanceConfig": {
+            "type": "object",
+            "properties": {
+                "uuidandversion": {
+                    "$ref": "#/definitions/configUUIDandVersion"
+                },
+                "displayname": {
+                    "type": "string"
+                },
+                "fixedresources": {
+                    "$ref": "#/definitions/configVmConfig"
+                },
+                "drives": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configDrive"
+                    },
+                    "description": "VolumeRefs, if supported by EVE, will supersede drives. Drives still\nexist for backward compatibility.\nDrives will be deprecated in the future.\nThe order here is critical because they are presented to the VM or\ncontainer in the order they are listed, e.g., the first VM image\nwill be the root disk."
+                },
+                "activate": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Set activate to start the application instance; clear it to stop it."
+                },
+                "interfaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configNetworkAdapter"
+                    },
+                    "description": "NetworkAdapter are virtual adapters assigned to the application\nThe order here is critical because they are presented to the VM or\ncontainer in the order they are listed, e.g., the first NetworkAdapter\nwill appear in a Linux VM as eth0. Also, the MAC address is determined\nbased on the order in the list."
+                },
+                "adapters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configAdapter"
+                    },
+                    "title": "Physical adapters such as eth1 or USB controllers and GPUs assigned\nto the application instance.\nThe Name in Adapter should be set to PhysicalIO.assigngrp"
+                },
+                "restart": {
+                    "$ref": "#/definitions/configInstanceOpsCmd",
+                    "description": "The device behavior for a restart command (if counter increased)\nis to restart the application instance\nIncreasing this multiple times does not imply the application instance\nwill restart more than once.\nEVE can assume that the adapters did not change."
+                },
+                "purge": {
+                    "$ref": "#/definitions/configInstanceOpsCmd",
+                    "description": "The EVE behavior for a purge command is to restart the application instance\nwith the first drive/volumeRef recreated from its origin."
+                },
+                "userData": {
+                    "type": "string",
+                    "description": "App Instance initialization configuration data provided by user\nThis will be used as \"user-data\" in cloud-init\nEmpty string will indicate that cloud-init is not required\nIt is also used to carry environment variables for containers.\nXXX will be deprecated and replaced by the cipherData below."
+                },
+                "remoteConsole": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Config flag if the app-instance should be made accessible\nthrough a remote console session established by the device."
+                },
+                "cipherData": {
+                    "$ref": "#/definitions/configCipherBlock",
+                    "title": "contains the encrypted userdata"
+                },
+                "collectStatsIPAddr": {
+                    "type": "string",
+                    "title": "The static IP address assigned on the NetworkAdapter which App Container\nstats collection uses. If the 'collectStatsIPAddr' is not empty and valid,\nit enables the container stats collection for this App.\nDuring App instance creation, after user enables the collection of stats\nfrom App, cloud needs to make sure at least one 'Local' type of Network-Instance\nis assigned to the App interface, and based on the subnet of the NI, statically\nassign an IP address on the same subnet, e.g. 10.1.0.100"
+                },
+                "volumeRefList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configVolumeRef"
+                    },
+                    "description": "The volumes to be attached to the app-instance.\nThe order here is critical because they are presented to the VM or\ncontainer in the order they are listed, e.g., the first VM image\nwill be the root disk.\nNote that since the name volumeRef was used before and deprecated\npython protobuf seems to require that we use a different name."
+                },
+                "metaDataType": {
+                    "$ref": "#/definitions/configMetaDataType",
+                    "title": "metadata type to use for app if provided inside userData"
+                },
+                "profile_list": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "profile_list is a set of strings which can be used to control which sets\nof applications are run. Combined with the activate flag above.\nIf the profile list is empty it means wildcard; application will\nbe started independent of the global or local profile specified for the\ndevice."
+                }
+            },
+            "description": "The complete configuration for an Application Instance\nWhen changing key fields such as the drives/volumeRefs or the number\nof interfaces, the controller is required to issue a purge command i.e.,\nincrease the purge counter. Otherwise there will be an error (The controller\ncan also issue a purge command to re-construct the content of the first\ndrive/volumeRef without any changes.)\nSome changes such as ACL changes in the interfaces do not require a restart,\nbut all other changes (such as fixedresources and adapters) require a\nrestart command i.e., an increase to the restart counter. The restart counter\ncan also be increased to cause an application instance restart without\nany other change to the application instance."
+        },
+        "configBaseOS": {
+            "type": "object",
+            "properties": {
+                "content_tree_uuid": {
+                    "type": "string",
+                    "title": "UUID for ContentTree with BaseOS image"
+                },
+                "retry_update": {
+                    "$ref": "#/definitions/configDeviceOpsCmd",
+                    "description": "retry_update\nRetry the BaseOs update if the update failed previously.\n1) If this image is in FAILED state, retry the image update.\n2) If this image is already active and fully installed (PartitionState = UPDATED),\n   Do nothing. Just update the baseos_update_counter in Info message.\n3) If this image is same as active image, but status is NOT yet UPDATED, or\n   if the update to this image is in progress, wait till the update\n   concludes (Success / Error+rollback) - then trigger the retry as needed."
+                }
+            }
+        },
+        "configBaseOSConfig": {
+            "type": "object",
+            "properties": {
+                "uuidandversion": {
+                    "$ref": "#/definitions/configUUIDandVersion"
+                },
+                "drives": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configDrive"
+                    },
+                    "description": "volumeID will supersede drives. Drives still\nexist for backward compatibility.\nDrives will be deprecated in the future."
+                },
+                "activate": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "baseOSVersion": {
+                    "type": "string"
+                },
+                "volumeID": {
+                    "type": "string"
+                }
+            }
+        },
+        "configCellularConfig": {
+            "type": "object",
+            "properties": {
+                "APN": {
+                    "type": "string"
+                }
+            }
+        },
+        "configCipherBlock": {
+            "type": "object",
+            "properties": {
+                "cipherContextId": {
+                    "type": "string",
+                    "title": "cipher context id"
+                },
+                "initialValue": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "Initial Value for Symmetric Key derivation"
+                },
+                "cipherData": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "encrypted sensitive data"
+                },
+                "clearTextSha256": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "sha256 of the plaintext sensitive data"
+                }
+            },
+            "title": "Encrypted sensitive data information"
+        },
+        "configCipherContext": {
+            "type": "object",
+            "properties": {
+                "contextId": {
+                    "type": "string",
+                    "title": "cipher context id, key to this structure"
+                },
+                "hashScheme": {
+                    "$ref": "#/definitions/commonHashAlgorithm",
+                    "title": "algorithm used to compute hash for certificates"
+                },
+                "keyExchangeScheme": {
+                    "$ref": "#/definitions/configKeyExchangeScheme",
+                    "description": "for key exchange scheme, like ECDH etc."
+                },
+                "encryptionScheme": {
+                    "$ref": "#/definitions/configEncryptionScheme",
+                    "description": "for encrypting sensitive data, like AES256 etc."
+                },
+                "deviceCertHash": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "device public certificate hash"
+                },
+                "controllerCertHash": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "controller certificate hash"
+                }
+            },
+            "title": "Cipher information to decrypt Sensitive Data"
+        },
+        "configConfigItem": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "description": "Timers and other per-device policy which relates to the interaction\nwith zedcloud. Note that the timers are randomized on the device\nto avoid synchronization with other devices. Random range is between\nbetween .5 and 1.5 of these nominal values. If not set (i.e. zero),\nit means the default value of 60 seconds."
+        },
+        "configContentTree": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                },
+                "dsId": {
+                    "type": "string"
+                },
+                "URL": {
+                    "type": "string"
+                },
+                "iformat": {
+                    "$ref": "#/definitions/configFormat"
+                },
+                "sha256": {
+                    "type": "string",
+                    "title": "The sha is for the top blob of the ContentTree"
+                },
+                "maxSizeBytes": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "maxSizeBytes used for capping resource consumption in EVE.\nmaxSizeBytes indicates the maximum download size of content tree."
+                },
+                "siginfo": {
+                    "$ref": "#/definitions/configSignatureInfo"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "generation_count": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "For container ContentTree, sha256 might not be available in config.\nIf the sha256 is not available then it needs to be resolved corresponding to the tag\nchange in generation_count indicates that the resolution of tag is needed\ngeneration_count needs to be updated when purge is required for an existing\ninstance. In case of new instance using the same content tree, EVE will get\nnew content tree UUID in the device configuration from the controller."
+                }
+            },
+            "title": "ContentTree describes the top of some content tree. The controller needs\nto allocate a uuid for it, and that uuid will be sent by EVE in the\nZInfoContentTree message"
+        },
+        "configDHCPType": {
+            "type": "string",
+            "enum": [
+                "DHCPNoop",
+                "Static",
+                "DHCPNone",
+                "Client"
+            ],
+            "default": "DHCPNoop",
+            "title": "- Static: Statically configure the DHCP for port\n - DHCPNone: Don't run any DHCP, we are in passthrough mode for app\n - Client: Run the DHCP client on this port"
+        },
+        "configDatastoreConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "dType": {
+                    "$ref": "#/definitions/configDsType"
+                },
+                "fqdn": {
+                    "type": "string"
+                },
+                "apiKey": {
+                    "type": "string",
+                    "title": "to be deprecated, use cipherData instead"
+                },
+                "password": {
+                    "type": "string",
+                    "title": "to be deprecated, use cipherData instead"
+                },
+                "dpath": {
+                    "type": "string",
+                    "title": "depending on datastore types, it could be bucket or path"
+                },
+                "region": {
+                    "type": "string",
+                    "title": "Applies for some datastore types"
+                },
+                "cipherData": {
+                    "$ref": "#/definitions/configCipherBlock",
+                    "title": "contains the encrypted credentials"
+                },
+                "dsCertPEM": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "title": "Uploaded datastore certificate or certificate chain"
+                }
+            },
+            "title": "The DataStoreConfig contains common parameters for a give source of\nimages aka ContentTrees, such as the credentials and server"
+        },
+        "configDeviceOpsCmd": {
+            "type": "object",
+            "properties": {
+                "counter": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "desiredState": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "opsTime": {
+                    "type": "string",
+                    "title": "FIXME: change to timestamp, once we move to gogo proto"
+                }
+            },
+            "description": "Device Operational Commands Semantic\nFor rebooting device,  command=Reset, counter = counter+delta, desiredState = on\nFor poweroff device,  command=Reset, counter = counter+delta, desiredState = off\nFor backup at midnight, command=Backup, counter = counter+delta, desiredState=n/a, opsTime = mm/dd/yy:hh:ss\nCurrent implementation does support only single command outstanding for each\ntype. In future can be extended to have more scheduled events."
+        },
+        "configDrive": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "$ref": "#/definitions/eveconfigImage"
+                },
+                "readonly": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "preserve": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "drvtype": {
+                    "$ref": "#/definitions/configDriveType"
+                },
+                "target": {
+                    "$ref": "#/definitions/configTarget"
+                },
+                "maxsizebytes": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "maxsizebytes indicates the maximum size of the volume.\nInitial image size will be resized to the maxsizebytes\niff maxsizebytes is greater than the image size."
+                }
+            },
+            "title": "XXX the Drive will be deprecated and we will use Volumes instead"
+        },
+        "configDriveType": {
+            "type": "string",
+            "enum": [
+                "Unclassified",
+                "CDROM",
+                "HDD",
+                "NET",
+                "HDD_EMPTY"
+            ],
+            "default": "Unclassified",
+            "description": "- HDD_EMPTY: this type is allocate the empty disk of maxsizebytes specified",
+            "title": "XXX the DriveType will be deprecated when we deprecate Drive"
+        },
+        "configDsType": {
+            "type": "string",
+            "enum": [
+                "DsUnknown",
+                "DsHttp",
+                "DsHttps",
+                "DsS3",
+                "DsSFTP",
+                "DsContainerRegistry",
+                "DsAzureBlob"
+            ],
+            "default": "DsUnknown"
+        },
+        "configEdgeDevConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "$ref": "#/definitions/configUUIDandVersion"
+                },
+                "apps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configAppInstanceConfig"
+                    }
+                },
+                "networks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configNetworkConfig"
+                    }
+                },
+                "datastores": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configDatastoreConfig"
+                    }
+                },
+                "base": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configBaseOSConfig"
+                    },
+                    "description": "OBSOLETE - base. Use baseos instead. Controller should fill this for\nbackward compatibility till all the Older Eve images are no longer\nsupported."
+                },
+                "reboot": {
+                    "$ref": "#/definitions/configDeviceOpsCmd"
+                },
+                "backup": {
+                    "$ref": "#/definitions/configDeviceOpsCmd"
+                },
+                "configItems": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configConfigItem"
+                    }
+                },
+                "systemAdapterList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configSystemAdapter"
+                    },
+                    "description": "systemAdapterList - List of DeviceNetworkAdapters. Only Network\n adapters ( Ex: eth0, wlan1 etc ) have a corresponding SystemAdapter.\nnon-Network adapters do not have systemadapters."
+                },
+                "deviceIoList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configPhysicalIO"
+                    },
+                    "title": "deviceIoList - List of Physical Adapters. Includes both Network\n Adapters and Non-Network Adapters ( USB / Com etc )"
+                },
+                "manufacturer": {
+                    "type": "string",
+                    "title": "Override dmidecode info if set"
+                },
+                "productName": {
+                    "type": "string"
+                },
+                "networkInstances": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configNetworkInstanceConfig"
+                    }
+                },
+                "cipherContexts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configCipherContext"
+                    },
+                    "title": "controller supplies a list of cipher contexts,\ncontaining certificate and other details, to be\nused for sensitive data decryption"
+                },
+                "contentInfo": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configContentTree"
+                    },
+                    "description": "These images aka ContentTrees and Volumes should be created by EVE\nindependently of any application usage.\nApplication instances will refer to the volumes."
+                },
+                "volumes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configVolume"
+                    }
+                },
+                "controllercert_confighash": {
+                    "type": "string",
+                    "description": "This field is used by the device to detect when it needs to re-download\nthe controller certs using the /certs API endpoint.\nThe controller just needs to ensure this value changes when it wants the\ndevice to re-fetch the controller certs, for instance by having it\nbe a hash of all of the controller certificates."
+                },
+                "maintenance_mode": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "deprecated 23;\nIf maintence_mode is set the device will operate in a limited mode e.g.,\nnot start applications etc as to enable inspection of its state and\nrecover from bad state."
+                },
+                "controller_epoch": {
+                    "type": "string",
+                    "format": "int64",
+                    "title": "controller_epoch indicates current epoch of config\nif we set new epoch, EVE sends all info messages to controller\nit captures when a new controller takes over and needs all the info be resent"
+                },
+                "baseos": {
+                    "$ref": "#/definitions/configBaseOS",
+                    "title": "Baseos Config Block"
+                },
+                "global_profile": {
+                    "type": "string",
+                    "description": "global_profile, if set, controls set of applications which will run.\nThe Activate=true app instances which have this profile in their profile_list\nwill run. If the global_profile is not set, then the profile_list is not\nused to gate the application instances."
+                },
+                "local_profile_server": {
+                    "type": "string",
+                    "title": "local_profile_server, if set, indicates a hostname/IPv4/IPv6 address and\noptional port number at which EVE will request for a local profile.\nIf such a local profile is retrieved, it will override the global_profile.\nThe syntax follows the usual URL server name syntax thus the following\nare example valid strings:\n   [fe80::1]:1234\n   10.1.1.1:1234\n   hostname:1234\n   [fe80::1]\n   10.1.1.1\n   hostname\nIf the port number is not specified, it will default to 8888"
+                },
+                "profile_server_token": {
+                    "type": "string",
+                    "description": "Together with a local_profile_server one can specify a\nprofile_server_token. EVE must verify that the response from the\nlocal_profile_server contains this token."
+                }
+            },
+            "description": "This is the response to a GET /api/v1/edgeDevice/config\nThe EdgeDevConfig message carries all of the device's configuration from\nthe controller to the device.\nThe device will request these messages either periodically or as a result\nof some TBD notification.\nThe message is assumed to be protected by a TLS session bound to the\ndevice certificate."
+        },
+        "configEncryptionScheme": {
+            "type": "string",
+            "enum": [
+                "SA_NONE",
+                "SA_AES_256_CFB"
+            ],
+            "default": "SA_NONE",
+            "title": "Encryption Scheme for Cipher Payload"
+        },
+        "configFormat": {
+            "type": "string",
+            "enum": [
+                "FmtUnknown",
+                "RAW",
+                "QCOW",
+                "QCOW2",
+                "VHD",
+                "VMDK",
+                "OVA",
+                "VHDX",
+                "CONTAINER"
+            ],
+            "default": "FmtUnknown"
+        },
+        "configInstanceOpsCmd": {
+            "type": "object",
+            "properties": {
+                "counter": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "opsTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "configKeyExchangeScheme": {
+            "type": "string",
+            "enum": [
+                "KEA_NONE",
+                "KEA_ECDH"
+            ],
+            "default": "KEA_NONE",
+            "title": "Security Key Exchange Method"
+        },
+        "configMetaDataType": {
+            "type": "string",
+            "enum": [
+                "MetaDataDrive",
+                "MetaDataNone",
+                "MetaDataOpenStack",
+                "MetaDataDriveMultipart"
+            ],
+            "default": "MetaDataDrive",
+            "title": "Type of cloud-init data to provide to application"
+        },
+        "configNetworkAdapter": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "networkId": {
+                    "type": "string"
+                },
+                "addr": {
+                    "type": "string"
+                },
+                "hostname": {
+                    "type": "string"
+                },
+                "cryptoEid": {
+                    "type": "string",
+                    "title": "more configuration for getting addr/EID"
+                },
+                "lispsignature": {
+                    "type": "string"
+                },
+                "pemcert": {
+                    "type": "string",
+                    "format": "byte"
+                },
+                "pemprivatekey": {
+                    "type": "string",
+                    "format": "byte"
+                },
+                "macAddress": {
+                    "type": "string",
+                    "title": "Used in case of P2V, where we want to specify a macAddress\nto vif, that is simulated towards app"
+                },
+                "acls": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configACE"
+                    },
+                    "title": "firewall"
+                },
+                "access_vlan_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "access port vlan id\napp interface with access vlan id of zero will be treated as trunk port\nvalid vlan id range: 2 - 4093\nvlan id 1 is implicitly used by linux bridges"
+                }
+            }
+        },
+        "configNetworkConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/configNetworkType"
+                },
+                "ip": {
+                    "$ref": "#/definitions/configipspec",
+                    "title": "network ip specification"
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configZnetStaticDNSEntry"
+                    }
+                },
+                "entProxy": {
+                    "$ref": "#/definitions/configProxyConfig",
+                    "title": "enterprise proxy"
+                },
+                "wireless": {
+                    "$ref": "#/definitions/configWirelessConfig",
+                    "title": "wireless specification"
+                }
+            }
+        },
+        "configNetworkInstanceConfig": {
+            "type": "object",
+            "properties": {
+                "uuidandversion": {
+                    "$ref": "#/definitions/configUUIDandVersion"
+                },
+                "displayname": {
+                    "type": "string"
+                },
+                "instType": {
+                    "$ref": "#/definitions/configZNetworkInstType",
+                    "title": "instType - Type of network instance ( local, bridge etc )"
+                },
+                "activate": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "activate\n - True by default. If set to false ( deactivate), the network instance\n   configuration is downloaded to the device, but the network instance\n   itself is not created on the device."
+                },
+                "port": {
+                    "$ref": "#/definitions/configAdapter",
+                    "description": "port - Only a single port is supported.\n   This is used as the external connection for the network instance.\n   This can be a physical (eth0 ) or logical port (vlan 0).\n   The port name comes from DeviceConfig ( When it is supported in future).\n   If the user needs multiple physical ports, Device config should be\n   used to create a label for multiple physical ports."
+                },
+                "cfg": {
+                    "$ref": "#/definitions/configNetworkInstanceOpaqueConfig",
+                    "title": "cfg - Used to pass some feature-specific configuration to the\n      network instance. For Ex: Lisp, StriongSwan etc"
+                },
+                "ipType": {
+                    "$ref": "#/definitions/configAddressType",
+                    "title": "type of ipSpec"
+                },
+                "ip": {
+                    "$ref": "#/definitions/configipspec",
+                    "title": "network ip specification"
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configZnetStaticDNSEntry"
+                    },
+                    "title": "static DNS entry, if we are running DNS/DHCP service"
+                }
+            }
+        },
+        "configNetworkInstanceLispConfig": {
+            "type": "object",
+            "properties": {
+                "LispMSs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configZcServicePoint"
+                    }
+                },
+                "LispInstanceId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "allocate": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "exportprivate": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "allocationprefix": {
+                    "type": "string",
+                    "format": "byte"
+                },
+                "allocationprefixlen": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "experimental": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "various configuration to dataPlane, lispers.net vs Zededa"
+                }
+            },
+            "title": "Lisp NetworkInstance config"
+        },
+        "configNetworkInstanceOpaqueConfig": {
+            "type": "object",
+            "properties": {
+                "oconfig": {
+                    "type": "string"
+                },
+                "lispConfig": {
+                    "$ref": "#/definitions/configNetworkInstanceLispConfig"
+                },
+                "type": {
+                    "$ref": "#/definitions/configZNetworkOpaqueConfigType"
+                }
+            },
+            "description": "Network Instance Opaque config. In future we might add more fields here\nbut idea is here. This is service specific configuration."
+        },
+        "configNetworkType": {
+            "type": "string",
+            "enum": [
+                "NETWORKTYPENOOP",
+                "V4",
+                "V6",
+                "CryptoV4",
+                "CryptoV6",
+                "CryptoEID"
+            ],
+            "default": "NETWORKTYPENOOP"
+        },
+        "configPhyIOUsagePolicy": {
+            "type": "object",
+            "properties": {
+                "freeUplink": {
+                    "type": "boolean",
+                    "format": "boolean"
+                }
+            },
+            "title": "Given additional details for EVE software to how to treat this\ninterface. Example policies could be limit use of LTE interface\nor only use Eth1 only if Eth0 is not available etc\nNote that this is the static information from the model.\nCurrent configuration is in systemAdapter"
+        },
+        "configPhysicalIO": {
+            "type": "object",
+            "properties": {
+                "ptype": {
+                    "$ref": "#/definitions/commonPhyIoType"
+                },
+                "phylabel": {
+                    "type": "string",
+                    "title": "physical label typically printed on box.\nExample Eth0, Eth1, Wifi0, ComA, ComB"
+                },
+                "phyaddrs": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "The hardware bus address. The key to this map can be of the following\n(case-insensitive) values:\n\"pcilong\": the address is a PCI id of the form 0000:02:00.0\n\"ifname\": the address is a string for a network interface like \"eth1\"\n\"serial\": the address is a Linux serial port alias such as \"/dev/ttyS2\"\n\"irq\": the address is a number such as \"5\". This can be a comma\n   separated list of integers or even a range of integers. Hence using\n   a string to address this.\n\"ioports\": the address is a string such as \"2f8-2ff\"\n\"usbaddr\": the address is a USB of the form of \"1:2.3\"\nIf the type is PhyIoNet*, then there needs to be an \"ifname\" physaddr."
+                },
+                "logicallabel": {
+                    "type": "string",
+                    "title": "logicallabel - provides the ability to model designer to refer\n   the physicalIO port to using more friendly name\nFor example Eth0->Mgmt0\n or USBA->ConfigDiskA etc"
+                },
+                "assigngrp": {
+                    "type": "string",
+                    "description": "This is the name used in AppInstanceConfig.adapters to assign an\nadapter to an application.\n\nIf assigngrp is not set, the Adapter cannot be assigned to any\napplication. One example is, when the adapter is on the same Pci\nbus as another device required by Dom0.\n\nEven if there is only one device on the its PCIBus, the assignGrp Must\nbe set.",
+                    "title": "assigngrp\nAssignment Group, is unique label that is applied across PhysicalIOs\nEntireGroup can be assigned to application or nothing at all"
+                },
+                "usage": {
+                    "$ref": "#/definitions/commonPhyIoMemberUsage",
+                    "title": "usage - indicates the role of adapter ( mgmt / blocked / app-direct\n   etc. )"
+                },
+                "usagePolicy": {
+                    "$ref": "#/definitions/configPhyIOUsagePolicy",
+                    "description": "usagePolicy - Policy Object used to further refine the usage.\nFor example, specify if this should be only used as fallback?\n   Or used as the primary uplink? Allow App traffic? restrict\n   app traffic?? etc.."
+                },
+                "cbattr": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "title": "physical and logical attributes\n   For example in WWAN to which firmware version to load etc"
+                }
+            },
+            "title": "PhysicalIO:\n   Absolute low level description of physical buses and ports that are\n   available on given platform.\n   Collection of these IOs, constitute what we would call as hardware\n   model. Each physical IO is manageable and visible to EVE software, and\n   it can be further configured to either provide IP connectivity or\n   directly be given to workloads"
+        },
+        "configProxyConfig": {
+            "type": "object",
+            "properties": {
+                "networkProxyEnable": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "enable network level proxy in the form of WPAD"
+                },
+                "proxies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configProxyServer"
+                    },
+                    "title": "dedicated per protocol information"
+                },
+                "exceptions": {
+                    "type": "string",
+                    "title": "exceptions separated by commas"
+                },
+                "pacfile": {
+                    "type": "string",
+                    "title": "or pacfile can be in place of others\nbase64 encoded"
+                },
+                "networkProxyURL": {
+                    "type": "string",
+                    "title": "Direct URL for wpad.dat download"
+                },
+                "proxyCertPEM": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "title": "Uploaded proxy certificate or certificate chain for MITM\nthis may be needed either in explicit (has ProxyServer items), automatic\n(networkProxyEnable) or transparent (network layer not aware of proxy)"
+                }
+            }
+        },
+        "configProxyServer": {
+            "type": "object",
+            "properties": {
+                "proto": {
+                    "$ref": "#/definitions/configproxyProto"
+                },
+                "server": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "configSignatureInfo": {
+            "type": "object",
+            "properties": {
+                "intercertsurl": {
+                    "type": "string"
+                },
+                "signercerturl": {
+                    "type": "string"
+                },
+                "signature": {
+                    "type": "string",
+                    "format": "byte"
+                }
+            },
+            "description": "XXX this will be deprecated when all deployed instances of EVE\nno longer expect it. 5.6.X depend on it. 5.7.1 does not."
+        },
+        "configSystemAdapter": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "name - Name of the Network Interface. This is the Port Name\n used in Info / Metrics / flowlog etc. Name cannot be changed.\nThis will be the Network Port name."
+                },
+                "freeUplink": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "deprecated; need level 2 spec. sWAdapterParams allocDetails = 20;\nthis is part of the freelink group\nDEPRECATED by cost below"
+                },
+                "uplink": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "uplink - DEPRECATED by PhysicalIO.Usage / PhysicalIO.UsagePolicy\nthis is part of the uplink group\ndeprecate: have a separate device policy object in the API"
+                },
+                "networkUUID": {
+                    "type": "string",
+                    "title": "networkUUID - attach this network config for this adapter\nif not set, depending on Usage of Adapter, would be treated as\nan L2 port"
+                },
+                "addr": {
+                    "type": "string",
+                    "description": "addr - if its static network we need ip address\nIf this is specified, networkUUID must also be specified. addr\nis expected to be in sync with the network object (same subnet etc )."
+                },
+                "alias": {
+                    "type": "string",
+                    "description": "alias - Device just reflects it back in status / Metrics back to\ncloud."
+                },
+                "lowerLayerName": {
+                    "type": "string",
+                    "description": "lowerLayerName - For example, if lower layer is PhysicalAdapter\n( physical interface), this should point to PhyLabel of the\nphysicalIO."
+                },
+                "cost": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "cost of using a port for EVE management traffic (which is determined\nfrom PhysicalIO.usage)\n0 is the lowest cost (free); 255 the highest.\nLoad spreading will apply when multiple adapters have the same cost.\nHigher cost adapters are only tried when none of the lower cost ones work."
+                }
+            },
+            "description": "systemAdapters, are the higher l2 concept built on physicalIOs.\nsystemAdapters, gives all the required bits to turn the physical IOs\ninto useful IP endpoints.\nThese endpoints can be further used to connect to controller or\ncan be shared between workload/services running on the node."
+        },
+        "configTarget": {
+            "type": "string",
+            "enum": [
+                "TgtUnknown",
+                "Disk",
+                "Kernel",
+                "Initrd",
+                "RamDisk"
+            ],
+            "default": "TgtUnknown"
+        },
+        "configUUIDandVersion": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "configVmConfig": {
+            "type": "object",
+            "properties": {
+                "kernel": {
+                    "type": "string"
+                },
+                "ramdisk": {
+                    "type": "string"
+                },
+                "memory": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "maxmem": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "vcpus": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "maxcpus": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "rootdev": {
+                    "type": "string"
+                },
+                "extraargs": {
+                    "type": "string"
+                },
+                "bootloader": {
+                    "type": "string"
+                },
+                "cpus": {
+                    "type": "string"
+                },
+                "devicetree": {
+                    "type": "string"
+                },
+                "dtdev": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "irqs": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "iomem": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "virtualizationMode": {
+                    "$ref": "#/definitions/configVmMode"
+                },
+                "enableVnc": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "vncDisplay": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "vncPasswd": {
+                    "type": "string"
+                }
+            }
+        },
+        "configVmMode": {
+            "type": "string",
+            "enum": [
+                "PV",
+                "HVM",
+                "Filler",
+                "FML",
+                "NOHYPER",
+                "LEGACY"
+            ],
+            "default": "PV",
+            "description": "For now we need to tell the device which virtualization mode\nto use. Later we might use a single one for all VMs (on any particular\nISA). If we end up keeping this we should make the names be less\ntied to a particular hypervisor."
+        },
+        "configVolume": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                },
+                "origin": {
+                    "$ref": "#/definitions/configVolumeContentOrigin",
+                    "description": "origin of the volume content."
+                },
+                "protocols": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configVolumeAccessProtocols"
+                    },
+                    "title": "describes all the different ways how this Volume can\nbe offered to Tasks"
+                },
+                "generationCount": {
+                    "type": "string",
+                    "format": "int64",
+                    "title": "change in generationCount indicates that the mutated volume needs to be\npurged and built from scratch. This is a generalization of the purge\ncommand for an application instance"
+                },
+                "maxsizebytes": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "miscellaneous attributes of the Volume\nmaxSizeBytes Used for capping resource consumption in EVE.\nmaxSizeBytes indicates the maximum size of the volume."
+                },
+                "readonly": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "clear_text": {
+                    "type": "boolean",
+                    "format": "boolean"
+                }
+            },
+            "description": "The Volume describes a storage volume which should exist on the device.\nThis can currently either be blank or created from a ContentTree\nIf maxSizeBytes is zero it means unlimited by the controller. In that\ncase EVE needs to determine how much space it can assign and limit any\ndownloaded ContentTree and the created volume based on that calculated size."
+        },
+        "configVolumeAccessProtocols": {
+            "type": "string",
+            "enum": [
+                "VAP_NONE",
+                "VAP_9P"
+            ],
+            "default": "VAP_NONE",
+            "title": "The protocol that the task will use to access the Volume"
+        },
+        "configVolumeContentOrigin": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/configVolumeContentOriginType"
+                },
+                "downloadContentTreeID": {
+                    "type": "string"
+                }
+            }
+        },
+        "configVolumeContentOriginType": {
+            "type": "string",
+            "enum": [
+                "VCOT_UNKNOWN",
+                "VCOT_BLANK",
+                "VCOT_DOWNLOAD"
+            ],
+            "default": "VCOT_UNKNOWN"
+        },
+        "configVolumeRef": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string"
+                },
+                "generationCount": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "mount_dir": {
+                    "type": "string",
+                    "title": "Indicates volume mount point inside container\nif mount_dir is empty then it will be mounted on /mnt"
+                }
+            },
+            "title": "Reference to a Volume specified separately in the API\nIf a volume is purged (re-created from scratch) it will either have a new\nUUID or a new generationCount"
+        },
+        "configWiFiKeyScheme": {
+            "type": "string",
+            "enum": [
+                "SchemeNOOP",
+                "WPAPSK",
+                "WPAEAP"
+            ],
+            "default": "SchemeNOOP"
+        },
+        "configWifiConfig": {
+            "type": "object",
+            "properties": {
+                "wifiSSID": {
+                    "type": "string"
+                },
+                "keyScheme": {
+                    "$ref": "#/definitions/configWiFiKeyScheme"
+                },
+                "identity": {
+                    "type": "string",
+                    "title": "to be deprecated, use cipherData instead"
+                },
+                "password": {
+                    "type": "string",
+                    "title": "to be deprecated, use cipherData instead"
+                },
+                "crypto": {
+                    "$ref": "#/definitions/WifiConfigcryptoblock"
+                },
+                "priority": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "cipherData": {
+                    "$ref": "#/definitions/configCipherBlock"
+                }
+            }
+        },
+        "configWirelessConfig": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/configWirelessType"
+                },
+                "cellularCfg": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configCellularConfig"
+                    }
+                },
+                "wifiCfg": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configWifiConfig"
+                    }
+                }
+            }
+        },
+        "configWirelessType": {
+            "type": "string",
+            "enum": [
+                "TypeNOOP",
+                "WiFi",
+                "Cellular"
+            ],
+            "default": "TypeNOOP"
+        },
+        "configZNetworkInstType": {
+            "type": "string",
+            "enum": [
+                "ZNetInstFirst",
+                "ZnetInstSwitch",
+                "ZnetInstLocal",
+                "ZnetInstCloud",
+                "ZnetInstMesh",
+                "ZnetInstHoneyPot",
+                "ZnetInstTransparent",
+                "ZNetInstLast"
+            ],
+            "default": "ZNetInstFirst"
+        },
+        "configZNetworkOpaqueConfigType": {
+            "type": "string",
+            "enum": [
+                "ZNetOConfigVPN",
+                "ZNetOConfigLisp"
+            ],
+            "default": "ZNetOConfigVPN"
+        },
+        "configZcServicePoint": {
+            "type": "object",
+            "properties": {
+                "zsType": {
+                    "$ref": "#/definitions/configZcServiceType"
+                },
+                "NameOrIp": {
+                    "type": "string"
+                },
+                "Credential": {
+                    "type": "string"
+                }
+            },
+            "title": "This is way to tell the device if there is service in cloud somewhere,\nwhat type it is how to access it"
+        },
+        "configZcServiceType": {
+            "type": "string",
+            "enum": [
+                "zcloudInvalidSrv",
+                "mapServer",
+                "supportServer"
+            ],
+            "default": "zcloudInvalidSrv",
+            "title": "- mapServer: mapping service for zededa overlay service\n - supportServer: if device has support feature enabled, this is cloud service from\ndevice can be reached"
+        },
+        "configZnetStaticDNSEntry": {
+            "type": "object",
+            "properties": {
+                "HostName": {
+                    "type": "string"
+                },
+                "Address": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "title": "These are list of static mapping that can be added to network"
+        },
+        "configipRange": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "string"
+                },
+                "end": {
+                    "type": "string"
+                }
+            }
+        },
+        "configipspec": {
+            "type": "object",
+            "properties": {
+                "dhcp": {
+                    "$ref": "#/definitions/configDHCPType"
+                },
+                "subnet": {
+                    "type": "string",
+                    "title": "subnet is CIDR format...x.y.z.l/nn"
+                },
+                "gateway": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "ntp": {
+                    "type": "string"
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dhcpRange": {
+                    "$ref": "#/definitions/configipRange",
+                    "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                }
+            },
+            "title": "Common for IPv4 and IPv6"
+        },
+        "configproxyProto": {
+            "type": "string",
+            "enum": [
+                "PROXY_HTTP",
+                "PROXY_HTTPS",
+                "PROXY_SOCKS",
+                "PROXY_FTP",
+                "PROXY_OTHER"
+            ],
+            "default": "PROXY_HTTP"
+        },
+        "eveconfigImage": {
+            "type": "object",
+            "properties": {
+                "uuidandversion": {
+                    "$ref": "#/definitions/configUUIDandVersion"
+                },
+                "name": {
+                    "type": "string",
+                    "title": "it could be relative path/name as well; appended to the datastore dpath"
+                },
+                "sha256": {
+                    "type": "string"
+                },
+                "iformat": {
+                    "$ref": "#/definitions/configFormat"
+                },
+                "siginfo": {
+                    "$ref": "#/definitions/configSignatureInfo",
+                    "title": "if its signed image"
+                },
+                "dsId": {
+                    "type": "string"
+                },
+                "sizeBytes": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "sizeBytes indicates the maximum download size of an image.\nA value of 0 will indicate the unlimited download."
+                }
+            },
+            "title": "XXX the Image will be deprecated and we will use ContentTree instead"
+        },
+        "protobufNullValue": {
+            "type": "string",
+            "enum": [
+                "NULL_VALUE"
+            ],
+            "default": "NULL_VALUE",
+            "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+        }
+    },
+    "securityDefinitions": {
+        "BearerToken": {
+            "type": "apiKey",
+            "description": "Bearer token for user session",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "security": [
+        {
+            "BearerToken": []
+        }
+    ],
+    "externalDocs": {
+        "description": "ZEDEDA Product Documentation",
+        "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+    }
+}

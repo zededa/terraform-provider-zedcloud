@@ -1,0 +1,3070 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "ZEDEDA Job Service",
+        "description": "The ZEDEDA Job Service is helper service to ZEDEDA Edge Application Service and ZEDEDA Edge Node Service. This service allows device administrators and operators to update Edge nodes and manage Edge Applications in bulk. Jobs execute edge node management and edge application management against a set of edge nodes or edge applications matching a selection criteria. For example, an operator would use a job to initiate and track installation of a lightning detection edge application on all edge nodes inistalled in all windmills in a particular Texas ZIP code (defined as a project).",
+        "termsOfService": "https://www.zededa.com/terms",
+        "version": "1.0",
+        "contact": {
+            "name": "ZEDEDA API Support",
+            "url": "https://www.zededa.com/support",
+            "email": "support@zededa.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "zedcontrol.zededa.net",
+    "basePath": "/api",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/v1/jobs": {
+            "get": {
+                "summary": "Query asynchronous job requests",
+                "description": "Query the asynchronous job request records.",
+                "operationId": "QueryJobs",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/JobConfigList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "summary",
+                        "description": "Only summary count is required.",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean",
+                        "format": "boolean"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "filter.jobStatus",
+                        "description": "status of the job.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "JOB_STATUS_UNSPECIFIED",
+                            "JOB_STATUS_INITIALIZED",
+                            "JOB_STATUS_READY",
+                            "JOB_STATUS_INPROGRESS",
+                            "JOB_STATUS_COMPLETED",
+                            "JOB_STATUS_FAILED",
+                            "JOB_STATUS_ABORTED"
+                        ],
+                        "default": "JOB_STATUS_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.projectName",
+                        "description": "project name.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.namePattern",
+                        "description": "name pattern of the job.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            },
+            "post": {
+                "summary": "Create asynchronous job request",
+                "description": "Create an asynchronous job request record.",
+                "operationId": "CreateJob",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this job record will conflict with an already existing job record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/JobConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/apps/bundles/import": {
+            "put": {
+                "summary": "Update job request to import edge application bundles",
+                "description": "Update job request to import edge application bundle(s) from global App Store matching selection criteria.",
+                "operationId": "BulkImportEdgeApplications",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/apps/instances/create": {
+            "put": {
+                "summary": "Update job request to create edge application instances",
+                "description": "Update job request to create edge application instance(s) on edge node(s) matching selection criteria.",
+                "operationId": "BulkCreateEdgeApplicationInstances",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/apps/instances/refresh": {
+            "put": {
+                "summary": "Update job request to refresh edge application instances",
+                "description": "Update job request to refresh edge application instances matching selection criteria. Update edge application instance(s) to the latest version of the edge application. This operation will result in a restart of the edge application instance(s).",
+                "operationId": "BulkRefreshEdgeApplicationInstances",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/apps/instances/refresh/purge": {
+            "put": {
+                "summary": "Update job request to refresh and purge edge application instances",
+                "description": "Update job request to refresh and purge edge application instances matching selection criteria. Update edge application instance(s) to the latest version of the edge application. This operation will result in loss of data and a restart of the edge application instance(s). ",
+                "operationId": "BulkRefreshAndPurgeEdgeApplicationInstances",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/devices/baseos/upgrade": {
+            "put": {
+                "summary": "Update job request to update EVE image on edge nodes",
+                "description": "Update job request to update EVE image on edge nodes. If edge node is already running the latest EVE image no action is taken.",
+                "operationId": "BulkUpdateEdgeNodeBaseOS",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/id/{id}": {
+            "put": {
+                "summary": "Update asynchronous job request",
+                "description": "Update an asynchronous job request record. The usual pattern to update an asynchronous job request record is to retrieve the record and update with the modified values in a new body to update the asynchronous job request record.",
+                "operationId": "UpdateJob",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the job request",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/JobConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/id/{id}/objectType/{objectType}": {
+            "get": {
+                "summary": "Get asynchronous job request",
+                "description": "Get the configuration and status of an asynchronous job request record.",
+                "operationId": "GetJob",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/JobConfig"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the job request",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "objectType",
+                        "description": "object type for which job has been created",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "OBJECT_TYPE_UNSPECIFIED",
+                            "OBJECT_TYPE_USER",
+                            "OBJECT_TYPE_EDGE_NODE",
+                            "OBJECT_TYPE_EDGE_APP",
+                            "OBJECT_TYPE_IMAGE",
+                            "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                            "OBJECT_TYPE_PROJECT",
+                            "OBJECT_TYPE_NETWORK",
+                            "OBJECT_TYPE_DATASTORE",
+                            "OBJECT_TYPE_SERVICE",
+                            "OBJECT_TYPE_SERVICE_INSTANCE",
+                            "OBJECT_TYPE_ENTERPRISE",
+                            "OBJECT_TYPE_ROLE",
+                            "OBJECT_TYPE_CREDENTIAL",
+                            "OBJECT_TYPE_NETWORK_INSTANCE",
+                            "OBJECT_TYPE_VOLUME_INSTANCE",
+                            "OBJECT_TYPE_REALM",
+                            "OBJECT_TYPE_AUTHPROFILE",
+                            "OBJECT_TYPE_POLICY",
+                            "OBJECT_TYPE_APP_POLICY",
+                            "OBJECT_TYPE_CLUSTER_INSTANCE",
+                            "OBJECT_TYPE_PLUGIN",
+                            "OBJECT_TYPE_DOC_POLICY",
+                            "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                            "OBJECT_TYPE_TAGS",
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                        ]
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            },
+            "delete": {
+                "summary": "Delete asynchronous job request",
+                "description": "Delete an asynchronous job request record.",
+                "operationId": "DeleteJob",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this job is in progress, dependent tasks are still running",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the job request",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "objectType",
+                        "description": "object type for which job has been created",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "OBJECT_TYPE_UNSPECIFIED",
+                            "OBJECT_TYPE_USER",
+                            "OBJECT_TYPE_EDGE_NODE",
+                            "OBJECT_TYPE_EDGE_APP",
+                            "OBJECT_TYPE_IMAGE",
+                            "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                            "OBJECT_TYPE_PROJECT",
+                            "OBJECT_TYPE_NETWORK",
+                            "OBJECT_TYPE_DATASTORE",
+                            "OBJECT_TYPE_SERVICE",
+                            "OBJECT_TYPE_SERVICE_INSTANCE",
+                            "OBJECT_TYPE_ENTERPRISE",
+                            "OBJECT_TYPE_ROLE",
+                            "OBJECT_TYPE_CREDENTIAL",
+                            "OBJECT_TYPE_NETWORK_INSTANCE",
+                            "OBJECT_TYPE_VOLUME_INSTANCE",
+                            "OBJECT_TYPE_REALM",
+                            "OBJECT_TYPE_AUTHPROFILE",
+                            "OBJECT_TYPE_POLICY",
+                            "OBJECT_TYPE_APP_POLICY",
+                            "OBJECT_TYPE_CLUSTER_INSTANCE",
+                            "OBJECT_TYPE_PLUGIN",
+                            "OBJECT_TYPE_DOC_POLICY",
+                            "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                            "OBJECT_TYPE_TAGS",
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                        ]
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/models/import": {
+            "put": {
+                "summary": "Update job request to import hardware models",
+                "description": "Update job request to import hardware model(s) from global Model Store matching selection criteria.",
+                "operationId": "BulkImportHardwareModels",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/name/{name}/objectType/{objectType}": {
+            "get": {
+                "summary": "Get asynchronous job request",
+                "description": "Get the configuration and status of an asynchronous job request record.",
+                "operationId": "GetJobByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/JobConfig"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "User defined name of the job request, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "objectType",
+                        "description": "object type for which job has been created",
+                        "in": "path",
+                        "required": true,
+                        "type": "string",
+                        "enum": [
+                            "OBJECT_TYPE_UNSPECIFIED",
+                            "OBJECT_TYPE_USER",
+                            "OBJECT_TYPE_EDGE_NODE",
+                            "OBJECT_TYPE_EDGE_APP",
+                            "OBJECT_TYPE_IMAGE",
+                            "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                            "OBJECT_TYPE_PROJECT",
+                            "OBJECT_TYPE_NETWORK",
+                            "OBJECT_TYPE_DATASTORE",
+                            "OBJECT_TYPE_SERVICE",
+                            "OBJECT_TYPE_SERVICE_INSTANCE",
+                            "OBJECT_TYPE_ENTERPRISE",
+                            "OBJECT_TYPE_ROLE",
+                            "OBJECT_TYPE_CREDENTIAL",
+                            "OBJECT_TYPE_NETWORK_INSTANCE",
+                            "OBJECT_TYPE_VOLUME_INSTANCE",
+                            "OBJECT_TYPE_REALM",
+                            "OBJECT_TYPE_AUTHPROFILE",
+                            "OBJECT_TYPE_POLICY",
+                            "OBJECT_TYPE_APP_POLICY",
+                            "OBJECT_TYPE_CLUSTER_INSTANCE",
+                            "OBJECT_TYPE_PLUGIN",
+                            "OBJECT_TYPE_DOC_POLICY",
+                            "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                            "OBJECT_TYPE_TAGS",
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                        ]
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "ActionScope": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/ObjectType",
+                    "description": "Scope of the action (e.g. project in case certificate expired at project level)"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Unique id of the type (e.g. projectId in case of project type)"
+                }
+            }
+        },
+        "AppInstance": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the app instance",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the app instance, unique across the enterprise. Once app instance is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the app instance. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the app instance",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "app instance object revision details"
+                },
+                "projectId": {
+                    "type": "string",
+                    "description": "project name which the given app instance belong to"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "clusterID": {
+                    "type": "string",
+                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "appId": {
+                    "type": "string",
+                    "description": "User defined name of the edge app, unique across the enterprise. Once app name is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string",
+                    "description": "User defined name of the device name, unique across the enterprise. Once device name is defined, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "activate": {
+                    "type": "string",
+                    "format": "boolean",
+                    "description": "app instance activation flag"
+                },
+                "vminfo": {
+                    "$ref": "#/definitions/vm",
+                    "description": "virtual machine info"
+                },
+                "drives": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/drive"
+                    },
+                    "description": "drive details"
+                },
+                "interfaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appInterface"
+                    },
+                    "description": "application interfaces"
+                },
+                "userData": {
+                    "type": "string",
+                    "description": "Deprecated: Application initiazation script in cloud-config format to be used by cloud-init"
+                },
+                "customConfig": {
+                    "$ref": "#/definitions/CustomConfig",
+                    "description": "Application initialization script template in cloud-config format and user specified values"
+                },
+                "collectStatsIPAddr": {
+                    "type": "string",
+                    "description": "holds the static Ip of the app instance"
+                },
+                "bundleversion": {
+                    "type": "string",
+                    "description": "version of bundle app is referring to"
+                },
+                "logs": {
+                    "$ref": "#/definitions/AppInstanceLogs",
+                    "description": "App Instance logs"
+                },
+                "restart": {
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Restart counter: ZedCloudOpsCmd"
+                },
+                "refresh": {
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Refresh counter: ZedCloudOpsCmd"
+                },
+                "purge": {
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Purge counter: ZedCloudOpsCmd"
+                },
+                "remoteConsole": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Remote console flag"
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "cryptoKey": {
+                    "type": "string",
+                    "description": "Crypto Key for decrypting user secret information"
+                },
+                "manifestInfo": {
+                    "$ref": "#/definitions/ManifestInfo",
+                    "description": "app manifest Info"
+                },
+                "appType": {
+                    "$ref": "#/definitions/AppType",
+                    "description": "type of bundle"
+                },
+                "isSecretUpdated": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "This field tells whether user secrets has updated or not, especially the cusotom config"
+                },
+                "appPolicyId": {
+                    "type": "string",
+                    "description": "app policy id"
+                },
+                "deploymentType": {
+                    "$ref": "#/definitions/DeploymentType",
+                    "description": "type of deployment for the app, eg: azure, k3s, standalone"
+                },
+                "userDefinedVersion": {
+                    "type": "string",
+                    "description": "Instance version tells which edge app does this instance is running"
+                }
+            },
+            "description": "App Instance detail",
+            "title": "App Instance detail",
+            "required": [
+                "name",
+                "title",
+                "projectId",
+                "appId",
+                "deviceId",
+                "activate",
+                "drives",
+                "interfaces"
+            ]
+        },
+        "AppInstanceDeploy": {
+            "type": "object",
+            "properties": {
+                "instanceConfig": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BulkInstanceConfig"
+                    },
+                    "description": "XXX for now user will send only one common config. In future with complex\nfiltering and payload, user can send instance config per device."
+                }
+            }
+        },
+        "AppInstanceLogs": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "type": "string",
+                    "format": "boolean",
+                    "description": "Application instance logs flag"
+                }
+            },
+            "description": "App Instance Logs detail",
+            "title": "App Instance Logs detail",
+            "required": [
+                "access"
+            ]
+        },
+        "AppInstanceRefreshAndPurge": {
+            "type": "object",
+            "properties": {
+                "purge": {
+                    "type": "boolean",
+                    "format": "boolean"
+                }
+            }
+        },
+        "AppType": {
+            "type": "string",
+            "enum": [
+                "APP_TYPE_UNSPECIFIED",
+                "APP_TYPE_VM",
+                "APP_TYPE_VM_RUNTIME",
+                "APP_TYPE_CONTAINER",
+                "APP_TYPE_MODULE"
+            ],
+            "default": "APP_TYPE_UNSPECIFIED",
+            "description": "type of app bundle."
+        },
+        "BaseOSImage": {
+            "type": "object",
+            "properties": {
+                "uuid": {
+                    "type": "string",
+                    "description": "system generated unique id for an image"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "image version"
+                },
+                "imageName": {
+                    "type": "string",
+                    "description": "image name"
+                },
+                "activate": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "activation flag"
+                }
+            },
+            "description": "Base OS image request details",
+            "title": "Base OS image payload detail",
+            "required": [
+                "uuid",
+                "version",
+                "imageName",
+                "activate"
+            ]
+        },
+        "BaseosUpdate": {
+            "type": "object",
+            "properties": {
+                "baseimage": {
+                    "$ref": "#/definitions/BaseOSImage"
+                }
+            }
+        },
+        "BulkConfig": {
+            "type": "object",
+            "properties": {
+                "selectionCriteria": {
+                    "$ref": "#/definitions/SelectionCriteria"
+                },
+                "jobId": {
+                    "type": "string"
+                },
+                "jobName": {
+                    "type": "string"
+                },
+                "baseosUpdate": {
+                    "$ref": "#/definitions/BaseosUpdate"
+                },
+                "instanceDeploy": {
+                    "$ref": "#/definitions/AppInstanceDeploy"
+                },
+                "instanceRefreshAndPurge": {
+                    "$ref": "#/definitions/AppInstanceRefreshAndPurge"
+                },
+                "modelImport": {
+                    "$ref": "#/definitions/ModelImport"
+                },
+                "bundleImport": {
+                    "$ref": "#/definitions/BundleImport"
+                }
+            },
+            "description": "config required for bulk ops."
+        },
+        "BulkInstanceConfig": {
+            "type": "object",
+            "properties": {
+                "deviceId": {
+                    "type": "string"
+                },
+                "appInstanceConfig": {
+                    "$ref": "#/definitions/AppInstance"
+                },
+                "netInstanceDetail": {
+                    "$ref": "#/definitions/NetworkConfigOrDefault"
+                },
+                "netInstanceConfig": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetInstConfig"
+                    }
+                }
+            }
+        },
+        "BulkService": {
+            "type": "string",
+            "enum": [
+                "BULK_SERVICE_UNSPECIFIED",
+                "BULK_SERVICE_BASEOS_UPDATE",
+                "BULK_SERVICE_APPINSTANCE_DEPLOY",
+                "BULK_SERVICE_APPINSTANCE_REFRESH",
+                "BULK_SERVICE_APPINSTANCE_PURGE",
+                "BULK_SERVICE_MODEL_IMPORT",
+                "BULK_SERVICE_BUNDLE_IMPORT",
+                "BULK_SERVICE_APPINSTANCE_CERT_UPDATE",
+                "BULK_SERVICE_APPINSTANCE_DELETE"
+            ],
+            "default": "BULK_SERVICE_UNSPECIFIED",
+            "title": "type of bulk operation"
+        },
+        "BundleDetail": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "parentBundleId": {
+                    "type": "string"
+                }
+            }
+        },
+        "BundleImport": {
+            "type": "object",
+            "properties": {
+                "bundleConfig": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BundleDetail"
+                    }
+                }
+            }
+        },
+        "Cursor": {
+            "type": "object",
+            "properties": {
+                "pageToken": {
+                    "type": "string",
+                    "description": "Page Token"
+                },
+                "orderBy": {
+                    "type": "string",
+                    "description": "OrderBy helps in sorting the list response"
+                },
+                "pageNum": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Page Number"
+                },
+                "pageSize": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Defines the page size"
+                },
+                "totalPages": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Total number of pages to be fetched."
+                }
+            },
+            "description": "Cursor helps in filtering the various list response like edge-app bundle list, model list, bundle list etc. ",
+            "title": "Cursor is used as filter in list operation."
+        },
+        "CustomConfig": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "add": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "override": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "allowStorageResize": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "fieldDelimiter": {
+                    "type": "string"
+                },
+                "template": {
+                    "type": "string"
+                },
+                "variableGroups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CustomConfigVariableGroup"
+                    }
+                }
+            }
+        },
+        "CustomConfigVariableGroup": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "variables": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VariableGroupVariable"
+                    }
+                },
+                "required": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "condition": {
+                    "$ref": "#/definitions/VariableGroupCondition"
+                }
+            }
+        },
+        "CustomUpdateModelFields": {
+            "type": "object",
+            "properties": {
+                "customModelAttributes": {
+                    "$ref": "#/definitions/ModelAttributes"
+                }
+            }
+        },
+        "DeploymentType": {
+            "type": "string",
+            "enum": [
+                "DEPLOYMENT_TYPE_UNSPECIFIED",
+                "DEPLOYMENT_TYPE_STAND_ALONE",
+                "DEPLOYMENT_TYPE_AZURE",
+                "DEPLOYMENT_TYPE_K3S",
+                "DEPLOYMENT_TYPE_AWS",
+                "DEPLOYMENT_TYPE_K3S_AZURE",
+                "DEPLOYMENT_TYPE_K3S_AWS"
+            ],
+            "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+        },
+        "DhcpServerConfig": {
+            "type": "object",
+            "properties": {
+                "subnet": {
+                    "type": "string"
+                },
+                "mask": {
+                    "type": "string"
+                },
+                "gateway": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "ntp": {
+                    "type": "string"
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "possible DNS ip address"
+                },
+                "dhcpRange": {
+                    "$ref": "#/definitions/dhcpIpRange",
+                    "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                }
+            }
+        },
+        "EIDRegister": {
+            "type": "object",
+            "properties": {
+                "AppCert": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "app certificate"
+                },
+                "AppPublicKey": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "App public key"
+                },
+                "AppPrivateKey": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "App private key"
+                },
+                "UUID": {
+                    "type": "string",
+                    "description": "UUID"
+                },
+                "DisplayName": {
+                    "type": "string",
+                    "description": "Display name"
+                },
+                "LispInstance": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Lisp Instance"
+                },
+                "EID": {
+                    "type": "string",
+                    "description": "EID"
+                },
+                "EIDHashLen": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "EID hash length"
+                },
+                "LispSignature": {
+                    "type": "string",
+                    "description": "Lisp Signature"
+                },
+                "LispMapServers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LispServer"
+                    },
+                    "description": "Lisp Map Server",
+                    "title": "time CreateTime     time.Time"
+                }
+            },
+            "description": "EID Register",
+            "title": "EID Register detail",
+            "required": [
+                "AppCert",
+                "AppPublicKey",
+                "AppPrivateKey",
+                "UUID",
+                "DisplayName",
+                "LispInstance",
+                "EID",
+                "EIDHashLen",
+                "LispSignature",
+                "LispMapServers"
+            ]
+        },
+        "InstanceTransitionAction": {
+            "type": "string",
+            "enum": [
+                "INSTANCE_TA_UNSPECIFIED",
+                "INSTANCE_TA_NONE",
+                "INSTANCE_TA_UPDATEREQUIRED",
+                "INSTANCE_TA_UPDATEWITHRESTART",
+                "INSTANCE_TA_UPDATEWITHPURGE"
+            ],
+            "default": "INSTANCE_TA_UNSPECIFIED",
+            "description": "- INSTANCE_TA_UNSPECIFIED: Default. Invalid option\n - INSTANCE_TA_NONE: Either Edge app bundle has not changed or Edge app bundle has\nchanged but the changes do not impact Edge app instances\n - INSTANCE_TA_UPDATEREQUIRED: Edge app bundle has changed. Changes impact Edge app Instances\nEdge App instances need to be restarted with temporary loss of access\n - INSTANCE_TA_UPDATEWITHRESTART: Transition Action: Update with Restart\n - INSTANCE_TA_UPDATEWITHPURGE: Edge app bundle has changed. Changes impact Edge app Instances\nEdge App instances need to be deleted and created again with\ntemporary loss of access and permanent loss of data",
+            "title": "Instance Transition action"
+        },
+        "IoType": {
+            "type": "string",
+            "enum": [
+                "IO_TYPE_UNSPECIFIED",
+                "IO_TYPE_ETH",
+                "IO_TYPE_USB",
+                "IO_TYPE_COM",
+                "IO_TYPE_AUDIO",
+                "IO_TYPE_WLAN",
+                "IO_TYPE_WWAN",
+                "IO_TYPE_HDMI",
+                "IO_TYPE_LTE",
+                "IO_TYPE_OTHER"
+            ],
+            "default": "IO_TYPE_UNSPECIFIED",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_OTHER: Other Io Types",
+            "title": "Input/Output Type"
+        },
+        "JobConfig": {
+            "type": "object",
+            "example": {
+                "id": "d85a545f-6510-4327-b03d-c02eef119e99",
+                "name": "sample-job",
+                "objectType": "OBJECT_TYPE_EDGE_NODE"
+            },
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the job request, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true,
+                    "required": [
+                        "true"
+                    ]
+                },
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the job request",
+                    "readOnly": true,
+                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                    "uniqueItems": true
+                },
+                "objectType": {
+                    "$ref": "#/definitions/ObjectType",
+                    "description": "object type for which job has been created"
+                },
+                "operationType": {
+                    "$ref": "#/definitions/BulkService"
+                },
+                "status": {
+                    "$ref": "#/definitions/JobStatus",
+                    "description": "status of the job",
+                    "readOnly": true
+                },
+                "objectList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "startTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "start time of the job",
+                    "readOnly": true
+                },
+                "finishTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "finish time of the job",
+                    "readOnly": true
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info",
+                    "readOnly": true
+                },
+                "individualOpStatus": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "selectionCriteria": {
+                    "$ref": "#/definitions/SelectionCriteria",
+                    "description": "selection criteria for the job",
+                    "readOnly": true
+                },
+                "errorDetailOfJob": {
+                    "type": "string",
+                    "description": "detailed error with which job/task has failed",
+                    "readOnly": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "user or system specified title",
+                    "required": [
+                        "true"
+                    ]
+                },
+                "description": {
+                    "type": "string",
+                    "description": "user or system specified description",
+                    "required": [
+                        "true"
+                    ]
+                },
+                "projectId": {
+                    "type": "string",
+                    "description": "project Id in which job is getting created"
+                }
+            },
+            "description": "config required for job ops",
+            "title": "config required for job ops",
+            "required": [
+                "name",
+                "objectType"
+            ]
+        },
+        "JobConfigList": {
+            "type": "object",
+            "properties": {
+                "jobListSummary": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "Summary information about job list records."
+                },
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/JobConfig"
+                    },
+                    "description": "Details of job list records."
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Returned record page."
+                }
+            },
+            "description": "Returned list of jobs matched by filter criteria",
+            "title": "Job list records"
+        },
+        "JobFilter": {
+            "type": "object",
+            "properties": {
+                "jobStatus": {
+                    "$ref": "#/definitions/JobStatus",
+                    "description": "status of the job."
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "project name."
+                },
+                "namePattern": {
+                    "type": "string",
+                    "description": "name pattern of the job.",
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+"
+                }
+            },
+            "description": "Filter criteria for the job list.",
+            "title": "Job list filter criteria"
+        },
+        "JobStatus": {
+            "type": "string",
+            "enum": [
+                "JOB_STATUS_UNSPECIFIED",
+                "JOB_STATUS_INITIALIZED",
+                "JOB_STATUS_READY",
+                "JOB_STATUS_INPROGRESS",
+                "JOB_STATUS_COMPLETED",
+                "JOB_STATUS_FAILED",
+                "JOB_STATUS_ABORTED"
+            ],
+            "default": "JOB_STATUS_UNSPECIFIED",
+            "description": "job status."
+        },
+        "LispConfig": {
+            "type": "object",
+            "properties": {
+                "lispiid": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "lisp id"
+                },
+                "allocate": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Allocate flag"
+                },
+                "exportprivate": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Export Private flag"
+                },
+                "allocationprefix": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "Allocation Prefix"
+                },
+                "allocationprefixlen": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Allocation Prefix Length"
+                },
+                "sp": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ServicePoint"
+                    },
+                    "description": "Service Point List"
+                }
+            },
+            "description": "List Configurations.",
+            "title": "Lisp Configurations"
+        },
+        "LispServer": {
+            "type": "object",
+            "properties": {
+                "nameOrIp": {
+                    "type": "string",
+                    "description": "name/IP"
+                },
+                "credential": {
+                    "type": "string",
+                    "description": "lisp credential"
+                }
+            },
+            "description": "LispServer request paylod",
+            "title": "LispServer payload detail",
+            "required": [
+                "nameOrIp",
+                "credential"
+            ]
+        },
+        "ManifestInfo": {
+            "type": "object",
+            "properties": {
+                "bundleVersion": {
+                    "type": "string",
+                    "description": "Current version of edge application being used"
+                },
+                "nextBundleVersion": {
+                    "type": "string",
+                    "description": "Next version of edge application available"
+                },
+                "transitionAction": {
+                    "type": "string",
+                    "$ref": "#/definitions/InstanceTransitionAction",
+                    "description": "Recommended transition action"
+                },
+                "params": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "details": {
+                    "$ref": "#/definitions/TransDetails",
+                    "description": "Details for recommended transition action"
+                }
+            },
+            "description": "Details about transition parameters and indication for cause of the transition and recommendation for the transition action",
+            "title": "Transition action information"
+        },
+        "ModelAttributes": {
+            "type": "object",
+            "properties": {
+                "memory": {
+                    "type": "string"
+                },
+                "storage": {
+                    "type": "string"
+                },
+                "cpus": {
+                    "type": "string"
+                }
+            }
+        },
+        "ModelImport": {
+            "type": "object",
+            "properties": {
+                "modelConfig": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SysModelDetail"
+                    }
+                }
+            }
+        },
+        "NetInstConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network instance",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the network instance. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the network instance",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "clusterID": {
+                    "type": "string",
+                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string",
+                    "title": "device on which this network is running"
+                },
+                "port": {
+                    "type": "string",
+                    "title": "name of port mapping in the model"
+                },
+                "portTags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkInstanceKind"
+                },
+                "dhcp": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "if we do dhcp on this network or not"
+                },
+                "type": {
+                    "$ref": "#/definitions/NetworkInstanceDhcpType"
+                },
+                "ip": {
+                    "$ref": "#/definitions/DhcpServerConfig"
+                },
+                "dnsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticDNSList"
+                    }
+                },
+                "oconfig": {
+                    "type": "string",
+                    "title": "Deprecated"
+                },
+                "lisp": {
+                    "$ref": "#/definitions/LispConfig",
+                    "description": "Lisp Config : read only for now. Deprecated."
+                },
+                "opaque": {
+                    "$ref": "#/definitions/NetInstOpaqueConfig",
+                    "description": "Service specific Config."
+                },
+                "deviceDefault": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "flag to indicate if this is default network"
+                },
+                "networkPolicyId": {
+                    "type": "string",
+                    "description": "network policy id"
+                }
+            },
+            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
+            "title": "Network instance detailed configuration",
+            "required": [
+                "name",
+                "title",
+                "deviceId",
+                "port",
+                "kind"
+            ]
+        },
+        "NetInstOpaqueConfig": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/OpaqueConfigType"
+                },
+                "oconfig": {
+                    "type": "string"
+                },
+                "lisp": {
+                    "$ref": "#/definitions/LispConfig"
+                }
+            },
+            "description": "Network Instance Opaque config. This is service specific configuration."
+        },
+        "NetworkConfigOrDefault": {
+            "type": "object",
+            "properties": {
+                "netInstanceDefault": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "netInstanceConfig": {
+                    "$ref": "#/definitions/NetInstConfig"
+                }
+            }
+        },
+        "NetworkInstanceDhcpType": {
+            "type": "string",
+            "enum": [
+                "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED",
+                "NETWORK_INSTANCE_DHCP_TYPE_V4",
+                "NETWORK_INSTANCE_DHCP_TYPE_V6",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOEID",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV4",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV6"
+            ],
+            "default": "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED",
+            "title": "NetworkInstanceDhcpType: Used in the network instance provide\n   dhcp server configuration"
+        },
+        "NetworkInstanceKind": {
+            "type": "string",
+            "enum": [
+                "NETWORK_INSTANCE_KIND_UNSPECIFIED",
+                "NETWORK_INSTANCE_KIND_TRANSPARENT",
+                "NETWORK_INSTANCE_KIND_SWITCH",
+                "NETWORK_INSTANCE_KIND_LOCAL",
+                "NETWORK_INSTANCE_KIND_CLOUD",
+                "NETWORK_INSTANCE_KIND_MESH",
+                "NETWORK_INSTANCE_KIND_HONEYPOT"
+            ],
+            "default": "NETWORK_INSTANCE_KIND_UNSPECIFIED"
+        },
+        "ObjectRevision": {
+            "type": "object",
+            "properties": {
+                "prev": {
+                    "type": "string",
+                    "description": "Previous"
+                },
+                "curr": {
+                    "type": "string",
+                    "description": "Current Database version of the record"
+                },
+                "createdAt": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "The time, in milliseconds since the epoch, when the record was created."
+                },
+                "createdBy": {
+                    "type": "string",
+                    "description": "User data: Created By"
+                },
+                "updatedAt": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "The time, in milliseconds since the epoch, when the record was last updated."
+                },
+                "updatedBy": {
+                    "type": "string",
+                    "description": "User data: Updated By"
+                }
+            },
+            "description": "ObjectRevision store the user details, who has doent the necessary operation like Create Operation or update operation",
+            "title": "ObjectRevision is used to store the user information.",
+            "required": [
+                "curr",
+                "createdAt",
+                "createdBy",
+                "updatedAt",
+                "updatedBy"
+            ]
+        },
+        "ObjectType": {
+            "type": "string",
+            "enum": [
+                "OBJECT_TYPE_UNSPECIFIED",
+                "OBJECT_TYPE_USER",
+                "OBJECT_TYPE_EDGE_NODE",
+                "OBJECT_TYPE_EDGE_APP",
+                "OBJECT_TYPE_IMAGE",
+                "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                "OBJECT_TYPE_PROJECT",
+                "OBJECT_TYPE_NETWORK",
+                "OBJECT_TYPE_DATASTORE",
+                "OBJECT_TYPE_SERVICE",
+                "OBJECT_TYPE_SERVICE_INSTANCE",
+                "OBJECT_TYPE_ENTERPRISE",
+                "OBJECT_TYPE_ROLE",
+                "OBJECT_TYPE_CREDENTIAL",
+                "OBJECT_TYPE_NETWORK_INSTANCE",
+                "OBJECT_TYPE_VOLUME_INSTANCE",
+                "OBJECT_TYPE_REALM",
+                "OBJECT_TYPE_AUTHPROFILE",
+                "OBJECT_TYPE_POLICY",
+                "OBJECT_TYPE_APP_POLICY",
+                "OBJECT_TYPE_CLUSTER_INSTANCE",
+                "OBJECT_TYPE_PLUGIN",
+                "OBJECT_TYPE_DOC_POLICY",
+                "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                "OBJECT_TYPE_TAGS",
+                "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+            ],
+            "default": "OBJECT_TYPE_UNSPECIFIED"
+        },
+        "OpaqueConfigType": {
+            "type": "string",
+            "enum": [
+                "OPAQUE_CONFIG_TYPE_UNSPECIFIED",
+                "OPAQUE_CONFIG_TYPE_VPN",
+                "OPAQUE_CONFIG_TYPE_LISP"
+            ],
+            "default": "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+        },
+        "SelectionCriteria": {
+            "type": "object",
+            "properties": {
+                "projectId": {
+                    "type": "string"
+                },
+                "bundleId": {
+                    "type": "string"
+                },
+                "deviceIdList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "ServicePoint": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "object",
+                    "$ref": "#/definitions/spType",
+                    "description": "Service Point Type"
+                },
+                "NameOrIp": {
+                    "type": "string",
+                    "description": "Service name/ service name"
+                },
+                "Credential": {
+                    "type": "string",
+                    "description": "Service credentials"
+                }
+            },
+            "description": "Service Point",
+            "title": "Service Point"
+        },
+        "StaticDNSList": {
+            "type": "object",
+            "properties": {
+                "hostname": {
+                    "type": "string",
+                    "description": "Host name"
+                },
+                "addrs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Addresses"
+                }
+            },
+            "description": "Static DNS list",
+            "title": "Static DNS list"
+        },
+        "Summary": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "Summary description"
+                },
+                "total": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Total"
+                },
+                "values": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "description": "Summary is used to store the Summary details",
+            "title": "Summary is used to store the Summary details"
+        },
+        "SysModelDetail": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "parentModelId": {
+                    "type": "string"
+                },
+                "customModelFields": {
+                    "$ref": "#/definitions/CustomUpdateModelFields"
+                }
+            }
+        },
+        "TransCause": {
+            "type": "string",
+            "enum": [
+                "TRANS_CAUSE_UNSPECIFIED",
+                "TRANS_CAUSE_APP_DRIVE_CHANGED",
+                "TRANS_CAUSE_APP_NETWORK_CHANGED",
+                "TRANS_CAUSE_APP_CUSTOM_CONFIG_CHANGED",
+                "TRANS_CAUSE_APP_MODULE_BUNDLE_UPDATE",
+                "TRANS_CAUSE_APP_DESC_CHANGED",
+                "TRANS_CAUSE_APP_FIXED_RESOURCES_CHANGED",
+                "TRANS_CAUSE_APP_VNC_MODE_CHANGED",
+                "TRANS_CAUSE_APP_VM_MODE_CHANGED",
+                "TRANS_CAUSE_INTER_CA_EXPIRING",
+                "TRANS_CAUSE_INTER_CA_EXPIRED",
+                "TRANS_CAUSE_DEVICE_CA_EXPIRING",
+                "TRANS_CAUSE_DEVICE_CA_EXPIRED"
+            ],
+            "default": "TRANS_CAUSE_UNSPECIFIED"
+        },
+        "TransDetails": {
+            "type": "object",
+            "properties": {
+                "cause": {
+                    "$ref": "#/definitions/TransCause",
+                    "description": "Cause of the transition action"
+                },
+                "severity": {
+                    "type": "string",
+                    "description": "Urgency of the recommended action (ERROR - must take action immediately, WARN - must take action but not immediately, NOTICE - may take action"
+                },
+                "scope": {
+                    "$ref": "#/definitions/ActionScope",
+                    "description": "Scope of the action (e.g. project, cluster, instance)"
+                }
+            }
+        },
+        "VariableFileEncoding": {
+            "type": "string",
+            "enum": [
+                "FILE_ENCODING_UNSPECIFIED",
+                "FILE_ENCODING_BASE64"
+            ],
+            "default": "FILE_ENCODING_UNSPECIFIED",
+            "description": "- FILE_ENCODING_UNSPECIFIED: File content not encoded\n - FILE_ENCODING_BASE64: File content encoded in Base64",
+            "title": "File content encoding type"
+        },
+        "VariableGroupCondition": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "operator": {
+                    "$ref": "#/definitions/VariableGroupConditionOperator"
+                }
+            }
+        },
+        "VariableGroupConditionOperator": {
+            "type": "string",
+            "enum": [
+                "CONDITION_OPERATOR_UNSPECIFIED",
+                "CONDITION_OPERATOR_EQUALTO",
+                "CONDITION_OPERATOR_NOTEQUALTO"
+            ],
+            "default": "CONDITION_OPERATOR_UNSPECIFIED"
+        },
+        "VariableGroupVariable": {
+            "type": "object",
+            "example": {
+                "format": "VARIABLE_FORMAT_TEXT",
+                "name": "username",
+                "label": "Enter User Name",
+                "required": "True"
+            },
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "label": {
+                    "type": "string"
+                },
+                "maxLength": {
+                    "type": "string"
+                },
+                "required": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "default": {
+                    "type": "string"
+                },
+                "processInput": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "format": {
+                    "$ref": "#/definitions/VariableVariableFormat"
+                },
+                "encode": {
+                    "$ref": "#/definitions/VariableFileEncoding"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VariableOptionVal"
+                    }
+                }
+            },
+            "description": "Edge Application Artifact Details",
+            "title": "Edge Application detail",
+            "required": [
+                "format",
+                "name",
+                "label",
+                "required"
+            ]
+        },
+        "VariableOptionVal": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "VariableVariableFormat": {
+            "type": "string",
+            "enum": [
+                "VARIABLE_FORMAT_UNSPECIFIED",
+                "VARIABLE_FORMAT_TEXT",
+                "VARIABLE_FORMAT_NUMBER",
+                "VARIABLE_FORMAT_FILE",
+                "VARIABLE_FORMAT_DROPDOWN",
+                "VARIABLE_FORMAT_BOOLEAN",
+                "VARIABLE_FORMAT_PASSWORD"
+            ],
+            "default": "VARIABLE_FORMAT_UNSPECIFIED",
+            "description": "- VARIABLE_FORMAT_UNSPECIFIED: Invalid format\n - VARIABLE_FORMAT_TEXT: Value in string format\n - VARIABLE_FORMAT_NUMBER: Value in integer format\n - VARIABLE_FORMAT_FILE: Value to be read from a file\n - VARIABLE_FORMAT_DROPDOWN: Value to be selected from dropdown of options\n - VARIABLE_FORMAT_BOOLEAN: Value in boolean format\n - VARIABLE_FORMAT_PASSWORD: Value in string to be masked in User-Agent",
+            "title": "Custom variable format"
+        },
+        "ZcOpsStatus": {
+            "type": "string",
+            "enum": [
+                "OPS_STATUS_UNSPECIFIED",
+                "OPS_STATUS_PENDING",
+                "OPS_STATUS_ONGOING",
+                "OPS_STATUS_COMPLETE"
+            ],
+            "default": "OPS_STATUS_UNSPECIFIED",
+            "description": "- OPS_STATUS_PENDING: In rare cases, system may not start operation when it was requested. Client will be notified that operation is PENDING\n - OPS_STATUS_ONGOING: system will start the operation, but at the time response was generated, operation is still ONGOING.\n - OPS_STATUS_COMPLETE: Even if the result of the operations may result in failure, but the OpsStatus will marked COMPLETE for almost all cases.",
+            "title": "ZedCloud internal operation status"
+        },
+        "ZcOpsType": {
+            "type": "string",
+            "enum": [
+                "OPS_TYPE_UNSPECIFIED",
+                "OPS_TYPE_READ",
+                "OPS_TYPE_DELETE",
+                "OPS_TYPE_CREATE",
+                "OPS_TYPE_UPDATE",
+                "OPS_TYPE_LIST"
+            ],
+            "default": "OPS_TYPE_UNSPECIFIED",
+            "title": "ZedCloud internal operation type"
+        },
+        "ZedCloudOpsCmd": {
+            "type": "object",
+            "properties": {
+                "counter": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "counter"
+                },
+                "opsTime": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "Timestamp: Operational time"
+                }
+            },
+            "description": "Zed cloud Operation command",
+            "title": "Zed cloud Operation command"
+        },
+        "ZsrvError": {
+            "type": "object",
+            "properties": {
+                "ec": {
+                    "$ref": "#/definitions/ZsrvErrorCode",
+                    "title": "Enumrated error code, describes more granular numerical\nvalue than just httpStatus"
+                },
+                "location": {
+                    "type": "string",
+                    "title": "Ignore: Internal field only"
+                },
+                "details": {
+                    "type": "string",
+                    "title": "Field captures string description of details"
+                }
+            }
+        },
+        "ZsrvErrorCode": {
+            "type": "string",
+            "enum": [
+                "zMsgErrorNone",
+                "zMsgSucess",
+                "NotFound",
+                "AlreadyExists",
+                "VersionMismatch",
+                "RangeError",
+                "LargeResult",
+                "IncompleteData",
+                "InvalidData",
+                "FunctionUnsupported",
+                "NoMemory",
+                "SendFailure",
+                "Timeout",
+                "BadReqBody",
+                "BadReqParam",
+                "InvalidFieldFormat",
+                "UrlNotFound",
+                "ApiVersionNotSupported",
+                "Unauthorized",
+                "Forbidden",
+                "Conflict",
+                "NotModified",
+                "DependencyConflict",
+                "JsonFmtError",
+                "ProtoFmtError",
+                "CertError",
+                "DataBaseConnection",
+                "DBError",
+                "zMsgAccepted",
+                "zMsgCreated",
+                "PreConditionFailed"
+            ],
+            "default": "zMsgErrorNone",
+            "description": "- zMsgErrorNone: common validation errors\n - IncompleteData: message had fields that weren't filled in\n - InvalidData: message contained the field that wasn't expected\n - FunctionUnsupported: this feature unavailable on this version of device\n - InvalidFieldFormat: message contained the field that wasn't correctly formatted\n - JsonFmtError: Marshal / Unmarshal errors\n - DataBaseConnection: generic DB error",
+            "title": "ZedCould internal error code"
+        },
+        "ZsrvResponse": {
+            "type": "object",
+            "properties": {
+                "operationType": {
+                    "$ref": "#/definitions/ZcOpsType",
+                    "title": "Describes one of the operations type : possible values\n                        Read/Delete/Create/Update/List"
+                },
+                "operationStatus": {
+                    "$ref": "#/definitions/ZcOpsStatus",
+                    "title": "if this is log running job"
+                },
+                "objectKind": {
+                    "type": "string",
+                    "title": "zedcloud object kind on which the operation was performed"
+                },
+                "objectId": {
+                    "type": "string",
+                    "title": "Unique value identifies the object that was operated on"
+                },
+                "objectName": {
+                    "type": "string",
+                    "title": "name of the object"
+                },
+                "objectRevision": {
+                    "type": "string",
+                    "title": "object revision post the operation, note Read operation\ndoesn't change the revision"
+                },
+                "objectType": {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                "operationTime": {
+                    "type": "string",
+                    "title": "time of operation"
+                },
+                "startTime": {
+                    "type": "string",
+                    "title": "total time taken by operations"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string",
+                    "title": "the operation is performed on behalf of this user"
+                },
+                "httpStatusCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "http response"
+                },
+                "httpStatusMsg": {
+                    "type": "string",
+                    "title": "summary of the error in text format"
+                },
+                "error": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ZsrvError"
+                    },
+                    "title": "one or more errors will be set if the operation failed\ni.e. httpStatusCode != 2xx"
+                }
+            }
+        },
+        "appACE": {
+            "type": "object",
+            "properties": {
+                "matches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appACEMatch"
+                    },
+                    "description": "app ACE match"
+                },
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appACEAction"
+                    },
+                    "description": "app ACE actions"
+                },
+                "id": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "app ACE id"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the app ACE, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                }
+            },
+            "description": "App ACE Configuration",
+            "title": "App ACE detaisn",
+            "required": [
+                "matches",
+                "actions",
+                "id",
+                "name"
+            ]
+        },
+        "appACEAction": {
+            "type": "object",
+            "properties": {
+                "drop": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "ACE drop flag"
+                },
+                "limit": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "ACE limit flag"
+                },
+                "limitrate": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "ACE limit rate"
+                },
+                "limitunit": {
+                    "type": "string",
+                    "description": "ACE limit unit"
+                },
+                "limitburst": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "ACE limit burst"
+                },
+                "portmap": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "application port map flag"
+                },
+                "mapparams": {
+                    "$ref": "#/definitions/appMapParams",
+                    "description": "Application map params"
+                }
+            },
+            "description": "App ACE actions",
+            "title": "App ACE Action",
+            "required": [
+                "drop",
+                "limit",
+                "limitrate",
+                "limitunit",
+                "limitburst",
+                "portmap",
+                "mapparams"
+            ]
+        },
+        "appACEMatch": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Type"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Value"
+                }
+            },
+            "description": "App ACE Match",
+            "title": "appACEMatch detail",
+            "required": [
+                "type",
+                "value"
+            ]
+        },
+        "appInterface": {
+            "type": "object",
+            "properties": {
+                "netname": {
+                    "type": "string",
+                    "description": "network name: will be deprecated in future, use netinstname"
+                },
+                "io": {
+                    "$ref": "#/definitions/phyAdapter",
+                    "description": "Physical Adapter to be matched for interface assignment. Applicable only when \"direct attach\" flag is true"
+                },
+                "intforder": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "intforder"
+                },
+                "intfname": {
+                    "type": "string",
+                    "description": "intf Name"
+                },
+                "directattach": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "direct attach flag",
+                    "title": "comes from manifest during app create"
+                },
+                "privateip": {
+                    "type": "string",
+                    "format": "boolean",
+                    "description": "Private IP flag"
+                },
+                "acls": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appACE"
+                    },
+                    "description": "app Acls"
+                },
+                "ipaddr": {
+                    "type": "string",
+                    "description": "IP address",
+                    "title": "if netname points static DHCP then we need to take\nstatic /32 address here"
+                },
+                "macaddr": {
+                    "type": "string",
+                    "description": "MAC address",
+                    "title": "in case of p2v we might want to provide a mac-address.\napplicable only in case of DHCP=passthrough"
+                },
+                "accessVlanId": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "access port VLAN ID, vlan id of zero will be treated as trunk port and vlan id 1 is implicitly used by linux bridges",
+                    "maximum": 4093,
+                    "minimum": 2
+                },
+                "eidregister": {
+                    "$ref": "#/definitions/EIDRegister",
+                    "description": "EID register details",
+                    "title": "FIXME: Check why is this required"
+                },
+                "netinstname": {
+                    "type": "string",
+                    "description": "Network Instance name to be matched for interface assignment. Applicable only when \"direct attach\" flag is false"
+                },
+                "netinsttag": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "defaultNetInstance": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "default instance flag"
+                }
+            },
+            "description": "App Interface detail",
+            "title": "App Interface detail",
+            "required": [
+                "io",
+                "intforder",
+                "intfname",
+                "directattach",
+                "privateip",
+                "acls",
+                "ipaddr",
+                "macaddr",
+                "eidregister",
+                "netinstname"
+            ]
+        },
+        "appMapParams": {
+            "type": "object",
+            "properties": {
+                "port": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Application port"
+                }
+            },
+            "description": "Application map parameters",
+            "title": "App map Params detail",
+            "required": [
+                "port"
+            ]
+        },
+        "dhcpIpRange": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "string",
+                    "description": "starting IP"
+                },
+                "end": {
+                    "type": "string",
+                    "description": "ending IP"
+                }
+            },
+            "description": "DHCP IP range",
+            "title": "DHCP IP range"
+        },
+        "drive": {
+            "type": "object",
+            "properties": {
+                "imagename": {
+                    "type": "string",
+                    "description": "Image name"
+                },
+                "maxsize": {
+                    "type": "number",
+                    "format": "uint64",
+                    "description": "Drive maximum size"
+                },
+                "readonly": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Read only flag"
+                },
+                "preserve": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Preserves flag which preserves the volume"
+                },
+                "drvtype": {
+                    "type": "string",
+                    "description": "Drive type"
+                },
+                "target": {
+                    "type": "string",
+                    "description": "Target drive"
+                },
+                "volumelabel": {
+                    "type": "string",
+                    "description": "User defined volume to use for this drive "
+                },
+                "mvolname": {
+                    "type": "string",
+                    "description": "mutable Volume for this drive"
+                },
+                "imvolname": {
+                    "type": "string",
+                    "description": "immutable Volume for this drive"
+                },
+                "ignorepurge": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "don't purge this Drive, only applicable to purge command"
+                },
+                "cleartext": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "don't encrypt, store in cleartext"
+                },
+                "mountpath": {
+                    "type": "string",
+                    "description": "Mount Path"
+                }
+            },
+            "description": "Drive configuration",
+            "title": "Drive details",
+            "required": [
+                "imagename",
+                "maxsize",
+                "readonly",
+                "preserve",
+                "drvtype",
+                "target"
+            ]
+        },
+        "hvMode": {
+            "type": "string",
+            "enum": [
+                "HV_PV",
+                "HV_HVM",
+                "HV_FML",
+                "HV_NOHYPER",
+                "HV_LEGACY"
+            ],
+            "default": "HV_PV",
+            "description": "For now we need to tell the device which virtualization mode\nto use. Later we might use a single one for all VMs (on any particular\nISA). If we end up keeping this we should make the names be less\ntied to a particular hypervisor."
+        },
+        "phyAdapter": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "object",
+                    "$ref": "#/definitions/IoType",
+                    "description": "IoType specifies the type of the Input output of the device"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Physical Adapter name"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            },
+            "description": "Physical Adapter",
+            "title": "Physical Adapter"
+        },
+        "spType": {
+            "type": "string",
+            "enum": [
+                "SPTYPE_INVALIDSRV",
+                "SPTYPE_MAPSERVER",
+                "SPTYPE_SUPPORTSERVER"
+            ],
+            "default": "SPTYPE_INVALIDSRV",
+            "description": "clone of types defined in API repo.\n\n - SPTYPE_MAPSERVER: mapping service for zededa overlay service\n - SPTYPE_SUPPORTSERVER: if device has support feature enabled, this ia cloud service\nwhich device can be reached."
+        },
+        "vm": {
+            "type": "object",
+            "properties": {
+                "cpus": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "CPUs"
+                },
+                "memory": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Memory"
+                },
+                "mode": {
+                    "$ref": "#/definitions/hvMode",
+                    "description": "Hardware Virtualization"
+                },
+                "vnc": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "VNC"
+                },
+                "vncDisplay": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "VNC display",
+                    "readOnly": true
+                }
+            },
+            "description": "Virtual machine memory configuration",
+            "title": "vm detail",
+            "required": [
+                "cpus",
+                "memory",
+                "mode",
+                "vnc"
+            ]
+        }
+    },
+    "securityDefinitions": {
+        "BearerToken": {
+            "type": "apiKey",
+            "description": "Bearer token for user session",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "security": [
+        {
+            "BearerToken": []
+        }
+    ],
+    "externalDocs": {
+        "description": "ZEDEDA Product Documentation",
+        "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+    }
+}

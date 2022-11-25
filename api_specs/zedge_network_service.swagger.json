@@ -1,0 +1,2710 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "ZEDEDA Edge Network Service",
+        "description": "The ZEDEDA Edge Network Service is helper service to ZEDEDA Edge Application Service. This service provides edge nodes and applications a variety of connectivity choices for all types of networks. This enables physical connectivity with Ethernet, WiFi, LTE to communicate with Cloud Controller and Data Centres on one hand and logical secure connectivity between applications within a single edge node and within a logical group of edge nodes. This also supports secure tunnel from an edge node or an edge application in a remote location to a Data server behindi firewall in AWS or Azure or On-premise VPC.",
+        "termsOfService": "https://www.zededa.com/terms",
+        "version": "1.0",
+        "contact": {
+            "name": "ZEDEDA API Support",
+            "url": "https://www.zededa.com/support",
+            "email": "support@zededa.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "zedcontrol.zededa.net",
+    "basePath": "/api",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/v1/netinsts": {
+            "get": {
+                "summary": "Query edge network instances",
+                "description": "Query the edge network instance records.",
+                "operationId": "QueryEdgeNetworkInstances",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetInstList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "summary",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean",
+                        "format": "boolean"
+                    },
+                    {
+                        "name": "filter.deviceName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.projectName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.namePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            },
+            "post": {
+                "summary": "Create edge network instance",
+                "description": "Create an edge network instance record.",
+                "operationId": "CreateEdgeNetworkInstance",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this edge network record will conflict with an already existing edge network record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NetInstConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        },
+        "/v1/netinsts/id/{id}": {
+            "get": {
+                "summary": "Get edge network instance",
+                "description": "Get the configuration (without security details) of an edge network instance record.",
+                "operationId": "GetEdgeNetworkInstance",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetInstConfig"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the network instance",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            },
+            "delete": {
+                "summary": "Delete edge network instance",
+                "description": "Delete an edge network instance record.",
+                "operationId": "DeleteEdgeNetworkInstance",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the network instance",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            },
+            "put": {
+                "summary": "Update edge network instance",
+                "description": "Update an edge network instance. The usual pattern to update an edge network instance record is to retrieve the record and update with the modified values in a new body to update the edge network instance record.",
+                "operationId": "UpdateEdgeNetworkInstance",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge network record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the network instance",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NetInstConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        },
+        "/v1/netinsts/id/{id}/status": {
+            "get": {
+                "summary": "Get edge network instance status",
+                "description": "Get the status of an edge network instance as reported by the edge node where the edge network instance has been deployed.",
+                "operationId": "GetEdgeNetworkInstanceStatus",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetInstStatusMsg"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceStatus"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        },
+        "/v1/netinsts/name/{name}": {
+            "get": {
+                "summary": "Get edge network instance",
+                "description": "Get the configuration (without security details) of an edge network instance record.",
+                "operationId": "GetEdgeNetworkInstanceByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetInstConfig"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        },
+        "/v1/netinsts/name/{name}/status": {
+            "get": {
+                "summary": "Get edge network instance status",
+                "description": "Get the status of an edge network instance as reported by the edge node where the edge network instance has been deployed.",
+                "operationId": "GetEdgeNetworkInstanceStatusByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetInstStatusMsg"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceStatus"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        },
+        "/v1/netinsts/status": {
+            "get": {
+                "summary": "Query status of edge network instances",
+                "description": "Query the status of edge network instances as reported by the edge nodes where the edge network instances have been deployed.",
+                "operationId": "QueryEdgeNetworkInstanceStatus",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetInstStatusListMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "summary",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean",
+                        "format": "boolean"
+                    },
+                    {
+                        "name": "filter.deviceName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.projectName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.namePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.runState",
+                        "description": " - RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "RUN_STATE_UNSPECIFIED",
+                            "RUN_STATE_ONLINE",
+                            "RUN_STATE_HALTED",
+                            "RUN_STATE_INIT",
+                            "RUN_STATE_REBOOTING",
+                            "RUN_STATE_OFFLINE",
+                            "RUN_STATE_UNKNOWN",
+                            "RUN_STATE_UNPROVISIONED",
+                            "RUN_STATE_PROVISIONED",
+                            "RUN_STATE_SUSPECT",
+                            "RUN_STATE_DOWNLOADING",
+                            "RUN_STATE_RESTARTING",
+                            "RUN_STATE_PURGING",
+                            "RUN_STATE_HALTING",
+                            "RUN_STATE_ERROR",
+                            "RUN_STATE_VERIFYING",
+                            "RUN_STATE_LOADING",
+                            "RUN_STATE_CREATING_VOLUME",
+                            "RUN_STATE_BOOTING",
+                            "RUN_STATE_MAINTENANCE_MODE"
+                        ],
+                        "default": "RUN_STATE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkInstanceStatus"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        },
+        "/v1/networks": {
+            "get": {
+                "summary": "Query edge networks",
+                "description": "Query the edge network records.",
+                "operationId": "QueryEdgeNetworks",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetConfigList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "summary",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean",
+                        "format": "boolean"
+                    },
+                    {
+                        "name": "filter.projectName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.namePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            },
+            "post": {
+                "summary": "Create edge network",
+                "description": "Create an edge network record.",
+                "operationId": "CreateEdgeNetwork",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this edge network record will conflict with an already existing edge network record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NetConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        },
+        "/v1/networks/id/{id}": {
+            "get": {
+                "summary": "Get edge network",
+                "description": "Get the configuration (without security details) of an edge network record.",
+                "operationId": "GetEdgeNetwork",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetConfig"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the network",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            },
+            "delete": {
+                "summary": "Delete edge network",
+                "description": "Delete an edge network record.",
+                "operationId": "DeleteEdgeNetwork",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the network",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            },
+            "put": {
+                "summary": "Update edge network",
+                "description": "Update an edge network. The usual pattern to update an edge network record is to retrieve the record and update with the modified values in a new body to update the edge network record.",
+                "operationId": "UpdateEdgeNetwork",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge network record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the network",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/NetConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        },
+        "/v1/networks/name/{name}": {
+            "get": {
+                "summary": "Get edge network",
+                "description": "Get the configuration (without security details) of an edge network record.",
+                "operationId": "GetEdgeNetworkByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/NetConfig"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "User defined name of the network, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNetworkConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Cursor": {
+            "type": "object",
+            "properties": {
+                "pageToken": {
+                    "type": "string",
+                    "description": "Page Token"
+                },
+                "orderBy": {
+                    "type": "string",
+                    "description": "OrderBy helps in sorting the list response"
+                },
+                "pageNum": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Page Number"
+                },
+                "pageSize": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Defines the page size"
+                },
+                "totalPages": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Total number of pages to be fetched."
+                }
+            },
+            "description": "Cursor helps in filtering the various list response like edge-app bundle list, model list, bundle list etc. ",
+            "title": "Cursor is used as filter in list operation."
+        },
+        "DeviceEntity": {
+            "type": "object",
+            "properties": {
+                "entity": {
+                    "$ref": "#/definitions/Entity"
+                },
+                "entityId": {
+                    "type": "string"
+                }
+            }
+        },
+        "DeviceError": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "Description of the error"
+                },
+                "severity": {
+                    "type": "string",
+                    "$ref": "#/definitions/Severity",
+                    "description": "Severity of the error"
+                },
+                "timestamp": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "Timestamp at which error had occurred"
+                },
+                "entities": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DeviceEntity"
+                    },
+                    "description": "objects referenced by the description or retry_condition"
+                },
+                "retry_condition": {
+                    "type": "string",
+                    "description": "condition for retry"
+                }
+            },
+            "description": "DeviceError store the error occurred at the device side",
+            "title": "DeviceError is used to store the error details of the hardware.",
+            "required": [
+                "description",
+                "severity",
+                "timestamp",
+                "entities"
+            ]
+        },
+        "DhcpServerConfig": {
+            "type": "object",
+            "properties": {
+                "subnet": {
+                    "type": "string"
+                },
+                "mask": {
+                    "type": "string"
+                },
+                "gateway": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "ntp": {
+                    "type": "string"
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "possible DNS ip address"
+                },
+                "dhcpRange": {
+                    "$ref": "#/definitions/dhcpIpRange",
+                    "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                }
+            }
+        },
+        "Entity": {
+            "type": "string",
+            "enum": [
+                "ENTITY_UNSPECIFIED",
+                "ENTITY_BASE_OS",
+                "ENTITY_SYSTEM_ADAPTER",
+                "ENTITY_VAULT",
+                "ENTITY_ATTESTATION",
+                "ENTITY_APP_INSTANCE",
+                "ENTITY_PORT",
+                "ENTITY_NETWORK",
+                "ENTITY_NETWORK_INSTANCE",
+                "ENTITY_CONTENT_TREE",
+                "ENTITY_CONTENT_BLOB",
+                "ENTITY_VOLUME"
+            ],
+            "default": "ENTITY_UNSPECIFIED",
+            "description": "- ENTITY_UNSPECIFIED: Invalid Device Entity\n - ENTITY_BASE_OS: Base OS entity\n - ENTITY_SYSTEM_ADAPTER: System Adapter Entity\n - ENTITY_VAULT: Vault Entity\n - ENTITY_ATTESTATION: Attestation Entity\n - ENTITY_APP_INSTANCE: App Instance Entity\n - ENTITY_PORT: Port Entity\n - ENTITY_NETWORK: Network Entity\n - ENTITY_NETWORK_INSTANCE: Network Instance Entity\n - ENTITY_CONTENT_TREE: ContentTree Entity\n - ENTITY_CONTENT_BLOB: Blob Entity\n - ENTITY_VOLUME: VOLUME Entity",
+            "title": "Edge node components"
+        },
+        "IPAssignment": {
+            "type": "object",
+            "properties": {
+                "macAddress": {
+                    "type": "string"
+                },
+                "ipAddress": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "IoBundleStatus": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "object",
+                    "$ref": "#/definitions/IoType",
+                    "description": "IoType specifies the type of the Input output of the device"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Io Bundle status name"
+                },
+                "members": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Member Array"
+                },
+                "appName": {
+                    "type": "string",
+                    "description": "Application name"
+                },
+                "lte_info": {
+                    "type": "object",
+                    "$ref": "#/definitions/LTEAdapter",
+                    "description": "LTE information"
+                },
+                "err": {
+                    "$ref": "#/definitions/DeviceError",
+                    "description": "Device error details",
+                    "title": "6 - DEPRECATED"
+                }
+            },
+            "description": "IoBundleStatus is used to store the status of the Input Output bundle",
+            "title": "IoBundleStatus is used to store the status of the Input Output bundle",
+            "required": [
+                "type",
+                "name",
+                "members",
+                "appName"
+            ]
+        },
+        "IoType": {
+            "type": "string",
+            "enum": [
+                "IO_TYPE_UNSPECIFIED",
+                "IO_TYPE_ETH",
+                "IO_TYPE_USB",
+                "IO_TYPE_COM",
+                "IO_TYPE_AUDIO",
+                "IO_TYPE_WLAN",
+                "IO_TYPE_WWAN",
+                "IO_TYPE_HDMI",
+                "IO_TYPE_LTE",
+                "IO_TYPE_OTHER"
+            ],
+            "default": "IO_TYPE_UNSPECIFIED",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_OTHER: Other Io Types",
+            "title": "Input/Output Type"
+        },
+        "IpSpec": {
+            "type": "object",
+            "properties": {
+                "deprecated_dhcp": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "deprecated"
+                },
+                "dhcp": {
+                    "$ref": "#/definitions/NetworkDHCPType"
+                },
+                "subnet": {
+                    "type": "string"
+                },
+                "mask": {
+                    "type": "string"
+                },
+                "gateway": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "ntp": {
+                    "type": "string"
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dhcpRange": {
+                    "$ref": "#/definitions/dhcpIpRange",
+                    "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                }
+            }
+        },
+        "LTEAdapter": {
+            "type": "object",
+            "properties": {
+                "sim_name": {
+                    "type": "string",
+                    "description": "Name of SIM card."
+                },
+                "cell_module_name": {
+                    "type": "string",
+                    "description": "Name of Cell Module"
+                },
+                "imsi": {
+                    "type": "string",
+                    "description": "imsi of the SIM"
+                },
+                "iccid": {
+                    "type": "string",
+                    "description": "iccid of the SIM"
+                },
+                "simcard_state": {
+                    "type": "string",
+                    "$ref": "#/definitions/SimcardState",
+                    "description": "State of SimCard"
+                },
+                "imei": {
+                    "type": "string",
+                    "description": "IMEI of Cell Radio."
+                },
+                "firmware_version": {
+                    "type": "string",
+                    "description": "Firmware Version of Cell Radio."
+                }
+            },
+            "description": "Details of LTE Adapter",
+            "title": "LTE Adapter"
+        },
+        "LispConfig": {
+            "type": "object",
+            "properties": {
+                "lispiid": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "lisp id"
+                },
+                "allocate": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Allocate flag"
+                },
+                "exportprivate": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Export Private flag"
+                },
+                "allocationprefix": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "Allocation Prefix"
+                },
+                "allocationprefixlen": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Allocation Prefix Length"
+                },
+                "sp": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ServicePoint"
+                    },
+                    "description": "Service Point List"
+                }
+            },
+            "description": "List Configurations.",
+            "title": "Lisp Configurations"
+        },
+        "NetCellularConfig": {
+            "type": "object",
+            "properties": {
+                "APN": {
+                    "type": "string"
+                }
+            }
+        },
+        "NetConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the network. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the network",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkKind"
+                },
+                "ip": {
+                    "$ref": "#/definitions/IpSpec"
+                },
+                "dnsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticDNSList"
+                    }
+                },
+                "proxy": {
+                    "$ref": "#/definitions/NetProxyConfig",
+                    "title": "enterprise proxy"
+                },
+                "enterpriseDefault": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "make this network default for device"
+                },
+                "wireless": {
+                    "$ref": "#/definitions/NetWirelessConfig",
+                    "title": "Wifi configuration"
+                }
+            },
+            "description": "Network provides Edge nodes a variety of connectivity choices for all types of networks. This enables physical connectivity with Ethernet, WiFi, LTE to communicate with ZEDEDA Cloud controller and Data Centres.",
+            "title": "Network detailed configuration",
+            "required": [
+                "name",
+                "title",
+                "projectId",
+                "kind",
+                "ip"
+            ]
+        },
+        "NetConfigList": {
+            "type": "object",
+            "properties": {
+                "summary": {
+                    "$ref": "#/definitions/Summary"
+                },
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetConfig"
+                    }
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor"
+                }
+            }
+        },
+        "NetInstConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network instance",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the network instance. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the network instance",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "clusterID": {
+                    "type": "string",
+                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string",
+                    "title": "device on which this network is running"
+                },
+                "port": {
+                    "type": "string",
+                    "title": "name of port mapping in the model"
+                },
+                "portTags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkInstanceKind"
+                },
+                "dhcp": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "if we do dhcp on this network or not"
+                },
+                "type": {
+                    "$ref": "#/definitions/NetworkInstanceDhcpType"
+                },
+                "ip": {
+                    "$ref": "#/definitions/DhcpServerConfig"
+                },
+                "dnsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticDNSList"
+                    }
+                },
+                "oconfig": {
+                    "type": "string",
+                    "title": "Deprecated"
+                },
+                "lisp": {
+                    "$ref": "#/definitions/LispConfig",
+                    "description": "Lisp Config : read only for now. Deprecated."
+                },
+                "opaque": {
+                    "$ref": "#/definitions/NetInstOpaqueConfig",
+                    "description": "Service specific Config."
+                },
+                "deviceDefault": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "title": "flag to indicate if this is default network"
+                },
+                "networkPolicyId": {
+                    "type": "string",
+                    "description": "network policy id"
+                }
+            },
+            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
+            "title": "Network instance detailed configuration",
+            "required": [
+                "name",
+                "title",
+                "deviceId",
+                "port",
+                "kind"
+            ]
+        },
+        "NetInstFilter": {
+            "type": "object",
+            "properties": {
+                "deviceName": {
+                    "type": "string"
+                },
+                "projectName": {
+                    "type": "string"
+                },
+                "namePattern": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "NetInstList": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetInstShortConfig"
+                    }
+                },
+                "cfgList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetInstConfig"
+                    }
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor"
+                }
+            }
+        },
+        "NetInstOpaqueConfig": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/OpaqueConfigType"
+                },
+                "oconfig": {
+                    "type": "string"
+                },
+                "lisp": {
+                    "$ref": "#/definitions/LispConfig"
+                }
+            },
+            "description": "Network Instance Opaque config. This is service specific configuration."
+        },
+        "NetInstShortConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network instance",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkInstanceKind"
+                },
+                "type": {
+                    "$ref": "#/definitions/NetworkInstanceDhcpType"
+                },
+                "deviceDefault": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "networkPolicyId": {
+                    "type": "string",
+                    "description": "network policy id"
+                }
+            },
+            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides summary configuration of a Network instance.",
+            "title": "Network instance summary configuration"
+        },
+        "NetInstStatusFilter": {
+            "type": "object",
+            "properties": {
+                "deviceName": {
+                    "type": "string"
+                },
+                "projectName": {
+                    "type": "string"
+                },
+                "namePattern": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "runState": {
+                    "$ref": "#/definitions/RunState"
+                }
+            }
+        },
+        "NetInstStatusListMsg": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetInstStatusSummaryMsg"
+                    }
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor"
+                }
+            }
+        },
+        "NetInstStatusMsg": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network instance",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string",
+                    "title": "device on which this network is running"
+                },
+                "runState": {
+                    "$ref": "#/definitions/RunState"
+                },
+                "upTimeStamp": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "clusterID": {
+                    "type": "string",
+                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkInstanceKind"
+                },
+                "bridgeNum": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "bridgeName": {
+                    "type": "string"
+                },
+                "bridgeIPAddr": {
+                    "type": "string"
+                },
+                "ipMappings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/IPAssignment"
+                    }
+                },
+                "vifs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VifInfo"
+                    }
+                },
+                "ipv4Eid": {
+                    "type": "boolean",
+                    "format": "boolean"
+                },
+                "assignedAdapters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/IoBundleStatus"
+                    }
+                },
+                "uplinkIntf": {
+                    "type": "string"
+                },
+                "errInfo": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DeviceError"
+                    }
+                },
+                "rawStatus": {
+                    "type": "string"
+                }
+            },
+            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed status of a Network instance.",
+            "title": "Network instance detailed status"
+        },
+        "NetInstStatusSummaryMsg": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network instance",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "runState": {
+                    "$ref": "#/definitions/RunState"
+                },
+                "upTimeStamp": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "uplinkIntf": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "clusterID": {
+                    "type": "string",
+                    "description": "User defined name of the clusterInstance, unique across the enterprise.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkInstanceKind"
+                },
+                "deviceId": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "string"
+                }
+            },
+            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides summary status of a Network instance.",
+            "title": "Network instance summary status"
+        },
+        "NetProxyConfig": {
+            "type": "object",
+            "properties": {
+                "networkProxy": {
+                    "type": "boolean",
+                    "format": "boolean",
+                    "description": "Network proxy"
+                },
+                "proxies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetProxyServer"
+                    },
+                    "description": "Net Proxy: protocol level proxies",
+                    "title": "protocol level proxies"
+                },
+                "exceptions": {
+                    "type": "string",
+                    "description": "Proxy exceptions"
+                },
+                "pacfile": {
+                    "type": "string",
+                    "description": "proxy configuration in a pacfile",
+                    "title": "proxy configuration in a pacfile"
+                },
+                "networkProxyURL": {
+                    "type": "string",
+                    "description": "Network Proxy URL",
+                    "title": "Direct URL for wpad.dat download"
+                },
+                "networkProxyCerts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "description": "Network Proxy Certificates",
+                    "title": "Proxy Certificates"
+                }
+            },
+            "description": "Net Proxy Configurations",
+            "title": "Net Proxy Configurations"
+        },
+        "NetProxyServer": {
+            "type": "object",
+            "properties": {
+                "proto": {
+                    "type": "object",
+                    "$ref": "#/definitions/NetworkProxyProto",
+                    "description": "Net Proxy proto"
+                },
+                "server": {
+                    "type": "string",
+                    "description": "Net Proxy Server"
+                },
+                "port": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Net Proxy Port"
+                }
+            },
+            "description": "Net Proxy Server",
+            "title": "Net Proxy Server"
+        },
+        "NetWifiConfig": {
+            "type": "object",
+            "properties": {
+                "wifiSSID": {
+                    "type": "string"
+                },
+                "keyScheme": {
+                    "$ref": "#/definitions/NetworkWiFiKeyScheme"
+                },
+                "identity": {
+                    "type": "string"
+                },
+                "secret": {
+                    "$ref": "#/definitions/NetWifiConfigSecrets"
+                },
+                "crypto": {
+                    "$ref": "#/definitions/NetWifiConfigNetcryptoblock"
+                },
+                "priority": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "cryptoKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "NetWifiConfigNetcryptoblock": {
+            "type": "object",
+            "properties": {
+                "identity": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "NetWifiConfigSecrets": {
+            "type": "object",
+            "properties": {
+                "WiFiPasswd": {
+                    "type": "string",
+                    "description": "Wifi Password"
+                }
+            }
+        },
+        "NetWirelessConfig": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/NetworkWirelessType"
+                },
+                "cellularCfg": {
+                    "$ref": "#/definitions/NetCellularConfig"
+                },
+                "wifiCfg": {
+                    "$ref": "#/definitions/NetWifiConfig"
+                }
+            }
+        },
+        "NetworkDHCPType": {
+            "type": "string",
+            "enum": [
+                "NETWORK_DHCP_TYPE_UNSPECIFIED",
+                "NETWORK_DHCP_TYPE_STATIC",
+                "NETWORK_DHCP_TYPE_PASSTHROUGH",
+                "NETWORK_DHCP_TYPE_DEPRECATED",
+                "NETWORK_DHCP_TYPE_CLIENT"
+            ],
+            "default": "NETWORK_DHCP_TYPE_UNSPECIFIED",
+            "title": "- NETWORK_DHCP_TYPE_STATIC: used for adapter configured DHCP static\n - NETWORK_DHCP_TYPE_PASSTHROUGH: used for adapter configured DHCP none, application will do DHCP\n - NETWORK_DHCP_TYPE_DEPRECATED: used for application simulation\n - NETWORK_DHCP_TYPE_CLIENT: used for adapter configured DHCP client"
+        },
+        "NetworkFilter": {
+            "type": "object",
+            "properties": {
+                "projectName": {
+                    "type": "string"
+                },
+                "namePattern": {
+                    "type": "string"
+                }
+            }
+        },
+        "NetworkInstanceDhcpType": {
+            "type": "string",
+            "enum": [
+                "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED",
+                "NETWORK_INSTANCE_DHCP_TYPE_V4",
+                "NETWORK_INSTANCE_DHCP_TYPE_V6",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOEID",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV4",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV6"
+            ],
+            "default": "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED",
+            "title": "NetworkInstanceDhcpType: Used in the network instance provide\n   dhcp server configuration"
+        },
+        "NetworkInstanceKind": {
+            "type": "string",
+            "enum": [
+                "NETWORK_INSTANCE_KIND_UNSPECIFIED",
+                "NETWORK_INSTANCE_KIND_TRANSPARENT",
+                "NETWORK_INSTANCE_KIND_SWITCH",
+                "NETWORK_INSTANCE_KIND_LOCAL",
+                "NETWORK_INSTANCE_KIND_CLOUD",
+                "NETWORK_INSTANCE_KIND_MESH",
+                "NETWORK_INSTANCE_KIND_HONEYPOT"
+            ],
+            "default": "NETWORK_INSTANCE_KIND_UNSPECIFIED"
+        },
+        "NetworkKind": {
+            "type": "string",
+            "enum": [
+                "NETWORK_KIND_UNSPECIFIED",
+                "NETWORK_KIND_V4",
+                "NETWORK_KIND_V6"
+            ],
+            "default": "NETWORK_KIND_UNSPECIFIED",
+            "title": "NetworkKind: Used for the network configuration, this is\n only client mode"
+        },
+        "NetworkProxyProto": {
+            "type": "string",
+            "enum": [
+                "NETWORK_PROXY_PROTO_HTTP",
+                "NETWORK_PROXY_PROTO_HTTPS",
+                "NETWORK_PROXY_PROTO_SOCKS",
+                "NETWORK_PROXY_PROTO_FTP",
+                "NETWORK_PROXY_PROTO_OTHER"
+            ],
+            "default": "NETWORK_PROXY_PROTO_HTTP"
+        },
+        "NetworkWiFiKeyScheme": {
+            "type": "string",
+            "enum": [
+                "NETWORK_WIFIKEY_SCHEME_UNSPECIFIED",
+                "NETWORK_WIFIKEY_SCHEME_WPAPSK",
+                "NETWORK_WIFIKEY_SCHEME_WPAEAP"
+            ],
+            "default": "NETWORK_WIFIKEY_SCHEME_UNSPECIFIED"
+        },
+        "NetworkWirelessType": {
+            "type": "string",
+            "enum": [
+                "NETWORK_WIRELESS_TYPE_UNSPECIFIED",
+                "NETWORK_WIRELESS_TYPE_WIFI",
+                "NETWORK_WIRELESS_TYPE_CELLULAR"
+            ],
+            "default": "NETWORK_WIRELESS_TYPE_UNSPECIFIED"
+        },
+        "ObjectRevision": {
+            "type": "object",
+            "properties": {
+                "prev": {
+                    "type": "string",
+                    "description": "Previous"
+                },
+                "curr": {
+                    "type": "string",
+                    "description": "Current Database version of the record"
+                },
+                "createdAt": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "The time, in milliseconds since the epoch, when the record was created."
+                },
+                "createdBy": {
+                    "type": "string",
+                    "description": "User data: Created By"
+                },
+                "updatedAt": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "The time, in milliseconds since the epoch, when the record was last updated."
+                },
+                "updatedBy": {
+                    "type": "string",
+                    "description": "User data: Updated By"
+                }
+            },
+            "description": "ObjectRevision store the user details, who has doent the necessary operation like Create Operation or update operation",
+            "title": "ObjectRevision is used to store the user information.",
+            "required": [
+                "curr",
+                "createdAt",
+                "createdBy",
+                "updatedAt",
+                "updatedBy"
+            ]
+        },
+        "ObjectType": {
+            "type": "string",
+            "enum": [
+                "OBJECT_TYPE_UNSPECIFIED",
+                "OBJECT_TYPE_USER",
+                "OBJECT_TYPE_EDGE_NODE",
+                "OBJECT_TYPE_EDGE_APP",
+                "OBJECT_TYPE_IMAGE",
+                "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                "OBJECT_TYPE_PROJECT",
+                "OBJECT_TYPE_NETWORK",
+                "OBJECT_TYPE_DATASTORE",
+                "OBJECT_TYPE_SERVICE",
+                "OBJECT_TYPE_SERVICE_INSTANCE",
+                "OBJECT_TYPE_ENTERPRISE",
+                "OBJECT_TYPE_ROLE",
+                "OBJECT_TYPE_CREDENTIAL",
+                "OBJECT_TYPE_NETWORK_INSTANCE",
+                "OBJECT_TYPE_VOLUME_INSTANCE",
+                "OBJECT_TYPE_REALM",
+                "OBJECT_TYPE_AUTHPROFILE",
+                "OBJECT_TYPE_POLICY",
+                "OBJECT_TYPE_APP_POLICY",
+                "OBJECT_TYPE_CLUSTER_INSTANCE",
+                "OBJECT_TYPE_PLUGIN",
+                "OBJECT_TYPE_DOC_POLICY",
+                "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                "OBJECT_TYPE_TAGS",
+                "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+            ],
+            "default": "OBJECT_TYPE_UNSPECIFIED"
+        },
+        "OpaqueConfigType": {
+            "type": "string",
+            "enum": [
+                "OPAQUE_CONFIG_TYPE_UNSPECIFIED",
+                "OPAQUE_CONFIG_TYPE_VPN",
+                "OPAQUE_CONFIG_TYPE_LISP"
+            ],
+            "default": "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+        },
+        "RunState": {
+            "type": "string",
+            "enum": [
+                "RUN_STATE_UNSPECIFIED",
+                "RUN_STATE_ONLINE",
+                "RUN_STATE_HALTED",
+                "RUN_STATE_INIT",
+                "RUN_STATE_REBOOTING",
+                "RUN_STATE_OFFLINE",
+                "RUN_STATE_UNKNOWN",
+                "RUN_STATE_UNPROVISIONED",
+                "RUN_STATE_PROVISIONED",
+                "RUN_STATE_SUSPECT",
+                "RUN_STATE_DOWNLOADING",
+                "RUN_STATE_RESTARTING",
+                "RUN_STATE_PURGING",
+                "RUN_STATE_HALTING",
+                "RUN_STATE_ERROR",
+                "RUN_STATE_VERIFYING",
+                "RUN_STATE_LOADING",
+                "RUN_STATE_CREATING_VOLUME",
+                "RUN_STATE_BOOTING",
+                "RUN_STATE_MAINTENANCE_MODE"
+            ],
+            "default": "RUN_STATE_UNSPECIFIED",
+            "description": "- RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode",
+            "title": "Run-time state of an object, reported by EVE"
+        },
+        "ServicePoint": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "object",
+                    "$ref": "#/definitions/spType",
+                    "description": "Service Point Type"
+                },
+                "NameOrIp": {
+                    "type": "string",
+                    "description": "Service name/ service name"
+                },
+                "Credential": {
+                    "type": "string",
+                    "description": "Service credentials"
+                }
+            },
+            "description": "Service Point",
+            "title": "Service Point"
+        },
+        "Severity": {
+            "type": "string",
+            "enum": [
+                "SEVERITY_UNSPECIFIED",
+                "SEVERITY_NOTICE",
+                "SEVERITY_WARNING",
+                "SEVERITY_ERROR"
+            ],
+            "default": "SEVERITY_UNSPECIFIED",
+            "title": "Severity tells the severity type"
+        },
+        "SimcardState": {
+            "type": "string",
+            "enum": [
+                "SIMCARD_STATE_INVALID",
+                "SIMCARD_STATE_ASSIGNED",
+                "SIMCARD_STATE_PROVISIONED",
+                "SIMCARD_STATE_ACTIVE",
+                "SIMCARD_STATE_SUSPENDED",
+                "SIMCARD_STATE_CANCELLED"
+            ],
+            "default": "SIMCARD_STATE_INVALID"
+        },
+        "StaticDNSList": {
+            "type": "object",
+            "properties": {
+                "hostname": {
+                    "type": "string",
+                    "description": "Host name"
+                },
+                "addrs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Addresses"
+                }
+            },
+            "description": "Static DNS list",
+            "title": "Static DNS list"
+        },
+        "Summary": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "description": "Summary description"
+                },
+                "total": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Total"
+                },
+                "values": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "description": "Summary is used to store the Summary details",
+            "title": "Summary is used to store the Summary details"
+        },
+        "VifInfo": {
+            "type": "object",
+            "properties": {
+                "vifName": {
+                    "type": "string"
+                },
+                "macAddress": {
+                    "type": "string"
+                },
+                "appName": {
+                    "type": "string"
+                }
+            }
+        },
+        "ZcOpsStatus": {
+            "type": "string",
+            "enum": [
+                "OPS_STATUS_UNSPECIFIED",
+                "OPS_STATUS_PENDING",
+                "OPS_STATUS_ONGOING",
+                "OPS_STATUS_COMPLETE"
+            ],
+            "default": "OPS_STATUS_UNSPECIFIED",
+            "description": "- OPS_STATUS_PENDING: In rare cases, system may not start operation when it was requested. Client will be notified that operation is PENDING\n - OPS_STATUS_ONGOING: system will start the operation, but at the time response was generated, operation is still ONGOING.\n - OPS_STATUS_COMPLETE: Even if the result of the operations may result in failure, but the OpsStatus will marked COMPLETE for almost all cases.",
+            "title": "ZedCloud internal operation status"
+        },
+        "ZcOpsType": {
+            "type": "string",
+            "enum": [
+                "OPS_TYPE_UNSPECIFIED",
+                "OPS_TYPE_READ",
+                "OPS_TYPE_DELETE",
+                "OPS_TYPE_CREATE",
+                "OPS_TYPE_UPDATE",
+                "OPS_TYPE_LIST"
+            ],
+            "default": "OPS_TYPE_UNSPECIFIED",
+            "title": "ZedCloud internal operation type"
+        },
+        "ZsrvError": {
+            "type": "object",
+            "properties": {
+                "ec": {
+                    "$ref": "#/definitions/ZsrvErrorCode",
+                    "title": "Enumrated error code, describes more granular numerical\nvalue than just httpStatus"
+                },
+                "location": {
+                    "type": "string",
+                    "title": "Ignore: Internal field only"
+                },
+                "details": {
+                    "type": "string",
+                    "title": "Field captures string description of details"
+                }
+            }
+        },
+        "ZsrvErrorCode": {
+            "type": "string",
+            "enum": [
+                "zMsgErrorNone",
+                "zMsgSucess",
+                "NotFound",
+                "AlreadyExists",
+                "VersionMismatch",
+                "RangeError",
+                "LargeResult",
+                "IncompleteData",
+                "InvalidData",
+                "FunctionUnsupported",
+                "NoMemory",
+                "SendFailure",
+                "Timeout",
+                "BadReqBody",
+                "BadReqParam",
+                "InvalidFieldFormat",
+                "UrlNotFound",
+                "ApiVersionNotSupported",
+                "Unauthorized",
+                "Forbidden",
+                "Conflict",
+                "NotModified",
+                "DependencyConflict",
+                "JsonFmtError",
+                "ProtoFmtError",
+                "CertError",
+                "DataBaseConnection",
+                "DBError",
+                "zMsgAccepted",
+                "zMsgCreated",
+                "PreConditionFailed"
+            ],
+            "default": "zMsgErrorNone",
+            "description": "- zMsgErrorNone: common validation errors\n - IncompleteData: message had fields that weren't filled in\n - InvalidData: message contained the field that wasn't expected\n - FunctionUnsupported: this feature unavailable on this version of device\n - InvalidFieldFormat: message contained the field that wasn't correctly formatted\n - JsonFmtError: Marshal / Unmarshal errors\n - DataBaseConnection: generic DB error",
+            "title": "ZedCould internal error code"
+        },
+        "ZsrvResponse": {
+            "type": "object",
+            "properties": {
+                "operationType": {
+                    "$ref": "#/definitions/ZcOpsType",
+                    "title": "Describes one of the operations type : possible values\n                        Read/Delete/Create/Update/List"
+                },
+                "operationStatus": {
+                    "$ref": "#/definitions/ZcOpsStatus",
+                    "title": "if this is log running job"
+                },
+                "objectKind": {
+                    "type": "string",
+                    "title": "zedcloud object kind on which the operation was performed"
+                },
+                "objectId": {
+                    "type": "string",
+                    "title": "Unique value identifies the object that was operated on"
+                },
+                "objectName": {
+                    "type": "string",
+                    "title": "name of the object"
+                },
+                "objectRevision": {
+                    "type": "string",
+                    "title": "object revision post the operation, note Read operation\ndoesn't change the revision"
+                },
+                "objectType": {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                "operationTime": {
+                    "type": "string",
+                    "title": "time of operation"
+                },
+                "startTime": {
+                    "type": "string",
+                    "title": "total time taken by operations"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string",
+                    "title": "the operation is performed on behalf of this user"
+                },
+                "httpStatusCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "http response"
+                },
+                "httpStatusMsg": {
+                    "type": "string",
+                    "title": "summary of the error in text format"
+                },
+                "error": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ZsrvError"
+                    },
+                    "title": "one or more errors will be set if the operation failed\ni.e. httpStatusCode != 2xx"
+                }
+            }
+        },
+        "dhcpIpRange": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "string",
+                    "description": "starting IP"
+                },
+                "end": {
+                    "type": "string",
+                    "description": "ending IP"
+                }
+            },
+            "description": "DHCP IP range",
+            "title": "DHCP IP range"
+        },
+        "spType": {
+            "type": "string",
+            "enum": [
+                "SPTYPE_INVALIDSRV",
+                "SPTYPE_MAPSERVER",
+                "SPTYPE_SUPPORTSERVER"
+            ],
+            "default": "SPTYPE_INVALIDSRV",
+            "description": "clone of types defined in API repo.\n\n - SPTYPE_MAPSERVER: mapping service for zededa overlay service\n - SPTYPE_SUPPORTSERVER: if device has support feature enabled, this ia cloud service\nwhich device can be reached."
+        }
+    },
+    "securityDefinitions": {
+        "BearerToken": {
+            "type": "apiKey",
+            "description": "Bearer token for user session",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "security": [
+        {
+            "BearerToken": []
+        }
+    ],
+    "externalDocs": {
+        "description": "ZEDEDA Product Documentation",
+        "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-network"
+    }
+}
