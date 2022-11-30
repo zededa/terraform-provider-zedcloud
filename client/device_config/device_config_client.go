@@ -30,60 +30,60 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	ActivateEdgeNode(params *ActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ActivateEdgeNodeOK, error)
+	ActivateDevice(params *ActivateDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ActivateDeviceOK, error)
 
-	CreateEdgeNode(params *CreateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateEdgeNodeOK, error)
+	CreateDevice(params *CreateDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateDeviceOK, error)
 
-	DeActivateEdgeNode(params *DeActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeActivateEdgeNodeOK, error)
+	DeActivateDevice(params *DeActivateDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeActivateDeviceOK, error)
 
-	DeleteEdgeNode(params *DeleteEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteEdgeNodeOK, error)
+	DeleteDevice(params *DeleteDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteDeviceOK, error)
 
-	GetEdgeNode(params *GetEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeOK, error)
+	GetDevice(params *GetDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceOK, error)
 
-	GetEdgeNodeAttestation(params *GetEdgeNodeAttestationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeAttestationOK, error)
+	GetDeviceAttestation(params *GetDeviceAttestationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceAttestationOK, error)
 
-	GetEdgeNodeByName(params *GetEdgeNodeByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeByNameOK, error)
+	GetDeviceByName(params *GetDeviceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceByNameOK, error)
 
-	GetEdgeNodeBySerial(params *GetEdgeNodeBySerialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeBySerialOK, error)
+	GetDeviceBySerial(params *GetDeviceBySerialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceBySerialOK, error)
 
-	GetEdgeNodeOnboarding(params *GetEdgeNodeOnboardingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeOnboardingOK, error)
+	GetDeviceList(params *GetDeviceListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceListOK, error)
+
+	GetDeviceOnboarding(params *GetDeviceOnboardingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceOnboardingOK, error)
 
 	Offboard(params *OffboardParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*OffboardOK, error)
 
-	QueryEdgeNodes(params *QueryEdgeNodesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryEdgeNodesOK, error)
-
 	Reboot(params *RebootParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RebootOK, error)
 
-	UpdateEdgeNode(params *UpdateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEdgeNodeOK, error)
+	UpdateDevice(params *UpdateDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDeviceOK, error)
 
-	UpdateEdgeNodeBaseOS(params *UpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEdgeNodeBaseOSOK, error)
+	UpdateDeviceBaseOS(params *UpdateDeviceBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDeviceBaseOSOK, error)
 
-	UpdateEdgeNodeBaseOS2(params *UpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEdgeNodeBaseOS2OK, error)
+	UpdateDeviceBaseOS2(params *UpdateDeviceBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDeviceBaseOS2OK, error)
 
-	UpdateEdgeNodeBaseOS3(params *UpdateEdgeNodeBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEdgeNodeBaseOS3OK, error)
+	UpdateDeviceBaseOS3(params *UpdateDeviceBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDeviceBaseOS3OK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-ActivateEdgeNode activates edge node
+ActivateDevice activates device
 
-Activate an edge node. If already in active state no action is taken.
+Activate an device. If already in active state no action is taken.
 */
-func (a *Client) ActivateEdgeNode(params *ActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ActivateEdgeNodeOK, error) {
+func (a *Client) ActivateDevice(params *ActivateDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ActivateDeviceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewActivateEdgeNodeParams()
+		params = NewActivateDeviceParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "ActivateEdgeNode",
+		ID:                 "ActivateDevice",
 		Method:             "PUT",
 		PathPattern:        "/v1/devices/id/{id}/activate",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &ActivateEdgeNodeReader{formats: a.formats},
+		Reader:             &ActivateDeviceReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -96,35 +96,35 @@ func (a *Client) ActivateEdgeNode(params *ActivateEdgeNodeParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*ActivateEdgeNodeOK)
+	success, ok := result.(*ActivateDeviceOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for ActivateEdgeNode: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for ActivateDevice: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-CreateEdgeNode creates edge node
+CreateDevice creates device
 
-Create an edge node record.
+Create an device record.
 */
-func (a *Client) CreateEdgeNode(params *CreateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateEdgeNodeOK, error) {
+func (a *Client) CreateDevice(params *CreateDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateDeviceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewCreateEdgeNodeParams()
+		params = NewCreateDeviceParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "CreateEdgeNode",
+		ID:                 "CreateDevice",
 		Method:             "POST",
 		PathPattern:        "/v1/devices",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &CreateEdgeNodeReader{formats: a.formats},
+		Reader:             &CreateDeviceReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -137,35 +137,35 @@ func (a *Client) CreateEdgeNode(params *CreateEdgeNodeParams, authInfo runtime.C
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*CreateEdgeNodeOK)
+	success, ok := result.(*CreateDeviceOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for CreateEdgeNode: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for CreateDevice: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-DeActivateEdgeNode deactivates edge node
+DeActivateDevice deactivates device
 
-Deactivate an edge node. If already in inactive state no action is taken.
+Deactivate an device. If already in inactive state no action is taken.
 */
-func (a *Client) DeActivateEdgeNode(params *DeActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeActivateEdgeNodeOK, error) {
+func (a *Client) DeActivateDevice(params *DeActivateDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeActivateDeviceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDeActivateEdgeNodeParams()
+		params = NewDeActivateDeviceParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "DeActivateEdgeNode",
+		ID:                 "DeActivateDevice",
 		Method:             "PUT",
 		PathPattern:        "/v1/devices/id/{id}/deactivate",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &DeActivateEdgeNodeReader{formats: a.formats},
+		Reader:             &DeActivateDeviceReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -178,35 +178,35 @@ func (a *Client) DeActivateEdgeNode(params *DeActivateEdgeNodeParams, authInfo r
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*DeActivateEdgeNodeOK)
+	success, ok := result.(*DeActivateDeviceOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for DeActivateEdgeNode: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for DeActivateDevice: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-DeleteEdgeNode deletes edge node
+DeleteDevice deletes device
 
-Delete an edge node record.
+Delete an device record.
 */
-func (a *Client) DeleteEdgeNode(params *DeleteEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteEdgeNodeOK, error) {
+func (a *Client) DeleteDevice(params *DeleteDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteDeviceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDeleteEdgeNodeParams()
+		params = NewDeleteDeviceParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "DeleteEdgeNode",
+		ID:                 "DeleteDevice",
 		Method:             "DELETE",
 		PathPattern:        "/v1/devices/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &DeleteEdgeNodeReader{formats: a.formats},
+		Reader:             &DeleteDeviceReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -219,35 +219,35 @@ func (a *Client) DeleteEdgeNode(params *DeleteEdgeNodeParams, authInfo runtime.C
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*DeleteEdgeNodeOK)
+	success, ok := result.(*DeleteDeviceOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for DeleteEdgeNode: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for DeleteDevice: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-GetEdgeNode gets edge node
+GetDevice gets device
 
-Get the configuration (without security details) of an edge node record.
+Get the configuration (without security details) of an device record.
 */
-func (a *Client) GetEdgeNode(params *GetEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeOK, error) {
+func (a *Client) GetDevice(params *GetDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetEdgeNodeParams()
+		params = NewGetDeviceParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetEdgeNode",
+		ID:                 "GetDevice",
 		Method:             "GET",
 		PathPattern:        "/v1/devices/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetEdgeNodeReader{formats: a.formats},
+		Reader:             &GetDeviceReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -260,35 +260,35 @@ func (a *Client) GetEdgeNode(params *GetEdgeNodeParams, authInfo runtime.ClientA
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetEdgeNodeOK)
+	success, ok := result.(*GetDeviceOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetEdgeNode: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for GetDevice: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-GetEdgeNodeAttestation gets edge node p c r attestation
+GetDeviceAttestation gets device p c r attestation
 
-Get the PCR attestation of an edge node record if present.
+Get the PCR attestation of an device record if present.
 */
-func (a *Client) GetEdgeNodeAttestation(params *GetEdgeNodeAttestationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeAttestationOK, error) {
+func (a *Client) GetDeviceAttestation(params *GetDeviceAttestationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceAttestationOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetEdgeNodeAttestationParams()
+		params = NewGetDeviceAttestationParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetEdgeNodeAttestation",
+		ID:                 "GetDeviceAttestation",
 		Method:             "GET",
 		PathPattern:        "/v1/devices/id/{id}/attestation",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetEdgeNodeAttestationReader{formats: a.formats},
+		Reader:             &GetDeviceAttestationReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -301,35 +301,35 @@ func (a *Client) GetEdgeNodeAttestation(params *GetEdgeNodeAttestationParams, au
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetEdgeNodeAttestationOK)
+	success, ok := result.(*GetDeviceAttestationOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetEdgeNodeAttestation: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for GetDeviceAttestation: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-GetEdgeNodeByName gets edge node by name
+GetDeviceByName gets device by name
 
-Get the configuration (without security details) of an edge node record.
+Get the configuration (without security details) of an device record.
 */
-func (a *Client) GetEdgeNodeByName(params *GetEdgeNodeByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeByNameOK, error) {
+func (a *Client) GetDeviceByName(params *GetDeviceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetEdgeNodeByNameParams()
+		params = NewGetDeviceByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetEdgeNodeByName",
+		ID:                 "GetDeviceByName",
 		Method:             "GET",
 		PathPattern:        "/v1/devices/name/{name}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetEdgeNodeByNameReader{formats: a.formats},
+		Reader:             &GetDeviceByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -342,35 +342,35 @@ func (a *Client) GetEdgeNodeByName(params *GetEdgeNodeByNameParams, authInfo run
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetEdgeNodeByNameOK)
+	success, ok := result.(*GetDeviceByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetEdgeNodeByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for GetDeviceByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-GetEdgeNodeBySerial gets edge node by serial number
+GetDeviceBySerial gets device by serial number
 
-Get the configuration (without security details) of an edge node record.
+Get the configuration (without security details) of an device record.
 */
-func (a *Client) GetEdgeNodeBySerial(params *GetEdgeNodeBySerialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeBySerialOK, error) {
+func (a *Client) GetDeviceBySerial(params *GetDeviceBySerialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceBySerialOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetEdgeNodeBySerialParams()
+		params = NewGetDeviceBySerialParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetEdgeNodeBySerial",
+		ID:                 "GetDeviceBySerial",
 		Method:             "GET",
 		PathPattern:        "/v1/devices/serial/{serialno}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetEdgeNodeBySerialReader{formats: a.formats},
+		Reader:             &GetDeviceBySerialReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -383,35 +383,76 @@ func (a *Client) GetEdgeNodeBySerial(params *GetEdgeNodeBySerialParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetEdgeNodeBySerialOK)
+	success, ok := result.(*GetDeviceBySerialOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetEdgeNodeBySerial: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for GetDeviceBySerial: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-GetEdgeNodeOnboarding gets edge node onboarding certificate
+GetDeviceList gets device list
 
-Get the onboarding certificate of an edge node record if present, only valid for edge nodes that have not been onboarded.
+Get list of existing devices.
 */
-func (a *Client) GetEdgeNodeOnboarding(params *GetEdgeNodeOnboardingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetEdgeNodeOnboardingOK, error) {
+func (a *Client) GetDeviceList(params *GetDeviceListParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceListOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetEdgeNodeOnboardingParams()
+		params = NewGetDeviceListParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetEdgeNodeOnboarding",
+		ID:                 "GetDeviceList",
+		Method:             "GET",
+		PathPattern:        "/v1/devices",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetDeviceListReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*GetDeviceListOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
+	msg := fmt.Sprintf("unexpected success response for GetDeviceList: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	panic(msg)
+}
+
+/*
+GetDeviceOnboarding gets device onboarding certificate
+
+Get the onboarding certificate of an device record if present, only valid for devices that have not been onboarded.
+*/
+func (a *Client) GetDeviceOnboarding(params *GetDeviceOnboardingParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceOnboardingOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewGetDeviceOnboardingParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "GetDeviceOnboarding",
 		Method:             "GET",
 		PathPattern:        "/v1/devices/id/{id}/onboarding",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetEdgeNodeOnboardingReader{formats: a.formats},
+		Reader:             &GetDeviceOnboardingReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -424,13 +465,13 @@ func (a *Client) GetEdgeNodeOnboarding(params *GetEdgeNodeOnboardingParams, auth
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetEdgeNodeOnboardingOK)
+	success, ok := result.(*GetDeviceOnboardingOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetEdgeNodeOnboarding: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for GetDeviceOnboarding: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
@@ -476,50 +517,9 @@ func (a *Client) Offboard(params *OffboardParams, authInfo runtime.ClientAuthInf
 }
 
 /*
-QueryEdgeNodes queries edge nodes
+Reboot reboots device
 
-Query the edge node records.
-*/
-func (a *Client) QueryEdgeNodes(params *QueryEdgeNodesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryEdgeNodesOK, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewQueryEdgeNodesParams()
-	}
-	op := &runtime.ClientOperation{
-		ID:                 "QueryEdgeNodes",
-		Method:             "GET",
-		PathPattern:        "/v1/devices",
-		ProducesMediaTypes: []string{"application/json"},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"https"},
-		Params:             params,
-		Reader:             &QueryEdgeNodesReader{formats: a.formats},
-		AuthInfo:           authInfo,
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	}
-	for _, opt := range opts {
-		opt(op)
-	}
-
-	result, err := a.transport.Submit(op)
-	if err != nil {
-		return nil, err
-	}
-	success, ok := result.(*QueryEdgeNodesOK)
-	if ok {
-		return success, nil
-	}
-	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for QueryEdgeNodes: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
-}
-
-/*
-Reboot reboots edge node
-
-Reboot an edge node remotely. This operation triggers reboot event. Please check bla-bla for device reboot status.
+Reboot an device remotely. This operation triggers reboot event. Please check bla-bla for device reboot status.
 */
 func (a *Client) Reboot(params *RebootParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*RebootOK, error) {
 	// TODO: Validate the params before sending
@@ -558,24 +558,24 @@ func (a *Client) Reboot(params *RebootParams, authInfo runtime.ClientAuthInfoWri
 }
 
 /*
-UpdateEdgeNode updates edge node
+UpdateDevice updates device
 
-Update an edge node record. The usual pattern to update an edge node record is to retrieve the record and update with the modified values in a new body to update the edge node record.
+Update an device record. The usual pattern to update an device record is to retrieve the record and update with the modified values in a new body to update the device record.
 */
-func (a *Client) UpdateEdgeNode(params *UpdateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEdgeNodeOK, error) {
+func (a *Client) UpdateDevice(params *UpdateDeviceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDeviceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateEdgeNodeParams()
+		params = NewUpdateDeviceParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "UpdateEdgeNode",
+		ID:                 "UpdateDevice",
 		Method:             "PUT",
 		PathPattern:        "/v1/devices/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateEdgeNodeReader{formats: a.formats},
+		Reader:             &UpdateDeviceReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -588,35 +588,35 @@ func (a *Client) UpdateEdgeNode(params *UpdateEdgeNodeParams, authInfo runtime.C
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateEdgeNodeOK)
+	success, ok := result.(*UpdateDeviceOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for UpdateEdgeNode: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for UpdateDevice: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-UpdateEdgeNodeBaseOS updates e v e image on edge node
+UpdateDeviceBaseOS updates e v e image on device
 
-Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.
+Update EVE image on device, if device is already running the latest EVE image no action is taken.
 */
-func (a *Client) UpdateEdgeNodeBaseOS(params *UpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEdgeNodeBaseOSOK, error) {
+func (a *Client) UpdateDeviceBaseOS(params *UpdateDeviceBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDeviceBaseOSOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateEdgeNodeBaseOSParams()
+		params = NewUpdateDeviceBaseOSParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "UpdateEdgeNodeBaseOS",
+		ID:                 "UpdateDeviceBaseOS",
 		Method:             "PUT",
 		PathPattern:        "/v1/devices/id/{id}/apply",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateEdgeNodeBaseOSReader{formats: a.formats},
+		Reader:             &UpdateDeviceBaseOSReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -629,35 +629,35 @@ func (a *Client) UpdateEdgeNodeBaseOS(params *UpdateEdgeNodeBaseOSParams, authIn
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateEdgeNodeBaseOSOK)
+	success, ok := result.(*UpdateDeviceBaseOSOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for UpdateEdgeNodeBaseOS: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for UpdateDeviceBaseOS: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-UpdateEdgeNodeBaseOS2 updates e v e image on edge node
+UpdateDeviceBaseOS2 updates e v e image on device
 
-Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.
+Update EVE image on device, if device is already running the latest EVE image no action is taken.
 */
-func (a *Client) UpdateEdgeNodeBaseOS2(params *UpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEdgeNodeBaseOS2OK, error) {
+func (a *Client) UpdateDeviceBaseOS2(params *UpdateDeviceBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDeviceBaseOS2OK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateEdgeNodeBaseOS2Params()
+		params = NewUpdateDeviceBaseOS2Params()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "UpdateEdgeNodeBaseOS2",
+		ID:                 "UpdateDeviceBaseOS2",
 		Method:             "PUT",
 		PathPattern:        "/v1/devices/id/{id}/publish",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateEdgeNodeBaseOS2Reader{formats: a.formats},
+		Reader:             &UpdateDeviceBaseOS2Reader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -670,35 +670,35 @@ func (a *Client) UpdateEdgeNodeBaseOS2(params *UpdateEdgeNodeBaseOS2Params, auth
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateEdgeNodeBaseOS2OK)
+	success, ok := result.(*UpdateDeviceBaseOS2OK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for UpdateEdgeNodeBaseOS2: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for UpdateDeviceBaseOS2: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 
 /*
-UpdateEdgeNodeBaseOS3 updates e v e image on edge node
+UpdateDeviceBaseOS3 updates e v e image on device
 
-Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.
+Update EVE image on device, if device is already running the latest EVE image no action is taken.
 */
-func (a *Client) UpdateEdgeNodeBaseOS3(params *UpdateEdgeNodeBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateEdgeNodeBaseOS3OK, error) {
+func (a *Client) UpdateDeviceBaseOS3(params *UpdateDeviceBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateDeviceBaseOS3OK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateEdgeNodeBaseOS3Params()
+		params = NewUpdateDeviceBaseOS3Params()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "UpdateEdgeNodeBaseOS3",
+		ID:                 "UpdateDeviceBaseOS3",
 		Method:             "PUT",
 		PathPattern:        "/v1/devices/id/{id}/unpublish",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateEdgeNodeBaseOS3Reader{formats: a.formats},
+		Reader:             &UpdateDeviceBaseOS3Reader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -711,13 +711,13 @@ func (a *Client) UpdateEdgeNodeBaseOS3(params *UpdateEdgeNodeBaseOS3Params, auth
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateEdgeNodeBaseOS3OK)
+	success, ok := result.(*UpdateDeviceBaseOS3OK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
 	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for UpdateEdgeNodeBaseOS3: API contract not enforced by server. Client expected to get an error, but got: %T", result)
+	msg := fmt.Sprintf("unexpected success response for UpdateDeviceBaseOS3: API contract not enforced by server. Client expected to get an error, but got: %T", result)
 	panic(msg)
 }
 

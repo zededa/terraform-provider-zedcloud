@@ -23,7 +23,7 @@ import (
 // swagger:model Tag
 type Tag struct {
 
-	// Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group
+	// Resource group wide policy for edge applications to be deployed on all devices on this resource group
 	// Read Only: true
 	AppPolicy *PolicyConfig `json:"appPolicy,omitempty"`
 
@@ -60,7 +60,7 @@ type Tag struct {
 	// Network policy to enforce on all devices of this project
 	NetworkPolicy *PolicyConfig `json:"networkPolicy,omitempty"`
 
-	// Number of edge nodes in this resource group
+	// Number of devices in this resource group
 	// Read Only: true
 	Numdevices int64 `json:"numdevices,omitempty"`
 

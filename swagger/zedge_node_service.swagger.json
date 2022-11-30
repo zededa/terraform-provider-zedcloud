@@ -1,8 +1,8 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "ZEDEDA Edge Node Service",
-        "description": "The ZEDEDA Edge Node Service is part of ZEDEDA Edge Orchestration Platform. This service enables customers to onboard their edge nodes on ZEDEDA platform and upgrade/restart/monitor them remotely. You can use the ZEDEDA Edge Node Service to provision and manage lifecycle of millions of edge nodes distributed in different geographical locations in a secure and scalable manner.",
+        "title": "ZEDEDA device Service",
+        "description": "The ZEDEDA device Service is part of ZEDEDA Edge Orchestration Platform. This service enables customers to onboard their devices on ZEDEDA platform and upgrade/restart/monitor them remotely. You can use the ZEDEDA device Service to provision and manage lifecycle of millions of devices distributed in different geographical locations in a secure and scalable manner.",
         "termsOfService": "https://www.zededa.com/terms",
         "version": "1.0",
         "contact": {
@@ -817,9 +817,9 @@
         },
         "/v1/devices": {
             "get": {
-                "summary": "Query edge nodes",
-                "description": "Query the edge node records.",
-                "operationId": "QueryEdgeNodes",
+                "summary": "Get device list",
+                "description": "Get list of existing devices.",
+                "operationId": "GetDeviceList",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -884,9 +884,9 @@
                 }
             },
             "post": {
-                "summary": "Create edge node",
-                "description": "Create an edge node record.",
-                "operationId": "CreateEdgeNode",
+                "summary": "Create device",
+                "description": "Create an device record.",
+                "operationId": "CreateDevice",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -913,7 +913,7 @@
                         }
                     },
                     "409": {
-                        "description": "Conflict. The API gateway did not process the request because this edge node record will conflict with an already existing edge node record.",
+                        "description": "Conflict. The API gateway did not process the request because this device record will conflict with an already existing device record.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -959,9 +959,9 @@
         },
         "/v1/devices/id/{id}": {
             "get": {
-                "summary": "Get edge node",
-                "description": "Get the configuration (without security details) of an edge node record.",
-                "operationId": "GetEdgeNode",
+                "summary": "Get device",
+                "description": "Get the configuration (without security details) of an device record.",
+                "operationId": "GetDevice",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1025,9 +1025,9 @@
                 }
             },
             "delete": {
-                "summary": "Delete edge node",
-                "description": "Delete an edge node record.",
-                "operationId": "DeleteEdgeNode",
+                "summary": "Delete device",
+                "description": "Delete an device record.",
+                "operationId": "DeleteDevice",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1091,9 +1091,9 @@
                 }
             },
             "put": {
-                "summary": "Update edge node",
-                "description": "Update an edge node record. The usual pattern to update an edge node record is to retrieve the record and update with the modified values in a new body to update the edge node record.",
-                "operationId": "UpdateEdgeNode",
+                "summary": "Update device",
+                "description": "Update an device record. The usual pattern to update an device record is to retrieve the record and update with the modified values in a new body to update the device record.",
+                "operationId": "UpdateDevice",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1120,7 +1120,7 @@
                         }
                     },
                     "409": {
-                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.",
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing device record.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -1241,9 +1241,9 @@
         },
         "/v1/devices/id/{id}/activate": {
             "put": {
-                "summary": "Activate edge node.",
-                "description": "Activate an edge node. If already in active state no action is taken.",
-                "operationId": "ActivateEdgeNode",
+                "summary": "Activate device.",
+                "description": "Activate an device. If already in active state no action is taken.",
+                "operationId": "ActivateDevice",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1270,7 +1270,7 @@
                         }
                     },
                     "409": {
-                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.",
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing device record.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -1315,9 +1315,9 @@
         },
         "/v1/devices/id/{id}/apply": {
             "put": {
-                "summary": "update EVE image on edge node",
-                "description": "Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.",
-                "operationId": "UpdateEdgeNodeBaseOS",
+                "summary": "update EVE image on device",
+                "description": "Update EVE image on device, if device is already running the latest EVE image no action is taken.",
+                "operationId": "UpdateDeviceBaseOS",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1344,7 +1344,7 @@
                         }
                     },
                     "409": {
-                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.",
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing device record.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -1389,9 +1389,9 @@
         },
         "/v1/devices/id/{id}/attestation": {
             "get": {
-                "summary": "Get edge node PCR attestation",
-                "description": "Get the PCR attestation of an edge node record if present.",
-                "operationId": "GetEdgeNodeAttestation",
+                "summary": "Get device PCR attestation",
+                "description": "Get the PCR attestation of an device record if present.",
+                "operationId": "GetDeviceAttestation",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1457,9 +1457,9 @@
         },
         "/v1/devices/id/{id}/deactivate": {
             "put": {
-                "summary": "Deactivate edge node.",
-                "description": "Deactivate an edge node. If already in inactive state no action is taken.",
-                "operationId": "DeActivateEdgeNode",
+                "summary": "Deactivate device.",
+                "description": "Deactivate an device. If already in inactive state no action is taken.",
+                "operationId": "DeActivateDevice",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1486,7 +1486,7 @@
                         }
                     },
                     "409": {
-                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.",
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing device record.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -1531,9 +1531,9 @@
         },
         "/v1/devices/id/{id}/onboarding": {
             "get": {
-                "summary": "Get edge node onboarding certificate",
-                "description": "Get the onboarding certificate of an edge node record if present, only valid for edge nodes that have not been onboarded.",
-                "operationId": "GetEdgeNodeOnboarding",
+                "summary": "Get device onboarding certificate",
+                "description": "Get the onboarding certificate of an device record if present, only valid for devices that have not been onboarded.",
+                "operationId": "GetDeviceOnboarding",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1599,9 +1599,9 @@
         },
         "/v1/devices/id/{id}/publish": {
             "put": {
-                "summary": "update EVE image on edge node",
-                "description": "Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.",
-                "operationId": "UpdateEdgeNodeBaseOS2",
+                "summary": "update EVE image on device",
+                "description": "Update EVE image on device, if device is already running the latest EVE image no action is taken.",
+                "operationId": "UpdateDeviceBaseOS2",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1628,7 +1628,7 @@
                         }
                     },
                     "409": {
-                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.",
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing device record.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -1673,8 +1673,8 @@
         },
         "/v1/devices/id/{id}/reboot": {
             "put": {
-                "summary": "Reboot edge node.",
-                "description": "Reboot an edge node remotely. This operation triggers reboot event. Please check bla-bla for device reboot status.",
+                "summary": "Reboot device.",
+                "description": "Reboot an device remotely. This operation triggers reboot event. Please check bla-bla for device reboot status.",
                 "operationId": "Reboot",
                 "responses": {
                     "200": {
@@ -1702,7 +1702,7 @@
                         }
                     },
                     "409": {
-                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.",
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing device record.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -1747,14 +1747,14 @@
         },
         "/v1/devices/id/{id}/status": {
             "get": {
-                "summary": "Get edge node status",
-                "description": "Get the status of an edge node as reported by the edge node itself",
-                "operationId": "GetEdgeNodeStatus",
+                "summary": "Get device status",
+                "description": "Get the status of an device as reported by the device itself",
+                "operationId": "GetDeviceStatusByID",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
                         "schema": {
-                            "$ref": "#/definitions/DeviceStatusMsg"
+                            "$ref": "#/definitions/DeviceStatus"
                         }
                     },
                     "401": {
@@ -1804,7 +1804,7 @@
                     }
                 ],
                 "tags": [
-                    "EdgeNodeStatus"
+                    "DeviceStatus"
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
@@ -1814,9 +1814,9 @@
         },
         "/v1/devices/id/{id}/unpublish": {
             "put": {
-                "summary": "update EVE image on edge node",
-                "description": "Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.",
-                "operationId": "UpdateEdgeNodeBaseOS3",
+                "summary": "update EVE image on device",
+                "description": "Update EVE image on device, if device is already running the latest EVE image no action is taken.",
+                "operationId": "UpdateDeviceBaseOS3",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1843,7 +1843,7 @@
                         }
                     },
                     "409": {
-                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.",
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing device record.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -1888,9 +1888,9 @@
         },
         "/v1/devices/id/{objid}/events": {
             "get": {
-                "summary": "Get edge node events by id",
-                "description": "Get configuration and status events of an edge node by id.",
-                "operationId": "GetEdgeNodeEvents",
+                "summary": "Get device events by id",
+                "description": "Get configuration and status events of an device by id.",
+                "operationId": "GetDeviceEventsListByID",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1960,7 +1960,7 @@
                     }
                 ],
                 "tags": [
-                    "EdgeNodeStatus"
+                    "DeviceStatus"
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
@@ -1970,9 +1970,9 @@
         },
         "/v1/devices/id/{objid}/timeSeries/{mType}": {
             "get": {
-                "summary": "Get edge node resource usage timeline",
-                "description": "Get the resource usage timeline of an edge node",
-                "operationId": "GetEdgeNodeResourceMetricsById",
+                "summary": "Get device resource usage timeline",
+                "description": "Get the resource usage timeline of an device",
+                "operationId": "GetDeviceResourceMetricsById",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2112,7 +2112,7 @@
                     }
                 ],
                 "tags": [
-                    "EdgeNodeStatus"
+                    "DeviceStatus"
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
@@ -2122,9 +2122,9 @@
         },
         "/v1/devices/name/{name}": {
             "get": {
-                "summary": "Get edge node by name",
-                "description": "Get the configuration (without security details) of an edge node record.",
-                "operationId": "GetEdgeNodeByName",
+                "summary": "Get device by name",
+                "description": "Get the configuration (without security details) of an device record.",
+                "operationId": "GetDeviceByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2190,14 +2190,14 @@
         },
         "/v1/devices/name/{name}/status": {
             "get": {
-                "summary": "Get edge node status",
-                "description": "Get the status of an edge node as reported by the edge node itself",
-                "operationId": "GetEdgeNodeStatusByName",
+                "summary": "Get device status",
+                "description": "Get the status of an device as reported by the device itself",
+                "operationId": "GetDeviceStatusByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
                         "schema": {
-                            "$ref": "#/definitions/DeviceStatusMsg"
+                            "$ref": "#/definitions/DeviceStatus"
                         }
                     },
                     "401": {
@@ -2247,7 +2247,7 @@
                     }
                 ],
                 "tags": [
-                    "EdgeNodeStatus"
+                    "DeviceStatus"
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
@@ -2257,9 +2257,9 @@
         },
         "/v1/devices/name/{objname}/events": {
             "get": {
-                "summary": "Get edge node events by id",
-                "description": "Get configuration and status events of an edge node by id.",
-                "operationId": "GetEdgeNodeEventsByName",
+                "summary": "Get device events by id",
+                "description": "Get configuration and status events of an device by id.",
+                "operationId": "GetDeviceEventsListByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2329,7 +2329,7 @@
                     }
                 ],
                 "tags": [
-                    "EdgeNodeStatus"
+                    "DeviceStatus"
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
@@ -2339,9 +2339,9 @@
         },
         "/v1/devices/name/{objname}/timeSeries/{mType}": {
             "get": {
-                "summary": "Get edge node resource usage timeline",
-                "description": "Get the resource usage timeline of an edge node",
-                "operationId": "GetEdgeNodeResourceMetricsByName",
+                "summary": "Get device resource usage timeline",
+                "description": "Get the resource usage timeline of an device",
+                "operationId": "GetDeviceResourceMetricsByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2481,7 +2481,7 @@
                     }
                 ],
                 "tags": [
-                    "EdgeNodeStatus"
+                    "DeviceStatus"
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
@@ -2491,9 +2491,9 @@
         },
         "/v1/devices/serial/{serialno}": {
             "get": {
-                "summary": "Get edge node by serial number",
-                "description": "Get the configuration (without security details) of an edge node record.",
-                "operationId": "GetEdgeNodeBySerial",
+                "summary": "Get device by serial number",
+                "description": "Get the configuration (without security details) of an device record.",
+                "operationId": "GetDeviceBySerial",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2559,9 +2559,9 @@
         },
         "/v1/devices/status": {
             "get": {
-                "summary": "Query status of edge nodes",
-                "description": "Query the status of edge nodes as reported by the edge nodes themselves",
-                "operationId": "QueryEdgeNodeStatus",
+                "summary": "Query status of devices",
+                "description": "Query the status of devices as reported by the devices themselves",
+                "operationId": "QueryDeviceStatus",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2710,7 +2710,7 @@
                     }
                 ],
                 "tags": [
-                    "EdgeNodeStatus"
+                    "DeviceStatus"
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
@@ -3398,7 +3398,7 @@
         "/v1/projects/id/{objid}/timeSeries/{mType}": {
             "get": {
                 "summary": "Get resource group resource usage timeline",
-                "description": "Get the resource usage timeline of a resource group as reported by the edge nodes in the resource group",
+                "description": "Get the resource usage timeline of a resource group as reported by the devices in the resource group",
                 "operationId": "GetResourceGroupResourceMetricsById",
                 "responses": {
                     "200": {
@@ -3768,7 +3768,7 @@
         "/v1/projects/name/{objname}/timeSeries/{mType}": {
             "get": {
                 "summary": "Get resource group resource usage timeline",
-                "description": "Get the resource usage timeline of a resource group as reported by the edge nodes in the resource group",
+                "description": "Get the resource usage timeline of a resource group as reported by the devices in the resource group",
                 "operationId": "GetResourceGroupResourceMetricsByName",
                 "responses": {
                     "200": {
@@ -5052,7 +5052,7 @@
                     "description": "user defined storage for bundle"
                 }
             },
-            "description": "Edge application configuration for an App policy defines configuration details of the Edge application to be installed to all Edge node(s) under the App policy.",
+            "description": "Edge application configuration for an App policy defines configuration details of the Edge application to be installed to all device(s) under the App policy.",
             "title": "Edge application configuration for App policy",
             "required": [
                 "name",
@@ -6448,7 +6448,7 @@
                 }
             }
         },
-        "DeviceStatusMsg": {
+        "DeviceStatus": {
             "type": "object",
             "properties": {
                 "name": {
@@ -6597,7 +6597,7 @@
                 },
                 "capabilities": {
                     "$ref": "#/definitions/Capabilities",
-                    "description": "Edge node virtualization capabilities.",
+                    "description": "device virtualization capabilities.",
                     "title": "Information about hardware capabilities"
                 }
             }
@@ -6900,7 +6900,7 @@
             ],
             "default": "ENTITY_UNSPECIFIED",
             "description": "- ENTITY_UNSPECIFIED: Invalid Device Entity - ENTITY_BASE_OS: Base OS entity - ENTITY_SYSTEM_ADAPTER: System Adapter Entity - ENTITY_VAULT: Vault Entity - ENTITY_ATTESTATION: Attestation Entity - ENTITY_APP_INSTANCE: App Instance Entity - ENTITY_PORT: Port Entity - ENTITY_NETWORK: Network Entity - ENTITY_NETWORK_INSTANCE: Network Instance Entity - ENTITY_CONTENT_TREE: ContentTree Entity - ENTITY_CONTENT_BLOB: Blob Entity - ENTITY_VOLUME: VOLUME Entity",
-            "title": "Edge node components"
+            "title": "device components"
         },
         "EventQueryResponse": {
             "type": "object",
@@ -7001,7 +7001,7 @@
                 "EVENT_SOURCE_USER"
             ],
             "default": "EVENT_SOURCE_UNSPECIFIED",
-            "description": "- EVENT_SOURCE_UNSPECIFIED: Default - EVENT_SOURCE_SYSTEM: Event is generated as a result of status change reported by edge node / application - EVENT_SOURCE_USER: Event is generated as a result of an user's configuration action",
+            "description": "- EVENT_SOURCE_UNSPECIFIED: Default - EVENT_SOURCE_SYSTEM: Event is generated as a result of status change reported by device / application - EVENT_SOURCE_USER: Event is generated as a result of an user's configuration action",
             "title": "Source of events"
         },
         "GeoLocation": {
@@ -7048,8 +7048,8 @@
                     "description": "Free formatted location string"
                 }
             },
-            "description": "Geographic location of an edge node determined by a variety of data collection mechanisms (e.g. network routing addresses or internal GPS devices).",
-            "title": "Geographic location of an edge node"
+            "description": "Geographic location of an device determined by a variety of data collection mechanisms (e.g. network routing addresses or internal GPS devices).",
+            "title": "Geographic location of an device"
         },
         "GroupSymmetricKeyEnrollment": {
             "type": "object",
@@ -7635,7 +7635,7 @@
                     "description": "network policy id"
                 }
             },
-            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
+            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single device and within a logical group of devices. This provides detailed configuration of a Network instance.",
             "title": "Network instance detailed configuration",
             "required": [
                 "name",
@@ -8976,7 +8976,7 @@
                 },
                 "appPolicy": {
                     "$ref": "#/definitions/PolicyConfig",
-                    "description": "Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group",
+                    "description": "Resource group wide policy for edge applications to be deployed on all devices on this resource group",
                     "readOnly": true
                 },
                 "cloudPolicy": {
@@ -8995,7 +8995,7 @@
                 "numdevices": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Number of edge nodes in this resource group",
+                    "description": "Number of devices in this resource group",
                     "readOnly": true
                 },
                 "attestationPolicy": {

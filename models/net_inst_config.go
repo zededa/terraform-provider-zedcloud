@@ -17,7 +17,7 @@ import (
 
 // NetInstConfig Network instance detailed configuration
 //
-// Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.
+// Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single device and within a logical group of devices. This provides detailed configuration of a Network instance.
 //
 // swagger:model NetInstConfig
 type NetInstConfig struct {

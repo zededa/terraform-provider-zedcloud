@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	"github.com/zededa/terraform-provider/client/device_config"
-	"github.com/zededa/terraform-provider/client/edge_node_status"
+	"github.com/zededa/terraform-provider/client/device_status"
 	"github.com/zededa/terraform-provider/client/hardware_model"
 	"github.com/zededa/terraform-provider/client/resource_group"
 	"github.com/zededa/terraform-provider/client/resource_group_status"
@@ -60,7 +60,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Zedcloudap
 	cli := new(Zedcloudapi)
 	cli.Transport = transport
 	cli.DeviceConfig = device_config.New(transport, formats)
-	cli.EdgeNodeStatus = edge_node_status.New(transport, formats)
+	cli.DeviceStatus = device_status.New(transport, formats)
 	cli.HardwareModel = hardware_model.New(transport, formats)
 	cli.ResourceGroup = resource_group.New(transport, formats)
 	cli.ResourceGroupStatus = resource_group_status.New(transport, formats)
@@ -110,7 +110,7 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 type Zedcloudapi struct {
 	DeviceConfig device_config.ClientService
 
-	EdgeNodeStatus edge_node_status.ClientService
+	DeviceStatus device_status.ClientService
 
 	HardwareModel hardware_model.ClientService
 
@@ -125,7 +125,7 @@ type Zedcloudapi struct {
 func (c *Zedcloudapi) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.DeviceConfig.SetTransport(transport)
-	c.EdgeNodeStatus.SetTransport(transport)
+	c.DeviceStatus.SetTransport(transport)
 	c.HardwareModel.SetTransport(transport)
 	c.ResourceGroup.SetTransport(transport)
 	c.ResourceGroupStatus.SetTransport(transport)

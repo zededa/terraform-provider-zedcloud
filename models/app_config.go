@@ -17,7 +17,7 @@ import (
 
 // AppConfig Edge application configuration for App policy
 //
-// Edge application configuration for an App policy defines configuration details of the Edge application to be installed to all Edge node(s) under the App policy.
+// Edge application configuration for an App policy defines configuration details of the Edge application to be installed to all device(s) under the App policy.
 //
 // swagger:model AppConfig
 type AppConfig struct {

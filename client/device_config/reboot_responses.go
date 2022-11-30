@@ -330,7 +330,7 @@ func NewRebootConflict() *RebootConflict {
 /*
 RebootConflict describes a response with status code 409, with default header values.
 
-Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.
+Conflict. The API gateway did not process the request because this operation will conflict with an already existing device record.
 */
 type RebootConflict struct {
 	Payload *models.ZsrvResponse

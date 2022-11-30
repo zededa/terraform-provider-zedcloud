@@ -117,7 +117,7 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 func TagSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
-			Description: `Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group`,
+			Description: `Resource group wide policy for edge applications to be deployed on all devices on this resource group`,
 			Type:        schema.TypeList, //GoType: PolicyConfig
 			Elem: &schema.Resource{
 				Schema: PolicyConfigSchema(),
@@ -190,7 +190,7 @@ func TagSchema() map[string]*schema.Schema {
 		},
 
 		"numdevices": {
-			Description: `Number of edge nodes in this resource group`,
+			Description: `Number of devices in this resource group`,
 			Type:        schema.TypeInt,
 			Computed:    true,
 		},

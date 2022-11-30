@@ -302,7 +302,7 @@ func (a *Client) GetResourceGroupEventsByName(params *GetResourceGroupEventsByNa
 /*
 GetResourceGroupResourceMetricsByID gets resource group resource usage timeline
 
-Get the resource usage timeline of a resource group as reported by the edge nodes in the resource group
+Get the resource usage timeline of a resource group as reported by the devices in the resource group
 */
 func (a *Client) GetResourceGroupResourceMetricsByID(params *GetResourceGroupResourceMetricsByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupResourceMetricsByIDOK, error) {
 	// TODO: Validate the params before sending
@@ -343,7 +343,7 @@ func (a *Client) GetResourceGroupResourceMetricsByID(params *GetResourceGroupRes
 /*
 GetResourceGroupResourceMetricsByName gets resource group resource usage timeline
 
-Get the resource usage timeline of a resource group as reported by the edge nodes in the resource group
+Get the resource usage timeline of a resource group as reported by the devices in the resource group
 */
 func (a *Client) GetResourceGroupResourceMetricsByName(params *GetResourceGroupResourceMetricsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupResourceMetricsByNameOK, error) {
 	// TODO: Validate the params before sending

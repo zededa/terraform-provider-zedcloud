@@ -2,30 +2,6 @@ package utils
 
 import (
 )
-{{/* We keep our helper/utility methods here for anything that needs to be run across various templates */}}
-
-// retrieve resource custom properties from resource structure
-func GetPropertiesFromResource(d *schema.ResourceData, key string) (t []*models.NameAndValue) {
-	if r, ok := d.GetOk(key); ok {
-		return getPropertiesFromInterface(r)
-	}
-	return
-}
-
-func getPropertiesFromInterface(r interface{}) (t []*models.NameAndValue) {
-	for _, i := range r.([]interface{}) {
-		if m, ok := i.(map[string]interface{}); ok {
-			var name = m["name"].(string)
-			var value = m["value"].(string)
-			model := &models.NameAndValue{
-				Name:  &name,
-				Value: &value,
-			}
-			t = append(t, model)
-		}
-	}
-	return
-}
 
 // remove an item from array
 func Remove(s []string, r string) []string {
