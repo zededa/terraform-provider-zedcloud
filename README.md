@@ -36,3 +36,7 @@
 
 - Change /v1/devices/id/{objid}/events endpoint operationId: GetDeviceEventListByID
 - Change /v1/devices/name/{objname}/events endpoint operationId: -> GetDeviceEventListByName
+
+### TODO
+- rename Device to EdgeNode to stay consistent even though endpoints use device?
+
