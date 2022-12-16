@@ -10,6 +10,7 @@ import (
 	zschema "github.com/zededa/terraform-provider/schemas"
 	"github.com/zededa/terraform-provider/resources/utils"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 {{- $operationGroup := .Name -}} {{/* operation groups map to OpenAPI tags */}}
