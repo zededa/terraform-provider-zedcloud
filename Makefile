@@ -10,6 +10,7 @@ all: swagger
 
 clean: swagger-clean
 
+.PHONY: download-swagger
 download-swagger:
 	# This target needs an env variable SWAGGER_URL_BASE to be set.
 	# Example Value for SWAGGER_URL_BASE: https://zedcontrol.zededa.net/api/v1/docs/zapiservices/
@@ -18,6 +19,10 @@ download-swagger:
 	 	echo "downloading file: $$f"; \
 		wget -O swagger/$$f $(SWAGGER_URL_BASE)/$$f; \
 	done
+
+.PHONY: swagger-clean
+swagger-clean:
+	rm -rf swagger_client swagger_models swagger_operations
 
 swagger: swagger-install swagger-generate
 
@@ -47,8 +52,7 @@ gen:
 		-A zedcloudapi \
 		-C swagger/config.yml
 
-client:
-	cd zedcloud_client && go build
-
-swagger-clean:
-	rm -rf swagger_client swagger_models swagger_operations
+.PHONY: gen
+build:
+	go build -o terraform-provider-zedcloud_v0.0.0
+	chmod a+x terraform-provider-zedcloud_v0.0.0
