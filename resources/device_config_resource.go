@@ -9,7 +9,6 @@ import (
 	"errors"
 	"log"
 
-	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	apiclient "github.com/zededa/terraform-provider/client"
@@ -24,11 +23,24 @@ DeviceConfig device config API
 
 func DeviceConfig() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: CreateDevice,
-		DeleteContext: DeleteDevice,
-		ReadContext:   GetDevice,
-		UpdateContext: UpdateDevice,
-		Schema:        zschema.DeviceConfigSchema(),
+		/*
+			UpdateContext: ActivateDevice,
+			CreateContext: CreateDevice,
+			UpdateContext: DeActivateDevice,
+			DeleteContext: DeleteDevice,
+			ReadContext: GetDevice,
+			ReadContext: GetDeviceAttestation,
+			ReadContext: GetDeviceByName,
+			ReadContext: GetDeviceBySerial,
+			ReadContext: GetDeviceOnboarding,
+			UpdateContext: Offboard,
+			UpdateContext: Reboot,
+			UpdateContext: UpdateDevice,
+			UpdateContext: UpdateDeviceBaseOS,
+			UpdateContext: UpdateDeviceBaseOS2,
+			UpdateContext: UpdateDeviceBaseOS3,
+		*/
+		Schema: zschema.DeviceConfigSchema(),
 	}
 }
 
@@ -60,10 +72,7 @@ func GetDevice(ctx context.Context, d *schema.ResourceData, m interface{}) diag.
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.DeviceConfig.GetDevice(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.GetDevice(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -96,10 +105,7 @@ func GetDeviceAttestation(ctx context.Context, d *schema.ResourceData, m interfa
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.DeviceConfig.GetDeviceAttestation(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.GetDeviceAttestation(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -131,10 +137,7 @@ func GetDeviceByName(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.DeviceConfig.GetDeviceByName(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.GetDeviceByName(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -166,10 +169,7 @@ func GetDeviceBySerial(ctx context.Context, d *schema.ResourceData, m interface{
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.DeviceConfig.GetDeviceBySerial(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.GetDeviceBySerial(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -198,10 +198,7 @@ func GetDeviceList(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.DeviceConfig.GetDeviceList(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.GetDeviceList(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -241,10 +238,7 @@ func GetDeviceOnboarding(ctx context.Context, d *schema.ResourceData, m interfac
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.DeviceConfig.GetDeviceOnboarding(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.GetDeviceOnboarding(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -265,10 +259,7 @@ func CreateDevice(ctx context.Context, d *schema.ResourceData, m interface{}) di
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.DeviceConfig.CreateDevice(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.CreateDevice(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -323,10 +314,7 @@ func ActivateDevice(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.DeviceConfig.ActivateDevice(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.ActivateDevice(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -382,10 +370,7 @@ func DeActivateDevice(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.DeviceConfig.DeActivateDevice(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.DeActivateDevice(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -441,10 +426,7 @@ func Offboard(ctx context.Context, d *schema.ResourceData, m interface{}) diag.D
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.DeviceConfig.Offboard(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.Offboard(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -500,10 +482,7 @@ func Reboot(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Dia
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.DeviceConfig.Reboot(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.Reboot(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -562,10 +541,7 @@ func UpdateDevice(ctx context.Context, d *schema.ResourceData, m interface{}) di
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.DeviceConfig.UpdateDevice(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.UpdateDevice(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -621,10 +597,7 @@ func UpdateDeviceBaseOS(ctx context.Context, d *schema.ResourceData, m interface
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.DeviceConfig.UpdateDeviceBaseOS(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.UpdateDeviceBaseOS(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -680,10 +653,7 @@ func UpdateDeviceBaseOS2(ctx context.Context, d *schema.ResourceData, m interfac
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.DeviceConfig.UpdateDeviceBaseOS2(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.UpdateDeviceBaseOS2(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -739,10 +709,7 @@ func UpdateDeviceBaseOS3(ctx context.Context, d *schema.ResourceData, m interfac
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.DeviceConfig.UpdateDeviceBaseOS3(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.UpdateDeviceBaseOS3(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -788,10 +755,7 @@ func DeleteDevice(ctx context.Context, d *schema.ResourceData, m interface{}) di
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.DeviceConfig.DeleteDevice(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.DeviceConfig.DeleteDevice(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
