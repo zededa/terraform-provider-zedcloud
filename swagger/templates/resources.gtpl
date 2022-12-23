@@ -72,10 +72,7 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(
-	    params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if(err != nil){
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -114,10 +111,7 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(
-	    params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if(err != nil){
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -171,10 +165,7 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(
-	    params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -215,10 +206,7 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(
-		params,
-		httptransport.BearerToken(d.Get("ZEDCLOUD_API_TOKEN").(string)),
-	)
+	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)

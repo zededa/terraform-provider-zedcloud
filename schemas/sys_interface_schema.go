@@ -90,7 +90,8 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AdapterUsageSchema(),
 			},
-			Optional: true,
+			ConfigMode: schema.SchemaConfigModeAttr,
+			Optional:   true,
 		},
 
 		"intfname": {
