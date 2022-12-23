@@ -5,3 +5,6 @@ tftest/
 .terraform/
 terraform.tfstate
 terraform.tfstate.backup
+dev.tfrc
+main.tf.bkp
+terraform-provider-zedcloud_v*
