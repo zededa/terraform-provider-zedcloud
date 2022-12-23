@@ -15,7 +15,14 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "host": "zedcontrol.zededa.net",
+    "tags": [
+        {
+            "name": "CloudDiagnostics"
+        },
+        {
+            "name": "EdgeDiagnostics"
+        }
+    ],
     "basePath": "/api",
     "schemes": [
         "https"
@@ -31,7 +38,7 @@
             "get": {
                 "summary": "Get Cloud services health report",
                 "description": "Get Cloud services health report.",
-                "operationId": "GetClusterHealthReport",
+                "operationId": "CloudDiagnostics_GetClusterHealthReport",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -49,6 +56,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -74,7 +87,7 @@
             "get": {
                 "summary": "Check Cloud reachability",
                 "description": "Check Cloud reachability by sending a ping message to API gateway. API gateway will echo back either \"pong\" or the id specified.",
-                "operationId": "checkClusterHealth",
+                "operationId": "CloudDiagnostics_checkClusterHealth",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -92,6 +105,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -124,7 +143,7 @@
             "get": {
                 "summary": "Check Cloud reachability",
                 "description": "Check Cloud reachability by sending a ping message to API gateway. API gateway will echo back either \"pong\" or the id specified.",
-                "operationId": "checkClusterHealth2",
+                "operationId": "CloudDiagnostics_checkClusterHealth2",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -142,6 +161,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -174,7 +199,7 @@
             "get": {
                 "summary": "Query Cloud policies",
                 "description": "Query policy records of latest version of Cloud policies.",
-                "operationId": "QueryCloudPolicies",
+                "operationId": "CloudDiagnostics_QueryCloudPolicies",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -192,6 +217,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -259,7 +290,7 @@
                 }
             },
             "post": {
-                "operationId": "CreateCloudPolicyDocument",
+                "operationId": "CloudDiagnostics_CreateCloudPolicyDocument",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -277,6 +308,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -294,7 +331,7 @@
                 ]
             },
             "put": {
-                "operationId": "MarkCloudPolicyLatest",
+                "operationId": "CloudDiagnostics_MarkCloudPolicyLatest",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -312,6 +349,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -333,7 +376,7 @@
             "get": {
                 "summary": "Get Cloud policy document",
                 "description": "Get policy document for specific version of Cloud policy.",
-                "operationId": "GetCloudPolicyDocument",
+                "operationId": "CloudDiagnostics_GetCloudPolicyDocument",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -357,6 +400,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -424,7 +473,7 @@
                 }
             },
             "delete": {
-                "operationId": "DeleteCloudPolicyDocument",
+                "operationId": "CloudDiagnostics_DeleteCloudPolicyDocument",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -442,6 +491,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -509,7 +564,7 @@
             "get": {
                 "summary": "Get Cloud policy latest version",
                 "description": "Get policy record for latest version of Cloud policy.",
-                "operationId": "GetCloudPolicy",
+                "operationId": "CloudDiagnostics_GetCloudPolicy",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -533,6 +588,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -604,7 +665,7 @@
             "get": {
                 "summary": "Get Cloud policy specific version",
                 "description": "Get policy record for specific version of Cloud policy.",
-                "operationId": "GetCloudPolicyVersion",
+                "operationId": "CloudDiagnostics_GetCloudPolicyVersion",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -628,6 +689,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -699,7 +766,7 @@
             "get": {
                 "summary": "Get Cloud controller software version",
                 "description": "Get Cloud controller software version.",
-                "operationId": "GetClusterVersion",
+                "operationId": "CloudDiagnostics_GetClusterVersion",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -717,6 +784,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -742,7 +815,7 @@
             "get": {
                 "summary": "Get current Device twin configuration",
                 "description": "Get currentnext Device twin configuration for the edge node. Edge node has read this configuration when it queried Cloud controller last time.",
-                "operationId": "GetDeviceTwinConfig",
+                "operationId": "EdgeDiagnostics_GetDeviceTwinConfig",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -785,6 +858,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -814,7 +893,7 @@
             "put": {
                 "summary": "Re-generate device configuration",
                 "description": "Re-generate the device configuration. Edge node will get this configuration when it queries Cloud controller next time.",
-                "operationId": "RegenDeviceConfig",
+                "operationId": "EdgeDiagnostics_RegenDeviceConfig",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -856,6 +935,98 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "system generated unique id for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/devices/id/{id}/config/bootstrap": {
+            "get": {
+                "summary": "Get bootstrap Device twin configuration",
+                "description": "Get bootstrap Device twin configuration for the edge node. Doesn't change the existing edge node configuration.",
+                "operationId": "EdgeDiagnostics_GetDeviceTwinBootstrapConfig",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigServiceResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed. The API request can't be performed due to a wrong edge node's admin status.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -888,7 +1059,7 @@
             "get": {
                 "summary": "Get next Device twin configuration",
                 "description": "Get next Device twin configuration for the edge node. Edge node will get this configuration when it queries Cloud controller next time.",
-                "operationId": "GetDeviceTwinNextConfig",
+                "operationId": "EdgeDiagnostics_GetDeviceTwinNextConfig",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -930,6 +1101,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -962,7 +1139,7 @@
             "get": {
                 "summary": "Get offline Device twin configuration",
                 "description": "Get offline Device twin configuration for the edge node. Edge node will get this configuration when it queries Cloud controller next time.",
-                "operationId": "GetDeviceTwinOfflineNextConfig",
+                "operationId": "EdgeDiagnostics_GetDeviceTwinOfflineNextConfig",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1004,6 +1181,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1036,7 +1219,7 @@
             "get": {
                 "summary": "Get current Device twin configuration",
                 "description": "Get currentnext Device twin configuration for the edge node. Edge node has read this configuration when it queried Cloud controller last time.",
-                "operationId": "GetDeviceTwinConfigByName",
+                "operationId": "EdgeDiagnostics_GetDeviceTwinConfigByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1078,6 +1261,98 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "user defined device name for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
+            }
+        },
+        "/v1/devices/name/{name}/config/bootstrap": {
+            "get": {
+                "summary": "Get bootstrap Device twin configuration",
+                "description": "Get bootstrap Device twin configuration for the edge node. Doesn't change the existing edge node configuration.",
+                "operationId": "EdgeDiagnostics_GetDeviceTwinBootstrapConfigByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ConfigServiceResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "405": {
+                        "description": "Method not allowed. The API request can't be performed due to a wrong edge node's admin status.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1110,7 +1385,7 @@
             "get": {
                 "summary": "Get next Device twin configuration",
                 "description": "Get next Device twin configuration for the edge node. Edge node will get this configuration when it queries Cloud controller next time.",
-                "operationId": "GetDeviceTwinNextConfigByName",
+                "operationId": "EdgeDiagnostics_GetDeviceTwinNextConfigByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1152,6 +1427,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1184,7 +1465,7 @@
             "get": {
                 "summary": "Get offline Device twin configuration",
                 "description": "Get offline Device twin configuration for the edge node. Edge node will get this configuration when it queries Cloud controller next time.",
-                "operationId": "GetDeviceTwinOfflineConfigByName",
+                "operationId": "EdgeDiagnostics_GetDeviceTwinOfflineConfigByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1227,6 +1508,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1258,7 +1545,7 @@
             "get": {
                 "summary": "Get events timeline",
                 "description": "Get aggregated events timeline",
-                "operationId": "GetEventsTimeline",
+                "operationId": "EdgeDiagnostics_GetEventsTimeline",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1294,6 +1581,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1340,7 +1633,7 @@
             "get": {
                 "summary": "Get resource usage timeline",
                 "description": "Get the aggregated resource usage timeline as reported by the edge nodes and edge application instances.",
-                "operationId": "GetResourceMetricsTimeline",
+                "operationId": "EdgeDiagnostics_GetResourceMetricsTimeline",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1377,6 +1670,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1394,7 +1693,9 @@
                             "METRIC_TYPE_NETWORK_TOTAL",
                             "METRIC_TYPE_NETWORK_RATES",
                             "METRIC_TYPE_EVENTS_COUNT",
-                            "METRIC_TYPE_STORAGE_UTILIZATION"
+                            "METRIC_TYPE_STORAGE_UTILIZATION",
+                            "METRIC_TYPE_STORAGE_IO_ZPOOL",
+                            "METRIC_TYPE_STORAGE_IO_ZVOL"
                         ]
                     },
                     {
@@ -1428,7 +1729,11 @@
                             "OBJECT_TYPE_DOC_POLICY",
                             "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                             "OBJECT_TYPE_TAGS",
-                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                            "OBJECT_TYPE_DEPLOYMENT",
+                            "OBJECT_TYPE_ENTITLEMENTS",
+                            "OBJECT_TYPE_DATA_STREAM",
+                            "OBJECT_TYPE_API_USAGE"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -1488,11 +1793,78 @@
                 }
             }
         },
+        "/v1/events/topUsers": {
+            "get": {
+                "summary": "Get top users",
+                "description": "Get top users.",
+                "operationId": "EdgeDiagnostics_GetTopUsers2",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/EventTopUsersResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "tags": [
+                    "EdgeDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                },
+                "parameters": [
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/v1/hello": {
             "post": {
                 "summary": "Check Cloud services health",
                 "description": "Check Cloud services health by sending a hello name to microservice behind API Gateway. Microservice will echo back the name.",
-                "operationId": "checkMicroserviceHealth",
+                "operationId": "CloudDiagnostics_checkMicroserviceHealth",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1516,6 +1888,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1549,7 +1927,7 @@
             "get": {
                 "summary": "Get resource usage timeline",
                 "description": "Get the aggregated resource usage timeline as reported by the edge nodes and edge application instances.",
-                "operationId": "GetResourceMetricsTimeline2",
+                "operationId": "EdgeDiagnostics_GetResourceMetricsTimeline2",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1586,6 +1964,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1603,7 +1987,9 @@
                             "METRIC_TYPE_NETWORK_TOTAL",
                             "METRIC_TYPE_NETWORK_RATES",
                             "METRIC_TYPE_EVENTS_COUNT",
-                            "METRIC_TYPE_STORAGE_UTILIZATION"
+                            "METRIC_TYPE_STORAGE_UTILIZATION",
+                            "METRIC_TYPE_STORAGE_IO_ZPOOL",
+                            "METRIC_TYPE_STORAGE_IO_ZVOL"
                         ]
                     },
                     {
@@ -1637,7 +2023,11 @@
                             "OBJECT_TYPE_DOC_POLICY",
                             "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                             "OBJECT_TYPE_TAGS",
-                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                            "OBJECT_TYPE_DEPLOYMENT",
+                            "OBJECT_TYPE_ENTITLEMENTS",
+                            "OBJECT_TYPE_DATA_STREAM",
+                            "OBJECT_TYPE_API_USAGE"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -1783,7 +2173,10 @@
                     "description": "Page Token"
                 },
                 "orderBy": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
                     "description": "OrderBy helps in sorting the list response"
                 },
                 "pageNum": {
@@ -1805,6 +2198,32 @@
             "description": "Cursor helps in filtering the various list response like edge-app bundle list, model list, bundle list etc. ",
             "title": "Cursor is used as filter in list operation."
         },
+        "DebugKnobDetail": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "system generated unique id for a device",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "debugKnob": {
+                    "type": "boolean",
+                    "description": "debug knob flag"
+                },
+                "expiry": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "debug expiry time in minutes"
+                },
+                "expired": {
+                    "type": "boolean",
+                    "description": "debug knob expiry status flag"
+                }
+            },
+            "description": "Device debug knob configuration request payload holds the device debug mode properties",
+            "title": "Device debug knob configuration"
+        },
         "DeviceCmdsSubType": {
             "type": "string",
             "enum": [
@@ -1820,10 +2239,17 @@
                 "DeviceDropOS",
                 "DeviceOffboard",
                 "DeviceActivate",
-                "DeviceDeActivate"
+                "DeviceDeActivate",
+                "DeviceBaseosRetry",
+                "DeviceStartDebugMode",
+                "DeviceStopDebugMode",
+                "PreparePowerOff",
+                "DeviceStartEdgeviewMode",
+                "DeviceStopEdgeviewMode",
+                "DeviceEdgeviewClientScript"
             ],
             "default": "DeviceNoOp",
-            "title": "- DeviceNoOp: Device Operation: No Operation\n - DeviceStart: Device Operation: Start\n - DeviceStop: Device Operation: Stop\n - DeviceReboot: Device Operation: Reboot: Power cycle the device\n - DeviceShutdown: Device Operation: Shutdown- Power off the device\n - DeviceUpdateOS: Device Operation: Update OS- deprecated\n - DeviceApplyOS: Device Operation: Apply OS- Change Boot order of installed images\n - DeviceReset: Device Operation: Reset- Config reset to factory default\n - DeviceAddOS: Device Operation: Add OS- Install new image but don't change boot order\n - DeviceDropOS: Device Operation: Drop OS- Remove uninstalled image but don't change boot order\n - DeviceOffboard: Device Operation Type: offboard the device\n - DeviceActivate: Device Activate\n - DeviceDeActivate: Device Deactivate"
+            "description": " - DeviceNoOp: Device Operation: No Operation\n - DeviceStart: Device Operation: Start\n - DeviceStop: Device Operation: Stop\n - DeviceReboot: Device Operation: Reboot: Power cycle the device\n - DeviceShutdown: Device Operation: Shutdown- Power off the device\n - DeviceUpdateOS: Device Operation: Update OS- deprecated\n - DeviceApplyOS: Device Operation: Apply OS- Change Boot order of installed images\n - DeviceReset: Device Operation: Reset- Config reset to factory default\n - DeviceAddOS: Device Operation: Add OS- Install new image but don't change boot order\n - DeviceDropOS: Device Operation: Drop OS- Remove uninstalled image but don't change boot order\n - DeviceOffboard: Device Operation Type: offboard the device\n - DeviceActivate: Device Activate\n - DeviceDeActivate: Device Deactivate\n - DeviceBaseosRetry: Device Operation: Retry OS\n - DeviceStartDebugMode: Device Operation: Run device in debug mode.\n - DeviceStopDebugMode: Device Operation: Stop device in debug mode.\n - PreparePowerOff: Device Operation: Gracefully shutdown all apps and prepare for power down.\n - DeviceStartEdgeviewMode: Device Operation: Run device in edgeview mode.\n - DeviceStopEdgeviewMode: Device Operation: Stop device in edgeview mode.\n - DeviceEdgeviewClientScript: Device Operation: get Edgeview client script if activated."
         },
         "EventQueryResponse": {
             "type": "object",
@@ -1839,6 +2265,10 @@
                     "type": "object",
                     "$ref": "#/definitions/Cursor",
                     "description": "Cursor filter"
+                },
+                "summary": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "Summary of filtered events."
                 }
             },
             "description": "Event query response request payload",
@@ -1904,7 +2334,7 @@
                     "type": "string",
                     "description": "Event resources"
                 },
-                "json_data": {
+                "jsonData": {
                     "type": "object",
                     "description": "Event resources"
                 },
@@ -1926,6 +2356,29 @@
             "default": "EVENT_SOURCE_UNSPECIFIED",
             "description": "- EVENT_SOURCE_UNSPECIFIED: Default\n - EVENT_SOURCE_SYSTEM: Event is generated as a result of status change reported by edge node / application\n - EVENT_SOURCE_USER: Event is generated as a result of an user's configuration action",
             "title": "Source of events"
+        },
+        "EventTopUsersData": {
+            "type": "object",
+            "properties": {
+                "userName": {
+                    "type": "string"
+                },
+                "eventCount": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "EventTopUsersResp": {
+            "type": "object",
+            "properties": {
+                "topUsers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/EventTopUsersData"
+                    }
+                }
+            }
         },
         "HealthDesc": {
             "type": "object",
@@ -2082,7 +2535,9 @@
                 "METRIC_TYPE_NETWORK_TOTAL",
                 "METRIC_TYPE_NETWORK_RATES",
                 "METRIC_TYPE_EVENTS_COUNT",
-                "METRIC_TYPE_STORAGE_UTILIZATION"
+                "METRIC_TYPE_STORAGE_UTILIZATION",
+                "METRIC_TYPE_STORAGE_IO_ZPOOL",
+                "METRIC_TYPE_STORAGE_IO_ZVOL"
             ],
             "default": "METRIC_TYPE_UNSPECIFIED"
         },
@@ -2154,7 +2609,11 @@
                 "OBJECT_TYPE_DOC_POLICY",
                 "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                 "OBJECT_TYPE_TAGS",
-                "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                "OBJECT_TYPE_DEPLOYMENT",
+                "OBJECT_TYPE_ENTITLEMENTS",
+                "OBJECT_TYPE_DATA_STREAM",
+                "OBJECT_TYPE_API_USAGE"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -2232,7 +2691,8 @@
                     "additionalProperties": {
                         "type": "integer",
                         "format": "int64"
-                    }
+                    },
+                    "description": "Values: Map for storing <string, uint32>"
                 }
             },
             "description": "Summary is used to store the Summary details",
@@ -2384,6 +2844,10 @@
                     "type": "string",
                     "title": "summary of the error in text format"
                 },
+                "jobId": {
+                    "type": "string",
+                    "title": "for tracking asynchronous tasks"
+                },
                 "error": {
                     "type": "array",
                     "items": {
@@ -2426,9 +2890,14 @@
                 "PhyIoNetWLAN",
                 "PhyIoNetWWAN",
                 "PhyIoHDMI",
+                "PhyIoNVMEStorage",
+                "PhyIoSATAStorage",
+                "PhyIoNetEthPF",
+                "PhyIoNetEthVF",
                 "PhyIoOther"
             ],
-            "default": "PhyIoNoop"
+            "default": "PhyIoNoop",
+            "title": "- PhyIoNVMEStorage: enum 8 is reserved for backward compatibility with controller API"
         },
         "configACE": {
             "type": "object",
@@ -2463,12 +2932,10 @@
             "type": "object",
             "properties": {
                 "drop": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "limit": {
                     "type": "boolean",
-                    "format": "boolean",
                     "title": "limit action, and its associated parameter"
                 },
                 "limitrate": {
@@ -2484,7 +2951,6 @@
                 },
                 "portmap": {
                     "type": "boolean",
-                    "format": "boolean",
                     "title": "port map action, and its associated parameter"
                 },
                 "appPort": {
@@ -2522,6 +2988,9 @@
                 },
                 "name": {
                     "type": "string"
+                },
+                "ethVf": {
+                    "$ref": "#/definitions/configEthVF"
                 }
             },
             "description": "Adapter bundles corresponding to a subset of what is in ZioBundle\nWhen used by a NetworkInstanceConfig the name is the logicallabel\nfor the network adapter."
@@ -2537,6 +3006,16 @@
                 "Last"
             ],
             "default": "First"
+        },
+        "configAppDebugAccessPolicy": {
+            "type": "object",
+            "properties": {
+                "allowApp": {
+                    "type": "boolean",
+                    "title": "app side of edge-view access is allowed or not"
+                }
+            },
+            "title": "App debug policy applicable to edge-view"
         },
         "configAppInstanceConfig": {
             "type": "object",
@@ -2559,7 +3038,6 @@
                 },
                 "activate": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Set activate to start the application instance; clear it to stop it."
                 },
                 "interfaces": {
@@ -2590,7 +3068,6 @@
                 },
                 "remoteConsole": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Config flag if the app-instance should be made accessible\nthrough a remote console session established by the device."
                 },
                 "cipherData": {
@@ -2612,26 +3089,56 @@
                     "$ref": "#/definitions/configMetaDataType",
                     "title": "metadata type to use for app if provided inside userData"
                 },
-                "profile_list": {
+                "profileList": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
                     "description": "profile_list is a set of strings which can be used to control which sets\nof applications are run. Combined with the activate flag above.\nIf the profile list is empty it means wildcard; application will\nbe started independent of the global or local profile specified for the\ndevice."
+                },
+                "startDelayInSeconds": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "start_delay_in_seconds - Applicable only when EVE boots up fresh and starts\napplications for the first time after boot up. This is the amount of time that\nEVE waits (after boot finish) before starting each application.\nDefault value 0 -> start application immediately.\nNon-Zero value -> After EVE is ready to start application instance, wait for the\ngiven amount of time before starting the respective application instance."
                 }
             },
             "description": "The complete configuration for an Application Instance\nWhen changing key fields such as the drives/volumeRefs or the number\nof interfaces, the controller is required to issue a purge command i.e.,\nincrease the purge counter. Otherwise there will be an error (The controller\ncan also issue a purge command to re-construct the content of the first\ndrive/volumeRef without any changes.)\nSome changes such as ACL changes in the interfaces do not require a restart,\nbut all other changes (such as fixedresources and adapters) require a\nrestart command i.e., an increase to the restart counter. The restart counter\ncan also be increased to cause an application instance restart without\nany other change to the application instance."
         },
+        "configArpMonitor": {
+            "type": "object",
+            "properties": {
+                "interval": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Interval specifies the ARP link monitoring frequency in milliseconds."
+                },
+                "ipTargets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "IpTargets specifies the IPv4 addresses to use as ARP monitoring peers.\nThese are the targets of ARP requests sent to determine the health of links."
+                }
+            },
+            "description": "ArpMonitor : ARP-based link monitoring parameters.\nDefined for BondAdapter."
+        },
         "configBaseOS": {
             "type": "object",
             "properties": {
-                "content_tree_uuid": {
+                "contentTreeUuid": {
                     "type": "string",
                     "title": "UUID for ContentTree with BaseOS image"
                 },
-                "retry_update": {
+                "retryUpdate": {
                     "$ref": "#/definitions/configDeviceOpsCmd",
                     "description": "retry_update\nRetry the BaseOs update if the update failed previously.\n1) If this image is in FAILED state, retry the image update.\n2) If this image is already active and fully installed (PartitionState = UPDATED),\n   Do nothing. Just update the baseos_update_counter in Info message.\n3) If this image is same as active image, but status is NOT yet UPDATED, or\n   if the update to this image is in progress, wait till the update\n   concludes (Success / Error+rollback) - then trigger the retry as needed."
+                },
+                "activate": {
+                    "type": "boolean",
+                    "title": "if not set BaseOS will be installed,\nbut not activated"
+                },
+                "baseOsVersion": {
+                    "type": "string"
                 }
             }
         },
@@ -2649,8 +3156,7 @@
                     "description": "volumeID will supersede drives. Drives still\nexist for backward compatibility.\nDrives will be deprecated in the future."
                 },
                 "activate": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "baseOSVersion": {
                     "type": "string"
@@ -2660,13 +3166,88 @@
                 }
             }
         },
+        "configBondAdapter": {
+            "type": "object",
+            "properties": {
+                "logicallabel": {
+                    "type": "string",
+                    "description": "Name of this bond adapter."
+                },
+                "interfaceName": {
+                    "type": "string",
+                    "description": "A physical name of the bond interface.\nNote that the interface name is limited in Linux kernel to 15 characters.\nIf not defined, logicallabel will be used instead."
+                },
+                "lowerLayerNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Logical names of aggregated PhysicalIOs.\nFor all bonding modes but Active-Backup the order is irrelevant.\nIn the Active-Backup mode (BOND_MODE_ACTIVE_BACKUP), the first PhysicalIO\nin the list will be considered as the primary port (i.e. only when\nthe primary is off-line will alternate ports be used)."
+                },
+                "bondMode": {
+                    "$ref": "#/definitions/configBondMode",
+                    "title": "A bonding mode specifies the policy indicating how bonding slaves are used\nduring network transmission"
+                },
+                "mii": {
+                    "$ref": "#/definitions/configMIIMonitor",
+                    "description": "The MII monitor is driver-dependent. It monitors the links from the device\nto the nearest connected switch. If the failure occurs beyond the nearest\nconnected switch, it cannot be detected by MII monitor."
+                },
+                "arp": {
+                    "$ref": "#/definitions/configArpMonitor",
+                    "description": "The ARP monitor is based on the communication to the target\nhosts designated by their IP addresses. Even if the link is beyond\nthe nearest connected switch, the APR monitor can detect it."
+                },
+                "lacpRate": {
+                    "$ref": "#/definitions/configLacpRate",
+                    "description": "Option specifying the rate in which EVE will ask LACP link partners\nto transmit LACPDU packets in 802.3ad mode."
+                }
+            },
+            "description": "BondAdapter aggregates multiple PhysicalIOs into one adapter for redundancy\nand load-spreading purposes."
+        },
+        "configBondMode": {
+            "type": "string",
+            "enum": [
+                "BOND_MODE_UNSPECIFIED",
+                "BOND_MODE_BALANCE_RR",
+                "BOND_MODE_ACTIVE_BACKUP",
+                "BOND_MODE_BALANCE_XOR",
+                "BOND_MODE_BROADCAST",
+                "BOND_MODE_802_3AD",
+                "BOND_MODE_BALANCE_TLB",
+                "BOND_MODE_BALANCE_ALB"
+            ],
+            "default": "BOND_MODE_UNSPECIFIED",
+            "description": "A bonding mode specifies the policy indicating how bonding slaves are used\nduring network transmission.\n\n - BOND_MODE_UNSPECIFIED: BOND_MODE_UNSPECIFIED : if bonding mode is not explicitly specified,\nthen by default Round-Robin policy is applied (BOND_MODE_BALANCE_RR).\n - BOND_MODE_BALANCE_RR: BOND_MODE_BALANCE_RR : transmit packets in sequential order from the first\navailable slave through the last. This mode provides load balancing\nand fault tolerance.\nThis is the default bonding mode.\n - BOND_MODE_ACTIVE_BACKUP: BOND_MODE_ACTIVE_BACKUP : only one slave in the bond is active.\nA different slave becomes active if, and only if, the active slave fails.\nThe bond's MAC address is externally visible on only one port to avoid\nconfusing the switch.\nThis mode provides fault tolerance.\n - BOND_MODE_BALANCE_XOR: BOND_MODE_BALANCE_XOR : packet source and destination MAC addresses are\nused to calculate hash and select the output slave interface accordingly.\nThis algorithm will place all traffic destined to a particular network\npeer on the same slave.\nThis mode provides load balancing and fault tolerance.\n - BOND_MODE_BROADCAST: BOND_MODE_BROADCAST: transmits everything on all slave interfaces.\nThis mode provides fault tolerance.\n - BOND_MODE_802_3AD: BOND_MODE_802_3AD : IEEE 802.3ad Dynamic link aggregation.\nCreates aggregation groups that share the same speed and duplex settings.\nUtilizes all slaves in the active aggregator according to the 802.3ad\nspecification.\nRequires that upstream networks equipment supports and has the IEEE 802.3ad\nDynamic link aggregation properly configured.\n - BOND_MODE_BALANCE_TLB: BOND_MODE_BALANCE_TLB : adaptive transmit load balancing. Channel bonding that\ndoes not require any special switch support. The outgoing traffic\nis distributed according to the current load (computed relative to the speed)\non each slave.\nIncoming traffic is received by the current slave. If the receiving slave\nfails, another slave takes over the MAC address of the failed receiving slave.\nThis mode provides (TX) load balancing and fault tolerance.\n - BOND_MODE_BALANCE_ALB: BOND_MODE_BALANCE_ALB : adaptive load balancing. Includes BOND_MODE_BALANCE_TLB\nplus receive load balancing (RLB) for IPV4 traffic, and does not require\nany special switch support. The receive load balancing is achieved by ARP\nnegotiation.\nThis mode provides load balancing and fault tolerance."
+        },
         "configCellularConfig": {
             "type": "object",
             "properties": {
                 "APN": {
-                    "type": "string"
+                    "type": "string",
+                    "title": "APN string - by default it is \"internet\""
+                },
+                "probe": {
+                    "$ref": "#/definitions/configCellularConnectivityProbe",
+                    "description": "Optional cellular connectivity probing.\nBy default it is enabled."
+                },
+                "locationTracking": {
+                    "type": "boolean",
+                    "description": "Some LTE modems have GNSS receiver integrated and can be used for device\nlocation tracking.\nEnable this option to have location info periodically obtained from this\nmodem and published to controller and to applications."
                 }
             }
+        },
+        "configCellularConnectivityProbe": {
+            "type": "object",
+            "properties": {
+                "disable": {
+                    "type": "boolean",
+                    "description": "If true, then probing is disabled."
+                },
+                "probeAddress": {
+                    "type": "string",
+                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nDefault address is \"8.8.8.8\" (Google Public DNS)."
+                }
+            },
+            "description": "CellularConnectivityProbe is used to periodically check the connectivity status of a cellular network\nby probing a remote endpoint.\nWhenever the probe fails, the cellular connection is automatically restarted. If the probe keeps failing\neven after the restart, the failure is reported in ZCellularStatus.probeError.\nThe connectivity probing interval is 5 minutes and currently it is not configurable."
         },
         "configCipherBlock": {
             "type": "object",
@@ -2767,7 +3348,7 @@
                 "displayName": {
                     "type": "string"
                 },
-                "generation_count": {
+                "generationCount": {
                     "type": "string",
                     "format": "int64",
                     "description": "For container ContentTree, sha256 might not be available in config.\nIf the sha256 is not available then it needs to be resolved corresponding to the tag\nchange in generation_count indicates that the resolution of tag is needed\ngeneration_count needs to be updated when purge is required for an existing\ninstance. In case of new instance using the same content tree, EVE will get\nnew content tree UUID in the device configuration from the controller."
@@ -2829,6 +3410,16 @@
             },
             "title": "The DataStoreConfig contains common parameters for a give source of\nimages aka ContentTrees, such as the credentials and server"
         },
+        "configDevDebugAccessPolicy": {
+            "type": "object",
+            "properties": {
+                "allowDev": {
+                    "type": "boolean",
+                    "title": "device side of edge-view access is allowed or not"
+                }
+            },
+            "title": "Dev debug policy applicable to edge-view"
+        },
         "configDeviceOpsCmd": {
             "type": "object",
             "properties": {
@@ -2837,8 +3428,7 @@
                     "format": "int64"
                 },
                 "desiredState": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "opsTime": {
                     "type": "string",
@@ -2847,6 +3437,70 @@
             },
             "description": "Device Operational Commands Semantic\nFor rebooting device,  command=Reset, counter = counter+delta, desiredState = on\nFor poweroff device,  command=Reset, counter = counter+delta, desiredState = off\nFor backup at midnight, command=Backup, counter = counter+delta, desiredState=n/a, opsTime = mm/dd/yy:hh:ss\nCurrent implementation does support only single command outstanding for each\ntype. In future can be extended to have more scheduled events."
         },
+        "configDiskConfig": {
+            "type": "object",
+            "properties": {
+                "disk": {
+                    "$ref": "#/definitions/evecommonDiskDescription"
+                },
+                "oldDisk": {
+                    "$ref": "#/definitions/evecommonDiskDescription",
+                    "title": "define old disk here to replace it with new one defined in disk, omit it to not use replacement"
+                },
+                "diskConfig": {
+                    "$ref": "#/definitions/configDiskConfigType"
+                }
+            },
+            "title": "DiskConfig describe desired configuration of disk\nIf we want change state to online/offline we should define its state\nIf we want to add disk we should define it here and set DiskConfigType to online or offline\nIf we want to remove disk we should set its state to unused or appdirect\nIf we want to replace disk we should fill old_disk to be replaced with disk\nProgress of operation is expected to be available in info messages"
+        },
+        "configDiskConfigType": {
+            "type": "string",
+            "enum": [
+                "DISK_CONFIG_TYPE_UNSPECIFIED",
+                "DISK_CONFIG_TYPE_EVEOS",
+                "DISK_CONFIG_TYPE_PERSIST",
+                "DISK_CONFIG_TYPE_ZFS_ONLINE",
+                "DISK_CONFIG_TYPE_ZFS_OFFLINE",
+                "DISK_CONFIG_TYPE_APPDIRECT",
+                "DISK_CONFIG_TYPE_UNUSED"
+            ],
+            "default": "DISK_CONFIG_TYPE_UNSPECIFIED",
+            "title": "DiskConfigType is the desired configuration of disks"
+        },
+        "configDisksArrayType": {
+            "type": "string",
+            "enum": [
+                "DISKS_ARRAY_TYPE_UNSPECIFIED",
+                "DISKS_ARRAY_TYPE_RAID0",
+                "DISKS_ARRAY_TYPE_RAID1",
+                "DISKS_ARRAY_TYPE_RAID5",
+                "DISKS_ARRAY_TYPE_RAID6"
+            ],
+            "default": "DISKS_ARRAY_TYPE_UNSPECIFIED",
+            "title": "DisksArrayType is the desired configuration of disks in DisksConfig"
+        },
+        "configDisksConfig": {
+            "type": "object",
+            "properties": {
+                "disks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configDiskConfig"
+                    }
+                },
+                "arrayType": {
+                    "$ref": "#/definitions/configDisksArrayType"
+                },
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configDisksConfig"
+                    }
+                }
+            },
+            "description": "For example to use stripe of two pairs of mirrored disks we should define\nDisksConfig without disks with array_type DISKS_ARRAY_TYPE_RAID0\nwith two children with properly defined disks inside and with array_type DISKS_ARRAY_TYPE_RAID1\nand empty children",
+            "title": "DisksConfig is a configuration of disks\nWe expect information about disks to be filled and will try to adjust disks states accordingly\nAll disks defined in disks field expected to have array type defined in array_type\nTo support nested topologies we can use children field"
+        },
         "configDrive": {
             "type": "object",
             "properties": {
@@ -2854,12 +3508,10 @@
                     "$ref": "#/definitions/eveconfigImage"
                 },
                 "readonly": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "preserve": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "drvtype": {
                     "$ref": "#/definitions/configDriveType"
@@ -2897,7 +3549,8 @@
                 "DsS3",
                 "DsSFTP",
                 "DsContainerRegistry",
-                "DsAzureBlob"
+                "DsAzureBlob",
+                "DsGoogleStorage"
             ],
             "default": "DsUnknown"
         },
@@ -2991,16 +3644,15 @@
                         "$ref": "#/definitions/configVolume"
                     }
                 },
-                "controllercert_confighash": {
+                "controllercertConfighash": {
                     "type": "string",
                     "description": "This field is used by the device to detect when it needs to re-download\nthe controller certs using the /certs API endpoint.\nThe controller just needs to ensure this value changes when it wants the\ndevice to re-fetch the controller certs, for instance by having it\nbe a hash of all of the controller certificates."
                 },
-                "maintenance_mode": {
+                "maintenanceMode": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "deprecated 23;\nIf maintence_mode is set the device will operate in a limited mode e.g.,\nnot start applications etc as to enable inspection of its state and\nrecover from bad state."
                 },
-                "controller_epoch": {
+                "controllerEpoch": {
                     "type": "string",
                     "format": "int64",
                     "title": "controller_epoch indicates current epoch of config\nif we set new epoch, EVE sends all info messages to controller\nit captures when a new controller takes over and needs all the info be resent"
@@ -3009,20 +3661,100 @@
                     "$ref": "#/definitions/configBaseOS",
                     "title": "Baseos Config Block"
                 },
-                "global_profile": {
+                "globalProfile": {
                     "type": "string",
                     "description": "global_profile, if set, controls set of applications which will run.\nThe Activate=true app instances which have this profile in their profile_list\nwill run. If the global_profile is not set, then the profile_list is not\nused to gate the application instances."
                 },
-                "local_profile_server": {
+                "localProfileServer": {
                     "type": "string",
                     "title": "local_profile_server, if set, indicates a hostname/IPv4/IPv6 address and\noptional port number at which EVE will request for a local profile.\nIf such a local profile is retrieved, it will override the global_profile.\nThe syntax follows the usual URL server name syntax thus the following\nare example valid strings:\n   [fe80::1]:1234\n   10.1.1.1:1234\n   hostname:1234\n   [fe80::1]\n   10.1.1.1\n   hostname\nIf the port number is not specified, it will default to 8888"
                 },
-                "profile_server_token": {
+                "profileServerToken": {
                     "type": "string",
                     "description": "Together with a local_profile_server one can specify a\nprofile_server_token. EVE must verify that the response from the\nlocal_profile_server contains this token."
+                },
+                "vlans": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configVlanAdapter"
+                    },
+                    "description": "A list of VLAN sub-interfaces configured for EVE management traffic and\nfor local network instances."
+                },
+                "bonds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configBondAdapter"
+                    },
+                    "description": "A list of bond interfaces (LAGs) aggregating physical network adapters."
+                },
+                "edgeview": {
+                    "$ref": "#/definitions/configEdgeViewConfig",
+                    "title": "edge-view configuration"
+                },
+                "disks": {
+                    "$ref": "#/definitions/configDisksConfig",
+                    "title": "disks configuration"
+                },
+                "shutdown": {
+                    "$ref": "#/definitions/configDeviceOpsCmd",
+                    "description": "Graceful shutdown of all app instances on the edge node.\nAny local profile server is shut down after all the other app instances\nhave halted.\nNote that this does not power off the edge node since there is no remote\npower on capability; power off can be done locally using the Local Profile\nServer API."
+                },
+                "deviceName": {
+                    "type": "string"
+                },
+                "projectName": {
+                    "type": "string"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "enterpriseName": {
+                    "type": "string"
+                },
+                "enterpriseId": {
+                    "type": "string"
+                },
+                "configTimestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp updated by controller whenever device config is modified.\nUsed by EVE to properly order configurations that originate at the same controller\nbut get submitted to device through different ways:\n    /config API vs. initial config for bootstrapping vs. USB-based config override etc.\nThis ensures that device will not accidentally revert back to an older configuration.\nDoes not apply to legacy override.json and usb.json mechanisms."
                 }
             },
             "description": "This is the response to a GET /api/v1/edgeDevice/config\nThe EdgeDevConfig message carries all of the device's configuration from\nthe controller to the device.\nThe device will request these messages either periodically or as a result\nof some TBD notification.\nThe message is assumed to be protected by a TLS session bound to the\ndevice certificate."
+        },
+        "configEdgeViewConfig": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "title": "JWT token for signed info, it contains the dispatcher\nendpoint IP:Port, device UUID, nonce and expiration time"
+                },
+                "dispCertPem": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "title": "dispatcher certificate(s) if it's not well-known CA signed"
+                },
+                "devPolicy": {
+                    "$ref": "#/definitions/configDevDebugAccessPolicy",
+                    "title": "policy for device access through edge-view"
+                },
+                "appPolicy": {
+                    "$ref": "#/definitions/configAppDebugAccessPolicy",
+                    "title": "policy access for apps through edge-view"
+                },
+                "extPolicy": {
+                    "$ref": "#/definitions/configExternalEndPointPolicy",
+                    "title": "policy access for external endpoint through edge-view"
+                },
+                "generationId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "Generation ID for re-start edgeview without parameter changes"
+                }
+            }
         },
         "configEncryptionScheme": {
             "type": "string",
@@ -3032,6 +3764,33 @@
             ],
             "default": "SA_NONE",
             "title": "Encryption Scheme for Cipher Payload"
+        },
+        "configEthVF": {
+            "type": "object",
+            "properties": {
+                "index": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "mac": {
+                    "type": "string"
+                },
+                "vlanId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            },
+            "title": "Information regarding Virtual Function (VF) customisation"
+        },
+        "configExternalEndPointPolicy": {
+            "type": "object",
+            "properties": {
+                "allowExt": {
+                    "type": "boolean",
+                    "title": "external of device side of edge-view access is allowed or not"
+                }
+            },
+            "title": "External Endpoint applicable to edge-view\nTo mean the entity external to the device, e.g. a local-profile server on the LAN outside of mgmt\nor app-shared ports. since it's not part of EVE, and not part of EVE applications. In the EdgeView code,\nif tcp session setup is to an address we don't have, it identifies the request as 'external'"
         },
         "configFormat": {
             "type": "string",
@@ -3044,7 +3803,8 @@
                 "VMDK",
                 "OVA",
                 "VHDX",
-                "CONTAINER"
+                "CONTAINER",
+                "ISO"
             ],
             "default": "FmtUnknown"
         },
@@ -3068,6 +3828,37 @@
             ],
             "default": "KEA_NONE",
             "title": "Security Key Exchange Method"
+        },
+        "configLacpRate": {
+            "type": "string",
+            "enum": [
+                "LACP_RATE_UNSPECIFIED",
+                "LACP_RATE_SLOW",
+                "LACP_RATE_FAST"
+            ],
+            "default": "LACP_RATE_UNSPECIFIED",
+            "description": "Option specifying the rate in which EVE will ask LACP link partners\nto transmit LACPDU packets in 802.3ad mode.\n\n - LACP_RATE_UNSPECIFIED: Default LACP rate is Slow.\n - LACP_RATE_SLOW: Request LACP partner to transmit LACPDUs every 30 seconds.\n - LACP_RATE_FAST: Request LACP partner to transmit LACPDUs every 1 second."
+        },
+        "configMIIMonitor": {
+            "type": "object",
+            "properties": {
+                "interval": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Specifies the MII link monitoring frequency in milliseconds.\nThis determines how often the link state of each bond slave is inspected\nfor link failures."
+                },
+                "updelay": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Updelay specifies the time, in milliseconds, to wait before enabling\na bond slave after a link recovery has been detected.\nThe updelay value should be a multiple of the monitoring interval; if not,\nit will be rounded down to the nearest multiple.\nThe default value is 0."
+                },
+                "downdelay": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Specifies the time, in milliseconds, to wait before disabling a bond\nslave after a link failure has been detected.\nThe downdelay value should be a multiple of the monitoring interval; if not,\nit will be rounded down to the nearest multiple.\nThe default value is 0."
+                }
+            },
+            "description": "MIIMonitor : MII link monitoring parameters.\nDefined for BondAdapter."
         },
         "configMetaDataType": {
             "type": "string",
@@ -3121,7 +3912,7 @@
                     },
                     "title": "firewall"
                 },
-                "access_vlan_id": {
+                "accessVlanId": {
                     "type": "integer",
                     "format": "int64",
                     "title": "access port vlan id\napp interface with access vlan id of zero will be treated as trunk port\nvalid vlan id range: 2 - 4093\nvlan id 1 is implicitly used by linux bridges"
@@ -3172,7 +3963,6 @@
                 },
                 "activate": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "activate\n - True by default. If set to false ( deactivate), the network instance\n   configuration is downloaded to the device, but the network instance\n   itself is not created on the device."
                 },
                 "port": {
@@ -3214,12 +4004,10 @@
                     "format": "int64"
                 },
                 "allocate": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "exportprivate": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "allocationprefix": {
                     "type": "string",
@@ -3231,7 +4019,6 @@
                 },
                 "experimental": {
                     "type": "boolean",
-                    "format": "boolean",
                     "title": "various configuration to dataPlane, lispers.net vs Zededa"
                 }
             },
@@ -3260,7 +4047,10 @@
                 "V6",
                 "CryptoV4",
                 "CryptoV6",
-                "CryptoEID"
+                "CryptoEID",
+                "V4Only",
+                "V6Only",
+                "DualV4V6"
             ],
             "default": "NETWORKTYPENOOP"
         },
@@ -3268,8 +4058,7 @@
             "type": "object",
             "properties": {
                 "freeUplink": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 }
             },
             "title": "Given additional details for EVE software to how to treat this\ninterface. Example policies could be limit use of LTE interface\nor only use Eth1 only if Eth0 is not available etc\nNote that this is the static information from the model.\nCurrent configuration is in systemAdapter"
@@ -3314,6 +4103,10 @@
                         "type": "string"
                     },
                     "title": "physical and logical attributes\n   For example in WWAN to which firmware version to load etc"
+                },
+                "vflist": {
+                    "$ref": "#/definitions/configVfList",
+                    "title": "list of Virtual Functions (VF) for given Physical Function (PF)\nonly applies for PHY_IO_TYPE_PHY_IO_NET_ETH_PF"
                 }
             },
             "title": "PhysicalIO:\n   Absolute low level description of physical buses and ports that are\n   available on given platform.\n   Collection of these IOs, constitute what we would call as hardware\n   model. Each physical IO is manageable and visible to EVE software, and\n   it can be further configured to either provide IP connectivity or\n   directly be given to workloads"
@@ -3323,7 +4116,6 @@
             "properties": {
                 "networkProxyEnable": {
                     "type": "boolean",
-                    "format": "boolean",
                     "title": "enable network level proxy in the form of WPAD"
                 },
                 "proxies": {
@@ -3395,12 +4187,10 @@
                 },
                 "freeUplink": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "title": "deprecated; need level 2 spec. sWAdapterParams allocDetails = 20;\nthis is part of the freelink group\nDEPRECATED by cost below"
+                    "title": "DEPRECATED by cost below"
                 },
                 "uplink": {
                     "type": "boolean",
-                    "format": "boolean",
                     "title": "uplink - DEPRECATED by PhysicalIO.Usage / PhysicalIO.UsagePolicy\nthis is part of the uplink group\ndeprecate: have a separate device policy object in the API"
                 },
                 "networkUUID": {
@@ -3417,7 +4207,7 @@
                 },
                 "lowerLayerName": {
                     "type": "string",
-                    "description": "lowerLayerName - For example, if lower layer is PhysicalAdapter\n( physical interface), this should point to PhyLabel of the\nphysicalIO."
+                    "description": "lowerLayerName - For example, if lower layer is PhysicalAdapter\n( physical interface), this should point to logicallabel of the\nphysicalIO."
                 },
                 "cost": {
                     "type": "integer",
@@ -3425,7 +4215,7 @@
                     "description": "cost of using a port for EVE management traffic (which is determined\nfrom PhysicalIO.usage)\n0 is the lowest cost (free); 255 the highest.\nLoad spreading will apply when multiple adapters have the same cost.\nHigher cost adapters are only tried when none of the lower cost ones work."
                 }
             },
-            "description": "systemAdapters, are the higher l2 concept built on physicalIOs.\nsystemAdapters, gives all the required bits to turn the physical IOs\ninto useful IP endpoints.\nThese endpoints can be further used to connect to controller or\ncan be shared between workload/services running on the node."
+            "description": "systemAdapters are higher-level IP-ready network endpoints.\nsystemAdapters give all the required bits to turn the physical IOs\nand intermediate L2 objects into useful IP endpoints.\nThese endpoints can be further used to connect to controller or\ncan be shared between workload/services running on the node."
         },
         "configTarget": {
             "type": "string",
@@ -3448,6 +4238,46 @@
                     "type": "string"
                 }
             }
+        },
+        "configVfList": {
+            "type": "object",
+            "properties": {
+                "vfCount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "how many Virtual Functions (VF) will be created"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configEthVF"
+                    },
+                    "title": "optional configuration for given Virtual Function (VF)"
+                }
+            }
+        },
+        "configVlanAdapter": {
+            "type": "object",
+            "properties": {
+                "logicallabel": {
+                    "type": "string",
+                    "description": "Logical name of this VLAN adapter."
+                },
+                "interfaceName": {
+                    "type": "string",
+                    "description": "A physical name of the VLAN sub-interface.\nNote that the interface name is limited in Linux kernel to 15 characters.\nIf not defined, logicallabel will be used instead."
+                },
+                "lowerLayerName": {
+                    "type": "string",
+                    "description": "Logical name of the lower layer adapter (bond or physicalIO)."
+                },
+                "vlanId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "VLAN ID. Valid values are from 1 to 4094."
+                }
+            },
+            "description": "VlanAdapter represents a single VLAN sub-interface.\nThe parent, which is referenced by lower_layer_name,\nshould be either PhysicalIO or BondAdapter."
         },
         "configVmConfig": {
             "type": "object",
@@ -3512,8 +4342,7 @@
                     "$ref": "#/definitions/configVmMode"
                 },
                 "enableVnc": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "vncDisplay": {
                     "type": "integer",
@@ -3521,6 +4350,13 @@
                 },
                 "vncPasswd": {
                     "type": "string"
+                },
+                "disableLogs": {
+                    "type": "boolean"
+                },
+                "pinCpu": {
+                    "type": "boolean",
+                    "description": "Set if the VM should run in a mode with pinned CPUs.\nIn this case any VCPU thread created by QEMU runs on a dedicated physical\nCPU. All the other QEMU threads will be limited to run on the physical\nCPUs defined by CPU mask. The CPU mask is provided with the 'cpus' field,\ndefined above. If the CPU mask is not set, the physical CPUs to be used\nfor running QEMU threads are picked automatically by Pillar: it just takes\nthat amount of available physical CPUs that is defined with the 'vcpus'\nparameter defined above."
                 }
             }
         },
@@ -3565,15 +4401,13 @@
                     "description": "miscellaneous attributes of the Volume\nmaxSizeBytes Used for capping resource consumption in EVE.\nmaxSizeBytes indicates the maximum size of the volume."
                 },
                 "readonly": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "displayName": {
                     "type": "string"
                 },
-                "clear_text": {
-                    "type": "boolean",
-                    "format": "boolean"
+                "clearText": {
+                    "type": "boolean"
                 }
             },
             "description": "The Volume describes a storage volume which should exist on the device.\nThis can currently either be blank or created from a ContentTree\nIf maxSizeBytes is zero it means unlimited by the controller. In that\ncase EVE needs to determine how much space it can assign and limit any\ndownloaded ContentTree and the created volume based on that calculated size."
@@ -3617,7 +4451,7 @@
                     "type": "string",
                     "format": "int64"
                 },
-                "mount_dir": {
+                "mountDir": {
                     "type": "string",
                     "title": "Indicates volume mount point inside container\nif mount_dir is empty then it will be mounted on /mnt"
                 }
@@ -3807,6 +4641,21 @@
             ],
             "default": "PROXY_HTTP"
         },
+        "evecommonDiskDescription": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "logicalName": {
+                    "type": "string"
+                },
+                "serial": {
+                    "type": "string"
+                }
+            },
+            "title": "DiskDescription describes disk\nwe can use different data to locate disk in the system"
+        },
         "eveconfigImage": {
             "type": "object",
             "properties": {
@@ -3837,6 +4686,36 @@
                 }
             },
             "title": "XXX the Image will be deprecated and we will use ContentTree instead"
+        },
+        "googlerpcStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/protobufAny"
+                    }
+                }
+            }
+        },
+        "protobufAny": {
+            "type": "object",
+            "properties": {
+                "typeUrl": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "byte"
+                }
+            }
         },
         "protobufNullValue": {
             "type": "string",

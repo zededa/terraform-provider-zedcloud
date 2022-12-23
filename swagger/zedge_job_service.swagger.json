@@ -15,7 +15,11 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "host": "zedcontrol.zededa.net",
+    "tags": [
+        {
+            "name": "BulkJobOps"
+        }
+    ],
     "basePath": "/api",
     "schemes": [
         "https"
@@ -31,7 +35,7 @@
             "get": {
                 "summary": "Query asynchronous job requests",
                 "description": "Query the asynchronous job request records.",
-                "operationId": "QueryJobs",
+                "operationId": "BulkJobOps_QueryJobs",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -68,6 +72,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -76,8 +86,7 @@
                         "description": "Only summary count is required.",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "next.pageToken",
@@ -91,7 +100,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -167,7 +180,7 @@
             "post": {
                 "summary": "Create asynchronous job request",
                 "description": "Create an asynchronous job request record.",
-                "operationId": "CreateJob",
+                "operationId": "BulkJobOps_CreateJob",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -210,6 +223,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -242,7 +261,7 @@
             "put": {
                 "summary": "Update job request to import edge application bundles",
                 "description": "Update job request to import edge application bundle(s) from global App Store matching selection criteria.",
-                "operationId": "BulkImportEdgeApplications",
+                "operationId": "BulkJobOps_BulkImportEdgeApplications",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -290,6 +309,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -323,7 +348,7 @@
             "put": {
                 "summary": "Update job request to create edge application instances",
                 "description": "Update job request to create edge application instance(s) on edge node(s) matching selection criteria.",
-                "operationId": "BulkCreateEdgeApplicationInstances",
+                "operationId": "BulkJobOps_BulkCreateEdgeApplicationInstances",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -371,6 +396,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -404,7 +435,7 @@
             "put": {
                 "summary": "Update job request to refresh edge application instances",
                 "description": "Update job request to refresh edge application instances matching selection criteria. Update edge application instance(s) to the latest version of the edge application. This operation will result in a restart of the edge application instance(s).",
-                "operationId": "BulkRefreshEdgeApplicationInstances",
+                "operationId": "BulkJobOps_BulkRefreshEdgeApplicationInstances",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -452,6 +483,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -485,7 +522,7 @@
             "put": {
                 "summary": "Update job request to refresh and purge edge application instances",
                 "description": "Update job request to refresh and purge edge application instances matching selection criteria. Update edge application instance(s) to the latest version of the edge application. This operation will result in loss of data and a restart of the edge application instance(s). ",
-                "operationId": "BulkRefreshAndPurgeEdgeApplicationInstances",
+                "operationId": "BulkJobOps_BulkRefreshAndPurgeEdgeApplicationInstances",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -533,6 +570,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -566,7 +609,7 @@
             "put": {
                 "summary": "Update job request to update EVE image on edge nodes",
                 "description": "Update job request to update EVE image on edge nodes. If edge node is already running the latest EVE image no action is taken.",
-                "operationId": "BulkUpdateEdgeNodeBaseOS",
+                "operationId": "BulkJobOps_BulkUpdateEdgeNodeBaseOS",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -614,6 +657,99 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/devices/baseos/upgrade/retry": {
+            "put": {
+                "summary": "Update job request to retry update EVE image on edge nodes",
+                "description": "Update job request to retry update EVE image on edge nodes. If edge node is already running the latest EVE image no action is taken.",
+                "operationId": "BulkJobOps_BulkUpdateEdgeNodeBaseOSRetry",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -647,7 +783,7 @@
             "put": {
                 "summary": "Update asynchronous job request",
                 "description": "Update an asynchronous job request record. The usual pattern to update an asynchronous job request record is to retrieve the record and update with the modified values in a new body to update the asynchronous job request record.",
-                "operationId": "UpdateJob",
+                "operationId": "BulkJobOps_UpdateJob",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -696,6 +832,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -711,7 +853,93 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/JobConfig"
+                            "type": "object",
+                            "example": {
+                                "id": "d85a545f-6510-4327-b03d-c02eef119e99",
+                                "name": "sample-job",
+                                "objectType": "OBJECT_TYPE_EDGE_NODE"
+                            },
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "User defined name of the job request, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "objectType": {
+                                    "$ref": "#/definitions/ObjectType",
+                                    "description": "object type for which job has been created"
+                                },
+                                "operationType": {
+                                    "$ref": "#/definitions/BulkService"
+                                },
+                                "status": {
+                                    "$ref": "#/definitions/JobStatus",
+                                    "description": "status of the job",
+                                    "readOnly": true
+                                },
+                                "objectList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "startTime": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "start time of the job",
+                                    "readOnly": true
+                                },
+                                "finishTime": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "description": "finish time of the job",
+                                    "readOnly": true
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "system defined info",
+                                    "readOnly": true
+                                },
+                                "individualOpStatus": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "status of individual field of the given object",
+                                    "readOnly": true
+                                },
+                                "selectionCriteria": {
+                                    "$ref": "#/definitions/SelectionCriteria",
+                                    "description": "selection criteria for the job",
+                                    "readOnly": true
+                                },
+                                "errorDetailOfJob": {
+                                    "type": "string",
+                                    "description": "detailed error with which job/task has failed",
+                                    "readOnly": true
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "user or system specified title"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "user or system specified description"
+                                },
+                                "projectId": {
+                                    "type": "string",
+                                    "description": "project Id in which job is getting created"
+                                }
+                            },
+                            "description": "config required for job ops",
+                            "title": "config required for job ops",
+                            "required": [
+                                "name",
+                                "objectType"
+                            ]
                         }
                     },
                     {
@@ -735,7 +963,7 @@
             "get": {
                 "summary": "Get asynchronous job request",
                 "description": "Get the configuration and status of an asynchronous job request record.",
-                "operationId": "GetJob",
+                "operationId": "BulkJobOps_GetJob",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -777,6 +1005,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -820,7 +1054,11 @@
                             "OBJECT_TYPE_DOC_POLICY",
                             "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                             "OBJECT_TYPE_TAGS",
-                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                            "OBJECT_TYPE_DEPLOYMENT",
+                            "OBJECT_TYPE_ENTITLEMENTS",
+                            "OBJECT_TYPE_DATA_STREAM",
+                            "OBJECT_TYPE_API_USAGE"
                         ]
                     },
                     {
@@ -842,7 +1080,7 @@
             "delete": {
                 "summary": "Delete asynchronous job request",
                 "description": "Delete an asynchronous job request record.",
-                "operationId": "DeleteJob",
+                "operationId": "BulkJobOps_DeleteJob",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -891,6 +1129,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -933,7 +1177,11 @@
                             "OBJECT_TYPE_DOC_POLICY",
                             "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                             "OBJECT_TYPE_TAGS",
-                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                            "OBJECT_TYPE_DEPLOYMENT",
+                            "OBJECT_TYPE_ENTITLEMENTS",
+                            "OBJECT_TYPE_DATA_STREAM",
+                            "OBJECT_TYPE_API_USAGE"
                         ]
                     },
                     {
@@ -957,7 +1205,7 @@
             "put": {
                 "summary": "Update job request to import hardware models",
                 "description": "Update job request to import hardware model(s) from global Model Store matching selection criteria.",
-                "operationId": "BulkImportHardwareModels",
+                "operationId": "BulkJobOps_BulkImportHardwareModels",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1006,6 +1254,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1038,7 +1292,7 @@
             "get": {
                 "summary": "Get asynchronous job request",
                 "description": "Get the configuration and status of an asynchronous job request record.",
-                "operationId": "GetJobByName",
+                "operationId": "BulkJobOps_GetJobByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1080,6 +1334,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1123,7 +1383,11 @@
                             "OBJECT_TYPE_DOC_POLICY",
                             "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                             "OBJECT_TYPE_TAGS",
-                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                            "OBJECT_TYPE_DEPLOYMENT",
+                            "OBJECT_TYPE_ENTITLEMENTS",
+                            "OBJECT_TYPE_DATA_STREAM",
+                            "OBJECT_TYPE_API_USAGE"
                         ]
                     },
                     {
@@ -1200,7 +1464,10 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 },
                 "clusterID": {
                     "type": "string",
@@ -1228,7 +1495,6 @@
                 },
                 "activate": {
                     "type": "string",
-                    "format": "boolean",
                     "description": "app instance activation flag"
                 },
                 "vminfo": {
@@ -1283,14 +1549,14 @@
                 },
                 "remoteConsole": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Remote console flag"
                 },
                 "encryptedSecrets": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "user encrypted secrets map"
                 },
                 "cryptoKey": {
                     "type": "string",
@@ -1306,7 +1572,6 @@
                 },
                 "isSecretUpdated": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "This field tells whether user secrets has updated or not, especially the cusotom config"
                 },
                 "appPolicyId": {
@@ -1320,6 +1585,11 @@
                 "userDefinedVersion": {
                     "type": "string",
                     "description": "Instance version tells which edge app does this instance is running"
+                },
+                "startDelayInSeconds": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "start delay is the time in seconds EVE should wait after boot before starting the application instance"
                 }
             },
             "description": "App Instance detail",
@@ -1352,12 +1622,11 @@
             "properties": {
                 "access": {
                     "type": "string",
-                    "format": "boolean",
-                    "description": "Application instance logs flag"
+                    "description": "Flags to enable / disable sending of logs generated by app instance to zedcloud"
                 }
             },
-            "description": "App Instance Logs detail",
-            "title": "App Instance Logs detail",
+            "description": "App Instance Logs configuration",
+            "title": "App Instance Logs configuration",
             "required": [
                 "access"
             ]
@@ -1366,8 +1635,7 @@
             "type": "object",
             "properties": {
                 "purge": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 }
             }
         },
@@ -1400,8 +1668,11 @@
                 },
                 "activate": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "activation flag"
+                },
+                "imvolId": {
+                    "type": "string",
+                    "description": "immutable Volume for this base image"
                 }
             },
             "description": "Base OS image request details",
@@ -1447,6 +1718,15 @@
                 },
                 "bundleImport": {
                     "$ref": "#/definitions/BundleImport"
+                },
+                "tagUpdate": {
+                    "$ref": "#/definitions/TagUpdate"
+                },
+                "deploymentTagUpdate": {
+                    "$ref": "#/definitions/DeploymentTagUpdate"
+                },
+                "deviceProjectAndTargetUpdate": {
+                    "$ref": "#/definitions/DeviceProjectAndTargetUpdate"
                 }
             },
             "description": "config required for bulk ops."
@@ -1482,7 +1762,13 @@
                 "BULK_SERVICE_MODEL_IMPORT",
                 "BULK_SERVICE_BUNDLE_IMPORT",
                 "BULK_SERVICE_APPINSTANCE_CERT_UPDATE",
-                "BULK_SERVICE_APPINSTANCE_DELETE"
+                "BULK_SERVICE_APPINSTANCE_DELETE",
+                "BULK_SERVICE_BASEOS_UPDATE_RETRY",
+                "BULK_SERVICE_APPINSTANCE_UPDATE",
+                "BULK_SERVICE_DEVICE_TAG_UPDATE",
+                "BULK_SERVICE_DEVICE_TAG_DEPLOYMENT_UPDATE",
+                "BULK_SERVICE_DEVICE_PROJECT_AND_TARGET_UPDATE",
+                "BULK_SERVICE_DEPLOYMENT_CREATE"
             ],
             "default": "BULK_SERVICE_UNSPECIFIED",
             "title": "type of bulk operation"
@@ -1517,7 +1803,10 @@
                     "description": "Page Token"
                 },
                 "orderBy": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
                     "description": "OrderBy helps in sorting the list response"
                 },
                 "pageNum": {
@@ -1543,31 +1832,35 @@
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of CustomConfig (Required)"
                 },
                 "add": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "Add the Custom Config to App Instance (Optional. Default: False)"
                 },
                 "override": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "Override existing custom config from App Bundle Manifest (Optional. Default: False)"
                 },
                 "allowStorageResize": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)"
                 },
                 "fieldDelimiter": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Field delimiter used in specifying variables in template. (Required)"
                 },
                 "template": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "base64 encrypted template string. (Optional)"
                 },
                 "variableGroups": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/CustomConfigVariableGroup"
-                    }
+                    },
+                    "description": "List of Variable groups. (Required)"
                 }
             }
         },
@@ -1575,20 +1868,23 @@
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the Variable Group(Required)"
                 },
                 "variables": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/VariableGroupVariable"
-                    }
+                    },
+                    "description": "List of variables(Required)"
                 },
                 "required": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)"
                 },
                 "condition": {
-                    "$ref": "#/definitions/VariableGroupCondition"
+                    "$ref": "#/definitions/VariableGroupCondition",
+                    "description": "Condition to apply the variable group. (Optional. Default: None)"
                 }
             }
         },
@@ -1600,6 +1896,21 @@
                 }
             }
         },
+        "DeploymentTagUpdate": {
+            "type": "object",
+            "properties": {
+                "deploymentTag": {
+                    "type": "string",
+                    "description": "deployment tag to be updated on the device",
+                    "readOnly": true
+                }
+            },
+            "description": "deployment tag will be required to target deployment version on the device",
+            "title": "deployment tag required for the devices",
+            "required": [
+                "deploymentTag"
+            ]
+        },
         "DeploymentType": {
             "type": "string",
             "enum": [
@@ -1609,38 +1920,76 @@
                 "DEPLOYMENT_TYPE_K3S",
                 "DEPLOYMENT_TYPE_AWS",
                 "DEPLOYMENT_TYPE_K3S_AZURE",
-                "DEPLOYMENT_TYPE_K3S_AWS"
+                "DEPLOYMENT_TYPE_K3S_AWS",
+                "DEPLOYMENT_TYPE_VMWARE_VCE"
             ],
             "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+        },
+        "DeviceProjectAndTargetUpdate": {
+            "type": "object",
+            "properties": {
+                "projectId": {
+                    "type": "string",
+                    "description": "project id."
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "tag to be updated on the device",
+                    "readOnly": true
+                },
+                "deploymentTag": {
+                    "type": "string",
+                    "description": "deployment tag to be updated on the device",
+                    "readOnly": true
+                },
+                "override": {
+                    "type": "boolean",
+                    "description": "Set this flag to override given tags over existing tags. Otherwise the tags will be merged/appended"
+                }
+            },
+            "description": "project id  will be required to move the device to a new project",
+            "title": "project id required for the devices",
+            "required": [
+                "projectId"
+            ]
         },
         "DhcpServerConfig": {
             "type": "object",
             "properties": {
                 "subnet": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Subnet address"
                 },
                 "mask": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Subnet Mask"
                 },
                 "gateway": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "IP Address of Network Gateway"
                 },
                 "domain": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Network domain"
                 },
                 "ntp": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "IP Address of NTP Server"
                 },
                 "dns": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     },
+                    "description": "IP Addresses of DNS servers",
                     "title": "possible DNS ip address"
                 },
                 "dhcpRange": {
                     "$ref": "#/definitions/dhcpIpRange",
-                    "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                    "description": "Range of IP addresses to be used for DHCP"
                 }
             }
         },
@@ -1737,10 +2086,12 @@
                 "IO_TYPE_WWAN",
                 "IO_TYPE_HDMI",
                 "IO_TYPE_LTE",
+                "IO_TYPE_STORAGE_NVME_DEVICE",
+                "IO_TYPE_STORAGE_SATA_DEVICE",
                 "IO_TYPE_OTHER"
             ],
             "default": "IO_TYPE_UNSPECIFIED",
-            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_OTHER: Other Io Types",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_OTHER: Other Io Types",
             "title": "Input/Output Type"
         },
         "JobConfig": {
@@ -1757,10 +2108,7 @@
                     "maxLength": 256,
                     "minLength": 3,
                     "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                    "uniqueItems": true,
-                    "required": [
-                        "true"
-                    ]
+                    "uniqueItems": true
                 },
                 "id": {
                     "type": "string",
@@ -1808,7 +2156,9 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "status of individual field of the given object",
+                    "readOnly": true
                 },
                 "selectionCriteria": {
                     "$ref": "#/definitions/SelectionCriteria",
@@ -1822,17 +2172,11 @@
                 },
                 "title": {
                     "type": "string",
-                    "description": "user or system specified title",
-                    "required": [
-                        "true"
-                    ]
+                    "description": "user or system specified title"
                 },
                 "description": {
                     "type": "string",
-                    "description": "user or system specified description",
-                    "required": [
-                        "true"
-                    ]
+                    "description": "user or system specified description"
                 },
                 "projectId": {
                     "type": "string",
@@ -1849,7 +2193,7 @@
         "JobConfigList": {
             "type": "object",
             "properties": {
-                "jobListSummary": {
+                "summaryByState": {
                     "$ref": "#/definitions/Summary",
                     "description": "Summary information about job list records."
                 },
@@ -1912,12 +2256,10 @@
                 },
                 "allocate": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Allocate flag"
                 },
                 "exportprivate": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Export Private flag"
                 },
                 "allocationprefix": {
@@ -1980,7 +2322,8 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Common and Custom parameters for deciding on transition actions"
                 },
                 "details": {
                     "$ref": "#/definitions/TransDetails",
@@ -2017,6 +2360,10 @@
         },
         "NetInstConfig": {
             "type": "object",
+            "example": {
+                "id": "d85a545f-6510-4327-b03d-c02eef119e99",
+                "name": "sample-app"
+            },
             "properties": {
                 "id": {
                     "type": "string",
@@ -2047,20 +2394,24 @@
                 },
                 "revision": {
                     "$ref": "#/definitions/ObjectRevision",
-                    "description": "system defined info"
+                    "description": "system defined info for the object"
                 },
                 "projectId": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "id of the project in which network instance is created"
                 },
                 "tags": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 },
                 "clusterID": {
                     "type": "string",
-                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                    "description": "id of the Cluster in which the network instance is configured",
                     "maxLength": 256,
                     "minLength": 3,
                     "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
@@ -2068,37 +2419,46 @@
                 },
                 "deviceId": {
                     "type": "string",
+                    "description": "id of the device on which network instance is created",
                     "title": "device on which this network is running"
                 },
                 "port": {
                     "type": "string",
+                    "description": "name of port mapping in the model",
                     "title": "name of port mapping in the model"
                 },
                 "portTags": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 },
                 "kind": {
-                    "$ref": "#/definitions/NetworkInstanceKind"
+                    "$ref": "#/definitions/NetworkInstanceKind",
+                    "description": "Kind of Network Instance ( Local, Switch etc )"
                 },
                 "dhcp": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "title": "if we do dhcp on this network or not"
+                    "description": "Deprecated",
+                    "title": "dhcp - DEPRECATED"
                 },
                 "type": {
-                    "$ref": "#/definitions/NetworkInstanceDhcpType"
+                    "$ref": "#/definitions/NetworkInstanceDhcpType",
+                    "description": "Type of DHCP for this Network Instance"
                 },
                 "ip": {
-                    "$ref": "#/definitions/DhcpServerConfig"
+                    "$ref": "#/definitions/DhcpServerConfig",
+                    "description": "Dhcp Server Configuration"
                 },
                 "dnsList": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/StaticDNSList"
-                    }
+                    },
+                    "description": "List of Static DNS entries"
                 },
                 "oconfig": {
                     "type": "string",
@@ -2110,16 +2470,16 @@
                 },
                 "opaque": {
                     "$ref": "#/definitions/NetInstOpaqueConfig",
-                    "description": "Service specific Config."
+                    "description": "Service specific Config"
                 },
                 "deviceDefault": {
-                    "type": "boolean",
-                    "format": "boolean",
+                    "type": "string",
+                    "description": "flag to indicate if this is the default network instance for the device",
                     "title": "flag to indicate if this is default network"
                 },
                 "networkPolicyId": {
                     "type": "string",
-                    "description": "network policy id"
+                    "description": "id of the network policy to be attached to this network instance"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -2136,13 +2496,19 @@
             "type": "object",
             "properties": {
                 "type": {
-                    "$ref": "#/definitions/OpaqueConfigType"
+                    "type": "string",
+                    "$ref": "#/definitions/OpaqueConfigType",
+                    "description": "type of Opaque config"
                 },
                 "oconfig": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "base64 encoded string of opaque config"
                 },
                 "lisp": {
-                    "$ref": "#/definitions/LispConfig"
+                    "type": "string",
+                    "$ref": "#/definitions/LispConfig",
+                    "description": "Deprecated - Lisp config",
+                    "title": "lisp - Deprecated"
                 }
             },
             "description": "Network Instance Opaque config. This is service specific configuration."
@@ -2151,8 +2517,7 @@
             "type": "object",
             "properties": {
                 "netInstanceDefault": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "boolean"
                 },
                 "netInstanceConfig": {
                     "$ref": "#/definitions/NetInstConfig"
@@ -2253,7 +2618,11 @@
                 "OBJECT_TYPE_DOC_POLICY",
                 "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                 "OBJECT_TYPE_TAGS",
-                "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                "OBJECT_TYPE_DEPLOYMENT",
+                "OBJECT_TYPE_ENTITLEMENTS",
+                "OBJECT_TYPE_DATA_STREAM",
+                "OBJECT_TYPE_API_USAGE"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -2338,7 +2707,8 @@
                     "additionalProperties": {
                         "type": "integer",
                         "format": "int64"
-                    }
+                    },
+                    "description": "Values: Map for storing <string, uint32>"
                 }
             },
             "description": "Summary is used to store the Summary details",
@@ -2357,6 +2727,28 @@
                     "$ref": "#/definitions/CustomUpdateModelFields"
                 }
             }
+        },
+        "TagUpdate": {
+            "type": "object",
+            "properties": {
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "tag to be updated on the device",
+                    "readOnly": true
+                },
+                "override": {
+                    "type": "boolean",
+                    "description": "Set this flag to override given tags over existing tags. Otherwise the tags will be merged/appended"
+                }
+            },
+            "description": "device tag will be required to auto deploy objects on the device",
+            "title": "tags required for the devices",
+            "required": [
+                "tags"
+            ]
         },
         "TransCause": {
             "type": "string",
@@ -2440,38 +2832,46 @@
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the Variable (Required)"
                 },
                 "label": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Label for the variable (Required)"
                 },
                 "maxLength": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Max length of the value of the variable(Optional. Default: 1024)"
                 },
                 "required": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "This variable MUST be specified when creating an App Instance. (Optional. Default: False)"
                 },
                 "default": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Default value of the variable. (Optional. Default: <Default value based on type>)"
                 },
                 "processInput": {
                     "type": "string"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "User-specified value of the variable.(Required if required is true. Optional otherwise)"
                 },
                 "format": {
-                    "$ref": "#/definitions/VariableVariableFormat"
+                    "$ref": "#/definitions/VariableVariableFormat",
+                    "description": "Format of the user variable. (Required)"
                 },
                 "encode": {
-                    "$ref": "#/definitions/VariableFileEncoding"
+                    "$ref": "#/definitions/VariableFileEncoding",
+                    "description": "Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE"
                 },
                 "options": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/VariableOptionVal"
-                    }
+                    },
+                    "description": "Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN"
                 }
             },
             "description": "Edge Application Artifact Details",
@@ -2487,10 +2887,12 @@
             "type": "object",
             "properties": {
                 "label": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Display label of the key in User-Agent"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Value of the key to be used"
                 }
             }
         },
@@ -2661,6 +3063,10 @@
                     "type": "string",
                     "title": "summary of the error in text format"
                 },
+                "jobId": {
+                    "type": "string",
+                    "title": "for tracking asynchronous tasks"
+                },
                 "error": {
                     "type": "array",
                     "items": {
@@ -2715,12 +3121,10 @@
             "properties": {
                 "drop": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "ACE drop flag"
                 },
                 "limit": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "ACE limit flag"
                 },
                 "limitrate": {
@@ -2739,7 +3143,6 @@
                 },
                 "portmap": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "application port map flag"
                 },
                 "mapparams": {
@@ -2800,13 +3203,11 @@
                 },
                 "directattach": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "direct attach flag",
                     "title": "comes from manifest during app create"
                 },
                 "privateip": {
                     "type": "string",
-                    "format": "boolean",
                     "description": "Private IP flag"
                 },
                 "acls": {
@@ -2846,11 +3247,15 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Network Instance tag to be matched for interface assignment. Applicable only when \"direct attach\" flag is false"
+                },
+                "netinstid": {
+                    "type": "string",
+                    "description": "Network Instance id to be matched for interface assignment."
                 },
                 "defaultNetInstance": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "default instance flag"
                 }
             },
@@ -2904,7 +3309,7 @@
             "properties": {
                 "imagename": {
                     "type": "string",
-                    "description": "Image name"
+                    "description": "Name of Image Object used for the drive."
                 },
                 "maxsize": {
                     "type": "number",
@@ -2913,21 +3318,19 @@
                 },
                 "readonly": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "Read only flag"
+                    "description": "Read only flag. If set, drive is mounted as readonly by app instance."
                 },
                 "preserve": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "Preserves flag which preserves the volume"
+                    "description": "Preserve the drive even when all app instances using it are deleted"
                 },
                 "drvtype": {
                     "type": "string",
-                    "description": "Drive type"
+                    "description": "Type of Drive. Valid Values: UNSPECIFIED, CDROM, HDD, NET, HDD_EMPTY. HDD_EMPTY - is to allocate the empty disk of maxsizebytes specified"
                 },
                 "target": {
                     "type": "string",
-                    "description": "Target drive"
+                    "description": "type of target. Valid values: Disk, Kernel, Initrd, RamDisk"
                 },
                 "volumelabel": {
                     "type": "string",
@@ -2935,25 +3338,23 @@
                 },
                 "mvolname": {
                     "type": "string",
-                    "description": "mutable Volume for this drive"
+                    "description": "mutable Volume for this drive. Only one of imvolname and mvolname must be specified."
                 },
                 "imvolname": {
                     "type": "string",
-                    "description": "immutable Volume for this drive"
+                    "description": "immutable Volume for this drive. Only one of imvolname and mvolname must be specified."
                 },
                 "ignorepurge": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "don't purge this Drive, only applicable to purge command"
+                    "description": "don't purge this drive as part of purge command for mutable volumes"
                 },
                 "cleartext": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "don't encrypt, store in cleartext"
+                    "description": "If set, don't encrypt the drive. Store in cleartext"
                 },
                 "mountpath": {
                     "type": "string",
-                    "description": "Mount Path"
+                    "description": "Mount Path for the drive in the App Instance"
                 }
             },
             "description": "Drive configuration",
@@ -2966,6 +3367,24 @@
                 "drvtype",
                 "target"
             ]
+        },
+        "googlerpcStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/protobufAny"
+                    }
+                }
+            }
         },
         "hvMode": {
             "type": "string",
@@ -2995,11 +3414,26 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 }
             },
             "description": "Physical Adapter",
             "title": "Physical Adapter"
+        },
+        "protobufAny": {
+            "type": "object",
+            "properties": {
+                "typeUrl": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "byte"
+                }
+            }
         },
         "spType": {
             "type": "string",
@@ -3030,7 +3464,6 @@
                 },
                 "vnc": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "VNC"
                 },
                 "vncDisplay": {
@@ -3038,6 +3471,10 @@
                     "format": "int64",
                     "description": "VNC display",
                     "readOnly": true
+                },
+                "cpuPinningEnabled": {
+                    "type": "boolean",
+                    "description": "Enable CpuPinning"
                 }
             },
             "description": "Virtual machine memory configuration",

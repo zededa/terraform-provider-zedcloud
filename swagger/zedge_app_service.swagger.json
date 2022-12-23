@@ -15,7 +15,17 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "host": "zedcontrol.zededa.net",
+    "tags": [
+        {
+            "name": "EdgeApplicationConfiguration"
+        },
+        {
+            "name": "EdgeApplicationInstanceConfiguration"
+        },
+        {
+            "name": "EdgeApplicationInstanceStatus"
+        }
+    ],
     "basePath": "/api",
     "schemes": [
         "https"
@@ -31,7 +41,7 @@
             "get": {
                 "summary": "Query edge application bundles",
                 "description": "Query the edge application bundle records.",
-                "operationId": "QueryEdgeApplicationBundles",
+                "operationId": "EdgeApplicationConfiguration_QueryEdgeApplicationBundles",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -68,6 +78,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -76,8 +92,7 @@
                         "description": "Only summary of the records required",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.namePattern",
@@ -155,9 +170,33 @@
                             "DEPLOYMENT_TYPE_K3S",
                             "DEPLOYMENT_TYPE_AWS",
                             "DEPLOYMENT_TYPE_K3S_AZURE",
-                            "DEPLOYMENT_TYPE_K3S_AWS"
+                            "DEPLOYMENT_TYPE_K3S_AWS",
+                            "DEPLOYMENT_TYPE_VMWARE_VCE"
                         ],
                         "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.categories",
+                        "description": "category types of the bundle\n\n - APP_CATEGORY_UNSPECIFIED: Invalid Edge Application Category\n - APP_CATEGORY_OPERATING_SYSTEM: Edge operating systems\n - APP_CATEGORY_INDUSTRIAL: Connectity solution for industrial protocols\n - APP_CATEGORY_EDGE_APPLICATION: Edge application framework featuring composite functions for data ingestion, buffering, analytics and export\n - APP_CATEGORY_NETWORKING: Edge networking services (e.g. SD-WAN, NFV)\n - APP_CATEGORY_SECURITY: Edge security services (e.g. protocol inspection, firewall)\n - APP_CATEGORY_DATA_ANALYTICS: Edge analytics (e.g. AI/ML) and data management (e.g. database, connectors) services\n - APP_CATEGORY_CLOUD_APPLICATION: Edge application runtimes, cloud connectivity and general application enablement\n - APP_CATEGORY_DEVOPS: Tools for Edge Application CI/CD and performance optimization\n - APP_CATEGORY_OTHERS: Miscellaneous functionality",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "APP_CATEGORY_UNSPECIFIED",
+                                "APP_CATEGORY_OPERATING_SYSTEM",
+                                "APP_CATEGORY_INDUSTRIAL",
+                                "APP_CATEGORY_EDGE_APPLICATION",
+                                "APP_CATEGORY_NETWORKING",
+                                "APP_CATEGORY_SECURITY",
+                                "APP_CATEGORY_DATA_ANALYTICS",
+                                "APP_CATEGORY_CLOUD_APPLICATION",
+                                "APP_CATEGORY_DEVOPS",
+                                "APP_CATEGORY_OTHERS"
+                            ]
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageToken",
@@ -171,7 +210,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -216,7 +259,7 @@
             "post": {
                 "summary": "Create edge application bundle",
                 "description": "Create an edge application bundle record.",
-                "operationId": "CreateEdgeApplicationBundle",
+                "operationId": "EdgeApplicationConfiguration_CreateEdgeApplicationBundle",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -259,6 +302,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -291,7 +340,7 @@
             "get": {
                 "summary": "Query global edge application bundles",
                 "description": "Query the edge application bundle records present in the parent enetrprise",
-                "operationId": "QueryGlobalEdgeApplicationBundles",
+                "operationId": "EdgeApplicationConfiguration_QueryGlobalEdgeApplicationBundles",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -328,6 +377,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -336,8 +391,7 @@
                         "description": "Only summary of the records required",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.namePattern",
@@ -415,9 +469,33 @@
                             "DEPLOYMENT_TYPE_K3S",
                             "DEPLOYMENT_TYPE_AWS",
                             "DEPLOYMENT_TYPE_K3S_AZURE",
-                            "DEPLOYMENT_TYPE_K3S_AWS"
+                            "DEPLOYMENT_TYPE_K3S_AWS",
+                            "DEPLOYMENT_TYPE_VMWARE_VCE"
                         ],
                         "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.categories",
+                        "description": "category types of the bundle\n\n - APP_CATEGORY_UNSPECIFIED: Invalid Edge Application Category\n - APP_CATEGORY_OPERATING_SYSTEM: Edge operating systems\n - APP_CATEGORY_INDUSTRIAL: Connectity solution for industrial protocols\n - APP_CATEGORY_EDGE_APPLICATION: Edge application framework featuring composite functions for data ingestion, buffering, analytics and export\n - APP_CATEGORY_NETWORKING: Edge networking services (e.g. SD-WAN, NFV)\n - APP_CATEGORY_SECURITY: Edge security services (e.g. protocol inspection, firewall)\n - APP_CATEGORY_DATA_ANALYTICS: Edge analytics (e.g. AI/ML) and data management (e.g. database, connectors) services\n - APP_CATEGORY_CLOUD_APPLICATION: Edge application runtimes, cloud connectivity and general application enablement\n - APP_CATEGORY_DEVOPS: Tools for Edge Application CI/CD and performance optimization\n - APP_CATEGORY_OTHERS: Miscellaneous functionality",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "APP_CATEGORY_UNSPECIFIED",
+                                "APP_CATEGORY_OPERATING_SYSTEM",
+                                "APP_CATEGORY_INDUSTRIAL",
+                                "APP_CATEGORY_EDGE_APPLICATION",
+                                "APP_CATEGORY_NETWORKING",
+                                "APP_CATEGORY_SECURITY",
+                                "APP_CATEGORY_DATA_ANALYTICS",
+                                "APP_CATEGORY_CLOUD_APPLICATION",
+                                "APP_CATEGORY_DEVOPS",
+                                "APP_CATEGORY_OTHERS"
+                            ]
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageToken",
@@ -431,7 +509,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -478,7 +560,7 @@
             "get": {
                 "summary": "Get global edge application bundle",
                 "description": "Get the configuration (without security details) of a global edge application bundle record.",
-                "operationId": "GetGlobalEdgeApplicationBundle",
+                "operationId": "EdgeApplicationConfiguration_GetGlobalEdgeApplicationBundle",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -514,6 +596,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -546,7 +634,7 @@
             "get": {
                 "summary": "Get global edge application bundle",
                 "description": "Get the configuration (without security details) of a global edge application bundle record.",
-                "operationId": "GetGlobalEdgeApplicationBundleByName",
+                "operationId": "EdgeApplicationConfiguration_GetGlobalEdgeApplicationBundleByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -582,6 +670,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -614,7 +708,7 @@
             "get": {
                 "summary": "Get edge application bundle",
                 "description": "Get the configuration (without security details) of an edge application bundle record.",
-                "operationId": "GetEdgeApplicationBundle",
+                "operationId": "EdgeApplicationConfiguration_GetEdgeApplicationBundle",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -651,6 +745,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -680,7 +780,7 @@
             "delete": {
                 "summary": "Delete edge application bundle",
                 "description": "Delete an edge application bundle record.",
-                "operationId": "DeleteEdgeApplicationBundle",
+                "operationId": "EdgeApplicationConfiguration_DeleteEdgeApplicationBundle",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -723,6 +823,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -752,7 +858,7 @@
             "put": {
                 "summary": "Update edge application bundle",
                 "description": "Update an edge application bundle record. The usual pattern to update an edge application bundle record is to retrieve the record and update with the modified values in a new body to update the edge application bundle record.",
-                "operationId": "UpdateEdgeApplicationBundle",
+                "operationId": "EdgeApplicationConfiguration_UpdateEdgeApplicationBundle",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -795,6 +901,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -810,8 +922,215 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/App"
+                            "type": "object",
+                            "example": {
+                                "name": "sample-app",
+                                "title": "Sample Edge Applications",
+                                "originType": "ORIGIN_LOCAL"
+                            },
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "User defined name of the edge application, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "User defined title of the edge application. Title can be changed at any time",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the edge application",
+                                    "maxLength": 256
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "system defined info"
+                                },
+                                "networks": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "user defined network options"
+                                },
+                                "drives": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "user defined drives",
+                                    "readOnly": true
+                                },
+                                "cpus": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "user defined cpus for bundle"
+                                },
+                                "memory": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "user defined memory for bundle"
+                                },
+                                "manifestJSON": {
+                                    "$ref": "#/definitions/VMManifest",
+                                    "description": "user defined manifest in JSON format"
+                                },
+                                "parentDetail": {
+                                    "$ref": "#/definitions/ObjectParentDetail",
+                                    "description": "origin and parent related details"
+                                },
+                                "originType": {
+                                    "$ref": "#/definitions/Origin",
+                                    "description": "origin of object"
+                                },
+                                "storage": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "user defined storage for bundle"
+                                },
+                                "userDefinedVersion": {
+                                    "type": "string",
+                                    "description": "User defined version for the given edge-app"
+                                },
+                                "projectAccessList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "project access list of the app bundle"
+                                },
+                                "isImported": {
+                                    "type": "boolean",
+                                    "description": "Flag to represent where app bundle is already imported"
+                                }
+                            },
+                            "description": "Edge application gets installed/uninstalled to/from edge node(s) and perform specific edge computing tasks. Lifecycle of Edge application (upgrade/restart) on Edge node can be managed and monitored by ZEDEDA Cloud controller through this detailed configuration.",
+                            "title": "Edge application detailed configuration",
+                            "required": [
+                                "name",
+                                "title",
+                                "originType"
+                            ]
                         }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeApplicationConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-apps"
+                }
+            }
+        },
+        "/v1/apps/id/{id}/projects": {
+            "get": {
+                "summary": "Query the project access list of an edge application bundle",
+                "description": "Query the project access list of an edge application bundle",
+                "operationId": "EdgeApplicationConfiguration_QueryEdgeApplicationBundleProjectList",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/AppProjectList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the app bundle",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
                     },
                     {
                         "name": "X-Request-Id",
@@ -834,7 +1153,7 @@
             "get": {
                 "summary": "Query edge application instances",
                 "description": "Query the edge application instance records.",
-                "operationId": "QueryEdgeApplicationInstances",
+                "operationId": "EdgeApplicationInstanceConfiguration_QueryEdgeApplicationInstances",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -871,6 +1190,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -879,8 +1204,7 @@
                         "description": "summary flag",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.projectName",
@@ -938,9 +1262,24 @@
                             "DEPLOYMENT_TYPE_K3S",
                             "DEPLOYMENT_TYPE_AWS",
                             "DEPLOYMENT_TYPE_K3S_AZURE",
-                            "DEPLOYMENT_TYPE_K3S_AWS"
+                            "DEPLOYMENT_TYPE_K3S_AWS",
+                            "DEPLOYMENT_TYPE_VMWARE_VCE"
                         ],
                         "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.projectNamePattern",
+                        "description": "project name pattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.deviceNamePattern",
+                        "description": "device name pattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
                     },
                     {
                         "name": "next.pageToken",
@@ -954,7 +1293,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -981,6 +1324,17 @@
                         "format": "int64"
                     },
                     {
+                        "name": "fields",
+                        "description": "Fields to select: id, name, title, description, projectId, tags, clusterID, appId, deviceId, manifestInfo, appType, appPolicyId, userDefinedVersion, remoteConsole",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
                         "name": "X-Request-Id",
                         "in": "header",
                         "required": false,
@@ -999,7 +1353,7 @@
             "post": {
                 "summary": "Create edge application instance",
                 "description": "Create an edge application instance record.",
-                "operationId": "CreateEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_CreateEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1042,6 +1396,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1074,7 +1434,7 @@
             "get": {
                 "summary": "Get edge application instance",
                 "description": "Get the configuration (without security details) of an edge application instance record.",
-                "operationId": "GetEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_GetEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1110,6 +1470,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1140,7 +1506,7 @@
             "delete": {
                 "summary": "Delete edge application instance",
                 "description": "Delete an edge application instance record.",
-                "operationId": "DeleteEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_DeleteEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1176,6 +1542,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1206,7 +1578,7 @@
             "put": {
                 "summary": "Update edge application instance",
                 "description": "Update an edge application instance. The usual pattern to update an edge application bundle record is to retrieve the record and update with the modified values in a new body to update the edge application bundle record.",
-                "operationId": "UpdateEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_UpdateEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1249,6 +1621,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1264,7 +1642,180 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/AppInstance"
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "User defined name of the app instance, unique across the enterprise. Once app instance is created, name can\u2019t be changed",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "User defined title of the app instance. Title can be changed at any time",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the app instance",
+                                    "maxLength": 256
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "app instance object revision details"
+                                },
+                                "projectId": {
+                                    "type": "string",
+                                    "description": "project name which the given app instance belong to"
+                                },
+                                "tags": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                                    "maxLength": 32,
+                                    "pattern": "^[^<%&?/\\>]+$"
+                                },
+                                "clusterID": {
+                                    "type": "string",
+                                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "appId": {
+                                    "type": "string",
+                                    "description": "User defined name of the edge app, unique across the enterprise. Once app name is created, name can\u2019t be changed",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "deviceId": {
+                                    "type": "string",
+                                    "description": "User defined name of the device name, unique across the enterprise. Once device name is defined, name can\u2019t be changed",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "activate": {
+                                    "type": "string",
+                                    "description": "app instance activation flag"
+                                },
+                                "vminfo": {
+                                    "$ref": "#/definitions/vm",
+                                    "description": "virtual machine info"
+                                },
+                                "drives": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/drive"
+                                    },
+                                    "description": "drive details"
+                                },
+                                "interfaces": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/appInterface"
+                                    },
+                                    "description": "application interfaces"
+                                },
+                                "userData": {
+                                    "type": "string",
+                                    "description": "Deprecated: Application initiazation script in cloud-config format to be used by cloud-init"
+                                },
+                                "customConfig": {
+                                    "$ref": "#/definitions/CustomConfig",
+                                    "description": "Application initialization script template in cloud-config format and user specified values"
+                                },
+                                "collectStatsIPAddr": {
+                                    "type": "string",
+                                    "description": "holds the static Ip of the app instance"
+                                },
+                                "bundleversion": {
+                                    "type": "string",
+                                    "description": "version of bundle app is referring to"
+                                },
+                                "logs": {
+                                    "$ref": "#/definitions/AppInstanceLogs",
+                                    "description": "App Instance logs"
+                                },
+                                "restart": {
+                                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                                    "description": "Restart counter: ZedCloudOpsCmd"
+                                },
+                                "refresh": {
+                                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                                    "description": "Refresh counter: ZedCloudOpsCmd"
+                                },
+                                "purge": {
+                                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                                    "description": "Purge counter: ZedCloudOpsCmd"
+                                },
+                                "remoteConsole": {
+                                    "type": "boolean",
+                                    "description": "Remote console flag"
+                                },
+                                "encryptedSecrets": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "user encrypted secrets map"
+                                },
+                                "cryptoKey": {
+                                    "type": "string",
+                                    "description": "Crypto Key for decrypting user secret information"
+                                },
+                                "manifestInfo": {
+                                    "$ref": "#/definitions/ManifestInfo",
+                                    "description": "app manifest Info"
+                                },
+                                "appType": {
+                                    "$ref": "#/definitions/AppType",
+                                    "description": "type of bundle"
+                                },
+                                "isSecretUpdated": {
+                                    "type": "boolean",
+                                    "description": "This field tells whether user secrets has updated or not, especially the cusotom config"
+                                },
+                                "appPolicyId": {
+                                    "type": "string",
+                                    "description": "app policy id"
+                                },
+                                "deploymentType": {
+                                    "$ref": "#/definitions/DeploymentType",
+                                    "description": "type of deployment for the app, eg: azure, k3s, standalone"
+                                },
+                                "userDefinedVersion": {
+                                    "type": "string",
+                                    "description": "Instance version tells which edge app does this instance is running"
+                                },
+                                "startDelayInSeconds": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "start delay is the time in seconds EVE should wait after boot before starting the application instance"
+                                }
+                            },
+                            "description": "App Instance detail",
+                            "title": "App Instance detail",
+                            "required": [
+                                "name",
+                                "title",
+                                "projectId",
+                                "appId",
+                                "deviceId",
+                                "activate",
+                                "drives",
+                                "interfaces"
+                            ]
                         }
                     },
                     {
@@ -1288,7 +1839,7 @@
             "put": {
                 "summary": "Activate edge application instance",
                 "description": "Activate an edge application instance. If already in active state no action is taken.",
-                "operationId": "ActivateEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_ActivateEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1330,6 +1881,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1362,7 +1919,7 @@
             "put": {
                 "summary": "Connect to edge application instance console",
                 "description": "Remotely connect to console of an edge application instance running on the edge node where the edge application instance has been deployed.",
-                "operationId": "ConnectToEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_ConnectToEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1404,6 +1961,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1436,7 +1999,7 @@
             "put": {
                 "summary": "Deactivate edge application instance",
                 "description": "Deactivate an edge application instance. If already in inactive state no action is taken.",
-                "operationId": "DeActivateEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_DeActivateEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1479,6 +2042,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1510,7 +2079,7 @@
             "get": {
                 "summary": "Get edge application instance network traffic flow log",
                 "description": "Get the network traffic flow log of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceTrafficFlows",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceTrafficFlows",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1546,6 +2115,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1692,7 +2267,7 @@
             "get": {
                 "summary": "Get edge application instance top talkers of the network traffic flows",
                 "description": "Get the top talkers of the network traffic flows of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceTopTalkers",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceTopTalkers",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1728,6 +2303,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1788,7 +2369,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "Cursor.pageNum",
@@ -1835,7 +2420,7 @@
             "get": {
                 "summary": "Get edge application instance log",
                 "description": "Get the log of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceLogs",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceLogs",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1871,6 +2456,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1918,7 +2509,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "Cursor.pageNum",
@@ -1965,7 +2560,7 @@
             "put": {
                 "summary": "Refresh edge application instance",
                 "description": "Refresh an edge application instance. Update edge application instance to the latest version of the edge application. This operation will result in a restart of the edge application instance.",
-                "operationId": "RefreshEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_RefreshEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2007,6 +2602,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -2039,7 +2640,7 @@
             "put": {
                 "summary": "Refresh and purge edge application instance",
                 "description": "Refresh and purge an edge application instance, update edge application instance to the latest version of the edge application. This operation will result in loss of data and a restart of the edge application instance. ",
-                "operationId": "RefreshPurgeEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_RefreshPurgeEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2081,6 +2682,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -2113,7 +2720,7 @@
             "put": {
                 "summary": "Restart edge application instance",
                 "description": "Restart an edge application instance, initiate a restart of the edge application instance.",
-                "operationId": "RestartEdgeApplicationInstance",
+                "operationId": "EdgeApplicationInstanceConfiguration_RestartEdgeApplicationInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2156,6 +2763,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2187,7 +2800,7 @@
             "get": {
                 "summary": "Get edge application instance status",
                 "description": "Get the status of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceStatus",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceStatus",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2224,6 +2837,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2255,7 +2874,7 @@
             "get": {
                 "summary": "Get edge application instance events by id",
                 "description": "Get configuration and status events of an edge application instance by id.",
-                "operationId": "GetEdgeApplicationInstanceEvents",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceEvents",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2291,6 +2910,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -2337,7 +2962,7 @@
             "get": {
                 "summary": "Get edge application instance resource usage timeline",
                 "description": "Get the resource usage timeline of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceResourceMetricsById",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceResourceMetricsById",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2374,6 +2999,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2397,7 +3028,9 @@
                             "METRIC_TYPE_NETWORK_TOTAL",
                             "METRIC_TYPE_NETWORK_RATES",
                             "METRIC_TYPE_EVENTS_COUNT",
-                            "METRIC_TYPE_STORAGE_UTILIZATION"
+                            "METRIC_TYPE_STORAGE_UTILIZATION",
+                            "METRIC_TYPE_STORAGE_IO_ZPOOL",
+                            "METRIC_TYPE_STORAGE_IO_ZVOL"
                         ]
                     },
                     {
@@ -2431,7 +3064,11 @@
                             "OBJECT_TYPE_DOC_POLICY",
                             "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                             "OBJECT_TYPE_TAGS",
-                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                            "OBJECT_TYPE_DEPLOYMENT",
+                            "OBJECT_TYPE_ENTITLEMENTS",
+                            "OBJECT_TYPE_DATA_STREAM",
+                            "OBJECT_TYPE_API_USAGE"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -2489,7 +3126,7 @@
             "get": {
                 "summary": "Get edge application instance",
                 "description": "Get the configuration (without security details) of an edge application instance record.",
-                "operationId": "GetEdgeApplicationInstanceByName",
+                "operationId": "EdgeApplicationInstanceConfiguration_GetEdgeApplicationInstanceByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2526,6 +3163,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2557,7 +3200,7 @@
             "get": {
                 "summary": "Get edge application instance network traffic flow log",
                 "description": "Get the network traffic flow log of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceTrafficFlows2",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceTrafficFlows2",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2593,6 +3236,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -2739,7 +3388,7 @@
             "get": {
                 "summary": "Get edge application instance top talkers of the network traffic flows",
                 "description": "Get the top talkers of the network traffic flows of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceTopTalkers2",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceTopTalkers2",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2775,6 +3424,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -2835,7 +3490,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "Cursor.pageNum",
@@ -2882,7 +3541,7 @@
             "get": {
                 "summary": "Get edge application instance status",
                 "description": "Get the status of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceStatusByName",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceStatusByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2919,6 +3578,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2950,7 +3615,7 @@
             "get": {
                 "summary": "Get edge application instance events by name",
                 "description": "Get configuration and status events of an edge application instance by name.",
-                "operationId": "GetEdgeApplicationInstanceEventsByName",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceEventsByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2986,6 +3651,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -3032,7 +3703,7 @@
             "get": {
                 "summary": "Get edge application instance resource usage timeline",
                 "description": "Get the resource usage timeline of an edge application instance as reported by the edge node where the edge application instance has been deployed.",
-                "operationId": "GetEdgeApplicationInstanceResourceMetricsByName",
+                "operationId": "EdgeApplicationInstanceStatus_GetEdgeApplicationInstanceResourceMetricsByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -3069,6 +3740,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -3092,7 +3769,9 @@
                             "METRIC_TYPE_NETWORK_TOTAL",
                             "METRIC_TYPE_NETWORK_RATES",
                             "METRIC_TYPE_EVENTS_COUNT",
-                            "METRIC_TYPE_STORAGE_UTILIZATION"
+                            "METRIC_TYPE_STORAGE_UTILIZATION",
+                            "METRIC_TYPE_STORAGE_IO_ZPOOL",
+                            "METRIC_TYPE_STORAGE_IO_ZVOL"
                         ]
                     },
                     {
@@ -3126,7 +3805,11 @@
                             "OBJECT_TYPE_DOC_POLICY",
                             "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                             "OBJECT_TYPE_TAGS",
-                            "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                            "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                            "OBJECT_TYPE_DEPLOYMENT",
+                            "OBJECT_TYPE_ENTITLEMENTS",
+                            "OBJECT_TYPE_DATA_STREAM",
+                            "OBJECT_TYPE_API_USAGE"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -3184,7 +3867,7 @@
             "get": {
                 "summary": "Query status of edge application instances",
                 "description": "Query the status of edge application instances as reported by the edge nodes where the edge application instances have been deployed.",
-                "operationId": "QueryEdgeApplicationInstanceStatus",
+                "operationId": "EdgeApplicationInstanceStatus_QueryEdgeApplicationInstanceStatus",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -3221,6 +3904,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -3229,8 +3918,7 @@
                         "description": "app instance summary flag",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.appName",
@@ -3241,7 +3929,7 @@
                     },
                     {
                         "name": "filter.runState",
-                        "description": "aperation status\n\n - RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode",
+                        "description": "aperation status\n\n - RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode\n - RUN_STATE_START_DELAYED: Application start delayed as per configuration\n - RUN_STATE_BASEOS_UPDATING: Device BaseOs Update in Progress\n - RUN_STATE_PREPARING_POWEROFF: device preparing power off - shutting down all app instances\n - RUN_STATE_POWERING_OFF: device powering off from local profile server\n - RUN_STATE_PREPARED_POWEROFF: device prepared power off - all app instances are shut down",
                         "in": "query",
                         "required": false,
                         "type": "string",
@@ -3265,7 +3953,12 @@
                             "RUN_STATE_LOADING",
                             "RUN_STATE_CREATING_VOLUME",
                             "RUN_STATE_BOOTING",
-                            "RUN_STATE_MAINTENANCE_MODE"
+                            "RUN_STATE_MAINTENANCE_MODE",
+                            "RUN_STATE_START_DELAYED",
+                            "RUN_STATE_BASEOS_UPDATING",
+                            "RUN_STATE_PREPARING_POWEROFF",
+                            "RUN_STATE_POWERING_OFF",
+                            "RUN_STATE_PREPARED_POWEROFF"
                         ],
                         "default": "RUN_STATE_UNSPECIFIED"
                     },
@@ -3318,9 +4011,24 @@
                             "DEPLOYMENT_TYPE_K3S",
                             "DEPLOYMENT_TYPE_AWS",
                             "DEPLOYMENT_TYPE_K3S_AZURE",
-                            "DEPLOYMENT_TYPE_K3S_AWS"
+                            "DEPLOYMENT_TYPE_K3S_AWS",
+                            "DEPLOYMENT_TYPE_VMWARE_VCE"
                         ],
                         "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.projectNamePattern",
+                        "description": "project name pattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.deviceNamePattern",
+                        "description": "device name pattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
                     },
                     {
                         "name": "next.pageToken",
@@ -3334,7 +4042,382 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "fields",
+                        "description": "Fields to select: id, name, deviceId, appId, tags, adminState, clusterID, runState, Memory, Storage, swState, Cpu, projectId, title, appType, deploymentType, memorySummary",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
                         "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeApplicationInstanceStatus"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-apps"
+                }
+            }
+        },
+        "/v1/apps/instances/status-config": {
+            "get": {
+                "summary": "Query status and config of edge application instances",
+                "description": "Edge application instances status config API is a composite API for application instance config and application instance status",
+                "operationId": "EdgeApplicationInstanceStatus_QueryEdgeApplicationInstanceStatusConfig",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/AppInstConfigStatusList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "summary",
+                        "description": "app instance summary flag",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "filter.appName",
+                        "description": "User defined name of the app bundle, unique across the enterprise. Once app bundle is created, name can\u2019t be changed",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.runState",
+                        "description": "aperation status\n\n - RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode\n - RUN_STATE_START_DELAYED: Application start delayed as per configuration\n - RUN_STATE_BASEOS_UPDATING: Device BaseOs Update in Progress\n - RUN_STATE_PREPARING_POWEROFF: device preparing power off - shutting down all app instances\n - RUN_STATE_POWERING_OFF: device powering off from local profile server\n - RUN_STATE_PREPARED_POWEROFF: device prepared power off - all app instances are shut down",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "RUN_STATE_UNSPECIFIED",
+                            "RUN_STATE_ONLINE",
+                            "RUN_STATE_HALTED",
+                            "RUN_STATE_INIT",
+                            "RUN_STATE_REBOOTING",
+                            "RUN_STATE_OFFLINE",
+                            "RUN_STATE_UNKNOWN",
+                            "RUN_STATE_UNPROVISIONED",
+                            "RUN_STATE_PROVISIONED",
+                            "RUN_STATE_SUSPECT",
+                            "RUN_STATE_DOWNLOADING",
+                            "RUN_STATE_RESTARTING",
+                            "RUN_STATE_PURGING",
+                            "RUN_STATE_HALTING",
+                            "RUN_STATE_ERROR",
+                            "RUN_STATE_VERIFYING",
+                            "RUN_STATE_LOADING",
+                            "RUN_STATE_CREATING_VOLUME",
+                            "RUN_STATE_BOOTING",
+                            "RUN_STATE_MAINTENANCE_MODE",
+                            "RUN_STATE_START_DELAYED",
+                            "RUN_STATE_BASEOS_UPDATING",
+                            "RUN_STATE_PREPARING_POWEROFF",
+                            "RUN_STATE_POWERING_OFF",
+                            "RUN_STATE_PREPARED_POWEROFF"
+                        ],
+                        "default": "RUN_STATE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.deviceName",
+                        "description": "User defined name of the device, unique across the enterprise. Once device is created, name can\u2019t be changed",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.projectName",
+                        "description": "User defined name of the project, unique across the enterprise. Once project is created, name can\u2019t be changed",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.namePattern",
+                        "description": "name pattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.appType",
+                        "description": "type of app",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "APP_TYPE_UNSPECIFIED",
+                            "APP_TYPE_VM",
+                            "APP_TYPE_VM_RUNTIME",
+                            "APP_TYPE_CONTAINER",
+                            "APP_TYPE_MODULE"
+                        ],
+                        "default": "APP_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.deploymentType",
+                        "description": "type of deployment for the app, eg: azure, k3s, standalone",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "DEPLOYMENT_TYPE_UNSPECIFIED",
+                            "DEPLOYMENT_TYPE_STAND_ALONE",
+                            "DEPLOYMENT_TYPE_AZURE",
+                            "DEPLOYMENT_TYPE_K3S",
+                            "DEPLOYMENT_TYPE_AWS",
+                            "DEPLOYMENT_TYPE_K3S_AZURE",
+                            "DEPLOYMENT_TYPE_K3S_AWS",
+                            "DEPLOYMENT_TYPE_VMWARE_VCE"
+                        ],
+                        "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.projectNamePattern",
+                        "description": "project name pattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.deviceNamePattern",
+                        "description": "device name pattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "fields",
+                        "description": "Fields to select: id, name, deviceId, appId, tags, adminState, clusterID, runState, Memory, Storage, swState, Cpu, projectId, title, appType, deploymentType, memorySummary",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeApplicationInstanceStatus"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-apps"
+                }
+            }
+        },
+        "/v1/apps/instances/tags": {
+            "get": {
+                "summary": "Query Application instance tags",
+                "description": "Application Instance tags LIST API is to fetch the interfaces tags attached to app instances.",
+                "operationId": "EdgeApplicationInstanceStatus_GetApplicationInterfaceTags",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ObjectTagsList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "filter.objId",
+                        "description": "Object Id which tags are associated.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.objName",
+                        "description": "Object name which tags are associated.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -3381,7 +4464,7 @@
             "get": {
                 "summary": "Get edge application bundle",
                 "description": "Get the configuration (without security details) of an edge application bundle record.",
-                "operationId": "GetEdgeApplicationBundleByName",
+                "operationId": "EdgeApplicationConfiguration_GetEdgeApplicationBundleByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -3417,6 +4500,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -3475,17 +4564,17 @@
             "properties": {
                 "drop": {
                     "type": "boolean",
-                    "format": "boolean",
+                    "description": "Drop the packet",
                     "title": "Not used by ZedUI"
                 },
                 "limit": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
                     "title": "Limit action on ACL rule"
                 },
                 "limitValue": {
                     "$ref": "#/definitions/LimitParams",
+                    "description": "Value to be used for limit action (Required if limit is true)",
                     "title": "only valid if limit flag is set, see below.\nNot used by ZedUI"
                 },
                 "limitrate": {
@@ -3507,7 +4596,6 @@
                 },
                 "portmap": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
                     "title": "Enable device to app port mapping for incoming ACL rule, implicitly added by ZedUI code"
                 },
@@ -3539,10 +4627,11 @@
                 "ADMIN_STATE_DELETED",
                 "ADMIN_STATE_ACTIVE",
                 "ADMIN_STATE_INACTIVE",
-                "ADMIN_STATE_REGISTERED"
+                "ADMIN_STATE_REGISTERED",
+                "ADMIN_STATE_ARCHIVED"
             ],
             "default": "ADMIN_STATE_UNSPECIFIED",
-            "description": "- ADMIN_STATE_CREATED: Entity Created in the controller\n - ADMIN_STATE_DELETED: Entity Deleted in the controller\n - ADMIN_STATE_ACTIVE: Entity Activated in the controller\n - ADMIN_STATE_INACTIVE: Entity Deactivated in the controller\n - ADMIN_STATE_REGISTERED: Specific to Edge-node - Edge-node Registered with the controller",
+            "description": "- ADMIN_STATE_CREATED: Entity Created in the controller\n - ADMIN_STATE_DELETED: Entity Deleted in the controller\n - ADMIN_STATE_ACTIVE: Entity Activated in the controller\n - ADMIN_STATE_INACTIVE: Entity Deactivated in the controller\n - ADMIN_STATE_REGISTERED: Specific to Edge-node - Edge-node Registered with the controller\n - ADMIN_STATE_ARCHIVED: Entity Archived in the controller",
             "title": "Configured state of an object"
         },
         "App": {
@@ -3614,12 +4703,8 @@
                     "description": "origin and parent related details"
                 },
                 "originType": {
-                    "type": "object",
                     "$ref": "#/definitions/Origin",
-                    "description": "origin of object",
-                    "required": [
-                        "true"
-                    ]
+                    "description": "origin of object"
                 },
                 "storage": {
                     "type": "integer",
@@ -3629,6 +4714,17 @@
                 "userDefinedVersion": {
                     "type": "string",
                     "description": "User defined version for the given edge-app"
+                },
+                "projectAccessList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "project access list of the app bundle"
+                },
+                "isImported": {
+                    "type": "boolean",
+                    "description": "Flag to represent where app bundle is already imported"
                 }
             },
             "description": "Edge application gets installed/uninstalled to/from edge node(s) and perform specific edge computing tasks. Lifecycle of Edge application (upgrade/restart) on Edge node can be managed and monitored by ZEDEDA Cloud controller through this detailed configuration.",
@@ -3685,8 +4781,46 @@
                 "deploymentType": {
                     "$ref": "#/definitions/DeploymentType",
                     "description": "type of deployment for the app, eg: azure, k3s, standalone"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AppCategory"
+                    },
+                    "description": "category types of the bundle"
                 }
             }
+        },
+        "AppInstConfigStatusList": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appInstConfigStatus"
+                    },
+                    "description": "app instance status summary"
+                },
+                "summaryByState": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "app instance status by state"
+                },
+                "totalCount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "total number of records"
+                },
+                "summaryByAppType": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "app instance summary by application type"
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "cursor next"
+                }
+            },
+            "description": "AppInstConfigStatusList is used for listing the app instance statuses",
+            "title": "App instance config status list"
         },
         "AppInstFilter": {
             "type": "object",
@@ -3726,6 +4860,14 @@
                 "deploymentType": {
                     "$ref": "#/definitions/DeploymentType",
                     "description": "type of deployment for the app, eg: azure, k3s, standalone"
+                },
+                "projectNamePattern": {
+                    "type": "string",
+                    "description": "project name pattern"
+                },
+                "deviceNamePattern": {
+                    "type": "string",
+                    "description": "device name pattern"
                 }
             }
         },
@@ -3800,6 +4942,14 @@
                 "deploymentType": {
                     "$ref": "#/definitions/DeploymentType",
                     "description": "type of deployment for the app, eg: azure, k3s, standalone"
+                },
+                "projectNamePattern": {
+                    "type": "string",
+                    "description": "project name pattern"
+                },
+                "deviceNamePattern": {
+                    "type": "string",
+                    "description": "device name pattern"
                 }
             }
         },
@@ -3816,6 +4966,10 @@
                 "summaryByState": {
                     "$ref": "#/definitions/Summary",
                     "description": "app instance status by state"
+                },
+                "summaryByAppType": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "app instance summary by application type"
                 },
                 "next": {
                     "$ref": "#/definitions/Cursor",
@@ -3860,7 +5014,10 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 },
                 "adminState": {
                     "$ref": "#/definitions/AdminState",
@@ -3971,6 +5128,17 @@
                 "memorySummary": {
                     "$ref": "#/definitions/AppInstMemorySummary",
                     "description": "memory summary"
+                },
+                "volumeRefs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "list of volume ids attached"
+                },
+                "zpoolMetrics": {
+                    "$ref": "#/definitions/StorageDeviceMetrics",
+                    "description": "Last received counters for zvol metrics"
                 }
             },
             "description": "AppInstanceStatusMsg encapsulates the status of an app instance",
@@ -4014,7 +5182,10 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 },
                 "adminState": {
                     "$ref": "#/definitions/AdminState",
@@ -4074,6 +5245,37 @@
                 "memorySummary": {
                     "$ref": "#/definitions/AppInstMemorySummary",
                     "description": "memory summary"
+                },
+                "swInfo": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SWInfo"
+                    },
+                    "description": "Software details"
+                },
+                "appName": {
+                    "type": "string",
+                    "description": "User defined name of the edge app, unique across the enterprise. Once edge app is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "User defined name of the project, unique across the enterprise. Once project is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceName": {
+                    "type": "string",
+                    "description": "User defined name of the device, unique across the enterprise. Once device is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
                 }
             },
             "description": "AppInstStatusSummaryMsg stores the summary of the app instance status",
@@ -4121,7 +5323,10 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 },
                 "clusterID": {
                     "type": "string",
@@ -4149,7 +5354,6 @@
                 },
                 "activate": {
                     "type": "string",
-                    "format": "boolean",
                     "description": "app instance activation flag"
                 },
                 "vminfo": {
@@ -4204,14 +5408,14 @@
                 },
                 "remoteConsole": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Remote console flag"
                 },
                 "encryptedSecrets": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "user encrypted secrets map"
                 },
                 "cryptoKey": {
                     "type": "string",
@@ -4227,7 +5431,6 @@
                 },
                 "isSecretUpdated": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "This field tells whether user secrets has updated or not, especially the cusotom config"
                 },
                 "appPolicyId": {
@@ -4241,6 +5444,11 @@
                 "userDefinedVersion": {
                     "type": "string",
                     "description": "Instance version tells which edge app does this instance is running"
+                },
+                "startDelayInSeconds": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "start delay is the time in seconds EVE should wait after boot before starting the application instance"
                 }
             },
             "description": "App Instance detail",
@@ -4261,12 +5469,11 @@
             "properties": {
                 "access": {
                     "type": "string",
-                    "format": "boolean",
-                    "description": "Application instance logs flag"
+                    "description": "Flags to enable / disable sending of logs generated by app instance to zedcloud"
                 }
             },
-            "description": "App Instance Logs detail",
-            "title": "App Instance Logs detail",
+            "description": "App Instance Logs configuration",
+            "title": "App Instance Logs configuration",
             "required": [
                 "access"
             ]
@@ -4346,6 +5553,27 @@
                 }
             }
         },
+        "AppProjectList": {
+            "type": "object",
+            "properties": {
+                "projectDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ObjectDetail"
+                    },
+                    "description": "List of projects which are associated with the given app"
+                },
+                "totalCount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "total number of records"
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Responded page details of filtered records"
+                }
+            }
+        },
         "AppStatusFromTPController": {
             "type": "object",
             "properties": {
@@ -4366,6 +5594,9 @@
                 },
                 "azureStatus": {
                     "$ref": "#/definitions/AzureStatus"
+                },
+                "vceStatus": {
+                    "$ref": "#/definitions/VCEStatus"
                 }
             }
         },
@@ -4447,10 +5678,22 @@
                 "userDefinedVersion": {
                     "type": "string",
                     "description": "User defined version for the given edge-app"
+                },
+                "appInstCount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "App instance count"
+                },
+                "isImported": {
+                    "type": "boolean",
+                    "description": "Flag to represent where app bundle is already imported"
                 }
             },
             "description": "Edge application summary",
-            "title": "Bundle summary"
+            "title": "Bundle summary",
+            "required": [
+                "originType"
+            ]
         },
         "AppType": {
             "type": "string",
@@ -4478,6 +5721,14 @@
                 "summaryByOrigin": {
                     "$ref": "#/definitions/Summary",
                     "description": "edge applications by origin"
+                },
+                "summaryByAppType": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "edge applications by appType"
+                },
+                "summaryByAppInstanceDistribution": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "app distribution summary"
                 },
                 "list": {
                     "type": "array",
@@ -4596,7 +5847,8 @@
                 "CONTROLLER_TYPE_UNSPECIFIED",
                 "CONTROLLER_TYPE_AZURE",
                 "CONTROLLER_TYPE_AWS",
-                "CONTROLLER_TYPE_GCP"
+                "CONTROLLER_TYPE_GCP",
+                "CONTROLLER_TYPE_VCO"
             ],
             "default": "CONTROLLER_TYPE_UNSPECIFIED",
             "description": "third party controller types."
@@ -4621,7 +5873,10 @@
                     "description": "Page Token"
                 },
                 "orderBy": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
                     "description": "OrderBy helps in sorting the list response"
                 },
                 "pageNum": {
@@ -4647,31 +5902,35 @@
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of CustomConfig (Required)"
                 },
                 "add": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "Add the Custom Config to App Instance (Optional. Default: False)"
                 },
                 "override": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "Override existing custom config from App Bundle Manifest (Optional. Default: False)"
                 },
                 "allowStorageResize": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)"
                 },
                 "fieldDelimiter": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Field delimiter used in specifying variables in template. (Required)"
                 },
                 "template": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "base64 encrypted template string. (Optional)"
                 },
                 "variableGroups": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/CustomConfigVariableGroup"
-                    }
+                    },
+                    "description": "List of Variable groups. (Required)"
                 }
             }
         },
@@ -4679,20 +5938,23 @@
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the Variable Group(Required)"
                 },
                 "variables": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/VariableGroupVariable"
-                    }
+                    },
+                    "description": "List of variables(Required)"
                 },
                 "required": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)"
                 },
                 "condition": {
-                    "$ref": "#/definitions/VariableGroupCondition"
+                    "$ref": "#/definitions/VariableGroupCondition",
+                    "description": "Condition to apply the variable group. (Optional. Default: None)"
                 }
             }
         },
@@ -4735,7 +5997,8 @@
                 "DEPLOYMENT_TYPE_K3S",
                 "DEPLOYMENT_TYPE_AWS",
                 "DEPLOYMENT_TYPE_K3S_AZURE",
-                "DEPLOYMENT_TYPE_K3S_AWS"
+                "DEPLOYMENT_TYPE_K3S_AWS",
+                "DEPLOYMENT_TYPE_VMWARE_VCE"
             ],
             "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
         },
@@ -4765,20 +6028,25 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo",
+                    "title": "App Logo"
                 },
                 "screenshotList": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields",
+                    "title": "App Screenshots"
                 },
                 "licenseList": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     },
-                    "title": "Schema: {<license_name>:<url>}"
+                    "description": "UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License",
+                    "title": "App Licenses"
                 },
                 "support": {
                     "type": "string",
@@ -4789,7 +6057,9 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field",
+                    "title": "Developer Agreements"
                 }
             },
             "description": "Edge Application Artifact Details",
@@ -4805,6 +6075,9 @@
                     "$ref": "#/definitions/Entity"
                 },
                 "entityId": {
+                    "type": "string"
+                },
+                "entityName": {
                     "type": "string"
                 }
             }
@@ -4833,7 +6106,7 @@
                     },
                     "description": "objects referenced by the description or retry_condition"
                 },
-                "retry_condition": {
+                "retryCondition": {
                     "type": "string",
                     "description": "condition for retry"
                 }
@@ -4949,6 +6222,10 @@
                     "type": "object",
                     "$ref": "#/definitions/Cursor",
                     "description": "Cursor filter"
+                },
+                "summary": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "Summary of filtered events."
                 }
             },
             "description": "Event query response request payload",
@@ -5014,7 +6291,7 @@
                     "type": "string",
                     "description": "Event resources"
                 },
-                "json_data": {
+                "jsonData": {
                     "type": "object",
                     "description": "Event resources"
                 },
@@ -5077,6 +6354,55 @@
                 "FLOW_LOG_METRIC_PACKETS"
             ],
             "default": "FLOW_LOG_METRIC_UNSPECIFIED"
+        },
+        "GPSLocation": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Latitude"
+                },
+                "longitude": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Longitude"
+                },
+                "altitude": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Altitude from mean sea level"
+                },
+                "timestamp": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "UTC timestamp"
+                },
+                "horizontalReliability": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Horizontal reliability"
+                },
+                "verticalReliability": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Vertical reliability"
+                },
+                "horizontalUncertainty": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Horizontal uncertainty"
+                },
+                "verticalUncertainty": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Vertical uncertainty"
+                },
+                "logicalLabel": {
+                    "type": "string",
+                    "description": "Logical label of the adapter used to get GPS coordinates"
+                }
+            }
         },
         "GeoLocation": {
             "type": "object",
@@ -5151,17 +6477,14 @@
                 },
                 "optional": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Indicates if the interface is optional for edge application."
                 },
                 "directattach": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "If true, a physical adapter is assigned to the edge application directly. If false, a network instance is assigned to the edge application."
                 },
                 "privateip": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "If true, DHCP network can't be assigned and user needs to provide a static IP address."
                 },
                 "acls": {
@@ -5170,6 +6493,14 @@
                         "$ref": "#/definitions/Acl"
                     },
                     "description": "Traffic access control rules for this interface. Applicable only when \"direct attach\" flag is false."
+                }
+            }
+        },
+        "IoAddresses": {
+            "type": "object",
+            "properties": {
+                "macAddress": {
+                    "type": "string"
                 }
             }
         },
@@ -5190,13 +6521,14 @@
                     "items": {
                         "type": "string"
                     },
-                    "description": "Member Array"
+                    "description": "Member Array",
+                    "title": "members - Deprecated by memberList"
                 },
                 "appName": {
                     "type": "string",
                     "description": "Application name"
                 },
-                "lte_info": {
+                "lteInfo": {
                     "type": "object",
                     "$ref": "#/definitions/LTEAdapter",
                     "description": "LTE information"
@@ -5205,6 +6537,13 @@
                     "$ref": "#/definitions/DeviceError",
                     "description": "Device error details",
                     "title": "6 - DEPRECATED"
+                },
+                "memberList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/IoMemberStatus"
+                    },
+                    "description": "List of IO members"
                 }
             },
             "description": "IoBundleStatus is used to store the status of the Input Output bundle",
@@ -5215,6 +6554,19 @@
                 "members",
                 "appName"
             ]
+        },
+        "IoMemberStatus": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "IoBundle Member name"
+                },
+                "ioAddress": {
+                    "$ref": "#/definitions/IoAddresses",
+                    "description": "IO addresses of the member. Each address corresponds to the member in the members array"
+                }
+            }
         },
         "IoType": {
             "type": "string",
@@ -5228,20 +6580,22 @@
                 "IO_TYPE_WWAN",
                 "IO_TYPE_HDMI",
                 "IO_TYPE_LTE",
+                "IO_TYPE_STORAGE_NVME_DEVICE",
+                "IO_TYPE_STORAGE_SATA_DEVICE",
                 "IO_TYPE_OTHER"
             ],
             "default": "IO_TYPE_UNSPECIFIED",
-            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_OTHER: Other Io Types",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_OTHER: Other Io Types",
             "title": "Input/Output Type"
         },
         "LTEAdapter": {
             "type": "object",
             "properties": {
-                "sim_name": {
+                "simName": {
                     "type": "string",
                     "description": "Name of SIM card."
                 },
-                "cell_module_name": {
+                "cellModuleName": {
                     "type": "string",
                     "description": "Name of Cell Module"
                 },
@@ -5253,7 +6607,7 @@
                     "type": "string",
                     "description": "iccid of the SIM"
                 },
-                "simcard_state": {
+                "simcardState": {
                     "type": "string",
                     "$ref": "#/definitions/SimcardState",
                     "description": "State of SimCard"
@@ -5262,7 +6616,7 @@
                     "type": "string",
                     "description": "IMEI of Cell Radio."
                 },
-                "firmware_version": {
+                "firmwareVersion": {
                     "type": "string",
                     "description": "Firmware Version of Cell Radio."
                 }
@@ -5331,7 +6685,8 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Common and Custom parameters for deciding on transition actions"
                 },
                 "details": {
                     "$ref": "#/definitions/TransDetails",
@@ -5346,7 +6701,8 @@
             "properties": {
                 "appPort": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "description": "Application Port value"
                 }
             }
         },
@@ -5355,10 +6711,12 @@
             "properties": {
                 "type": {
                     "type": "string",
+                    "description": "Type of Match (Required)",
                     "title": "enum: host, protocol, fport\nAt the device level it will pick right interface to apply this match"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Value of match (Required)"
                 }
             }
         },
@@ -5450,7 +6808,9 @@
                 "METRIC_TYPE_NETWORK_TOTAL",
                 "METRIC_TYPE_NETWORK_RATES",
                 "METRIC_TYPE_EVENTS_COUNT",
-                "METRIC_TYPE_STORAGE_UTILIZATION"
+                "METRIC_TYPE_STORAGE_UTILIZATION",
+                "METRIC_TYPE_STORAGE_IO_ZPOOL",
+                "METRIC_TYPE_STORAGE_IO_ZVOL"
             ],
             "default": "METRIC_TYPE_UNSPECIFIED"
         },
@@ -5468,13 +6828,15 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Send messages between modules or send messages from modules to iot hub"
                 },
                 "environment": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Extra information to module to make configuration easier"
                 },
                 "moduleType": {
                     "$ref": "#/definitions/ModuleType",
@@ -5531,8 +6893,7 @@
             "properties": {
                 "networkProxy": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "Network Proxy flag",
+                    "description": "Use pacfile (Auto discover or manual upload)",
                     "title": "Enable, the proxy configuration coming from network"
                 },
                 "proxies": {
@@ -5652,7 +7013,6 @@
             "properties": {
                 "up": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Network Status flag"
                 },
                 "macAddr": {
@@ -5689,7 +7049,6 @@
                 },
                 "uplink": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Uplink flag"
                 },
                 "proxy": {
@@ -5701,10 +7060,26 @@
                     "type": "object",
                     "$ref": "#/definitions/DeviceError",
                     "description": "Network error details"
+                },
+                "gpsLocation": {
+                    "type": "object",
+                    "$ref": "#/definitions/GPSLocation",
+                    "description": "Location from GNSS receivers on WWAN type adapters"
                 }
             },
             "description": "NetworkStatus is used to store the Network status",
             "title": "NetworkStatus is used to store the Network Status"
+        },
+        "ObjectDetail": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         },
         "ObjectParentDetail": {
             "type": "object",
@@ -5727,17 +7102,18 @@
                 },
                 "updateAvailable": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Update required flag"
                 },
                 "referenceExists": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Relation with child and parent object exists or not"
                 }
             },
             "description": "ObjectImportDetail consists of various object attributes like idOfParentObject, versionOfParentObject, updateAvailable, referenceExists",
-            "title": "Object Import Detail"
+            "title": "Object Import Detail",
+            "required": [
+                "idOfParentObject"
+            ]
         },
         "ObjectRevision": {
             "type": "object",
@@ -5779,6 +7155,63 @@
                 "updatedBy"
             ]
         },
+        "ObjectTag": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "description": "object tag key identifier."
+                },
+                "value": {
+                    "type": "string",
+                    "description": "value associated for the object tag key"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of the tag key"
+                }
+            },
+            "description": "Object tag deaails.",
+            "title": "Object Tag details"
+        },
+        "ObjectTagFilter": {
+            "type": "object",
+            "properties": {
+                "objId": {
+                    "type": "string",
+                    "description": "Object Id which tags are associated."
+                },
+                "objName": {
+                    "type": "string",
+                    "description": "Object name which tags are associated."
+                },
+                "objType": {
+                    "type": "object",
+                    "$ref": "#/definitions/ObjectType",
+                    "description": "Object type"
+                }
+            },
+            "description": "Filter criteria for the object tag list.",
+            "title": "Object tag list filter criteria"
+        },
+        "ObjectTagsList": {
+            "type": "object",
+            "properties": {
+                "objectTags": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ObjectTag"
+                    },
+                    "description": "Details of Object tags list records."
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Returned record page."
+                }
+            },
+            "description": "Returned list of Object tags matched by filter criteria",
+            "title": "Object tag list records"
+        },
         "ObjectType": {
             "type": "string",
             "enum": [
@@ -5807,7 +7240,11 @@
                 "OBJECT_TYPE_DOC_POLICY",
                 "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                 "OBJECT_TYPE_TAGS",
-                "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                "OBJECT_TYPE_DEPLOYMENT",
+                "OBJECT_TYPE_ENTITLEMENTS",
+                "OBJECT_TYPE_DATA_STREAM",
+                "OBJECT_TYPE_API_USAGE"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -5827,10 +7264,12 @@
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the Parameter (Required)"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Value of the parameter (Required)"
                 }
             }
         },
@@ -5841,10 +7280,12 @@
             "type": "object",
             "properties": {
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the Resource (Required)"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Value of Resource (Required)"
                 }
             }
         },
@@ -5870,10 +7311,15 @@
                 "RUN_STATE_LOADING",
                 "RUN_STATE_CREATING_VOLUME",
                 "RUN_STATE_BOOTING",
-                "RUN_STATE_MAINTENANCE_MODE"
+                "RUN_STATE_MAINTENANCE_MODE",
+                "RUN_STATE_START_DELAYED",
+                "RUN_STATE_BASEOS_UPDATING",
+                "RUN_STATE_PREPARING_POWEROFF",
+                "RUN_STATE_POWERING_OFF",
+                "RUN_STATE_PREPARED_POWEROFF"
             ],
             "default": "RUN_STATE_UNSPECIFIED",
-            "description": "- RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode",
+            "description": "- RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode\n - RUN_STATE_START_DELAYED: Application start delayed as per configuration\n - RUN_STATE_BASEOS_UPDATING: Device BaseOs Update in Progress\n - RUN_STATE_PREPARING_POWEROFF: device preparing power off - shutting down all app instances\n - RUN_STATE_POWERING_OFF: device powering off from local profile server\n - RUN_STATE_PREPARED_POWEROFF: device prepared power off - all app instances are shut down",
             "title": "Run-time state of an object, reported by EVE"
         },
         "SWInfo": {
@@ -5959,6 +7405,26 @@
             ],
             "default": "SIMCARD_STATE_INVALID"
         },
+        "StorageDeviceMetrics": {
+            "type": "object",
+            "properties": {
+                "readErrors": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "read errors counter"
+                },
+                "writeErrors": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "write errors counter"
+                },
+                "checksumErrors": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "checksum errors counter"
+                }
+            }
+        },
         "StorageSummary": {
             "type": "object",
             "properties": {
@@ -5998,7 +7464,8 @@
                     "additionalProperties": {
                         "type": "integer",
                         "format": "int64"
-                    }
+                    },
+                    "description": "Values: Map for storing <string, uint32>"
                 }
             },
             "description": "Summary is used to store the Summary details",
@@ -6138,6 +7605,109 @@
                 }
             }
         },
+        "VCEStatus": {
+            "type": "object",
+            "properties": {
+                "vceStatusDetail": {
+                    "$ref": "#/definitions/VCEStatusDetail"
+                }
+            },
+            "description": "status of object on velocloud."
+        },
+        "VCEStatusDetail": {
+            "type": "object",
+            "properties": {
+                "vceURL": {
+                    "type": "string"
+                },
+                "vceEdgeId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "activationState": {
+                    "type": "string"
+                },
+                "edgeState": {
+                    "type": "string"
+                },
+                "serviceState": {
+                    "type": "string"
+                },
+                "haState": {
+                    "type": "string"
+                },
+                "haPreviousState": {
+                    "type": "string"
+                },
+                "bastionState": {
+                    "type": "string"
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "activationKey": {
+                    "type": "string"
+                },
+                "activationKeyExpires": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "activationTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "serialNumber": {
+                    "type": "string"
+                },
+                "lteRegion": {
+                    "type": "string"
+                },
+                "alertsEnabled": {
+                    "type": "boolean"
+                },
+                "operatorAlertsEnabled": {
+                    "type": "boolean"
+                },
+                "edgeStateTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "isLive": {
+                    "type": "boolean"
+                },
+                "systemUpSince": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "serviceUpSince": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "lastContact": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "haLastContact": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "haSerialNumber": {
+                    "type": "string"
+                },
+                "modified": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "isHub": {
+                    "type": "boolean"
+                },
+                "statusFetchedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
         "VMManifest": {
             "type": "object",
             "properties": {
@@ -6170,10 +7740,12 @@
                     "pattern": "[0-9A-Za-z-]+"
                 },
                 "owner": {
-                    "$ref": "#/definitions/Author"
+                    "$ref": "#/definitions/Author",
+                    "description": "Owner of the application"
                 },
                 "desc": {
-                    "$ref": "#/definitions/Details"
+                    "$ref": "#/definitions/Details",
+                    "description": "Description of the application"
                 },
                 "images": {
                     "type": "array",
@@ -6205,8 +7777,6 @@
                 },
                 "enablevnc": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "default": "false",
                     "description": "UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field",
                     "title": "Enable VNC for the app"
                 },
@@ -6220,6 +7790,7 @@
                 },
                 "configuration": {
                     "$ref": "#/definitions/UserDataTemplate",
+                    "description": "Template for Custom Configuration. Used for Cloud-Init",
                     "title": "Annotations   types.Annotations    `json:\"Annotations,omitempty\"`\nLabels        types.Labels         `json:\"Labels,omitempty\"`"
                 },
                 "containerDetail": {
@@ -6239,6 +7810,10 @@
                 "deploymentType": {
                     "$ref": "#/definitions/DeploymentType",
                     "description": "type of deployment for the app, eg: azure, k3s, standalone"
+                },
+                "cpuPinningEnabled": {
+                    "type": "boolean",
+                    "description": "Enable CpuPinning"
                 }
             }
         },
@@ -6249,6 +7824,14 @@
                     "type": "string",
                     "description": "UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field"
                 },
+                "imageid": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field"
+                },
+                "imageformat": {
+                    "$ref": "#/definitions/configFormat",
+                    "description": "UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field"
+                },
                 "maxsize": {
                     "type": "string",
                     "format": "uint64",
@@ -6256,7 +7839,6 @@
                 },
                 "preserve": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field"
                 },
                 "target": {
@@ -6278,7 +7860,6 @@
                 },
                 "readonly": {
                     "type": "boolean",
-                    "format": "boolean",
                     "title": "Not used by ZedUI"
                 },
                 "volumelabel": {
@@ -6287,12 +7868,10 @@
                 },
                 "ignorepurge": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "UI map: AppEditPage:DrivesPane:Ignorepurge, AppDetailsPage:DrivesPane:Ignorepurgee_Field"
                 },
                 "cleartext": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field"
                 },
                 "mountpath": {
@@ -6333,7 +7912,8 @@
                     "pattern": "[0-9A-Za-z-]+"
                 },
                 "desc": {
-                    "$ref": "#/definitions/Details"
+                    "$ref": "#/definitions/Details",
+                    "description": "Details of the Edge App"
                 },
                 "module": {
                     "$ref": "#/definitions/ModuleSummary",
@@ -6397,38 +7977,46 @@
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Name of the Variable (Required)"
                 },
                 "label": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Label for the variable (Required)"
                 },
                 "maxLength": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Max length of the value of the variable(Optional. Default: 1024)"
                 },
                 "required": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "This variable MUST be specified when creating an App Instance. (Optional. Default: False)"
                 },
                 "default": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Default value of the variable. (Optional. Default: <Default value based on type>)"
                 },
                 "processInput": {
                     "type": "string"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "User-specified value of the variable.(Required if required is true. Optional otherwise)"
                 },
                 "format": {
-                    "$ref": "#/definitions/VariableVariableFormat"
+                    "$ref": "#/definitions/VariableVariableFormat",
+                    "description": "Format of the user variable. (Required)"
                 },
                 "encode": {
-                    "$ref": "#/definitions/VariableFileEncoding"
+                    "$ref": "#/definitions/VariableFileEncoding",
+                    "description": "Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE"
                 },
                 "options": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/VariableOptionVal"
-                    }
+                    },
+                    "description": "Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN"
                 }
             },
             "description": "Edge Application Artifact Details",
@@ -6444,10 +8032,12 @@
             "type": "object",
             "properties": {
                 "label": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Display label of the key in User-Agent"
                 },
                 "value": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Value of the key to be used"
                 }
             }
         },
@@ -6618,6 +8208,10 @@
                     "type": "string",
                     "title": "summary of the error in text format"
                 },
+                "jobId": {
+                    "type": "string",
+                    "title": "for tracking asynchronous tasks"
+                },
                 "error": {
                     "type": "array",
                     "items": {
@@ -6672,12 +8266,10 @@
             "properties": {
                 "drop": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "ACE drop flag"
                 },
                 "limit": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "ACE limit flag"
                 },
                 "limitrate": {
@@ -6696,7 +8288,6 @@
                 },
                 "portmap": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "application port map flag"
                 },
                 "mapparams": {
@@ -6735,6 +8326,122 @@
                 "value"
             ]
         },
+        "appInstConfigStatus": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the app instance",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the app instance, unique across the enterprise. Once app instance is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string",
+                    "description": "System generated identifier for the device",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceName": {
+                    "type": "string",
+                    "description": "User defined name of the device, unique across the enterprise. Once device is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "appId": {
+                    "type": "string",
+                    "description": "System generated identifier for the app bundle",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "appName": {
+                    "type": "string",
+                    "description": "User defined name of the edge app, unique across the enterprise. Once edge app is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "projectId": {
+                    "type": "string",
+                    "description": "System generated identifier for the project",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "User defined name of the project, unique across the enterprise. Once project is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "runState": {
+                    "$ref": "#/definitions/RunState",
+                    "description": "operation status"
+                },
+                "Storage": {
+                    "$ref": "#/definitions/StorageSummary",
+                    "description": "storage summary"
+                },
+                "cpuUtilization": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "cpu utilization"
+                },
+                "memoryUtilization": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "memory utilization"
+                },
+                "storageUtilization": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "storage utilization"
+                },
+                "appType": {
+                    "$ref": "#/definitions/AppType",
+                    "description": "type of app"
+                },
+                "userDefinedVersion": {
+                    "type": "string",
+                    "description": "Instance version tells which edge app does this instance is running"
+                },
+                "swState": {
+                    "$ref": "#/definitions/SWState",
+                    "description": "sotware state"
+                },
+                "swInfo": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SWInfo"
+                    },
+                    "description": "Software details"
+                },
+                "manifestInfo": {
+                    "$ref": "#/definitions/ManifestInfo",
+                    "description": "app manifest Info"
+                }
+            },
+            "description": "appInstConfigStatus stores the summary of the app instance config status",
+            "title": "App instance config status"
+        },
         "appInterface": {
             "type": "object",
             "properties": {
@@ -6757,13 +8464,11 @@
                 },
                 "directattach": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "direct attach flag",
                     "title": "comes from manifest during app create"
                 },
                 "privateip": {
                     "type": "string",
-                    "format": "boolean",
                     "description": "Private IP flag"
                 },
                 "acls": {
@@ -6803,11 +8508,15 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Network Instance tag to be matched for interface assignment. Applicable only when \"direct attach\" flag is false"
+                },
+                "netinstid": {
+                    "type": "string",
+                    "description": "Network Instance id to be matched for interface assignment."
                 },
                 "defaultNetInstance": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "default instance flag"
                 }
             },
@@ -6841,12 +8550,28 @@
                 "port"
             ]
         },
+        "configFormat": {
+            "type": "string",
+            "enum": [
+                "FmtUnknown",
+                "RAW",
+                "QCOW",
+                "QCOW2",
+                "VHD",
+                "VMDK",
+                "OVA",
+                "VHDX",
+                "CONTAINER",
+                "ISO"
+            ],
+            "default": "FmtUnknown"
+        },
         "drive": {
             "type": "object",
             "properties": {
                 "imagename": {
                     "type": "string",
-                    "description": "Image name"
+                    "description": "Name of Image Object used for the drive."
                 },
                 "maxsize": {
                     "type": "number",
@@ -6855,21 +8580,19 @@
                 },
                 "readonly": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "Read only flag"
+                    "description": "Read only flag. If set, drive is mounted as readonly by app instance."
                 },
                 "preserve": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "Preserves flag which preserves the volume"
+                    "description": "Preserve the drive even when all app instances using it are deleted"
                 },
                 "drvtype": {
                     "type": "string",
-                    "description": "Drive type"
+                    "description": "Type of Drive. Valid Values: UNSPECIFIED, CDROM, HDD, NET, HDD_EMPTY. HDD_EMPTY - is to allocate the empty disk of maxsizebytes specified"
                 },
                 "target": {
                     "type": "string",
-                    "description": "Target drive"
+                    "description": "type of target. Valid values: Disk, Kernel, Initrd, RamDisk"
                 },
                 "volumelabel": {
                     "type": "string",
@@ -6877,25 +8600,23 @@
                 },
                 "mvolname": {
                     "type": "string",
-                    "description": "mutable Volume for this drive"
+                    "description": "mutable Volume for this drive. Only one of imvolname and mvolname must be specified."
                 },
                 "imvolname": {
                     "type": "string",
-                    "description": "immutable Volume for this drive"
+                    "description": "immutable Volume for this drive. Only one of imvolname and mvolname must be specified."
                 },
                 "ignorepurge": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "don't purge this Drive, only applicable to purge command"
+                    "description": "don't purge this drive as part of purge command for mutable volumes"
                 },
                 "cleartext": {
                     "type": "boolean",
-                    "format": "boolean",
-                    "description": "don't encrypt, store in cleartext"
+                    "description": "If set, don't encrypt the drive. Store in cleartext"
                 },
                 "mountpath": {
                     "type": "string",
-                    "description": "Mount Path"
+                    "description": "Mount Path for the drive in the App Instance"
                 }
             },
             "description": "Drive configuration",
@@ -6908,6 +8629,24 @@
                 "drvtype",
                 "target"
             ]
+        },
+        "googlerpcStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/protobufAny"
+                    }
+                }
+            }
         },
         "hvMode": {
             "type": "string",
@@ -6937,11 +8676,26 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 }
             },
             "description": "Physical Adapter",
             "title": "Physical Adapter"
+        },
+        "protobufAny": {
+            "type": "object",
+            "properties": {
+                "typeUrl": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "byte"
+                }
+            }
         },
         "protobufNullValue": {
             "type": "string",
@@ -6970,7 +8724,6 @@
                 },
                 "vnc": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "VNC"
                 },
                 "vncDisplay": {
@@ -6978,6 +8731,10 @@
                     "format": "int64",
                     "description": "VNC display",
                     "readOnly": true
+                },
+                "cpuPinningEnabled": {
+                    "type": "boolean",
+                    "description": "Enable CpuPinning"
                 }
             },
             "description": "Virtual machine memory configuration",

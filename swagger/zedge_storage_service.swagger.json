@@ -15,7 +15,23 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "host": "zedcontrol.zededa.net",
+    "tags": [
+        {
+            "name": "ImageConfiguration"
+        },
+        {
+            "name": "DatastoreConfiguration"
+        },
+        {
+            "name": "ArtifactManager"
+        },
+        {
+            "name": "VolumeInstanceConfiguration"
+        },
+        {
+            "name": "VolumeInstanceStatus"
+        }
+    ],
     "basePath": "/api",
     "schemes": [
         "https"
@@ -31,7 +47,7 @@
             "get": {
                 "summary": "Query edge application images",
                 "description": "Query the edge application image records.",
-                "operationId": "QueryImages",
+                "operationId": "ImageConfiguration_QueryImages",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -68,6 +84,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -76,8 +98,7 @@
                         "description": "Only summary of the records required",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.imageType",
@@ -153,7 +174,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -198,7 +223,7 @@
             "post": {
                 "summary": "Create edge application image",
                 "description": "Create an edge application image record.",
-                "operationId": "CreateImage",
+                "operationId": "ImageConfiguration_CreateImage",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -241,6 +266,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -273,7 +304,7 @@
             "get": {
                 "summary": "Query latest version of EVE image for each hardware architecture",
                 "description": "Query the latest version of EVE image for each hardware architecture.",
-                "operationId": "QueryLatestImageVersions",
+                "operationId": "ImageConfiguration_QueryLatestImageVersions",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -310,6 +341,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -318,8 +355,7 @@
                         "description": "Only summary of the records required",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.namePattern",
@@ -327,6 +363,17 @@
                         "in": "query",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "fields",
+                        "description": "fields list for variable response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageToken",
@@ -340,7 +387,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -385,7 +436,7 @@
             "delete": {
                 "summary": "Delete edge application image",
                 "description": "Delete an edge application image record.",
-                "operationId": "DeleteLatestImage",
+                "operationId": "ImageConfiguration_DeleteLatestImage",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -428,6 +479,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -457,7 +514,7 @@
             "put": {
                 "summary": "Mark Eve image as latest",
                 "description": "Mark Eve image as latest for a given hardware architecture.",
-                "operationId": "MarkEveImageLatest",
+                "operationId": "ImageConfiguration_MarkEveImageLatest",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -500,6 +557,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -532,7 +595,7 @@
             "get": {
                 "summary": "Get latest version of EVE image",
                 "description": "Query the latest version of EVE image for given hardware architecture.",
-                "operationId": "GetLatestImageVersion",
+                "operationId": "ImageConfiguration_GetLatestImageVersion",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -568,6 +631,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -604,7 +673,7 @@
             "put": {
                 "summary": "Mark Eve image as latest",
                 "description": "Mark Eve image as latest for a given hardware architecture.",
-                "operationId": "MarkEveImageLatest2",
+                "operationId": "ImageConfiguration_MarkEveImageLatest2",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -647,6 +716,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -668,7 +743,136 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ImageConfig"
+                            "type": "object",
+                            "example": {
+                                "id": "d1125b0f-633d-459c-99c6-f47e7467cebc",
+                                "name": "my-test-image",
+                                "title": "My Test Image for Edge Computing",
+                                "description": "My test image in QCOW2 format for Edge computing",
+                                "revision": {
+                                    "curr": "1",
+                                    "createdAt": {
+                                        "seconds": 1592068270
+                                    },
+                                    "createdBy": "admin@my-company.com",
+                                    "updatedAt": {
+                                        "seconds": 1592068271
+                                    },
+                                    "updatedBy": "admin@my-company.com"
+                                },
+                                "imageFormat": 3,
+                                "imageRelUrl": "edge/computing/AMD64",
+                                "imageSha256": "ADC5BB9DD39F83DD74C276B0BA119FB27925A5CDEA343FE1F2C8433F28AB345B",
+                                "imageVersion": "",
+                                "imageArch": "AMD64",
+                                "imageStatus": 4,
+                                "imageType": 2,
+                                "dsId": "7927f6e3-484d-4105-a98e-868b21c1cb61",
+                                "imageSizeBytes": 142016512,
+                                "imageError": "Image uplinked successfully...",
+                                "imageLocal": "",
+                                "originType": 2
+                            },
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "description": "System defined universally unique Id of the image.",
+                                    "readOnly": true,
+                                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                                    "uniqueItems": true
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "User defined name of the image, unique across the enterprise. Once image is created, name can\u2019t be changed.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "User defined title of the image. Title can be changed at any time.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the image.",
+                                    "maxLength": 256
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "system defined info",
+                                    "readOnly": true
+                                },
+                                "imageFormat": {
+                                    "$ref": "#/definitions/configFormat",
+                                    "description": "Image binary format."
+                                },
+                                "imageRelUrl": {
+                                    "type": "string",
+                                    "description": "Image relative path w.r.t. Datastore"
+                                },
+                                "imageSha256": {
+                                    "type": "string",
+                                    "description": "Image checksum in SHA256 format"
+                                },
+                                "imageVersion": {
+                                    "type": "string",
+                                    "description": "system defined info"
+                                },
+                                "imageStatus": {
+                                    "$ref": "#/definitions/ImageStatus",
+                                    "description": "Image status",
+                                    "readOnly": true
+                                },
+                                "imageType": {
+                                    "$ref": "#/definitions/ImageType",
+                                    "description": "Image type"
+                                },
+                                "datastoreId": {
+                                    "type": "string",
+                                    "description": "Datastore Id where image binary is located.",
+                                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+                                },
+                                "imageSizeBytes": {
+                                    "type": "string",
+                                    "format": "int64",
+                                    "description": "Image size in KBytes."
+                                },
+                                "imageError": {
+                                    "type": "string",
+                                    "description": "Image upload/uplink detailed error/status message",
+                                    "readOnly": true
+                                },
+                                "imageLocal": {
+                                    "type": "string",
+                                    "description": "Internal image location.",
+                                    "readOnly": true
+                                },
+                                "originType": {
+                                    "$ref": "#/definitions/Origin",
+                                    "description": "Origin type of image.",
+                                    "readOnly": true
+                                },
+                                "projectAccessList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "project access list of the image"
+                                }
+                            },
+                            "description": "Image metadata for edge gateway Base OS or for eedge applications.",
+                            "title": "Image metadata detail",
+                            "required": [
+                                "name",
+                                "title",
+                                "imageFormat",
+                                "imageType",
+                                "datastoreId"
+                            ]
                         }
                     },
                     {
@@ -692,7 +896,7 @@
             "get": {
                 "summary": "Get edge application image",
                 "description": "Get the configuration (without security details) of an edge application image record.",
-                "operationId": "GetImage",
+                "operationId": "ImageConfiguration_GetImage",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -729,6 +933,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -758,7 +968,7 @@
             "delete": {
                 "summary": "Delete edge application image",
                 "description": "Delete an edge application image record.",
-                "operationId": "DeleteImage",
+                "operationId": "ImageConfiguration_DeleteImage",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -801,6 +1011,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -830,7 +1046,7 @@
             "put": {
                 "summary": "Update edge application image",
                 "description": "Update an edge application image. The usual pattern to update an edge application image record is to retrieve the record and update with the modified values in a new body to update the edge application image record.",
-                "operationId": "UpdateImage",
+                "operationId": "ImageConfiguration_UpdateImage",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -879,6 +1095,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -894,7 +1116,134 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ImageConfig"
+                            "type": "object",
+                            "example": {
+                                "id": "d1125b0f-633d-459c-99c6-f47e7467cebc",
+                                "name": "my-test-image",
+                                "title": "My Test Image for Edge Computing",
+                                "description": "My test image in QCOW2 format for Edge computing",
+                                "revision": {
+                                    "curr": "1",
+                                    "createdAt": {
+                                        "seconds": 1592068270
+                                    },
+                                    "createdBy": "admin@my-company.com",
+                                    "updatedAt": {
+                                        "seconds": 1592068271
+                                    },
+                                    "updatedBy": "admin@my-company.com"
+                                },
+                                "imageFormat": 3,
+                                "imageRelUrl": "edge/computing/AMD64",
+                                "imageSha256": "ADC5BB9DD39F83DD74C276B0BA119FB27925A5CDEA343FE1F2C8433F28AB345B",
+                                "imageVersion": "",
+                                "imageArch": "AMD64",
+                                "imageStatus": 4,
+                                "imageType": 2,
+                                "dsId": "7927f6e3-484d-4105-a98e-868b21c1cb61",
+                                "imageSizeBytes": 142016512,
+                                "imageError": "Image uplinked successfully...",
+                                "imageLocal": "",
+                                "originType": 2
+                            },
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "User defined name of the image, unique across the enterprise. Once image is created, name can\u2019t be changed.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "User defined title of the image. Title can be changed at any time.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the image.",
+                                    "maxLength": 256
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "system defined info",
+                                    "readOnly": true
+                                },
+                                "imageFormat": {
+                                    "$ref": "#/definitions/configFormat",
+                                    "description": "Image binary format."
+                                },
+                                "imageRelUrl": {
+                                    "type": "string",
+                                    "description": "Image relative path w.r.t. Datastore"
+                                },
+                                "imageSha256": {
+                                    "type": "string",
+                                    "description": "Image checksum in SHA256 format"
+                                },
+                                "imageVersion": {
+                                    "type": "string",
+                                    "description": "system defined info"
+                                },
+                                "imageArch": {
+                                    "$ref": "#/definitions/ModelArchType",
+                                    "description": "Image Architecture."
+                                },
+                                "imageStatus": {
+                                    "$ref": "#/definitions/ImageStatus",
+                                    "description": "Image status",
+                                    "readOnly": true
+                                },
+                                "imageType": {
+                                    "$ref": "#/definitions/ImageType",
+                                    "description": "Image type"
+                                },
+                                "datastoreId": {
+                                    "type": "string",
+                                    "description": "Datastore Id where image binary is located.",
+                                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+                                },
+                                "imageSizeBytes": {
+                                    "type": "string",
+                                    "format": "int64",
+                                    "description": "Image size in KBytes."
+                                },
+                                "imageError": {
+                                    "type": "string",
+                                    "description": "Image upload/uplink detailed error/status message",
+                                    "readOnly": true
+                                },
+                                "imageLocal": {
+                                    "type": "string",
+                                    "description": "Internal image location.",
+                                    "readOnly": true
+                                },
+                                "originType": {
+                                    "$ref": "#/definitions/Origin",
+                                    "description": "Origin type of image.",
+                                    "readOnly": true
+                                },
+                                "projectAccessList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "project access list of the image"
+                                }
+                            },
+                            "description": "Image metadata for edge gateway Base OS or for eedge applications.",
+                            "title": "Image metadata detail",
+                            "required": [
+                                "name",
+                                "title",
+                                "imageFormat",
+                                "imageArch",
+                                "imageType",
+                                "datastoreId"
+                            ]
                         }
                     },
                     {
@@ -918,7 +1267,7 @@
             "get": {
                 "summary": "Get edge application image",
                 "description": "Get the configuration (without security details) of an edge application image record.",
-                "operationId": "GetImageByName",
+                "operationId": "ImageConfiguration_GetImageByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -955,6 +1304,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -986,7 +1341,7 @@
             "put": {
                 "summary": "Uplinks edge application image",
                 "description": "Uplinks the edge application image record to an existing binry file in the datastore.",
-                "operationId": "UplinkImage",
+                "operationId": "ImageConfiguration_UplinkImage",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1041,6 +1396,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1056,7 +1417,132 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ImageConfig"
+                            "type": "object",
+                            "example": {
+                                "id": "d1125b0f-633d-459c-99c6-f47e7467cebc",
+                                "name": "my-test-image",
+                                "title": "My Test Image for Edge Computing",
+                                "description": "My test image in QCOW2 format for Edge computing",
+                                "revision": {
+                                    "curr": "1",
+                                    "createdAt": {
+                                        "seconds": 1592068270
+                                    },
+                                    "createdBy": "admin@my-company.com",
+                                    "updatedAt": {
+                                        "seconds": 1592068271
+                                    },
+                                    "updatedBy": "admin@my-company.com"
+                                },
+                                "imageFormat": 3,
+                                "imageRelUrl": "edge/computing/AMD64",
+                                "imageSha256": "ADC5BB9DD39F83DD74C276B0BA119FB27925A5CDEA343FE1F2C8433F28AB345B",
+                                "imageVersion": "",
+                                "imageArch": "AMD64",
+                                "imageStatus": 4,
+                                "imageType": 2,
+                                "dsId": "7927f6e3-484d-4105-a98e-868b21c1cb61",
+                                "imageSizeBytes": 142016512,
+                                "imageError": "Image uplinked successfully...",
+                                "imageLocal": "",
+                                "originType": 2
+                            },
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "description": "System defined universally unique Id of the image.",
+                                    "readOnly": true,
+                                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                                    "uniqueItems": true
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "User defined title of the image. Title can be changed at any time.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the image.",
+                                    "maxLength": 256
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "system defined info",
+                                    "readOnly": true
+                                },
+                                "imageFormat": {
+                                    "$ref": "#/definitions/configFormat",
+                                    "description": "Image binary format."
+                                },
+                                "imageRelUrl": {
+                                    "type": "string",
+                                    "description": "Image relative path w.r.t. Datastore"
+                                },
+                                "imageSha256": {
+                                    "type": "string",
+                                    "description": "Image checksum in SHA256 format"
+                                },
+                                "imageVersion": {
+                                    "type": "string",
+                                    "description": "system defined info"
+                                },
+                                "imageArch": {
+                                    "$ref": "#/definitions/ModelArchType",
+                                    "description": "Image Architecture."
+                                },
+                                "imageStatus": {
+                                    "$ref": "#/definitions/ImageStatus",
+                                    "description": "Image status",
+                                    "readOnly": true
+                                },
+                                "imageType": {
+                                    "$ref": "#/definitions/ImageType",
+                                    "description": "Image type"
+                                },
+                                "datastoreId": {
+                                    "type": "string",
+                                    "description": "Datastore Id where image binary is located.",
+                                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+                                },
+                                "imageSizeBytes": {
+                                    "type": "string",
+                                    "format": "int64",
+                                    "description": "Image size in KBytes."
+                                },
+                                "imageError": {
+                                    "type": "string",
+                                    "description": "Image upload/uplink detailed error/status message",
+                                    "readOnly": true
+                                },
+                                "imageLocal": {
+                                    "type": "string",
+                                    "description": "Internal image location.",
+                                    "readOnly": true
+                                },
+                                "originType": {
+                                    "$ref": "#/definitions/Origin",
+                                    "description": "Origin type of image.",
+                                    "readOnly": true
+                                },
+                                "projectAccessList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "project access list of the image"
+                                }
+                            },
+                            "description": "Image metadata for edge gateway Base OS or for eedge applications.",
+                            "title": "Image metadata detail",
+                            "required": [
+                                "title",
+                                "imageFormat",
+                                "imageArch",
+                                "imageType",
+                                "datastoreId"
+                            ]
                         }
                     },
                     {
@@ -1080,7 +1566,7 @@
             "put": {
                 "summary": "Uploads edge application image binary file",
                 "description": "Uploads the edge application image binary file in the datastore. This method uses multiple HTTP requests to upload image binary file in smaller chunks. Recommended for larger file size.",
-                "operationId": "UploadImageChunked",
+                "operationId": "ImageConfiguration_UploadImageChunked",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1134,6 +1620,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -1177,6 +1669,9 @@
                 "tags": [
                     "ImageConfiguration"
                 ],
+                "produces": [
+                    "application/json"
+                ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
                     "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/storage"
@@ -1187,7 +1682,7 @@
             "put": {
                 "summary": "Uploads edge application image binary file",
                 "description": "Uploads the edge application image binary file in the datastore. This method uses single HTTP request to upload the entire image binary file. Recommended for smaller file size.",
-                "operationId": "UploadImageFile",
+                "operationId": "ImageConfiguration_UploadImageFile",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1242,6 +1737,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1271,6 +1772,9 @@
                 "tags": [
                     "ImageConfiguration"
                 ],
+                "produces": [
+                    "application/json"
+                ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
                     "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/storage"
@@ -1280,11 +1784,131 @@
                 ]
             }
         },
+        "/v1/apps/images/projects": {
+            "get": {
+                "summary": "Query common project access list among a list of images",
+                "description": "Query common project access list among a list of images",
+                "operationId": "ImageConfiguration_QueryImageProjectList",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ImageProjectList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "ids",
+                        "description": "List of images IDs",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "ImageConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/storage"
+                }
+            }
+        },
         "/v1/artifacts": {
             "get": {
                 "summary": "Query artifact files",
                 "description": "Query the artifact file records.",
-                "operationId": "QueryArtifacts",
+                "operationId": "ArtifactManager_QueryArtifacts",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1321,6 +1945,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1329,8 +1959,7 @@
                         "description": "Only summary of the records required",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "next.pageToken",
@@ -1344,7 +1973,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -1389,7 +2022,7 @@
             "post": {
                 "summary": "Create artifact file in the file storage",
                 "description": "Create the artifact file in the file storage in AWS S3 or Azure BlobStorage",
-                "operationId": "CreateArtifact",
+                "operationId": "ArtifactManager_CreateArtifact",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1426,6 +2059,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1458,14 +2097,21 @@
             "get": {
                 "summary": "Download artifact file chunk by chunk",
                 "description": "Downloads the artifact file in a stream from the file storage",
-                "operationId": "GetArtifactStream",
+                "operationId": "ArtifactManager_GetArtifactStream",
                 "responses": {
                     "200": {
                         "description": "artifact chunk data(streaming responses)",
                         "schema": {
-                            "type": "string",
+                            "type": "object",
                             "format": "byte",
-                            "description": "artifact chunk data"
+                            "properties": {
+                                "result": {},
+                                "error": {
+                                    "$ref": "#/definitions/googlerpcStatus"
+                                }
+                            },
+                            "description": "artifact chunk data",
+                            "title": "Stream result of ArtifactStream"
                         }
                     },
                     "206": {
@@ -1509,6 +2155,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1530,6 +2182,9 @@
                 "tags": [
                     "ArtifactManager"
                 ],
+                "produces": [
+                    "application/octet-stream"
+                ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
                     "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/storage"
@@ -1538,7 +2193,7 @@
             "delete": {
                 "summary": "Delete artifact file form the datastore",
                 "description": "Drops the artifact file from the file storage in AWS S3 or Azure BlobStorage",
-                "operationId": "DeleteArtifact",
+                "operationId": "ArtifactManager_DeleteArtifact",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1575,6 +2230,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1606,7 +2267,7 @@
             "put": {
                 "summary": "Uploads the given chunk into the specified multiplePart file",
                 "description": "Uploads the given chunk into the specified file",
-                "operationId": "UploadArtifact",
+                "operationId": "ArtifactManager_UploadArtifact",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1649,6 +2310,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1688,6 +2355,9 @@
                 "tags": [
                     "ArtifactManager"
                 ],
+                "produces": [
+                    "application/json"
+                ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
                     "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/storage"
@@ -1698,7 +2368,7 @@
             "get": {
                 "summary": "Generates the signedUrl for accessing the resource",
                 "description": "Generate the URL which can be used to access the resource from datastore like s3, Azure etc for specified amount of time.",
-                "operationId": "GetArtifactSignedUrl",
+                "operationId": "ArtifactManager_GetArtifactSignedUrl",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1741,6 +2411,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1772,7 +2448,7 @@
             "get": {
                 "summary": "Query datastores",
                 "description": "Query the datastore records.",
-                "operationId": "QueryDatastores",
+                "operationId": "DatastoreConfiguration_QueryDatastores",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1809,6 +2485,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1817,8 +2499,7 @@
                         "description": "Only summary of the records required",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.namePattern",
@@ -1859,7 +2540,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -1904,7 +2589,7 @@
             "post": {
                 "summary": "Create Datastore",
                 "description": "Create a Datastore record.",
-                "operationId": "CreateDatastore",
+                "operationId": "DatastoreConfiguration_CreateDatastore",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -1947,6 +2632,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -1979,7 +2670,7 @@
             "get": {
                 "summary": "Get datastore",
                 "description": "Get the configuration (without security details) of a datastore record.",
-                "operationId": "GetDatastore",
+                "operationId": "DatastoreConfiguration_GetDatastore",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2016,6 +2707,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2045,7 +2742,7 @@
             "delete": {
                 "summary": "Delete datastore",
                 "description": "Delete a datastore record.",
-                "operationId": "DeleteDatastore",
+                "operationId": "DatastoreConfiguration_DeleteDatastore",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2088,6 +2785,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2117,7 +2820,7 @@
             "put": {
                 "summary": "Update datastore",
                 "description": "Update a datastore record. The usual pattern to update a datastore record is to retrieve the record and update with the modified values in a new body to update the datastore record.",
-                "operationId": "UpdateDatastore",
+                "operationId": "DatastoreConfiguration_UpdateDatastore",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2160,6 +2863,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2175,8 +2884,255 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DatastoreInfo"
+                            "type": "object",
+                            "example": {
+                                "id": "d1125b0f-633d-459c-99c6-f47e7467cebc",
+                                "name": "my-test-datastore",
+                                "title": "My test datatsore for Edge computing images",
+                                "description": "My test datastore hosted on HTTP server for Edge computing images.",
+                                "revision": {
+                                    "curr": "1",
+                                    "createdAt": {
+                                        "seconds": 1592068270
+                                    },
+                                    "createdBy": "admin@my-company.com",
+                                    "updatedAt": {
+                                        "seconds": 1592068271
+                                    },
+                                    "updatedBy": "admin@my-company.com"
+                                },
+                                "dsFQDN": "http://my-datastore.my-company.com",
+                                "dsPath": "download/AMD64",
+                                "dsStatus": "DATASTORE_STATUS_ACTIVE",
+                                "dsType": "DATASTORE_TYPE_HTTP",
+                                "secret": {
+                                    "apiKey": "my-datastore-api-key",
+                                    "apiPasswd": "my-datastore-api-password"
+                                },
+                                "dsError": "Datastore validated successfully...",
+                                "originType": "ORIGIN_LOCAL"
+                            },
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "User defined name of the datastore, unique across the enterprise. Once datastore is created, name can\u2019t be changed.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "User defined title of the datastore. Title can be changed at any time.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the datastore.",
+                                    "maxLength": 256
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "system defined info",
+                                    "readOnly": true
+                                },
+                                "enterpriseId": {
+                                    "type": "string"
+                                },
+                                "dsType": {
+                                    "$ref": "#/definitions/DatastoreType",
+                                    "description": "Datastore type"
+                                },
+                                "dsFQDN": {
+                                    "type": "string",
+                                    "description": "Datastore Fully Qualified Domain Name"
+                                },
+                                "dsPath": {
+                                    "type": "string",
+                                    "description": "Datastore relative path w.r.t. Datastore root"
+                                },
+                                "apiKey": {
+                                    "type": "string"
+                                },
+                                "region": {
+                                    "type": "string",
+                                    "description": "Datastore region - valid for AWS S3 and Azure BlobStorage"
+                                },
+                                "dsStatus": {
+                                    "$ref": "#/definitions/DatastoreStatus",
+                                    "description": "Datastore status"
+                                },
+                                "dsErr": {
+                                    "type": "string",
+                                    "description": "Datastore validation detailed error/status message",
+                                    "readOnly": true
+                                },
+                                "secret": {
+                                    "$ref": "#/definitions/DatastoreInfoSecrets",
+                                    "description": "Plain-text sensitive data"
+                                },
+                                "encryptedSecrets": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Internal - Encrypted sensitive data",
+                                    "readOnly": true
+                                },
+                                "cryptoKey": {
+                                    "type": "string",
+                                    "description": "Internal - Encryption Key context",
+                                    "readOnly": true
+                                },
+                                "originType": {
+                                    "$ref": "#/definitions/Origin",
+                                    "description": "Origin type of datastore.",
+                                    "readOnly": true
+                                },
+                                "certificateChain": {
+                                    "$ref": "#/definitions/CertificateChain",
+                                    "description": "Certificate chain of the certificate"
+                                },
+                                "needClearText": {
+                                    "type": "boolean",
+                                    "description": "knob for sending creds in clear text"
+                                },
+                                "projectAccessList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "project access list of the datastore"
+                                }
+                            },
+                            "description": "Datastore idetail",
+                            "title": "Datastore",
+                            "required": [
+                                "name",
+                                "title",
+                                "dsType",
+                                "dsFQDN",
+                                "dsPath"
+                            ]
                         }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "DatastoreConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/storage"
+                }
+            }
+        },
+        "/v1/datastores/id/{id}/projects": {
+            "get": {
+                "summary": "Query the project access list of a datastore",
+                "description": "Query the project access list of a datastore",
+                "operationId": "DatastoreConfiguration_QueryDatastoreProjectList",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/DatastoreProjectList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the datastore",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
                     },
                     {
                         "name": "X-Request-Id",
@@ -2199,7 +3155,7 @@
             "get": {
                 "summary": "Get datastore",
                 "description": "Get the configuration (without security details) of a datastore record.",
-                "operationId": "GetDatastoreByName",
+                "operationId": "DatastoreConfiguration_GetDatastoreByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2236,6 +3192,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2267,7 +3229,7 @@
             "get": {
                 "summary": "Query edge volume instances",
                 "description": "Query the edge volume instance records.",
-                "operationId": "QueryVolumeInstances",
+                "operationId": "VolumeInstanceConfiguration_QueryVolumeInstances",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2304,6 +3266,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2311,8 +3279,7 @@
                         "name": "summary",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.type",
@@ -2357,6 +3324,24 @@
                         "type": "string"
                     },
                     {
+                        "name": "filter.appInstName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.deviceNamePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.projectNamePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "next.pageToken",
                         "description": "Page Token",
                         "in": "query",
@@ -2368,7 +3353,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -2395,6 +3384,16 @@
                         "format": "int64"
                     },
                     {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
                         "name": "X-Request-Id",
                         "in": "header",
                         "required": false,
@@ -2413,7 +3412,7 @@
             "post": {
                 "summary": "Create edge volume instance",
                 "description": "Create an edge volume instance record.",
-                "operationId": "CreateVolumeInstance",
+                "operationId": "VolumeInstanceConfiguration_CreateVolumeInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2456,6 +3455,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2488,7 +3493,7 @@
             "get": {
                 "summary": "Get edge volume instance",
                 "description": "Get the configuration (without security details) of an edge volume instance record.",
-                "operationId": "GetVolumeInstance",
+                "operationId": "VolumeInstanceConfiguration_GetVolumeInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2525,6 +3530,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2553,7 +3564,7 @@
             "delete": {
                 "summary": "Delete volume instance",
                 "description": "Delete a volume instance record.",
-                "operationId": "DeleteVolumeInstance",
+                "operationId": "VolumeInstanceConfiguration_DeleteVolumeInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2590,6 +3601,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2618,7 +3635,7 @@
             "put": {
                 "summary": "Update edge volume instance",
                 "description": "Update an edge volume instance. The usual pattern to update an edge volume instance record is to retrieve the record and update with the modified values in a new body to update the edge volume instance record.",
-                "operationId": "UpdateVolumeInstance",
+                "operationId": "VolumeInstanceConfiguration_UpdateVolumeInstance",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2661,11 +3678,18 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
                     {
                         "name": "id",
+                        "description": "System defined universally unique Id of the volume instance.",
                         "in": "path",
                         "required": true,
                         "type": "string"
@@ -2675,7 +3699,94 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/VolInstConfig"
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "User defined name of the volume instance, unique across the enterprise. Once object is created, name can\u2019t be changed.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "User defined title of the volume instance. Title can be changed at any time.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the volume instance.",
+                                    "maxLength": 256
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "system defined Revision info of the object",
+                                    "readOnly": true
+                                },
+                                "projectId": {
+                                    "type": "string",
+                                    "description": "id of the project in which the volume instance is created"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/VolumeInstanceType",
+                                    "description": "type of Volume Instance"
+                                },
+                                "deviceId": {
+                                    "type": "string",
+                                    "description": "id of the device on which volume instance is created"
+                                },
+                                "multiattach": {
+                                    "type": "boolean",
+                                    "description": "flag to enable the volume to be attached to multiple app instances"
+                                },
+                                "cleartext": {
+                                    "type": "boolean",
+                                    "description": "flag to keep the contents of the volume unencrypted (in clear text)"
+                                },
+                                "accessmode": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/VolumeInstanceAccessMode",
+                                    "description": "Access mode"
+                                },
+                                "sizeBytes": {
+                                    "type": "integer",
+                                    "format": "uint64",
+                                    "description": "size of volume"
+                                },
+                                "image": {
+                                    "type": "string",
+                                    "description": "name of the image"
+                                },
+                                "implicit": {
+                                    "type": "string",
+                                    "description": "flag to create implicit volumes"
+                                },
+                                "contentTreeId": {
+                                    "type": "string",
+                                    "description": "content tree ID"
+                                },
+                                "label": {
+                                    "type": "string",
+                                    "description": "label"
+                                },
+                                "purge": {
+                                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                                    "description": "Purge Counter information"
+                                },
+                                "tags": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                                    "maxLength": 32,
+                                    "pattern": "^[^<%&?/\\>]+$"
+                                }
+                            }
                         }
                     },
                     {
@@ -2699,7 +3810,7 @@
             "get": {
                 "summary": "Get edge volume instance status",
                 "description": "Get the status of an edge volume instance record.",
-                "operationId": "GetVolumeInstanceStatus",
+                "operationId": "VolumeInstanceStatus_GetVolumeInstanceStatus",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2736,6 +3847,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2766,7 +3883,7 @@
             "get": {
                 "summary": "Get edge volume instance events by id",
                 "description": "Get configuration and status events of an edge volume by id.",
-                "operationId": "GetVolumeInstanceEvents",
+                "operationId": "VolumeInstanceStatus_GetVolumeInstanceEvents",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2802,6 +3919,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -2848,7 +3971,7 @@
             "get": {
                 "summary": "Get edge volume instance",
                 "description": "Get the configuration (without security details) of an edge volume instance record.",
-                "operationId": "GetVolumeInstanceByName",
+                "operationId": "VolumeInstanceConfiguration_GetVolumeInstanceByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2885,6 +4008,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2915,7 +4044,7 @@
             "get": {
                 "summary": "Get edge volume instance status",
                 "description": "Get the status of an edge volume instance record.",
-                "operationId": "GetVolumeInstanceStatusByName",
+                "operationId": "VolumeInstanceStatus_GetVolumeInstanceStatusByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -2952,6 +4081,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -2982,7 +4117,7 @@
             "get": {
                 "summary": "Get edge volume instance events by name",
                 "description": "Get configuration and status events of an edge volume by name.",
-                "operationId": "GetVolumeInstanceEventsByName",
+                "operationId": "VolumeInstanceStatus_GetVolumeInstanceEventsByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -3018,6 +4153,12 @@
                         "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
                         }
                     }
                 },
@@ -3064,7 +4205,7 @@
             "get": {
                 "summary": "Query status of edge volume instances",
                 "description": "Query the status of edge volume instance records.",
-                "operationId": "QueryVolumeInstanceStatus",
+                "operationId": "VolumeInstanceStatus_QueryVolumeInstanceStatus",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -3101,6 +4242,12 @@
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
                     }
                 },
                 "parameters": [
@@ -3108,8 +4255,7 @@
                         "name": "summary",
                         "in": "query",
                         "required": false,
-                        "type": "boolean",
-                        "format": "boolean"
+                        "type": "boolean"
                     },
                     {
                         "name": "filter.deviceName",
@@ -3131,7 +4277,7 @@
                     },
                     {
                         "name": "filter.runState",
-                        "description": " - RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode",
+                        "description": " - RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode\n - RUN_STATE_START_DELAYED: Application start delayed as per configuration\n - RUN_STATE_BASEOS_UPDATING: Device BaseOs Update in Progress\n - RUN_STATE_PREPARING_POWEROFF: device preparing power off - shutting down all app instances\n - RUN_STATE_POWERING_OFF: device powering off from local profile server\n - RUN_STATE_PREPARED_POWEROFF: device prepared power off - all app instances are shut down",
                         "in": "query",
                         "required": false,
                         "type": "string",
@@ -3155,7 +4301,12 @@
                             "RUN_STATE_LOADING",
                             "RUN_STATE_CREATING_VOLUME",
                             "RUN_STATE_BOOTING",
-                            "RUN_STATE_MAINTENANCE_MODE"
+                            "RUN_STATE_MAINTENANCE_MODE",
+                            "RUN_STATE_START_DELAYED",
+                            "RUN_STATE_BASEOS_UPDATING",
+                            "RUN_STATE_PREPARING_POWEROFF",
+                            "RUN_STATE_POWERING_OFF",
+                            "RUN_STATE_PREPARED_POWEROFF"
                         ],
                         "default": "RUN_STATE_UNSPECIFIED"
                     },
@@ -3184,6 +4335,24 @@
                         "type": "string"
                     },
                     {
+                        "name": "filter.appInstName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.deviceNamePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.projectNamePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "next.pageToken",
                         "description": "Page Token",
                         "in": "query",
@@ -3195,7 +4364,11 @@
                         "description": "OrderBy helps in sorting the list response",
                         "in": "query",
                         "required": false,
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "next.pageNum",
@@ -3220,6 +4393,236 @@
                         "required": false,
                         "type": "number",
                         "format": "int64"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "VolumeInstanceStatus"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/storage"
+                }
+            }
+        },
+        "/v1/volumes/instances/status-config": {
+            "get": {
+                "summary": "Query status and config of edge volume instances",
+                "description": "Query the status and config of edge volume instance records.",
+                "operationId": "VolumeInstanceStatus_QueryVolumeInstanceStatusConfig",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/VolInstStatusListMsg"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "summary",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "filter.deviceName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.projectName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.namePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.runState",
+                        "description": " - RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode\n - RUN_STATE_START_DELAYED: Application start delayed as per configuration\n - RUN_STATE_BASEOS_UPDATING: Device BaseOs Update in Progress\n - RUN_STATE_PREPARING_POWEROFF: device preparing power off - shutting down all app instances\n - RUN_STATE_POWERING_OFF: device powering off from local profile server\n - RUN_STATE_PREPARED_POWEROFF: device prepared power off - all app instances are shut down",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "RUN_STATE_UNSPECIFIED",
+                            "RUN_STATE_ONLINE",
+                            "RUN_STATE_HALTED",
+                            "RUN_STATE_INIT",
+                            "RUN_STATE_REBOOTING",
+                            "RUN_STATE_OFFLINE",
+                            "RUN_STATE_UNKNOWN",
+                            "RUN_STATE_UNPROVISIONED",
+                            "RUN_STATE_PROVISIONED",
+                            "RUN_STATE_SUSPECT",
+                            "RUN_STATE_DOWNLOADING",
+                            "RUN_STATE_RESTARTING",
+                            "RUN_STATE_PURGING",
+                            "RUN_STATE_HALTING",
+                            "RUN_STATE_ERROR",
+                            "RUN_STATE_VERIFYING",
+                            "RUN_STATE_LOADING",
+                            "RUN_STATE_CREATING_VOLUME",
+                            "RUN_STATE_BOOTING",
+                            "RUN_STATE_MAINTENANCE_MODE",
+                            "RUN_STATE_START_DELAYED",
+                            "RUN_STATE_BASEOS_UPDATING",
+                            "RUN_STATE_PREPARING_POWEROFF",
+                            "RUN_STATE_POWERING_OFF",
+                            "RUN_STATE_PREPARED_POWEROFF"
+                        ],
+                        "default": "RUN_STATE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.type",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "VOLUME_INSTANCE_TYPE_UNSPECIFIED",
+                            "VOLUME_INSTANCE_TYPE_EMPTYDIR",
+                            "VOLUME_INSTANCE_TYPE_BLOCKSTORAGE",
+                            "VOLUME_INSTANCE_TYPE_HOSTFS",
+                            "VOLUME_INSTANCE_TYPE_TMPFS",
+                            "VOLUME_INSTANCE_TYPE_SECRET",
+                            "VOLUME_INSTANCE_TYPE_NFS",
+                            "VOLUME_INSTANCE_TYPE_AWS_BLOCK_STORAGE",
+                            "VOLUME_INSTANCE_TYPE_CONTENT_TREE"
+                        ],
+                        "default": "VOLUME_INSTANCE_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "filter.imageName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.appInstName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.deviceNamePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.projectNamePattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
                     },
                     {
                         "name": "X-Request-Id",
@@ -3364,12 +4767,10 @@
                 },
                 "exportable": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Indicates if the private key can be exported."
                 },
                 "reuseKey": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "Indicates if the same key pair will be used on certificate renewal."
                 },
                 "encryptedSecrets": {
@@ -3377,6 +4778,7 @@
                     "additionalProperties": {
                         "type": "string"
                     },
+                    "description": "user encrypted secrets map",
                     "title": "secrets encryption"
                 },
                 "cryptoKey": {
@@ -3426,7 +4828,6 @@
                 },
                 "basicContraintsValid": {
                     "type": "boolean",
-                    "format": "boolean",
                     "description": "This fields tells the basic constraints like isCA are correct."
                 },
                 "keyUsage": {
@@ -3466,7 +4867,10 @@
                     "description": "Page Token"
                 },
                 "orderBy": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
                     "description": "OrderBy helps in sorting the list response"
                 },
                 "pageNum": {
@@ -3605,7 +5009,9 @@
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
-                    }
+                    },
+                    "description": "Internal - Encrypted sensitive data",
+                    "readOnly": true
                 },
                 "cryptoKey": {
                     "type": "string",
@@ -3619,8 +5025,18 @@
                 },
                 "certificateChain": {
                     "$ref": "#/definitions/CertificateChain",
-                    "description": "Certificate chain of the certificate",
-                    "title": "datastore certificate if applicable"
+                    "description": "Certificate chain of the certificate"
+                },
+                "needClearText": {
+                    "type": "boolean",
+                    "description": "knob for sending creds in clear text"
+                },
+                "projectAccessList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "project access list of the datastore"
                 }
             },
             "description": "Datastore idetail",
@@ -3643,6 +5059,27 @@
                 "apiPasswd": {
                     "type": "string",
                     "description": "Datastore access API password in plain-text"
+                }
+            }
+        },
+        "DatastoreProjectList": {
+            "type": "object",
+            "properties": {
+                "projectDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ObjectDetail"
+                    },
+                    "description": "List of projects which are associated with the given datastore"
+                },
+                "totalCount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "total number of records"
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Responded page details of filtered records"
                 }
             }
         },
@@ -3747,6 +5184,9 @@
                 },
                 "entityId": {
                     "type": "string"
+                },
+                "entityName": {
+                    "type": "string"
                 }
             }
         },
@@ -3774,7 +5214,7 @@
                     },
                     "description": "objects referenced by the description or retry_condition"
                 },
-                "retry_condition": {
+                "retryCondition": {
                     "type": "string",
                     "description": "condition for retry"
                 }
@@ -3858,6 +5298,10 @@
                     "type": "object",
                     "$ref": "#/definitions/Cursor",
                     "description": "Cursor filter"
+                },
+                "summary": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "Summary of filtered events."
                 }
             },
             "description": "Event query response request payload",
@@ -3923,7 +5367,7 @@
                     "type": "string",
                     "description": "Event resources"
                 },
-                "json_data": {
+                "jsonData": {
                     "type": "object",
                     "description": "Event resources"
                 },
@@ -3948,6 +5392,35 @@
         },
         "ImageConfig": {
             "type": "object",
+            "example": {
+                "id": "d1125b0f-633d-459c-99c6-f47e7467cebc",
+                "name": "my-test-image",
+                "title": "My Test Image for Edge Computing",
+                "description": "My test image in QCOW2 format for Edge computing",
+                "revision": {
+                    "curr": "1",
+                    "createdAt": {
+                        "seconds": 1592068270
+                    },
+                    "createdBy": "admin@my-company.com",
+                    "updatedAt": {
+                        "seconds": 1592068271
+                    },
+                    "updatedBy": "admin@my-company.com"
+                },
+                "imageFormat": 3,
+                "imageRelUrl": "edge/computing/AMD64",
+                "imageSha256": "ADC5BB9DD39F83DD74C276B0BA119FB27925A5CDEA343FE1F2C8433F28AB345B",
+                "imageVersion": "",
+                "imageArch": "AMD64",
+                "imageStatus": 4,
+                "imageType": 2,
+                "dsId": "7927f6e3-484d-4105-a98e-868b21c1cb61",
+                "imageSizeBytes": 142016512,
+                "imageError": "Image uplinked successfully...",
+                "imageLocal": "",
+                "originType": 2
+            },
             "properties": {
                 "id": {
                     "type": "string",
@@ -4034,6 +5507,13 @@
                     "$ref": "#/definitions/Origin",
                     "description": "Origin type of image.",
                     "readOnly": true
+                },
+                "projectAccessList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "project access list of the image"
                 }
             },
             "description": "Image metadata for edge gateway Base OS or for eedge applications.",
@@ -4073,6 +5553,27 @@
                     "maxLength": 256,
                     "minLength": 3,
                     "pattern": "[a-zA-Z0-9_.-]{3,256}"
+                }
+            }
+        },
+        "ImageProjectList": {
+            "type": "object",
+            "properties": {
+                "projectDetails": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ObjectDetail"
+                    },
+                    "description": "List of projects which are are common among given list of images"
+                },
+                "totalCount": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "total number of records"
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Responded page details of filtered records"
                 }
             }
         },
@@ -4125,6 +5626,22 @@
                     "$ref": "#/definitions/Summary",
                     "description": "Summary of filtered Image records"
                 },
+                "summaryByImageStatus": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "Imagestatus distribution summary"
+                },
+                "summaryByImageArch": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "Image architecture distribution summary"
+                },
+                "summaryByImageType": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "Image type distribution summary"
+                },
+                "summaryByImageFormat": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "Image format distribution summary"
+                },
                 "list": {
                     "type": "array",
                     "items": {
@@ -4147,6 +5664,17 @@
                 "ARM64"
             ],
             "default": "UNSPECIFIED"
+        },
+        "ObjectDetail": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         },
         "ObjectRevision": {
             "type": "object",
@@ -4216,7 +5744,11 @@
                 "OBJECT_TYPE_DOC_POLICY",
                 "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
                 "OBJECT_TYPE_TAGS",
-                "OBJECT_TYPE_EDGE_NODE_INTERFACE"
+                "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                "OBJECT_TYPE_DEPLOYMENT",
+                "OBJECT_TYPE_ENTITLEMENTS",
+                "OBJECT_TYPE_DATA_STREAM",
+                "OBJECT_TYPE_API_USAGE"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -4264,10 +5796,15 @@
                 "RUN_STATE_LOADING",
                 "RUN_STATE_CREATING_VOLUME",
                 "RUN_STATE_BOOTING",
-                "RUN_STATE_MAINTENANCE_MODE"
+                "RUN_STATE_MAINTENANCE_MODE",
+                "RUN_STATE_START_DELAYED",
+                "RUN_STATE_BASEOS_UPDATING",
+                "RUN_STATE_PREPARING_POWEROFF",
+                "RUN_STATE_POWERING_OFF",
+                "RUN_STATE_PREPARED_POWEROFF"
             ],
             "default": "RUN_STATE_UNSPECIFIED",
-            "description": "- RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode",
+            "description": "- RUN_STATE_ONLINE: Entity Online\n - RUN_STATE_HALTED: Entity Halted\n - RUN_STATE_INIT: Entity Initializing\n - RUN_STATE_REBOOTING: Entity Rebooting\n - RUN_STATE_OFFLINE: Entity Offline\n - RUN_STATE_UNKNOWN: Entity state Unknown\n - RUN_STATE_UNPROVISIONED: Entity Unprovisioned\n - RUN_STATE_PROVISIONED: Entity Provisioned\n - RUN_STATE_SUSPECT: Entity Suspect\n - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts\n - RUN_STATE_RESTARTING: Entity Restarting\n - RUN_STATE_PURGING: Entity Purging\n - RUN_STATE_HALTING: Entity Halting\n - RUN_STATE_ERROR: Entity encountered an error\n - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.\n - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.\n - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress\n - RUN_STATE_BOOTING: Entity booting up\n - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode\n - RUN_STATE_START_DELAYED: Application start delayed as per configuration\n - RUN_STATE_BASEOS_UPDATING: Device BaseOs Update in Progress\n - RUN_STATE_PREPARING_POWEROFF: device preparing power off - shutting down all app instances\n - RUN_STATE_POWERING_OFF: device powering off from local profile server\n - RUN_STATE_PREPARED_POWEROFF: device prepared power off - all app instances are shut down",
             "title": "Run-time state of an object, reported by EVE"
         },
         "SANValues": {
@@ -4458,7 +5995,8 @@
                     "additionalProperties": {
                         "type": "integer",
                         "format": "int64"
-                    }
+                    },
+                    "description": "Values: Map for storing <string, uint32>"
                 }
             },
             "description": "Summary is used to store the Summary details",
@@ -4468,59 +6006,96 @@
             "type": "object",
             "properties": {
                 "id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "System defined universally unique Id of the volume instance.",
+                    "readOnly": true,
+                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                    "uniqueItems": true
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "User defined name of the volume instance, unique across the enterprise. Once object is created, name can\u2019t be changed.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
                 },
                 "title": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "User defined title of the volume instance. Title can be changed at any time.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
                 },
                 "description": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Detailed description of the volume instance.",
+                    "maxLength": 256
                 },
                 "revision": {
-                    "$ref": "#/definitions/ObjectRevision"
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined Revision info of the object",
+                    "readOnly": true
                 },
                 "projectId": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "id of the project in which the volume instance is created"
                 },
                 "type": {
-                    "$ref": "#/definitions/VolumeInstanceType"
+                    "type": "string",
+                    "$ref": "#/definitions/VolumeInstanceType",
+                    "description": "type of Volume Instance"
                 },
                 "deviceId": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "id of the device on which volume instance is created"
                 },
                 "multiattach": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "flag to enable the volume to be attached to multiple app instances"
                 },
                 "cleartext": {
                     "type": "boolean",
-                    "format": "boolean"
+                    "description": "flag to keep the contents of the volume unencrypted (in clear text)"
                 },
                 "accessmode": {
-                    "$ref": "#/definitions/VolumeInstanceAccessMode"
+                    "type": "string",
+                    "$ref": "#/definitions/VolumeInstanceAccessMode",
+                    "description": "Access mode"
                 },
                 "sizeBytes": {
-                    "type": "string",
-                    "format": "uint64"
+                    "type": "integer",
+                    "format": "uint64",
+                    "description": "size of volume"
                 },
                 "image": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "name of the image"
                 },
                 "implicit": {
-                    "type": "boolean",
-                    "format": "boolean"
+                    "type": "string",
+                    "description": "flag to create implicit volumes"
                 },
                 "contentTreeId": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "content tree ID"
                 },
                 "label": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "label"
                 },
                 "purge": {
-                    "$ref": "#/definitions/ZedCloudOpsCmd"
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Purge Counter information"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
                 }
             }
         },
@@ -4541,6 +6116,15 @@
                 },
                 "labelName": {
                     "type": "string"
+                },
+                "appInstName": {
+                    "type": "string"
+                },
+                "deviceNamePattern": {
+                    "type": "string"
+                },
+                "projectNamePattern": {
+                    "type": "string"
                 }
             }
         },
@@ -4558,6 +6142,9 @@
                     "items": {
                         "$ref": "#/definitions/VolInstConfig"
                     }
+                },
+                "summaryByType": {
+                    "$ref": "#/definitions/Summary"
                 },
                 "next": {
                     "$ref": "#/definitions/Cursor"
@@ -4616,6 +6203,15 @@
                     "$ref": "#/definitions/VolumeInstanceType"
                 },
                 "imageName": {
+                    "type": "string"
+                },
+                "appInstName": {
+                    "type": "string"
+                },
+                "deviceNamePattern": {
+                    "type": "string"
+                },
+                "projectNamePattern": {
                     "type": "string"
                 }
             }
@@ -4730,6 +6326,12 @@
                 "progressPercentage": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "deviceName": {
+                    "type": "string"
+                },
+                "projectName": {
+                    "type": "string"
                 }
             }
         },
@@ -4910,6 +6512,10 @@
                     "type": "string",
                     "title": "summary of the error in text format"
                 },
+                "jobId": {
+                    "type": "string",
+                    "title": "for tracking asynchronous tasks"
+                },
                 "error": {
                     "type": "array",
                     "items": {
@@ -4930,48 +6536,19 @@
                 "VMDK",
                 "OVA",
                 "VHDX",
-                "CONTAINER"
+                "CONTAINER",
+                "ISO"
             ],
             "default": "FmtUnknown"
         },
-        "protobufAny": {
+        "googlerpcStatus": {
             "type": "object",
             "properties": {
-                "type_url": {
-                    "type": "string",
-                    "description": "A URL/resource name that uniquely identifies the type of the serialized\nprotocol buffer message. This string must contain at least\none \"/\" character. The last segment of the URL's path must represent\nthe fully qualified name of the type (as in\n`path/google.protobuf.Duration`). The name should be in a canonical form\n(e.g., leading \".\" is not accepted).\n\nIn practice, teams usually precompile into the binary all types that they\nexpect it to use in the context of Any. However, for URLs which use the\nscheme `http`, `https`, or no scheme, one can optionally set up a type\nserver that maps type URLs to message definitions as follows:\n\n* If no scheme is provided, `https` is assumed.\n* An HTTP GET on the URL must yield a [google.protobuf.Type][]\n  value in binary format, or produce an error.\n* Applications are allowed to cache lookup results based on the\n  URL, or have them precompiled into a binary to avoid any\n  lookup. Therefore, binary compatibility needs to be preserved\n  on changes to types. (Use versioned type names to manage\n  breaking changes.)\n\nNote: this functionality is not currently available in the official\nprotobuf release, and it is not used for type URLs beginning with\ntype.googleapis.com.\n\nSchemes other than `http`, `https` (or the empty scheme) might be\nused with implementation specific semantics."
-                },
-                "value": {
-                    "type": "string",
-                    "format": "byte",
-                    "description": "Must be a valid serialized protocol buffer of the above specified type."
-                }
-            },
-            "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(&foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := &pb.Foo{...}\n     any, err := ptypes.MarshalAny(foo)\n     ...\n     foo := &pb.Foo{}\n     if err := ptypes.UnmarshalAny(any, foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": <string>,\n      \"lastName\": <string>\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
-        },
-        "protobufNullValue": {
-            "type": "string",
-            "enum": [
-                "NULL_VALUE"
-            ],
-            "default": "NULL_VALUE",
-            "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
-        },
-        "runtimeStreamError": {
-            "type": "object",
-            "properties": {
-                "grpc_code": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "http_code": {
+                "code": {
                     "type": "integer",
                     "format": "int32"
                 },
                 "message": {
-                    "type": "string"
-                },
-                "http_status": {
                     "type": "string"
                 },
                 "details": {
@@ -4981,20 +6558,26 @@
                     }
                 }
             }
-        }
-    },
-    "x-stream-definitions": {
-        "ArtifactStream": {
+        },
+        "protobufAny": {
             "type": "object",
             "properties": {
-                "result": {
-                    "$ref": "#/definitions/ArtifactStream"
+                "typeUrl": {
+                    "type": "string"
                 },
-                "error": {
-                    "$ref": "#/definitions/runtimeStreamError"
+                "value": {
+                    "type": "string",
+                    "format": "byte"
                 }
-            },
-            "title": "Stream result of ArtifactStream"
+            }
+        },
+        "protobufNullValue": {
+            "type": "string",
+            "enum": [
+                "NULL_VALUE"
+            ],
+            "default": "NULL_VALUE",
+            "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
         }
     },
     "securityDefinitions": {
