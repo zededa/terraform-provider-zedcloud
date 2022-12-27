@@ -62,9 +62,8 @@ func PCRValueSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Type of value for the PCR item. Could be one of the following values: 0 (PCR_TYPE_UNSPECIFIED), 1 (PCR_TYPE_HASH) or 2 (PCR_TYPE_EVENT_LOG)`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"value": {

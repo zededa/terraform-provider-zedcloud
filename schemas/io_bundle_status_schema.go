@@ -108,15 +108,19 @@ func IoBundleStatusSchema() map[string]*schema.Schema {
 
 		"err": {
 			Description: `Device error details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceError
+			Elem: &schema.Resource{
+				Schema: DeviceErrorSchema(),
+			},
 			Optional: true,
 		},
 
 		"lte_info": {
 			Description: `LTE information`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: LTEAdapter
+			Elem: &schema.Resource{
+				Schema: LTEAdapterSchema(),
+			},
 			Optional: true,
 		},
 
@@ -147,9 +151,8 @@ func IoBundleStatusSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `IoType specifies the type of the Input output of the device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }

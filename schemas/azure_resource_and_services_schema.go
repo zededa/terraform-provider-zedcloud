@@ -67,8 +67,10 @@ func AzureResourceAndServicesSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"dps_service": {
 			Description: `dps service attached to cloud policy`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DPSServiceDetail
+			Elem: &schema.Resource{
+				Schema: DPSServiceDetailSchema(),
+			},
 			Required: true,
 		},
 

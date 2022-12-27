@@ -148,15 +148,19 @@ func TagSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: `Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: PolicyConfig
+			Elem: &schema.Resource{
+				Schema: PolicyConfigSchema(),
+			},
 			Computed: true,
 		},
 
 		"attestation_policy": {
 			Description: `Attestation policy to enforce on all devices of this project`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: PolicyConfig
+			Elem: &schema.Resource{
+				Schema: PolicyConfigSchema(),
+			},
 			Optional: true,
 		},
 
@@ -171,15 +175,19 @@ func TagSchema() map[string]*schema.Schema {
 
 		"cloud_policy": {
 			Description: `Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: PolicyConfig
+			Elem: &schema.Resource{
+				Schema: PolicyConfigSchema(),
+			},
 			Computed: true,
 		},
 
 		"deployment": {
 			Description: `Deployment template containing different types of policies`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Deployment
+			Elem: &schema.Resource{
+				Schema: DeploymentSchema(),
+			},
 			Optional: true,
 		},
 
@@ -191,8 +199,10 @@ func TagSchema() map[string]*schema.Schema {
 
 		"edgeview_policy": {
 			Description: `Edgeview policy on devices of this project`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: PolicyConfig
+			Elem: &schema.Resource{
+				Schema: PolicyConfigSchema(),
+			},
 			Optional: true,
 		},
 
@@ -220,8 +230,10 @@ func TagSchema() map[string]*schema.Schema {
 
 		"network_policy": {
 			Description: `Network policy to enforce on all devices of this project`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: PolicyConfig
+			Elem: &schema.Resource{
+				Schema: PolicyConfigSchema(),
+			},
 			Optional: true,
 		},
 
@@ -233,8 +245,10 @@ func TagSchema() map[string]*schema.Schema {
 
 		"revision": {
 			Description: `system defined info`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevisionSchema(),
+			},
 			Computed: true,
 		},
 
@@ -246,9 +260,8 @@ func TagSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Resource group type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }

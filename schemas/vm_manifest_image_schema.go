@@ -134,9 +134,8 @@ func VMManifestImageSchema() map[string]*schema.Schema {
 
 		"imageformat": {
 			Description: `UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"imageid": {

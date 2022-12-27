@@ -86,9 +86,8 @@ func DeviceStatusFilterSchema() map[string]*schema.Schema {
 
 		"load": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"name_pattern": {
@@ -111,9 +110,8 @@ func DeviceStatusFilterSchema() map[string]*schema.Schema {
 
 		"run_state": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"tags": {

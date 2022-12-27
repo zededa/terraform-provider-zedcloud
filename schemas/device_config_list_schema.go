@@ -105,22 +105,28 @@ func DeviceConfigListSchema() map[string]*schema.Schema {
 
 		"next": {
 			Description: `filter next`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Cursor
+			Elem: &schema.Resource{
+				Schema: CursorSchema(),
+			},
 			Required: true,
 		},
 
 		"summary_by_state": {
 			Description: `Summary by state`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Required: true,
 		},
 
 		"summary_by_tag_distribution": {
 			Description: `Summary by project distribution`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Optional: true,
 		},
 	}

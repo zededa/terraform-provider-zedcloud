@@ -91,8 +91,10 @@ func DhcpServerConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"dhcp_range": {
 			Description: `Range of IP addresses to be used for DHCP`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DhcpIPRange
+			Elem: &schema.Resource{
+				Schema: DhcpIPRangeSchema(),
+			},
 			Optional: true,
 		},
 

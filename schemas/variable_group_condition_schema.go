@@ -62,9 +62,8 @@ func VariableGroupConditionSchema() map[string]*schema.Schema {
 
 		"operator": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"value": {

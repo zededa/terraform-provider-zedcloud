@@ -134,8 +134,10 @@ func ModulePolicySchema() map[string]*schema.Schema {
 
 		"metrics": {
 			Description: `custom metrics for deployment`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: MetricsDetail
+			Elem: &schema.Resource{
+				Schema: MetricsDetailSchema(),
+			},
 			Optional: true,
 		},
 

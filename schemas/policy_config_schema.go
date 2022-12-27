@@ -203,15 +203,19 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: `app policy, which is used in auto app instance deployment`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: AppPolicy
+			Elem: &schema.Resource{
+				Schema: AppPolicySchema(),
+			},
 			Optional: true,
 		},
 
 		"attestation_policy": {
 			Description: `attestation policy to enforce on all devices in this project`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: AttestationPolicy
+			Elem: &schema.Resource{
+				Schema: AttestationPolicySchema(),
+			},
 			Optional: true,
 		},
 
@@ -226,15 +230,19 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"azure_policy": {
 			Description: `azure policy, which is used in configuring azure iot-edge.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: AzurePolicy
+			Elem: &schema.Resource{
+				Schema: AzurePolicySchema(),
+			},
 			Optional: true,
 		},
 
 		"cluster_policy": {
 			Description: `cluster policy to bring up cluster on devices in this project`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ClusterPolicy
+			Elem: &schema.Resource{
+				Schema: ClusterPolicySchema(),
+			},
 			Optional: true,
 		},
 
@@ -246,8 +254,10 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"edgeview_policy": {
 			Description: `edgeview policy on devices of this project`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: EdgeviewPolicy
+			Elem: &schema.Resource{
+				Schema: EdgeviewPolicySchema(),
+			},
 			Optional: true,
 		},
 
@@ -259,8 +269,10 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"module_policy": {
 			Description: `module policy, which is used in auto module deployment`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ModulePolicy
+			Elem: &schema.Resource{
+				Schema: ModulePolicySchema(),
+			},
 			Optional: true,
 		},
 
@@ -272,23 +284,26 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"network_policy": {
 			Description: `network policy to enforce on all devices in this project`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: NetworkPolicy
+			Elem: &schema.Resource{
+				Schema: NetworkPolicySchema(),
+			},
 			Optional: true,
 		},
 
 		"revision": {
 			Description: `system defined info`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevisionSchema(),
+			},
 			Computed: true,
 		},
 
 		"status": {
 			Description: `status of the policy`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Computed: true,
+			Type:        schema.TypeString,
+			Computed:    true,
 		},
 
 		"status_message": {
@@ -305,9 +320,8 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `type of policy`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }

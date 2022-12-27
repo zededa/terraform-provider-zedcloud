@@ -168,22 +168,28 @@ func NetworkStatusSchema() map[string]*schema.Schema {
 
 		"dns": {
 			Description: `DNS Configuration`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DNSInfo
+			Elem: &schema.Resource{
+				Schema: DNSInfoSchema(),
+			},
 			Optional: true,
 		},
 
 		"err_info": {
 			Description: `Network error details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceError
+			Elem: &schema.Resource{
+				Schema: DeviceErrorSchema(),
+			},
 			Optional: true,
 		},
 
 		"gps_location": {
 			Description: `Location from GNSS receivers on WWAN type adapters`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: GPSLocation
+			Elem: &schema.Resource{
+				Schema: GPSLocationSchema(),
+			},
 			Optional: true,
 		},
 
@@ -204,8 +210,10 @@ func NetworkStatusSchema() map[string]*schema.Schema {
 
 		"location": {
 			Description: `Geo Location Details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: GeoLocation
+			Elem: &schema.Resource{
+				Schema: GeoLocationSchema(),
+			},
 			Optional: true,
 		},
 
@@ -217,8 +225,10 @@ func NetworkStatusSchema() map[string]*schema.Schema {
 
 		"proxy": {
 			Description: `Network Proxy status`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: NetProxyStatus
+			Elem: &schema.Resource{
+				Schema: NetProxyStatusSchema(),
+			},
 			Optional: true,
 		},
 

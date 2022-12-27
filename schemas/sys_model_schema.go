@@ -215,15 +215,16 @@ func SysModelSchema() map[string]*schema.Schema {
 
 		"origin_type": {
 			Description: `origin of object`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"parent_detail": {
 			Description: `origin and parent related details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectParentDetail
+			Elem: &schema.Resource{
+				Schema: ObjectParentDetailSchema(),
+			},
 			Optional: true,
 		},
 
@@ -241,16 +242,17 @@ func SysModelSchema() map[string]*schema.Schema {
 
 		"revision": {
 			Description: `Object Revision  of the model`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevisionSchema(),
+			},
 			Computed: true,
 		},
 
 		"state": {
 			Description: `SysModel State which denotes the status of the model`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"title": {
@@ -261,9 +263,8 @@ func SysModelSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Defines the Architecture type of the model`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }

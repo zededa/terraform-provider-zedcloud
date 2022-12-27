@@ -62,9 +62,8 @@ func DeviceFilterSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"admin_state": {
 			Description: `admin state of the device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"name_pattern": {

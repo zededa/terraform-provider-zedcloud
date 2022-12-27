@@ -88,15 +88,19 @@ func EventQueryResponseSchema() map[string]*schema.Schema {
 
 		"next": {
 			Description: `Cursor filter`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Cursor
+			Elem: &schema.Resource{
+				Schema: CursorSchema(),
+			},
 			Required: true,
 		},
 
 		"summary": {
 			Description: `Summary of filtered events.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Optional: true,
 		},
 	}

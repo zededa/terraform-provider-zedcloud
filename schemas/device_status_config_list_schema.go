@@ -134,29 +134,37 @@ func DeviceStatusConfigListSchema() map[string]*schema.Schema {
 
 		"next": {
 			Description: `Page details of the filtered records`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Cursor
+			Elem: &schema.Resource{
+				Schema: CursorSchema(),
+			},
 			Optional: true,
 		},
 
 		"summary_by_app_instance_count": {
 			Description: `Device status config summary by app instance count`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Required: true,
 		},
 
 		"summary_by_e_v_e_distribution": {
 			Description: `Device status config summary by eve distribution`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Required: true,
 		},
 
 		"summary_by_state": {
 			Description: `Device status config summary by state`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Required: true,
 		},
 

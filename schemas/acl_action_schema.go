@@ -120,8 +120,10 @@ func ACLActionSchema() map[string]*schema.Schema {
 
 		"limit_value": {
 			Description: `Value to be used for limit action (Required if limit is true)`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: LimitParams
+			Elem: &schema.Resource{
+				Schema: LimitParamsSchema(),
+			},
 			Optional: true,
 		},
 
@@ -151,8 +153,10 @@ func ACLActionSchema() map[string]*schema.Schema {
 
 		"portmapto": {
 			Description: `UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: MapParams
+			Elem: &schema.Resource{
+				Schema: MapParamsSchema(),
+			},
 			Optional: true,
 		},
 	}

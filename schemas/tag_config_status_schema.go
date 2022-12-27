@@ -112,16 +112,14 @@ func TagConfigStatusSchema() map[string]*schema.Schema {
 
 		"attest_policy_type": {
 			Description: `type of attestation policy`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"cloud_policy_type": {
 			Description: `type of cloud policy`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"edgeview_allow": {
@@ -162,9 +160,8 @@ func TagConfigStatusSchema() map[string]*schema.Schema {
 
 		"status": {
 			Description: `Resource group status`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Computed: true,
+			Type:        schema.TypeString,
+			Computed:    true,
 		},
 	}
 }

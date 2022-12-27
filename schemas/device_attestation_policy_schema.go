@@ -44,9 +44,8 @@ func DeviceAttestationPolicySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"type": {
 			Description: `Attestation policy type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }

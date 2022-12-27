@@ -91,8 +91,10 @@ func EdgeviewPolicySchema() map[string]*schema.Schema {
 
 		"edgeviewcfg": {
 			Description: `Edgeview configuration and policies`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: EdgeviewCfg
+			Elem: &schema.Resource{
+				Schema: EdgeviewCfgSchema(),
+			},
 			Optional: true,
 		},
 

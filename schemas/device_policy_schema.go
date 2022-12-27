@@ -78,23 +78,26 @@ func DevicePolicySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"attestation_policy": {
 			Description: `device attestation policy`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceAttestationPolicy
+			Elem: &schema.Resource{
+				Schema: DeviceAttestationPolicySchema(),
+			},
 			Optional: true,
 		},
 
 		"meta_data": {
 			Description: `all the required metadata for a policy like id, name, different types of tags`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: PolicyCommon
+			Elem: &schema.Resource{
+				Schema: PolicyCommonSchema(),
+			},
 			Optional: true,
 		},
 
 		"policy_sub_type": {
 			Description: `device policy type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

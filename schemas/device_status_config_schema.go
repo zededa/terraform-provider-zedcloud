@@ -133,9 +133,8 @@ func DeviceStatusConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"admin_state": {
 			Description: `Admin state of the device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"app_inst_count": {
@@ -146,8 +145,10 @@ func DeviceStatusConfigSchema() map[string]*schema.Schema {
 
 		"dinfo": {
 			Description: `Device info like storage, arch, memory etc`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceInfo
+			Elem: &schema.Resource{
+				Schema: DeviceInfoSchema(),
+			},
 			Optional: true,
 		},
 
@@ -195,9 +196,8 @@ func DeviceStatusConfigSchema() map[string]*schema.Schema {
 
 		"run_state": {
 			Description: `Run state of the device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"serial_no": {

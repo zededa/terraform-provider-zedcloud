@@ -73,8 +73,10 @@ func CustomConfigVariableGroupSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"condition": {
 			Description: `Condition to apply the variable group. (Optional. Default: None)`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: VariableGroupCondition
+			Elem: &schema.Resource{
+				Schema: VariableGroupConditionSchema(),
+			},
 			Optional: true,
 		},
 

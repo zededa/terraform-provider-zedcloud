@@ -134,9 +134,8 @@ func IoMemberSchema() map[string]*schema.Schema {
 
 		"usage": {
 			Description: `Adopter Usage`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"usage_policy": {
@@ -150,9 +149,8 @@ func IoMemberSchema() map[string]*schema.Schema {
 
 		"ztype": {
 			Description: `Z Type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }

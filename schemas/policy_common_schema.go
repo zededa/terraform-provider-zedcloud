@@ -106,8 +106,10 @@ func PolicyCommonSchema() map[string]*schema.Schema {
 
 		"revision": {
 			Description: `object revision details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevisionSchema(),
+			},
 			Optional: true,
 		},
 

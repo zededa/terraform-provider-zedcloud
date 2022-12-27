@@ -71,9 +71,8 @@ func ModuleDetailSchema() map[string]*schema.Schema {
 
 		"module_type": {
 			Description: `Type of modules`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"routes": {

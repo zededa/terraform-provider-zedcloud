@@ -139,9 +139,8 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"admin_state": {
 			Description: `administrative state of device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"base_image": {
@@ -162,8 +161,10 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 
 		"debug_knob": {
 			Description: `debug knob details for the device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DebugKnobDetail
+			Elem: &schema.Resource{
+				Schema: DebugKnobDetailSchema(),
+			},
 			Optional: true,
 		},
 
@@ -236,9 +237,8 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 
 		"utype": {
 			Description: `device model arch type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

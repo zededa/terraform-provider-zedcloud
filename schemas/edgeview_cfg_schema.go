@@ -118,22 +118,28 @@ func EdgeviewCfgSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: AppAccessPolicy
+			Elem: &schema.Resource{
+				Schema: AppAccessPolicySchema(),
+			},
 			Optional: true,
 		},
 
 		"dev_policy": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DevAccessPolicy
+			Elem: &schema.Resource{
+				Schema: DevAccessPolicySchema(),
+			},
 			Optional: true,
 		},
 
 		"ext_policy": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ExtAccessPolicy
+			Elem: &schema.Resource{
+				Schema: ExtAccessPolicySchema(),
+			},
 			Optional: true,
 		},
 
@@ -145,8 +151,10 @@ func EdgeviewCfgSchema() map[string]*schema.Schema {
 
 		"jwt_info": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: JWTInfo
+			Elem: &schema.Resource{
+				Schema: JWTInfoSchema(),
+			},
 			Optional: true,
 		},
 

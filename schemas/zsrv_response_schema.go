@@ -186,16 +186,14 @@ func ZsrvResponseSchema() map[string]*schema.Schema {
 
 		"object_type": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"operation_status": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"operation_time": {
@@ -206,9 +204,8 @@ func ZsrvResponseSchema() map[string]*schema.Schema {
 
 		"operation_type": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"start_time": {

@@ -95,8 +95,10 @@ func MetricQueryResponseSchema() map[string]*schema.Schema {
 
 		"threshold": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: MetricThreshold
+			Elem: &schema.Resource{
+				Schema: MetricThresholdSchema(),
+			},
 			Optional: true,
 		},
 

@@ -82,16 +82,14 @@ func TagStatusMsgSchema() map[string]*schema.Schema {
 
 		"status": {
 			Description: `Resource group status`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Computed: true,
+			Type:        schema.TypeString,
+			Computed:    true,
 		},
 
 		"type": {
 			Description: `Resource group type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

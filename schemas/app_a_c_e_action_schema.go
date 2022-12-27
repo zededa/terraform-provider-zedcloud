@@ -121,8 +121,10 @@ func AppACEActionSchema() map[string]*schema.Schema {
 
 		"mapparams": {
 			Description: `Application map params`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: AppMapParams
+			Elem: &schema.Resource{
+				Schema: AppMapParamsSchema(),
+			},
 			Required: true,
 		},
 

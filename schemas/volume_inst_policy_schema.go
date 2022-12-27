@@ -72,15 +72,19 @@ func VolumeInstPolicySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"meta_data": {
 			Description: `all the required metadata for a policy like id, name, different types of tags`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: PolicyCommon
+			Elem: &schema.Resource{
+				Schema: PolicyCommonSchema(),
+			},
 			Optional: true,
 		},
 
 		"vol_inst_config": {
 			Description: `volume instance config details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: VolumeInstConfig
+			Elem: &schema.Resource{
+				Schema: VolumeInstConfigSchema(),
+			},
 			Optional: true,
 		},
 	}

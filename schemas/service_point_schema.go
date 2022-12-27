@@ -68,9 +68,8 @@ func ServicePointSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Service Point Type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

@@ -354,37 +354,41 @@ func DeviceStatusMsgSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cpu": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: CPUSummary
+			Elem: &schema.Resource{
+				Schema: CPUSummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"memory": {
 			Description: `memory - OBSOLETE. Use memorySummary instead.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: MemorySummary
+			Elem: &schema.Resource{
+				Schema: MemorySummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"storage": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: StorageSummary
+			Elem: &schema.Resource{
+				Schema: StorageSummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"admin_state": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"attest_state": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"blob_list": {
@@ -405,8 +409,10 @@ func DeviceStatusMsgSchema() map[string]*schema.Schema {
 
 		"capabilities": {
 			Description: `Edge node virtualization capabilities.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Capabilities
+			Elem: &schema.Resource{
+				Schema: CapabilitiesSchema(),
+			},
 			Optional: true,
 		},
 
@@ -438,22 +444,25 @@ func DeviceStatusMsgSchema() map[string]*schema.Schema {
 
 		"device_reboot_reason": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"dinfo": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceInfo
+			Elem: &schema.Resource{
+				Schema: DeviceInfoSchema(),
+			},
 			Optional: true,
 		},
 
 		"dns": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DNSInfo
+			Elem: &schema.Resource{
+				Schema: DNSInfoSchema(),
+			},
 			Optional: true,
 		},
 
@@ -499,15 +508,19 @@ func DeviceStatusMsgSchema() map[string]*schema.Schema {
 
 		"memory_summary": {
 			Description: `Device memory Info`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceMemorySummary
+			Elem: &schema.Resource{
+				Schema: DeviceMemorySummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"minfo": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ZManufacturerInfo
+			Elem: &schema.Resource{
+				Schema: ZManufacturerInfoSchema(),
+			},
 			Optional: true,
 		},
 
@@ -557,9 +570,8 @@ func DeviceStatusMsgSchema() map[string]*schema.Schema {
 
 		"run_state": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"storage_list": {
@@ -615,8 +627,10 @@ func DeviceStatusMsgSchema() map[string]*schema.Schema {
 
 		"zpool_metrics": {
 			Description: `Last received counters for zpool metrics.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: StorageDeviceMetrics
+			Elem: &schema.Resource{
+				Schema: StorageDeviceMetricsSchema(),
+			},
 			Optional: true,
 		},
 	}

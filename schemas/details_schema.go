@@ -95,9 +95,8 @@ func DetailsSchema() map[string]*schema.Schema {
 
 		"app_category": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"category": {

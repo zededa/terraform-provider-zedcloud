@@ -115,9 +115,8 @@ func VolumeInstConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"accessmode": {
 			Description: `Access mode`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"block_storage_tags": {
@@ -170,8 +169,10 @@ func VolumeInstConfigSchema() map[string]*schema.Schema {
 
 		"purge": {
 			Description: `Purge Counter information`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ZedCloudOpsCmd
+			Elem: &schema.Resource{
+				Schema: ZedCloudOpsCmdSchema(),
+			},
 			Optional: true,
 		},
 
@@ -183,9 +184,8 @@ func VolumeInstConfigSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `type of Volume Instance`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

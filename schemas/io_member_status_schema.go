@@ -61,8 +61,10 @@ func IoMemberStatusSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"io_address": {
 			Description: `IO addresses of the member. Each address corresponds to the member in the members array`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: IoAddresses
+			Elem: &schema.Resource{
+				Schema: IoAddressesSchema(),
+			},
 			Optional: true,
 		},
 

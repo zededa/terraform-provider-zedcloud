@@ -110,16 +110,14 @@ func VariableGroupVariableSchema() map[string]*schema.Schema {
 
 		"encode": {
 			Description: `Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"format": {
 			Description: `Format of the user variable. (Required)`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"label": {

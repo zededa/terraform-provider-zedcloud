@@ -55,8 +55,10 @@ func IotHubServiceDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"service_detail": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: AzureResourceAndServiceDetail
+			Elem: &schema.Resource{
+				Schema: AzureResourceAndServiceDetailSchema(),
+			},
 			Optional: true,
 		},
 	}

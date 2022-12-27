@@ -86,9 +86,8 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 
 		"intf_usage": {
 			Description: `Adapter Udage`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"intfname": {

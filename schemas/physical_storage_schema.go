@@ -110,9 +110,8 @@ func PhysicalStorageSchema() map[string]*schema.Schema {
 
 		"current_raid": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"disks": {
@@ -139,16 +138,14 @@ func PhysicalStorageSchema() map[string]*schema.Schema {
 
 		"storage_state": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"storage_type": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"zfs_version": {

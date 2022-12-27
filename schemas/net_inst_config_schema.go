@@ -254,22 +254,25 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 
 		"ip": {
 			Description: `Dhcp Server Configuration`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DhcpServerConfig
+			Elem: &schema.Resource{
+				Schema: DhcpServerConfigSchema(),
+			},
 			Optional: true,
 		},
 
 		"kind": {
 			Description: `Kind of Network Instance ( Local, Switch etc )`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"lisp": {
 			Description: `Lisp Config : read only for now. Deprecated.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: LispConfig
+			Elem: &schema.Resource{
+				Schema: LispConfigSchema(),
+			},
 			Optional: true,
 		},
 
@@ -293,8 +296,10 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 
 		"opaque": {
 			Description: `Service specific Config`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: NetInstOpaqueConfig
+			Elem: &schema.Resource{
+				Schema: NetInstOpaqueConfigSchema(),
+			},
 			Optional: true,
 		},
 
@@ -321,8 +326,10 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 
 		"revision": {
 			Description: `system defined info for the object`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevisionSchema(),
+			},
 			Optional: true,
 		},
 
@@ -343,9 +350,8 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Type of DHCP for this Network Instance`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

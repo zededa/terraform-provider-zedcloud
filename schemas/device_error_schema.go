@@ -90,9 +90,8 @@ func DeviceErrorSchema() map[string]*schema.Schema {
 
 		"severity": {
 			Description: `Severity of the error`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"timestamp": {

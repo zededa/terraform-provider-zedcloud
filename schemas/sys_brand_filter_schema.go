@@ -56,9 +56,8 @@ func SysBrandFilterSchema() map[string]*schema.Schema {
 
 		"origin_type": {
 			Description: `origin of object`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }

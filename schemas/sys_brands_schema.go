@@ -88,15 +88,19 @@ func SysBrandsSchema() map[string]*schema.Schema {
 
 		"next": {
 			Description: `Responded page details of filtered records`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Cursor
+			Elem: &schema.Resource{
+				Schema: CursorSchema(),
+			},
 			Optional: true,
 		},
 
 		"terse": {
 			Description: `Summary of filtered model records`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Optional: true,
 		},
 	}

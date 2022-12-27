@@ -62,16 +62,14 @@ func TagStatusFilterSchema() map[string]*schema.Schema {
 
 		"status": {
 			Description: `Resource group status to be matched.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"type": {
 			Description: `Resource group type to ne matched.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

@@ -111,22 +111,28 @@ func TagsConfigStatusSchema() map[string]*schema.Schema {
 
 		"next": {
 			Description: `Responded page details of filtered records`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Cursor
+			Elem: &schema.Resource{
+				Schema: CursorSchema(),
+			},
 			Optional: true,
 		},
 
 		"summary_by_state": {
 			Description: `Summary of filtered resource group records`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"summary_by_type": {
 			Description: `Summary of filtered resource group records`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Optional: true,
 		},
 

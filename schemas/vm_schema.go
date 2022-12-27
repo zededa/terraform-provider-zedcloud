@@ -88,9 +88,8 @@ func VMSchema() map[string]*schema.Schema {
 
 		"mode": {
 			Description: `Hardware Virtualization`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"vnc": {

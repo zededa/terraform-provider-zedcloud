@@ -67,8 +67,10 @@ func NetInstOpaqueConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"lisp": {
 			Description: `Deprecated - Lisp config`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: LispConfig
+			Elem: &schema.Resource{
+				Schema: LispConfigSchema(),
+			},
 			Optional: true,
 		},
 
@@ -80,9 +82,8 @@ func NetInstOpaqueConfigSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `type of Opaque config`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

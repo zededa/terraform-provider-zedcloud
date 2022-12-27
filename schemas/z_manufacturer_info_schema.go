@@ -146,9 +146,8 @@ func ZManufacturerInfoSchema() map[string]*schema.Schema {
 
 		"h_s_m_status": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"manufacturer": {

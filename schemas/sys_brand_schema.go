@@ -151,23 +151,23 @@ func SysBrandSchema() map[string]*schema.Schema {
 
 		"origin_type": {
 			Description: `origin of object`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"revision": {
 			Description: `Object Revision  of the sys brand`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevisionSchema(),
+			},
 			Optional: true,
 		},
 
 		"state": {
 			Description: `Sys Model Status`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"svg": {

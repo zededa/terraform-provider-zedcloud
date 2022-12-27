@@ -68,9 +68,8 @@ func ObjectTagFilterSchema() map[string]*schema.Schema {
 
 		"obj_type": {
 			Description: `Object type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

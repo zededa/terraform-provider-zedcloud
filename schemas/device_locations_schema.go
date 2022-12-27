@@ -71,8 +71,10 @@ func DeviceLocationsSchema() map[string]*schema.Schema {
 
 		"next": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Cursor
+			Elem: &schema.Resource{
+				Schema: CursorSchema(),
+			},
 			Optional: true,
 		},
 	}

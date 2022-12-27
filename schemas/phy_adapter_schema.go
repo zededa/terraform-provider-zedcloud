@@ -71,9 +71,8 @@ func PhyAdapterSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `IoType specifies the type of the Input output of the device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

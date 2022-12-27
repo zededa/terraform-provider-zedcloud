@@ -56,9 +56,8 @@ func DeviceEntitySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"entity": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"entity_id": {

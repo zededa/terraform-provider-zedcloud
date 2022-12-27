@@ -243,30 +243,35 @@ func DeviceStatusSummaryMsgSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cpu": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: CPUSummary
+			Elem: &schema.Resource{
+				Schema: CPUSummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"memory": {
 			Description: `Memory - OBSOLETE. Use memorySummary instead.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: MemorySummary
+			Elem: &schema.Resource{
+				Schema: MemorySummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"storage": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: StorageSummary
+			Elem: &schema.Resource{
+				Schema: StorageSummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"admin_state": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"app_inst_count": {
@@ -305,8 +310,10 @@ func DeviceStatusSummaryMsgSchema() map[string]*schema.Schema {
 
 		"dinfo": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceInfo
+			Elem: &schema.Resource{
+				Schema: DeviceInfoSchema(),
+			},
 			Optional: true,
 		},
 
@@ -330,15 +337,19 @@ func DeviceStatusSummaryMsgSchema() map[string]*schema.Schema {
 
 		"memory_summary": {
 			Description: `Device memory Info`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceMemorySummary
+			Elem: &schema.Resource{
+				Schema: DeviceMemorySummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"minfo": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ZManufacturerInfo
+			Elem: &schema.Resource{
+				Schema: ZManufacturerInfoSchema(),
+			},
 			Optional: true,
 		},
 
@@ -372,9 +383,8 @@ func DeviceStatusSummaryMsgSchema() map[string]*schema.Schema {
 
 		"run_state": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"sw_info": {

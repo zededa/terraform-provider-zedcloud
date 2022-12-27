@@ -222,8 +222,10 @@ func AppConfigSchema() map[string]*schema.Schema {
 
 		"manifest_json": {
 			Description: `Manifest data`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: VMManifest
+			Elem: &schema.Resource{
+				Schema: VMManifestSchema(),
+			},
 			Required: true,
 		},
 
@@ -253,9 +255,8 @@ func AppConfigSchema() map[string]*schema.Schema {
 
 		"naming_scheme": {
 			Description: `app naming scheme`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"networks": {
@@ -266,15 +267,16 @@ func AppConfigSchema() map[string]*schema.Schema {
 
 		"origin_type": {
 			Description: `origin of object`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"parent_detail": {
 			Description: `origin and parent related details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectParentDetail
+			Elem: &schema.Resource{
+				Schema: ObjectParentDetailSchema(),
+			},
 			Optional: true,
 		},
 

@@ -232,15 +232,19 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 
 		"logs": {
 			Description: `App Instance logs`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: AppInstanceLogs
+			Elem: &schema.Resource{
+				Schema: AppInstanceLogsSchema(),
+			},
 			Optional: true,
 		},
 
 		"manifest_json": {
 			Description: `user defined manifest in JSON format`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: VMManifest
+			Elem: &schema.Resource{
+				Schema: VMManifestSchema(),
+			},
 			Optional: true,
 		},
 
@@ -264,9 +268,8 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 
 		"naming_scheme": {
 			Description: `app naming scheme`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"networks": {
@@ -283,15 +286,16 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 
 		"origin_type": {
 			Description: `origin of object`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"parent_detail": {
 			Description: `origin and parent related details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectParentDetail
+			Elem: &schema.Resource{
+				Schema: ObjectParentDetailSchema(),
+			},
 			Optional: true,
 		},
 
@@ -324,8 +328,10 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 
 		"vminfo": {
 			Description: `virtual machine info`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: VM
+			Elem: &schema.Resource{
+				Schema: VMSchema(),
+			},
 			Optional: true,
 		},
 	}

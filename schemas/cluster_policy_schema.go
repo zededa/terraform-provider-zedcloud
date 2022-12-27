@@ -79,8 +79,10 @@ func ClusterPolicySchema() map[string]*schema.Schema {
 
 		"cluster_config": {
 			Description: `Cluster Policy Parameters`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ClusterConfig
+			Elem: &schema.Resource{
+				Schema: ClusterConfigSchema(),
+			},
 			Optional: true,
 		},
 
@@ -92,9 +94,8 @@ func ClusterPolicySchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Type of cluster`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Required: true,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }

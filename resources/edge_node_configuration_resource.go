@@ -7,8 +7,10 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	apiclient "github.com/zededa/terraform-provider/client"
@@ -26,29 +28,7 @@ func EdgeNodeConfiguration() *schema.Resource {
 		UpdateContext: EdgeNodeConfiguration_UpdateEdgeNode,
 		CreateContext: EdgeNodeConfiguration_CreateEdgeNode,
 		DeleteContext: EdgeNodeConfiguration_DeleteEdgeNode,
-		/*
-			UpdateContext: EdgeNodeConfiguration_ActivateEdgeNode,
-			UpdateContext: EdgeNodeConfiguration_BaseOsUpgradeRetryEdgeNode,
-			UpdateContext: EdgeNodeConfiguration_DeActivateEdgeNode,
-			ReadContext: EdgeNodeConfiguration_GetDeviceInterfaceTags,
-			ReadContext: EdgeNodeConfiguration_GetEdgeNodeAttestation,
-			ReadContext: EdgeNodeConfiguration_GetEdgeNodeByName,
-			ReadContext: EdgeNodeConfiguration_GetEdgeNodeBySerial,
-			ReadContext: EdgeNodeConfiguration_GetEdgeNodeOnboarding,
-			ReadContext: EdgeNodeConfiguration_GetEdgeviewClientScript,
-			UpdateContext: EdgeNodeConfiguration_Offboard,
-			UpdateContext: EdgeNodeConfiguration_PreparePowerOff,
-			ReadContext: EdgeNodeConfiguration_QueryEdgeNodes,
-			UpdateContext: EdgeNodeConfiguration_Reboot,
-			UpdateContext: EdgeNodeConfiguration_StartDebugEdgeNode,
-			UpdateContext: EdgeNodeConfiguration_StartEdgeviewEdgeNode,
-			UpdateContext: EdgeNodeConfiguration_StopDebugEdgeNode,
-			UpdateContext: EdgeNodeConfiguration_StopEdgeviewEdgeNode,
-			UpdateContext: EdgeNodeConfiguration_UpdateEdgeNodeBaseOS,
-			UpdateContext: EdgeNodeConfiguration_UpdateEdgeNodeBaseOS2,
-			UpdateContext: EdgeNodeConfiguration_UpdateEdgeNodeBaseOS3,
-		*/
-		Schema: zschema.DeviceConfigSchema(),
+		Schema:        zschema.DeviceConfigSchema(),
 	}
 }
 
@@ -65,6 +45,11 @@ func EdgeNodeConfiguration_CreateEdgeNode(ctx context.Context, d *schema.Resourc
 	model := zschema.DeviceConfigModel(d)
 	params := edge_node_configuration.NewEdgeNodeConfigurationCreateEdgeNodeParams()
 	params.SetBody(model)
+
+	fmt.Println("---------------------------------------")
+	spew.Dump(params)
+	fmt.Println("---------------------------------------")
+	return nil
 
 	client := m.(*apiclient.Zedcloudapi)
 

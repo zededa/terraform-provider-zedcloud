@@ -147,8 +147,10 @@ func DeploymentSchema() map[string]*schema.Schema {
 
 		"cluster_policy": {
 			Description: `cluster policy details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ClusterInstPolicy
+			Elem: &schema.Resource{
+				Schema: ClusterInstPolicySchema(),
+			},
 			Optional: true,
 		},
 
@@ -176,8 +178,10 @@ func DeploymentSchema() map[string]*schema.Schema {
 
 		"integration_policy": {
 			Description: `integration policy details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: IntegrationPolicy
+			Elem: &schema.Resource{
+				Schema: IntegrationPolicySchema(),
+			},
 			Optional: true,
 		},
 
@@ -199,8 +203,10 @@ func DeploymentSchema() map[string]*schema.Schema {
 
 		"revision": {
 			Description: `object revision`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevisionSchema(),
+			},
 			Optional: true,
 		},
 

@@ -363,9 +363,8 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"admin_state": {
 			Description: `administrative state of device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"asset_id": {
@@ -426,15 +425,19 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 
 		"debug_knob": {
 			Description: `debug knob details for the device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DebugKnobDetail
+			Elem: &schema.Resource{
+				Schema: DebugKnobDetailSchema(),
+			},
 			Optional: true,
 		},
 
 		"default_net_inst": {
 			Description: `default network instance details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: NetInstConfig
+			Elem: &schema.Resource{
+				Schema: NetInstConfigSchema(),
+			},
 			Optional: true,
 		},
 
@@ -458,22 +461,28 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 
 		"dev_location": {
 			Description: `User specified geo location`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: GeoLocation
+			Elem: &schema.Resource{
+				Schema: GeoLocationSchema(),
+			},
 			Optional: true,
 		},
 
 		"dlisp": {
 			Description: `device Lisp`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceLisp
+			Elem: &schema.Resource{
+				Schema: DeviceLispSchema(),
+			},
 			Optional: true,
 		},
 
 		"edgeviewconfig": {
 			Description: `edgeview configuration for device`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: EdgeviewCfg
+			Elem: &schema.Resource{
+				Schema: EdgeviewCfgSchema(),
+			},
 			Optional: true,
 		},
 
@@ -538,8 +547,10 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 
 		"onboarding": {
 			Description: `Device level certificates used while onboarding`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: DeviceCerts
+			Elem: &schema.Resource{
+				Schema: DeviceCertsSchema(),
+			},
 			Optional: true,
 		},
 
@@ -575,8 +586,10 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 
 		"revision": {
 			Description: `Object revision details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevisionSchema(),
+			},
 			Optional: true,
 		},
 
@@ -630,9 +643,8 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 
 		"utype": {
 			Description: `device model arch type`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

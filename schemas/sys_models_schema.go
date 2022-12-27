@@ -122,29 +122,37 @@ func SysModelsSchema() map[string]*schema.Schema {
 
 		"next": {
 			Description: `Responded page details of filtered records`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Cursor
+			Elem: &schema.Resource{
+				Schema: CursorSchema(),
+			},
 			Optional: true,
 		},
 
 		"summary_by_brand_distribution": {
 			Description: `Summary by brand distribution`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"summary_by_device_distribution": {
 			Description: `Summary by device distribution`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Optional: true,
 		},
 
 		"terse": {
 			Description: `Summary of filtered model records`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Summary
+			Elem: &schema.Resource{
+				Schema: SummarySchema(),
+			},
 			Optional: true,
 		},
 	}

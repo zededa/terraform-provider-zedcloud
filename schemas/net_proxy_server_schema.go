@@ -62,9 +62,8 @@ func NetProxyServerSchema() map[string]*schema.Schema {
 
 		"proto": {
 			Description: `Net Proxy proto`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"server": {

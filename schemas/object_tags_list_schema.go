@@ -61,8 +61,10 @@ func ObjectTagsListSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"next": {
 			Description: `Returned record page.`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Cursor
+			Elem: &schema.Resource{
+				Schema: CursorSchema(),
+			},
 			Optional: true,
 		},
 

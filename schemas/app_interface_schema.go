@@ -178,8 +178,10 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 
 		"eidregister": {
 			Description: `EID register details`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: EIDRegister
+			Elem: &schema.Resource{
+				Schema: EIDRegisterSchema(),
+			},
 			Required: true,
 		},
 
@@ -197,8 +199,10 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 
 		"io": {
 			Description: `Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: PhyAdapter
+			Elem: &schema.Resource{
+				Schema: PhyAdapterSchema(),
+			},
 			Required: true,
 		},
 

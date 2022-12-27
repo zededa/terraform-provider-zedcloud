@@ -382,8 +382,13 @@ func {{ $operationGroup }}Schema() map[string]*schema.Schema {
 				Schema: {{ .GoType }}Schema(),
 			},
 						{{- end }}
+
+			        {{- else if .IsComplexObject }}
+			Type: schema.TypeList, //GoType: {{ .GoType }}
+			Elem: &schema.Resource{
+				Schema: {{ .GoType }}Schema(),
+			},
 					{{- else }}
-			// We assume it's an enum type
 			Type: schema.TypeString,
 					{{- end }}
 					{{- if and .Required (not .ReadOnly) }}

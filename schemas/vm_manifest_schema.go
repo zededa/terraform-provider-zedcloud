@@ -221,22 +221,25 @@ func VMManifestSchema() map[string]*schema.Schema {
 
 		"app_type": {
 			Description: `bundle type, eg: vm, container, module`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"configuration": {
 			Description: `Template for Custom Configuration. Used for Cloud-Init`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: UserDataTemplate
+			Elem: &schema.Resource{
+				Schema: UserDataTemplateSchema(),
+			},
 			Optional: true,
 		},
 
 		"container_detail": {
 			Description: `Create options direct the creation of the Docker container`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ContainerDetail
+			Elem: &schema.Resource{
+				Schema: ContainerDetailSchema(),
+			},
 			Optional: true,
 		},
 
@@ -248,15 +251,16 @@ func VMManifestSchema() map[string]*schema.Schema {
 
 		"deployment_type": {
 			Description: `type of deployment for the app, eg: azure, k3s, standalone`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"desc": {
 			Description: `Description of the application`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Details
+			Elem: &schema.Resource{
+				Schema: DetailsSchema(),
+			},
 			Optional: true,
 		},
 
@@ -300,8 +304,10 @@ func VMManifestSchema() map[string]*schema.Schema {
 
 		"module": {
 			Description: `Azure module specific details like module twin, environment variable, routes`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: ModuleDetail
+			Elem: &schema.Resource{
+				Schema: ModuleDetailSchema(),
+			},
 			Optional: true,
 		},
 
@@ -313,8 +319,10 @@ func VMManifestSchema() map[string]*schema.Schema {
 
 		"owner": {
 			Description: `Owner of the application`,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: Author
+			Elem: &schema.Resource{
+				Schema: AuthorSchema(),
+			},
 			Optional: true,
 		},
 

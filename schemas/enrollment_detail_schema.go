@@ -108,9 +108,8 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"allocation_policy": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"attached_iot_hubs_name": {
@@ -124,9 +123,8 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 
 		"certificate_enrollment": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"enable_iot_edge_device": {
@@ -137,15 +135,16 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 
 		"mechanism": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"symmetric_key_enrollment": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: SymmetricKeyEnrollmentDetail
+			Elem: &schema.Resource{
+				Schema: SymmetricKeyEnrollmentDetailSchema(),
+			},
 			Optional: true,
 		},
 
@@ -160,8 +159,10 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 
 		"tpm_enrollment": {
 			Description: ``,
-			// We assume it's an enum type
-			Type:     schema.TypeString,
+			Type:        schema.TypeList, //GoType: TPMEnrollmentDetail
+			Elem: &schema.Resource{
+				Schema: TPMEnrollmentDetailSchema(),
+			},
 			Optional: true,
 		},
 	}
