@@ -141,16 +141,14 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppInstPolicySchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"cluster_policy": {
 			Description: `cluster policy details`,
-			Type:        schema.TypeList, //GoType: ClusterInstPolicy
-			Elem: &schema.Resource{
-				Schema: ClusterInstPolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -166,8 +164,8 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DevicePolicySchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"id": {
@@ -178,10 +176,8 @@ func DeploymentSchema() map[string]*schema.Schema {
 
 		"integration_policy": {
 			Description: `integration policy details`,
-			Type:        schema.TypeList, //GoType: IntegrationPolicy
-			Elem: &schema.Resource{
-				Schema: IntegrationPolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -197,16 +193,14 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: NetworkInstPolicySchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"revision": {
 			Description: `object revision`,
-			Type:        schema.TypeList, //GoType: ObjectRevision
-			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -222,8 +216,8 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: VolumeInstPolicySchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 	}
 }

@@ -17,12 +17,13 @@ import (
 
 // NetInstConfig Network instance detailed configuration
 //
-// Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single device and within a logical group of devices. This provides detailed configuration of a Network instance.
+// Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.
+// Example: {"id":"d85a545f-6510-4327-b03d-c02eef119e99","name":"sample-app"}
 //
 // swagger:model NetInstConfig
 type NetInstConfig struct {
 
-	// System defined universally unique clusterInstance ID, unique across the enterprise.
+	// id of the Cluster in which the network instance is configured
 	// Max Length: 256
 	// Min Length: 3
 	// Pattern: [a-zA-Z0-9][a-zA-Z0-9_.-]+
@@ -33,16 +34,22 @@ type NetInstConfig struct {
 	Description string `json:"description,omitempty"`
 
 	// flag to indicate if this is default network
-	DeviceDefault bool `json:"deviceDefault,omitempty"`
+	//
+	// flag to indicate if this is the default network instance for the device
+	DeviceDefault string `json:"deviceDefault,omitempty"`
 
 	// device on which this network is running
+	//
+	// id of the device on which network instance is created
 	// Required: true
 	DeviceID *string `json:"deviceId"`
 
-	// if we do dhcp on this network or not
+	// dhcp - DEPRECATED
+	//
+	// Deprecated
 	Dhcp bool `json:"dhcp,omitempty"`
 
-	// dns list
+	// List of Static DNS entries
 	DNSList []*StaticDNSList `json:"dnsList"`
 
 	// System defined universally unique Id of the network instance
@@ -50,10 +57,10 @@ type NetInstConfig struct {
 	// Pattern: [0-9A-Za-z-]+
 	ID string `json:"id,omitempty"`
 
-	// ip
+	// Dhcp Server Configuration
 	IP *DhcpServerConfig `json:"ip,omitempty"`
 
-	// kind
+	// Kind of Network Instance ( Local, Switch etc )
 	// Required: true
 	Kind *NetworkInstanceKind `json:"kind"`
 
@@ -67,29 +74,31 @@ type NetInstConfig struct {
 	// Pattern: [a-zA-Z0-9][a-zA-Z0-9_.-]+
 	Name *string `json:"name"`
 
-	// network policy id
+	// id of the network policy to be attached to this network instance
 	NetworkPolicyID string `json:"networkPolicyId,omitempty"`
 
 	// Deprecated
 	Oconfig string `json:"oconfig,omitempty"`
 
-	// Service specific Config.
+	// Service specific Config
 	Opaque *NetInstOpaqueConfig `json:"opaque,omitempty"`
 
+	// name of port mapping in the model
+	//
 	// name of port mapping in the model
 	// Required: true
 	Port *string `json:"port"`
 
-	// port tags
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	PortTags map[string]string `json:"portTags,omitempty"`
 
-	// project Id
+	// id of the project in which network instance is created
 	ProjectID string `json:"projectId,omitempty"`
 
-	// system defined info
+	// system defined info for the object
 	Revision *ObjectRevision `json:"revision,omitempty"`
 
-	// tags
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
 
 	// User defined title of the network instance. Title can be changed at any time
@@ -99,7 +108,7 @@ type NetInstConfig struct {
 	// Pattern: ^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$
 	Title *string `json:"title"`
 
-	// type
+	// Type of DHCP for this Network Instance
 	Type *NetworkInstanceDhcpType `json:"type,omitempty"`
 }
 

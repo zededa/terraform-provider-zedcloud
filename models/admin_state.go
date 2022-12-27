@@ -16,7 +16,12 @@ import (
 
 // AdminState Configured state of an object
 //
-// - ADMIN_STATE_CREATED: Entity Created in the controller - ADMIN_STATE_DELETED: Entity Deleted in the controller - ADMIN_STATE_ACTIVE: Entity Activated in the controller - ADMIN_STATE_INACTIVE: Entity Deactivated in the controller - ADMIN_STATE_REGISTERED: Specific to Edge-node - Edge-node Registered with the controller
+// - ADMIN_STATE_CREATED: Entity Created in the controller
+//   - ADMIN_STATE_DELETED: Entity Deleted in the controller
+//   - ADMIN_STATE_ACTIVE: Entity Activated in the controller
+//   - ADMIN_STATE_INACTIVE: Entity Deactivated in the controller
+//   - ADMIN_STATE_REGISTERED: Specific to Edge-node - Edge-node Registered with the controller
+//   - ADMIN_STATE_ARCHIVED: Entity Archived in the controller
 //
 // swagger:model AdminState
 type AdminState string
@@ -49,6 +54,9 @@ const (
 
 	// AdminStateADMINSTATEREGISTERED captures enum value "ADMIN_STATE_REGISTERED"
 	AdminStateADMINSTATEREGISTERED AdminState = "ADMIN_STATE_REGISTERED"
+
+	// AdminStateADMINSTATEARCHIVED captures enum value "ADMIN_STATE_ARCHIVED"
+	AdminStateADMINSTATEARCHIVED AdminState = "ADMIN_STATE_ARCHIVED"
 )
 
 // for schema
@@ -56,7 +64,7 @@ var adminStateEnum []interface{}
 
 func init() {
 	var res []AdminState
-	if err := json.Unmarshal([]byte(`["ADMIN_STATE_UNSPECIFIED","ADMIN_STATE_CREATED","ADMIN_STATE_DELETED","ADMIN_STATE_ACTIVE","ADMIN_STATE_INACTIVE","ADMIN_STATE_REGISTERED"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["ADMIN_STATE_UNSPECIFIED","ADMIN_STATE_CREATED","ADMIN_STATE_DELETED","ADMIN_STATE_ACTIVE","ADMIN_STATE_INACTIVE","ADMIN_STATE_REGISTERED","ADMIN_STATE_ARCHIVED"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

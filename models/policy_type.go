@@ -56,6 +56,9 @@ const (
 
 	// PolicyTypePOLICYTYPECLUSTER captures enum value "POLICY_TYPE_CLUSTER"
 	PolicyTypePOLICYTYPECLUSTER PolicyType = "POLICY_TYPE_CLUSTER"
+
+	// PolicyTypePOLICYTYPEEDGEVIEW captures enum value "POLICY_TYPE_EDGEVIEW"
+	PolicyTypePOLICYTYPEEDGEVIEW PolicyType = "POLICY_TYPE_EDGEVIEW"
 )
 
 // for schema
@@ -63,7 +66,7 @@ var policyTypeEnum []interface{}
 
 func init() {
 	var res []PolicyType
-	if err := json.Unmarshal([]byte(`["POLICY_TYPE_UNSPECIFIED","POLICY_TYPE_APP","POLICY_TYPE_AZURE","POLICY_TYPE_AWS","POLICY_TYPE_GCP","POLICY_TYPE_MODULE","POLICY_TYPE_ATTESTATION","POLICY_TYPE_NETWORK","POLICY_TYPE_CLUSTER"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["POLICY_TYPE_UNSPECIFIED","POLICY_TYPE_APP","POLICY_TYPE_AZURE","POLICY_TYPE_AWS","POLICY_TYPE_GCP","POLICY_TYPE_MODULE","POLICY_TYPE_ATTESTATION","POLICY_TYPE_NETWORK","POLICY_TYPE_CLUSTER","POLICY_TYPE_EDGEVIEW"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

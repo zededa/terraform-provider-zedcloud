@@ -50,6 +50,9 @@ const (
 
 	// DeploymentTypeDEPLOYMENTTYPEK3SAWS captures enum value "DEPLOYMENT_TYPE_K3S_AWS"
 	DeploymentTypeDEPLOYMENTTYPEK3SAWS DeploymentType = "DEPLOYMENT_TYPE_K3S_AWS"
+
+	// DeploymentTypeDEPLOYMENTTYPEVMWAREVCE captures enum value "DEPLOYMENT_TYPE_VMWARE_VCE"
+	DeploymentTypeDEPLOYMENTTYPEVMWAREVCE DeploymentType = "DEPLOYMENT_TYPE_VMWARE_VCE"
 )
 
 // for schema
@@ -57,7 +60,7 @@ var deploymentTypeEnum []interface{}
 
 func init() {
 	var res []DeploymentType
-	if err := json.Unmarshal([]byte(`["DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE","DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE","DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS","DEPLOYMENT_TYPE_VMWARE_VCE"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

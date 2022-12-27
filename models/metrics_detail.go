@@ -17,10 +17,10 @@ import (
 // swagger:model MetricsDetail
 type MetricsDetail struct {
 
-	// queries
+	// Mapping of queries variable keys and value
 	Queries map[string]string `json:"queries,omitempty"`
 
-	// results
+	// Mapping of results variable keys and value
 	Results map[string]string `json:"results,omitempty"`
 }
 

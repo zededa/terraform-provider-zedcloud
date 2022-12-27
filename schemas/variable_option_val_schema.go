@@ -49,13 +49,13 @@ func SetVariableOptionValSubResourceData(m []*models.VariableOptionVal) (d []*ma
 func VariableOptionValSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"label": {
-			Description: ``,
+			Description: `Display label of the key in User-Agent`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"value": {
-			Description: ``,
+			Description: `Value of the key to be used`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

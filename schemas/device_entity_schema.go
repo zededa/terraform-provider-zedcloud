@@ -11,18 +11,22 @@ import (
 func DeviceEntityModel(d *schema.ResourceData) *models.DeviceEntity {
 	entity := d.Get("entity").(*models.Entity) // Entity
 	entityID := d.Get("entity_id").(string)
+	entityName := d.Get("entity_name").(string)
 	return &models.DeviceEntity{
-		Entity:   entity,
-		EntityID: entityID,
+		Entity:     entity,
+		EntityID:   entityID,
+		EntityName: entityName,
 	}
 }
 
 func DeviceEntityModelFromMap(m map[string]interface{}) *models.DeviceEntity {
 	entity := m["entity"].(*models.Entity) // Entity
 	entityID := m["entity_id"].(string)
+	entityName := m["entity_name"].(string)
 	return &models.DeviceEntity{
-		Entity:   entity,
-		EntityID: entityID,
+		Entity:     entity,
+		EntityID:   entityID,
+		EntityName: entityName,
 	}
 }
 
@@ -30,6 +34,7 @@ func DeviceEntityModelFromMap(m map[string]interface{}) *models.DeviceEntity {
 func SetDeviceEntityResourceData(d *schema.ResourceData, m *models.DeviceEntity) {
 	d.Set("entity", m.Entity)
 	d.Set("entity_id", m.EntityID)
+	d.Set("entity_name", m.EntityName)
 }
 
 // Iterate throught and update the DeviceEntity resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -39,6 +44,7 @@ func SetDeviceEntitySubResourceData(m []*models.DeviceEntity) (d []*map[string]i
 			properties := make(map[string]interface{})
 			properties["entity"] = DeviceEntityModel.Entity
 			properties["entity_id"] = DeviceEntityModel.EntityID
+			properties["entity_name"] = DeviceEntityModel.EntityName
 			d = append(d, &properties)
 		}
 	}
@@ -50,14 +56,18 @@ func DeviceEntitySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"entity": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: Entity
-			Elem: &schema.Resource{
-				Schema: EntitySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"entity_id": {
+			Description: ``,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"entity_name": {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
@@ -70,5 +80,6 @@ func GetDeviceEntityPropertyFields() (t []string) {
 	return []string{
 		"entity",
 		"entity_id",
+		"entity_name",
 	}
 }

@@ -16,7 +16,18 @@ import (
 
 // IoType Input/Output Type
 //
-// - IO_TYPE_UNSPECIFIED: No operation/ Invalid peration - IO_TYPE_ETH: Ethernet - IO_TYPE_USB: USB Type - IO_TYPE_COM: Communication Port - IO_TYPE_AUDIO: Audio Port - IO_TYPE_WLAN: wireless LAN - IO_TYPE_WWAN: Wireless wide area network - IO_TYPE_HDMI: High-Definition Multimedia Interface - IO_TYPE_LTE: LTE Interfaces - IO_TYPE_OTHER: Other Io Types
+// - IO_TYPE_UNSPECIFIED: No operation/ Invalid peration
+//   - IO_TYPE_ETH: Ethernet
+//   - IO_TYPE_USB: USB Type
+//   - IO_TYPE_COM: Communication Port
+//   - IO_TYPE_AUDIO: Audio Port
+//   - IO_TYPE_WLAN: wireless LAN
+//   - IO_TYPE_WWAN: Wireless wide area network
+//   - IO_TYPE_HDMI: High-Definition Multimedia Interface
+//   - IO_TYPE_LTE: LTE Interfaces
+//   - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device
+//   - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device
+//   - IO_TYPE_OTHER: Other Io Types
 //
 // swagger:model IoType
 type IoType string
@@ -59,6 +70,12 @@ const (
 	// IoTypeIOTYPELTE captures enum value "IO_TYPE_LTE"
 	IoTypeIOTYPELTE IoType = "IO_TYPE_LTE"
 
+	// IoTypeIOTYPESTORAGENVMEDEVICE captures enum value "IO_TYPE_STORAGE_NVME_DEVICE"
+	IoTypeIOTYPESTORAGENVMEDEVICE IoType = "IO_TYPE_STORAGE_NVME_DEVICE"
+
+	// IoTypeIOTYPESTORAGESATADEVICE captures enum value "IO_TYPE_STORAGE_SATA_DEVICE"
+	IoTypeIOTYPESTORAGESATADEVICE IoType = "IO_TYPE_STORAGE_SATA_DEVICE"
+
 	// IoTypeIOTYPEOTHER captures enum value "IO_TYPE_OTHER"
 	IoTypeIOTYPEOTHER IoType = "IO_TYPE_OTHER"
 )
@@ -68,7 +85,7 @@ var ioTypeEnum []interface{}
 
 func init() {
 	var res []IoType
-	if err := json.Unmarshal([]byte(`["IO_TYPE_UNSPECIFIED","IO_TYPE_ETH","IO_TYPE_USB","IO_TYPE_COM","IO_TYPE_AUDIO","IO_TYPE_WLAN","IO_TYPE_WWAN","IO_TYPE_HDMI","IO_TYPE_LTE","IO_TYPE_OTHER"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["IO_TYPE_UNSPECIFIED","IO_TYPE_ETH","IO_TYPE_USB","IO_TYPE_COM","IO_TYPE_AUDIO","IO_TYPE_WLAN","IO_TYPE_WWAN","IO_TYPE_HDMI","IO_TYPE_LTE","IO_TYPE_STORAGE_NVME_DEVICE","IO_TYPE_STORAGE_SATA_DEVICE","IO_TYPE_OTHER"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

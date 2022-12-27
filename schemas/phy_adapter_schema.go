@@ -61,7 +61,7 @@ func PhyAdapterSchema() map[string]*schema.Schema {
 		},
 
 		"tags": {
-			Description: ``,
+			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -71,10 +71,8 @@ func PhyAdapterSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `IoType specifies the type of the Input output of the device`,
-			Type:        schema.TypeList, //GoType: IoType
-			Elem: &schema.Resource{
-				Schema: IoTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

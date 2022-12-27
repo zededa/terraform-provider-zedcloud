@@ -6,8 +6,6 @@ package resource_group
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"fmt"
-
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 )
@@ -30,48 +28,48 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateResourceGroup(params *CreateResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateResourceGroupOK, error)
+	ResourceGroupCreateResourceGroup(params *ResourceGroupCreateResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupCreateResourceGroupOK, error)
 
-	DeleteResourceGroup(params *DeleteResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteResourceGroupOK, error)
+	ResourceGroupDeleteResourceGroup(params *ResourceGroupDeleteResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupDeleteResourceGroupOK, error)
 
-	GetResourceGroup(params *GetResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupOK, error)
+	ResourceGroupGetResourceGroup(params *ResourceGroupGetResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupOK, error)
 
-	GetResourceGroupByName(params *GetResourceGroupByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupByNameOK, error)
+	ResourceGroupGetResourceGroupByName(params *ResourceGroupGetResourceGroupByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupByNameOK, error)
 
-	GetResourceGroupEvents(params *GetResourceGroupEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupEventsOK, error)
+	ResourceGroupGetResourceGroupEvents(params *ResourceGroupGetResourceGroupEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupEventsOK, error)
 
-	GetResourceGroupEventsByName(params *GetResourceGroupEventsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupEventsByNameOK, error)
+	ResourceGroupGetResourceGroupEventsByName(params *ResourceGroupGetResourceGroupEventsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupEventsByNameOK, error)
 
-	GetResourceGroupResourceMetricsByID(params *GetResourceGroupResourceMetricsByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupResourceMetricsByIDOK, error)
+	ResourceGroupGetResourceGroupResourceMetricsByID(params *ResourceGroupGetResourceGroupResourceMetricsByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupResourceMetricsByIDOK, error)
 
-	GetResourceGroupResourceMetricsByName(params *GetResourceGroupResourceMetricsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupResourceMetricsByNameOK, error)
+	ResourceGroupGetResourceGroupResourceMetricsByName(params *ResourceGroupGetResourceGroupResourceMetricsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupResourceMetricsByNameOK, error)
 
-	QueryResourceGroups(params *QueryResourceGroupsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryResourceGroupsOK, error)
+	ResourceGroupQueryResourceGroups(params *ResourceGroupQueryResourceGroupsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupQueryResourceGroupsOK, error)
 
-	UpdateResourceGroup(params *UpdateResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateResourceGroupOK, error)
+	ResourceGroupUpdateResourceGroup(params *ResourceGroupUpdateResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupUpdateResourceGroupOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-CreateResourceGroup creates resource group
+ResourceGroupCreateResourceGroup creates resource group
 
 Create a resource group record.
 */
-func (a *Client) CreateResourceGroup(params *CreateResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateResourceGroupOK, error) {
+func (a *Client) ResourceGroupCreateResourceGroup(params *ResourceGroupCreateResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupCreateResourceGroupOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewCreateResourceGroupParams()
+		params = NewResourceGroupCreateResourceGroupParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "CreateResourceGroup",
+		ID:                 "ResourceGroup_CreateResourceGroup",
 		Method:             "POST",
 		PathPattern:        "/v1/projects",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &CreateResourceGroupReader{formats: a.formats},
+		Reader:             &ResourceGroupCreateResourceGroupReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -84,35 +82,34 @@ func (a *Client) CreateResourceGroup(params *CreateResourceGroupParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*CreateResourceGroupOK)
+	success, ok := result.(*ResourceGroupCreateResourceGroupOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for CreateResourceGroup: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupCreateResourceGroupDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-DeleteResourceGroup deletes resource group
+ResourceGroupDeleteResourceGroup deletes resource group
 
 Delete a resource group record.
 */
-func (a *Client) DeleteResourceGroup(params *DeleteResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteResourceGroupOK, error) {
+func (a *Client) ResourceGroupDeleteResourceGroup(params *ResourceGroupDeleteResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupDeleteResourceGroupOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDeleteResourceGroupParams()
+		params = NewResourceGroupDeleteResourceGroupParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "DeleteResourceGroup",
+		ID:                 "ResourceGroup_DeleteResourceGroup",
 		Method:             "DELETE",
 		PathPattern:        "/v1/projects/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &DeleteResourceGroupReader{formats: a.formats},
+		Reader:             &ResourceGroupDeleteResourceGroupReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -125,35 +122,34 @@ func (a *Client) DeleteResourceGroup(params *DeleteResourceGroupParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*DeleteResourceGroupOK)
+	success, ok := result.(*ResourceGroupDeleteResourceGroupOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for DeleteResourceGroup: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupDeleteResourceGroupDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetResourceGroup gets resource group
+ResourceGroupGetResourceGroup gets resource group
 
 Get the configuration (without security details) of a resource group record.
 */
-func (a *Client) GetResourceGroup(params *GetResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupOK, error) {
+func (a *Client) ResourceGroupGetResourceGroup(params *ResourceGroupGetResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetResourceGroupParams()
+		params = NewResourceGroupGetResourceGroupParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetResourceGroup",
+		ID:                 "ResourceGroup_GetResourceGroup",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetResourceGroupReader{formats: a.formats},
+		Reader:             &ResourceGroupGetResourceGroupReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -166,35 +162,34 @@ func (a *Client) GetResourceGroup(params *GetResourceGroupParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetResourceGroupOK)
+	success, ok := result.(*ResourceGroupGetResourceGroupOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetResourceGroup: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupGetResourceGroupDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetResourceGroupByName gets resource group
+ResourceGroupGetResourceGroupByName gets resource group
 
 Get the configuration (without security details) of a resource group record.
 */
-func (a *Client) GetResourceGroupByName(params *GetResourceGroupByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupByNameOK, error) {
+func (a *Client) ResourceGroupGetResourceGroupByName(params *ResourceGroupGetResourceGroupByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetResourceGroupByNameParams()
+		params = NewResourceGroupGetResourceGroupByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetResourceGroupByName",
+		ID:                 "ResourceGroup_GetResourceGroupByName",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/name/{name}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetResourceGroupByNameReader{formats: a.formats},
+		Reader:             &ResourceGroupGetResourceGroupByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -207,35 +202,34 @@ func (a *Client) GetResourceGroupByName(params *GetResourceGroupByNameParams, au
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetResourceGroupByNameOK)
+	success, ok := result.(*ResourceGroupGetResourceGroupByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetResourceGroupByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupGetResourceGroupByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetResourceGroupEvents gets resource group events by id
+ResourceGroupGetResourceGroupEvents gets resource group events by id
 
 Get configuration and status events of a resource group by id.
 */
-func (a *Client) GetResourceGroupEvents(params *GetResourceGroupEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupEventsOK, error) {
+func (a *Client) ResourceGroupGetResourceGroupEvents(params *ResourceGroupGetResourceGroupEventsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupEventsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetResourceGroupEventsParams()
+		params = NewResourceGroupGetResourceGroupEventsParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetResourceGroupEvents",
+		ID:                 "ResourceGroup_GetResourceGroupEvents",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/id/{objid}/events",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetResourceGroupEventsReader{formats: a.formats},
+		Reader:             &ResourceGroupGetResourceGroupEventsReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -248,35 +242,34 @@ func (a *Client) GetResourceGroupEvents(params *GetResourceGroupEventsParams, au
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetResourceGroupEventsOK)
+	success, ok := result.(*ResourceGroupGetResourceGroupEventsOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetResourceGroupEvents: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupGetResourceGroupEventsDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetResourceGroupEventsByName gets resource group events by name
+ResourceGroupGetResourceGroupEventsByName gets resource group events by name
 
 Get configuration and status events of a resource group by name.
 */
-func (a *Client) GetResourceGroupEventsByName(params *GetResourceGroupEventsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupEventsByNameOK, error) {
+func (a *Client) ResourceGroupGetResourceGroupEventsByName(params *ResourceGroupGetResourceGroupEventsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupEventsByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetResourceGroupEventsByNameParams()
+		params = NewResourceGroupGetResourceGroupEventsByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetResourceGroupEventsByName",
+		ID:                 "ResourceGroup_GetResourceGroupEventsByName",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/name/{objname}/events",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetResourceGroupEventsByNameReader{formats: a.formats},
+		Reader:             &ResourceGroupGetResourceGroupEventsByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -289,35 +282,34 @@ func (a *Client) GetResourceGroupEventsByName(params *GetResourceGroupEventsByNa
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetResourceGroupEventsByNameOK)
+	success, ok := result.(*ResourceGroupGetResourceGroupEventsByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetResourceGroupEventsByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupGetResourceGroupEventsByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetResourceGroupResourceMetricsByID gets resource group resource usage timeline
+ResourceGroupGetResourceGroupResourceMetricsByID gets resource group resource usage timeline
 
-Get the resource usage timeline of a resource group as reported by the devices in the resource group
+Get the resource usage timeline of a resource group as reported by the edge nodes in the resource group
 */
-func (a *Client) GetResourceGroupResourceMetricsByID(params *GetResourceGroupResourceMetricsByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupResourceMetricsByIDOK, error) {
+func (a *Client) ResourceGroupGetResourceGroupResourceMetricsByID(params *ResourceGroupGetResourceGroupResourceMetricsByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupResourceMetricsByIDOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetResourceGroupResourceMetricsByIDParams()
+		params = NewResourceGroupGetResourceGroupResourceMetricsByIDParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetResourceGroupResourceMetricsById",
+		ID:                 "ResourceGroup_GetResourceGroupResourceMetricsById",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/id/{objid}/timeSeries/{mType}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetResourceGroupResourceMetricsByIDReader{formats: a.formats},
+		Reader:             &ResourceGroupGetResourceGroupResourceMetricsByIDReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -330,35 +322,34 @@ func (a *Client) GetResourceGroupResourceMetricsByID(params *GetResourceGroupRes
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetResourceGroupResourceMetricsByIDOK)
+	success, ok := result.(*ResourceGroupGetResourceGroupResourceMetricsByIDOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetResourceGroupResourceMetricsById: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupGetResourceGroupResourceMetricsByIDDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetResourceGroupResourceMetricsByName gets resource group resource usage timeline
+ResourceGroupGetResourceGroupResourceMetricsByName gets resource group resource usage timeline
 
-Get the resource usage timeline of a resource group as reported by the devices in the resource group
+Get the resource usage timeline of a resource group as reported by the edge nodes in the resource group
 */
-func (a *Client) GetResourceGroupResourceMetricsByName(params *GetResourceGroupResourceMetricsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupResourceMetricsByNameOK, error) {
+func (a *Client) ResourceGroupGetResourceGroupResourceMetricsByName(params *ResourceGroupGetResourceGroupResourceMetricsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupGetResourceGroupResourceMetricsByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetResourceGroupResourceMetricsByNameParams()
+		params = NewResourceGroupGetResourceGroupResourceMetricsByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetResourceGroupResourceMetricsByName",
+		ID:                 "ResourceGroup_GetResourceGroupResourceMetricsByName",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/name/{objname}/timeSeries/{mType}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetResourceGroupResourceMetricsByNameReader{formats: a.formats},
+		Reader:             &ResourceGroupGetResourceGroupResourceMetricsByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -371,35 +362,34 @@ func (a *Client) GetResourceGroupResourceMetricsByName(params *GetResourceGroupR
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetResourceGroupResourceMetricsByNameOK)
+	success, ok := result.(*ResourceGroupGetResourceGroupResourceMetricsByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetResourceGroupResourceMetricsByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupGetResourceGroupResourceMetricsByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-QueryResourceGroups queries resource groups
+ResourceGroupQueryResourceGroups queries resource groups
 
 Query the resource group records.
 */
-func (a *Client) QueryResourceGroups(params *QueryResourceGroupsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryResourceGroupsOK, error) {
+func (a *Client) ResourceGroupQueryResourceGroups(params *ResourceGroupQueryResourceGroupsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupQueryResourceGroupsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewQueryResourceGroupsParams()
+		params = NewResourceGroupQueryResourceGroupsParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "QueryResourceGroups",
+		ID:                 "ResourceGroup_QueryResourceGroups",
 		Method:             "GET",
 		PathPattern:        "/v1/projects",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &QueryResourceGroupsReader{formats: a.formats},
+		Reader:             &ResourceGroupQueryResourceGroupsReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -412,35 +402,34 @@ func (a *Client) QueryResourceGroups(params *QueryResourceGroupsParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*QueryResourceGroupsOK)
+	success, ok := result.(*ResourceGroupQueryResourceGroupsOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for QueryResourceGroups: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupQueryResourceGroupsDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-UpdateResourceGroup updates resource group
+ResourceGroupUpdateResourceGroup updates resource group
 
 Update a resource group record. The usual pattern to update a resource group record is to retrieve the record and update with the modified values in a new body to update the resource group record.
 */
-func (a *Client) UpdateResourceGroup(params *UpdateResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateResourceGroupOK, error) {
+func (a *Client) ResourceGroupUpdateResourceGroup(params *ResourceGroupUpdateResourceGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupUpdateResourceGroupOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateResourceGroupParams()
+		params = NewResourceGroupUpdateResourceGroupParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "UpdateResourceGroup",
+		ID:                 "ResourceGroup_UpdateResourceGroup",
 		Method:             "PUT",
 		PathPattern:        "/v1/projects/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateResourceGroupReader{formats: a.formats},
+		Reader:             &ResourceGroupUpdateResourceGroupReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -453,14 +442,13 @@ func (a *Client) UpdateResourceGroup(params *UpdateResourceGroupParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateResourceGroupOK)
+	success, ok := result.(*ResourceGroupUpdateResourceGroupOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for UpdateResourceGroup: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupUpdateResourceGroupDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 // SetTransport changes the transport on the client

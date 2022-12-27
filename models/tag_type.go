@@ -16,7 +16,11 @@ import (
 
 // TagType Resource group types
 //
-// - TAG_TYPE_UNSPECIFIED: Unspecified - TAG_TYPE_GENERIC: Generic resource group - TAG_TYPE_PROJECT: Project resource group
+// - TAG_TYPE_UNSPECIFIED: Unspecified
+//   - TAG_TYPE_GENERIC: Generic resource group
+//   - TAG_TYPE_PROJECT: Project resource group
+//   - TAG_TYPE_AZURE: Project resource group
+//   - TAG_TYPE_DEPLOYMENT: Project with deployment
 //
 // swagger:model TagType
 type TagType string
@@ -40,6 +44,12 @@ const (
 
 	// TagTypeTAGTYPEPROJECT captures enum value "TAG_TYPE_PROJECT"
 	TagTypeTAGTYPEPROJECT TagType = "TAG_TYPE_PROJECT"
+
+	// TagTypeTAGTYPEAZURE captures enum value "TAG_TYPE_AZURE"
+	TagTypeTAGTYPEAZURE TagType = "TAG_TYPE_AZURE"
+
+	// TagTypeTAGTYPEDEPLOYMENT captures enum value "TAG_TYPE_DEPLOYMENT"
+	TagTypeTAGTYPEDEPLOYMENT TagType = "TAG_TYPE_DEPLOYMENT"
 )
 
 // for schema
@@ -47,7 +57,7 @@ var tagTypeEnum []interface{}
 
 func init() {
 	var res []TagType
-	if err := json.Unmarshal([]byte(`["TAG_TYPE_UNSPECIFIED","TAG_TYPE_GENERIC","TAG_TYPE_PROJECT"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["TAG_TYPE_UNSPECIFIED","TAG_TYPE_GENERIC","TAG_TYPE_PROJECT","TAG_TYPE_AZURE","TAG_TYPE_DEPLOYMENT"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

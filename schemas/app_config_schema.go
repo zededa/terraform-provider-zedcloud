@@ -34,35 +34,37 @@ func AppConfigModel(d *schema.ResourceData) *models.AppConfig {
 		parentDetailMap := parentDetailInterface.([]interface{})[0].(map[string]interface{})
 		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
 	}
+	startDelayInSeconds := int64(d.Get("start_delay_in_seconds").(int))
 	storage := int64(d.Get("storage").(int))
 	tags := d.Get("tags").(map[string]string) // map[string]string
 	title := d.Get("title").(string)
 	return &models.AppConfig{
-		AppID:           appID,
-		AppVersion:      appVersion,
-		Cpus:            cpus,
-		Description:     description,
-		ID:              id,
-		Interfaces:      interfaces,
-		ManifestJSON:    manifestJSON,
-		Memory:          memory,
-		Name:            &name, // string true false false
-		NameAppPart:     nameAppPart,
-		NameProjectPart: nameProjectPart,
-		NamingScheme:    namingScheme,
-		Networks:        networks,
-		OriginType:      originType,
-		ParentDetail:    parentDetail,
-		Storage:         storage,
-		Tags:            tags,
-		Title:           &title, // string true false false
+		AppID:               appID,
+		AppVersion:          appVersion,
+		Cpus:                &cpus, // int64 true false false
+		Description:         description,
+		ID:                  id,
+		Interfaces:          interfaces,
+		ManifestJSON:        manifestJSON,
+		Memory:              &memory, // int64 true false false
+		Name:                &name,   // string true false false
+		NameAppPart:         nameAppPart,
+		NameProjectPart:     nameProjectPart,
+		NamingScheme:        namingScheme,
+		Networks:            &networks, // int64 true false false
+		OriginType:          originType,
+		ParentDetail:        parentDetail,
+		StartDelayInSeconds: startDelayInSeconds,
+		Storage:             storage,
+		Tags:                tags,
+		Title:               &title, // string true false false
 	}
 }
 
 func AppConfigModelFromMap(m map[string]interface{}) *models.AppConfig {
 	appID := m["app_id"].(string)
 	appVersion := m["app_version"].(string)
-	cpus := int64(m["cpus"].(int)) // int64 false false false
+	cpus := int64(m["cpus"].(int)) // int64 true false false
 	description := m["description"].(string)
 	id := m["id"].(string)
 	interfaces := m["interfaces"].([]*models.AppInterface) // []*AppInterface
@@ -73,12 +75,12 @@ func AppConfigModelFromMap(m map[string]interface{}) *models.AppConfig {
 		manifestJSON = VMManifestModelFromMap(manifestJSONMap)
 	}
 	//
-	memory := int64(m["memory"].(int)) // int64 false false false
+	memory := int64(m["memory"].(int)) // int64 true false false
 	name := m["name"].(string)
 	nameAppPart := m["name_app_part"].(string)
 	nameProjectPart := m["name_project_part"].(string)
 	namingScheme := m["naming_scheme"].(*models.AppNamingScheme) // AppNamingScheme
-	networks := int64(m["networks"].(int))                       // int64 false false false
+	networks := int64(m["networks"].(int))                       // int64 true false false
 	originType := m["origin_type"].(*models.Origin)              // Origin
 	var parentDetail *models.ObjectParentDetail                  // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := m["parent_detail"]
@@ -87,28 +89,30 @@ func AppConfigModelFromMap(m map[string]interface{}) *models.AppConfig {
 		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
 	}
 	//
-	storage := int64(m["storage"].(int)) // int64 false false false
+	startDelayInSeconds := int64(m["start_delay_in_seconds"].(int)) // int64 false false false
+	storage := int64(m["storage"].(int))                            // int64 false false false
 	tags := m["tags"].(map[string]string)
 	title := m["title"].(string)
 	return &models.AppConfig{
-		AppID:           appID,
-		AppVersion:      appVersion,
-		Cpus:            cpus,
-		Description:     description,
-		ID:              id,
-		Interfaces:      interfaces,
-		ManifestJSON:    manifestJSON,
-		Memory:          memory,
-		Name:            &name,
-		NameAppPart:     nameAppPart,
-		NameProjectPart: nameProjectPart,
-		NamingScheme:    namingScheme,
-		Networks:        networks,
-		OriginType:      originType,
-		ParentDetail:    parentDetail,
-		Storage:         storage,
-		Tags:            tags,
-		Title:           &title,
+		AppID:               appID,
+		AppVersion:          appVersion,
+		Cpus:                &cpus,
+		Description:         description,
+		ID:                  id,
+		Interfaces:          interfaces,
+		ManifestJSON:        manifestJSON,
+		Memory:              &memory,
+		Name:                &name,
+		NameAppPart:         nameAppPart,
+		NameProjectPart:     nameProjectPart,
+		NamingScheme:        namingScheme,
+		Networks:            &networks,
+		OriginType:          originType,
+		ParentDetail:        parentDetail,
+		StartDelayInSeconds: startDelayInSeconds,
+		Storage:             storage,
+		Tags:                tags,
+		Title:               &title,
 	}
 }
 
@@ -130,6 +134,7 @@ func SetAppConfigResourceData(d *schema.ResourceData, m *models.AppConfig) {
 	d.Set("networks", m.Networks)
 	d.Set("origin_type", m.OriginType)
 	d.Set("parent_detail", SetObjectParentDetailSubResourceData([]*models.ObjectParentDetail{m.ParentDetail}))
+	d.Set("start_delay_in_seconds", m.StartDelayInSeconds)
 	d.Set("storage", m.Storage)
 	d.Set("tags", m.Tags)
 	d.Set("title", m.Title)
@@ -156,6 +161,7 @@ func SetAppConfigSubResourceData(m []*models.AppConfig) (d []*map[string]interfa
 			properties["networks"] = AppConfigModel.Networks
 			properties["origin_type"] = AppConfigModel.OriginType
 			properties["parent_detail"] = SetObjectParentDetailSubResourceData([]*models.ObjectParentDetail{AppConfigModel.ParentDetail})
+			properties["start_delay_in_seconds"] = AppConfigModel.StartDelayInSeconds
 			properties["storage"] = AppConfigModel.Storage
 			properties["tags"] = AppConfigModel.Tags
 			properties["title"] = AppConfigModel.Title
@@ -183,7 +189,7 @@ func AppConfigSchema() map[string]*schema.Schema {
 		"cpus": {
 			Description: `user defined cpus for bundle`,
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"description": {
@@ -210,23 +216,21 @@ func AppConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppInterfaceSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"manifest_json": {
 			Description: `Manifest data`,
-			Type:        schema.TypeList, //GoType: VMManifest
-			Elem: &schema.Resource{
-				Schema: VMManifestSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
 		"memory": {
 			Description: `user defined memory for bundle`,
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"name": {
@@ -249,35 +253,35 @@ func AppConfigSchema() map[string]*schema.Schema {
 
 		"naming_scheme": {
 			Description: `app naming scheme`,
-			Type:        schema.TypeList, //GoType: AppNamingScheme
-			Elem: &schema.Resource{
-				Schema: AppNamingSchemeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"networks": {
 			Description: `user defined network options`,
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"origin_type": {
 			Description: `origin of object`,
-			Type:        schema.TypeList, //GoType: Origin
-			Elem: &schema.Resource{
-				Schema: OriginSchema(),
-			},
-			Optional: true,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Required: true,
 		},
 
 		"parent_detail": {
 			Description: `origin and parent related details`,
-			Type:        schema.TypeList, //GoType: ObjectParentDetail
-			Elem: &schema.Resource{
-				Schema: ObjectParentDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
+		},
+
+		"start_delay_in_seconds": {
+			Description: `start delay is the time in seconds EVE should wait after boot before starting the application instance`,
+			Type:        schema.TypeInt,
+			Optional:    true,
 		},
 
 		"storage": {
@@ -287,7 +291,7 @@ func AppConfigSchema() map[string]*schema.Schema {
 		},
 
 		"tags": {
-			Description: ``,
+			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -321,6 +325,7 @@ func GetAppConfigPropertyFields() (t []string) {
 		"networks",
 		"origin_type",
 		"parent_detail",
+		"start_delay_in_seconds",
 		"storage",
 		"tags",
 		"title",

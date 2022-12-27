@@ -6,8 +6,6 @@ package hardware_model
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"fmt"
-
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 )
@@ -30,66 +28,70 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateHardwareBrand(params *CreateHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateHardwareBrandOK, error)
+	HardwareModelCreateHardwareBrand(params *HardwareModelCreateHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelCreateHardwareBrandOK, error)
 
-	CreateHardwareModel(params *CreateHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateHardwareModelOK, error)
+	HardwareModelCreateHardwareModel(params *HardwareModelCreateHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelCreateHardwareModelOK, error)
 
-	DeleteHardwareBrand(params *DeleteHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteHardwareBrandOK, error)
+	HardwareModelDeleteHardwareBrand(params *HardwareModelDeleteHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelDeleteHardwareBrandOK, error)
 
-	DeleteHardwareModel(params *DeleteHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteHardwareModelOK, error)
+	HardwareModelDeleteHardwareModel(params *HardwareModelDeleteHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelDeleteHardwareModelOK, error)
 
-	GetDeviceTags(params *GetDeviceTagsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceTagsOK, error)
+	HardwareModelGetDeviceStatusConfig(params *HardwareModelGetDeviceStatusConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetDeviceStatusConfigOK, error)
 
-	GetGlobalHardwareBrand(params *GetGlobalHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGlobalHardwareBrandOK, error)
+	HardwareModelGetDeviceStatusLocation(params *HardwareModelGetDeviceStatusLocationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetDeviceStatusLocationOK, error)
 
-	GetGlobalHardwareBrandByName(params *GetGlobalHardwareBrandByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGlobalHardwareBrandByNameOK, error)
+	HardwareModelGetDeviceTags(params *HardwareModelGetDeviceTagsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetDeviceTagsOK, error)
 
-	GetGlobalHardwareModel(params *GetGlobalHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGlobalHardwareModelOK, error)
+	HardwareModelGetGlobalHardwareBrand(params *HardwareModelGetGlobalHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetGlobalHardwareBrandOK, error)
 
-	GetGlobalHardwareModelByName(params *GetGlobalHardwareModelByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGlobalHardwareModelByNameOK, error)
+	HardwareModelGetGlobalHardwareBrandByName(params *HardwareModelGetGlobalHardwareBrandByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetGlobalHardwareBrandByNameOK, error)
 
-	GetHardwareBrand(params *GetHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetHardwareBrandOK, error)
+	HardwareModelGetGlobalHardwareModel(params *HardwareModelGetGlobalHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetGlobalHardwareModelOK, error)
 
-	GetHardwareBrandByName(params *GetHardwareBrandByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetHardwareBrandByNameOK, error)
+	HardwareModelGetGlobalHardwareModelByName(params *HardwareModelGetGlobalHardwareModelByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetGlobalHardwareModelByNameOK, error)
 
-	GetHardwareModel(params *GetHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetHardwareModelOK, error)
+	HardwareModelGetHardwareBrand(params *HardwareModelGetHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetHardwareBrandOK, error)
 
-	GetHardwareModelByName(params *GetHardwareModelByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetHardwareModelByNameOK, error)
+	HardwareModelGetHardwareBrandByName(params *HardwareModelGetHardwareBrandByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetHardwareBrandByNameOK, error)
 
-	QueryGlobalHardwareBrands(params *QueryGlobalHardwareBrandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryGlobalHardwareBrandsOK, error)
+	HardwareModelGetHardwareModel(params *HardwareModelGetHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetHardwareModelOK, error)
 
-	QueryGlobalHardwareModels(params *QueryGlobalHardwareModelsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryGlobalHardwareModelsOK, error)
+	HardwareModelGetHardwareModelByName(params *HardwareModelGetHardwareModelByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetHardwareModelByNameOK, error)
 
-	QueryHardwareBrands(params *QueryHardwareBrandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryHardwareBrandsOK, error)
+	HardwareModelQueryGlobalHardwareBrands(params *HardwareModelQueryGlobalHardwareBrandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelQueryGlobalHardwareBrandsOK, error)
 
-	QueryHardwareModels(params *QueryHardwareModelsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryHardwareModelsOK, error)
+	HardwareModelQueryGlobalHardwareModels(params *HardwareModelQueryGlobalHardwareModelsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelQueryGlobalHardwareModelsOK, error)
 
-	UpdateHardwareBrand(params *UpdateHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateHardwareBrandOK, error)
+	HardwareModelQueryHardwareBrands(params *HardwareModelQueryHardwareBrandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelQueryHardwareBrandsOK, error)
 
-	UpdateHardwareModel(params *UpdateHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateHardwareModelOK, error)
+	HardwareModelQueryHardwareModels(params *HardwareModelQueryHardwareModelsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelQueryHardwareModelsOK, error)
+
+	HardwareModelUpdateHardwareBrand(params *HardwareModelUpdateHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelUpdateHardwareBrandOK, error)
+
+	HardwareModelUpdateHardwareModel(params *HardwareModelUpdateHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelUpdateHardwareModelOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-CreateHardwareBrand creates hardware brand
+HardwareModelCreateHardwareBrand creates hardware brand
 
 Create a hardware brand record.
 */
-func (a *Client) CreateHardwareBrand(params *CreateHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateHardwareBrandOK, error) {
+func (a *Client) HardwareModelCreateHardwareBrand(params *HardwareModelCreateHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelCreateHardwareBrandOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewCreateHardwareBrandParams()
+		params = NewHardwareModelCreateHardwareBrandParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "CreateHardwareBrand",
+		ID:                 "HardwareModel_CreateHardwareBrand",
 		Method:             "POST",
 		PathPattern:        "/v1/brands",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &CreateHardwareBrandReader{formats: a.formats},
+		Reader:             &HardwareModelCreateHardwareBrandReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -102,35 +104,34 @@ func (a *Client) CreateHardwareBrand(params *CreateHardwareBrandParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*CreateHardwareBrandOK)
+	success, ok := result.(*HardwareModelCreateHardwareBrandOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for CreateHardwareBrand: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelCreateHardwareBrandDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-CreateHardwareModel creates hardware model
+HardwareModelCreateHardwareModel creates hardware model
 
 Create a hardware model record.
 */
-func (a *Client) CreateHardwareModel(params *CreateHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateHardwareModelOK, error) {
+func (a *Client) HardwareModelCreateHardwareModel(params *HardwareModelCreateHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelCreateHardwareModelOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewCreateHardwareModelParams()
+		params = NewHardwareModelCreateHardwareModelParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "CreateHardwareModel",
+		ID:                 "HardwareModel_CreateHardwareModel",
 		Method:             "POST",
 		PathPattern:        "/v1/sysmodels",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &CreateHardwareModelReader{formats: a.formats},
+		Reader:             &HardwareModelCreateHardwareModelReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -143,35 +144,34 @@ func (a *Client) CreateHardwareModel(params *CreateHardwareModelParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*CreateHardwareModelOK)
+	success, ok := result.(*HardwareModelCreateHardwareModelOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for CreateHardwareModel: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelCreateHardwareModelDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-DeleteHardwareBrand deletes hardware brand
+HardwareModelDeleteHardwareBrand deletes hardware brand
 
 Delete a hardware brand record.
 */
-func (a *Client) DeleteHardwareBrand(params *DeleteHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteHardwareBrandOK, error) {
+func (a *Client) HardwareModelDeleteHardwareBrand(params *HardwareModelDeleteHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelDeleteHardwareBrandOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDeleteHardwareBrandParams()
+		params = NewHardwareModelDeleteHardwareBrandParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "DeleteHardwareBrand",
+		ID:                 "HardwareModel_DeleteHardwareBrand",
 		Method:             "DELETE",
 		PathPattern:        "/v1/brands/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &DeleteHardwareBrandReader{formats: a.formats},
+		Reader:             &HardwareModelDeleteHardwareBrandReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -184,35 +184,34 @@ func (a *Client) DeleteHardwareBrand(params *DeleteHardwareBrandParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*DeleteHardwareBrandOK)
+	success, ok := result.(*HardwareModelDeleteHardwareBrandOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for DeleteHardwareBrand: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelDeleteHardwareBrandDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-DeleteHardwareModel deletes hardware model
+HardwareModelDeleteHardwareModel deletes hardware model
 
 Delete a hardware model record.
 */
-func (a *Client) DeleteHardwareModel(params *DeleteHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteHardwareModelOK, error) {
+func (a *Client) HardwareModelDeleteHardwareModel(params *HardwareModelDeleteHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelDeleteHardwareModelOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDeleteHardwareModelParams()
+		params = NewHardwareModelDeleteHardwareModelParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "DeleteHardwareModel",
+		ID:                 "HardwareModel_DeleteHardwareModel",
 		Method:             "DELETE",
 		PathPattern:        "/v1/sysmodels/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &DeleteHardwareModelReader{formats: a.formats},
+		Reader:             &HardwareModelDeleteHardwareModelReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -225,35 +224,114 @@ func (a *Client) DeleteHardwareModel(params *DeleteHardwareModelParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*DeleteHardwareModelOK)
+	success, ok := result.(*HardwareModelDeleteHardwareModelOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for DeleteHardwareModel: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelDeleteHardwareModelDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetDeviceTags queries device object tag key values
+HardwareModelGetDeviceStatusConfig queries device status and config
+
+Device status config API is a composite API for device config and device status
+*/
+func (a *Client) HardwareModelGetDeviceStatusConfig(params *HardwareModelGetDeviceStatusConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetDeviceStatusConfigOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewHardwareModelGetDeviceStatusConfigParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "HardwareModel_GetDeviceStatusConfig",
+		Method:             "GET",
+		PathPattern:        "/v1/devices/status-config",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &HardwareModelGetDeviceStatusConfigReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*HardwareModelGetDeviceStatusConfigOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*HardwareModelGetDeviceStatusConfigDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+HardwareModelGetDeviceStatusLocation queries device status location
+
+Query device status locations
+*/
+func (a *Client) HardwareModelGetDeviceStatusLocation(params *HardwareModelGetDeviceStatusLocationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetDeviceStatusLocationOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewHardwareModelGetDeviceStatusLocationParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "HardwareModel_GetDeviceStatusLocation",
+		Method:             "GET",
+		PathPattern:        "/v1/devices/status/locations",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &HardwareModelGetDeviceStatusLocationReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*HardwareModelGetDeviceStatusLocationOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*HardwareModelGetDeviceStatusLocationDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+HardwareModelGetDeviceTags queries device object tag key values
 
 Query device object tag key-values
 */
-func (a *Client) GetDeviceTags(params *GetDeviceTagsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetDeviceTagsOK, error) {
+func (a *Client) HardwareModelGetDeviceTags(params *HardwareModelGetDeviceTagsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetDeviceTagsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetDeviceTagsParams()
+		params = NewHardwareModelGetDeviceTagsParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetDeviceTags",
+		ID:                 "HardwareModel_GetDeviceTags",
 		Method:             "GET",
 		PathPattern:        "/v1/devices/tags",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetDeviceTagsReader{formats: a.formats},
+		Reader:             &HardwareModelGetDeviceTagsReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -266,35 +344,34 @@ func (a *Client) GetDeviceTags(params *GetDeviceTagsParams, authInfo runtime.Cli
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetDeviceTagsOK)
+	success, ok := result.(*HardwareModelGetDeviceTagsOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetDeviceTags: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetDeviceTagsDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetGlobalHardwareBrand gets global hardware brand
+HardwareModelGetGlobalHardwareBrand gets global hardware brand
 
 Get the configuration (without security details) of a global hardware brand record.
 */
-func (a *Client) GetGlobalHardwareBrand(params *GetGlobalHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGlobalHardwareBrandOK, error) {
+func (a *Client) HardwareModelGetGlobalHardwareBrand(params *HardwareModelGetGlobalHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetGlobalHardwareBrandOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetGlobalHardwareBrandParams()
+		params = NewHardwareModelGetGlobalHardwareBrandParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetGlobalHardwareBrand",
+		ID:                 "HardwareModel_GetGlobalHardwareBrand",
 		Method:             "GET",
 		PathPattern:        "/v1/brands/global/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetGlobalHardwareBrandReader{formats: a.formats},
+		Reader:             &HardwareModelGetGlobalHardwareBrandReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -307,35 +384,34 @@ func (a *Client) GetGlobalHardwareBrand(params *GetGlobalHardwareBrandParams, au
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetGlobalHardwareBrandOK)
+	success, ok := result.(*HardwareModelGetGlobalHardwareBrandOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetGlobalHardwareBrand: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetGlobalHardwareBrandDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetGlobalHardwareBrandByName gets global hardware brand
+HardwareModelGetGlobalHardwareBrandByName gets global hardware brand
 
 Get the configuration (without security details) of a global hardware brand record.
 */
-func (a *Client) GetGlobalHardwareBrandByName(params *GetGlobalHardwareBrandByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGlobalHardwareBrandByNameOK, error) {
+func (a *Client) HardwareModelGetGlobalHardwareBrandByName(params *HardwareModelGetGlobalHardwareBrandByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetGlobalHardwareBrandByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetGlobalHardwareBrandByNameParams()
+		params = NewHardwareModelGetGlobalHardwareBrandByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetGlobalHardwareBrandByName",
+		ID:                 "HardwareModel_GetGlobalHardwareBrandByName",
 		Method:             "GET",
 		PathPattern:        "/v1/brands/global/name/{name}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetGlobalHardwareBrandByNameReader{formats: a.formats},
+		Reader:             &HardwareModelGetGlobalHardwareBrandByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -348,35 +424,34 @@ func (a *Client) GetGlobalHardwareBrandByName(params *GetGlobalHardwareBrandByNa
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetGlobalHardwareBrandByNameOK)
+	success, ok := result.(*HardwareModelGetGlobalHardwareBrandByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetGlobalHardwareBrandByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetGlobalHardwareBrandByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetGlobalHardwareModel gets global hardware model
+HardwareModelGetGlobalHardwareModel gets global hardware model
 
 Get the configuration (without security details) of a global hardware model record.
 */
-func (a *Client) GetGlobalHardwareModel(params *GetGlobalHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGlobalHardwareModelOK, error) {
+func (a *Client) HardwareModelGetGlobalHardwareModel(params *HardwareModelGetGlobalHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetGlobalHardwareModelOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetGlobalHardwareModelParams()
+		params = NewHardwareModelGetGlobalHardwareModelParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetGlobalHardwareModel",
+		ID:                 "HardwareModel_GetGlobalHardwareModel",
 		Method:             "GET",
 		PathPattern:        "/v1/sysmodels/global/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetGlobalHardwareModelReader{formats: a.formats},
+		Reader:             &HardwareModelGetGlobalHardwareModelReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -389,35 +464,34 @@ func (a *Client) GetGlobalHardwareModel(params *GetGlobalHardwareModelParams, au
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetGlobalHardwareModelOK)
+	success, ok := result.(*HardwareModelGetGlobalHardwareModelOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetGlobalHardwareModel: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetGlobalHardwareModelDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetGlobalHardwareModelByName gets global hardware model
+HardwareModelGetGlobalHardwareModelByName gets global hardware model
 
 Get the configuration (without security details) of a global hardware model record.
 */
-func (a *Client) GetGlobalHardwareModelByName(params *GetGlobalHardwareModelByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetGlobalHardwareModelByNameOK, error) {
+func (a *Client) HardwareModelGetGlobalHardwareModelByName(params *HardwareModelGetGlobalHardwareModelByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetGlobalHardwareModelByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetGlobalHardwareModelByNameParams()
+		params = NewHardwareModelGetGlobalHardwareModelByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetGlobalHardwareModelByName",
+		ID:                 "HardwareModel_GetGlobalHardwareModelByName",
 		Method:             "GET",
 		PathPattern:        "/v1/sysmodels/global/name/{name}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetGlobalHardwareModelByNameReader{formats: a.formats},
+		Reader:             &HardwareModelGetGlobalHardwareModelByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -430,35 +504,34 @@ func (a *Client) GetGlobalHardwareModelByName(params *GetGlobalHardwareModelByNa
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetGlobalHardwareModelByNameOK)
+	success, ok := result.(*HardwareModelGetGlobalHardwareModelByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetGlobalHardwareModelByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetGlobalHardwareModelByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetHardwareBrand gets hardware brand
+HardwareModelGetHardwareBrand gets hardware brand
 
 Get the configuration (without security details) of a hardware brand record.
 */
-func (a *Client) GetHardwareBrand(params *GetHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetHardwareBrandOK, error) {
+func (a *Client) HardwareModelGetHardwareBrand(params *HardwareModelGetHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetHardwareBrandOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetHardwareBrandParams()
+		params = NewHardwareModelGetHardwareBrandParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetHardwareBrand",
+		ID:                 "HardwareModel_GetHardwareBrand",
 		Method:             "GET",
 		PathPattern:        "/v1/brands/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetHardwareBrandReader{formats: a.formats},
+		Reader:             &HardwareModelGetHardwareBrandReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -471,35 +544,34 @@ func (a *Client) GetHardwareBrand(params *GetHardwareBrandParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetHardwareBrandOK)
+	success, ok := result.(*HardwareModelGetHardwareBrandOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetHardwareBrand: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetHardwareBrandDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetHardwareBrandByName gets hardware brand
+HardwareModelGetHardwareBrandByName gets hardware brand
 
 Get the configuration (without security details) of a hardware brand record.
 */
-func (a *Client) GetHardwareBrandByName(params *GetHardwareBrandByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetHardwareBrandByNameOK, error) {
+func (a *Client) HardwareModelGetHardwareBrandByName(params *HardwareModelGetHardwareBrandByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetHardwareBrandByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetHardwareBrandByNameParams()
+		params = NewHardwareModelGetHardwareBrandByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetHardwareBrandByName",
+		ID:                 "HardwareModel_GetHardwareBrandByName",
 		Method:             "GET",
 		PathPattern:        "/v1/brands/name/{name}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetHardwareBrandByNameReader{formats: a.formats},
+		Reader:             &HardwareModelGetHardwareBrandByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -512,35 +584,34 @@ func (a *Client) GetHardwareBrandByName(params *GetHardwareBrandByNameParams, au
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetHardwareBrandByNameOK)
+	success, ok := result.(*HardwareModelGetHardwareBrandByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetHardwareBrandByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetHardwareBrandByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetHardwareModel gets hardware model
+HardwareModelGetHardwareModel gets hardware model
 
 Get the configuration (without security details) of a hardware model record.
 */
-func (a *Client) GetHardwareModel(params *GetHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetHardwareModelOK, error) {
+func (a *Client) HardwareModelGetHardwareModel(params *HardwareModelGetHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetHardwareModelOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetHardwareModelParams()
+		params = NewHardwareModelGetHardwareModelParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetHardwareModel",
+		ID:                 "HardwareModel_GetHardwareModel",
 		Method:             "GET",
 		PathPattern:        "/v1/sysmodels/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetHardwareModelReader{formats: a.formats},
+		Reader:             &HardwareModelGetHardwareModelReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -553,35 +624,34 @@ func (a *Client) GetHardwareModel(params *GetHardwareModelParams, authInfo runti
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetHardwareModelOK)
+	success, ok := result.(*HardwareModelGetHardwareModelOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetHardwareModel: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetHardwareModelDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetHardwareModelByName gets hardware model
+HardwareModelGetHardwareModelByName gets hardware model
 
 Get the configuration (without security details) of a hardware model record.
 */
-func (a *Client) GetHardwareModelByName(params *GetHardwareModelByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetHardwareModelByNameOK, error) {
+func (a *Client) HardwareModelGetHardwareModelByName(params *HardwareModelGetHardwareModelByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelGetHardwareModelByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetHardwareModelByNameParams()
+		params = NewHardwareModelGetHardwareModelByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetHardwareModelByName",
+		ID:                 "HardwareModel_GetHardwareModelByName",
 		Method:             "GET",
 		PathPattern:        "/v1/sysmodels/name/{name}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetHardwareModelByNameReader{formats: a.formats},
+		Reader:             &HardwareModelGetHardwareModelByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -594,35 +664,34 @@ func (a *Client) GetHardwareModelByName(params *GetHardwareModelByNameParams, au
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetHardwareModelByNameOK)
+	success, ok := result.(*HardwareModelGetHardwareModelByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetHardwareModelByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelGetHardwareModelByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-QueryGlobalHardwareBrands queries global hardware brands
+HardwareModelQueryGlobalHardwareBrands queries global hardware brands
 
 Query the global hardware brand records.
 */
-func (a *Client) QueryGlobalHardwareBrands(params *QueryGlobalHardwareBrandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryGlobalHardwareBrandsOK, error) {
+func (a *Client) HardwareModelQueryGlobalHardwareBrands(params *HardwareModelQueryGlobalHardwareBrandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelQueryGlobalHardwareBrandsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewQueryGlobalHardwareBrandsParams()
+		params = NewHardwareModelQueryGlobalHardwareBrandsParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "QueryGlobalHardwareBrands",
+		ID:                 "HardwareModel_QueryGlobalHardwareBrands",
 		Method:             "GET",
 		PathPattern:        "/v1/brands/global",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &QueryGlobalHardwareBrandsReader{formats: a.formats},
+		Reader:             &HardwareModelQueryGlobalHardwareBrandsReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -635,35 +704,34 @@ func (a *Client) QueryGlobalHardwareBrands(params *QueryGlobalHardwareBrandsPara
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*QueryGlobalHardwareBrandsOK)
+	success, ok := result.(*HardwareModelQueryGlobalHardwareBrandsOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for QueryGlobalHardwareBrands: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelQueryGlobalHardwareBrandsDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-QueryGlobalHardwareModels queries global hardware models
+HardwareModelQueryGlobalHardwareModels queries global hardware models
 
 Query the global hardware model records.
 */
-func (a *Client) QueryGlobalHardwareModels(params *QueryGlobalHardwareModelsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryGlobalHardwareModelsOK, error) {
+func (a *Client) HardwareModelQueryGlobalHardwareModels(params *HardwareModelQueryGlobalHardwareModelsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelQueryGlobalHardwareModelsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewQueryGlobalHardwareModelsParams()
+		params = NewHardwareModelQueryGlobalHardwareModelsParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "QueryGlobalHardwareModels",
+		ID:                 "HardwareModel_QueryGlobalHardwareModels",
 		Method:             "GET",
 		PathPattern:        "/v1/sysmodels/global",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &QueryGlobalHardwareModelsReader{formats: a.formats},
+		Reader:             &HardwareModelQueryGlobalHardwareModelsReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -676,35 +744,34 @@ func (a *Client) QueryGlobalHardwareModels(params *QueryGlobalHardwareModelsPara
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*QueryGlobalHardwareModelsOK)
+	success, ok := result.(*HardwareModelQueryGlobalHardwareModelsOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for QueryGlobalHardwareModels: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelQueryGlobalHardwareModelsDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-QueryHardwareBrands queries hardware brands
+HardwareModelQueryHardwareBrands queries hardware brands
 
 Query the hardware brand records.
 */
-func (a *Client) QueryHardwareBrands(params *QueryHardwareBrandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryHardwareBrandsOK, error) {
+func (a *Client) HardwareModelQueryHardwareBrands(params *HardwareModelQueryHardwareBrandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelQueryHardwareBrandsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewQueryHardwareBrandsParams()
+		params = NewHardwareModelQueryHardwareBrandsParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "QueryHardwareBrands",
+		ID:                 "HardwareModel_QueryHardwareBrands",
 		Method:             "GET",
 		PathPattern:        "/v1/brands",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &QueryHardwareBrandsReader{formats: a.formats},
+		Reader:             &HardwareModelQueryHardwareBrandsReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -717,35 +784,34 @@ func (a *Client) QueryHardwareBrands(params *QueryHardwareBrandsParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*QueryHardwareBrandsOK)
+	success, ok := result.(*HardwareModelQueryHardwareBrandsOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for QueryHardwareBrands: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelQueryHardwareBrandsDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-QueryHardwareModels queries hardware models
+HardwareModelQueryHardwareModels queries hardware models
 
 Query the hardware model records.
 */
-func (a *Client) QueryHardwareModels(params *QueryHardwareModelsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryHardwareModelsOK, error) {
+func (a *Client) HardwareModelQueryHardwareModels(params *HardwareModelQueryHardwareModelsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelQueryHardwareModelsOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewQueryHardwareModelsParams()
+		params = NewHardwareModelQueryHardwareModelsParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "QueryHardwareModels",
+		ID:                 "HardwareModel_QueryHardwareModels",
 		Method:             "GET",
 		PathPattern:        "/v1/sysmodels",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &QueryHardwareModelsReader{formats: a.formats},
+		Reader:             &HardwareModelQueryHardwareModelsReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -758,35 +824,34 @@ func (a *Client) QueryHardwareModels(params *QueryHardwareModelsParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*QueryHardwareModelsOK)
+	success, ok := result.(*HardwareModelQueryHardwareModelsOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for QueryHardwareModels: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelQueryHardwareModelsDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-UpdateHardwareBrand updates hardware brand
+HardwareModelUpdateHardwareBrand updates hardware brand
 
 Update a hardware brand. The usual pattern to update a hardware brand record is to retrieve the record and update with the modified values in a new body to update the hardware brand record.
 */
-func (a *Client) UpdateHardwareBrand(params *UpdateHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateHardwareBrandOK, error) {
+func (a *Client) HardwareModelUpdateHardwareBrand(params *HardwareModelUpdateHardwareBrandParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelUpdateHardwareBrandOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateHardwareBrandParams()
+		params = NewHardwareModelUpdateHardwareBrandParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "UpdateHardwareBrand",
+		ID:                 "HardwareModel_UpdateHardwareBrand",
 		Method:             "PUT",
 		PathPattern:        "/v1/brands/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateHardwareBrandReader{formats: a.formats},
+		Reader:             &HardwareModelUpdateHardwareBrandReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -799,35 +864,34 @@ func (a *Client) UpdateHardwareBrand(params *UpdateHardwareBrandParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateHardwareBrandOK)
+	success, ok := result.(*HardwareModelUpdateHardwareBrandOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for UpdateHardwareBrand: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelUpdateHardwareBrandDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-UpdateHardwareModel updates hardware model
+HardwareModelUpdateHardwareModel updates hardware model
 
 Update a hardware model. The usual pattern to update a hardware model record is to retrieve the record and update with the modified values in a new body to update the hardware model record.
 */
-func (a *Client) UpdateHardwareModel(params *UpdateHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateHardwareModelOK, error) {
+func (a *Client) HardwareModelUpdateHardwareModel(params *HardwareModelUpdateHardwareModelParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*HardwareModelUpdateHardwareModelOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateHardwareModelParams()
+		params = NewHardwareModelUpdateHardwareModelParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "UpdateHardwareModel",
+		ID:                 "HardwareModel_UpdateHardwareModel",
 		Method:             "PUT",
 		PathPattern:        "/v1/sysmodels/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateHardwareModelReader{formats: a.formats},
+		Reader:             &HardwareModelUpdateHardwareModelReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -840,14 +904,13 @@ func (a *Client) UpdateHardwareModel(params *UpdateHardwareModelParams, authInfo
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateHardwareModelOK)
+	success, ok := result.(*HardwareModelUpdateHardwareModelOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for UpdateHardwareModel: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*HardwareModelUpdateHardwareModelDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 // SetTransport changes the transport on the client

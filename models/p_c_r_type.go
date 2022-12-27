@@ -14,7 +14,9 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// PCRType - PCR_TYPE_UNSPECIFIED: Unset PCR type - PCR_TYPE_HASH: PCR value of type HASH - PCR_TYPE_EVENT_LOG: PCR value of type event log
+// PCRType - PCR_TYPE_UNSPECIFIED: Unset PCR type
+//   - PCR_TYPE_HASH: PCR value of type HASH
+//   - PCR_TYPE_EVENT_LOG: PCR value of type event log
 //
 // swagger:model PCRType
 type PCRType string

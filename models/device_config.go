@@ -31,6 +31,12 @@ type DeviceConfig struct {
 	// base images
 	BaseImage []*BaseOSImage `json:"baseImage"`
 
+	// device baseos retry counter
+	BaseOsRetryCounter int64 `json:"baseOsRetryCounter,omitempty"`
+
+	// device baseos retry time
+	BaseOsRetryTime string `json:"baseOsRetryTime,omitempty"`
+
 	// Client IP
 	ClientIP string `json:"clientIp,omitempty"`
 
@@ -46,6 +52,15 @@ type DeviceConfig struct {
 	// CPU (configured values)
 	CPU int64 `json:"cpu,omitempty"`
 
+	// debug knob details for the device
+	DebugKnob *DebugKnobDetail `json:"debugKnob,omitempty"`
+
+	// default network instance details
+	DefaultNetInst *NetInstConfig `json:"defaultNetInst,omitempty"`
+
+	// user defined tag for the device, which is used while deploying policies.
+	DeploymentTag string `json:"deploymentTag,omitempty"`
+
 	// deprecated field
 	Deprecated string `json:"deprecated,omitempty"`
 
@@ -57,6 +72,12 @@ type DeviceConfig struct {
 
 	// device Lisp
 	Dlisp *DeviceLisp `json:"dlisp,omitempty"`
+
+	// edgeview configuration for device
+	Edgeviewconfig *EdgeviewCfg `json:"edgeviewconfig,omitempty"`
+
+	// indicates whether a soft serial should be generated; it will work ONLY when device is created
+	GenerateSoftSerial bool `json:"generateSoftSerial,omitempty"`
 
 	// system generated unique id for a device
 	// Read Only: true
@@ -90,6 +111,12 @@ type DeviceConfig struct {
 	// Device level certificates used while onboarding
 	Onboarding *DeviceCerts `json:"onboarding,omitempty"`
 
+	// prepare poweroff counter
+	PreparePowerOffCounter int64 `json:"preparePowerOffCounter,omitempty"`
+
+	// prepare poweroff time
+	PreparePowerOffTime string `json:"preparePowerOffTime,omitempty"`
+
 	// project name
 	// Required: true
 	ProjectID *string `json:"projectId"`
@@ -112,7 +139,7 @@ type DeviceConfig struct {
 	// Device storage in GBs
 	Storage int64 `json:"storage,omitempty"`
 
-	// tags
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
 
 	// Threads
@@ -149,11 +176,23 @@ func (m *DeviceConfig) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateDebugKnob(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDefaultNetInst(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateDevLocation(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateDlisp(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEdgeviewconfig(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -290,6 +329,44 @@ func (m *DeviceConfig) validateConfigItem(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *DeviceConfig) validateDebugKnob(formats strfmt.Registry) error {
+	if swag.IsZero(m.DebugKnob) { // not required
+		return nil
+	}
+
+	if m.DebugKnob != nil {
+		if err := m.DebugKnob.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("debugKnob")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("debugKnob")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) validateDefaultNetInst(formats strfmt.Registry) error {
+	if swag.IsZero(m.DefaultNetInst) { // not required
+		return nil
+	}
+
+	if m.DefaultNetInst != nil {
+		if err := m.DefaultNetInst.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("defaultNetInst")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("defaultNetInst")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *DeviceConfig) validateDevLocation(formats strfmt.Registry) error {
 	if swag.IsZero(m.DevLocation) { // not required
 		return nil
@@ -320,6 +397,25 @@ func (m *DeviceConfig) validateDlisp(formats strfmt.Registry) error {
 				return ve.ValidateName("dlisp")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("dlisp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) validateEdgeviewconfig(formats strfmt.Registry) error {
+	if swag.IsZero(m.Edgeviewconfig) { // not required
+		return nil
+	}
+
+	if m.Edgeviewconfig != nil {
+		if err := m.Edgeviewconfig.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeviewconfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeviewconfig")
 			}
 			return err
 		}
@@ -475,11 +571,23 @@ func (m *DeviceConfig) ContextValidate(ctx context.Context, formats strfmt.Regis
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateDebugKnob(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateDefaultNetInst(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateDevLocation(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.contextValidateDlisp(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateEdgeviewconfig(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -565,6 +673,38 @@ func (m *DeviceConfig) contextValidateConfigItem(ctx context.Context, formats st
 	return nil
 }
 
+func (m *DeviceConfig) contextValidateDebugKnob(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.DebugKnob != nil {
+		if err := m.DebugKnob.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("debugKnob")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("debugKnob")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) contextValidateDefaultNetInst(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.DefaultNetInst != nil {
+		if err := m.DefaultNetInst.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("defaultNetInst")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("defaultNetInst")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *DeviceConfig) contextValidateDevLocation(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DevLocation != nil {
@@ -589,6 +729,22 @@ func (m *DeviceConfig) contextValidateDlisp(ctx context.Context, formats strfmt.
 				return ve.ValidateName("dlisp")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("dlisp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) contextValidateEdgeviewconfig(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Edgeviewconfig != nil {
+		if err := m.Edgeviewconfig.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeviewconfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeviewconfig")
 			}
 			return err
 		}

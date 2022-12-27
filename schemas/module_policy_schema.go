@@ -29,7 +29,7 @@ func ModulePolicyModel(d *schema.ResourceData) *models.ModulePolicy {
 		ID:                 id,
 		Labels:             labels,
 		Metrics:            metrics,
-		Priority:           priority,
+		Priority:           &priority, // int64 true false false
 		Routes:             routes,
 		TargetCondition:    targetCondition,
 		TargetConditionNew: targetConditionNew,
@@ -48,7 +48,7 @@ func ModulePolicyModelFromMap(m map[string]interface{}) *models.ModulePolicy {
 		metrics = MetricsDetailModelFromMap(metricsMap)
 	}
 	//
-	priority := int64(m["priority"].(int)) // int64 false false false
+	priority := int64(m["priority"].(int)) // int64 true false false
 	routes := m["routes"].(map[string]string)
 	targetCondition := m["target_condition"].(string)
 	targetConditionNew := m["target_condition_new"].(map[string]string)
@@ -58,7 +58,7 @@ func ModulePolicyModelFromMap(m map[string]interface{}) *models.ModulePolicy {
 		ID:                 id,
 		Labels:             labels,
 		Metrics:            metrics,
-		Priority:           priority,
+		Priority:           &priority,
 		Routes:             routes,
 		TargetCondition:    targetCondition,
 		TargetConditionNew: targetConditionNew,
@@ -113,8 +113,8 @@ func ModulePolicySchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppConfigSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"id": {
@@ -124,7 +124,7 @@ func ModulePolicySchema() map[string]*schema.Schema {
 		},
 
 		"labels": {
-			Description: ``,
+			Description: `Mapping of label variable keys and value`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -134,21 +134,19 @@ func ModulePolicySchema() map[string]*schema.Schema {
 
 		"metrics": {
 			Description: `custom metrics for deployment`,
-			Type:        schema.TypeList, //GoType: MetricsDetail
-			Elem: &schema.Resource{
-				Schema: MetricsDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"priority": {
 			Description: `deployment priority of module manifest`,
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"routes": {
-			Description: ``,
+			Description: `Mapping of routes variable keys and value`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -163,7 +161,7 @@ func ModulePolicySchema() map[string]*schema.Schema {
 		},
 
 		"target_condition_new": {
-			Description: ``,
+			Description: `target condition for deployment that matches single device or group of devices`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,

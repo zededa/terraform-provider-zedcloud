@@ -22,13 +22,13 @@ func AppACEActionModel(d *schema.ResourceData) *models.AppACEAction {
 	}
 	portmap := d.Get("portmap").(bool)
 	return &models.AppACEAction{
-		Drop:       drop,
-		Limit:      limit,
+		Drop:       &drop,       // bool true false false
+		Limit:      &limit,      // bool true false false
 		Limitburst: &limitburst, // int64 true false false
 		Limitrate:  &limitrate,  // int64 true false false
 		Limitunit:  &limitunit,  // string true false false
 		Mapparams:  mapparams,
-		Portmap:    portmap,
+		Portmap:    &portmap, // bool true false false
 	}
 }
 
@@ -47,13 +47,13 @@ func AppACEActionModelFromMap(m map[string]interface{}) *models.AppACEAction {
 	//
 	portmap := m["portmap"].(bool)
 	return &models.AppACEAction{
-		Drop:       drop,
-		Limit:      limit,
+		Drop:       &drop,
+		Limit:      &limit,
 		Limitburst: &limitburst,
 		Limitrate:  &limitrate,
 		Limitunit:  &limitunit,
 		Mapparams:  mapparams,
-		Portmap:    portmap,
+		Portmap:    &portmap,
 	}
 }
 
@@ -121,10 +121,8 @@ func AppACEActionSchema() map[string]*schema.Schema {
 
 		"mapparams": {
 			Description: `Application map params`,
-			Type:        schema.TypeList, //GoType: AppMapParams
-			Elem: &schema.Resource{
-				Schema: AppMapParamsSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 

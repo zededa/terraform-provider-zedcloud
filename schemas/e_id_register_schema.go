@@ -149,8 +149,8 @@ func EIDRegisterSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: LispServerSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"lisp_signature": {

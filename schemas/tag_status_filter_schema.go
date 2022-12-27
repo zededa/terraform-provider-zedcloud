@@ -11,18 +11,22 @@ import (
 func TagStatusFilterModel(d *schema.ResourceData) *models.TagStatusFilter {
 	namePattern := d.Get("name_pattern").(string)
 	status := d.Get("status").(*models.TagStatus) // TagStatus
+	typeVar := d.Get("type").(*models.TagType)    // TagType
 	return &models.TagStatusFilter{
 		NamePattern: namePattern,
 		Status:      status,
+		Type:        typeVar,
 	}
 }
 
 func TagStatusFilterModelFromMap(m map[string]interface{}) *models.TagStatusFilter {
 	namePattern := m["name_pattern"].(string)
 	status := m["status"].(*models.TagStatus) // TagStatus
+	typeVar := m["type"].(*models.TagType)    // TagType
 	return &models.TagStatusFilter{
 		NamePattern: namePattern,
 		Status:      status,
+		Type:        typeVar,
 	}
 }
 
@@ -30,6 +34,7 @@ func TagStatusFilterModelFromMap(m map[string]interface{}) *models.TagStatusFilt
 func SetTagStatusFilterResourceData(d *schema.ResourceData, m *models.TagStatusFilter) {
 	d.Set("name_pattern", m.NamePattern)
 	d.Set("status", m.Status)
+	d.Set("type", m.Type)
 }
 
 // Iterate throught and update the TagStatusFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -39,6 +44,7 @@ func SetTagStatusFilterSubResourceData(m []*models.TagStatusFilter) (d []*map[st
 			properties := make(map[string]interface{})
 			properties["name_pattern"] = TagStatusFilterModel.NamePattern
 			properties["status"] = TagStatusFilterModel.Status
+			properties["type"] = TagStatusFilterModel.Type
 			d = append(d, &properties)
 		}
 	}
@@ -56,10 +62,15 @@ func TagStatusFilterSchema() map[string]*schema.Schema {
 
 		"status": {
 			Description: `Resource group status to be matched.`,
-			Type:        schema.TypeList, //GoType: TagStatus
-			Elem: &schema.Resource{
-				Schema: TagStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+
+		"type": {
+			Description: `Resource group type to ne matched.`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}
@@ -70,5 +81,6 @@ func GetTagStatusFilterPropertyFields() (t []string) {
 	return []string{
 		"name_pattern",
 		"status",
+		"type",
 	}
 }

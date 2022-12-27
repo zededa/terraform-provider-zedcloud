@@ -56,10 +56,8 @@ func AttestationPolicySchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Attestation policy type`,
-			Type:        schema.TypeList, //GoType: AttestPolicyType
-			Elem: &schema.Resource{
-				Schema: AttestPolicyTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 	}

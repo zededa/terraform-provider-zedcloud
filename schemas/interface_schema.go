@@ -78,8 +78,8 @@ func InterfaceSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ACLSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"directattach": {

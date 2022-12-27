@@ -49,13 +49,13 @@ func SetMatchSubResourceData(m []*models.Match) (d []*map[string]interface{}) {
 func MatchSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"type": {
-			Description: ``,
+			Description: `Type of Match (Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"value": {
-			Description: ``,
+			Description: `Value of match (Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

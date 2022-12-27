@@ -16,7 +16,9 @@ import (
 
 // SysModelState SysModelState : enum specifies the SysModel status
 //
-// - SYS_MODEL_STATE_UNSPECIFIED: default options, which says no Operation/Invalid Operation - SYS_MODEL_STATE_ARCHIVE: Archived  sysModel State - SYS_MODEL_STATE_ACTIVE: Active sysModel state
+// - SYS_MODEL_STATE_UNSPECIFIED: default options, which says no Operation/Invalid Operation
+//   - SYS_MODEL_STATE_ARCHIVE: Archived  sysModel State
+//   - SYS_MODEL_STATE_ACTIVE: Active sysModel state
 //
 // swagger:model SysModelState
 type SysModelState string

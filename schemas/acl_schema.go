@@ -60,8 +60,8 @@ func ACLSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ACLActionSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"matches": {
@@ -70,8 +70,8 @@ func ACLSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: MatchSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"name": {

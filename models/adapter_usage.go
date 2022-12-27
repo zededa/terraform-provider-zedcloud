@@ -16,7 +16,11 @@ import (
 
 // AdapterUsage Adapter Usage
 //
-// - ADAPTER_USAGE_UNSPECIFIED: Adapter unspecified - ADAPTER_USAGE_MANAGEMENT: Adapter can be used by EVE as well as other Edge applications - ADAPTER_USAGE_APP_DIRECT: Adapter is directly used by one edge application - ADAPTER_USAGE_APP_SHARED: Adapter can be shared by different network instances - ADAPTER_USAGE_DISABLED: Adapter disabled, for future use
+// - ADAPTER_USAGE_UNSPECIFIED: Adapter unspecified
+//   - ADAPTER_USAGE_MANAGEMENT: Adapter can be used by EVE as well as other Edge applications
+//   - ADAPTER_USAGE_APP_DIRECT: Adapter is directly used by one edge application
+//   - ADAPTER_USAGE_APP_SHARED: Adapter can be shared by different network instances
+//   - ADAPTER_USAGE_DISABLED: Adapter disabled, for future use
 //
 // swagger:model AdapterUsage
 type AdapterUsage string

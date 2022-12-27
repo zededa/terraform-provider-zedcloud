@@ -17,10 +17,10 @@ layout:
       source: "swagger/templates/schema.gtpl"
       target: "{{ joinFilePath .Target }}/schemas"
       file_name: "{{ camelize .Name }}_schema.go"
-    - name: datadump
-      source: "swagger/templates/datadump.gtpl"
-      target: "{{ joinFilePath .Target }}/data_profile"
-      file_name: "{{ camelize .Name }}_models.profile"
+    # - name: datadump
+    #   source: "swagger/templates/datadump.gtpl"
+    #   target: "{{ joinFilePath .Target }}/data_profile"
+    #   file_name: "{{ camelize .Name }}_models.profile"
   operations:
     - name: parameters
       source: asset:clientParameter
@@ -35,11 +35,11 @@ layout:
       source: asset:clientClient
       target: "{{ joinFilePath .Target .ClientPackage .Name }}"
       file_name: "{{ (snakize (pascalize .Name)) }}_client.go"
-    - name: resources
-      source: "swagger/templates/resources.gtpl"
-      target: "{{ joinFilePath .Target }}/resources"
-      file_name: "{{ camelize .Name }}_resource.go"
-    - name: datadump
-      source: "swagger/templates/datadump.gtpl"
-      target: "{{ joinFilePath .Target }}/resource_profile"
-      file_name: "{{ camelize .Name }}_resource.profile"
+    # - name: resources
+    #   source: "swagger/templates/resources.gtpl"
+    #   target: "{{ joinFilePath .Target }}/resources"
+    #   file_name: "{{ camelize .Name }}_resource.go"
+    # - name: datadump
+    #   source: "swagger/templates/datadump.gtpl"
+    #   target: "{{ joinFilePath .Target }}/resource_profile"
+    #   file_name: "{{ camelize .Name }}_resource.profile"

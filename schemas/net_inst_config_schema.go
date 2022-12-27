@@ -11,7 +11,7 @@ import (
 func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 	clusterID := d.Get("cluster_id").(string)
 	description := d.Get("description").(string)
-	deviceDefault := d.Get("device_default").(bool)
+	deviceDefault := d.Get("device_default").(string)
 	deviceID := d.Get("device_id").(string)
 	dhcp := d.Get("dhcp").(bool)
 	dNSList := d.Get("dns_list").([]*models.StaticDNSList) // []*StaticDNSList
@@ -78,7 +78,7 @@ func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 func NetInstConfigModelFromMap(m map[string]interface{}) *models.NetInstConfig {
 	clusterID := m["cluster_id"].(string)
 	description := m["description"].(string)
-	deviceDefault := m["device_default"].(bool)
+	deviceDefault := m["device_default"].(string)
 	deviceID := m["device_id"].(string)
 	dhcp := m["dhcp"].(bool)
 	dNSList := m["dns_list"].([]*models.StaticDNSList) // []*StaticDNSList
@@ -207,7 +207,7 @@ func SetNetInstConfigSubResourceData(m []*models.NetInstConfig) (d []*map[string
 func NetInstConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cluster_id": {
-			Description: `System defined universally unique clusterInstance ID, unique across the enterprise.`,
+			Description: `id of the Cluster in which the network instance is configured`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -219,31 +219,31 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 		},
 
 		"device_default": {
-			Description: ``,
-			Type:        schema.TypeBool,
+			Description: `flag to indicate if this is the default network instance for the device`,
+			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"device_id": {
-			Description: ``,
+			Description: `id of the device on which network instance is created`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},
 
 		"dhcp": {
-			Description: ``,
+			Description: `Deprecated`,
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
 		"dns_list": {
-			Description: ``,
+			Description: `List of Static DNS entries`,
 			Type:        schema.TypeList, //GoType: []*StaticDNSList
 			Elem: &schema.Resource{
 				Schema: StaticDNSListSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"id": {
@@ -253,29 +253,23 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 		},
 
 		"ip": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: DhcpServerConfig
-			Elem: &schema.Resource{
-				Schema: DhcpServerConfigSchema(),
-			},
+			Description: `Dhcp Server Configuration`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"kind": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: NetworkInstanceKind
-			Elem: &schema.Resource{
-				Schema: NetworkInstanceKindSchema(),
-			},
+			Description: `Kind of Network Instance ( Local, Switch etc )`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
 		"lisp": {
 			Description: `Lisp Config : read only for now. Deprecated.`,
-			Type:        schema.TypeList, //GoType: LispConfig
-			Elem: &schema.Resource{
-				Schema: LispConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -286,7 +280,7 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 		},
 
 		"network_policy_id": {
-			Description: `network policy id`,
+			Description: `id of the network policy to be attached to this network instance`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -298,22 +292,20 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 		},
 
 		"opaque": {
-			Description: `Service specific Config.`,
-			Type:        schema.TypeList, //GoType: NetInstOpaqueConfig
-			Elem: &schema.Resource{
-				Schema: NetInstOpaqueConfigSchema(),
-			},
+			Description: `Service specific Config`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"port": {
-			Description: ``,
+			Description: `name of port mapping in the model`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},
 
 		"port_tags": {
-			Description: ``,
+			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -322,22 +314,20 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 		},
 
 		"project_id": {
-			Description: ``,
+			Description: `id of the project in which network instance is created`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"revision": {
-			Description: `system defined info`,
-			Type:        schema.TypeList, //GoType: ObjectRevision
-			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
-			},
+			Description: `system defined info for the object`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"tags": {
-			Description: ``,
+			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -352,11 +342,9 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: NetworkInstanceDhcpType
-			Elem: &schema.Resource{
-				Schema: NetworkInstanceDhcpTypeSchema(),
-			},
+			Description: `Type of DHCP for this Network Instance`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

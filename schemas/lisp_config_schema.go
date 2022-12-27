@@ -111,8 +111,8 @@ func LispConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ServicePointSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 	}
 }

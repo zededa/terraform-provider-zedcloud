@@ -18,13 +18,15 @@ import (
 // swagger:model NetInstOpaqueConfig
 type NetInstOpaqueConfig struct {
 
-	// lisp
+	// lisp - Deprecated
+	//
+	// Deprecated - Lisp config
 	Lisp *LispConfig `json:"lisp,omitempty"`
 
-	// oconfig
+	// base64 encoded string of opaque config
 	Oconfig string `json:"oconfig,omitempty"`
 
-	// type
+	// type of Opaque config
 	Type *OpaqueConfigType `json:"type,omitempty"`
 }
 

@@ -23,6 +23,9 @@ type DeviceEntity struct {
 
 	// entity Id
 	EntityID string `json:"entityId,omitempty"`
+
+	// entity name
+	EntityName string `json:"entityName,omitempty"`
 }
 
 // Validate validates this device entity

@@ -12,6 +12,13 @@ func DeviceConfigSummaryModel(d *schema.ResourceData) *models.DeviceConfigSummar
 	adminState := d.Get("admin_state").(*models.AdminState)  // AdminState
 	baseImage := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
 	clusterID := d.Get("cluster_id").(string)
+	var debugKnob *models.DebugKnobDetail // DebugKnobDetail
+	debugKnobInterface, debugKnobIsSet := d.GetOk("debug_knob")
+	if debugKnobIsSet {
+		debugKnobMap := debugKnobInterface.([]interface{})[0].(map[string]interface{})
+		debugKnob = DebugKnobDetailModelFromMap(debugKnobMap)
+	}
+	deploymentTag := d.Get("deployment_tag").(string)
 	description := d.Get("description").(string)
 	id := d.Get("id").(string)
 	interfaces := d.Get("interfaces").([]*models.SysInterface) // []*SysInterface
@@ -23,19 +30,21 @@ func DeviceConfigSummaryModel(d *schema.ResourceData) *models.DeviceConfigSummar
 	title := d.Get("title").(string)
 	utype := d.Get("utype").(*models.ModelArchType) // ModelArchType
 	return &models.DeviceConfigSummary{
-		AdminState:  adminState,
-		BaseImage:   baseImage,
-		ClusterID:   clusterID,
-		Description: description,
-		ID:          id,
-		Interfaces:  interfaces,
-		ModelID:     &modelID,   // string true false false
-		Name:        &name,      // string true false false
-		ProjectID:   &projectID, // string true false false
-		Serialno:    serialno,
-		Tags:        tags,
-		Title:       &title, // string true false false
-		Utype:       utype,
+		AdminState:    adminState,
+		BaseImage:     baseImage,
+		ClusterID:     clusterID,
+		DebugKnob:     debugKnob,
+		DeploymentTag: deploymentTag,
+		Description:   description,
+		ID:            id,
+		Interfaces:    interfaces,
+		ModelID:       &modelID,   // string true false false
+		Name:          &name,      // string true false false
+		ProjectID:     &projectID, // string true false false
+		Serialno:      serialno,
+		Tags:          tags,
+		Title:         &title, // string true false false
+		Utype:         utype,
 	}
 }
 
@@ -43,6 +52,14 @@ func DeviceConfigSummaryModelFromMap(m map[string]interface{}) *models.DeviceCon
 	adminState := m["admin_state"].(*models.AdminState)  // AdminState
 	baseImage := m["base_image"].([]*models.BaseOSImage) // []*BaseOSImage
 	clusterID := m["cluster_id"].(string)
+	var debugKnob *models.DebugKnobDetail // DebugKnobDetail
+	debugKnobInterface, debugKnobIsSet := m["debug_knob"]
+	if debugKnobIsSet {
+		debugKnobMap := debugKnobInterface.([]interface{})[0].(map[string]interface{})
+		debugKnob = DebugKnobDetailModelFromMap(debugKnobMap)
+	}
+	//
+	deploymentTag := m["deployment_tag"].(string)
 	description := m["description"].(string)
 	id := m["id"].(string)
 	interfaces := m["interfaces"].([]*models.SysInterface) // []*SysInterface
@@ -54,19 +71,21 @@ func DeviceConfigSummaryModelFromMap(m map[string]interface{}) *models.DeviceCon
 	title := m["title"].(string)
 	utype := m["utype"].(*models.ModelArchType) // ModelArchType
 	return &models.DeviceConfigSummary{
-		AdminState:  adminState,
-		BaseImage:   baseImage,
-		ClusterID:   clusterID,
-		Description: description,
-		ID:          id,
-		Interfaces:  interfaces,
-		ModelID:     &modelID,
-		Name:        &name,
-		ProjectID:   &projectID,
-		Serialno:    serialno,
-		Tags:        tags,
-		Title:       &title,
-		Utype:       utype,
+		AdminState:    adminState,
+		BaseImage:     baseImage,
+		ClusterID:     clusterID,
+		DebugKnob:     debugKnob,
+		DeploymentTag: deploymentTag,
+		Description:   description,
+		ID:            id,
+		Interfaces:    interfaces,
+		ModelID:       &modelID,
+		Name:          &name,
+		ProjectID:     &projectID,
+		Serialno:      serialno,
+		Tags:          tags,
+		Title:         &title,
+		Utype:         utype,
 	}
 }
 
@@ -75,6 +94,8 @@ func SetDeviceConfigSummaryResourceData(d *schema.ResourceData, m *models.Device
 	d.Set("admin_state", m.AdminState)
 	d.Set("base_image", SetBaseOSImageSubResourceData(m.BaseImage))
 	d.Set("cluster_id", m.ClusterID)
+	d.Set("debug_knob", SetDebugKnobDetailSubResourceData([]*models.DebugKnobDetail{m.DebugKnob}))
+	d.Set("deployment_tag", m.DeploymentTag)
 	d.Set("description", m.Description)
 	d.Set("id", m.ID)
 	d.Set("interfaces", SetSysInterfaceSubResourceData(m.Interfaces))
@@ -95,6 +116,8 @@ func SetDeviceConfigSummarySubResourceData(m []*models.DeviceConfigSummary) (d [
 			properties["admin_state"] = DeviceConfigSummaryModel.AdminState
 			properties["base_image"] = SetBaseOSImageSubResourceData(DeviceConfigSummaryModel.BaseImage)
 			properties["cluster_id"] = DeviceConfigSummaryModel.ClusterID
+			properties["debug_knob"] = SetDebugKnobDetailSubResourceData([]*models.DebugKnobDetail{DeviceConfigSummaryModel.DebugKnob})
+			properties["deployment_tag"] = DeviceConfigSummaryModel.DeploymentTag
 			properties["description"] = DeviceConfigSummaryModel.Description
 			properties["id"] = DeviceConfigSummaryModel.ID
 			properties["interfaces"] = SetSysInterfaceSubResourceData(DeviceConfigSummaryModel.Interfaces)
@@ -116,10 +139,8 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"admin_state": {
 			Description: `administrative state of device`,
-			Type:        schema.TypeList, //GoType: AdminState
-			Elem: &schema.Resource{
-				Schema: AdminStateSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -129,12 +150,25 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: BaseOSImageSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"cluster_id": {
 			Description: `System defined universally unique clusterInstance ID, unique across the enterprise.`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"debug_knob": {
+			Description: `debug knob details for the device`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+
+		"deployment_tag": {
+			Description: `user defined tag for the device, which is used while deploying policies.`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -157,8 +191,8 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: SysInterfaceSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"model_id": {
@@ -186,7 +220,7 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 		},
 
 		"tags": {
-			Description: ``,
+			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -202,10 +236,8 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 
 		"utype": {
 			Description: `device model arch type`,
-			Type:        schema.TypeList, //GoType: ModelArchType
-			Elem: &schema.Resource{
-				Schema: ModelArchTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}
@@ -217,6 +249,8 @@ func GetDeviceConfigSummaryPropertyFields() (t []string) {
 		"admin_state",
 		"base_image",
 		"cluster_id",
+		"debug_knob",
+		"deployment_tag",
 		"description",
 		"id",
 		"interfaces",

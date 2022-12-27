@@ -67,7 +67,7 @@ func SummarySchema() map[string]*schema.Schema {
 		},
 
 		"values": {
-			Description: ``,
+			Description: `Values: Map for storing <string, uint32>`,
 			Type:        schema.TypeMap, //GoType: map[string]int64
 			Elem: &schema.Schema{
 				Type: schema.TypeInt,

@@ -169,10 +169,8 @@ func DeviceSWInfoSchema() map[string]*schema.Schema {
 
 		"status": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: SWState
-			Elem: &schema.Resource{
-				Schema: SWStateSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -184,28 +182,22 @@ func DeviceSWInfoSchema() map[string]*schema.Schema {
 
 		"sw_error": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: DeviceError
-			Elem: &schema.Resource{
-				Schema: DeviceErrorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"sw_status": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: DeviceSWStatus
-			Elem: &schema.Resource{
-				Schema: DeviceSWStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"sw_sub_status": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: DeviceSWSubStatus
-			Elem: &schema.Resource{
-				Schema: DeviceSWSubStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

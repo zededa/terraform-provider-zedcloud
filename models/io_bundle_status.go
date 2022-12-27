@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -31,8 +32,13 @@ type IoBundleStatus struct {
 	Err *DeviceError `json:"err,omitempty"`
 
 	// LTE information
-	LteInfo *LTEAdapter `json:"lte_info,omitempty"`
+	LteInfo *LTEAdapter `json:"lteInfo,omitempty"`
 
+	// List of IO members
+	MemberList []*IoMemberStatus `json:"memberList"`
+
+	// members - Deprecated by memberList
+	//
 	// Member Array
 	// Required: true
 	Members []string `json:"members"`
@@ -59,6 +65,10 @@ func (m *IoBundleStatus) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateLteInfo(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateMemberList(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -116,12 +126,38 @@ func (m *IoBundleStatus) validateLteInfo(formats strfmt.Registry) error {
 	if m.LteInfo != nil {
 		if err := m.LteInfo.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("lte_info")
+				return ve.ValidateName("lteInfo")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("lte_info")
+				return ce.ValidateName("lteInfo")
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *IoBundleStatus) validateMemberList(formats strfmt.Registry) error {
+	if swag.IsZero(m.MemberList) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.MemberList); i++ {
+		if swag.IsZero(m.MemberList[i]) { // not required
+			continue
+		}
+
+		if m.MemberList[i] != nil {
+			if err := m.MemberList[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("memberList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("memberList" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
@@ -181,6 +217,10 @@ func (m *IoBundleStatus) ContextValidate(ctx context.Context, formats strfmt.Reg
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateMemberList(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -212,12 +252,32 @@ func (m *IoBundleStatus) contextValidateLteInfo(ctx context.Context, formats str
 	if m.LteInfo != nil {
 		if err := m.LteInfo.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("lte_info")
+				return ve.ValidateName("lteInfo")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("lte_info")
+				return ce.ValidateName("lteInfo")
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *IoBundleStatus) contextValidateMemberList(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.MemberList); i++ {
+
+		if m.MemberList[i] != nil {
+			if err := m.MemberList[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("memberList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("memberList" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil

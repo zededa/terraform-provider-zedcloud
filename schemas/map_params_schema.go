@@ -43,7 +43,7 @@ func SetMapParamsSubResourceData(m []*models.MapParams) (d []*map[string]interfa
 func MapParamsSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_port": {
-			Description: ``,
+			Description: `Application Port value`,
 			Type:        schema.TypeInt,
 			Optional:    true,
 		},

@@ -72,34 +72,32 @@ func SetCustomConfigVariableGroupSubResourceData(m []*models.CustomConfigVariabl
 func CustomConfigVariableGroupSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"condition": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: VariableGroupCondition
-			Elem: &schema.Resource{
-				Schema: VariableGroupConditionSchema(),
-			},
+			Description: `Condition to apply the variable group. (Optional. Default: None)`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"name": {
-			Description: ``,
+			Description: `Name of the Variable Group(Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"required": {
-			Description: ``,
+			Description: `Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)`,
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
 		"variables": {
-			Description: ``,
+			Description: `List of variables(Required)`,
 			Type:        schema.TypeList, //GoType: []*VariableGroupVariable
 			Elem: &schema.Resource{
 				Schema: VariableGroupVariableSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 	}
 }

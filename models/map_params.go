@@ -17,7 +17,7 @@ import (
 // swagger:model MapParams
 type MapParams struct {
 
-	// app port
+	// Application Port value
 	AppPort int64 `json:"appPort,omitempty"`
 }
 

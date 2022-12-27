@@ -11,28 +11,42 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
-// PCRValue p c r value
+// PCRValue PCR value
+//
+// # PCR value contains the actual value of the specified PCR type
 //
 // swagger:model PCRValue
 type PCRValue struct {
 
-	// index
-	Index int64 `json:"index,omitempty"`
+	// Current index for the PCR item in the list. First element has the index 0
+	// Required: true
+	Index *int64 `json:"index"`
 
-	// type
-	Type *PCRType `json:"type,omitempty"`
+	// Type of value for the PCR item. Could be one of the following values: 0 (PCR_TYPE_UNSPECIFIED), 1 (PCR_TYPE_HASH) or 2 (PCR_TYPE_EVENT_LOG)
+	// Required: true
+	Type *PCRType `json:"type"`
 
-	// value
-	Value string `json:"value,omitempty"`
+	// Actual value for the PCR item.
+	// Required: true
+	Value *string `json:"value"`
 }
 
 // Validate validates this p c r value
 func (m *PCRValue) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateIndex(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateValue(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -42,9 +56,23 @@ func (m *PCRValue) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *PCRValue) validateIndex(formats strfmt.Registry) error {
+
+	if err := validate.Required("index", "body", m.Index); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *PCRValue) validateType(formats strfmt.Registry) error {
-	if swag.IsZero(m.Type) { // not required
-		return nil
+
+	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
 	}
 
 	if m.Type != nil {
@@ -56,6 +84,15 @@ func (m *PCRValue) validateType(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *PCRValue) validateValue(formats strfmt.Registry) error {
+
+	if err := validate.Required("value", "body", m.Value); err != nil {
+		return err
 	}
 
 	return nil

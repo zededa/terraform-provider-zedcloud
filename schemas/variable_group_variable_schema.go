@@ -29,7 +29,7 @@ func VariableGroupVariableModel(d *schema.ResourceData) *models.VariableGroupVar
 		Name:         &name, // string true false false
 		Options:      options,
 		ProcessInput: processInput,
-		Required:     required,
+		Required:     &required, // bool true false false
 		Type:         typeVar,
 		Value:        value,
 	}
@@ -56,7 +56,7 @@ func VariableGroupVariableModelFromMap(m map[string]interface{}) *models.Variabl
 		Name:         &name,
 		Options:      options,
 		ProcessInput: processInput,
-		Required:     required,
+		Required:     &required,
 		Type:         typeVar,
 		Value:        value,
 	}
@@ -103,55 +103,51 @@ func SetVariableGroupVariableSubResourceData(m []*models.VariableGroupVariable) 
 func VariableGroupVariableSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"default": {
-			Description: ``,
+			Description: `Default value of the variable. (Optional. Default: <Default value based on type>)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"encode": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: VariableFileEncoding
-			Elem: &schema.Resource{
-				Schema: VariableFileEncodingSchema(),
-			},
+			Description: `Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"format": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: VariableVariableFormat
-			Elem: &schema.Resource{
-				Schema: VariableVariableFormatSchema(),
-			},
+			Description: `Format of the user variable. (Required)`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
 		"label": {
-			Description: ``,
+			Description: `Label for the variable (Required)`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},
 
 		"max_length": {
-			Description: ``,
+			Description: `Max length of the value of the variable(Optional. Default: 1024)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"name": {
-			Description: ``,
+			Description: `Name of the Variable (Required)`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},
 
 		"options": {
-			Description: ``,
+			Description: `Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN`,
 			Type:        schema.TypeList, //GoType: []*VariableOptionVal
 			Elem: &schema.Resource{
 				Schema: VariableOptionValSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"process_input": {
@@ -161,7 +157,7 @@ func VariableGroupVariableSchema() map[string]*schema.Schema {
 		},
 
 		"required": {
-			Description: ``,
+			Description: `This variable MUST be specified when creating an App Instance. (Optional. Default: False)`,
 			Type:        schema.TypeBool,
 			Required:    true,
 		},
@@ -173,7 +169,7 @@ func VariableGroupVariableSchema() map[string]*schema.Schema {
 		},
 
 		"value": {
-			Description: ``,
+			Description: `User-specified value of the variable.(Required if required is true. Optional otherwise)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

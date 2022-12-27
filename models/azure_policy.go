@@ -41,7 +41,7 @@ type AzurePolicy struct {
 	// custom deployment managed
 	CustomDeploymentManaged bool `json:"customDeploymentManaged,omitempty"`
 
-	// encrypted secrets
+	// encrypted AppPassword
 	EncryptedSecrets map[string]string `json:"encryptedSecrets,omitempty"`
 
 	// tenant id for rbac

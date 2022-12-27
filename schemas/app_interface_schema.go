@@ -29,25 +29,27 @@ func AppInterfaceModel(d *schema.ResourceData) *models.AppInterface {
 	}
 	ipaddr := d.Get("ipaddr").(string)
 	macaddr := d.Get("macaddr").(string)
+	netinstid := d.Get("netinstid").(string)
 	netinstname := d.Get("netinstname").(string)
 	netinsttag := d.Get("netinsttag").(map[string]string) // map[string]string
 	netname := d.Get("netname").(string)
-	privateip := d.Get("privateip").(bool)
+	privateip := d.Get("privateip").(string)
 	return &models.AppInterface{
 		AccessVlanID:       accessVlanID,
 		Acls:               acls,
 		DefaultNetInstance: defaultNetInstance,
-		Directattach:       directattach,
+		Directattach:       &directattach, // bool true false false
 		Eidregister:        eidregister,
 		Intfname:           &intfname,  // string true false false
 		Intforder:          &intforder, // int64 true false false
 		Io:                 io,
-		Ipaddr:             &ipaddr,      // string true false false
-		Macaddr:            &macaddr,     // string true false false
+		Ipaddr:             &ipaddr,  // string true false false
+		Macaddr:            &macaddr, // string true false false
+		Netinstid:          netinstid,
 		Netinstname:        &netinstname, // string true false false
 		Netinsttag:         netinsttag,
 		Netname:            netname,
-		Privateip:          &privateip, // bool true false false
+		Privateip:          &privateip, // string true false false
 	}
 }
 
@@ -74,21 +76,23 @@ func AppInterfaceModelFromMap(m map[string]interface{}) *models.AppInterface {
 	//
 	ipaddr := m["ipaddr"].(string)
 	macaddr := m["macaddr"].(string)
+	netinstid := m["netinstid"].(string)
 	netinstname := m["netinstname"].(string)
 	netinsttag := m["netinsttag"].(map[string]string)
 	netname := m["netname"].(string)
-	privateip := m["privateip"].(bool)
+	privateip := m["privateip"].(string)
 	return &models.AppInterface{
 		AccessVlanID:       accessVlanID,
 		Acls:               acls,
 		DefaultNetInstance: defaultNetInstance,
-		Directattach:       directattach,
+		Directattach:       &directattach,
 		Eidregister:        eidregister,
 		Intfname:           &intfname,
 		Intforder:          &intforder,
 		Io:                 io,
 		Ipaddr:             &ipaddr,
 		Macaddr:            &macaddr,
+		Netinstid:          netinstid,
 		Netinstname:        &netinstname,
 		Netinsttag:         netinsttag,
 		Netname:            netname,
@@ -108,6 +112,7 @@ func SetAppInterfaceResourceData(d *schema.ResourceData, m *models.AppInterface)
 	d.Set("io", SetPhyAdapterSubResourceData([]*models.PhyAdapter{m.Io}))
 	d.Set("ipaddr", m.Ipaddr)
 	d.Set("macaddr", m.Macaddr)
+	d.Set("netinstid", m.Netinstid)
 	d.Set("netinstname", m.Netinstname)
 	d.Set("netinsttag", m.Netinsttag)
 	d.Set("netname", m.Netname)
@@ -129,6 +134,7 @@ func SetAppInterfaceSubResourceData(m []*models.AppInterface) (d []*map[string]i
 			properties["io"] = SetPhyAdapterSubResourceData([]*models.PhyAdapter{AppInterfaceModel.Io})
 			properties["ipaddr"] = AppInterfaceModel.Ipaddr
 			properties["macaddr"] = AppInterfaceModel.Macaddr
+			properties["netinstid"] = AppInterfaceModel.Netinstid
 			properties["netinstname"] = AppInterfaceModel.Netinstname
 			properties["netinsttag"] = AppInterfaceModel.Netinsttag
 			properties["netname"] = AppInterfaceModel.Netname
@@ -154,8 +160,8 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppACESchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"default_net_instance": {
@@ -172,10 +178,8 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 
 		"eidregister": {
 			Description: `EID register details`,
-			Type:        schema.TypeList, //GoType: EIDRegister
-			Elem: &schema.Resource{
-				Schema: EIDRegisterSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
@@ -193,10 +197,8 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 
 		"io": {
 			Description: `Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true`,
-			Type:        schema.TypeList, //GoType: PhyAdapter
-			Elem: &schema.Resource{
-				Schema: PhyAdapterSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
@@ -212,6 +214,12 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 
+		"netinstid": {
+			Description: `Network Instance id to be matched for interface assignment.`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
 		"netinstname": {
 			Description: `Network Instance name to be matched for interface assignment. Applicable only when "direct attach" flag is false`,
 			Type:        schema.TypeString,
@@ -219,7 +227,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 		},
 
 		"netinsttag": {
-			Description: ``,
+			Description: `Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -235,7 +243,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 
 		"privateip": {
 			Description: `Private IP flag`,
-			Type:        schema.TypeBool,
+			Type:        schema.TypeString,
 			Required:    true,
 		},
 	}
@@ -254,6 +262,7 @@ func GetAppInterfacePropertyFields() (t []string) {
 		"io",
 		"ipaddr",
 		"macaddr",
+		"netinstid",
 		"netinstname",
 		"netinsttag",
 		"netname",

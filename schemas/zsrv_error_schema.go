@@ -62,10 +62,8 @@ func ZsrvErrorSchema() map[string]*schema.Schema {
 
 		"ec": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: ZsrvErrorCode
-			Elem: &schema.Resource{
-				Schema: ZsrvErrorCodeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

@@ -14,9 +14,20 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Entity device components
+// Entity Edge node components
 //
-// - ENTITY_UNSPECIFIED: Invalid Device Entity - ENTITY_BASE_OS: Base OS entity - ENTITY_SYSTEM_ADAPTER: System Adapter Entity - ENTITY_VAULT: Vault Entity - ENTITY_ATTESTATION: Attestation Entity - ENTITY_APP_INSTANCE: App Instance Entity - ENTITY_PORT: Port Entity - ENTITY_NETWORK: Network Entity - ENTITY_NETWORK_INSTANCE: Network Instance Entity - ENTITY_CONTENT_TREE: ContentTree Entity - ENTITY_CONTENT_BLOB: Blob Entity - ENTITY_VOLUME: VOLUME Entity
+// - ENTITY_UNSPECIFIED: Invalid Device Entity
+//   - ENTITY_BASE_OS: Base OS entity
+//   - ENTITY_SYSTEM_ADAPTER: System Adapter Entity
+//   - ENTITY_VAULT: Vault Entity
+//   - ENTITY_ATTESTATION: Attestation Entity
+//   - ENTITY_APP_INSTANCE: App Instance Entity
+//   - ENTITY_PORT: Port Entity
+//   - ENTITY_NETWORK: Network Entity
+//   - ENTITY_NETWORK_INSTANCE: Network Instance Entity
+//   - ENTITY_CONTENT_TREE: ContentTree Entity
+//   - ENTITY_CONTENT_BLOB: Blob Entity
+//   - ENTITY_VOLUME: VOLUME Entity
 //
 // swagger:model Entity
 type Entity string

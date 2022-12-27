@@ -22,6 +22,9 @@ import (
 // swagger:model TagStatusMsg
 type TagStatusMsg struct {
 
+	// total count of devices enabled with edgeview session
+	EdgeviewSessionCount int64 `json:"edgeviewSessionCount,omitempty"`
+
 	// System defined universally unique Id of the resource group.
 	// Read Only: true
 	// Pattern: [a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}
@@ -36,6 +39,9 @@ type TagStatusMsg struct {
 	// Resource group status
 	// Read Only: true
 	Status *TagStatus `json:"status,omitempty"`
+
+	// Resource group type
+	Type *TagType `json:"type,omitempty"`
 }
 
 // Validate validates this tag status msg
@@ -51,6 +57,10 @@ func (m *TagStatusMsg) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -111,6 +121,25 @@ func (m *TagStatusMsg) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *TagStatusMsg) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if m.Type != nil {
+		if err := m.Type.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("type")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("type")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this tag status msg based on the context it is used
 func (m *TagStatusMsg) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -120,6 +149,10 @@ func (m *TagStatusMsg) ContextValidate(ctx context.Context, formats strfmt.Regis
 	}
 
 	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -146,6 +179,22 @@ func (m *TagStatusMsg) contextValidateStatus(ctx context.Context, formats strfmt
 				return ve.ValidateName("status")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("status")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *TagStatusMsg) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Type != nil {
+		if err := m.Type.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("type")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("type")
 			}
 			return err
 		}

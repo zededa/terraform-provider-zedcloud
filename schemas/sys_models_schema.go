@@ -16,6 +16,18 @@ func SysModelsModel(d *schema.ResourceData) *models.SysModels {
 		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
 		next = CursorModelFromMap(nextMap)
 	}
+	var summaryByBrandDistribution *models.Summary // Summary
+	summaryByBrandDistributionInterface, summaryByBrandDistributionIsSet := d.GetOk("summary_by_brand_distribution")
+	if summaryByBrandDistributionIsSet {
+		summaryByBrandDistributionMap := summaryByBrandDistributionInterface.([]interface{})[0].(map[string]interface{})
+		summaryByBrandDistribution = SummaryModelFromMap(summaryByBrandDistributionMap)
+	}
+	var summaryByDeviceDistribution *models.Summary // Summary
+	summaryByDeviceDistributionInterface, summaryByDeviceDistributionIsSet := d.GetOk("summary_by_device_distribution")
+	if summaryByDeviceDistributionIsSet {
+		summaryByDeviceDistributionMap := summaryByDeviceDistributionInterface.([]interface{})[0].(map[string]interface{})
+		summaryByDeviceDistribution = SummaryModelFromMap(summaryByDeviceDistributionMap)
+	}
 	var terse *models.Summary // Summary
 	terseInterface, terseIsSet := d.GetOk("terse")
 	if terseIsSet {
@@ -23,9 +35,11 @@ func SysModelsModel(d *schema.ResourceData) *models.SysModels {
 		terse = SummaryModelFromMap(terseMap)
 	}
 	return &models.SysModels{
-		List:  list,
-		Next:  next,
-		Terse: terse,
+		List:                        list,
+		Next:                        next,
+		SummaryByBrandDistribution:  summaryByBrandDistribution,
+		SummaryByDeviceDistribution: summaryByDeviceDistribution,
+		Terse:                       terse,
 	}
 }
 
@@ -38,6 +52,20 @@ func SysModelsModelFromMap(m map[string]interface{}) *models.SysModels {
 		next = CursorModelFromMap(nextMap)
 	}
 	//
+	var summaryByBrandDistribution *models.Summary // Summary
+	summaryByBrandDistributionInterface, summaryByBrandDistributionIsSet := m["summary_by_brand_distribution"]
+	if summaryByBrandDistributionIsSet {
+		summaryByBrandDistributionMap := summaryByBrandDistributionInterface.([]interface{})[0].(map[string]interface{})
+		summaryByBrandDistribution = SummaryModelFromMap(summaryByBrandDistributionMap)
+	}
+	//
+	var summaryByDeviceDistribution *models.Summary // Summary
+	summaryByDeviceDistributionInterface, summaryByDeviceDistributionIsSet := m["summary_by_device_distribution"]
+	if summaryByDeviceDistributionIsSet {
+		summaryByDeviceDistributionMap := summaryByDeviceDistributionInterface.([]interface{})[0].(map[string]interface{})
+		summaryByDeviceDistribution = SummaryModelFromMap(summaryByDeviceDistributionMap)
+	}
+	//
 	var terse *models.Summary // Summary
 	terseInterface, terseIsSet := m["terse"]
 	if terseIsSet {
@@ -46,9 +74,11 @@ func SysModelsModelFromMap(m map[string]interface{}) *models.SysModels {
 	}
 	//
 	return &models.SysModels{
-		List:  list,
-		Next:  next,
-		Terse: terse,
+		List:                        list,
+		Next:                        next,
+		SummaryByBrandDistribution:  summaryByBrandDistribution,
+		SummaryByDeviceDistribution: summaryByDeviceDistribution,
+		Terse:                       terse,
 	}
 }
 
@@ -56,6 +86,8 @@ func SysModelsModelFromMap(m map[string]interface{}) *models.SysModels {
 func SetSysModelsResourceData(d *schema.ResourceData, m *models.SysModels) {
 	d.Set("list", SetSysModelSubResourceData(m.List))
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
+	d.Set("summary_by_brand_distribution", SetSummarySubResourceData([]*models.Summary{m.SummaryByBrandDistribution}))
+	d.Set("summary_by_device_distribution", SetSummarySubResourceData([]*models.Summary{m.SummaryByDeviceDistribution}))
 	d.Set("terse", SetSummarySubResourceData([]*models.Summary{m.Terse}))
 }
 
@@ -66,6 +98,8 @@ func SetSysModelsSubResourceData(m []*models.SysModels) (d []*map[string]interfa
 			properties := make(map[string]interface{})
 			properties["list"] = SetSysModelSubResourceData(SysModelsModel.List)
 			properties["next"] = SetCursorSubResourceData([]*models.Cursor{SysModelsModel.Next})
+			properties["summary_by_brand_distribution"] = SetSummarySubResourceData([]*models.Summary{SysModelsModel.SummaryByBrandDistribution})
+			properties["summary_by_device_distribution"] = SetSummarySubResourceData([]*models.Summary{SysModelsModel.SummaryByDeviceDistribution})
 			properties["terse"] = SetSummarySubResourceData([]*models.Summary{SysModelsModel.Terse})
 			d = append(d, &properties)
 		}
@@ -82,25 +116,35 @@ func SysModelsSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: SysModelSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"next": {
 			Description: `Responded page details of filtered records`,
-			Type:        schema.TypeList, //GoType: Cursor
-			Elem: &schema.Resource{
-				Schema: CursorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+
+		"summary_by_brand_distribution": {
+			Description: `Summary by brand distribution`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+
+		"summary_by_device_distribution": {
+			Description: `Summary by device distribution`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"terse": {
 			Description: `Summary of filtered model records`,
-			Type:        schema.TypeList, //GoType: Summary
-			Elem: &schema.Resource{
-				Schema: SummarySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}
@@ -111,6 +155,8 @@ func GetSysModelsPropertyFields() (t []string) {
 	return []string{
 		"list",
 		"next",
+		"summary_by_brand_distribution",
+		"summary_by_device_distribution",
 		"terse",
 	}
 }

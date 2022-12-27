@@ -40,7 +40,7 @@ type SysInterface struct {
 	// network name: if attaching a network use netname
 	Netname string `json:"netname,omitempty"`
 
-	// tags
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
 }
 

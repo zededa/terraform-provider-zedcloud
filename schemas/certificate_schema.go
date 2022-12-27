@@ -238,15 +238,13 @@ func CertificateSchema() map[string]*schema.Schema {
 
 		"ecdsa_encryption": {
 			Description: `ECDSA encryption algorithm of the certificate`,
-			Type:        schema.TypeList, //GoType: ECDSA
-			Elem: &schema.Resource{
-				Schema: ECDSASchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"encrypted_secrets": {
-			Description: ``,
+			Description: `user encrypted secrets map`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -271,10 +269,8 @@ func CertificateSchema() map[string]*schema.Schema {
 
 		"issuer": {
 			Description: `Parameters for the issuer of the X509 component of a certificate.`,
-			Type:        schema.TypeList, //GoType: Subject
-			Elem: &schema.Resource{
-				Schema: SubjectSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -316,19 +312,15 @@ func CertificateSchema() map[string]*schema.Schema {
 
 		"rsa_ecryption": {
 			Description: `RSA encryption algorithm of the certificate`,
-			Type:        schema.TypeList, //GoType: RSA
-			Elem: &schema.Resource{
-				Schema: RSASchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"san_values": {
 			Description: `This holds the alternative name values like URIs, domain names IPs etc.`,
-			Type:        schema.TypeList, //GoType: SANValues
-			Elem: &schema.Resource{
-				Schema: SANValuesSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -346,10 +338,8 @@ func CertificateSchema() map[string]*schema.Schema {
 
 		"subject": {
 			Description: `Parameters for the subject of the X509 component of a certificate.`,
-			Type:        schema.TypeList, //GoType: Subject
-			Elem: &schema.Resource{
-				Schema: SubjectSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

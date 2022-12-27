@@ -21,13 +21,13 @@ import (
 // swagger:model ModuleDetail
 type ModuleDetail struct {
 
-	// environment
+	// Extra information to module to make configuration easier
 	Environment map[string]string `json:"environment,omitempty"`
 
 	// Type of modules
 	ModuleType *ModuleType `json:"moduleType,omitempty"`
 
-	// routes
+	// Send messages between modules or send messages from modules to iot hub
 	Routes map[string]string `json:"routes,omitempty"`
 
 	// Base64 encoded module twin details, desired properties of the module will be updated to reflect these values

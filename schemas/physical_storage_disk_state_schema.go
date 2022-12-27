@@ -61,19 +61,15 @@ func PhysicalStorageDiskStateSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"disk": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: DiskDescription
-			Elem: &schema.Resource{
-				Schema: DiskDescriptionSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"status": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: PhysicalStorageStatus
-			Elem: &schema.Resource{
-				Schema: PhysicalStorageStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

@@ -114,7 +114,7 @@ func SetSysBrandSubResourceData(m []*models.SysBrand) (d []*map[string]interface
 func SysBrandSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"attr": {
-			Description: ``,
+			Description: `Map of <string, string>`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -135,7 +135,7 @@ func SysBrandSchema() map[string]*schema.Schema {
 		},
 
 		"logo": {
-			Description: ``,
+			Description: `Map of <string, string> which holds the key:url for the logo artifact of the the brand`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -151,28 +151,22 @@ func SysBrandSchema() map[string]*schema.Schema {
 
 		"origin_type": {
 			Description: `origin of object`,
-			Type:        schema.TypeList, //GoType: Origin
-			Elem: &schema.Resource{
-				Schema: OriginSchema(),
-			},
-			Optional: true,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Required: true,
 		},
 
 		"revision": {
 			Description: `Object Revision  of the sys brand`,
-			Type:        schema.TypeList, //GoType: ObjectRevision
-			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"state": {
 			Description: `Sys Model Status`,
-			Type:        schema.TypeList, //GoType: SysModelState
-			Elem: &schema.Resource{
-				Schema: SysModelStateSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

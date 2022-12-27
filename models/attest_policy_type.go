@@ -14,7 +14,8 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// AttestPolicyType  - ATTEST_POLICY_TYPE_ACCEPT: Do not enforce attestation. All devices are marked as successfully attested. - ATTEST_POLICY_TYPE_ENFORCE: Enforce attestation. Devices failing attestation are marked accordingly.
+// AttestPolicyType  - ATTEST_POLICY_TYPE_ACCEPT: Do not enforce attestation. All devices are marked as successfully attested.
+//   - ATTEST_POLICY_TYPE_ENFORCE: Enforce attestation. Devices failing attestation are marked accordingly.
 //
 // swagger:model AttestPolicyType
 type AttestPolicyType string

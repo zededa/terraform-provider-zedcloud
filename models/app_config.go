@@ -17,7 +17,7 @@ import (
 
 // AppConfig Edge application configuration for App policy
 //
-// Edge application configuration for an App policy defines configuration details of the Edge application to be installed to all device(s) under the App policy.
+// Edge application configuration for an App policy defines configuration details of the Edge application to be installed to all Edge node(s) under the App policy.
 //
 // swagger:model AppConfig
 type AppConfig struct {
@@ -32,15 +32,17 @@ type AppConfig struct {
 	AppVersion string `json:"appVersion,omitempty"`
 
 	// user defined cpus for bundle
-	Cpus int64 `json:"cpus,omitempty"`
+	// Required: true
+	Cpus *int64 `json:"cpus"`
 
 	// Detailed description of the edge application
 	// Max Length: 256
 	Description string `json:"description,omitempty"`
 
 	// user defined drives
+	// Required: true
 	// Read Only: true
-	Drives int64 `json:"drives,omitempty"`
+	Drives int64 `json:"drives"`
 
 	// System defined universally unique Id of the edge application
 	// Read Only: true
@@ -55,7 +57,8 @@ type AppConfig struct {
 	ManifestJSON *VMManifest `json:"manifestJSON"`
 
 	// user defined memory for bundle
-	Memory int64 `json:"memory,omitempty"`
+	// Required: true
+	Memory *int64 `json:"memory"`
 
 	// User defined name of the edge application, unique across the enterprise. Once object is created, name can’t be changed
 	// Required: true
@@ -74,18 +77,23 @@ type AppConfig struct {
 	NamingScheme *AppNamingScheme `json:"namingScheme,omitempty"`
 
 	// user defined network options
-	Networks int64 `json:"networks,omitempty"`
+	// Required: true
+	Networks *int64 `json:"networks"`
 
 	// origin of object
-	OriginType *Origin `json:"originType,omitempty"`
+	// Required: true
+	OriginType *Origin `json:"originType"`
 
 	// origin and parent related details
 	ParentDetail *ObjectParentDetail `json:"parentDetail,omitempty"`
 
+	// start delay is the time in seconds EVE should wait after boot before starting the application instance
+	StartDelayInSeconds int64 `json:"startDelayInSeconds,omitempty"`
+
 	// user defined storage for bundle
 	Storage int64 `json:"storage,omitempty"`
 
-	// tags
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
 
 	// User defined title of the edge application. Title can be changed at any time
@@ -104,7 +112,15 @@ func (m *AppConfig) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateCpus(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateDescription(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDrives(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -120,11 +136,19 @@ func (m *AppConfig) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateMemory(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateName(formats); err != nil {
 		res = append(res, err)
 	}
 
 	if err := m.validateNamingScheme(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateNetworks(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -166,12 +190,30 @@ func (m *AppConfig) validateAppID(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *AppConfig) validateCpus(formats strfmt.Registry) error {
+
+	if err := validate.Required("cpus", "body", m.Cpus); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *AppConfig) validateDescription(formats strfmt.Registry) error {
 	if swag.IsZero(m.Description) { // not required
 		return nil
 	}
 
 	if err := validate.MaxLength("description", "body", m.Description, 256); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *AppConfig) validateDrives(formats strfmt.Registry) error {
+
+	if err := validate.Required("drives", "body", int64(m.Drives)); err != nil {
 		return err
 	}
 
@@ -236,6 +278,15 @@ func (m *AppConfig) validateManifestJSON(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *AppConfig) validateMemory(formats strfmt.Registry) error {
+
+	if err := validate.Required("memory", "body", m.Memory); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *AppConfig) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
@@ -276,9 +327,23 @@ func (m *AppConfig) validateNamingScheme(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *AppConfig) validateNetworks(formats strfmt.Registry) error {
+
+	if err := validate.Required("networks", "body", m.Networks); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (m *AppConfig) validateOriginType(formats strfmt.Registry) error {
-	if swag.IsZero(m.OriginType) { // not required
-		return nil
+
+	if err := validate.Required("originType", "body", m.OriginType); err != nil {
+		return err
+	}
+
+	if err := validate.Required("originType", "body", m.OriginType); err != nil {
+		return err
 	}
 
 	if m.OriginType != nil {

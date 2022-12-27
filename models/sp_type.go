@@ -14,7 +14,12 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// SpType clone of types defined in API repo. - SPTYPE_MAPSERVER: mapping service for zededa overlay service - SPTYPE_SUPPORTSERVER: if device has support feature enabled, this ia cloud servicewhich device can be reached.
+// SpType clone of types defined in API repo.
+//
+//   - SPTYPE_MAPSERVER: mapping service for zededa overlay service
+//   - SPTYPE_SUPPORTSERVER: if device has support feature enabled, this ia cloud service
+//
+// which device can be reached.
 //
 // swagger:model spType
 type SpType string

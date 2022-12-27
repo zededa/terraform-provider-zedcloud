@@ -22,7 +22,9 @@ import (
 // swagger:model Details
 type Details struct {
 
-	// agreement list
+	// Developer Agreements
+	//
+	// UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field
 	AgreementList map[string]string `json:"agreementList,omitempty"`
 
 	// Edge application category
@@ -34,16 +36,22 @@ type Details struct {
 	// UI map: AppMarketplacePage:AppCard:DescriptionField, AppEditPage:IdentityPane:CategoryField, AppDetailsPage:IdentityPane:CategoryField
 	Category *string `json:"category,omitempty"`
 
-	// Schema: {<license_name>:<url>}
+	// App Licenses
+	//
+	// UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License
 	LicenseList map[string]string `json:"licenseList,omitempty"`
 
-	// logo
+	// App Logo
+	//
+	// UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo
 	Logo map[string]string `json:"logo,omitempty"`
 
 	// Edge application's Operating System
 	Os string `json:"os,omitempty"`
 
-	// screenshot list
+	// App Screenshots
+	//
+	// UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields
 	ScreenshotList map[string]string `json:"screenshotList,omitempty"`
 
 	// Support Description

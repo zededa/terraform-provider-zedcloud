@@ -90,16 +90,14 @@ func SetDhcpServerConfigSubResourceData(m []*models.DhcpServerConfig) (d []*map[
 func DhcpServerConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"dhcp_range": {
-			Description: `for IPAM management when dhcp is turned on.If none provided, system will default pool.`,
-			Type:        schema.TypeList, //GoType: DhcpIPRange
-			Elem: &schema.Resource{
-				Schema: DhcpIPRangeSchema(),
-			},
+			Description: `Range of IP addresses to be used for DHCP`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"dns": {
-			Description: ``,
+			Description: `IP Addresses of DNS servers`,
 			Type:        schema.TypeList, //GoType: []string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -108,31 +106,31 @@ func DhcpServerConfigSchema() map[string]*schema.Schema {
 		},
 
 		"domain": {
-			Description: ``,
+			Description: `Network domain`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"gateway": {
-			Description: ``,
+			Description: `IP Address of Network Gateway`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"mask": {
-			Description: ``,
+			Description: `Subnet Mask`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"ntp": {
-			Description: ``,
+			Description: `IP Address of NTP Server`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"subnet": {
-			Description: ``,
+			Description: `Subnet address`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

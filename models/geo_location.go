@@ -12,9 +12,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// GeoLocation Geographic location of an device
+// GeoLocation Geographic location of an edge node
 //
-// Geographic location of an device determined by a variety of data collection mechanisms (e.g. network routing addresses or internal GPS devices).
+// Geographic location of an edge node determined by a variety of data collection mechanisms (e.g. network routing addresses or internal GPS devices).
 //
 // swagger:model GeoLocation
 type GeoLocation struct {

@@ -14,7 +14,26 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// DeviceCmdsSubType - DeviceNoOp: Device Operation: No Operation - DeviceStart: Device Operation: Start - DeviceStop: Device Operation: Stop - DeviceReboot: Device Operation: Reboot: Power cycle the device - DeviceShutdown: Device Operation: Shutdown- Power off the device - DeviceUpdateOS: Device Operation: Update OS- deprecated - DeviceApplyOS: Device Operation: Apply OS- Change Boot order of installed images - DeviceReset: Device Operation: Reset- Config reset to factory default - DeviceAddOS: Device Operation: Add OS- Install new image but don't change boot order - DeviceDropOS: Device Operation: Drop OS- Remove uninstalled image but don't change boot order - DeviceOffboard: Device Operation Type: offboard the device - DeviceActivate: Device Activate - DeviceDeActivate: Device Deactivate
+// DeviceCmdsSubType  - DeviceNoOp: Device Operation: No Operation
+//   - DeviceStart: Device Operation: Start
+//   - DeviceStop: Device Operation: Stop
+//   - DeviceReboot: Device Operation: Reboot: Power cycle the device
+//   - DeviceShutdown: Device Operation: Shutdown- Power off the device
+//   - DeviceUpdateOS: Device Operation: Update OS- deprecated
+//   - DeviceApplyOS: Device Operation: Apply OS- Change Boot order of installed images
+//   - DeviceReset: Device Operation: Reset- Config reset to factory default
+//   - DeviceAddOS: Device Operation: Add OS- Install new image but don't change boot order
+//   - DeviceDropOS: Device Operation: Drop OS- Remove uninstalled image but don't change boot order
+//   - DeviceOffboard: Device Operation Type: offboard the device
+//   - DeviceActivate: Device Activate
+//   - DeviceDeActivate: Device Deactivate
+//   - DeviceBaseosRetry: Device Operation: Retry OS
+//   - DeviceStartDebugMode: Device Operation: Run device in debug mode.
+//   - DeviceStopDebugMode: Device Operation: Stop device in debug mode.
+//   - PreparePowerOff: Device Operation: Gracefully shutdown all apps and prepare for power down.
+//   - DeviceStartEdgeviewMode: Device Operation: Run device in edgeview mode.
+//   - DeviceStopEdgeviewMode: Device Operation: Stop device in edgeview mode.
+//   - DeviceEdgeviewClientScript: Device Operation: get Edgeview client script if activated.
 //
 // swagger:model DeviceCmdsSubType
 type DeviceCmdsSubType string
@@ -68,6 +87,27 @@ const (
 
 	// DeviceCmdsSubTypeDeviceDeActivate captures enum value "DeviceDeActivate"
 	DeviceCmdsSubTypeDeviceDeActivate DeviceCmdsSubType = "DeviceDeActivate"
+
+	// DeviceCmdsSubTypeDeviceBaseosRetry captures enum value "DeviceBaseosRetry"
+	DeviceCmdsSubTypeDeviceBaseosRetry DeviceCmdsSubType = "DeviceBaseosRetry"
+
+	// DeviceCmdsSubTypeDeviceStartDebugMode captures enum value "DeviceStartDebugMode"
+	DeviceCmdsSubTypeDeviceStartDebugMode DeviceCmdsSubType = "DeviceStartDebugMode"
+
+	// DeviceCmdsSubTypeDeviceStopDebugMode captures enum value "DeviceStopDebugMode"
+	DeviceCmdsSubTypeDeviceStopDebugMode DeviceCmdsSubType = "DeviceStopDebugMode"
+
+	// DeviceCmdsSubTypePreparePowerOff captures enum value "PreparePowerOff"
+	DeviceCmdsSubTypePreparePowerOff DeviceCmdsSubType = "PreparePowerOff"
+
+	// DeviceCmdsSubTypeDeviceStartEdgeviewMode captures enum value "DeviceStartEdgeviewMode"
+	DeviceCmdsSubTypeDeviceStartEdgeviewMode DeviceCmdsSubType = "DeviceStartEdgeviewMode"
+
+	// DeviceCmdsSubTypeDeviceStopEdgeviewMode captures enum value "DeviceStopEdgeviewMode"
+	DeviceCmdsSubTypeDeviceStopEdgeviewMode DeviceCmdsSubType = "DeviceStopEdgeviewMode"
+
+	// DeviceCmdsSubTypeDeviceEdgeviewClientScript captures enum value "DeviceEdgeviewClientScript"
+	DeviceCmdsSubTypeDeviceEdgeviewClientScript DeviceCmdsSubType = "DeviceEdgeviewClientScript"
 )
 
 // for schema
@@ -75,7 +115,7 @@ var deviceCmdsSubTypeEnum []interface{}
 
 func init() {
 	var res []DeviceCmdsSubType
-	if err := json.Unmarshal([]byte(`["DeviceNoOp","DeviceStart","DeviceStop","DeviceReboot","DeviceShutdown","DeviceUpdateOS","DeviceApplyOS","DeviceReset","DeviceAddOS","DeviceDropOS","DeviceOffboard","DeviceActivate","DeviceDeActivate"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["DeviceNoOp","DeviceStart","DeviceStop","DeviceReboot","DeviceShutdown","DeviceUpdateOS","DeviceApplyOS","DeviceReset","DeviceAddOS","DeviceDropOS","DeviceOffboard","DeviceActivate","DeviceDeActivate","DeviceBaseosRetry","DeviceStartDebugMode","DeviceStopDebugMode","PreparePowerOff","DeviceStartEdgeviewMode","DeviceStopEdgeviewMode","DeviceEdgeviewClientScript"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

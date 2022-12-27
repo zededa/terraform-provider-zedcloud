@@ -17,10 +17,10 @@ import (
 // swagger:model Resource
 type Resource struct {
 
-	// name
+	// Name of the Resource (Required)
 	Name string `json:"name,omitempty"`
 
-	// value
+	// Value of Resource (Required)
 	Value string `json:"value,omitempty"`
 }
 

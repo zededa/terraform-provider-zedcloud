@@ -9,7 +9,7 @@ import (
 // (1) Translate Cursor resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CursorModel(d *schema.ResourceData) *models.Cursor {
-	orderBy := d.Get("order_by").(string)
+	orderBy := d.Get("order_by").([]string)
 	pageNum := int64(d.Get("page_num").(int))
 	pageSize := int64(d.Get("page_size").(int))
 	pageToken := d.Get("page_token").(string)
@@ -24,7 +24,7 @@ func CursorModel(d *schema.ResourceData) *models.Cursor {
 }
 
 func CursorModelFromMap(m map[string]interface{}) *models.Cursor {
-	orderBy := m["order_by"].(string)
+	orderBy := m["order_by"].([]string)
 	pageNum := int64(m["page_num"].(int))   // int64 false false false
 	pageSize := int64(m["page_size"].(int)) // int64 false false false
 	pageToken := m["page_token"].(string)
@@ -68,8 +68,11 @@ func CursorSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"order_by": {
 			Description: `OrderBy helps in sorting the list response`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Type:        schema.TypeList, //GoType: []string
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
 		},
 
 		"page_num": {

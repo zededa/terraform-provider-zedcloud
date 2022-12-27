@@ -17,10 +17,10 @@ import (
 // swagger:model VariableOptionVal
 type VariableOptionVal struct {
 
-	// label
+	// Display label of the key in User-Agent
 	Label string `json:"label,omitempty"`
 
-	// value
+	// Value of the key to be used
 	Value string `json:"value,omitempty"`
 }
 

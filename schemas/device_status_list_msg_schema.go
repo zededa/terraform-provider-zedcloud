@@ -35,6 +35,7 @@ func DeviceStatusListMsgModel(d *schema.ResourceData) *models.DeviceStatusListMs
 		summaryByState = SummaryModelFromMap(summaryByStateMap)
 	}
 	totalCount := int64(d.Get("total_count").(int))
+	totalEdgeviewActive := int64(d.Get("total_edgeview_active").(int))
 	return &models.DeviceStatusListMsg{
 		List:                      list,
 		Next:                      next,
@@ -42,6 +43,7 @@ func DeviceStatusListMsgModel(d *schema.ResourceData) *models.DeviceStatusListMs
 		SummaryByEVEDistribution:  summaryByEVEDistribution,
 		SummaryByState:            summaryByState,
 		TotalCount:                totalCount,
+		TotalEdgeviewActive:       totalEdgeviewActive,
 	}
 }
 
@@ -75,7 +77,8 @@ func DeviceStatusListMsgModelFromMap(m map[string]interface{}) *models.DeviceSta
 		summaryByState = SummaryModelFromMap(summaryByStateMap)
 	}
 	//
-	totalCount := int64(m["total_count"].(int)) // int64 false false false
+	totalCount := int64(m["total_count"].(int))                    // int64 false false false
+	totalEdgeviewActive := int64(m["total_edgeview_active"].(int)) // int64 false false false
 	return &models.DeviceStatusListMsg{
 		List:                      list,
 		Next:                      next,
@@ -83,6 +86,7 @@ func DeviceStatusListMsgModelFromMap(m map[string]interface{}) *models.DeviceSta
 		SummaryByEVEDistribution:  summaryByEVEDistribution,
 		SummaryByState:            summaryByState,
 		TotalCount:                totalCount,
+		TotalEdgeviewActive:       totalEdgeviewActive,
 	}
 }
 
@@ -94,6 +98,7 @@ func SetDeviceStatusListMsgResourceData(d *schema.ResourceData, m *models.Device
 	d.Set("summary_by_e_v_e_distribution", SetSummarySubResourceData([]*models.Summary{m.SummaryByEVEDistribution}))
 	d.Set("summary_by_state", SetSummarySubResourceData([]*models.Summary{m.SummaryByState}))
 	d.Set("total_count", m.TotalCount)
+	d.Set("total_edgeview_active", m.TotalEdgeviewActive)
 }
 
 // Iterate throught and update the DeviceStatusListMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -107,6 +112,7 @@ func SetDeviceStatusListMsgSubResourceData(m []*models.DeviceStatusListMsg) (d [
 			properties["summary_by_e_v_e_distribution"] = SetSummarySubResourceData([]*models.Summary{DeviceStatusListMsgModel.SummaryByEVEDistribution})
 			properties["summary_by_state"] = SetSummarySubResourceData([]*models.Summary{DeviceStatusListMsgModel.SummaryByState})
 			properties["total_count"] = DeviceStatusListMsgModel.TotalCount
+			properties["total_edgeview_active"] = DeviceStatusListMsgModel.TotalEdgeviewActive
 			d = append(d, &properties)
 		}
 	}
@@ -122,47 +128,45 @@ func DeviceStatusListMsgSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DeviceStatusSummaryMsgSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"next": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: Cursor
-			Elem: &schema.Resource{
-				Schema: CursorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"summary_by_app_instance_count": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: Summary
-			Elem: &schema.Resource{
-				Schema: SummarySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"summary_by_e_v_e_distribution": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: Summary
-			Elem: &schema.Resource{
-				Schema: SummarySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"summary_by_state": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: Summary
-			Elem: &schema.Resource{
-				Schema: SummarySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"total_count": {
+			Description: ``,
+			Type:        schema.TypeInt,
+			Optional:    true,
+		},
+
+		"total_edgeview_active": {
 			Description: ``,
 			Type:        schema.TypeInt,
 			Optional:    true,
@@ -179,5 +183,6 @@ func GetDeviceStatusListMsgPropertyFields() (t []string) {
 		"summary_by_e_v_e_distribution",
 		"summary_by_state",
 		"total_count",
+		"total_edgeview_active",
 	}
 }

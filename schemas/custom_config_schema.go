@@ -79,49 +79,49 @@ func SetCustomConfigSubResourceData(m []*models.CustomConfig) (d []*map[string]i
 func CustomConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"add": {
-			Description: ``,
+			Description: `Add the Custom Config to App Instance (Optional. Default: False)`,
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
 		"allow_storage_resize": {
-			Description: ``,
+			Description: `Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)`,
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
 		"field_delimiter": {
-			Description: ``,
+			Description: `Field delimiter used in specifying variables in template. (Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"name": {
-			Description: ``,
+			Description: `Name of CustomConfig (Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"override": {
-			Description: ``,
+			Description: `Override existing custom config from App Bundle Manifest (Optional. Default: False)`,
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
 		"template": {
-			Description: ``,
+			Description: `base64 encrypted template string. (Optional)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"variable_groups": {
-			Description: ``,
+			Description: `List of Variable groups. (Required)`,
 			Type:        schema.TypeList, //GoType: []*CustomConfigVariableGroup
 			Elem: &schema.Resource{
 				Schema: CustomConfigVariableGroupSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 	}
 }

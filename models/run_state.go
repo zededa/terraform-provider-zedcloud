@@ -16,7 +16,30 @@ import (
 
 // RunState Run-time state of an object, reported by EVE
 //
-// - RUN_STATE_ONLINE: Entity Online - RUN_STATE_HALTED: Entity Halted - RUN_STATE_INIT: Entity Initializing - RUN_STATE_REBOOTING: Entity Rebooting - RUN_STATE_OFFLINE: Entity Offline - RUN_STATE_UNKNOWN: Entity state Unknown - RUN_STATE_UNPROVISIONED: Entity Unprovisioned - RUN_STATE_PROVISIONED: Entity Provisioned - RUN_STATE_SUSPECT: Entity Suspect - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts - RUN_STATE_RESTARTING: Entity Restarting - RUN_STATE_PURGING: Entity Purging - RUN_STATE_HALTING: Entity Halting - RUN_STATE_ERROR: Entity encountered an error - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress. - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress. - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress - RUN_STATE_BOOTING: Entity booting up - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode
+// - RUN_STATE_ONLINE: Entity Online
+//   - RUN_STATE_HALTED: Entity Halted
+//   - RUN_STATE_INIT: Entity Initializing
+//   - RUN_STATE_REBOOTING: Entity Rebooting
+//   - RUN_STATE_OFFLINE: Entity Offline
+//   - RUN_STATE_UNKNOWN: Entity state Unknown
+//   - RUN_STATE_UNPROVISIONED: Entity Unprovisioned
+//   - RUN_STATE_PROVISIONED: Entity Provisioned
+//   - RUN_STATE_SUSPECT: Entity Suspect
+//   - RUN_STATE_DOWNLOADING: Edge-node downloading entity artifacts
+//   - RUN_STATE_RESTARTING: Entity Restarting
+//   - RUN_STATE_PURGING: Entity Purging
+//   - RUN_STATE_HALTING: Entity Halting
+//   - RUN_STATE_ERROR: Entity encountered an error
+//   - RUN_STATE_VERIFYING: Verification of downloaded Artifacts in Progress.
+//   - RUN_STATE_LOADING: Loading of Artifacts into local datastore in Progress.
+//   - RUN_STATE_CREATING_VOLUME: Volume creation from artifacts in Progress
+//   - RUN_STATE_BOOTING: Entity booting up
+//   - RUN_STATE_MAINTENANCE_MODE: Entity maintenance mode
+//   - RUN_STATE_START_DELAYED: Application start delayed as per configuration
+//   - RUN_STATE_BASEOS_UPDATING: Device BaseOs Update in Progress
+//   - RUN_STATE_PREPARING_POWEROFF: device preparing power off - shutting down all app instances
+//   - RUN_STATE_POWERING_OFF: device powering off from local profile server
+//   - RUN_STATE_PREPARED_POWEROFF: device prepared power off - all app instances are shut down
 //
 // swagger:model RunState
 type RunState string
@@ -91,6 +114,21 @@ const (
 
 	// RunStateRUNSTATEMAINTENANCEMODE captures enum value "RUN_STATE_MAINTENANCE_MODE"
 	RunStateRUNSTATEMAINTENANCEMODE RunState = "RUN_STATE_MAINTENANCE_MODE"
+
+	// RunStateRUNSTATESTARTDELAYED captures enum value "RUN_STATE_START_DELAYED"
+	RunStateRUNSTATESTARTDELAYED RunState = "RUN_STATE_START_DELAYED"
+
+	// RunStateRUNSTATEBASEOSUPDATING captures enum value "RUN_STATE_BASEOS_UPDATING"
+	RunStateRUNSTATEBASEOSUPDATING RunState = "RUN_STATE_BASEOS_UPDATING"
+
+	// RunStateRUNSTATEPREPARINGPOWEROFF captures enum value "RUN_STATE_PREPARING_POWEROFF"
+	RunStateRUNSTATEPREPARINGPOWEROFF RunState = "RUN_STATE_PREPARING_POWEROFF"
+
+	// RunStateRUNSTATEPOWERINGOFF captures enum value "RUN_STATE_POWERING_OFF"
+	RunStateRUNSTATEPOWERINGOFF RunState = "RUN_STATE_POWERING_OFF"
+
+	// RunStateRUNSTATEPREPAREDPOWEROFF captures enum value "RUN_STATE_PREPARED_POWEROFF"
+	RunStateRUNSTATEPREPAREDPOWEROFF RunState = "RUN_STATE_PREPARED_POWEROFF"
 )
 
 // for schema
@@ -98,7 +136,7 @@ var runStateEnum []interface{}
 
 func init() {
 	var res []RunState
-	if err := json.Unmarshal([]byte(`["RUN_STATE_UNSPECIFIED","RUN_STATE_ONLINE","RUN_STATE_HALTED","RUN_STATE_INIT","RUN_STATE_REBOOTING","RUN_STATE_OFFLINE","RUN_STATE_UNKNOWN","RUN_STATE_UNPROVISIONED","RUN_STATE_PROVISIONED","RUN_STATE_SUSPECT","RUN_STATE_DOWNLOADING","RUN_STATE_RESTARTING","RUN_STATE_PURGING","RUN_STATE_HALTING","RUN_STATE_ERROR","RUN_STATE_VERIFYING","RUN_STATE_LOADING","RUN_STATE_CREATING_VOLUME","RUN_STATE_BOOTING","RUN_STATE_MAINTENANCE_MODE"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["RUN_STATE_UNSPECIFIED","RUN_STATE_ONLINE","RUN_STATE_HALTED","RUN_STATE_INIT","RUN_STATE_REBOOTING","RUN_STATE_OFFLINE","RUN_STATE_UNKNOWN","RUN_STATE_UNPROVISIONED","RUN_STATE_PROVISIONED","RUN_STATE_SUSPECT","RUN_STATE_DOWNLOADING","RUN_STATE_RESTARTING","RUN_STATE_PURGING","RUN_STATE_HALTING","RUN_STATE_ERROR","RUN_STATE_VERIFYING","RUN_STATE_LOADING","RUN_STATE_CREATING_VOLUME","RUN_STATE_BOOTING","RUN_STATE_MAINTENANCE_MODE","RUN_STATE_START_DELAYED","RUN_STATE_BASEOS_UPDATING","RUN_STATE_PREPARING_POWEROFF","RUN_STATE_POWERING_OFF","RUN_STATE_PREPARED_POWEROFF"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

@@ -23,41 +23,41 @@ import (
 // swagger:model VariableGroupVariable
 type VariableGroupVariable struct {
 
-	// default
+	// Default value of the variable. (Optional. Default: <Default value based on type>)
 	Default string `json:"default,omitempty"`
 
-	// encode
+	// Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE
 	Encode *VariableFileEncoding `json:"encode,omitempty"`
 
-	// format
+	// Format of the user variable. (Required)
 	// Required: true
 	Format *VariableVariableFormat `json:"format"`
 
-	// label
+	// Label for the variable (Required)
 	// Required: true
 	Label *string `json:"label"`
 
-	// max length
+	// Max length of the value of the variable(Optional. Default: 1024)
 	MaxLength string `json:"maxLength,omitempty"`
 
-	// name
+	// Name of the Variable (Required)
 	// Required: true
 	Name *string `json:"name"`
 
-	// options
+	// Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN
 	Options []*VariableOptionVal `json:"options"`
 
 	// process input
 	ProcessInput string `json:"processInput,omitempty"`
 
-	// required
+	// This variable MUST be specified when creating an App Instance. (Optional. Default: False)
 	// Required: true
-	Required bool `json:"required"`
+	Required *bool `json:"required"`
 
 	// type
 	Type string `json:"type,omitempty"`
 
-	// value
+	// User-specified value of the variable.(Required if required is true. Optional otherwise)
 	Value string `json:"value,omitempty"`
 }
 
@@ -184,7 +184,7 @@ func (m *VariableGroupVariable) validateOptions(formats strfmt.Registry) error {
 
 func (m *VariableGroupVariable) validateRequired(formats strfmt.Registry) error {
 
-	if err := validate.Required("required", "body", bool(m.Required)); err != nil {
+	if err := validate.Required("required", "body", m.Required); err != nil {
 		return err
 	}
 

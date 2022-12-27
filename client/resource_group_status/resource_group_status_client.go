@@ -6,8 +6,6 @@ package resource_group_status
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
-	"fmt"
-
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 )
@@ -30,34 +28,36 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	GetResourceGroupStatusByID(params *GetResourceGroupStatusByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupStatusByIDOK, error)
+	ResourceGroupStatusGetResourceGroupStatusByID(params *ResourceGroupStatusGetResourceGroupStatusByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupStatusGetResourceGroupStatusByIDOK, error)
 
-	GetResourceGroupStatusByName(params *GetResourceGroupStatusByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupStatusByNameOK, error)
+	ResourceGroupStatusGetResourceGroupStatusByName(params *ResourceGroupStatusGetResourceGroupStatusByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupStatusGetResourceGroupStatusByNameOK, error)
 
-	QueryResourceGroupStatus(params *QueryResourceGroupStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryResourceGroupStatusOK, error)
+	ResourceGroupStatusQueryResourceGroupStatus(params *ResourceGroupStatusQueryResourceGroupStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupStatusQueryResourceGroupStatusOK, error)
+
+	ResourceGroupStatusQueryResourceGroupStatusConfig(params *ResourceGroupStatusQueryResourceGroupStatusConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupStatusQueryResourceGroupStatusConfigOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-GetResourceGroupStatusByID gets resource group status
+ResourceGroupStatusGetResourceGroupStatusByID gets resource group status
 
 Get the status (without security details) of a resource group record.
 */
-func (a *Client) GetResourceGroupStatusByID(params *GetResourceGroupStatusByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupStatusByIDOK, error) {
+func (a *Client) ResourceGroupStatusGetResourceGroupStatusByID(params *ResourceGroupStatusGetResourceGroupStatusByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupStatusGetResourceGroupStatusByIDOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetResourceGroupStatusByIDParams()
+		params = NewResourceGroupStatusGetResourceGroupStatusByIDParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetResourceGroupStatusById",
+		ID:                 "ResourceGroupStatus_GetResourceGroupStatusById",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/id/{id}/status",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetResourceGroupStatusByIDReader{formats: a.formats},
+		Reader:             &ResourceGroupStatusGetResourceGroupStatusByIDReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -70,35 +70,34 @@ func (a *Client) GetResourceGroupStatusByID(params *GetResourceGroupStatusByIDPa
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetResourceGroupStatusByIDOK)
+	success, ok := result.(*ResourceGroupStatusGetResourceGroupStatusByIDOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetResourceGroupStatusById: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupStatusGetResourceGroupStatusByIDDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-GetResourceGroupStatusByName gets resource group status
+ResourceGroupStatusGetResourceGroupStatusByName gets resource group status
 
 Get the status (without security details) of a resource group record.
 */
-func (a *Client) GetResourceGroupStatusByName(params *GetResourceGroupStatusByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetResourceGroupStatusByNameOK, error) {
+func (a *Client) ResourceGroupStatusGetResourceGroupStatusByName(params *ResourceGroupStatusGetResourceGroupStatusByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupStatusGetResourceGroupStatusByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewGetResourceGroupStatusByNameParams()
+		params = NewResourceGroupStatusGetResourceGroupStatusByNameParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "GetResourceGroupStatusByName",
+		ID:                 "ResourceGroupStatus_GetResourceGroupStatusByName",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/name/{name}/status",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &GetResourceGroupStatusByNameReader{formats: a.formats},
+		Reader:             &ResourceGroupStatusGetResourceGroupStatusByNameReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -111,35 +110,34 @@ func (a *Client) GetResourceGroupStatusByName(params *GetResourceGroupStatusByNa
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*GetResourceGroupStatusByNameOK)
+	success, ok := result.(*ResourceGroupStatusGetResourceGroupStatusByNameOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for GetResourceGroupStatusByName: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupStatusGetResourceGroupStatusByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
-QueryResourceGroupStatus queries resource groups status
+ResourceGroupStatusQueryResourceGroupStatus queries resource groups status
 
 Query the resource group status records.
 */
-func (a *Client) QueryResourceGroupStatus(params *QueryResourceGroupStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*QueryResourceGroupStatusOK, error) {
+func (a *Client) ResourceGroupStatusQueryResourceGroupStatus(params *ResourceGroupStatusQueryResourceGroupStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupStatusQueryResourceGroupStatusOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewQueryResourceGroupStatusParams()
+		params = NewResourceGroupStatusQueryResourceGroupStatusParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "QueryResourceGroupStatus",
+		ID:                 "ResourceGroupStatus_QueryResourceGroupStatus",
 		Method:             "GET",
 		PathPattern:        "/v1/projects/status",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &QueryResourceGroupStatusReader{formats: a.formats},
+		Reader:             &ResourceGroupStatusQueryResourceGroupStatusReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -152,14 +150,53 @@ func (a *Client) QueryResourceGroupStatus(params *QueryResourceGroupStatusParams
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*QueryResourceGroupStatusOK)
+	success, ok := result.(*ResourceGroupStatusQueryResourceGroupStatusOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	// safeguard: normally, absent a default response, unknown success responses return an error above: so this is a codegen issue
-	msg := fmt.Sprintf("unexpected success response for QueryResourceGroupStatus: API contract not enforced by server. Client expected to get an error, but got: %T", result)
-	panic(msg)
+	unexpectedSuccess := result.(*ResourceGroupStatusQueryResourceGroupStatusDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+ResourceGroupStatusQueryResourceGroupStatusConfig queries resource groups status and config
+
+Query the resource group status and config records.
+*/
+func (a *Client) ResourceGroupStatusQueryResourceGroupStatusConfig(params *ResourceGroupStatusQueryResourceGroupStatusConfigParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ResourceGroupStatusQueryResourceGroupStatusConfigOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewResourceGroupStatusQueryResourceGroupStatusConfigParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "ResourceGroupStatus_QueryResourceGroupStatusConfig",
+		Method:             "GET",
+		PathPattern:        "/v1/projects/status-config",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ResourceGroupStatusQueryResourceGroupStatusConfigReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ResourceGroupStatusQueryResourceGroupStatusConfigOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*ResourceGroupStatusQueryResourceGroupStatusConfigDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 // SetTransport changes the transport on the client

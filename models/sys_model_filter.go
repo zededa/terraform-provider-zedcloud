@@ -23,6 +23,9 @@ type SysModelFilter struct {
 	// Pattern: [a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12
 	BrandID string `json:"brandId,omitempty"`
 
+	// System defined universally unique Ids of the brand.
+	BrandIds []string `json:"brandIds"`
+
 	// Model name pattern to be matched.
 	// Max Length: 256
 	// Min Length: 3

@@ -124,34 +124,28 @@ func NetworkInstConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: StaticDNSListSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"ip": {
 			Description: `Dhcp Server Configuration`,
-			Type:        schema.TypeList, //GoType: DhcpServerConfig
-			Elem: &schema.Resource{
-				Schema: DhcpServerConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"kind": {
 			Description: `Kind of Network Instance ( Local, Switch etc )`,
-			Type:        schema.TypeList, //GoType: NetworkInstanceKind
-			Elem: &schema.Resource{
-				Schema: NetworkInstanceKindSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"opaque": {
 			Description: `Service specific Config`,
-			Type:        schema.TypeList, //GoType: NetInstOpaqueConfig
-			Elem: &schema.Resource{
-				Schema: NetInstOpaqueConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -181,10 +175,8 @@ func NetworkInstConfigSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Type of DHCP for this Network Instance`,
-			Type:        schema.TypeList, //GoType: NetworkInstanceDhcpType
-			Elem: &schema.Resource{
-				Schema: NetworkInstanceDhcpTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

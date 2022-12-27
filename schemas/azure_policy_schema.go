@@ -120,19 +120,15 @@ func AzurePolicySchema() map[string]*schema.Schema {
 
 		"azure_resource_and_services": {
 			Description: `azure resource and service the policy will be interested in`,
-			Type:        schema.TypeList, //GoType: AzureResourceAndServices
-			Elem: &schema.Resource{
-				Schema: AzureResourceAndServicesSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"certificate": {
 			Description: `Certificate object holds the details of certificate like encryption type, validity, subject etc`,
-			Type:        schema.TypeList, //GoType: Certificate
-			Elem: &schema.Resource{
-				Schema: CertificateSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -149,7 +145,7 @@ func AzurePolicySchema() map[string]*schema.Schema {
 		},
 
 		"encrypted_secrets": {
-			Description: ``,
+			Description: `encrypted AppPassword`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,

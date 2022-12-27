@@ -79,7 +79,7 @@ func NetProxyStatusSchema() map[string]*schema.Schema {
 		},
 
 		"network_proxy": {
-			Description: `Network Proxy flag`,
+			Description: `Use pacfile (Auto discover or manual upload)`,
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -102,8 +102,8 @@ func NetProxyStatusSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: NetProxyServerSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"wpad_proxy_url": {

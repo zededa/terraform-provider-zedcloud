@@ -110,10 +110,8 @@ func PhysicalStorageSchema() map[string]*schema.Schema {
 
 		"current_raid": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: PhysicalStorageRaidType
-			Elem: &schema.Resource{
-				Schema: PhysicalStorageRaidTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -123,8 +121,8 @@ func PhysicalStorageSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: PhysicalStorageDiskStateSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"pool_name": {
@@ -141,19 +139,15 @@ func PhysicalStorageSchema() map[string]*schema.Schema {
 
 		"storage_state": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: PhysicalStorageStatus
-			Elem: &schema.Resource{
-				Schema: PhysicalStorageStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"storage_type": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: PhysicalStorageTypeInfo
-			Elem: &schema.Resource{
-				Schema: PhysicalStorageTypeInfoSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

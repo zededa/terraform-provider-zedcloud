@@ -97,7 +97,7 @@ func IoMemberSchema() map[string]*schema.Schema {
 		},
 
 		"cbattr": {
-			Description: ``,
+			Description: `attributes`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -118,7 +118,7 @@ func IoMemberSchema() map[string]*schema.Schema {
 		},
 
 		"phyaddrs": {
-			Description: ``,
+			Description: `Map of Physical Addresses`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -134,10 +134,8 @@ func IoMemberSchema() map[string]*schema.Schema {
 
 		"usage": {
 			Description: `Adopter Usage`,
-			Type:        schema.TypeList, //GoType: AdapterUsage
-			Elem: &schema.Resource{
-				Schema: AdapterUsageSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -152,10 +150,8 @@ func IoMemberSchema() map[string]*schema.Schema {
 
 		"ztype": {
 			Description: `Z Type`,
-			Type:        schema.TypeList, //GoType: IoType
-			Elem: &schema.Resource{
-				Schema: IoTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 	}

@@ -25,7 +25,7 @@ type Summary struct {
 	// Total
 	Total int64 `json:"total,omitempty"`
 
-	// values
+	// Values: Map for storing <string, uint32>
 	Values map[string]int64 `json:"values,omitempty"`
 }
 

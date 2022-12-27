@@ -82,7 +82,7 @@ EdgeNodeStatusGetEdgeNodeStatusOK describes a response with status code 200, wit
 A successful response.
 */
 type EdgeNodeStatusGetEdgeNodeStatusOK struct {
-	Payload *models.DeviceStatus
+	Payload *models.DeviceStatusMsg
 }
 
 // IsSuccess returns true when this edge node status get edge node status o k response has a 2xx status code
@@ -118,13 +118,13 @@ func (o *EdgeNodeStatusGetEdgeNodeStatusOK) String() string {
 	return fmt.Sprintf("[GET /v1/devices/id/{id}/status][%d] edgeNodeStatusGetEdgeNodeStatusOK  %+v", 200, o.Payload)
 }
 
-func (o *EdgeNodeStatusGetEdgeNodeStatusOK) GetPayload() *models.DeviceStatus {
+func (o *EdgeNodeStatusGetEdgeNodeStatusOK) GetPayload() *models.DeviceStatusMsg {
 	return o.Payload
 }
 
 func (o *EdgeNodeStatusGetEdgeNodeStatusOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.DeviceStatus)
+	o.Payload = new(models.DeviceStatusMsg)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

@@ -16,7 +16,12 @@ import (
 
 // Origin OriginType : enum specifies the Object orgigin type
 //
-// - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation - ORIGIN_IMPORTED: Object imported from global enterprise. - ORIGIN_LOCAL: Objectl created locally. - ORIGIN_GLOBAL: Object created in global store,to use this type user should have root previlage.
+// - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation
+//   - ORIGIN_IMPORTED: Object imported from global enterprise.
+//   - ORIGIN_LOCAL: Objectl created locally.
+//   - ORIGIN_GLOBAL: Object created in global store,
+//
+// to use this type user should have root previlage.
 //
 // swagger:model Origin
 type Origin string

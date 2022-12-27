@@ -226,25 +226,21 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppInterfaceSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"logs": {
 			Description: `App Instance logs`,
-			Type:        schema.TypeList, //GoType: AppInstanceLogs
-			Elem: &schema.Resource{
-				Schema: AppInstanceLogsSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"manifest_json": {
 			Description: `user defined manifest in JSON format`,
-			Type:        schema.TypeList, //GoType: VMManifest
-			Elem: &schema.Resource{
-				Schema: VMManifestSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -268,10 +264,8 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 
 		"naming_scheme": {
 			Description: `app naming scheme`,
-			Type:        schema.TypeList, //GoType: AppNamingSchemeV2
-			Elem: &schema.Resource{
-				Schema: AppNamingSchemeV2Schema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -289,19 +283,15 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 
 		"origin_type": {
 			Description: `origin of object`,
-			Type:        schema.TypeList, //GoType: Origin
-			Elem: &schema.Resource{
-				Schema: OriginSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"parent_detail": {
 			Description: `origin and parent related details`,
-			Type:        schema.TypeList, //GoType: ObjectParentDetail
-			Elem: &schema.Resource{
-				Schema: ObjectParentDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -334,10 +324,8 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 
 		"vminfo": {
 			Description: `virtual machine info`,
-			Type:        schema.TypeList, //GoType: VM
-			Elem: &schema.Resource{
-				Schema: VMSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

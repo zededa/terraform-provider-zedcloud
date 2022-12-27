@@ -72,19 +72,15 @@ func AppInstPolicySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_inst_config": {
 			Description: `app instance config for automated deployment`,
-			Type:        schema.TypeList, //GoType: AppInstConfig
-			Elem: &schema.Resource{
-				Schema: AppInstConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"meta_data": {
 			Description: `all the required metadata for a policy like id, name, different types of tags`,
-			Type:        schema.TypeList, //GoType: PolicyCommon
-			Elem: &schema.Resource{
-				Schema: PolicyCommonSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

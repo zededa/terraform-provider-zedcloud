@@ -19,16 +19,16 @@ import (
 // swagger:model CustomConfigVariableGroup
 type CustomConfigVariableGroup struct {
 
-	// condition
+	// Condition to apply the variable group. (Optional. Default: None)
 	Condition *VariableGroupCondition `json:"condition,omitempty"`
 
-	// name
+	// Name of the Variable Group(Required)
 	Name string `json:"name,omitempty"`
 
-	// required
+	// Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)
 	Required bool `json:"required,omitempty"`
 
-	// variables
+	// List of variables(Required)
 	Variables []*VariableGroupVariable `json:"variables"`
 }
 

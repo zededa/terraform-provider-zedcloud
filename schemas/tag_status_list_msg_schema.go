@@ -22,10 +22,17 @@ func TagStatusListMsgModel(d *schema.ResourceData) *models.TagStatusListMsg {
 		summaryByStateMap := summaryByStateInterface.([]interface{})[0].(map[string]interface{})
 		summaryByState = SummaryModelFromMap(summaryByStateMap)
 	}
+	var summaryByType *models.Summary // Summary
+	summaryByTypeInterface, summaryByTypeIsSet := d.GetOk("summary_by_type")
+	if summaryByTypeIsSet {
+		summaryByTypeMap := summaryByTypeInterface.([]interface{})[0].(map[string]interface{})
+		summaryByType = SummaryModelFromMap(summaryByTypeMap)
+	}
 	return &models.TagStatusListMsg{
 		List:           list,
 		Next:           next,
 		SummaryByState: summaryByState,
+		SummaryByType:  summaryByType,
 	}
 }
 
@@ -45,10 +52,18 @@ func TagStatusListMsgModelFromMap(m map[string]interface{}) *models.TagStatusLis
 		summaryByState = SummaryModelFromMap(summaryByStateMap)
 	}
 	//
+	var summaryByType *models.Summary // Summary
+	summaryByTypeInterface, summaryByTypeIsSet := m["summary_by_type"]
+	if summaryByTypeIsSet {
+		summaryByTypeMap := summaryByTypeInterface.([]interface{})[0].(map[string]interface{})
+		summaryByType = SummaryModelFromMap(summaryByTypeMap)
+	}
+	//
 	return &models.TagStatusListMsg{
 		List:           list,
 		Next:           next,
 		SummaryByState: summaryByState,
+		SummaryByType:  summaryByType,
 	}
 }
 
@@ -57,6 +72,7 @@ func SetTagStatusListMsgResourceData(d *schema.ResourceData, m *models.TagStatus
 	d.Set("list", SetTagStatusMsgSubResourceData(m.List))
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
 	d.Set("summary_by_state", SetSummarySubResourceData([]*models.Summary{m.SummaryByState}))
+	d.Set("summary_by_type", SetSummarySubResourceData([]*models.Summary{m.SummaryByType}))
 }
 
 // Iterate throught and update the TagStatusListMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -67,6 +83,7 @@ func SetTagStatusListMsgSubResourceData(m []*models.TagStatusListMsg) (d []*map[
 			properties["list"] = SetTagStatusMsgSubResourceData(TagStatusListMsgModel.List)
 			properties["next"] = SetCursorSubResourceData([]*models.Cursor{TagStatusListMsgModel.Next})
 			properties["summary_by_state"] = SetSummarySubResourceData([]*models.Summary{TagStatusListMsgModel.SummaryByState})
+			properties["summary_by_type"] = SetSummarySubResourceData([]*models.Summary{TagStatusListMsgModel.SummaryByType})
 			d = append(d, &properties)
 		}
 	}
@@ -82,25 +99,28 @@ func TagStatusListMsgSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: TagStatusMsgSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"next": {
 			Description: `Responded page details of filtered records`,
-			Type:        schema.TypeList, //GoType: Cursor
-			Elem: &schema.Resource{
-				Schema: CursorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"summary_by_state": {
 			Description: `Summary of filtered resource group records`,
-			Type:        schema.TypeList, //GoType: Summary
-			Elem: &schema.Resource{
-				Schema: SummarySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+
+		"summary_by_type": {
+			Description: `Summary of filtered resource group records`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}
@@ -112,5 +132,6 @@ func GetTagStatusListMsgPropertyFields() (t []string) {
 		"list",
 		"next",
 		"summary_by_state",
+		"summary_by_type",
 	}
 }

@@ -27,6 +27,12 @@ type SysModels struct {
 	// Responded page details of filtered records
 	Next *Cursor `json:"next,omitempty"`
 
+	// Summary by brand distribution
+	SummaryByBrandDistribution *Summary `json:"summaryByBrandDistribution,omitempty"`
+
+	// Summary by device distribution
+	SummaryByDeviceDistribution *Summary `json:"summaryByDeviceDistribution,omitempty"`
+
 	// Summary of filtered model records
 	Terse *Summary `json:"terse,omitempty"`
 }
@@ -40,6 +46,14 @@ func (m *SysModels) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateNext(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSummaryByBrandDistribution(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSummaryByDeviceDistribution(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -98,6 +112,44 @@ func (m *SysModels) validateNext(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SysModels) validateSummaryByBrandDistribution(formats strfmt.Registry) error {
+	if swag.IsZero(m.SummaryByBrandDistribution) { // not required
+		return nil
+	}
+
+	if m.SummaryByBrandDistribution != nil {
+		if err := m.SummaryByBrandDistribution.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("summaryByBrandDistribution")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("summaryByBrandDistribution")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SysModels) validateSummaryByDeviceDistribution(formats strfmt.Registry) error {
+	if swag.IsZero(m.SummaryByDeviceDistribution) { // not required
+		return nil
+	}
+
+	if m.SummaryByDeviceDistribution != nil {
+		if err := m.SummaryByDeviceDistribution.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("summaryByDeviceDistribution")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("summaryByDeviceDistribution")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *SysModels) validateTerse(formats strfmt.Registry) error {
 	if swag.IsZero(m.Terse) { // not required
 		return nil
@@ -126,6 +178,14 @@ func (m *SysModels) ContextValidate(ctx context.Context, formats strfmt.Registry
 	}
 
 	if err := m.contextValidateNext(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSummaryByBrandDistribution(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSummaryByDeviceDistribution(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -167,6 +227,38 @@ func (m *SysModels) contextValidateNext(ctx context.Context, formats strfmt.Regi
 				return ve.ValidateName("next")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("next")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SysModels) contextValidateSummaryByBrandDistribution(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.SummaryByBrandDistribution != nil {
+		if err := m.SummaryByBrandDistribution.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("summaryByBrandDistribution")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("summaryByBrandDistribution")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SysModels) contextValidateSummaryByDeviceDistribution(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.SummaryByDeviceDistribution != nil {
+		if err := m.SummaryByDeviceDistribution.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("summaryByDeviceDistribution")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("summaryByDeviceDistribution")
 			}
 			return err
 		}

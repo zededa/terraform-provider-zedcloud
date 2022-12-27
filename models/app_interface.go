@@ -38,7 +38,7 @@ type AppInterface struct {
 	//
 	// direct attach flag
 	// Required: true
-	Directattach bool `json:"directattach"`
+	Directattach *bool `json:"directattach"`
 
 	// FIXME: Check why is this required
 	//
@@ -58,23 +58,28 @@ type AppInterface struct {
 	// Required: true
 	Io *PhyAdapter `json:"io"`
 
-	// if netname points static DHCP then we need to takestatic /32 address here
+	// if netname points static DHCP then we need to take
+	// static /32 address here
 	//
 	// IP address
 	// Required: true
 	Ipaddr *string `json:"ipaddr"`
 
-	// in case of p2v we might want to provide a mac-address.applicable only in case of DHCP=passthrough
+	// in case of p2v we might want to provide a mac-address.
+	// applicable only in case of DHCP=passthrough
 	//
 	// MAC address
 	// Required: true
 	Macaddr *string `json:"macaddr"`
 
+	// Network Instance id to be matched for interface assignment.
+	Netinstid string `json:"netinstid,omitempty"`
+
 	// Network Instance name to be matched for interface assignment. Applicable only when "direct attach" flag is false
 	// Required: true
 	Netinstname *string `json:"netinstname"`
 
-	// netinsttag
+	// Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 	Netinsttag map[string]string `json:"netinsttag,omitempty"`
 
 	// network name: will be deprecated in future, use netinstname
@@ -82,7 +87,7 @@ type AppInterface struct {
 
 	// Private IP flag
 	// Required: true
-	Privateip *bool `json:"privateip"`
+	Privateip *string `json:"privateip"`
 }
 
 // Validate validates this app interface
@@ -184,7 +189,7 @@ func (m *AppInterface) validateAcls(formats strfmt.Registry) error {
 
 func (m *AppInterface) validateDirectattach(formats strfmt.Registry) error {
 
-	if err := validate.Required("directattach", "body", bool(m.Directattach)); err != nil {
+	if err := validate.Required("directattach", "body", m.Directattach); err != nil {
 		return err
 	}
 

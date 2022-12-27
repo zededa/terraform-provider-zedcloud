@@ -66,8 +66,8 @@ func AppACESchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppACEActionSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"id": {
@@ -82,8 +82,8 @@ func AppACESchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppACEMatchSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"name": {

@@ -49,7 +49,7 @@ func SetMetricsDetailSubResourceData(m []*models.MetricsDetail) (d []*map[string
 func MetricsDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"queries": {
-			Description: ``,
+			Description: `Mapping of queries variable keys and value`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -58,7 +58,7 @@ func MetricsDetailSchema() map[string]*schema.Schema {
 		},
 
 		"results": {
-			Description: ``,
+			Description: `Mapping of results variable keys and value`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,

@@ -18,25 +18,27 @@ import (
 // swagger:model DhcpServerConfig
 type DhcpServerConfig struct {
 
-	// for IPAM management when dhcp is turned on.If none provided, system will default pool.
+	// Range of IP addresses to be used for DHCP
 	DhcpRange *DhcpIPRange `json:"dhcpRange,omitempty"`
 
 	// possible DNS ip address
+	//
+	// IP Addresses of DNS servers
 	DNS []string `json:"dns"`
 
-	// domain
+	// Network domain
 	Domain string `json:"domain,omitempty"`
 
-	// gateway
+	// IP Address of Network Gateway
 	Gateway string `json:"gateway,omitempty"`
 
-	// mask
+	// Subnet Mask
 	Mask string `json:"mask,omitempty"`
 
-	// ntp
+	// IP Address of NTP Server
 	Ntp string `json:"ntp,omitempty"`
 
-	// subnet
+	// Subnet address
 	Subnet string `json:"subnet,omitempty"`
 }
 

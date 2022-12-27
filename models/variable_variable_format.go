@@ -16,7 +16,13 @@ import (
 
 // VariableVariableFormat Custom variable format
 //
-// - VARIABLE_FORMAT_UNSPECIFIED: Invalid format - VARIABLE_FORMAT_TEXT: Value in string format - VARIABLE_FORMAT_NUMBER: Value in integer format - VARIABLE_FORMAT_FILE: Value to be read from a file - VARIABLE_FORMAT_DROPDOWN: Value to be selected from dropdown of options - VARIABLE_FORMAT_BOOLEAN: Value in boolean format - VARIABLE_FORMAT_PASSWORD: Value in string to be masked in User-Agent
+// - VARIABLE_FORMAT_UNSPECIFIED: Invalid format
+//   - VARIABLE_FORMAT_TEXT: Value in string format
+//   - VARIABLE_FORMAT_NUMBER: Value in integer format
+//   - VARIABLE_FORMAT_FILE: Value to be read from a file
+//   - VARIABLE_FORMAT_DROPDOWN: Value to be selected from dropdown of options
+//   - VARIABLE_FORMAT_BOOLEAN: Value in boolean format
+//   - VARIABLE_FORMAT_PASSWORD: Value in string to be masked in User-Agent
 //
 // swagger:model VariableVariableFormat
 type VariableVariableFormat string

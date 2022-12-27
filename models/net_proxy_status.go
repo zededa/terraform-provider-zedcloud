@@ -26,7 +26,7 @@ type NetProxyStatus struct {
 
 	// Enable, the proxy configuration coming from network
 	//
-	// Network Proxy flag
+	// Use pacfile (Auto discover or manual upload)
 	NetworkProxy bool `json:"networkProxy,omitempty"`
 
 	// Direct URL for wpad.dat download

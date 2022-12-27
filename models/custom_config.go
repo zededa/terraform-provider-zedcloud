@@ -19,25 +19,25 @@ import (
 // swagger:model CustomConfig
 type CustomConfig struct {
 
-	// add
+	// Add the Custom Config to App Instance (Optional. Default: False)
 	Add bool `json:"add,omitempty"`
 
-	// allow storage resize
+	// Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)
 	AllowStorageResize bool `json:"allowStorageResize,omitempty"`
 
-	// field delimiter
+	// Field delimiter used in specifying variables in template. (Required)
 	FieldDelimiter string `json:"fieldDelimiter,omitempty"`
 
-	// name
+	// Name of CustomConfig (Required)
 	Name string `json:"name,omitempty"`
 
-	// override
+	// Override existing custom config from App Bundle Manifest (Optional. Default: False)
 	Override bool `json:"override,omitempty"`
 
-	// template
+	// base64 encrypted template string. (Optional)
 	Template string `json:"template,omitempty"`
 
-	// variable groups
+	// List of Variable groups. (Required)
 	VariableGroups []*CustomConfigVariableGroup `json:"variableGroups"`
 }
 

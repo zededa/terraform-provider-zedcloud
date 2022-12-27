@@ -22,10 +22,17 @@ func DeviceConfigListModel(d *schema.ResourceData) *models.DeviceConfigList {
 		summaryByStateMap := summaryByStateInterface.([]interface{})[0].(map[string]interface{})
 		summaryByState = SummaryModelFromMap(summaryByStateMap)
 	}
+	var summaryByTagDistribution *models.Summary // Summary
+	summaryByTagDistributionInterface, summaryByTagDistributionIsSet := d.GetOk("summary_by_tag_distribution")
+	if summaryByTagDistributionIsSet {
+		summaryByTagDistributionMap := summaryByTagDistributionInterface.([]interface{})[0].(map[string]interface{})
+		summaryByTagDistribution = SummaryModelFromMap(summaryByTagDistributionMap)
+	}
 	return &models.DeviceConfigList{
-		List:           list,
-		Next:           next,
-		SummaryByState: summaryByState,
+		List:                     list,
+		Next:                     next,
+		SummaryByState:           summaryByState,
+		SummaryByTagDistribution: summaryByTagDistribution,
 	}
 }
 
@@ -45,10 +52,18 @@ func DeviceConfigListModelFromMap(m map[string]interface{}) *models.DeviceConfig
 		summaryByState = SummaryModelFromMap(summaryByStateMap)
 	}
 	//
+	var summaryByTagDistribution *models.Summary // Summary
+	summaryByTagDistributionInterface, summaryByTagDistributionIsSet := m["summary_by_tag_distribution"]
+	if summaryByTagDistributionIsSet {
+		summaryByTagDistributionMap := summaryByTagDistributionInterface.([]interface{})[0].(map[string]interface{})
+		summaryByTagDistribution = SummaryModelFromMap(summaryByTagDistributionMap)
+	}
+	//
 	return &models.DeviceConfigList{
-		List:           list,
-		Next:           next,
-		SummaryByState: summaryByState,
+		List:                     list,
+		Next:                     next,
+		SummaryByState:           summaryByState,
+		SummaryByTagDistribution: summaryByTagDistribution,
 	}
 }
 
@@ -57,6 +72,7 @@ func SetDeviceConfigListResourceData(d *schema.ResourceData, m *models.DeviceCon
 	d.Set("list", SetDeviceConfigSummarySubResourceData(m.List))
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
 	d.Set("summary_by_state", SetSummarySubResourceData([]*models.Summary{m.SummaryByState}))
+	d.Set("summary_by_tag_distribution", SetSummarySubResourceData([]*models.Summary{m.SummaryByTagDistribution}))
 }
 
 // Iterate throught and update the DeviceConfigList resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -67,6 +83,7 @@ func SetDeviceConfigListSubResourceData(m []*models.DeviceConfigList) (d []*map[
 			properties["list"] = SetDeviceConfigSummarySubResourceData(DeviceConfigListModel.List)
 			properties["next"] = SetCursorSubResourceData([]*models.Cursor{DeviceConfigListModel.Next})
 			properties["summary_by_state"] = SetSummarySubResourceData([]*models.Summary{DeviceConfigListModel.SummaryByState})
+			properties["summary_by_tag_distribution"] = SetSummarySubResourceData([]*models.Summary{DeviceConfigListModel.SummaryByTagDistribution})
 			d = append(d, &properties)
 		}
 	}
@@ -82,26 +99,29 @@ func DeviceConfigListSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DeviceConfigSummarySchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"next": {
 			Description: `filter next`,
-			Type:        schema.TypeList, //GoType: Cursor
-			Elem: &schema.Resource{
-				Schema: CursorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
 		"summary_by_state": {
 			Description: `Summary by state`,
-			Type:        schema.TypeList, //GoType: Summary
-			Elem: &schema.Resource{
-				Schema: SummarySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
+		},
+
+		"summary_by_tag_distribution": {
+			Description: `Summary by project distribution`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 	}
 }
@@ -112,5 +132,6 @@ func GetDeviceConfigListPropertyFields() (t []string) {
 		"list",
 		"next",
 		"summary_by_state",
+		"summary_by_tag_distribution",
 	}
 }

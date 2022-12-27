@@ -78,8 +78,8 @@ func DeviceErrorSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DeviceEntitySchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"retry_condition": {
@@ -90,10 +90,8 @@ func DeviceErrorSchema() map[string]*schema.Schema {
 
 		"severity": {
 			Description: `Severity of the error`,
-			Type:        schema.TypeList, //GoType: Severity
-			Elem: &schema.Resource{
-				Schema: SeveritySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 

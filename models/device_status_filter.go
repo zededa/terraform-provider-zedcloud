@@ -18,6 +18,9 @@ import (
 // swagger:model DeviceStatusFilter
 type DeviceStatusFilter struct {
 
+	// device name
+	DeviceName string `json:"deviceName,omitempty"`
+
 	// load
 	Load *DeviceLoad `json:"load,omitempty"`
 
@@ -26,6 +29,9 @@ type DeviceStatusFilter struct {
 
 	// project name
 	ProjectName string `json:"projectName,omitempty"`
+
+	// project name pattern
+	ProjectNamePattern string `json:"projectNamePattern,omitempty"`
 
 	// run state
 	RunState *RunState `json:"runState,omitempty"`

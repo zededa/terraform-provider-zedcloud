@@ -13,6 +13,7 @@ func ZsrvResponseModel(d *schema.ResourceData) *models.ZsrvResponse {
 	error := d.Get("error").([]*models.ZsrvError) // []*ZsrvError
 	hTTPStatusCode := int32(d.Get("http_status_code").(int))
 	hTTPStatusMsg := d.Get("http_status_msg").(string)
+	jobID := d.Get("job_id").(string)
 	objectID := d.Get("object_id").(string)
 	objectKind := d.Get("object_kind").(string)
 	objectName := d.Get("object_name").(string)
@@ -28,6 +29,7 @@ func ZsrvResponseModel(d *schema.ResourceData) *models.ZsrvResponse {
 		Error:           error,
 		HTTPStatusCode:  hTTPStatusCode,
 		HTTPStatusMsg:   hTTPStatusMsg,
+		JobID:           jobID,
 		ObjectID:        objectID,
 		ObjectKind:      objectKind,
 		ObjectName:      objectName,
@@ -46,6 +48,7 @@ func ZsrvResponseModelFromMap(m map[string]interface{}) *models.ZsrvResponse {
 	error := m["error"].([]*models.ZsrvError)            // []*ZsrvError
 	hTTPStatusCode := int32(m["http_status_code"].(int)) // int32 false false false
 	hTTPStatusMsg := m["http_status_msg"].(string)
+	jobID := m["job_id"].(string)
 	objectID := m["object_id"].(string)
 	objectKind := m["object_kind"].(string)
 	objectName := m["object_name"].(string)
@@ -61,6 +64,7 @@ func ZsrvResponseModelFromMap(m map[string]interface{}) *models.ZsrvResponse {
 		Error:           error,
 		HTTPStatusCode:  hTTPStatusCode,
 		HTTPStatusMsg:   hTTPStatusMsg,
+		JobID:           jobID,
 		ObjectID:        objectID,
 		ObjectKind:      objectKind,
 		ObjectName:      objectName,
@@ -80,6 +84,7 @@ func SetZsrvResponseResourceData(d *schema.ResourceData, m *models.ZsrvResponse)
 	d.Set("error", SetZsrvErrorSubResourceData(m.Error))
 	d.Set("http_status_code", m.HTTPStatusCode)
 	d.Set("http_status_msg", m.HTTPStatusMsg)
+	d.Set("job_id", m.JobID)
 	d.Set("object_id", m.ObjectID)
 	d.Set("object_kind", m.ObjectKind)
 	d.Set("object_name", m.ObjectName)
@@ -101,6 +106,7 @@ func SetZsrvResponseSubResourceData(m []*models.ZsrvResponse) (d []*map[string]i
 			properties["error"] = SetZsrvErrorSubResourceData(ZsrvResponseModel.Error)
 			properties["http_status_code"] = ZsrvResponseModel.HTTPStatusCode
 			properties["http_status_msg"] = ZsrvResponseModel.HTTPStatusMsg
+			properties["job_id"] = ZsrvResponseModel.JobID
 			properties["object_id"] = ZsrvResponseModel.ObjectID
 			properties["object_kind"] = ZsrvResponseModel.ObjectKind
 			properties["object_name"] = ZsrvResponseModel.ObjectName
@@ -132,8 +138,8 @@ func ZsrvResponseSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ZsrvErrorSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"http_status_code": {
@@ -143,6 +149,12 @@ func ZsrvResponseSchema() map[string]*schema.Schema {
 		},
 
 		"http_status_msg": {
+			Description: ``,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"job_id": {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
@@ -174,19 +186,15 @@ func ZsrvResponseSchema() map[string]*schema.Schema {
 
 		"object_type": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: ObjectType
-			Elem: &schema.Resource{
-				Schema: ObjectTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"operation_status": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: ZcOpsStatus
-			Elem: &schema.Resource{
-				Schema: ZcOpsStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -198,10 +206,8 @@ func ZsrvResponseSchema() map[string]*schema.Schema {
 
 		"operation_type": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: ZcOpsType
-			Elem: &schema.Resource{
-				Schema: ZcOpsTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -226,6 +232,7 @@ func GetZsrvResponsePropertyFields() (t []string) {
 		"error",
 		"http_status_code",
 		"http_status_msg",
+		"job_id",
 		"object_id",
 		"object_kind",
 		"object_name",

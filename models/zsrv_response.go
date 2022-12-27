@@ -22,7 +22,8 @@ type ZsrvResponse struct {
 	// end time
 	EndTime string `json:"endTime,omitempty"`
 
-	// one or more errors will be set if the operation failedi.e. httpStatusCode != 2xx
+	// one or more errors will be set if the operation failed
+	// i.e. httpStatusCode != 2xx
 	Error []*ZsrvError `json:"error"`
 
 	// http response
@@ -30,6 +31,9 @@ type ZsrvResponse struct {
 
 	// summary of the error in text format
 	HTTPStatusMsg string `json:"httpStatusMsg,omitempty"`
+
+	// for tracking asynchronous tasks
+	JobID string `json:"jobId,omitempty"`
 
 	// Unique value identifies the object that was operated on
 	ObjectID string `json:"objectId,omitempty"`
@@ -40,7 +44,8 @@ type ZsrvResponse struct {
 	// name of the object
 	ObjectName string `json:"objectName,omitempty"`
 
-	// object revision post the operation, note Read operationdoesn't change the revision
+	// object revision post the operation, note Read operation
+	// doesn't change the revision
 	ObjectRevision string `json:"objectRevision,omitempty"`
 
 	// object type
@@ -52,7 +57,8 @@ type ZsrvResponse struct {
 	// time of operation
 	OperationTime string `json:"operationTime,omitempty"`
 
-	// Describes one of the operations type : possible values                        Read/Delete/Create/Update/List
+	// Describes one of the operations type : possible values
+	//                         Read/Delete/Create/Update/List
 	OperationType *ZcOpsType `json:"operationType,omitempty"`
 
 	// total time taken by operations

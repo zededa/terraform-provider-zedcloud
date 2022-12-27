@@ -10,8 +10,8 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/zededa/terraform-provider/client/device_config"
-	"github.com/zededa/terraform-provider/client/device_status"
+	"github.com/zededa/terraform-provider/client/edge_node_configuration"
+	"github.com/zededa/terraform-provider/client/edge_node_status"
 	"github.com/zededa/terraform-provider/client/hardware_model"
 	"github.com/zededa/terraform-provider/client/resource_group"
 	"github.com/zededa/terraform-provider/client/resource_group_status"
@@ -23,7 +23,7 @@ var Default = NewHTTPClient(nil)
 const (
 	// DefaultHost is the default Host
 	// found in Meta (info) section of spec file
-	DefaultHost string = "zedcontrol.zededa.net"
+	DefaultHost string = "localhost"
 	// DefaultBasePath is the default BasePath
 	// found in Meta (info) section of spec file
 	DefaultBasePath string = "/api"
@@ -59,8 +59,8 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Zedcloudap
 
 	cli := new(Zedcloudapi)
 	cli.Transport = transport
-	cli.DeviceConfig = device_config.New(transport, formats)
-	cli.DeviceStatus = device_status.New(transport, formats)
+	cli.EdgeNodeConfiguration = edge_node_configuration.New(transport, formats)
+	cli.EdgeNodeStatus = edge_node_status.New(transport, formats)
 	cli.HardwareModel = hardware_model.New(transport, formats)
 	cli.ResourceGroup = resource_group.New(transport, formats)
 	cli.ResourceGroupStatus = resource_group_status.New(transport, formats)
@@ -108,9 +108,9 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Zedcloudapi is a client for zedcloudapi
 type Zedcloudapi struct {
-	DeviceConfig device_config.ClientService
+	EdgeNodeConfiguration edge_node_configuration.ClientService
 
-	DeviceStatus device_status.ClientService
+	EdgeNodeStatus edge_node_status.ClientService
 
 	HardwareModel hardware_model.ClientService
 
@@ -124,8 +124,8 @@ type Zedcloudapi struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Zedcloudapi) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-	c.DeviceConfig.SetTransport(transport)
-	c.DeviceStatus.SetTransport(transport)
+	c.EdgeNodeConfiguration.SetTransport(transport)
+	c.EdgeNodeStatus.SetTransport(transport)
 	c.HardwareModel.SetTransport(transport)
 	c.ResourceGroup.SetTransport(transport)
 	c.ResourceGroupStatus.SetTransport(transport)

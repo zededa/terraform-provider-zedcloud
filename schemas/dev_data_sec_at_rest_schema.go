@@ -67,10 +67,8 @@ func DevDataSecAtRestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"err_info": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: DeviceError
-			Elem: &schema.Resource{
-				Schema: DeviceErrorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -82,10 +80,8 @@ func DevDataSecAtRestSchema() map[string]*schema.Schema {
 
 		"status": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: DeviceDataSecurityAtRestStatus
-			Elem: &schema.Resource{
-				Schema: DeviceDataSecurityAtRestStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

@@ -61,7 +61,7 @@ func SetModuleDetailSubResourceData(m []*models.ModuleDetail) (d []*map[string]i
 func ModuleDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"environment": {
-			Description: ``,
+			Description: `Extra information to module to make configuration easier`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -71,15 +71,13 @@ func ModuleDetailSchema() map[string]*schema.Schema {
 
 		"module_type": {
 			Description: `Type of modules`,
-			Type:        schema.TypeList, //GoType: ModuleType
-			Elem: &schema.Resource{
-				Schema: ModuleTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"routes": {
-			Description: ``,
+			Description: `Send messages between modules or send messages from modules to iot hub`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,

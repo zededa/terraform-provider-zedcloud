@@ -36,6 +36,9 @@ type DeviceStatusListMsg struct {
 
 	// total count
 	TotalCount int64 `json:"totalCount,omitempty"`
+
+	// total edgeview active
+	TotalEdgeviewActive int64 `json:"totalEdgeviewActive,omitempty"`
 }
 
 // Validate validates this device status list msg

@@ -44,10 +44,8 @@ func TPMEnrollmentDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"type": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: EnrollmentType
-			Elem: &schema.Resource{
-				Schema: EnrollmentTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

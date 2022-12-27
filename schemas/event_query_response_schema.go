@@ -16,9 +16,16 @@ func EventQueryResponseModel(d *schema.ResourceData) *models.EventQueryResponse 
 		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
 		next = CursorModelFromMap(nextMap)
 	}
+	var summary *models.Summary // Summary
+	summaryInterface, summaryIsSet := d.GetOk("summary")
+	if summaryIsSet {
+		summaryMap := summaryInterface.([]interface{})[0].(map[string]interface{})
+		summary = SummaryModelFromMap(summaryMap)
+	}
 	return &models.EventQueryResponse{
-		List: list,
-		Next: next,
+		List:    list,
+		Next:    next,
+		Summary: summary,
 	}
 }
 
@@ -31,9 +38,17 @@ func EventQueryResponseModelFromMap(m map[string]interface{}) *models.EventQuery
 		next = CursorModelFromMap(nextMap)
 	}
 	//
+	var summary *models.Summary // Summary
+	summaryInterface, summaryIsSet := m["summary"]
+	if summaryIsSet {
+		summaryMap := summaryInterface.([]interface{})[0].(map[string]interface{})
+		summary = SummaryModelFromMap(summaryMap)
+	}
+	//
 	return &models.EventQueryResponse{
-		List: list,
-		Next: next,
+		List:    list,
+		Next:    next,
+		Summary: summary,
 	}
 }
 
@@ -41,6 +56,7 @@ func EventQueryResponseModelFromMap(m map[string]interface{}) *models.EventQuery
 func SetEventQueryResponseResourceData(d *schema.ResourceData, m *models.EventQueryResponse) {
 	d.Set("list", SetEventQueryResponseItemSubResourceData(m.List))
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
+	d.Set("summary", SetSummarySubResourceData([]*models.Summary{m.Summary}))
 }
 
 // Iterate throught and update the EventQueryResponse resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -50,6 +66,7 @@ func SetEventQueryResponseSubResourceData(m []*models.EventQueryResponse) (d []*
 			properties := make(map[string]interface{})
 			properties["list"] = SetEventQueryResponseItemSubResourceData(EventQueryResponseModel.List)
 			properties["next"] = SetCursorSubResourceData([]*models.Cursor{EventQueryResponseModel.Next})
+			properties["summary"] = SetSummarySubResourceData([]*models.Summary{EventQueryResponseModel.Summary})
 			d = append(d, &properties)
 		}
 	}
@@ -65,17 +82,22 @@ func EventQueryResponseSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: EventQueryResponseItemSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"next": {
 			Description: `Cursor filter`,
-			Type:        schema.TypeList, //GoType: Cursor
-			Elem: &schema.Resource{
-				Schema: CursorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
+		},
+
+		"summary": {
+			Description: `Summary of filtered events.`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 	}
 }
@@ -85,5 +107,6 @@ func GetEventQueryResponsePropertyFields() (t []string) {
 	return []string{
 		"list",
 		"next",
+		"summary",
 	}
 }

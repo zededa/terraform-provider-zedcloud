@@ -38,10 +38,10 @@ func Provider() *schema.Provider {
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"zedcloud_edgenode": resources.DataResourceDeviceConfig(),
+			"zedcloud_edgenode": resources.DataResourceEdgeNodeConfiguration(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"zedcloud_edgenode": resources.DeviceConfig(),
+			"zedcloud_edgenode": resources.EdgeNodeConfiguration(),
 		},
 	}
 }

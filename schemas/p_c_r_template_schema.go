@@ -12,10 +12,14 @@ func PCRTemplateModel(d *schema.ResourceData) *models.PCRTemplate {
 	pCRValues := d.Get("p_c_r_values").([]*models.PCRValue) // []*PCRValue
 	eveVersion := d.Get("eve_version").(string)
 	firmwareVersion := d.Get("firmware_version").(string)
+	id := d.Get("id").(string)
+	name := d.Get("name").(string)
 	return &models.PCRTemplate{
 		PCRValues:       pCRValues,
-		EveVersion:      eveVersion,
+		EveVersion:      &eveVersion, // string true false false
 		FirmwareVersion: firmwareVersion,
+		ID:              id,
+		Name:            name,
 	}
 }
 
@@ -23,10 +27,14 @@ func PCRTemplateModelFromMap(m map[string]interface{}) *models.PCRTemplate {
 	pCRValues := m["p_c_r_values"].([]*models.PCRValue) // []*PCRValue
 	eveVersion := m["eve_version"].(string)
 	firmwareVersion := m["firmware_version"].(string)
+	id := m["id"].(string)
+	name := m["name"].(string)
 	return &models.PCRTemplate{
 		PCRValues:       pCRValues,
-		EveVersion:      eveVersion,
+		EveVersion:      &eveVersion,
 		FirmwareVersion: firmwareVersion,
+		ID:              id,
+		Name:            name,
 	}
 }
 
@@ -35,6 +43,8 @@ func SetPCRTemplateResourceData(d *schema.ResourceData, m *models.PCRTemplate) {
 	d.Set("p_c_r_values", SetPCRValueSubResourceData(m.PCRValues))
 	d.Set("eve_version", m.EveVersion)
 	d.Set("firmware_version", m.FirmwareVersion)
+	d.Set("id", m.ID)
+	d.Set("name", m.Name)
 }
 
 // Iterate throught and update the PCRTemplate resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -45,6 +55,8 @@ func SetPCRTemplateSubResourceData(m []*models.PCRTemplate) (d []*map[string]int
 			properties["p_c_r_values"] = SetPCRValueSubResourceData(PCRTemplateModel.PCRValues)
 			properties["eve_version"] = PCRTemplateModel.EveVersion
 			properties["firmware_version"] = PCRTemplateModel.FirmwareVersion
+			properties["id"] = PCRTemplateModel.ID
+			properties["name"] = PCRTemplateModel.Name
 			d = append(d, &properties)
 		}
 	}
@@ -55,23 +67,35 @@ func SetPCRTemplateSubResourceData(m []*models.PCRTemplate) (d []*map[string]int
 func PCRTemplateSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"p_c_r_values": {
-			Description: ``,
+			Description: `List of PCR values for the PCR template`,
 			Type:        schema.TypeList, //GoType: []*PCRValue
 			Elem: &schema.Resource{
 				Schema: PCRValueSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"eve_version": {
-			Description: ``,
+			Description: `EVE version related to the PCR template`,
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+
+		"firmware_version": {
+			Description: `Firmware version related to the PCR template. If user doesn't set it, it will be set to '*'`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
-		"firmware_version": {
-			Description: ``,
+		"id": {
+			Description: `System defined universally unique Id of the PCR template. If not set in POST / PUT API calls, this will be treated as a new entry and a unique System Generated ID assigned.`,
+			Type:        schema.TypeString,
+			Computed:    true,
+		},
+
+		"name": {
+			Description: `Name of the PCR template. The name is Unique among PCR templates for that System Model. If it is not specified, a system-generated name will be assigned.`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -84,5 +108,7 @@ func GetPCRTemplatePropertyFields() (t []string) {
 		"p_c_r_values",
 		"eve_version",
 		"firmware_version",
+		"id",
+		"name",
 	}
 }

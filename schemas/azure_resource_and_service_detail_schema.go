@@ -85,10 +85,8 @@ func AzureResourceAndServiceDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"s_k_u": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: SKUDetail
-			Elem: &schema.Resource{
-				Schema: SKUDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

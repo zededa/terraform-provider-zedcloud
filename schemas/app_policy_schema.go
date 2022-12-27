@@ -48,8 +48,8 @@ func AppPolicySchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppConfigSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 	}
 }

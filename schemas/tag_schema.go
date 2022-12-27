@@ -15,8 +15,19 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		attestationPolicyMap := attestationPolicyInterface.([]interface{})[0].(map[string]interface{})
 		attestationPolicy = PolicyConfigModelFromMap(attestationPolicyMap)
 	}
-	attr := d.Get("attr").(map[string]string) // map[string]string
+	var deployment *models.Deployment // Deployment
+	deploymentInterface, deploymentIsSet := d.GetOk("deployment")
+	if deploymentIsSet {
+		deploymentMap := deploymentInterface.([]interface{})[0].(map[string]interface{})
+		deployment = DeploymentModelFromMap(deploymentMap)
+	}
 	description := d.Get("description").(string)
+	var edgeviewPolicy *models.PolicyConfig // PolicyConfig
+	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
+	if edgeviewPolicyIsSet {
+		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})[0].(map[string]interface{})
+		edgeviewPolicy = PolicyConfigModelFromMap(edgeviewPolicyMap)
+	}
 	id := d.Get("id").(string)
 	name := d.Get("name").(string)
 	var networkPolicy *models.PolicyConfig // PolicyConfig
@@ -29,8 +40,9 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 	typeVar := d.Get("type").(*models.TagType) // TagType
 	return &models.Tag{
 		AttestationPolicy: attestationPolicy,
-		Attr:              attr,
+		Deployment:        deployment,
 		Description:       description,
+		EdgeviewPolicy:    edgeviewPolicy,
 		ID:                id,
 		Name:              &name, // string true false false
 		NetworkPolicy:     networkPolicy,
@@ -47,8 +59,21 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		attestationPolicy = PolicyConfigModelFromMap(attestationPolicyMap)
 	}
 	//
-	attr := m["attr"].(map[string]string)
+	var deployment *models.Deployment // Deployment
+	deploymentInterface, deploymentIsSet := m["deployment"]
+	if deploymentIsSet {
+		deploymentMap := deploymentInterface.([]interface{})[0].(map[string]interface{})
+		deployment = DeploymentModelFromMap(deploymentMap)
+	}
+	//
 	description := m["description"].(string)
+	var edgeviewPolicy *models.PolicyConfig // PolicyConfig
+	edgeviewPolicyInterface, edgeviewPolicyIsSet := m["edgeview_policy"]
+	if edgeviewPolicyIsSet {
+		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})[0].(map[string]interface{})
+		edgeviewPolicy = PolicyConfigModelFromMap(edgeviewPolicyMap)
+	}
+	//
 	id := m["id"].(string)
 	name := m["name"].(string)
 	var networkPolicy *models.PolicyConfig // PolicyConfig
@@ -62,8 +87,9 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 	typeVar := m["type"].(*models.TagType) // TagType
 	return &models.Tag{
 		AttestationPolicy: attestationPolicy,
-		Attr:              attr,
+		Deployment:        deployment,
 		Description:       description,
+		EdgeviewPolicy:    edgeviewPolicy,
 		ID:                id,
 		Name:              &name,
 		NetworkPolicy:     networkPolicy,
@@ -78,7 +104,9 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("attestation_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.AttestationPolicy}))
 	d.Set("attr", m.Attr)
 	d.Set("cloud_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.CloudPolicy}))
+	d.Set("deployment", SetDeploymentSubResourceData([]*models.Deployment{m.Deployment}))
 	d.Set("description", m.Description)
+	d.Set("edgeview_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.EdgeviewPolicy}))
 	d.Set("id", m.ID)
 	d.Set("module_policy", SetPolicyConfigSubResourceData(m.ModulePolicy))
 	d.Set("name", m.Name)
@@ -98,7 +126,9 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 			properties["attestation_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.AttestationPolicy})
 			properties["attr"] = TagModel.Attr
 			properties["cloud_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.CloudPolicy})
+			properties["deployment"] = SetDeploymentSubResourceData([]*models.Deployment{TagModel.Deployment})
 			properties["description"] = TagModel.Description
+			properties["edgeview_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.EdgeviewPolicy})
 			properties["id"] = TagModel.ID
 			properties["module_policy"] = SetPolicyConfigSubResourceData(TagModel.ModulePolicy)
 			properties["name"] = TagModel.Name
@@ -117,45 +147,53 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 func TagSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
-			Description: `Resource group wide policy for edge applications to be deployed on all devices on this resource group`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
-			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
-			},
+			Description: `Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Computed: true,
 		},
 
 		"attestation_policy": {
 			Description: `Attestation policy to enforce on all devices of this project`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
-			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"attr": {
-			Description: ``,
+			Description: `Resource group wide configuration for edge nodes`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"cloud_policy": {
 			Description: `Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
-			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Computed: true,
+		},
+
+		"deployment": {
+			Description: `Deployment template containing different types of policies`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"description": {
 			Description: `Detailed description of the resource group.`,
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+
+		"edgeview_policy": {
+			Description: `Edgeview policy on devices of this project`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"id": {
@@ -170,8 +208,8 @@ func TagSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: PolicyConfigSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Computed:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Computed: true,
 		},
 
 		"name": {
@@ -182,25 +220,21 @@ func TagSchema() map[string]*schema.Schema {
 
 		"network_policy": {
 			Description: `Network policy to enforce on all devices of this project`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
-			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"numdevices": {
-			Description: `Number of devices in this resource group`,
+			Description: `Number of edge nodes in this resource group`,
 			Type:        schema.TypeInt,
 			Computed:    true,
 		},
 
 		"revision": {
 			Description: `system defined info`,
-			Type:        schema.TypeList, //GoType: ObjectRevision
-			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Computed: true,
 		},
 
@@ -212,10 +246,8 @@ func TagSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Resource group type`,
-			Type:        schema.TypeList, //GoType: TagType
-			Elem: &schema.Resource{
-				Schema: TagTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 	}
@@ -225,8 +257,9 @@ func TagSchema() map[string]*schema.Schema {
 func GetTagPropertyFields() (t []string) {
 	return []string{
 		"attestation_policy",
-		"attr",
+		"deployment",
 		"description",
+		"edgeview_policy",
 		"id",
 		"name",
 		"network_policy",

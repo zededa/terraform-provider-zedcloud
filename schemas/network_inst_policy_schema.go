@@ -72,19 +72,15 @@ func NetworkInstPolicySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"meta_data": {
 			Description: `all the required metadata for a policy like id, name, different types of tags`,
-			Type:        schema.TypeList, //GoType: PolicyCommon
-			Elem: &schema.Resource{
-				Schema: PolicyCommonSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"net_inst_config": {
 			Description: `network instance config details`,
-			Type:        schema.TypeList, //GoType: NetworkInstConfig
-			Elem: &schema.Resource{
-				Schema: NetworkInstConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

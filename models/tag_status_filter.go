@@ -27,6 +27,9 @@ type TagStatusFilter struct {
 
 	// Resource group status to be matched.
 	Status *TagStatus `json:"status,omitempty"`
+
+	// Resource group type to ne matched.
+	Type *TagType `json:"type,omitempty"`
 }
 
 // Validate validates this tag status filter
@@ -38,6 +41,10 @@ func (m *TagStatusFilter) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateStatus(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -86,11 +93,34 @@ func (m *TagStatusFilter) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *TagStatusFilter) validateType(formats strfmt.Registry) error {
+	if swag.IsZero(m.Type) { // not required
+		return nil
+	}
+
+	if m.Type != nil {
+		if err := m.Type.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("type")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("type")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this tag status filter based on the context it is used
 func (m *TagStatusFilter) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateStatus(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -108,6 +138,22 @@ func (m *TagStatusFilter) contextValidateStatus(ctx context.Context, formats str
 				return ve.ValidateName("status")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("status")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *TagStatusFilter) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Type != nil {
+		if err := m.Type.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("type")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("type")
 			}
 			return err
 		}

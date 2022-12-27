@@ -32,11 +32,21 @@ type DeviceStatusSummaryMsg struct {
 	// admin state
 	AdminState *AdminState `json:"adminState,omitempty"`
 
+	// App instance count that is actively running on the device
+	AppInstCount int64 `json:"appInstCount,omitempty"`
+
 	// System defined universally unique clusterInstance ID, unique across the enterprise.
 	// Max Length: 256
 	// Min Length: 3
 	// Pattern: [a-zA-Z0-9][a-zA-Z0-9_.-]+
 	ClusterID string `json:"clusterID,omitempty"`
+
+	// debug knob expiry time
+	DebugKnob bool `json:"debugKnob,omitempty"`
+
+	// debug knob expiry time
+	// Format: date-time
+	DebugKnobExpiryTime strfmt.DateTime `json:"debugKnobExpiryTime,omitempty"`
 
 	// dev error
 	DevError []*DeviceError `json:"devError"`
@@ -44,8 +54,14 @@ type DeviceStatusSummaryMsg struct {
 	// dinfo
 	Dinfo *DeviceInfo `json:"dinfo,omitempty"`
 
+	// Device edgeview session active
+	EdgeviewActive bool `json:"edgeviewActive,omitempty"`
+
 	// id
 	ID string `json:"id,omitempty"`
+
+	// Device location
+	Location string `json:"location,omitempty"`
 
 	// Device memory Info
 	MemorySummary *DeviceMemorySummary `json:"memorySummary,omitempty"`
@@ -62,6 +78,9 @@ type DeviceStatusSummaryMsg struct {
 	// project Id
 	ProjectID string `json:"projectId,omitempty"`
 
+	// Project name to which device is associated with
+	ProjectName string `json:"projectName,omitempty"`
+
 	// run state
 	RunState *RunState `json:"runState,omitempty"`
 
@@ -69,6 +88,8 @@ type DeviceStatusSummaryMsg struct {
 	SwInfo []*DeviceSWInfo `json:"swInfo"`
 
 	// deprecated = 5;
+	//
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
 
 	// title
@@ -96,6 +117,10 @@ func (m *DeviceStatusSummaryMsg) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateClusterID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDebugKnobExpiryTime(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -223,6 +248,18 @@ func (m *DeviceStatusSummaryMsg) validateClusterID(formats strfmt.Registry) erro
 	}
 
 	if err := validate.Pattern("clusterID", "body", m.ClusterID, `[a-zA-Z0-9][a-zA-Z0-9_.-]+`); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *DeviceStatusSummaryMsg) validateDebugKnobExpiryTime(formats strfmt.Registry) error {
+	if swag.IsZero(m.DebugKnobExpiryTime) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("debugKnobExpiryTime", "body", "date-time", m.DebugKnobExpiryTime.String(), formats); err != nil {
 		return err
 	}
 

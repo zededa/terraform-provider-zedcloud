@@ -44,10 +44,8 @@ func DeviceAttestationPolicySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"type": {
 			Description: `Attestation policy type`,
-			Type:        schema.TypeList, //GoType: DeviceAttestPolicyType
-			Elem: &schema.Resource{
-				Schema: DeviceAttestPolicyTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 	}

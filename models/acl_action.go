@@ -19,6 +19,8 @@ import (
 type ACLAction struct {
 
 	// Not used by ZedUI
+	//
+	// Drop the packet
 	Drop bool `json:"drop,omitempty"`
 
 	// Limit action on ACL rule
@@ -26,7 +28,10 @@ type ACLAction struct {
 	// UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
 	Limit bool `json:"limit,omitempty"`
 
-	// only valid if limit flag is set, see below.Not used by ZedUI
+	// only valid if limit flag is set, see below.
+	// Not used by ZedUI
+	//
+	// Value to be used for limit action (Required if limit is true)
 	LimitValue *LimitParams `json:"limitValue,omitempty"`
 
 	// Rate limit burst in ACL rule

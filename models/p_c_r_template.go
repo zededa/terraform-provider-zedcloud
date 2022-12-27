@@ -12,21 +12,34 @@ import (
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
-// PCRTemplate p c r template
+// PCRTemplate PCR template
+//
+// # PCR template data for the specified eve version and firmware version
 //
 // swagger:model PCRTemplate
 type PCRTemplate struct {
 
-	// p c r values
+	// List of PCR values for the PCR template
+	// Required: true
 	PCRValues []*PCRValue `json:"PCRValues"`
 
-	// eve version
-	EveVersion string `json:"eveVersion,omitempty"`
+	// EVE version related to the PCR template
+	// Required: true
+	EveVersion *string `json:"eveVersion"`
 
-	// firmware version
+	// Firmware version related to the PCR template. If user doesn't set it, it will be set to '*'
 	FirmwareVersion string `json:"firmwareVersion,omitempty"`
+
+	// System defined universally unique Id of the PCR template. If not set in POST / PUT API calls, this will be treated as a new entry and a unique System Generated ID assigned.
+	// Pattern: [a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}
+	ID string `json:"id,omitempty"`
+
+	// Name of the PCR template. The name is Unique among PCR templates for that System Model. If it is not specified, a system-generated name will be assigned.
+	// Max Length: 256
+	Name string `json:"name,omitempty"`
 }
 
 // Validate validates this p c r template
@@ -37,6 +50,18 @@ func (m *PCRTemplate) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateEveVersion(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -44,8 +69,9 @@ func (m *PCRTemplate) Validate(formats strfmt.Registry) error {
 }
 
 func (m *PCRTemplate) validatePCRValues(formats strfmt.Registry) error {
-	if swag.IsZero(m.PCRValues) { // not required
-		return nil
+
+	if err := validate.Required("PCRValues", "body", m.PCRValues); err != nil {
+		return err
 	}
 
 	for i := 0; i < len(m.PCRValues); i++ {
@@ -64,6 +90,39 @@ func (m *PCRTemplate) validatePCRValues(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *PCRTemplate) validateEveVersion(formats strfmt.Registry) error {
+
+	if err := validate.Required("eveVersion", "body", m.EveVersion); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *PCRTemplate) validateID(formats strfmt.Registry) error {
+	if swag.IsZero(m.ID) { // not required
+		return nil
+	}
+
+	if err := validate.Pattern("id", "body", m.ID, `[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}`); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *PCRTemplate) validateName(formats strfmt.Registry) error {
+	if swag.IsZero(m.Name) { // not required
+		return nil
+	}
+
+	if err := validate.MaxLength("name", "body", m.Name, 256); err != nil {
+		return err
 	}
 
 	return nil

@@ -23,11 +23,11 @@ type AppACEAction struct {
 
 	// ACE drop flag
 	// Required: true
-	Drop bool `json:"drop"`
+	Drop *bool `json:"drop"`
 
 	// ACE limit flag
 	// Required: true
-	Limit bool `json:"limit"`
+	Limit *bool `json:"limit"`
 
 	// ACE limit burst
 	// Required: true
@@ -47,7 +47,7 @@ type AppACEAction struct {
 
 	// application port map flag
 	// Required: true
-	Portmap bool `json:"portmap"`
+	Portmap *bool `json:"portmap"`
 }
 
 // Validate validates this app a c e action
@@ -90,7 +90,7 @@ func (m *AppACEAction) Validate(formats strfmt.Registry) error {
 
 func (m *AppACEAction) validateDrop(formats strfmt.Registry) error {
 
-	if err := validate.Required("drop", "body", bool(m.Drop)); err != nil {
+	if err := validate.Required("drop", "body", m.Drop); err != nil {
 		return err
 	}
 
@@ -99,7 +99,7 @@ func (m *AppACEAction) validateDrop(formats strfmt.Registry) error {
 
 func (m *AppACEAction) validateLimit(formats strfmt.Registry) error {
 
-	if err := validate.Required("limit", "body", bool(m.Limit)); err != nil {
+	if err := validate.Required("limit", "body", m.Limit); err != nil {
 		return err
 	}
 
@@ -155,7 +155,7 @@ func (m *AppACEAction) validateMapparams(formats strfmt.Registry) error {
 
 func (m *AppACEAction) validatePortmap(formats strfmt.Registry) error {
 
-	if err := validate.Required("portmap", "body", bool(m.Portmap)); err != nil {
+	if err := validate.Required("portmap", "body", m.Portmap); err != nil {
 		return err
 	}
 

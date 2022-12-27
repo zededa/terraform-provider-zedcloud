@@ -49,13 +49,13 @@ func SetParamSubResourceData(m []*models.Param) (d []*map[string]interface{}) {
 func ParamSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
-			Description: ``,
+			Description: `Name of the Parameter (Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"value": {
-			Description: ``,
+			Description: `Value of the parameter (Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

@@ -24,6 +24,7 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 		containerDetailMap := containerDetailInterface.([]interface{})[0].(map[string]interface{})
 		containerDetail = ContainerDetailModelFromMap(containerDetailMap)
 	}
+	cPUPinningEnabled := d.Get("cpu_pinning_enabled").(bool)
 	deploymentType := d.Get("deployment_type").(*models.DeploymentType) // DeploymentType
 	var desc *models.Details                                            // Details
 	descInterface, descIsSet := d.GetOk("desc")
@@ -53,24 +54,25 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	resources := d.Get("resources").([]*models.Resource)      // []*Resource
 	vmmode := d.Get("vmmode").(string)
 	return &models.VMManifest{
-		AcKind:          &acKind,    // string true false false
-		AcVersion:       &acVersion, // string true false false
-		AppType:         appType,
-		Configuration:   configuration,
-		ContainerDetail: containerDetail,
-		DeploymentType:  deploymentType,
-		Desc:            desc,
-		Description:     description,
-		DisplayName:     displayName,
-		Enablevnc:       enablevnc,
-		Images:          images,
-		Interfaces:      interfaces,
-		Module:          module,
-		Name:            name,
-		Owner:           owner,
-		Permissions:     permissions,
-		Resources:       resources,
-		Vmmode:          &vmmode, // string true false false
+		AcKind:            &acKind,    // string true false false
+		AcVersion:         &acVersion, // string true false false
+		AppType:           appType,
+		Configuration:     configuration,
+		ContainerDetail:   containerDetail,
+		CPUPinningEnabled: cPUPinningEnabled,
+		DeploymentType:    deploymentType,
+		Desc:              desc,
+		Description:       description,
+		DisplayName:       displayName,
+		Enablevnc:         enablevnc,
+		Images:            images,
+		Interfaces:        interfaces,
+		Module:            module,
+		Name:              name,
+		Owner:             owner,
+		Permissions:       permissions,
+		Resources:         resources,
+		Vmmode:            &vmmode, // string true false false
 	}
 }
 
@@ -92,6 +94,7 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 		containerDetail = ContainerDetailModelFromMap(containerDetailMap)
 	}
 	//
+	cPUPinningEnabled := m["cpu_pinning_enabled"].(bool)
 	deploymentType := m["deployment_type"].(*models.DeploymentType) // DeploymentType
 	var desc *models.Details                                        // Details
 	descInterface, descIsSet := m["desc"]
@@ -124,24 +127,25 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 	resources := m["resources"].([]*models.Resource)      // []*Resource
 	vmmode := m["vmmode"].(string)
 	return &models.VMManifest{
-		AcKind:          &acKind,
-		AcVersion:       &acVersion,
-		AppType:         appType,
-		Configuration:   configuration,
-		ContainerDetail: containerDetail,
-		DeploymentType:  deploymentType,
-		Desc:            desc,
-		Description:     description,
-		DisplayName:     displayName,
-		Enablevnc:       enablevnc,
-		Images:          images,
-		Interfaces:      interfaces,
-		Module:          module,
-		Name:            name,
-		Owner:           owner,
-		Permissions:     permissions,
-		Resources:       resources,
-		Vmmode:          &vmmode,
+		AcKind:            &acKind,
+		AcVersion:         &acVersion,
+		AppType:           appType,
+		Configuration:     configuration,
+		ContainerDetail:   containerDetail,
+		CPUPinningEnabled: cPUPinningEnabled,
+		DeploymentType:    deploymentType,
+		Desc:              desc,
+		Description:       description,
+		DisplayName:       displayName,
+		Enablevnc:         enablevnc,
+		Images:            images,
+		Interfaces:        interfaces,
+		Module:            module,
+		Name:              name,
+		Owner:             owner,
+		Permissions:       permissions,
+		Resources:         resources,
+		Vmmode:            &vmmode,
 	}
 }
 
@@ -152,6 +156,7 @@ func SetVMManifestResourceData(d *schema.ResourceData, m *models.VMManifest) {
 	d.Set("app_type", m.AppType)
 	d.Set("configuration", SetUserDataTemplateSubResourceData([]*models.UserDataTemplate{m.Configuration}))
 	d.Set("container_detail", SetContainerDetailSubResourceData([]*models.ContainerDetail{m.ContainerDetail}))
+	d.Set("cpu_pinning_enabled", m.CPUPinningEnabled)
 	d.Set("deployment_type", m.DeploymentType)
 	d.Set("desc", SetDetailsSubResourceData([]*models.Details{m.Desc}))
 	d.Set("description", m.Description)
@@ -177,6 +182,7 @@ func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]inter
 			properties["app_type"] = VMManifestModel.AppType
 			properties["configuration"] = SetUserDataTemplateSubResourceData([]*models.UserDataTemplate{VMManifestModel.Configuration})
 			properties["container_detail"] = SetContainerDetailSubResourceData([]*models.ContainerDetail{VMManifestModel.ContainerDetail})
+			properties["cpu_pinning_enabled"] = VMManifestModel.CPUPinningEnabled
 			properties["deployment_type"] = VMManifestModel.DeploymentType
 			properties["desc"] = SetDetailsSubResourceData([]*models.Details{VMManifestModel.Desc})
 			properties["description"] = VMManifestModel.Description
@@ -215,46 +221,42 @@ func VMManifestSchema() map[string]*schema.Schema {
 
 		"app_type": {
 			Description: `bundle type, eg: vm, container, module`,
-			Type:        schema.TypeList, //GoType: AppType
-			Elem: &schema.Resource{
-				Schema: AppTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"configuration": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: UserDataTemplate
-			Elem: &schema.Resource{
-				Schema: UserDataTemplateSchema(),
-			},
+			Description: `Template for Custom Configuration. Used for Cloud-Init`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"container_detail": {
 			Description: `Create options direct the creation of the Docker container`,
-			Type:        schema.TypeList, //GoType: ContainerDetail
-			Elem: &schema.Resource{
-				Schema: ContainerDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
+		},
+
+		"cpu_pinning_enabled": {
+			Description: `Enable CpuPinning`,
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 
 		"deployment_type": {
 			Description: `type of deployment for the app, eg: azure, k3s, standalone`,
-			Type:        schema.TypeList, //GoType: DeploymentType
-			Elem: &schema.Resource{
-				Schema: DeploymentTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"desc": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: Details
-			Elem: &schema.Resource{
-				Schema: DetailsSchema(),
-			},
+			Description: `Description of the application`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -273,7 +275,6 @@ func VMManifestSchema() map[string]*schema.Schema {
 		"enablevnc": {
 			Description: `UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field`,
 			Type:        schema.TypeBool,
-			Default:     false,
 			Optional:    true,
 		},
 
@@ -283,8 +284,8 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: VMManifestImageSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"interfaces": {
@@ -293,16 +294,14 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: InterfaceSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"module": {
 			Description: `Azure module specific details like module twin, environment variable, routes`,
-			Type:        schema.TypeList, //GoType: ModuleDetail
-			Elem: &schema.Resource{
-				Schema: ModuleDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -313,11 +312,9 @@ func VMManifestSchema() map[string]*schema.Schema {
 		},
 
 		"owner": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: Author
-			Elem: &schema.Resource{
-				Schema: AuthorSchema(),
-			},
+			Description: `Owner of the application`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -336,8 +333,8 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ResourceSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"vmmode": {
@@ -357,6 +354,7 @@ func GetVMManifestPropertyFields() (t []string) {
 		"app_type",
 		"configuration",
 		"container_detail",
+		"cpu_pinning_enabled",
 		"deployment_type",
 		"desc",
 		"description",

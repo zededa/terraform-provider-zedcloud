@@ -185,10 +185,8 @@ func EventQueryResponseItemSchema() map[string]*schema.Schema {
 
 		"source": {
 			Description: `source`,
-			Type:        schema.TypeList, //GoType: EventSource
-			Elem: &schema.Resource{
-				Schema: EventSourceSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

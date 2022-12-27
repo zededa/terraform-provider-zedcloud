@@ -16,7 +16,9 @@ import (
 
 // EventSource Source of events
 //
-// - EVENT_SOURCE_UNSPECIFIED: Default - EVENT_SOURCE_SYSTEM: Event is generated as a result of status change reported by device / application - EVENT_SOURCE_USER: Event is generated as a result of an user's configuration action
+// - EVENT_SOURCE_UNSPECIFIED: Default
+//   - EVENT_SOURCE_SYSTEM: Event is generated as a result of status change reported by edge node / application
+//   - EVENT_SOURCE_USER: Event is generated as a result of an user's configuration action
 //
 // swagger:model EventSource
 type EventSource string

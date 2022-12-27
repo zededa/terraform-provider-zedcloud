@@ -16,7 +16,8 @@ import (
 
 // VariableFileEncoding File content encoding type
 //
-// - FILE_ENCODING_UNSPECIFIED: File content not encoded - FILE_ENCODING_BASE64: File content encoded in Base64
+// - FILE_ENCODING_UNSPECIFIED: File content not encoded
+//   - FILE_ENCODING_BASE64: File content encoded in Base64
 //
 // swagger:model VariableFileEncoding
 type VariableFileEncoding string

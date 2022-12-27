@@ -116,10 +116,8 @@ func LTEAdapterSchema() map[string]*schema.Schema {
 
 		"simcard_state": {
 			Description: `State of SimCard`,
-			Type:        schema.TypeList, //GoType: SimcardState
-			Elem: &schema.Resource{
-				Schema: SimcardStateSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

@@ -108,10 +108,8 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"allocation_policy": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: AllocationPolicy
-			Elem: &schema.Resource{
-				Schema: AllocationPolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -126,10 +124,8 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 
 		"certificate_enrollment": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: CertificateEnrollmentDetail
-			Elem: &schema.Resource{
-				Schema: CertificateEnrollmentDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -141,19 +137,15 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 
 		"mechanism": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: EnrollmentMechanism
-			Elem: &schema.Resource{
-				Schema: EnrollmentMechanismSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"symmetric_key_enrollment": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: SymmetricKeyEnrollmentDetail
-			Elem: &schema.Resource{
-				Schema: SymmetricKeyEnrollmentDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -168,10 +160,8 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 
 		"tpm_enrollment": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: TPMEnrollmentDetail
-			Elem: &schema.Resource{
-				Schema: TPMEnrollmentDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

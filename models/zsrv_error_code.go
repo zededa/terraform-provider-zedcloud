@@ -16,7 +16,13 @@ import (
 
 // ZsrvErrorCode ZedCould internal error code
 //
-// - zMsgErrorNone: common validation errors - IncompleteData: message had fields that weren't filled in - InvalidData: message contained the field that wasn't expected - FunctionUnsupported: this feature unavailable on this version of device - InvalidFieldFormat: message contained the field that wasn't correctly formatted - JsonFmtError: Marshal / Unmarshal errors - DataBaseConnection: generic DB error
+// - zMsgErrorNone: common validation errors
+//   - IncompleteData: message had fields that weren't filled in
+//   - InvalidData: message contained the field that wasn't expected
+//   - FunctionUnsupported: this feature unavailable on this version of device
+//   - InvalidFieldFormat: message contained the field that wasn't correctly formatted
+//   - JsonFmtError: Marshal / Unmarshal errors
+//   - DataBaseConnection: generic DB error
 //
 // swagger:model ZsrvErrorCode
 type ZsrvErrorCode string

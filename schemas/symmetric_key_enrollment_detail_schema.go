@@ -78,28 +78,22 @@ func SymmetricKeyEnrollmentDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"group_symmetric_key_enrollment": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: GroupSymmetricKeyEnrollment
-			Elem: &schema.Resource{
-				Schema: GroupSymmetricKeyEnrollmentSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"individual_symmetric_key_enrollment": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: IndividualSymmetricKeyEnrollment
-			Elem: &schema.Resource{
-				Schema: IndividualSymmetricKeyEnrollmentSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"type": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: EnrollmentType
-			Elem: &schema.Resource{
-				Schema: EnrollmentTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

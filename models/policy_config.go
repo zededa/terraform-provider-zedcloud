@@ -27,7 +27,7 @@ type PolicyConfig struct {
 	// attestation policy to enforce on all devices in this project
 	AttestationPolicy *AttestationPolicy `json:"attestationPolicy,omitempty"`
 
-	// attr
+	// Mapping of policy  variable keys and policy variable values
 	Attr map[string]string `json:"attr,omitempty"`
 
 	// azure policy, which is used in configuring azure iot-edge.
@@ -39,6 +39,9 @@ type PolicyConfig struct {
 	// Detailed description of the policy
 	// Max Length: 256
 	Description string `json:"description,omitempty"`
+
+	// edgeview policy on devices of this project
+	EdgeviewPolicy *EdgeviewPolicy `json:"edgeviewPolicy,omitempty"`
 
 	// System defined universally unique Id of the policy request
 	// Read Only: true
@@ -103,6 +106,10 @@ func (m *PolicyConfig) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateDescription(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEdgeviewPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -231,6 +238,25 @@ func (m *PolicyConfig) validateDescription(formats strfmt.Registry) error {
 
 	if err := validate.MaxLength("description", "body", m.Description, 256); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *PolicyConfig) validateEdgeviewPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.EdgeviewPolicy) { // not required
+		return nil
+	}
+
+	if m.EdgeviewPolicy != nil {
+		if err := m.EdgeviewPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeviewPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeviewPolicy")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -422,6 +448,10 @@ func (m *PolicyConfig) ContextValidate(ctx context.Context, formats strfmt.Regis
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateEdgeviewPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateID(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -508,6 +538,22 @@ func (m *PolicyConfig) contextValidateClusterPolicy(ctx context.Context, formats
 				return ve.ValidateName("clusterPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("clusterPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *PolicyConfig) contextValidateEdgeviewPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.EdgeviewPolicy != nil {
+		if err := m.EdgeviewPolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeviewPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeviewPolicy")
 			}
 			return err
 		}

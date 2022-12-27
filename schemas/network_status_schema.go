@@ -22,6 +22,12 @@ func NetworkStatusModel(d *schema.ResourceData) *models.NetworkStatus {
 		errInfoMap := errInfoInterface.([]interface{})[0].(map[string]interface{})
 		errInfo = DeviceErrorModelFromMap(errInfoMap)
 	}
+	var gpsLocation *models.GPSLocation // GPSLocation
+	gpsLocationInterface, gpsLocationIsSet := d.GetOk("gps_location")
+	if gpsLocationIsSet {
+		gpsLocationMap := gpsLocationInterface.([]interface{})[0].(map[string]interface{})
+		gpsLocation = GPSLocationModelFromMap(gpsLocationMap)
+	}
 	ifName := d.Get("if_name").(string)
 	iPAddrs := d.Get("ip_addrs").([]string)
 	var location *models.GeoLocation // GeoLocation
@@ -43,6 +49,7 @@ func NetworkStatusModel(d *schema.ResourceData) *models.NetworkStatus {
 		DefaultRouters: defaultRouters,
 		DNS:            dns,
 		ErrInfo:        errInfo,
+		GpsLocation:    gpsLocation,
 		IfName:         ifName,
 		IPAddrs:        iPAddrs,
 		Location:       location,
@@ -69,6 +76,13 @@ func NetworkStatusModelFromMap(m map[string]interface{}) *models.NetworkStatus {
 		errInfo = DeviceErrorModelFromMap(errInfoMap)
 	}
 	//
+	var gpsLocation *models.GPSLocation // GPSLocation
+	gpsLocationInterface, gpsLocationIsSet := m["gps_location"]
+	if gpsLocationIsSet {
+		gpsLocationMap := gpsLocationInterface.([]interface{})[0].(map[string]interface{})
+		gpsLocation = GPSLocationModelFromMap(gpsLocationMap)
+	}
+	//
 	ifName := m["if_name"].(string)
 	iPAddrs := m["ip_addrs"].([]string)
 	var location *models.GeoLocation // GeoLocation
@@ -92,6 +106,7 @@ func NetworkStatusModelFromMap(m map[string]interface{}) *models.NetworkStatus {
 		DefaultRouters: defaultRouters,
 		DNS:            dns,
 		ErrInfo:        errInfo,
+		GpsLocation:    gpsLocation,
 		IfName:         ifName,
 		IPAddrs:        iPAddrs,
 		Location:       location,
@@ -107,6 +122,7 @@ func SetNetworkStatusResourceData(d *schema.ResourceData, m *models.NetworkStatu
 	d.Set("default_routers", m.DefaultRouters)
 	d.Set("dns", SetDNSInfoSubResourceData([]*models.DNSInfo{m.DNS}))
 	d.Set("err_info", SetDeviceErrorSubResourceData([]*models.DeviceError{m.ErrInfo}))
+	d.Set("gps_location", SetGPSLocationSubResourceData([]*models.GPSLocation{m.GpsLocation}))
 	d.Set("if_name", m.IfName)
 	d.Set("ip_addrs", m.IPAddrs)
 	d.Set("location", SetGeoLocationSubResourceData([]*models.GeoLocation{m.Location}))
@@ -124,6 +140,7 @@ func SetNetworkStatusSubResourceData(m []*models.NetworkStatus) (d []*map[string
 			properties["default_routers"] = NetworkStatusModel.DefaultRouters
 			properties["dns"] = SetDNSInfoSubResourceData([]*models.DNSInfo{NetworkStatusModel.DNS})
 			properties["err_info"] = SetDeviceErrorSubResourceData([]*models.DeviceError{NetworkStatusModel.ErrInfo})
+			properties["gps_location"] = SetGPSLocationSubResourceData([]*models.GPSLocation{NetworkStatusModel.GpsLocation})
 			properties["if_name"] = NetworkStatusModel.IfName
 			properties["ip_addrs"] = NetworkStatusModel.IPAddrs
 			properties["location"] = SetGeoLocationSubResourceData([]*models.GeoLocation{NetworkStatusModel.Location})
@@ -151,19 +168,22 @@ func NetworkStatusSchema() map[string]*schema.Schema {
 
 		"dns": {
 			Description: `DNS Configuration`,
-			Type:        schema.TypeList, //GoType: DNSInfo
-			Elem: &schema.Resource{
-				Schema: DNSInfoSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"err_info": {
 			Description: `Network error details`,
-			Type:        schema.TypeList, //GoType: DeviceError
-			Elem: &schema.Resource{
-				Schema: DeviceErrorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+
+		"gps_location": {
+			Description: `Location from GNSS receivers on WWAN type adapters`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -184,10 +204,8 @@ func NetworkStatusSchema() map[string]*schema.Schema {
 
 		"location": {
 			Description: `Geo Location Details`,
-			Type:        schema.TypeList, //GoType: GeoLocation
-			Elem: &schema.Resource{
-				Schema: GeoLocationSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -199,10 +217,8 @@ func NetworkStatusSchema() map[string]*schema.Schema {
 
 		"proxy": {
 			Description: `Network Proxy status`,
-			Type:        schema.TypeList, //GoType: NetProxyStatus
-			Elem: &schema.Resource{
-				Schema: NetProxyStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -226,6 +242,7 @@ func GetNetworkStatusPropertyFields() (t []string) {
 		"default_routers",
 		"dns",
 		"err_info",
+		"gps_location",
 		"if_name",
 		"ip_addrs",
 		"location",

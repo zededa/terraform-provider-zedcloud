@@ -56,10 +56,8 @@ func TagFilterSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Resource group type to ne matched.`,
-			Type:        schema.TypeList, //GoType: TagType
-			Elem: &schema.Resource{
-				Schema: TagTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

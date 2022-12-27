@@ -67,10 +67,8 @@ func AzureResourceAndServicesSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"dps_service": {
 			Description: `dps service attached to cloud policy`,
-			Type:        schema.TypeList, //GoType: DPSServiceDetail
-			Elem: &schema.Resource{
-				Schema: DPSServiceDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
@@ -80,8 +78,8 @@ func AzureResourceAndServicesSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: IotHubServiceDetailSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 
 		"resource_group": {
@@ -90,8 +88,8 @@ func AzureResourceAndServicesSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ResourceGroupDetailSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Required:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Required: true,
 		},
 	}
 }

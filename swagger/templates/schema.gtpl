@@ -268,7 +268,7 @@ func DataSource{{ $operationGroup }}Schema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: {{ .Items.GoType }}Schema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
+			// ConfigMode: schema.SchemaConfigModeAttr,
 					    {{- else if eq .GoType "[]float64" }}
 			Elem: &schema.Schema{
 				Type: schema.TypeFloat,
@@ -358,13 +358,13 @@ func {{ $operationGroup }}Schema() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-					{{- else }}
+					{{- else if stringContains .GoType "[]" }}
 			Type: schema.TypeList, //GoType: {{ .GoType }}
 						{{- if stringContains .GoType "[]*" }}
 			Elem: &schema.Resource{
 				Schema: {{ .Items.GoType }}Schema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
+			// ConfigMode: schema.SchemaConfigModeAttr,
 					    {{- else if eq .GoType "[]float64" }}
 			Elem: &schema.Schema{
 				Type: schema.TypeFloat,
@@ -382,6 +382,9 @@ func {{ $operationGroup }}Schema() map[string]*schema.Schema {
 				Schema: {{ .GoType }}Schema(),
 			},
 						{{- end }}
+					{{- else }}
+			// We assume it's an enum type
+			Type: schema.TypeString,
 					{{- end }}
 					{{- if and .Required (not .ReadOnly) }}
 			Required: true,

@@ -13,20 +13,20 @@ func PCRValueModel(d *schema.ResourceData) *models.PCRValue {
 	typeVar := d.Get("type").(*models.PCRType) // PCRType
 	value := d.Get("value").(string)
 	return &models.PCRValue{
-		Index: index,
+		Index: &index, // int64 true false false
 		Type:  typeVar,
-		Value: value,
+		Value: &value, // string true false false
 	}
 }
 
 func PCRValueModelFromMap(m map[string]interface{}) *models.PCRValue {
-	index := int64(m["index"].(int))       // int64 false false false
+	index := int64(m["index"].(int))       // int64 true false false
 	typeVar := m["type"].(*models.PCRType) // PCRType
 	value := m["value"].(string)
 	return &models.PCRValue{
-		Index: index,
+		Index: &index,
 		Type:  typeVar,
-		Value: value,
+		Value: &value,
 	}
 }
 
@@ -55,24 +55,22 @@ func SetPCRValueSubResourceData(m []*models.PCRValue) (d []*map[string]interface
 func PCRValueSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"index": {
-			Description: ``,
+			Description: `Current index for the PCR item in the list. First element has the index 0`,
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"type": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: PCRType
-			Elem: &schema.Resource{
-				Schema: PCRTypeSchema(),
-			},
-			Optional: true,
+			Description: `Type of value for the PCR item. Could be one of the following values: 0 (PCR_TYPE_UNSPECIFIED), 1 (PCR_TYPE_HASH) or 2 (PCR_TYPE_EVENT_LOG)`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Required: true,
 		},
 
 		"value": {
-			Description: ``,
+			Description: `Actual value for the PCR item.`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }

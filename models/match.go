@@ -17,10 +17,13 @@ import (
 // swagger:model Match
 type Match struct {
 
-	// enum: host, protocol, fportAt the device level it will pick right interface to apply this match
+	// enum: host, protocol, fport
+	// At the device level it will pick right interface to apply this match
+	//
+	// Type of Match (Required)
 	Type string `json:"type,omitempty"`
 
-	// value
+	// Value of match (Required)
 	Value string `json:"value,omitempty"`
 }
 

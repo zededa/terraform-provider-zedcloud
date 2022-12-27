@@ -22,7 +22,7 @@ import (
 // swagger:model SysBrand
 type SysBrand struct {
 
-	// attr
+	// Map of <string, string>
 	Attr map[string]string `json:"attr,omitempty"`
 
 	// Detailed description of the image.
@@ -34,7 +34,7 @@ type SysBrand struct {
 	// Pattern: [a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}
 	ID string `json:"id,omitempty"`
 
-	// logo
+	// Map of <string, string> which holds the key:url for the logo artifact of the the brand
 	Logo map[string]string `json:"logo,omitempty"`
 
 	// user defined sys brand name
@@ -45,7 +45,8 @@ type SysBrand struct {
 	Name *string `json:"name"`
 
 	// origin of object
-	OriginType *Origin `json:"originType,omitempty"`
+	// Required: true
+	OriginType *Origin `json:"originType"`
 
 	// Object Revision  of the sys brand
 	Revision *ObjectRevision `json:"revision,omitempty"`
@@ -149,8 +150,13 @@ func (m *SysBrand) validateName(formats strfmt.Registry) error {
 }
 
 func (m *SysBrand) validateOriginType(formats strfmt.Registry) error {
-	if swag.IsZero(m.OriginType) { // not required
-		return nil
+
+	if err := validate.Required("originType", "body", m.OriginType); err != nil {
+		return err
+	}
+
+	if err := validate.Required("originType", "body", m.OriginType); err != nil {
+		return err
 	}
 
 	if m.OriginType != nil {

@@ -21,7 +21,8 @@ type ZsrvError struct {
 	// Field captures string description of details
 	Details string `json:"details,omitempty"`
 
-	// Enumrated error code, describes more granular numericalvalue than just httpStatus
+	// Enumrated error code, describes more granular numerical
+	// value than just httpStatus
 	Ec *ZsrvErrorCode `json:"ec,omitempty"`
 
 	// Ignore: Internal field only

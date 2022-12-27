@@ -16,7 +16,9 @@ import (
 
 // ZcOpsStatus ZedCloud internal operation status
 //
-// - OPS_STATUS_PENDING: In rare cases, system may not start operation when it was requested. Client will be notified that operation is PENDING - OPS_STATUS_ONGOING: system will start the operation, but at the time response was generated, operation is still ONGOING. - OPS_STATUS_COMPLETE: Even if the result of the operations may result in failure, but the OpsStatus will marked COMPLETE for almost all cases.
+// - OPS_STATUS_PENDING: In rare cases, system may not start operation when it was requested. Client will be notified that operation is PENDING
+//   - OPS_STATUS_ONGOING: system will start the operation, but at the time response was generated, operation is still ONGOING.
+//   - OPS_STATUS_COMPLETE: Even if the result of the operations may result in failure, but the OpsStatus will marked COMPLETE for almost all cases.
 //
 // swagger:model ZcOpsStatus
 type ZcOpsStatus string

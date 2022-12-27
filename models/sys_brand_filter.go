@@ -26,7 +26,8 @@ type SysBrandFilter struct {
 	NamePattern string `json:"namePattern,omitempty"`
 
 	// origin of object
-	OriginType *Origin `json:"originType,omitempty"`
+	// Required: true
+	OriginType *Origin `json:"originType"`
 }
 
 // Validate validates this sys brand filter
@@ -68,8 +69,13 @@ func (m *SysBrandFilter) validateNamePattern(formats strfmt.Registry) error {
 }
 
 func (m *SysBrandFilter) validateOriginType(formats strfmt.Registry) error {
-	if swag.IsZero(m.OriginType) { // not required
-		return nil
+
+	if err := validate.Required("originType", "body", m.OriginType); err != nil {
+		return err
+	}
+
+	if err := validate.Required("originType", "body", m.OriginType); err != nil {
+		return err
 	}
 
 	if m.OriginType != nil {

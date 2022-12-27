@@ -66,26 +66,22 @@ func SetNetInstOpaqueConfigSubResourceData(m []*models.NetInstOpaqueConfig) (d [
 func NetInstOpaqueConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"lisp": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: LispConfig
-			Elem: &schema.Resource{
-				Schema: LispConfigSchema(),
-			},
+			Description: `Deprecated - Lisp config`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"oconfig": {
-			Description: ``,
+			Description: `base64 encoded string of opaque config`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"type": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: OpaqueConfigType
-			Elem: &schema.Resource{
-				Schema: OpaqueConfigTypeSchema(),
-			},
+			Description: `type of Opaque config`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

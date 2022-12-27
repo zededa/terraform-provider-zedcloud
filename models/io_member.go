@@ -18,6 +18,8 @@ import (
 //
 //	ioMember consists of list of various networking attributes like physical label, physical address etc  associated with SysModel
 //
+// Example: {"logicallabel":"eth0","phylabel":"eth0","ztype":1}
+//
 // swagger:model ioMember
 type IoMember struct {
 
@@ -26,6 +28,8 @@ type IoMember struct {
 	Assigngrp *string `json:"assigngrp"`
 
 	// physical and logical attributes
+	//
+	// attributes
 	Cbattr map[string]string `json:"cbattr,omitempty"`
 
 	// cost of using this ioMember. Default is 0.
@@ -37,7 +41,7 @@ type IoMember struct {
 	// Required: true
 	Logicallabel *string `json:"logicallabel"`
 
-	// phyaddrs
+	// Map of Physical Addresses
 	// Required: true
 	Phyaddrs map[string]string `json:"phyaddrs"`
 

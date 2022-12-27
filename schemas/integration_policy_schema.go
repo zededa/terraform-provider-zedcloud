@@ -85,10 +85,8 @@ func IntegrationPolicySchema() map[string]*schema.Schema {
 
 		"revision": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: ObjectRevision
-			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

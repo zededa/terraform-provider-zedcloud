@@ -16,7 +16,10 @@ import (
 
 // TagStatus Resource group status
 //
-// - TAG_STATUS_UNSPECIFIED: Tag Status : UNSPECIFIED - TAG_STATUS_ARCHIVE: Tag Status : ARCHIVE - TAG_STATUS_ACTIVE: Tag Status : ACTIVE - TAG_STATUS_INACTIVE: Tag Status : INACTIVE
+// - TAG_STATUS_UNSPECIFIED: Tag Status : UNSPECIFIED
+//   - TAG_STATUS_ARCHIVE: Tag Status : ARCHIVE
+//   - TAG_STATUS_ACTIVE: Tag Status : ACTIVE
+//   - TAG_STATUS_INACTIVE: Tag Status : INACTIVE
 //
 // swagger:model TagStatus
 type TagStatus string

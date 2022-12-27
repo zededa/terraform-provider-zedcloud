@@ -12,6 +12,8 @@ func VMManifestImageModel(d *schema.ResourceData) *models.VMManifestImage {
 	cleartext := d.Get("cleartext").(bool)
 	drvtype := d.Get("drvtype").(string)
 	ignorepurge := d.Get("ignorepurge").(bool)
+	imageformat := d.Get("imageformat").(*models.ConfigFormat) // ConfigFormat
+	imageid := d.Get("imageid").(string)
 	imagename := d.Get("imagename").(string)
 	maxsize := d.Get("maxsize").(string)
 	mountpath := d.Get("mountpath").(string)
@@ -24,6 +26,8 @@ func VMManifestImageModel(d *schema.ResourceData) *models.VMManifestImage {
 		Cleartext:   cleartext,
 		Drvtype:     drvtype,
 		Ignorepurge: ignorepurge,
+		Imageformat: imageformat,
+		Imageid:     imageid,
 		Imagename:   imagename,
 		Maxsize:     maxsize,
 		Mountpath:   mountpath,
@@ -39,6 +43,8 @@ func VMManifestImageModelFromMap(m map[string]interface{}) *models.VMManifestIma
 	cleartext := m["cleartext"].(bool)
 	drvtype := m["drvtype"].(string)
 	ignorepurge := m["ignorepurge"].(bool)
+	imageformat := m["imageformat"].(*models.ConfigFormat) // ConfigFormat
+	imageid := m["imageid"].(string)
 	imagename := m["imagename"].(string)
 	maxsize := m["maxsize"].(string)
 	mountpath := m["mountpath"].(string)
@@ -51,6 +57,8 @@ func VMManifestImageModelFromMap(m map[string]interface{}) *models.VMManifestIma
 		Cleartext:   cleartext,
 		Drvtype:     drvtype,
 		Ignorepurge: ignorepurge,
+		Imageformat: imageformat,
+		Imageid:     imageid,
 		Imagename:   imagename,
 		Maxsize:     maxsize,
 		Mountpath:   mountpath,
@@ -67,6 +75,8 @@ func SetVMManifestImageResourceData(d *schema.ResourceData, m *models.VMManifest
 	d.Set("cleartext", m.Cleartext)
 	d.Set("drvtype", m.Drvtype)
 	d.Set("ignorepurge", m.Ignorepurge)
+	d.Set("imageformat", m.Imageformat)
+	d.Set("imageid", m.Imageid)
 	d.Set("imagename", m.Imagename)
 	d.Set("maxsize", m.Maxsize)
 	d.Set("mountpath", m.Mountpath)
@@ -85,6 +95,8 @@ func SetVMManifestImageSubResourceData(m []*models.VMManifestImage) (d []*map[st
 			properties["cleartext"] = VMManifestImageModel.Cleartext
 			properties["drvtype"] = VMManifestImageModel.Drvtype
 			properties["ignorepurge"] = VMManifestImageModel.Ignorepurge
+			properties["imageformat"] = VMManifestImageModel.Imageformat
+			properties["imageid"] = VMManifestImageModel.Imageid
 			properties["imagename"] = VMManifestImageModel.Imagename
 			properties["maxsize"] = VMManifestImageModel.Maxsize
 			properties["mountpath"] = VMManifestImageModel.Mountpath
@@ -120,6 +132,19 @@ func VMManifestImageSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		"imageformat": {
+			Description: `UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+
+		"imageid": {
+			Description: `UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
 		"imagename": {
 			Description: `UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field`,
 			Type:        schema.TypeString,
@@ -144,8 +169,8 @@ func VMManifestImageSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ParamSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"preserve": {
@@ -180,6 +205,8 @@ func GetVMManifestImagePropertyFields() (t []string) {
 		"cleartext",
 		"drvtype",
 		"ignorepurge",
+		"imageformat",
+		"imageid",
 		"imagename",
 		"maxsize",
 		"mountpath",

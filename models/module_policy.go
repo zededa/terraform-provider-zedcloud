@@ -34,22 +34,23 @@ type ModulePolicy struct {
 	// Pattern: [0-9-a-z-]+
 	ID string `json:"id,omitempty"`
 
-	// labels
+	// Mapping of label variable keys and value
 	Labels map[string]string `json:"labels,omitempty"`
 
 	// custom metrics for deployment
 	Metrics *MetricsDetail `json:"metrics,omitempty"`
 
 	// deployment priority of module manifest
-	Priority int64 `json:"priority,omitempty"`
+	// Required: true
+	Priority *int64 `json:"priority"`
 
-	// routes
+	// Mapping of routes variable keys and value
 	Routes map[string]string `json:"routes,omitempty"`
 
 	// target condition for deployment that matches single device or group of devices
 	TargetCondition string `json:"targetCondition,omitempty"`
 
-	// target condition new
+	// target condition for deployment that matches single device or group of devices
 	TargetConditionNew map[string]string `json:"targetConditionNew,omitempty"`
 }
 
@@ -66,6 +67,10 @@ func (m *ModulePolicy) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateMetrics(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePriority(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -128,6 +133,15 @@ func (m *ModulePolicy) validateMetrics(formats strfmt.Registry) error {
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *ModulePolicy) validatePriority(formats strfmt.Registry) error {
+
+	if err := validate.Required("priority", "body", m.Priority); err != nil {
+		return err
 	}
 
 	return nil

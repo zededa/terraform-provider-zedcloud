@@ -13,7 +13,7 @@ func EDConfigItemModel(d *schema.ResourceData) *models.EDConfigItem {
 	floatValue := d.Get("float_value").(float32)
 	key := d.Get("key").(string)
 	stringValue := d.Get("string_value").(string)
-	uint32Value := int64(d.Get("uint32_value").(int))
+	uint32Value := d.Get("uint32_value").(uint32)
 	uint64Value := d.Get("uint64_value").(string)
 	valueType := d.Get("value_type").(string)
 	return &models.EDConfigItem{
@@ -32,7 +32,7 @@ func EDConfigItemModelFromMap(m map[string]interface{}) *models.EDConfigItem {
 	floatValue := m["float_value"].(float32)
 	key := m["key"].(string)
 	stringValue := m["string_value"].(string)
-	uint32Value := int64(m["uint32_value"].(int)) // int64 false false false
+	uint32Value := m["uint32_value"].(uint32)
 	uint64Value := m["uint64_value"].(string)
 	valueType := m["value_type"].(string)
 	return &models.EDConfigItem{

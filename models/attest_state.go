@@ -41,6 +41,12 @@ const (
 
 	// AttestStateATTESTSTATEPASS captures enum value "ATTEST_STATE_PASS"
 	AttestStateATTESTSTATEPASS AttestState = "ATTEST_STATE_PASS"
+
+	// AttestStateATTESTSTATEPASSNOPCR captures enum value "ATTEST_STATE_PASS_NO_PCR"
+	AttestStateATTESTSTATEPASSNOPCR AttestState = "ATTEST_STATE_PASS_NO_PCR"
+
+	// AttestStateATTESTSTATEFAILNOPCR captures enum value "ATTEST_STATE_FAIL_NO_PCR"
+	AttestStateATTESTSTATEFAILNOPCR AttestState = "ATTEST_STATE_FAIL_NO_PCR"
 )
 
 // for schema
@@ -48,7 +54,7 @@ var attestStateEnum []interface{}
 
 func init() {
 	var res []AttestState
-	if err := json.Unmarshal([]byte(`["ATTEST_STATE_UNSPECIFIED","ATTEST_STATE_NONE","ATTEST_STATE_FAIL","ATTEST_STATE_PASS"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["ATTEST_STATE_UNSPECIFIED","ATTEST_STATE_NONE","ATTEST_STATE_FAIL","ATTEST_STATE_PASS","ATTEST_STATE_PASS_NO_PCR","ATTEST_STATE_FAIL_NO_PCR"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

@@ -17,21 +17,23 @@ func IoBundleStatusModel(d *schema.ResourceData) *models.IoBundleStatus {
 		err = DeviceErrorModelFromMap(errMap)
 	}
 	var lteInfo *models.LTEAdapter // LTEAdapter
-	lte_infoInterface, lte_infoIsSet := d.GetOk("lte_info")
-	if lte_infoIsSet {
-		lte_infoMap := lte_infoInterface.([]interface{})[0].(map[string]interface{})
-		lteInfo = LTEAdapterModelFromMap(lte_infoMap)
+	lteInfoInterface, lteInfoIsSet := d.GetOk("lte_info")
+	if lteInfoIsSet {
+		lteInfoMap := lteInfoInterface.([]interface{})[0].(map[string]interface{})
+		lteInfo = LTEAdapterModelFromMap(lteInfoMap)
 	}
+	memberList := d.Get("member_list").([]*models.IoMemberStatus) // []*IoMemberStatus
 	members := d.Get("members").([]string)
 	name := d.Get("name").(string)
 	typeVar := d.Get("type").(*models.IoType) // IoType
 	return &models.IoBundleStatus{
-		AppName: &appName, // string true false false
-		Err:     err,
-		LteInfo: lteInfo,
-		Members: members,
-		Name:    &name, // string true false false
-		Type:    typeVar,
+		AppName:    &appName, // string true false false
+		Err:        err,
+		LteInfo:    lteInfo,
+		MemberList: memberList,
+		Members:    members,
+		Name:       &name, // string true false false
+		Type:       typeVar,
 	}
 }
 
@@ -45,22 +47,24 @@ func IoBundleStatusModelFromMap(m map[string]interface{}) *models.IoBundleStatus
 	}
 	//
 	var lteInfo *models.LTEAdapter // LTEAdapter
-	lte_infoInterface, lte_infoIsSet := m["lte_info"]
-	if lte_infoIsSet {
-		lte_infoMap := lte_infoInterface.([]interface{})[0].(map[string]interface{})
-		lteInfo = LTEAdapterModelFromMap(lte_infoMap)
+	lteInfoInterface, lteInfoIsSet := m["lte_info"]
+	if lteInfoIsSet {
+		lteInfoMap := lteInfoInterface.([]interface{})[0].(map[string]interface{})
+		lteInfo = LTEAdapterModelFromMap(lteInfoMap)
 	}
 	//
+	memberList := m["member_list"].([]*models.IoMemberStatus) // []*IoMemberStatus
 	members := m["members"].([]string)
 	name := m["name"].(string)
 	typeVar := m["type"].(*models.IoType) // IoType
 	return &models.IoBundleStatus{
-		AppName: &appName,
-		Err:     err,
-		LteInfo: lteInfo,
-		Members: members,
-		Name:    &name,
-		Type:    typeVar,
+		AppName:    &appName,
+		Err:        err,
+		LteInfo:    lteInfo,
+		MemberList: memberList,
+		Members:    members,
+		Name:       &name,
+		Type:       typeVar,
 	}
 }
 
@@ -69,6 +73,7 @@ func SetIoBundleStatusResourceData(d *schema.ResourceData, m *models.IoBundleSta
 	d.Set("app_name", m.AppName)
 	d.Set("err", SetDeviceErrorSubResourceData([]*models.DeviceError{m.Err}))
 	d.Set("lte_info", SetLTEAdapterSubResourceData([]*models.LTEAdapter{m.LteInfo}))
+	d.Set("member_list", SetIoMemberStatusSubResourceData(m.MemberList))
 	d.Set("members", m.Members)
 	d.Set("name", m.Name)
 	d.Set("type", m.Type)
@@ -82,6 +87,7 @@ func SetIoBundleStatusSubResourceData(m []*models.IoBundleStatus) (d []*map[stri
 			properties["app_name"] = IoBundleStatusModel.AppName
 			properties["err"] = SetDeviceErrorSubResourceData([]*models.DeviceError{IoBundleStatusModel.Err})
 			properties["lte_info"] = SetLTEAdapterSubResourceData([]*models.LTEAdapter{IoBundleStatusModel.LteInfo})
+			properties["member_list"] = SetIoMemberStatusSubResourceData(IoBundleStatusModel.MemberList)
 			properties["members"] = IoBundleStatusModel.Members
 			properties["name"] = IoBundleStatusModel.Name
 			properties["type"] = IoBundleStatusModel.Type
@@ -102,19 +108,25 @@ func IoBundleStatusSchema() map[string]*schema.Schema {
 
 		"err": {
 			Description: `Device error details`,
-			Type:        schema.TypeList, //GoType: DeviceError
-			Elem: &schema.Resource{
-				Schema: DeviceErrorSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"lte_info": {
 			Description: `LTE information`,
-			Type:        schema.TypeList, //GoType: LTEAdapter
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
+		},
+
+		"member_list": {
+			Description: `List of IO members`,
+			Type:        schema.TypeList, //GoType: []*IoMemberStatus
 			Elem: &schema.Resource{
-				Schema: LTEAdapterSchema(),
+				Schema: IoMemberStatusSchema(),
 			},
+			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
 		},
 
@@ -135,10 +147,8 @@ func IoBundleStatusSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `IoType specifies the type of the Input output of the device`,
-			Type:        schema.TypeList, //GoType: IoType
-			Elem: &schema.Resource{
-				Schema: IoTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 	}
@@ -150,6 +160,7 @@ func GetIoBundleStatusPropertyFields() (t []string) {
 		"app_name",
 		"err",
 		"lte_info",
+		"member_list",
 		"members",
 		"name",
 		"type",

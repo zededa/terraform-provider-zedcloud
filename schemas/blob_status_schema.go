@@ -80,10 +80,8 @@ func BlobStatusSchema() map[string]*schema.Schema {
 
 		"sw_state": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: SWState
-			Elem: &schema.Resource{
-				Schema: SWStateSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

@@ -35,6 +35,12 @@ func PolicyConfigModel(d *schema.ResourceData) *models.PolicyConfig {
 		clusterPolicy = ClusterPolicyModelFromMap(clusterPolicyMap)
 	}
 	description := d.Get("description").(string)
+	var edgeviewPolicy *models.EdgeviewPolicy // EdgeviewPolicy
+	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
+	if edgeviewPolicyIsSet {
+		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})[0].(map[string]interface{})
+		edgeviewPolicy = EdgeviewPolicyModelFromMap(edgeviewPolicyMap)
+	}
 	id := d.Get("id").(string)
 	var modulePolicy *models.ModulePolicy // ModulePolicy
 	modulePolicyInterface, modulePolicyIsSet := d.GetOk("module_policy")
@@ -59,6 +65,7 @@ func PolicyConfigModel(d *schema.ResourceData) *models.PolicyConfig {
 		AzurePolicy:       azurePolicy,
 		ClusterPolicy:     clusterPolicy,
 		Description:       description,
+		EdgeviewPolicy:    edgeviewPolicy,
 		ID:                id,
 		ModulePolicy:      modulePolicy,
 		Name:              &name, // string true false false
@@ -100,6 +107,13 @@ func PolicyConfigModelFromMap(m map[string]interface{}) *models.PolicyConfig {
 	}
 	//
 	description := m["description"].(string)
+	var edgeviewPolicy *models.EdgeviewPolicy // EdgeviewPolicy
+	edgeviewPolicyInterface, edgeviewPolicyIsSet := m["edgeview_policy"]
+	if edgeviewPolicyIsSet {
+		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})[0].(map[string]interface{})
+		edgeviewPolicy = EdgeviewPolicyModelFromMap(edgeviewPolicyMap)
+	}
+	//
 	id := m["id"].(string)
 	var modulePolicy *models.ModulePolicy // ModulePolicy
 	modulePolicyInterface, modulePolicyIsSet := m["module_policy"]
@@ -126,6 +140,7 @@ func PolicyConfigModelFromMap(m map[string]interface{}) *models.PolicyConfig {
 		AzurePolicy:       azurePolicy,
 		ClusterPolicy:     clusterPolicy,
 		Description:       description,
+		EdgeviewPolicy:    edgeviewPolicy,
 		ID:                id,
 		ModulePolicy:      modulePolicy,
 		Name:              &name,
@@ -144,6 +159,7 @@ func SetPolicyConfigResourceData(d *schema.ResourceData, m *models.PolicyConfig)
 	d.Set("azure_policy", SetAzurePolicySubResourceData([]*models.AzurePolicy{m.AzurePolicy}))
 	d.Set("cluster_policy", SetClusterPolicySubResourceData([]*models.ClusterPolicy{m.ClusterPolicy}))
 	d.Set("description", m.Description)
+	d.Set("edgeview_policy", SetEdgeviewPolicySubResourceData([]*models.EdgeviewPolicy{m.EdgeviewPolicy}))
 	d.Set("id", m.ID)
 	d.Set("module_policy", SetModulePolicySubResourceData([]*models.ModulePolicy{m.ModulePolicy}))
 	d.Set("name", m.Name)
@@ -166,6 +182,7 @@ func SetPolicyConfigSubResourceData(m []*models.PolicyConfig) (d []*map[string]i
 			properties["azure_policy"] = SetAzurePolicySubResourceData([]*models.AzurePolicy{PolicyConfigModel.AzurePolicy})
 			properties["cluster_policy"] = SetClusterPolicySubResourceData([]*models.ClusterPolicy{PolicyConfigModel.ClusterPolicy})
 			properties["description"] = PolicyConfigModel.Description
+			properties["edgeview_policy"] = SetEdgeviewPolicySubResourceData([]*models.EdgeviewPolicy{PolicyConfigModel.EdgeviewPolicy})
 			properties["id"] = PolicyConfigModel.ID
 			properties["module_policy"] = SetModulePolicySubResourceData([]*models.ModulePolicy{PolicyConfigModel.ModulePolicy})
 			properties["name"] = PolicyConfigModel.Name
@@ -186,24 +203,20 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: `app policy, which is used in auto app instance deployment`,
-			Type:        schema.TypeList, //GoType: AppPolicy
-			Elem: &schema.Resource{
-				Schema: AppPolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"attestation_policy": {
 			Description: `attestation policy to enforce on all devices in this project`,
-			Type:        schema.TypeList, //GoType: AttestationPolicy
-			Elem: &schema.Resource{
-				Schema: AttestationPolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"attr": {
-			Description: ``,
+			Description: `Mapping of policy  variable keys and policy variable values`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -213,19 +226,15 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"azure_policy": {
 			Description: `azure policy, which is used in configuring azure iot-edge.`,
-			Type:        schema.TypeList, //GoType: AzurePolicy
-			Elem: &schema.Resource{
-				Schema: AzurePolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"cluster_policy": {
 			Description: `cluster policy to bring up cluster on devices in this project`,
-			Type:        schema.TypeList, //GoType: ClusterPolicy
-			Elem: &schema.Resource{
-				Schema: ClusterPolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -233,6 +242,13 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 			Description: `Detailed description of the policy`,
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+
+		"edgeview_policy": {
+			Description: `edgeview policy on devices of this project`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"id": {
@@ -243,10 +259,8 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"module_policy": {
 			Description: `module policy, which is used in auto module deployment`,
-			Type:        schema.TypeList, //GoType: ModulePolicy
-			Elem: &schema.Resource{
-				Schema: ModulePolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -258,28 +272,22 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"network_policy": {
 			Description: `network policy to enforce on all devices in this project`,
-			Type:        schema.TypeList, //GoType: NetworkPolicy
-			Elem: &schema.Resource{
-				Schema: NetworkPolicySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"revision": {
 			Description: `system defined info`,
-			Type:        schema.TypeList, //GoType: ObjectRevision
-			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Computed: true,
 		},
 
 		"status": {
 			Description: `status of the policy`,
-			Type:        schema.TypeList, //GoType: PolicyStatus
-			Elem: &schema.Resource{
-				Schema: PolicyStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Computed: true,
 		},
 
@@ -297,10 +305,8 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `type of policy`,
-			Type:        schema.TypeList, //GoType: PolicyType
-			Elem: &schema.Resource{
-				Schema: PolicyTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 	}
@@ -315,6 +321,7 @@ func GetPolicyConfigPropertyFields() (t []string) {
 		"azure_policy",
 		"cluster_policy",
 		"description",
+		"edgeview_policy",
 		"id",
 		"module_policy",
 		"name",

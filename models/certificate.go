@@ -34,6 +34,8 @@ type Certificate struct {
 	EcdsaEncryption *ECDSA `json:"ecdsaEncryption,omitempty"`
 
 	// secrets encryption
+	//
+	// user encrypted secrets map
 	EncryptedSecrets map[string]string `json:"encryptedSecrets,omitempty"`
 
 	// Indicates if the private key can be exported.

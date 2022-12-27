@@ -17,10 +17,10 @@ import (
 // swagger:model Param
 type Param struct {
 
-	// name
+	// Name of the Parameter (Required)
 	Name string `json:"name,omitempty"`
 
-	// value
+	// Value of the parameter (Required)
 	Value string `json:"value,omitempty"`
 }
 

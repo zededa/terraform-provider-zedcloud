@@ -112,19 +112,15 @@ func TagConfigStatusSchema() map[string]*schema.Schema {
 
 		"attest_policy_type": {
 			Description: `type of attestation policy`,
-			Type:        schema.TypeList, //GoType: AttestPolicyType
-			Elem: &schema.Resource{
-				Schema: AttestPolicyTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"cloud_policy_type": {
 			Description: `type of cloud policy`,
-			Type:        schema.TypeList, //GoType: PolicyType
-			Elem: &schema.Resource{
-				Schema: PolicyTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -166,10 +162,8 @@ func TagConfigStatusSchema() map[string]*schema.Schema {
 
 		"status": {
 			Description: `Resource group status`,
-			Type:        schema.TypeList, //GoType: TagStatus
-			Elem: &schema.Resource{
-				Schema: TagStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Computed: true,
 		},
 	}

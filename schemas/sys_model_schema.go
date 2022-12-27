@@ -15,7 +15,8 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	description := d.Get("description").(string)
 	id := d.Get("id").(string)
 	ioMemberList := d.Get("io_member_list").([]*models.IoMember) // []*IoMember
-	logo := d.Get("logo").(map[string]string)                    // map[string]string
+	isImported := d.Get("is_imported").(bool)
+	logo := d.Get("logo").(map[string]string) // map[string]string
 	name := d.Get("name").(string)
 	originType := d.Get("origin_type").(*models.Origin) // Origin
 	var parentDetail *models.ObjectParentDetail         // ObjectParentDetail
@@ -36,6 +37,7 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 		Description:   description,
 		ID:            id,
 		IoMemberList:  ioMemberList,
+		IsImported:    isImported,
 		Logo:          logo,
 		Name:          &name, // string true false false
 		OriginType:    originType,
@@ -55,6 +57,7 @@ func SysModelModelFromMap(m map[string]interface{}) *models.SysModel {
 	description := m["description"].(string)
 	id := m["id"].(string)
 	ioMemberList := m["io_member_list"].([]*models.IoMember) // []*IoMember
+	isImported := m["is_imported"].(bool)
 	logo := m["logo"].(map[string]string)
 	name := m["name"].(string)
 	originType := m["origin_type"].(*models.Origin) // Origin
@@ -77,6 +80,7 @@ func SysModelModelFromMap(m map[string]interface{}) *models.SysModel {
 		Description:   description,
 		ID:            id,
 		IoMemberList:  ioMemberList,
+		IsImported:    isImported,
 		Logo:          logo,
 		Name:          &name,
 		OriginType:    originType,
@@ -97,6 +101,7 @@ func SetSysModelResourceData(d *schema.ResourceData, m *models.SysModel) {
 	d.Set("description", m.Description)
 	d.Set("id", m.ID)
 	d.Set("io_member_list", SetIoMemberSubResourceData(m.IoMemberList))
+	d.Set("is_imported", m.IsImported)
 	d.Set("logo", m.Logo)
 	d.Set("name", m.Name)
 	d.Set("origin_type", m.OriginType)
@@ -120,6 +125,7 @@ func SetSysModelSubResourceData(m []*models.SysModel) (d []*map[string]interface
 			properties["description"] = SysModelModel.Description
 			properties["id"] = SysModelModel.ID
 			properties["io_member_list"] = SetIoMemberSubResourceData(SysModelModel.IoMemberList)
+			properties["is_imported"] = SysModelModel.IsImported
 			properties["logo"] = SysModelModel.Logo
 			properties["name"] = SysModelModel.Name
 			properties["origin_type"] = SysModelModel.OriginType
@@ -145,12 +151,12 @@ func SysModelSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: PCRTemplateSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"attr": {
-			Description: ``,
+			Description: `Map of <string, string> which defines attr`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -182,12 +188,18 @@ func SysModelSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: IoMemberSchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
+		},
+
+		"is_imported": {
+			Description: `Flag to represent whether sysModel is imported`,
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 
 		"logo": {
-			Description: ``,
+			Description: `Map of <string, string> which holds the key:url for the logo artifact of the model`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -203,19 +215,15 @@ func SysModelSchema() map[string]*schema.Schema {
 
 		"origin_type": {
 			Description: `origin of object`,
-			Type:        schema.TypeList, //GoType: Origin
-			Elem: &schema.Resource{
-				Schema: OriginSchema(),
-			},
-			Optional: true,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Required: true,
 		},
 
 		"parent_detail": {
 			Description: `origin and parent related details`,
-			Type:        schema.TypeList, //GoType: ObjectParentDetail
-			Elem: &schema.Resource{
-				Schema: ObjectParentDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -233,19 +241,15 @@ func SysModelSchema() map[string]*schema.Schema {
 
 		"revision": {
 			Description: `Object Revision  of the model`,
-			Type:        schema.TypeList, //GoType: ObjectRevision
-			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Computed: true,
 		},
 
 		"state": {
 			Description: `SysModel State which denotes the status of the model`,
-			Type:        schema.TypeList, //GoType: SysModelState
-			Elem: &schema.Resource{
-				Schema: SysModelStateSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
@@ -257,10 +261,8 @@ func SysModelSchema() map[string]*schema.Schema {
 
 		"type": {
 			Description: `Defines the Architecture type of the model`,
-			Type:        schema.TypeList, //GoType: ModelArchType
-			Elem: &schema.Resource{
-				Schema: ModelArchTypeSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 	}
@@ -275,6 +277,7 @@ func GetSysModelPropertyFields() (t []string) {
 		"description",
 		"id",
 		"io_member_list",
+		"is_imported",
 		"logo",
 		"name",
 		"origin_type",

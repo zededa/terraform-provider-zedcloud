@@ -107,7 +107,7 @@ func SetACLActionSubResourceData(m []*models.ACLAction) (d []*map[string]interfa
 func ACLActionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"drop": {
-			Description: ``,
+			Description: `Drop the packet`,
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -119,11 +119,9 @@ func ACLActionSchema() map[string]*schema.Schema {
 		},
 
 		"limit_value": {
-			Description: ``,
-			Type:        schema.TypeList, //GoType: LimitParams
-			Elem: &schema.Resource{
-				Schema: LimitParamsSchema(),
-			},
+			Description: `Value to be used for limit action (Required if limit is true)`,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
@@ -153,10 +151,8 @@ func ACLActionSchema() map[string]*schema.Schema {
 
 		"portmapto": {
 			Description: `UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane`,
-			Type:        schema.TypeList, //GoType: MapParams
-			Elem: &schema.Resource{
-				Schema: MapParamsSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

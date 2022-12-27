@@ -33,6 +33,9 @@ type DeviceConfigList struct {
 	// Summary by state
 	// Required: true
 	SummaryByState *Summary `json:"summaryByState"`
+
+	// Summary by project distribution
+	SummaryByTagDistribution *Summary `json:"summaryByTagDistribution,omitempty"`
 }
 
 // Validate validates this device config list
@@ -48,6 +51,10 @@ func (m *DeviceConfigList) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateSummaryByState(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSummaryByTagDistribution(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -124,6 +131,25 @@ func (m *DeviceConfigList) validateSummaryByState(formats strfmt.Registry) error
 	return nil
 }
 
+func (m *DeviceConfigList) validateSummaryByTagDistribution(formats strfmt.Registry) error {
+	if swag.IsZero(m.SummaryByTagDistribution) { // not required
+		return nil
+	}
+
+	if m.SummaryByTagDistribution != nil {
+		if err := m.SummaryByTagDistribution.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("summaryByTagDistribution")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("summaryByTagDistribution")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this device config list based on the context it is used
 func (m *DeviceConfigList) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -137,6 +163,10 @@ func (m *DeviceConfigList) ContextValidate(ctx context.Context, formats strfmt.R
 	}
 
 	if err := m.contextValidateSummaryByState(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSummaryByTagDistribution(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -190,6 +220,22 @@ func (m *DeviceConfigList) contextValidateSummaryByState(ctx context.Context, fo
 				return ve.ValidateName("summaryByState")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("summaryByState")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfigList) contextValidateSummaryByTagDistribution(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.SummaryByTagDistribution != nil {
+		if err := m.SummaryByTagDistribution.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("summaryByTagDistribution")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("summaryByTagDistribution")
 			}
 			return err
 		}

@@ -86,12 +86,9 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 
 		"intf_usage": {
 			Description: `Adapter Udage`,
-			Type:        schema.TypeList, //GoType: AdapterUsage
-			Elem: &schema.Resource{
-				Schema: AdapterUsageSchema(),
-			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// We assume it's an enum type
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"intfname": {
@@ -119,7 +116,7 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 		},
 
 		"tags": {
-			Description: ``,
+			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,

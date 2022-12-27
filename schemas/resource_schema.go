@@ -49,13 +49,13 @@ func SetResourceSubResourceData(m []*models.Resource) (d []*map[string]interface
 func ResourceSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
-			Description: ``,
+			Description: `Name of the Resource (Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"value": {
-			Description: ``,
+			Description: `Value of Resource (Required)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

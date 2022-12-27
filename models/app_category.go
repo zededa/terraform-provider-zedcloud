@@ -16,7 +16,16 @@ import (
 
 // AppCategory Edge Application Category
 //
-// - APP_CATEGORY_UNSPECIFIED: Invalid Edge Application Category - APP_CATEGORY_OPERATING_SYSTEM: Edge operating systems - APP_CATEGORY_INDUSTRIAL: Connectity solution for industrial protocols - APP_CATEGORY_EDGE_APPLICATION: Edge application framework featuring composite functions for data ingestion, buffering, analytics and export - APP_CATEGORY_NETWORKING: Edge networking services (e.g. SD-WAN, NFV) - APP_CATEGORY_SECURITY: Edge security services (e.g. protocol inspection, firewall) - APP_CATEGORY_DATA_ANALYTICS: Edge analytics (e.g. AI/ML) and data management (e.g. database, connectors) services - APP_CATEGORY_CLOUD_APPLICATION: Edge application runtimes, cloud connectivity and general application enablement - APP_CATEGORY_DEVOPS: Tools for Edge Application CI/CD and performance optimization - APP_CATEGORY_OTHERS: Miscellaneous functionality
+// - APP_CATEGORY_UNSPECIFIED: Invalid Edge Application Category
+//   - APP_CATEGORY_OPERATING_SYSTEM: Edge operating systems
+//   - APP_CATEGORY_INDUSTRIAL: Connectity solution for industrial protocols
+//   - APP_CATEGORY_EDGE_APPLICATION: Edge application framework featuring composite functions for data ingestion, buffering, analytics and export
+//   - APP_CATEGORY_NETWORKING: Edge networking services (e.g. SD-WAN, NFV)
+//   - APP_CATEGORY_SECURITY: Edge security services (e.g. protocol inspection, firewall)
+//   - APP_CATEGORY_DATA_ANALYTICS: Edge analytics (e.g. AI/ML) and data management (e.g. database, connectors) services
+//   - APP_CATEGORY_CLOUD_APPLICATION: Edge application runtimes, cloud connectivity and general application enablement
+//   - APP_CATEGORY_DEVOPS: Tools for Edge Application CI/CD and performance optimization
+//   - APP_CATEGORY_OTHERS: Miscellaneous functionality
 //
 // swagger:model AppCategory
 type AppCategory string

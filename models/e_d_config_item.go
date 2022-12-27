@@ -32,7 +32,7 @@ type EDConfigItem struct {
 	StringValue string `json:"stringValue,omitempty"`
 
 	// uint32 value
-	Uint32Value int64 `json:"uint32Value,omitempty"`
+	Uint32Value uint32 `json:"uint32Value,omitempty"`
 
 	// uint64 value in string format
 	Uint64Value string `json:"uint64Value,omitempty"`

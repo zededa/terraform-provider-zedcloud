@@ -27,6 +27,9 @@ type TagStatusListMsg struct {
 
 	// Summary of filtered resource group records
 	SummaryByState *Summary `json:"summaryByState,omitempty"`
+
+	// Summary of filtered resource group records
+	SummaryByType *Summary `json:"summaryByType,omitempty"`
 }
 
 // Validate validates this tag status list msg
@@ -42,6 +45,10 @@ func (m *TagStatusListMsg) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateSummaryByState(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateSummaryByType(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -115,6 +122,25 @@ func (m *TagStatusListMsg) validateSummaryByState(formats strfmt.Registry) error
 	return nil
 }
 
+func (m *TagStatusListMsg) validateSummaryByType(formats strfmt.Registry) error {
+	if swag.IsZero(m.SummaryByType) { // not required
+		return nil
+	}
+
+	if m.SummaryByType != nil {
+		if err := m.SummaryByType.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("summaryByType")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("summaryByType")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this tag status list msg based on the context it is used
 func (m *TagStatusListMsg) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -128,6 +154,10 @@ func (m *TagStatusListMsg) ContextValidate(ctx context.Context, formats strfmt.R
 	}
 
 	if err := m.contextValidateSummaryByState(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateSummaryByType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -181,6 +211,22 @@ func (m *TagStatusListMsg) contextValidateSummaryByState(ctx context.Context, fo
 				return ve.ValidateName("summaryByState")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("summaryByState")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *TagStatusListMsg) contextValidateSummaryByType(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.SummaryByType != nil {
+		if err := m.SummaryByType.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("summaryByType")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("summaryByType")
 			}
 			return err
 		}

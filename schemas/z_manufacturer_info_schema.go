@@ -146,10 +146,8 @@ func ZManufacturerInfoSchema() map[string]*schema.Schema {
 
 		"h_s_m_status": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: DeviceHWSecurityModuleStatus
-			Elem: &schema.Resource{
-				Schema: DeviceHWSecurityModuleStatusSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 

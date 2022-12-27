@@ -55,10 +55,8 @@ func UserDataTemplateSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"custom_config": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: CustomConfig
-			Elem: &schema.Resource{
-				Schema: CustomConfigSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

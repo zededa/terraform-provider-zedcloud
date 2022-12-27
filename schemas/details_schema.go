@@ -85,7 +85,7 @@ func SetDetailsSubResourceData(m []*models.Details) (d []*map[string]interface{}
 func DetailsSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"agreement_list": {
-			Description: ``,
+			Description: `UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -95,10 +95,8 @@ func DetailsSchema() map[string]*schema.Schema {
 
 		"app_category": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: AppCategory
-			Elem: &schema.Resource{
-				Schema: AppCategorySchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Required: true,
 		},
 
@@ -110,7 +108,7 @@ func DetailsSchema() map[string]*schema.Schema {
 		},
 
 		"license_list": {
-			Description: ``,
+			Description: `UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -119,7 +117,7 @@ func DetailsSchema() map[string]*schema.Schema {
 		},
 
 		"logo": {
-			Description: ``,
+			Description: `UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -134,7 +132,7 @@ func DetailsSchema() map[string]*schema.Schema {
 		},
 
 		"screenshot_list": {
-			Description: ``,
+			Description: `UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,

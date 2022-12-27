@@ -34,6 +34,12 @@ type DeviceConfigSummary struct {
 	// Pattern: [a-zA-Z0-9][a-zA-Z0-9_.-]+
 	ClusterID string `json:"clusterID,omitempty"`
 
+	// debug knob details for the device
+	DebugKnob *DebugKnobDetail `json:"debugKnob,omitempty"`
+
+	// user defined tag for the device, which is used while deploying policies.
+	DeploymentTag string `json:"deploymentTag,omitempty"`
+
 	// user specified description
 	Description string `json:"description,omitempty"`
 
@@ -60,7 +66,7 @@ type DeviceConfigSummary struct {
 	// Device serial number
 	Serialno string `json:"serialno,omitempty"`
 
-	// tags
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
 
 	// user specified title
@@ -84,6 +90,10 @@ func (m *DeviceConfigSummary) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateClusterID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateDebugKnob(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -181,6 +191,25 @@ func (m *DeviceConfigSummary) validateClusterID(formats strfmt.Registry) error {
 
 	if err := validate.Pattern("clusterID", "body", m.ClusterID, `[a-zA-Z0-9][a-zA-Z0-9_.-]+`); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *DeviceConfigSummary) validateDebugKnob(formats strfmt.Registry) error {
+	if swag.IsZero(m.DebugKnob) { // not required
+		return nil
+	}
+
+	if m.DebugKnob != nil {
+		if err := m.DebugKnob.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("debugKnob")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("debugKnob")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -291,6 +320,10 @@ func (m *DeviceConfigSummary) ContextValidate(ctx context.Context, formats strfm
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateDebugKnob(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateID(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -340,6 +373,22 @@ func (m *DeviceConfigSummary) contextValidateBaseImage(ctx context.Context, form
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *DeviceConfigSummary) contextValidateDebugKnob(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.DebugKnob != nil {
+		if err := m.DebugKnob.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("debugKnob")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("debugKnob")
+			}
+			return err
+		}
 	}
 
 	return nil

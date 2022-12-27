@@ -14,7 +14,9 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// NetworkInstanceDhcpType NetworkInstanceDhcpType: Used in the network instance provide   dhcp server configuration
+// NetworkInstanceDhcpType NetworkInstanceDhcpType: Used in the network instance provide
+//
+//	dhcp server configuration
 //
 // swagger:model NetworkInstanceDhcpType
 type NetworkInstanceDhcpType string

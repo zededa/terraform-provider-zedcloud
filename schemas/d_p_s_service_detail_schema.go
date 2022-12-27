@@ -72,19 +72,15 @@ func DPSServiceDetailSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"enrollment": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: EnrollmentDetail
-			Elem: &schema.Resource{
-				Schema: EnrollmentDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 
 		"service_detail": {
 			Description: ``,
-			Type:        schema.TypeList, //GoType: AzureResourceAndServiceDetail
-			Elem: &schema.Resource{
-				Schema: AzureResourceAndServiceDetailSchema(),
-			},
+			// We assume it's an enum type
+			Type:     schema.TypeString,
 			Optional: true,
 		},
 	}

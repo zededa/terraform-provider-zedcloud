@@ -66,8 +66,8 @@ func GooglerpcStatusSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ProtobufAnySchema(),
 			},
-			ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:   true,
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"message": {

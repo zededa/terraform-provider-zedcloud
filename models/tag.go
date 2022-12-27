@@ -23,23 +23,30 @@ import (
 // swagger:model Tag
 type Tag struct {
 
-	// Resource group wide policy for edge applications to be deployed on all devices on this resource group
+	// Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group
 	// Read Only: true
 	AppPolicy *PolicyConfig `json:"appPolicy,omitempty"`
 
 	// Attestation policy to enforce on all devices of this project
 	AttestationPolicy *PolicyConfig `json:"attestationPolicy,omitempty"`
 
-	// attr
+	// Resource group wide configuration for edge nodes
+	// Read Only: true
 	Attr map[string]string `json:"attr,omitempty"`
 
 	// Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications
 	// Read Only: true
 	CloudPolicy *PolicyConfig `json:"cloudPolicy,omitempty"`
 
+	// Deployment template containing different types of policies
+	Deployment *Deployment `json:"deployment,omitempty"`
+
 	// Detailed description of the resource group.
 	// Max Length: 256
 	Description string `json:"description,omitempty"`
+
+	// Edgeview policy on devices of this project
+	EdgeviewPolicy *PolicyConfig `json:"edgeviewPolicy,omitempty"`
 
 	// System defined universally unique Id of the resource group.
 	// Read Only: true
@@ -60,7 +67,7 @@ type Tag struct {
 	// Network policy to enforce on all devices of this project
 	NetworkPolicy *PolicyConfig `json:"networkPolicy,omitempty"`
 
-	// Number of devices in this resource group
+	// Number of edge nodes in this resource group
 	// Read Only: true
 	Numdevices int64 `json:"numdevices,omitempty"`
 
@@ -96,7 +103,15 @@ func (m *Tag) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateDeployment(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateDescription(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEdgeviewPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -191,6 +206,25 @@ func (m *Tag) validateCloudPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Tag) validateDeployment(formats strfmt.Registry) error {
+	if swag.IsZero(m.Deployment) { // not required
+		return nil
+	}
+
+	if m.Deployment != nil {
+		if err := m.Deployment.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("deployment")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("deployment")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *Tag) validateDescription(formats strfmt.Registry) error {
 	if swag.IsZero(m.Description) { // not required
 		return nil
@@ -198,6 +232,25 @@ func (m *Tag) validateDescription(formats strfmt.Registry) error {
 
 	if err := validate.MaxLength("description", "body", m.Description, 256); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *Tag) validateEdgeviewPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.EdgeviewPolicy) { // not required
+		return nil
+	}
+
+	if m.EdgeviewPolicy != nil {
+		if err := m.EdgeviewPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeviewPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeviewPolicy")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -357,7 +410,19 @@ func (m *Tag) ContextValidate(ctx context.Context, formats strfmt.Registry) erro
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateAttr(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateCloudPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateDeployment(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateEdgeviewPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -423,6 +488,11 @@ func (m *Tag) contextValidateAttestationPolicy(ctx context.Context, formats strf
 	return nil
 }
 
+func (m *Tag) contextValidateAttr(ctx context.Context, formats strfmt.Registry) error {
+
+	return nil
+}
+
 func (m *Tag) contextValidateCloudPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.CloudPolicy != nil {
@@ -431,6 +501,38 @@ func (m *Tag) contextValidateCloudPolicy(ctx context.Context, formats strfmt.Reg
 				return ve.ValidateName("cloudPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("cloudPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Tag) contextValidateDeployment(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Deployment != nil {
+		if err := m.Deployment.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("deployment")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("deployment")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Tag) contextValidateEdgeviewPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.EdgeviewPolicy != nil {
+		if err := m.EdgeviewPolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeviewPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeviewPolicy")
 			}
 			return err
 		}

@@ -22,9 +22,10 @@ import (
 type ObjectParentDetail struct {
 
 	// system defined unique id of parent object
+	// Required: true
 	// Read Only: true
 	// Pattern: [0-9A-Za-z-]+
-	IDOfParentObject string `json:"idOfParentObject,omitempty"`
+	IDOfParentObject string `json:"idOfParentObject"`
 
 	// Relation with child and parent object exists or not
 	ReferenceExists bool `json:"referenceExists,omitempty"`
@@ -52,8 +53,9 @@ func (m *ObjectParentDetail) Validate(formats strfmt.Registry) error {
 }
 
 func (m *ObjectParentDetail) validateIDOfParentObject(formats strfmt.Registry) error {
-	if swag.IsZero(m.IDOfParentObject) { // not required
-		return nil
+
+	if err := validate.RequiredString("idOfParentObject", "body", m.IDOfParentObject); err != nil {
+		return err
 	}
 
 	if err := validate.Pattern("idOfParentObject", "body", m.IDOfParentObject, `[0-9A-Za-z-]+`); err != nil {

@@ -11,24 +11,28 @@ import (
 func BaseOSImageModel(d *schema.ResourceData) *models.BaseOSImage {
 	activate := d.Get("activate").(bool)
 	imageName := d.Get("image_name").(string)
+	imvolID := d.Get("imvol_id").(string)
 	uuid := d.Get("uuid").(string)
 	version := d.Get("version").(string)
 	return &models.BaseOSImage{
-		Activate:  activate,
+		Activate:  &activate,  // bool true false false
 		ImageName: &imageName, // string true false false
-		UUID:      &uuid,      // string true false false
-		Version:   &version,   // string true false false
+		ImvolID:   imvolID,
+		UUID:      &uuid,    // string true false false
+		Version:   &version, // string true false false
 	}
 }
 
 func BaseOSImageModelFromMap(m map[string]interface{}) *models.BaseOSImage {
 	activate := m["activate"].(bool)
 	imageName := m["image_name"].(string)
+	imvolID := m["imvol_id"].(string)
 	uuid := m["uuid"].(string)
 	version := m["version"].(string)
 	return &models.BaseOSImage{
-		Activate:  activate,
+		Activate:  &activate,
 		ImageName: &imageName,
+		ImvolID:   imvolID,
 		UUID:      &uuid,
 		Version:   &version,
 	}
@@ -38,6 +42,7 @@ func BaseOSImageModelFromMap(m map[string]interface{}) *models.BaseOSImage {
 func SetBaseOSImageResourceData(d *schema.ResourceData, m *models.BaseOSImage) {
 	d.Set("activate", m.Activate)
 	d.Set("image_name", m.ImageName)
+	d.Set("imvol_id", m.ImvolID)
 	d.Set("uuid", m.UUID)
 	d.Set("version", m.Version)
 }
@@ -49,6 +54,7 @@ func SetBaseOSImageSubResourceData(m []*models.BaseOSImage) (d []*map[string]int
 			properties := make(map[string]interface{})
 			properties["activate"] = BaseOSImageModel.Activate
 			properties["image_name"] = BaseOSImageModel.ImageName
+			properties["imvol_id"] = BaseOSImageModel.ImvolID
 			properties["uuid"] = BaseOSImageModel.UUID
 			properties["version"] = BaseOSImageModel.Version
 			d = append(d, &properties)
@@ -72,6 +78,12 @@ func BaseOSImageSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 
+		"imvol_id": {
+			Description: `immutable Volume for this base image`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
 		"uuid": {
 			Description: `system generated unique id for an image`,
 			Type:        schema.TypeString,
@@ -91,6 +103,7 @@ func GetBaseOSImagePropertyFields() (t []string) {
 	return []string{
 		"activate",
 		"image_name",
+		"imvol_id",
 		"uuid",
 		"version",
 	}

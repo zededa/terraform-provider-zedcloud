@@ -21,6 +21,9 @@ import (
 // swagger:model DeviceFilter
 type DeviceFilter struct {
 
+	// admin state of the device
+	AdminState *AdminState `json:"adminState,omitempty"`
+
 	// name pattern
 	// Required: true
 	NamePattern *string `json:"namePattern"`
@@ -28,11 +31,18 @@ type DeviceFilter struct {
 	// project
 	// Required: true
 	Project *string `json:"project"`
+
+	// project name pattern
+	ProjectNamePattern string `json:"projectNamePattern,omitempty"`
 }
 
 // Validate validates this device filter
 func (m *DeviceFilter) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateAdminState(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateNamePattern(formats); err != nil {
 		res = append(res, err)
@@ -45,6 +55,25 @@ func (m *DeviceFilter) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *DeviceFilter) validateAdminState(formats strfmt.Registry) error {
+	if swag.IsZero(m.AdminState) { // not required
+		return nil
+	}
+
+	if m.AdminState != nil {
+		if err := m.AdminState.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("adminState")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("adminState")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -66,8 +95,33 @@ func (m *DeviceFilter) validateProject(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validates this device filter based on context it is used
+// ContextValidate validate this device filter based on the context it is used
 func (m *DeviceFilter) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateAdminState(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *DeviceFilter) contextValidateAdminState(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.AdminState != nil {
+		if err := m.AdminState.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("adminState")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("adminState")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 

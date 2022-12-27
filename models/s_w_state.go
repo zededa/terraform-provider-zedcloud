@@ -16,7 +16,17 @@ import (
 
 // SWState State of EVE/Edge Application software
 //
-// - SW_STATE_RESOLVING_TAG: Prior to DOWNLOAD_STARTED we go through these:Resolving an image tag - SW_STATE_RESOLVED_TAG: Tag has been resolved/failed - SW_STATE_CREATING_VOLUME: Prior to INSTALLED we go through these:Volume create in progress - SW_STATE_CREATED_VOLUME: Volume create done/failed - SW_STATE_VERIFYING: Verification in-progress - SW_STATE_LOADING: Loading blob in CAS - SW_STATE_LOADED: Loaded blob in CAS - SW_STATE_AWAITNETWORKINSTANCE: Wait for network instance
+// - SW_STATE_RESOLVING_TAG: Prior to DOWNLOAD_STARTED we go through these:
+// Resolving an image tag
+//   - SW_STATE_RESOLVED_TAG: Tag has been resolved/failed
+//   - SW_STATE_CREATING_VOLUME: Prior to INSTALLED we go through these:
+//
+// Volume create in progress
+//   - SW_STATE_CREATED_VOLUME: Volume create done/failed
+//   - SW_STATE_VERIFYING: Verification in-progress
+//   - SW_STATE_LOADING: Loading blob in CAS
+//   - SW_STATE_LOADED: Loaded blob in CAS
+//   - SW_STATE_AWAITNETWORKINSTANCE: Wait for network instance
 //
 // swagger:model SWState
 type SWState string
