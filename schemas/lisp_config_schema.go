@@ -3,7 +3,6 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -49,7 +48,7 @@ func LispConfigModelFromMap(m map[string]interface{}) *models.LispConfig {
 // Update the underlying LispConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetLispConfigResourceData(d *schema.ResourceData, m *models.LispConfig) {
 	d.Set("allocate", m.Allocate)
-	d.Set("allocationprefix", m.Allocationprefix)
+	d.Set("allocationprefix", m.Allocationprefix.String())
 	d.Set("allocationprefixlen", m.Allocationprefixlen)
 	d.Set("exportprivate", m.Exportprivate)
 	d.Set("lispiid", m.Lispiid)
@@ -62,7 +61,7 @@ func SetLispConfigSubResourceData(m []*models.LispConfig) (d []*map[string]inter
 		if LispConfigModel != nil {
 			properties := make(map[string]interface{})
 			properties["allocate"] = LispConfigModel.Allocate
-			properties["allocationprefix"] = LispConfigModel.Allocationprefix
+			properties["allocationprefix"] = LispConfigModel.Allocationprefix.String()
 			properties["allocationprefixlen"] = LispConfigModel.Allocationprefixlen
 			properties["exportprivate"] = LispConfigModel.Exportprivate
 			properties["lispiid"] = LispConfigModel.Lispiid
@@ -83,10 +82,9 @@ func LispConfigSchema() map[string]*schema.Schema {
 		},
 
 		"allocationprefix": {
-			Description:  `Allocation Prefix`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Optional:     true,
+			Description: `Allocation Prefix`,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"allocationprefixlen": {

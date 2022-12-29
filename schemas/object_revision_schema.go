@@ -1,7 +1,9 @@
 package schemas
 
 import (
+	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -9,35 +11,35 @@ import (
 // (1) Translate ObjectRevision resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ObjectRevisionModel(d *schema.ResourceData) *models.ObjectRevision {
-	createdAt, _ := d.Get("created_at").(interface{}) // interface{}
+	createdAt, _ := d.Get("created_at").(strfmt.DateTime)
 	createdBy, _ := d.Get("created_by").(string)
 	curr, _ := d.Get("curr").(string)
 	prev, _ := d.Get("prev").(string)
-	updatedAt, _ := d.Get("updated_at").(interface{}) // interface{}
+	updatedAt, _ := d.Get("updated_at").(strfmt.DateTime)
 	updatedBy, _ := d.Get("updated_by").(string)
 	return &models.ObjectRevision{
-		CreatedAt: createdAt,
+		CreatedAt: &createdAt, // strfmt.DateTime true false false
 		CreatedBy: &createdBy, // string true false false
 		Curr:      &curr,      // string true false false
 		Prev:      prev,
-		UpdatedAt: updatedAt,
+		UpdatedAt: &updatedAt, // strfmt.DateTime true false false
 		UpdatedBy: &updatedBy, // string true false false
 	}
 }
 
 func ObjectRevisionModelFromMap(m map[string]interface{}) *models.ObjectRevision {
-	createdAt := m["created_at"].(interface{})
+	createdAt := m["created_at"].(strfmt.DateTime)
 	createdBy := m["created_by"].(string)
 	curr := m["curr"].(string)
 	prev := m["prev"].(string)
-	updatedAt := m["updated_at"].(interface{})
+	updatedAt := m["updated_at"].(strfmt.DateTime)
 	updatedBy := m["updated_by"].(string)
 	return &models.ObjectRevision{
-		CreatedAt: createdAt,
+		CreatedAt: &createdAt,
 		CreatedBy: &createdBy,
 		Curr:      &curr,
 		Prev:      prev,
-		UpdatedAt: updatedAt,
+		UpdatedAt: &updatedAt,
 		UpdatedBy: &updatedBy,
 	}
 }
@@ -57,11 +59,11 @@ func SetObjectRevisionSubResourceData(m []*models.ObjectRevision) (d []*map[stri
 	for _, ObjectRevisionModel := range m {
 		if ObjectRevisionModel != nil {
 			properties := make(map[string]interface{})
-			properties["created_at"] = ObjectRevisionModel.CreatedAt
+			properties["created_at"] = ObjectRevisionModel.CreatedAt.String()
 			properties["created_by"] = ObjectRevisionModel.CreatedBy
 			properties["curr"] = ObjectRevisionModel.Curr
 			properties["prev"] = ObjectRevisionModel.Prev
-			properties["updated_at"] = ObjectRevisionModel.UpdatedAt
+			properties["updated_at"] = ObjectRevisionModel.UpdatedAt.String()
 			properties["updated_by"] = ObjectRevisionModel.UpdatedBy
 			d = append(d, &properties)
 		}
@@ -73,12 +75,10 @@ func SetObjectRevisionSubResourceData(m []*models.ObjectRevision) (d []*map[stri
 func ObjectRevisionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"created_at": {
-			Description: `The time, in milliseconds since the epoch, when the record was created.`,
-			Type:        schema.TypeMap, //GoType: interface{}
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-			Required: true,
+			Description:  `The time, in milliseconds since the epoch, when the record was created.`,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Required:     true,
 		},
 
 		"created_by": {
@@ -100,12 +100,10 @@ func ObjectRevisionSchema() map[string]*schema.Schema {
 		},
 
 		"updated_at": {
-			Description: `The time, in milliseconds since the epoch, when the record was last updated.`,
-			Type:        schema.TypeMap, //GoType: interface{}
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-			Required: true,
+			Description:  `The time, in milliseconds since the epoch, when the record was last updated.`,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Required:     true,
 		},
 
 		"updated_by": {

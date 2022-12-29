@@ -3,6 +3,7 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -225,7 +226,7 @@ func SetDeviceStatusSummaryMsgSubResourceData(m []*models.DeviceStatusSummaryMsg
 			properties["app_inst_count"] = DeviceStatusSummaryMsgModel.AppInstCount
 			properties["cluster_id"] = DeviceStatusSummaryMsgModel.ClusterID
 			properties["debug_knob"] = DeviceStatusSummaryMsgModel.DebugKnob
-			properties["debug_knob_expiry_time"] = DeviceStatusSummaryMsgModel.DebugKnobExpiryTime
+			properties["debug_knob_expiry_time"] = DeviceStatusSummaryMsgModel.DebugKnobExpiryTime.String()
 			properties["dev_error"] = SetDeviceErrorSubResourceData(DeviceStatusSummaryMsgModel.DevError)
 			properties["dinfo"] = SetDeviceInfoSubResourceData([]*models.DeviceInfo{DeviceStatusSummaryMsgModel.Dinfo})
 			properties["edgeview_active"] = DeviceStatusSummaryMsgModel.EdgeviewActive
@@ -302,9 +303,10 @@ func DeviceStatusSummaryMsgSchema() map[string]*schema.Schema {
 		},
 
 		"debug_knob_expiry_time": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  ``,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 
 		"dev_error": {

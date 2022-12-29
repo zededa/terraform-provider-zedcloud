@@ -6,11 +6,16 @@ package edge_node_configuration
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
 	"fmt"
 	"io"
+	"strconv"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 
 	"github.com/zededa/terraform-provider/models"
 )
@@ -587,5 +592,805 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeDefault) readResponse(response runti
 		return err
 	}
 
+	return nil
+}
+
+/*
+EdgeNodeConfigurationUpdateEdgeNodeBody Device Configuration payload detail
+//
+// Device Configuration request paylod holds the device properties
+swagger:model EdgeNodeConfigurationUpdateEdgeNodeBody
+*/
+type EdgeNodeConfigurationUpdateEdgeNodeBody struct {
+
+	// administrative state of device
+	AdminState *models.AdminState `json:"adminState,omitempty"`
+
+	// Device asset ID
+	AssetID string `json:"assetId,omitempty"`
+
+	// base images
+	BaseImage []*models.BaseOSImage `json:"baseImage"`
+
+	// device baseos retry counter
+	BaseOsRetryCounter int64 `json:"baseOsRetryCounter,omitempty"`
+
+	// device baseos retry time
+	BaseOsRetryTime string `json:"baseOsRetryTime,omitempty"`
+
+	// Client IP
+	ClientIP string `json:"clientIp,omitempty"`
+
+	// System defined universally unique clusterInstance ID, unique across the enterprise.
+	// Max Length: 256
+	// Min Length: 3
+	// Pattern: [a-zA-Z0-9][a-zA-Z0-9_.-]+
+	ClusterID string `json:"clusterID,omitempty"`
+
+	// ED configurations
+	ConfigItem []*models.EDConfigItem `json:"configItem"`
+
+	// CPU (configured values)
+	CPU int64 `json:"cpu,omitempty"`
+
+	// debug knob details for the device
+	DebugKnob *models.DebugKnobDetail `json:"debugKnob,omitempty"`
+
+	// default network instance details
+	DefaultNetInst *models.NetInstConfig `json:"defaultNetInst,omitempty"`
+
+	// user defined tag for the device, which is used while deploying policies.
+	DeploymentTag string `json:"deploymentTag,omitempty"`
+
+	// deprecated field
+	Deprecated string `json:"deprecated,omitempty"`
+
+	// user specified description
+	Description string `json:"description,omitempty"`
+
+	// User specified geo location
+	DevLocation *models.GeoLocation `json:"devLocation,omitempty"`
+
+	// device Lisp
+	Dlisp *models.DeviceLisp `json:"dlisp,omitempty"`
+
+	// edgeview configuration for device
+	Edgeviewconfig *models.EdgeviewCfg `json:"edgeviewconfig,omitempty"`
+
+	// indicates whether a soft serial should be generated; it will work ONLY when device is created
+	GenerateSoftSerial bool `json:"generateSoftSerial,omitempty"`
+
+	// Device identity
+	// Format: byte
+	Identity strfmt.Base64 `json:"identity,omitempty"`
+
+	// System Interface list
+	Interfaces []*models.SysInterface `json:"interfaces"`
+
+	// Device location: deprecated
+	Location string `json:"location,omitempty"`
+
+	// Device memory in MBs
+	Memory int64 `json:"memory,omitempty"`
+
+	// device model
+	// Required: true
+	ModelID *string `json:"modelId"`
+
+	// user specified device name
+	// Required: true
+	Name *string `json:"name"`
+
+	// Object key
+	Obkey string `json:"obkey,omitempty"`
+
+	// Device level certificates used while onboarding
+	Onboarding *models.DeviceCerts `json:"onboarding,omitempty"`
+
+	// prepare poweroff counter
+	PreparePowerOffCounter int64 `json:"preparePowerOffCounter,omitempty"`
+
+	// prepare poweroff time
+	PreparePowerOffTime string `json:"preparePowerOffTime,omitempty"`
+
+	// project name
+	// Required: true
+	ProjectID *string `json:"projectId"`
+
+	// devicereset counter
+	ResetCounter int64 `json:"resetCounter,omitempty"`
+
+	// device reset time
+	ResetTime string `json:"resetTime,omitempty"`
+
+	// Object revision details
+	Revision *models.ObjectRevision `json:"revision,omitempty"`
+
+	// Device serial number
+	Serialno string `json:"serialno,omitempty"`
+
+	// Site captured pictures
+	SitePictures []string `json:"sitePictures"`
+
+	// Device storage in GBs
+	Storage int64 `json:"storage,omitempty"`
+
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+	Tags map[string]string `json:"tags,omitempty"`
+
+	// Threads
+	Thread int64 `json:"thread,omitempty"`
+
+	// user specified title
+	// Required: true
+	Title *string `json:"title"`
+
+	// Single use token
+	Token string `json:"token,omitempty"`
+
+	// device model arch type
+	Utype *models.ModelArchType `json:"utype,omitempty"`
+}
+
+// Validate validates this edge node configuration update edge node body
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.validateAdminState(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateBaseImage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateClusterID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateConfigItem(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDebugKnob(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDefaultNetInst(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDevLocation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateDlisp(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateEdgeviewconfig(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateInterfaces(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateModelID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateName(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateOnboarding(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateProjectID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateRevision(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateTitle(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.validateUtype(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateAdminState(formats strfmt.Registry) error {
+	if swag.IsZero(o.AdminState) { // not required
+		return nil
+	}
+
+	if o.AdminState != nil {
+		if err := o.AdminState.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "adminState")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "adminState")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateBaseImage(formats strfmt.Registry) error {
+	if swag.IsZero(o.BaseImage) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.BaseImage); i++ {
+		if swag.IsZero(o.BaseImage[i]) { // not required
+			continue
+		}
+
+		if o.BaseImage[i] != nil {
+			if err := o.BaseImage[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("body" + "." + "baseImage" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("body" + "." + "baseImage" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateClusterID(formats strfmt.Registry) error {
+	if swag.IsZero(o.ClusterID) { // not required
+		return nil
+	}
+
+	if err := validate.MinLength("body"+"."+"clusterID", "body", o.ClusterID, 3); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("body"+"."+"clusterID", "body", o.ClusterID, 256); err != nil {
+		return err
+	}
+
+	if err := validate.Pattern("body"+"."+"clusterID", "body", o.ClusterID, `[a-zA-Z0-9][a-zA-Z0-9_.-]+`); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateConfigItem(formats strfmt.Registry) error {
+	if swag.IsZero(o.ConfigItem) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.ConfigItem); i++ {
+		if swag.IsZero(o.ConfigItem[i]) { // not required
+			continue
+		}
+
+		if o.ConfigItem[i] != nil {
+			if err := o.ConfigItem[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("body" + "." + "configItem" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("body" + "." + "configItem" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateDebugKnob(formats strfmt.Registry) error {
+	if swag.IsZero(o.DebugKnob) { // not required
+		return nil
+	}
+
+	if o.DebugKnob != nil {
+		if err := o.DebugKnob.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "debugKnob")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "debugKnob")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateDefaultNetInst(formats strfmt.Registry) error {
+	if swag.IsZero(o.DefaultNetInst) { // not required
+		return nil
+	}
+
+	if o.DefaultNetInst != nil {
+		if err := o.DefaultNetInst.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "defaultNetInst")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "defaultNetInst")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateDevLocation(formats strfmt.Registry) error {
+	if swag.IsZero(o.DevLocation) { // not required
+		return nil
+	}
+
+	if o.DevLocation != nil {
+		if err := o.DevLocation.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "devLocation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "devLocation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateDlisp(formats strfmt.Registry) error {
+	if swag.IsZero(o.Dlisp) { // not required
+		return nil
+	}
+
+	if o.Dlisp != nil {
+		if err := o.Dlisp.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "dlisp")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "dlisp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateEdgeviewconfig(formats strfmt.Registry) error {
+	if swag.IsZero(o.Edgeviewconfig) { // not required
+		return nil
+	}
+
+	if o.Edgeviewconfig != nil {
+		if err := o.Edgeviewconfig.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "edgeviewconfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "edgeviewconfig")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateInterfaces(formats strfmt.Registry) error {
+	if swag.IsZero(o.Interfaces) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(o.Interfaces); i++ {
+		if swag.IsZero(o.Interfaces[i]) { // not required
+			continue
+		}
+
+		if o.Interfaces[i] != nil {
+			if err := o.Interfaces[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("body" + "." + "interfaces" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("body" + "." + "interfaces" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateModelID(formats strfmt.Registry) error {
+
+	if err := validate.Required("body"+"."+"modelId", "body", o.ModelID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateName(formats strfmt.Registry) error {
+
+	if err := validate.Required("body"+"."+"name", "body", o.Name); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateOnboarding(formats strfmt.Registry) error {
+	if swag.IsZero(o.Onboarding) { // not required
+		return nil
+	}
+
+	if o.Onboarding != nil {
+		if err := o.Onboarding.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "onboarding")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "onboarding")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateProjectID(formats strfmt.Registry) error {
+
+	if err := validate.Required("body"+"."+"projectId", "body", o.ProjectID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateRevision(formats strfmt.Registry) error {
+	if swag.IsZero(o.Revision) { // not required
+		return nil
+	}
+
+	if o.Revision != nil {
+		if err := o.Revision.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "revision")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "revision")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateTitle(formats strfmt.Registry) error {
+
+	if err := validate.Required("body"+"."+"title", "body", o.Title); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) validateUtype(formats strfmt.Registry) error {
+	if swag.IsZero(o.Utype) { // not required
+		return nil
+	}
+
+	if o.Utype != nil {
+		if err := o.Utype.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "utype")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "utype")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this edge node configuration update edge node body based on the context it is used
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := o.contextValidateAdminState(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateBaseImage(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateConfigItem(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateDebugKnob(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateDefaultNetInst(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateDevLocation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateDlisp(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateEdgeviewconfig(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateInterfaces(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateOnboarding(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateRevision(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := o.contextValidateUtype(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateAdminState(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.AdminState != nil {
+		if err := o.AdminState.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "adminState")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "adminState")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateBaseImage(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.BaseImage); i++ {
+
+		if o.BaseImage[i] != nil {
+			if err := o.BaseImage[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("body" + "." + "baseImage" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("body" + "." + "baseImage" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateConfigItem(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.ConfigItem); i++ {
+
+		if o.ConfigItem[i] != nil {
+			if err := o.ConfigItem[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("body" + "." + "configItem" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("body" + "." + "configItem" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateDebugKnob(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.DebugKnob != nil {
+		if err := o.DebugKnob.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "debugKnob")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "debugKnob")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateDefaultNetInst(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.DefaultNetInst != nil {
+		if err := o.DefaultNetInst.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "defaultNetInst")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "defaultNetInst")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateDevLocation(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.DevLocation != nil {
+		if err := o.DevLocation.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "devLocation")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "devLocation")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateDlisp(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Dlisp != nil {
+		if err := o.Dlisp.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "dlisp")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "dlisp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateEdgeviewconfig(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Edgeviewconfig != nil {
+		if err := o.Edgeviewconfig.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "edgeviewconfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "edgeviewconfig")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateInterfaces(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(o.Interfaces); i++ {
+
+		if o.Interfaces[i] != nil {
+			if err := o.Interfaces[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("body" + "." + "interfaces" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("body" + "." + "interfaces" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateOnboarding(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Onboarding != nil {
+		if err := o.Onboarding.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "onboarding")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "onboarding")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Revision != nil {
+		if err := o.Revision.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "revision")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "revision")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) contextValidateUtype(ctx context.Context, formats strfmt.Registry) error {
+
+	if o.Utype != nil {
+		if err := o.Utype.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("body" + "." + "utype")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("body" + "." + "utype")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBody) UnmarshalBinary(b []byte) error {
+	var res EdgeNodeConfigurationUpdateEdgeNodeBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
 	return nil
 }

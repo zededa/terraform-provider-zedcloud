@@ -3,7 +3,6 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -30,8 +29,8 @@ func DeviceCertsModelFromMap(m map[string]interface{}) *models.DeviceCerts {
 
 // Update the underlying DeviceCerts resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetDeviceCertsResourceData(d *schema.ResourceData, m *models.DeviceCerts) {
-	d.Set("pem_cert", m.PemCert)
-	d.Set("pem_key", m.PemKey)
+	d.Set("pem_cert", m.PemCert.String())
+	d.Set("pem_key", m.PemKey.String())
 }
 
 // Iterate through and update the DeviceCerts resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -39,8 +38,8 @@ func SetDeviceCertsSubResourceData(m []*models.DeviceCerts) (d []*map[string]int
 	for _, DeviceCertsModel := range m {
 		if DeviceCertsModel != nil {
 			properties := make(map[string]interface{})
-			properties["pem_cert"] = DeviceCertsModel.PemCert
-			properties["pem_key"] = DeviceCertsModel.PemKey
+			properties["pem_cert"] = DeviceCertsModel.PemCert.String()
+			properties["pem_key"] = DeviceCertsModel.PemKey.String()
 			d = append(d, &properties)
 		}
 	}
@@ -51,17 +50,15 @@ func SetDeviceCertsSubResourceData(m []*models.DeviceCerts) (d []*map[string]int
 func DeviceCertsSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"pem_cert": {
-			Description:  `pem certificate`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Optional:     true,
+			Description: `pem certificate`,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"pem_key": {
-			Description:  `pem key`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Optional:     true,
+			Description: `pem key`,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

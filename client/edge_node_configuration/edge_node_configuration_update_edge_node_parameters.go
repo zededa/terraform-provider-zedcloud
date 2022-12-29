@@ -14,8 +14,6 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/zededa/terraform-provider/models"
 )
 
 // NewEdgeNodeConfigurationUpdateEdgeNodeParams creates a new EdgeNodeConfigurationUpdateEdgeNodeParams object,
@@ -70,7 +68,7 @@ type EdgeNodeConfigurationUpdateEdgeNodeParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.DeviceConfig
+	Body EdgeNodeConfigurationUpdateEdgeNodeBody
 
 	/* ID.
 
@@ -143,13 +141,13 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) SetXRequestID(xRequestID *st
 }
 
 // WithBody adds the body to the edge node configuration update edge node params
-func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) WithBody(body *models.DeviceConfig) *EdgeNodeConfigurationUpdateEdgeNodeParams {
+func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) WithBody(body EdgeNodeConfigurationUpdateEdgeNodeBody) *EdgeNodeConfigurationUpdateEdgeNodeParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge node configuration update edge node params
-func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) SetBody(body *models.DeviceConfig) {
+func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) SetBody(body EdgeNodeConfigurationUpdateEdgeNodeBody) {
 	o.Body = body
 }
 
@@ -179,10 +177,8 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) WriteToRequest(r runtime.Cli
 			return err
 		}
 	}
-	if o.Body != nil {
-		if err := r.SetBodyParam(o.Body); err != nil {
-			return err
-		}
+	if err := r.SetBodyParam(o.Body); err != nil {
+		return err
 	}
 
 	// path param id

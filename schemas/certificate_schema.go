@@ -3,6 +3,7 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -208,8 +209,8 @@ func SetCertificateSubResourceData(m []*models.Certificate) (d []*map[string]int
 			properties["serial_number"] = CertificateModel.SerialNumber
 			properties["signature_algorithm"] = CertificateModel.SignatureAlgorithm
 			properties["subject"] = SetSubjectSubResourceData([]*models.Subject{CertificateModel.Subject})
-			properties["valid_from"] = CertificateModel.ValidFrom
-			properties["valid_till"] = CertificateModel.ValidTill
+			properties["valid_from"] = CertificateModel.ValidFrom.String()
+			properties["valid_till"] = CertificateModel.ValidTill.String()
 			d = append(d, &properties)
 		}
 	}
@@ -355,15 +356,17 @@ func CertificateSchema() map[string]*schema.Schema {
 		},
 
 		"valid_from": {
-			Description: `Certificate validatity start time`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  `Certificate validatity start time`,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 
 		"valid_till": {
-			Description: `Certificate validatity start time`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  `Certificate validatity start time`,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 	}
 }

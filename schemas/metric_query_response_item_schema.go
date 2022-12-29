@@ -3,6 +3,7 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -38,7 +39,7 @@ func SetMetricQueryResponseItemSubResourceData(m []*models.MetricQueryResponseIt
 	for _, MetricQueryResponseItemModel := range m {
 		if MetricQueryResponseItemModel != nil {
 			properties := make(map[string]interface{})
-			properties["timestamp"] = MetricQueryResponseItemModel.Timestamp
+			properties["timestamp"] = MetricQueryResponseItemModel.Timestamp.String()
 			properties["values"] = MetricQueryResponseItemModel.Values
 			d = append(d, &properties)
 		}
@@ -50,9 +51,10 @@ func SetMetricQueryResponseItemSubResourceData(m []*models.MetricQueryResponseIt
 func MetricQueryResponseItemSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"timestamp": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  ``,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 
 		"values": {

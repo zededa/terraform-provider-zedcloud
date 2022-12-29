@@ -3,7 +3,6 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -31,7 +30,7 @@ func ProtobufAnyModelFromMap(m map[string]interface{}) *models.ProtobufAny {
 // Update the underlying ProtobufAny resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetProtobufAnyResourceData(d *schema.ResourceData, m *models.ProtobufAny) {
 	d.Set("type_url", m.TypeURL)
-	d.Set("value", m.Value)
+	d.Set("value", m.Value.String())
 }
 
 // Iterate through and update the ProtobufAny resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -40,7 +39,7 @@ func SetProtobufAnySubResourceData(m []*models.ProtobufAny) (d []*map[string]int
 		if ProtobufAnyModel != nil {
 			properties := make(map[string]interface{})
 			properties["type_url"] = ProtobufAnyModel.TypeURL
-			properties["value"] = ProtobufAnyModel.Value
+			properties["value"] = ProtobufAnyModel.Value.String()
 			d = append(d, &properties)
 		}
 	}
@@ -57,10 +56,9 @@ func ProtobufAnySchema() map[string]*schema.Schema {
 		},
 
 		"value": {
-			Description:  ``,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Optional:     true,
+			Description: ``,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

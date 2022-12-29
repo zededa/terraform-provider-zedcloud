@@ -3,7 +3,6 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -297,7 +296,7 @@ func SetDeviceConfigResourceData(d *schema.ResourceData, m *models.DeviceConfig)
 	d.Set("edgeviewconfig", SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{m.Edgeviewconfig}))
 	d.Set("generate_soft_serial", m.GenerateSoftSerial)
 	d.Set("id", m.ID)
-	d.Set("identity", m.Identity)
+	d.Set("identity", m.Identity.String())
 	d.Set("interfaces", SetSysInterfaceSubResourceData(m.Interfaces))
 	d.Set("location", m.Location)
 	d.Set("memory", m.Memory)
@@ -345,7 +344,7 @@ func SetDeviceConfigSubResourceData(m []*models.DeviceConfig) (d []*map[string]i
 			properties["edgeviewconfig"] = SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{DeviceConfigModel.Edgeviewconfig})
 			properties["generate_soft_serial"] = DeviceConfigModel.GenerateSoftSerial
 			properties["id"] = DeviceConfigModel.ID
-			properties["identity"] = DeviceConfigModel.Identity
+			properties["identity"] = DeviceConfigModel.Identity.String()
 			properties["interfaces"] = SetSysInterfaceSubResourceData(DeviceConfigModel.Interfaces)
 			properties["location"] = DeviceConfigModel.Location
 			properties["memory"] = DeviceConfigModel.Memory
@@ -514,10 +513,9 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 		},
 
 		"identity": {
-			Description:  `Device identity`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Optional:     true,
+			Description: `Device identity`,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"interfaces": {

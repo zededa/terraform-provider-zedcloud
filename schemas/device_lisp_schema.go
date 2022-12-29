@@ -3,7 +3,6 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -64,7 +63,7 @@ func SetDeviceLispResourceData(d *schema.ResourceData, m *models.DeviceLisp) {
 	d.Set("e_id", m.EID)
 	d.Set("e_id_hash_len", m.EIDHashLen)
 	d.Set("client_addr", m.ClientAddr)
-	d.Set("eid_allocation_prefix", m.EidAllocationPrefix)
+	d.Set("eid_allocation_prefix", m.EidAllocationPrefix.String())
 	d.Set("eid_allocation_prefix_len", m.EidAllocationPrefixLen)
 	d.Set("lisp_instance", m.LispInstance)
 	d.Set("lisp_map_servers", SetLispServerSubResourceData(m.LispMapServers))
@@ -80,7 +79,7 @@ func SetDeviceLispSubResourceData(m []*models.DeviceLisp) (d []*map[string]inter
 			properties["e_id"] = DeviceLispModel.EID
 			properties["e_id_hash_len"] = DeviceLispModel.EIDHashLen
 			properties["client_addr"] = DeviceLispModel.ClientAddr
-			properties["eid_allocation_prefix"] = DeviceLispModel.EidAllocationPrefix
+			properties["eid_allocation_prefix"] = DeviceLispModel.EidAllocationPrefix.String()
 			properties["eid_allocation_prefix_len"] = DeviceLispModel.EidAllocationPrefixLen
 			properties["lisp_instance"] = DeviceLispModel.LispInstance
 			properties["lisp_map_servers"] = SetLispServerSubResourceData(DeviceLispModel.LispMapServers)
@@ -114,10 +113,9 @@ func DeviceLispSchema() map[string]*schema.Schema {
 		},
 
 		"eid_allocation_prefix": {
-			Description:  `EID allocation prefix`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Required:     true,
+			Description: `EID allocation prefix`,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"eid_allocation_prefix_len": {

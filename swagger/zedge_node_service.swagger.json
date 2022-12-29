@@ -1332,7 +1332,215 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DeviceConfig"
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "user specified device name"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "user specified title"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "user specified description"
+                                },
+                                "revision": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "Object revision details"
+                                },
+                                "tags": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                                    "maxLength": 32,
+                                    "pattern": "^[^<%&?/\\>]+$"
+                                },
+                                "utype": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/ModelArchType",
+                                    "description": "device model arch type"
+                                },
+                                "projectId": {
+                                    "type": "string",
+                                    "description": "project name"
+                                },
+                                "serialno": {
+                                    "type": "string",
+                                    "description": "Device serial number"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "description": "Device location: deprecated"
+                                },
+                                "cpu": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "CPU (configured values)"
+                                },
+                                "thread": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Threads"
+                                },
+                                "memory": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device memory in MBs"
+                                },
+                                "storage": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device storage in GBs"
+                                },
+                                "onboarding": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceCerts",
+                                    "description": "Device level certificates used while onboarding"
+                                },
+                                "identity": {
+                                    "type": "string",
+                                    "format": "byte",
+                                    "description": "Device identity"
+                                },
+                                "obkey": {
+                                    "type": "string",
+                                    "description": "Object key"
+                                },
+                                "token": {
+                                    "type": "string",
+                                    "description": "Single use token"
+                                },
+                                "clientIp": {
+                                    "type": "string",
+                                    "description": "Client IP"
+                                },
+                                "dlisp": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceLisp",
+                                    "description": "device Lisp"
+                                },
+                                "clusterID": {
+                                    "type": "string",
+                                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "adminState": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/AdminState",
+                                    "description": "administrative state of device"
+                                },
+                                "resetCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "devicereset counter"
+                                },
+                                "resetTime": {
+                                    "type": "string",
+                                    "description": "device reset time"
+                                },
+                                "baseImage": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BaseOSImage"
+                                    },
+                                    "description": "base images"
+                                },
+                                "modelId": {
+                                    "type": "string",
+                                    "description": "device model"
+                                },
+                                "configItem": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EDConfigItem"
+                                    },
+                                    "description": "ED configurations"
+                                },
+                                "deprecated": {
+                                    "type": "string",
+                                    "description": "deprecated field"
+                                },
+                                "interfaces": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/sysInterface"
+                                    },
+                                    "description": "System Interface list"
+                                },
+                                "devLocation": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/GeoLocation",
+                                    "description": "User specified geo location"
+                                },
+                                "sitePictures": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Site captured pictures"
+                                },
+                                "assetId": {
+                                    "type": "string",
+                                    "description": "Device asset ID"
+                                },
+                                "baseOsRetryCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "device baseos retry counter"
+                                },
+                                "baseOsRetryTime": {
+                                    "type": "string",
+                                    "description": "device baseos retry time"
+                                },
+                                "debugKnob": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DebugKnobDetail",
+                                    "description": "debug knob details for the device"
+                                },
+                                "defaultNetInst": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/NetInstConfig",
+                                    "description": "default network instance details"
+                                },
+                                "preparePowerOffCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "prepare poweroff counter"
+                                },
+                                "preparePowerOffTime": {
+                                    "type": "string",
+                                    "description": "prepare poweroff time"
+                                },
+                                "edgeviewconfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeviewCfg",
+                                    "description": "edgeview configuration for device"
+                                },
+                                "generateSoftSerial": {
+                                    "type": "boolean",
+                                    "description": "indicates whether a soft serial should be generated; it will work ONLY when device is created"
+                                },
+                                "deploymentTag": {
+                                    "type": "string",
+                                    "description": "user defined tag for the device, which is used while deploying policies."
+                                }
+                            },
+                            "description": "Device Configuration request paylod holds the device properties",
+                            "title": "Device Configuration payload detail",
+                            "required": [
+                                "name",
+                                "title",
+                                "projectId",
+                                "modelId"
+                            ]
                         }
                     },
                     {
@@ -11490,7 +11698,7 @@
                     "description": "Current Database version of the record"
                 },
                 "createdAt": {
-                    "type": "object",
+                    "type": "string",
                     "format": "date-time",
                     "description": "The time, in milliseconds since the epoch, when the record was created."
                 },
@@ -11499,7 +11707,7 @@
                     "description": "User data: Created By"
                 },
                 "updatedAt": {
-                    "type": "object",
+                    "type": "string",
                     "format": "date-time",
                     "description": "The time, in milliseconds since the epoch, when the record was last updated."
                 },

@@ -3,7 +3,6 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -64,9 +63,9 @@ func EIDRegisterModelFromMap(m map[string]interface{}) *models.EIDRegister {
 
 // Update the underlying EIDRegister resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetEIDRegisterResourceData(d *schema.ResourceData, m *models.EIDRegister) {
-	d.Set("app_cert", m.AppCert)
-	d.Set("app_private_key", m.AppPrivateKey)
-	d.Set("app_public_key", m.AppPublicKey)
+	d.Set("app_cert", m.AppCert.String())
+	d.Set("app_private_key", m.AppPrivateKey.String())
+	d.Set("app_public_key", m.AppPublicKey.String())
 	d.Set("display_name", m.DisplayName)
 	d.Set("e_id", m.EID)
 	d.Set("e_id_hash_len", m.EIDHashLen)
@@ -81,9 +80,9 @@ func SetEIDRegisterSubResourceData(m []*models.EIDRegister) (d []*map[string]int
 	for _, EIDRegisterModel := range m {
 		if EIDRegisterModel != nil {
 			properties := make(map[string]interface{})
-			properties["app_cert"] = EIDRegisterModel.AppCert
-			properties["app_private_key"] = EIDRegisterModel.AppPrivateKey
-			properties["app_public_key"] = EIDRegisterModel.AppPublicKey
+			properties["app_cert"] = EIDRegisterModel.AppCert.String()
+			properties["app_private_key"] = EIDRegisterModel.AppPrivateKey.String()
+			properties["app_public_key"] = EIDRegisterModel.AppPublicKey.String()
 			properties["display_name"] = EIDRegisterModel.DisplayName
 			properties["e_id"] = EIDRegisterModel.EID
 			properties["e_id_hash_len"] = EIDRegisterModel.EIDHashLen
@@ -101,24 +100,21 @@ func SetEIDRegisterSubResourceData(m []*models.EIDRegister) (d []*map[string]int
 func EIDRegisterSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_cert": {
-			Description:  `app certificate`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Required:     true,
+			Description: `app certificate`,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"app_private_key": {
-			Description:  `App private key`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Required:     true,
+			Description: `App private key`,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"app_public_key": {
-			Description:  `App public key`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Required:     true,
+			Description: `App public key`,
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 
 		"display_name": {

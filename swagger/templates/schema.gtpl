@@ -181,6 +181,8 @@ func Set{{ $operationGroup }}ResourceData(d *schema.ResourceData, m *models.{{ $
 	d.Set("{{ snakize .Name }}", Set{{ pascalize .GoType }}SubResourceData([]*models.{{ pascalize .GoType }}{m.{{ pascalize .Name }}}))
 		{{- else if stringContains .GoType "[]*" }}
 	d.Set("{{ snakize .Name }}", Set{{ pascalize .Items.GoType }}SubResourceData(m.{{ pascalize .Name }}))
+		{{- else if .IsBase64 }}
+	d.Set("{{ snakize .Name }}", m.{{ pascalize .Name }}.String())
 		{{- else }}
 	d.Set("{{ snakize .Name }}", m.{{ pascalize .Name }})
 		{{- end }}
@@ -199,6 +201,10 @@ func Set{{ $operationGroup }}SubResourceData(m []*models.{{ $operationGroup }}) 
 			properties["{{snakize .Name}}"] = Set{{ pascalize .GoType }}SubResourceData([]*models.{{ pascalize .GoType }}{ {{- $model }}.{{ pascalize .Name -}} })
 				{{- else if stringContains .GoType "[]*" }}
 			properties["{{snakize .Name}}"] = Set{{ pascalize .Items.GoType }}SubResourceData({{ $model }}.{{ pascalize .Name }})
+			{{- else if eq .GoType "strfmt.DateTime" }}
+			properties["{{ snakize .Name }}"] = {{ $model }}.{{ pascalize .Name }}.String()
+		        {{- else if .IsBase64 }}
+			properties["{{ snakize .Name }}"] = {{ $model }}.{{ pascalize .Name }}.String()
 				{{- else }}
 			properties["{{ snakize .Name }}"] = {{ $model }}.{{ pascalize .Name }}
 				{{- end }}
@@ -246,9 +252,9 @@ func DataSource{{ $operationGroup }}Schema() map[string]*schema.Schema {
 			Type: schema.TypeFloat,
 					{{- else if eq .GoType "strfmt.DateTime" }}
             Type:         schema.TypeString,
+            ValidateFunc: validation.IsRFC3339Time,
 					{{- else if eq .GoType "strfmt.Base64" }}
             Type:         schema.TypeString,
-            ValidateFunc: validation.IsRFC3339Time,
 					{{- else if eq .GoType "map[string]bool" }}
 			Type: schema.TypeMap, //GoType: {{ .GoType }}
 			Elem: &schema.Schema{
@@ -342,9 +348,9 @@ func {{ $operationGroup }}Schema() map[string]*schema.Schema {
 			Type: schema.TypeFloat,
 					{{- else if eq .GoType "strfmt.DateTime" }}
             Type:         schema.TypeString,
+            ValidateFunc: validation.IsRFC3339Time,
 					{{- else if eq .GoType "strfmt.Base64" }}
             Type:         schema.TypeString,
-            ValidateFunc: validation.IsRFC3339Time,
 					{{- else if eq .GoType "map[string]bool" }}
 			Type: schema.TypeMap, //GoType: {{ .GoType }}
 			Elem: &schema.Schema{

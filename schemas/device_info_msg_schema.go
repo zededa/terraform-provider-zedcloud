@@ -3,6 +3,7 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -339,12 +340,12 @@ func SetDeviceInfoMsgSubResourceData(m []*models.DeviceInfoMsg) (d []*map[string
 			properties["admin_state"] = DeviceInfoMsgModel.AdminState
 			properties["attest_state"] = DeviceInfoMsgModel.AttestState
 			properties["blob_list"] = SetBlobStatusSubResourceData(DeviceInfoMsgModel.BlobList)
-			properties["boot_time"] = DeviceInfoMsgModel.BootTime
+			properties["boot_time"] = DeviceInfoMsgModel.BootTime.String()
 			properties["capabilities"] = SetCapabilitiesSubResourceData([]*models.Capabilities{DeviceInfoMsgModel.Capabilities})
 			properties["cluster_id"] = DeviceInfoMsgModel.ClusterID
 			properties["data_sec_info"] = SetDevDataSecAtRestSubResourceData(DeviceInfoMsgModel.DataSecInfo)
 			properties["debug_knob"] = DeviceInfoMsgModel.DebugKnob
-			properties["debug_knob_expiry_time"] = DeviceInfoMsgModel.DebugKnobExpiryTime
+			properties["debug_knob_expiry_time"] = DeviceInfoMsgModel.DebugKnobExpiryTime.String()
 			properties["dev_error"] = SetDeviceErrorSubResourceData(DeviceInfoMsgModel.DevError)
 			properties["device_reboot_reason"] = DeviceInfoMsgModel.DeviceRebootReason
 			properties["dinfo"] = SetDeviceInfoSubResourceData([]*models.DeviceInfo{DeviceInfoMsgModel.Dinfo})
@@ -353,8 +354,8 @@ func SetDeviceInfoMsgSubResourceData(m []*models.DeviceInfoMsg) (d []*map[string
 			properties["id"] = DeviceInfoMsgModel.ID
 			properties["io_status_list"] = SetIoBundleStatusSubResourceData(DeviceInfoMsgModel.IoStatusList)
 			properties["last_reboot_reason"] = DeviceInfoMsgModel.LastRebootReason
-			properties["last_reboot_time"] = DeviceInfoMsgModel.LastRebootTime
-			properties["last_update"] = DeviceInfoMsgModel.LastUpdate
+			properties["last_reboot_time"] = DeviceInfoMsgModel.LastRebootTime.String()
+			properties["last_update"] = DeviceInfoMsgModel.LastUpdate.String()
 			properties["memory_summary"] = SetDeviceMemorySummarySubResourceData([]*models.DeviceMemorySummary{DeviceInfoMsgModel.MemorySummary})
 			properties["minfo"] = SetZManufacturerInfoSubResourceData([]*models.ZManufacturerInfo{DeviceInfoMsgModel.Minfo})
 			properties["name"] = DeviceInfoMsgModel.Name
@@ -368,7 +369,7 @@ func SetDeviceInfoMsgSubResourceData(m []*models.DeviceInfoMsg) (d []*map[string
 			properties["sw_info"] = SetDeviceSWInfoSubResourceData(DeviceInfoMsgModel.SwInfo)
 			properties["tags"] = DeviceInfoMsgModel.Tags
 			properties["title"] = DeviceInfoMsgModel.Title
-			properties["up_time"] = DeviceInfoMsgModel.UpTime
+			properties["up_time"] = DeviceInfoMsgModel.UpTime.String()
 			properties["zc_counters"] = SetZedcloudCountersSubResourceData(DeviceInfoMsgModel.ZcCounters)
 			properties["zpool_metrics"] = SetStorageDeviceMetricsSubResourceData([]*models.StorageDeviceMetrics{DeviceInfoMsgModel.ZpoolMetrics})
 			d = append(d, &properties)
@@ -430,9 +431,10 @@ func DeviceInfoMsgSchema() map[string]*schema.Schema {
 		},
 
 		"boot_time": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  ``,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 
 		"capabilities": {
@@ -467,9 +469,10 @@ func DeviceInfoMsgSchema() map[string]*schema.Schema {
 		},
 
 		"debug_knob_expiry_time": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  ``,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 
 		"dev_error": {
@@ -535,15 +538,17 @@ func DeviceInfoMsgSchema() map[string]*schema.Schema {
 		},
 
 		"last_reboot_time": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  ``,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 
 		"last_update": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  ``,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 
 		"memory_summary": {
@@ -654,9 +659,10 @@ func DeviceInfoMsgSchema() map[string]*schema.Schema {
 		},
 
 		"up_time": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:  ``,
+			Type:         schema.TypeString,
+			ValidateFunc: validation.IsRFC3339Time,
+			Optional:     true,
 		},
 
 		"zc_counters": {

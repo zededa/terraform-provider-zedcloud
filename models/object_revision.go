@@ -23,7 +23,8 @@ type ObjectRevision struct {
 
 	// The time, in milliseconds since the epoch, when the record was created.
 	// Required: true
-	CreatedAt interface{} `json:"createdAt"`
+	// Format: date-time
+	CreatedAt *strfmt.DateTime `json:"createdAt"`
 
 	// User data: Created By
 	// Required: true
@@ -38,7 +39,8 @@ type ObjectRevision struct {
 
 	// The time, in milliseconds since the epoch, when the record was last updated.
 	// Required: true
-	UpdatedAt interface{} `json:"updatedAt"`
+	// Format: date-time
+	UpdatedAt *strfmt.DateTime `json:"updatedAt"`
 
 	// User data: Updated By
 	// Required: true
@@ -77,8 +79,12 @@ func (m *ObjectRevision) Validate(formats strfmt.Registry) error {
 
 func (m *ObjectRevision) validateCreatedAt(formats strfmt.Registry) error {
 
-	if m.CreatedAt == nil {
-		return errors.Required("createdAt", "body", nil)
+	if err := validate.Required("createdAt", "body", m.CreatedAt); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("createdAt", "body", "date-time", m.CreatedAt.String(), formats); err != nil {
+		return err
 	}
 
 	return nil
@@ -104,8 +110,12 @@ func (m *ObjectRevision) validateCurr(formats strfmt.Registry) error {
 
 func (m *ObjectRevision) validateUpdatedAt(formats strfmt.Registry) error {
 
-	if m.UpdatedAt == nil {
-		return errors.Required("updatedAt", "body", nil)
+	if err := validate.Required("updatedAt", "body", m.UpdatedAt); err != nil {
+		return err
+	}
+
+	if err := validate.FormatOf("updatedAt", "body", "date-time", m.UpdatedAt.String(), formats); err != nil {
+		return err
 	}
 
 	return nil
