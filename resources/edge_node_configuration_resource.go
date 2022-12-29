@@ -49,7 +49,6 @@ func EdgeNodeConfiguration_CreateEdgeNode(ctx context.Context, d *schema.Resourc
 	fmt.Println("---------------------------------------")
 	spew.Dump(params)
 	fmt.Println("---------------------------------------")
-	return nil
 
 	client := m.(*apiclient.Zedcloudapi)
 
