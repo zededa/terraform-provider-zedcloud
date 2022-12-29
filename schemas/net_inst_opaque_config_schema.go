@@ -16,7 +16,7 @@ func NetInstOpaqueConfigModel(d *schema.ResourceData) *models.NetInstOpaqueConfi
 		lisp = LispConfigModelFromMap(lispMap)
 	}
 	oconfig, _ := d.Get("oconfig").(string)
-	typeVarModel, _ := d.Get("type").(models.OpaqueConfigType) // OpaqueConfigType
+	typeVarModel, ok := d.Get("type").(models.OpaqueConfigType) // OpaqueConfigType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

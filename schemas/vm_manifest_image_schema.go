@@ -12,7 +12,7 @@ func VMManifestImageModel(d *schema.ResourceData) *models.VMManifestImage {
 	cleartext, _ := d.Get("cleartext").(bool)
 	drvtype, _ := d.Get("drvtype").(string)
 	ignorepurge, _ := d.Get("ignorepurge").(bool)
-	imageformatModel, _ := d.Get("imageformat").(models.ConfigFormat) // ConfigFormat
+	imageformatModel, ok := d.Get("imageformat").(models.ConfigFormat) // ConfigFormat
 	imageformat := &imageformatModel
 	if !ok {
 		imageformat = nil

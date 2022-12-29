@@ -11,7 +11,7 @@ import (
 func ServicePointModel(d *schema.ResourceData) *models.ServicePoint {
 	credential, _ := d.Get("credential").(string)
 	nameOrIP, _ := d.Get("name_or_ip").(string)
-	typeVarModel, _ := d.Get("type").(models.SpType) // SpType
+	typeVarModel, ok := d.Get("type").(models.SpType) // SpType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

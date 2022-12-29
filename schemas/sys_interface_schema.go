@@ -11,7 +11,7 @@ import (
 func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	costInt, _ := d.Get("cost").(int)
 	cost := int64(costInt)
-	intfUsageModel, _ := d.Get("intf_usage").(models.AdapterUsage) // AdapterUsage
+	intfUsageModel, ok := d.Get("intf_usage").(models.AdapterUsage) // AdapterUsage
 	intfUsage := &intfUsageModel
 	if !ok {
 		intfUsage = nil

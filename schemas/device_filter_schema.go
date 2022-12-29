@@ -9,7 +9,7 @@ import (
 // (1) Translate DeviceFilter resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceFilterModel(d *schema.ResourceData) *models.DeviceFilter {
-	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminStateModel, ok := d.Get("admin_state").(models.AdminState) // AdminState
 	adminState := &adminStateModel
 	if !ok {
 		adminState = nil

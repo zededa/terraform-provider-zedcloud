@@ -31,7 +31,7 @@ func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 	memory := int64(memoryInt)
 	nameAppPart, _ := d.Get("name_app_part").(string)
 	nameProjectPart, _ := d.Get("name_project_part").(string)
-	namingSchemeModel, _ := d.Get("naming_scheme").(models.AppNamingSchemeV2) // AppNamingSchemeV2
+	namingSchemeModel, ok := d.Get("naming_scheme").(models.AppNamingSchemeV2) // AppNamingSchemeV2
 	namingScheme := &namingSchemeModel
 	if !ok {
 		namingScheme = nil
@@ -39,7 +39,7 @@ func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 	networksInt, _ := d.Get("networks").(int)
 	networks := int64(networksInt)
 	newBundleVersionAvailable, _ := d.Get("new_bundle_version_available").(bool)
-	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
 	originType := &originTypeModel
 	if !ok {
 		originType = nil

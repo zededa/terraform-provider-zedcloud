@@ -11,7 +11,7 @@ import (
 func NetProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
 	portInt, _ := d.Get("port").(int)
 	port := int64(portInt)
-	protoModel, _ := d.Get("proto").(models.NetworkProxyProto) // NetworkProxyProto
+	protoModel, ok := d.Get("proto").(models.NetworkProxyProto) // NetworkProxyProto
 	proto := &protoModel
 	if !ok {
 		proto = nil

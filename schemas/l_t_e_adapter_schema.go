@@ -15,7 +15,7 @@ func LTEAdapterModel(d *schema.ResourceData) *models.LTEAdapter {
 	imei, _ := d.Get("imei").(string)
 	imsi, _ := d.Get("imsi").(string)
 	simName, _ := d.Get("sim_name").(string)
-	simcardStateModel, _ := d.Get("simcard_state").(models.SimcardState) // SimcardState
+	simcardStateModel, ok := d.Get("simcard_state").(models.SimcardState) // SimcardState
 	simcardState := &simcardStateModel
 	if !ok {
 		simcardState = nil

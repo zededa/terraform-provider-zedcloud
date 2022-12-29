@@ -21,7 +21,7 @@ func DevicePolicyModel(d *schema.ResourceData) *models.DevicePolicy {
 		metaDataMap := metaDataInterface.([]interface{})[0].(map[string]interface{})
 		metaData = PolicyCommonModelFromMap(metaDataMap)
 	}
-	policySubTypeModel, _ := d.Get("policy_sub_type").(models.DevicePolicyType) // DevicePolicyType
+	policySubTypeModel, ok := d.Get("policy_sub_type").(models.DevicePolicyType) // DevicePolicyType
 	policySubType := &policySubTypeModel
 	if !ok {
 		policySubType = nil

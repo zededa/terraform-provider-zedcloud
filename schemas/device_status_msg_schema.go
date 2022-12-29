@@ -28,12 +28,12 @@ func DeviceStatusMsgModel(d *schema.ResourceData) *models.DeviceStatusMsg {
 		StorageMap := StorageInterface.([]interface{})[0].(map[string]interface{})
 		storage = StorageSummaryModelFromMap(StorageMap)
 	}
-	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminStateModel, ok := d.Get("admin_state").(models.AdminState) // AdminState
 	adminState := &adminStateModel
 	if !ok {
 		adminState = nil
 	}
-	attestStateModel, _ := d.Get("attest_state").(models.AttestState) // AttestState
+	attestStateModel, ok := d.Get("attest_state").(models.AttestState) // AttestState
 	attestState := &attestStateModel
 	if !ok {
 		attestState = nil
@@ -47,9 +47,9 @@ func DeviceStatusMsgModel(d *schema.ResourceData) *models.DeviceStatusMsg {
 		capabilities = CapabilitiesModelFromMap(capabilitiesMap)
 	}
 	clusterID, _ := d.Get("cluster_id").(string)
-	dataSecInfo, _ := d.Get("data_sec_info").([]*models.DevDataSecAtRest)                 // []*DevDataSecAtRest
-	devError, _ := d.Get("dev_error").([]*models.DeviceError)                             // []*DeviceError
-	deviceRebootReasonModel, _ := d.Get("device_reboot_reason").(models.DeviceBootReason) // DeviceBootReason
+	dataSecInfo, _ := d.Get("data_sec_info").([]*models.DevDataSecAtRest)                  // []*DevDataSecAtRest
+	devError, _ := d.Get("dev_error").([]*models.DeviceError)                              // []*DeviceError
+	deviceRebootReasonModel, ok := d.Get("device_reboot_reason").(models.DeviceBootReason) // DeviceBootReason
 	deviceRebootReason := &deviceRebootReasonModel
 	if !ok {
 		deviceRebootReason = nil
@@ -90,7 +90,7 @@ func DeviceStatusMsgModel(d *schema.ResourceData) *models.DeviceStatusMsg {
 	projectID, _ := d.Get("project_id").(string)
 	rawMetrics, _ := d.Get("raw_metrics").(string)
 	rawStatus, _ := d.Get("raw_status").(string)
-	runStateModel, _ := d.Get("run_state").(models.RunState) // RunState
+	runStateModel, ok := d.Get("run_state").(models.RunState) // RunState
 	runState := &runStateModel
 	if !ok {
 		runState = nil

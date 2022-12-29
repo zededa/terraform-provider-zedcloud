@@ -14,7 +14,7 @@ func VMModel(d *schema.ResourceData) *models.VM {
 	cpus := int64(cpusInt)
 	memoryInt, _ := d.Get("memory").(int)
 	memory := int64(memoryInt)
-	modeModel, _ := d.Get("mode").(models.HvMode) // HvMode
+	modeModel, ok := d.Get("mode").(models.HvMode) // HvMode
 	mode := &modeModel
 	if !ok {
 		mode = nil

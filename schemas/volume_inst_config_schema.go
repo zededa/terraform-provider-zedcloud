@@ -9,7 +9,7 @@ import (
 // (1) Translate VolumeInstConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VolumeInstConfigModel(d *schema.ResourceData) *models.VolumeInstConfig {
-	accessmodeModel, _ := d.Get("accessmode").(models.VolumeInstanceAccessMode) // VolumeInstanceAccessMode
+	accessmodeModel, ok := d.Get("accessmode").(models.VolumeInstanceAccessMode) // VolumeInstanceAccessMode
 	accessmode := &accessmodeModel
 	if !ok {
 		accessmode = nil
@@ -28,7 +28,7 @@ func VolumeInstConfigModel(d *schema.ResourceData) *models.VolumeInstConfig {
 		purge = ZedCloudOpsCmdModelFromMap(purgeMap)
 	}
 	sizeBytes, _ := d.Get("size_bytes").(uint64)
-	typeVarModel, _ := d.Get("type").(models.VolumeInstanceType) // VolumeInstanceType
+	typeVarModel, ok := d.Get("type").(models.VolumeInstanceType) // VolumeInstanceType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

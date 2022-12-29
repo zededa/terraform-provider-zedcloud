@@ -15,7 +15,7 @@ func PhysicalStorageDiskStateModel(d *schema.ResourceData) *models.PhysicalStora
 		diskMap := diskInterface.([]interface{})[0].(map[string]interface{})
 		disk = DiskDescriptionModelFromMap(diskMap)
 	}
-	statusModel, _ := d.Get("status").(models.PhysicalStorageStatus) // PhysicalStorageStatus
+	statusModel, ok := d.Get("status").(models.PhysicalStorageStatus) // PhysicalStorageStatus
 	status := &statusModel
 	if !ok {
 		status = nil

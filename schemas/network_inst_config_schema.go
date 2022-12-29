@@ -17,7 +17,7 @@ func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
 		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
 		ip = DhcpServerConfigModelFromMap(ipMap)
 	}
-	kindModel, _ := d.Get("kind").(models.NetworkInstanceKind) // NetworkInstanceKind
+	kindModel, ok := d.Get("kind").(models.NetworkInstanceKind) // NetworkInstanceKind
 	kind := &kindModel
 	if !ok {
 		kind = nil
@@ -29,9 +29,9 @@ func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
 		opaque = NetInstOpaqueConfigModelFromMap(opaqueMap)
 	}
 	port, _ := d.Get("port").(string)
-	portTags, _ := d.Get("port_tags").(map[string]string)             // map[string]string
-	tags, _ := d.Get("tags").(map[string]string)                      // map[string]string
-	typeVarModel, _ := d.Get("type").(models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
+	portTags, _ := d.Get("port_tags").(map[string]string)              // map[string]string
+	tags, _ := d.Get("tags").(map[string]string)                       // map[string]string
+	typeVarModel, ok := d.Get("type").(models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

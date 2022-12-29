@@ -19,7 +19,7 @@ func EventQueryResponseItemModel(d *schema.ResourceData) *models.EventQueryRespo
 	resource, _ := d.Get("resource").(string)
 	resourceName, _ := d.Get("resource_name").(string)
 	severity, _ := d.Get("severity").(string)
-	sourceModel, _ := d.Get("source").(models.EventSource) // EventSource
+	sourceModel, ok := d.Get("source").(models.EventSource) // EventSource
 	source := &sourceModel
 	if !ok {
 		source = nil

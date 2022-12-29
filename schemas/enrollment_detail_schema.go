@@ -9,7 +9,7 @@ import (
 // (1) Translate EnrollmentDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
-	allocationPolicyModel, _ := d.Get("allocation_policy").(models.AllocationPolicy) // AllocationPolicy
+	allocationPolicyModel, ok := d.Get("allocation_policy").(models.AllocationPolicy) // AllocationPolicy
 	allocationPolicy := &allocationPolicyModel
 	if !ok {
 		allocationPolicy = nil
@@ -17,7 +17,7 @@ func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
 	attachedIotHubsName, _ := d.Get("attached_iot_hubs_name").([]string)
 	certificateEnrollment, _ := d.Get("certificate_enrollment").(models.CertificateEnrollmentDetail) // CertificateEnrollmentDetail
 	enableIotEdgeDevice, _ := d.Get("enable_iot_edge_device").(bool)
-	mechanismModel, _ := d.Get("mechanism").(models.EnrollmentMechanism) // EnrollmentMechanism
+	mechanismModel, ok := d.Get("mechanism").(models.EnrollmentMechanism) // EnrollmentMechanism
 	mechanism := &mechanismModel
 	if !ok {
 		mechanism = nil

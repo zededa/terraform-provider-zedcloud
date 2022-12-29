@@ -37,7 +37,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		networkPolicy = PolicyConfigModelFromMap(networkPolicyMap)
 	}
 	title, _ := d.Get("title").(string)
-	typeVarModel, _ := d.Get("type").(models.TagType) // TagType
+	typeVarModel, ok := d.Get("type").(models.TagType) // TagType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

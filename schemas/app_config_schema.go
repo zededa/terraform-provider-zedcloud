@@ -27,14 +27,14 @@ func AppConfigModel(d *schema.ResourceData) *models.AppConfig {
 	name, _ := d.Get("name").(string)
 	nameAppPart, _ := d.Get("name_app_part").(string)
 	nameProjectPart, _ := d.Get("name_project_part").(string)
-	namingSchemeModel, _ := d.Get("naming_scheme").(models.AppNamingScheme) // AppNamingScheme
+	namingSchemeModel, ok := d.Get("naming_scheme").(models.AppNamingScheme) // AppNamingScheme
 	namingScheme := &namingSchemeModel
 	if !ok {
 		namingScheme = nil
 	}
 	networksInt, _ := d.Get("networks").(int)
 	networks := int64(networksInt)
-	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
 	originType := &originTypeModel
 	if !ok {
 		originType = nil

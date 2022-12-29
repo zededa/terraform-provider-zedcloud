@@ -11,7 +11,7 @@ import (
 // (1) Translate DeviceConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
-	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminStateModel, ok := d.Get("admin_state").(models.AdminState) // AdminState
 	adminState := &adminStateModel
 	if !ok {
 		adminState = nil
@@ -97,7 +97,7 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	thread := int64(threadInt)
 	title, _ := d.Get("title").(string)
 	token, _ := d.Get("token").(string)
-	utypeModel, _ := d.Get("utype").(models.ModelArchType) // ModelArchType
+	utypeModel, ok := d.Get("utype").(models.ModelArchType) // ModelArchType
 	utype := &utypeModel
 	if !ok {
 		utype = nil

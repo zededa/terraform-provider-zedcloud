@@ -11,12 +11,12 @@ import (
 func TagConfigStatusModel(d *schema.ResourceData) *models.TagConfigStatus {
 	appPolicyID, _ := d.Get("app_policy_id").(string)
 	appPolicyName, _ := d.Get("app_policy_name").(string)
-	attestPolicyTypeModel, _ := d.Get("attest_policy_type").(models.AttestPolicyType) // AttestPolicyType
+	attestPolicyTypeModel, ok := d.Get("attest_policy_type").(models.AttestPolicyType) // AttestPolicyType
 	attestPolicyType := &attestPolicyTypeModel
 	if !ok {
 		attestPolicyType = nil
 	}
-	cloudPolicyTypeModel, _ := d.Get("cloud_policy_type").(models.PolicyType) // PolicyType
+	cloudPolicyTypeModel, ok := d.Get("cloud_policy_type").(models.PolicyType) // PolicyType
 	cloudPolicyType := &cloudPolicyTypeModel
 	if !ok {
 		cloudPolicyType = nil

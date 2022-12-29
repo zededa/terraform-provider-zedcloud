@@ -10,7 +10,7 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceStatusFilterModel(d *schema.ResourceData) *models.DeviceStatusFilter {
 	deviceName, _ := d.Get("device_name").(string)
-	loadModel, _ := d.Get("load").(models.DeviceLoad) // DeviceLoad
+	loadModel, ok := d.Get("load").(models.DeviceLoad) // DeviceLoad
 	load := &loadModel
 	if !ok {
 		load = nil
@@ -18,7 +18,7 @@ func DeviceStatusFilterModel(d *schema.ResourceData) *models.DeviceStatusFilter 
 	namePattern, _ := d.Get("name_pattern").(string)
 	projectName, _ := d.Get("project_name").(string)
 	projectNamePattern, _ := d.Get("project_name_pattern").(string)
-	runStateModel, _ := d.Get("run_state").(models.RunState) // RunState
+	runStateModel, ok := d.Get("run_state").(models.RunState) // RunState
 	runState := &runStateModel
 	if !ok {
 		runState = nil

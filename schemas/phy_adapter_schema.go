@@ -10,8 +10,8 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PhyAdapterModel(d *schema.ResourceData) *models.PhyAdapter {
 	name, _ := d.Get("name").(string)
-	tags, _ := d.Get("tags").(map[string]string)     // map[string]string
-	typeVarModel, _ := d.Get("type").(models.IoType) // IoType
+	tags, _ := d.Get("tags").(map[string]string)      // map[string]string
+	typeVarModel, ok := d.Get("type").(models.IoType) // IoType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

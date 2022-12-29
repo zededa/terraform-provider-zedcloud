@@ -16,13 +16,13 @@ func IoMemberModel(d *schema.ResourceData) *models.IoMember {
 	logicallabel, _ := d.Get("logicallabel").(string)
 	phyaddrs, _ := d.Get("phyaddrs").(map[string]string) // map[string]string
 	phylabel, _ := d.Get("phylabel").(string)
-	usageModel, _ := d.Get("usage").(models.AdapterUsage) // AdapterUsage
+	usageModel, ok := d.Get("usage").(models.AdapterUsage) // AdapterUsage
 	usage := &usageModel
 	if !ok {
 		usage = nil
 	}
 	usagePolicy, _ := d.Get("usage_policy").(map[string]bool) // map[string]bool
-	ztypeModel, _ := d.Get("ztype").(models.IoType)           // IoType
+	ztypeModel, ok := d.Get("ztype").(models.IoType)          // IoType
 	ztype := &ztypeModel
 	if !ok {
 		ztype = nil

@@ -12,7 +12,7 @@ func DeviceErrorModel(d *schema.ResourceData) *models.DeviceError {
 	description, _ := d.Get("description").(string)
 	entities, _ := d.Get("entities").([]*models.DeviceEntity) // []*DeviceEntity
 	retryCondition, _ := d.Get("retry_condition").(string)
-	severityModel, _ := d.Get("severity").(models.Severity) // Severity
+	severityModel, ok := d.Get("severity").(models.Severity) // Severity
 	severity := &severityModel
 	if !ok {
 		severity = nil

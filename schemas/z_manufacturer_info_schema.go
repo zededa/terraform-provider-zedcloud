@@ -15,7 +15,7 @@ func ZManufacturerInfoModel(d *schema.ResourceData) *models.ZManufacturerInfo {
 	compatible, _ := d.Get("compatible").(string)
 	endorsementKey, _ := d.Get("endorsement_key").(string)
 	hSMInfo, _ := d.Get("h_s_m_info").(string)
-	hSMStatusModel, _ := d.Get("h_s_m_status").(models.DeviceHWSecurityModuleStatus) // DeviceHWSecurityModuleStatus
+	hSMStatusModel, ok := d.Get("h_s_m_status").(models.DeviceHWSecurityModuleStatus) // DeviceHWSecurityModuleStatus
 	hSMStatus := &hSMStatusModel
 	if !ok {
 		hSMStatus = nil

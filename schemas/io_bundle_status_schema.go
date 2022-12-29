@@ -25,7 +25,7 @@ func IoBundleStatusModel(d *schema.ResourceData) *models.IoBundleStatus {
 	memberList, _ := d.Get("member_list").([]*models.IoMemberStatus) // []*IoMemberStatus
 	members, _ := d.Get("members").([]string)
 	name, _ := d.Get("name").(string)
-	typeVarModel, _ := d.Get("type").(models.IoType) // IoType
+	typeVarModel, ok := d.Get("type").(models.IoType) // IoType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

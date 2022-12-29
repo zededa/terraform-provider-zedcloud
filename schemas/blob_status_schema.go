@@ -12,7 +12,7 @@ func BlobStatusModel(d *schema.ResourceData) *models.BlobStatus {
 	hash, _ := d.Get("hash").(string)
 	refCount, _ := d.Get("ref_count").(string)
 	sizeMB, _ := d.Get("size_m_b").(string)
-	swStateModel, _ := d.Get("sw_state").(models.SWState) // SWState
+	swStateModel, ok := d.Get("sw_state").(models.SWState) // SWState
 	swState := &swStateModel
 	if !ok {
 		swState = nil

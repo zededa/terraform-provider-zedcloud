@@ -28,7 +28,7 @@ func DeviceStatusSummaryMsgModel(d *schema.ResourceData) *models.DeviceStatusSum
 		StorageMap := StorageInterface.([]interface{})[0].(map[string]interface{})
 		storage = StorageSummaryModelFromMap(StorageMap)
 	}
-	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminStateModel, ok := d.Get("admin_state").(models.AdminState) // AdminState
 	adminState := &adminStateModel
 	if !ok {
 		adminState = nil
@@ -64,7 +64,7 @@ func DeviceStatusSummaryMsgModel(d *schema.ResourceData) *models.DeviceStatusSum
 	netStatusList, _ := d.Get("net_status_list").([]*models.NetworkStatus) // []*NetworkStatus
 	projectID, _ := d.Get("project_id").(string)
 	projectName, _ := d.Get("project_name").(string)
-	runStateModel, _ := d.Get("run_state").(models.RunState) // RunState
+	runStateModel, ok := d.Get("run_state").(models.RunState) // RunState
 	runState := &runStateModel
 	if !ok {
 		runState = nil

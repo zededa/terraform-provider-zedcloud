@@ -10,7 +10,7 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZsrvErrorModel(d *schema.ResourceData) *models.ZsrvError {
 	details, _ := d.Get("details").(string)
-	ecModel, _ := d.Get("ec").(models.ZsrvErrorCode) // ZsrvErrorCode
+	ecModel, ok := d.Get("ec").(models.ZsrvErrorCode) // ZsrvErrorCode
 	ec := &ecModel
 	if !ok {
 		ec = nil

@@ -11,7 +11,7 @@ import (
 func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	acKind, _ := d.Get("ac_kind").(string)
 	acVersion, _ := d.Get("ac_version").(string)
-	appTypeModel, _ := d.Get("app_type").(models.AppType) // AppType
+	appTypeModel, ok := d.Get("app_type").(models.AppType) // AppType
 	appType := &appTypeModel
 	if !ok {
 		appType = nil
@@ -29,7 +29,7 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 		containerDetail = ContainerDetailModelFromMap(containerDetailMap)
 	}
 	cPUPinningEnabled, _ := d.Get("cpu_pinning_enabled").(bool)
-	deploymentTypeModel, _ := d.Get("deployment_type").(models.DeploymentType) // DeploymentType
+	deploymentTypeModel, ok := d.Get("deployment_type").(models.DeploymentType) // DeploymentType
 	deploymentType := &deploymentTypeModel
 	if !ok {
 		deploymentType = nil

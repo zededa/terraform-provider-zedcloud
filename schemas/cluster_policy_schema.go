@@ -17,7 +17,7 @@ func ClusterPolicyModel(d *schema.ResourceData) *models.ClusterPolicy {
 		clusterConfig = ClusterConfigModelFromMap(clusterConfigMap)
 	}
 	networkPolicyID, _ := d.Get("network_policy_id").(string)
-	typeVarModel, _ := d.Get("type").(models.ClusterType) // ClusterType
+	typeVarModel, ok := d.Get("type").(models.ClusterType) // ClusterType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

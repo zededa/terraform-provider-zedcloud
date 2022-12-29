@@ -12,7 +12,7 @@ func PhysicalStorageModel(d *schema.ResourceData) *models.PhysicalStorage {
 	compressionRatio, _ := d.Get("compression_ratio").(float64)
 	countZvolsInt, _ := d.Get("count_zvols").(int)
 	countZvols := int64(countZvolsInt)
-	currentRaidModel, _ := d.Get("current_raid").(models.PhysicalStorageRaidType) // PhysicalStorageRaidType
+	currentRaidModel, ok := d.Get("current_raid").(models.PhysicalStorageRaidType) // PhysicalStorageRaidType
 	currentRaid := &currentRaidModel
 	if !ok {
 		currentRaid = nil
@@ -20,12 +20,12 @@ func PhysicalStorageModel(d *schema.ResourceData) *models.PhysicalStorage {
 	disks, _ := d.Get("disks").([]*models.PhysicalStorageDiskState) // []*PhysicalStorageDiskState
 	poolName, _ := d.Get("pool_name").(string)
 	poolStatusMsg, _ := d.Get("pool_status_msg").(string)
-	storageStateModel, _ := d.Get("storage_state").(models.PhysicalStorageStatus) // PhysicalStorageStatus
+	storageStateModel, ok := d.Get("storage_state").(models.PhysicalStorageStatus) // PhysicalStorageStatus
 	storageState := &storageStateModel
 	if !ok {
 		storageState = nil
 	}
-	storageTypeModel, _ := d.Get("storage_type").(models.PhysicalStorageTypeInfo) // PhysicalStorageTypeInfo
+	storageTypeModel, ok := d.Get("storage_type").(models.PhysicalStorageTypeInfo) // PhysicalStorageTypeInfo
 	storageType := &storageTypeModel
 	if !ok {
 		storageType = nil

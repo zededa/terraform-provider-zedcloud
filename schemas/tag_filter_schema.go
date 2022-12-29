@@ -10,7 +10,7 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagFilterModel(d *schema.ResourceData) *models.TagFilter {
 	namePattern, _ := d.Get("name_pattern").(string)
-	typeVarModel, _ := d.Get("type").(models.TagType) // TagType
+	typeVarModel, ok := d.Get("type").(models.TagType) // TagType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

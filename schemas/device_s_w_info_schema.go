@@ -17,7 +17,7 @@ func DeviceSWInfoModel(d *schema.ResourceData) *models.DeviceSWInfo {
 	partitionLabel, _ := d.Get("partition_label").(string)
 	partitionState, _ := d.Get("partition_state").(string)
 	shortVersion, _ := d.Get("short_version").(string)
-	statusModel, _ := d.Get("status").(models.SWState) // SWState
+	statusModel, ok := d.Get("status").(models.SWState) // SWState
 	status := &statusModel
 	if !ok {
 		status = nil
@@ -30,12 +30,12 @@ func DeviceSWInfoModel(d *schema.ResourceData) *models.DeviceSWInfo {
 		swErrorMap := swErrorInterface.([]interface{})[0].(map[string]interface{})
 		swError = DeviceErrorModelFromMap(swErrorMap)
 	}
-	swStatusModel, _ := d.Get("sw_status").(models.DeviceSWStatus) // DeviceSWStatus
+	swStatusModel, ok := d.Get("sw_status").(models.DeviceSWStatus) // DeviceSWStatus
 	swStatus := &swStatusModel
 	if !ok {
 		swStatus = nil
 	}
-	swSubStatusModel, _ := d.Get("sw_sub_status").(models.DeviceSWSubStatus) // DeviceSWSubStatus
+	swSubStatusModel, ok := d.Get("sw_sub_status").(models.DeviceSWSubStatus) // DeviceSWSubStatus
 	swSubStatus := &swSubStatusModel
 	if !ok {
 		swSubStatus = nil

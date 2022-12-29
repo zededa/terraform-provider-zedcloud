@@ -16,7 +16,7 @@ func DevDataSecAtRestModel(d *schema.ResourceData) *models.DevDataSecAtRest {
 		errInfo = DeviceErrorModelFromMap(errInfoMap)
 	}
 	name, _ := d.Get("name").(string)
-	statusModel, _ := d.Get("status").(models.DeviceDataSecurityAtRestStatus) // DeviceDataSecurityAtRestStatus
+	statusModel, ok := d.Get("status").(models.DeviceDataSecurityAtRestStatus) // DeviceDataSecurityAtRestStatus
 	status := &statusModel
 	if !ok {
 		status = nil

@@ -19,18 +19,18 @@ func ZsrvResponseModel(d *schema.ResourceData) *models.ZsrvResponse {
 	objectKind, _ := d.Get("object_kind").(string)
 	objectName, _ := d.Get("object_name").(string)
 	objectRevision, _ := d.Get("object_revision").(string)
-	objectTypeModel, _ := d.Get("object_type").(models.ObjectType) // ObjectType
+	objectTypeModel, ok := d.Get("object_type").(models.ObjectType) // ObjectType
 	objectType := &objectTypeModel
 	if !ok {
 		objectType = nil
 	}
-	operationStatusModel, _ := d.Get("operation_status").(models.ZcOpsStatus) // ZcOpsStatus
+	operationStatusModel, ok := d.Get("operation_status").(models.ZcOpsStatus) // ZcOpsStatus
 	operationStatus := &operationStatusModel
 	if !ok {
 		operationStatus = nil
 	}
 	operationTime, _ := d.Get("operation_time").(string)
-	operationTypeModel, _ := d.Get("operation_type").(models.ZcOpsType) // ZcOpsType
+	operationTypeModel, ok := d.Get("operation_type").(models.ZcOpsType) // ZcOpsType
 	operationType := &operationTypeModel
 	if !ok {
 		operationType = nil

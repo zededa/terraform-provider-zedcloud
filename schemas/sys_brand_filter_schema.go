@@ -10,7 +10,7 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysBrandFilterModel(d *schema.ResourceData) *models.SysBrandFilter {
 	namePattern, _ := d.Get("name_pattern").(string)
-	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
 	originType := &originTypeModel
 	if !ok {
 		originType = nil

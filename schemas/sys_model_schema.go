@@ -18,7 +18,7 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	isImported, _ := d.Get("is_imported").(bool)
 	logo, _ := d.Get("logo").(map[string]string) // map[string]string
 	name, _ := d.Get("name").(string)
-	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
 	originType := &originTypeModel
 	if !ok {
 		originType = nil
@@ -31,13 +31,13 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	}
 	productStatus, _ := d.Get("product_status").(string)
 	productURL, _ := d.Get("product_url").(string)
-	stateModel, _ := d.Get("state").(models.SysModelState) // SysModelState
+	stateModel, ok := d.Get("state").(models.SysModelState) // SysModelState
 	state := &stateModel
 	if !ok {
 		state = nil
 	}
 	title, _ := d.Get("title").(string)
-	typeVarModel, _ := d.Get("type").(models.ModelArchType) // ModelArchType
+	typeVarModel, ok := d.Get("type").(models.ModelArchType) // ModelArchType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil

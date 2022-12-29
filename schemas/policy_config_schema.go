@@ -57,7 +57,7 @@ func PolicyConfigModel(d *schema.ResourceData) *models.PolicyConfig {
 	}
 	statusMessage, _ := d.Get("status_message").(string)
 	title, _ := d.Get("title").(string)
-	typeVarModel, _ := d.Get("type").(models.PolicyType) // PolicyType
+	typeVarModel, ok := d.Get("type").(models.PolicyType) // PolicyType
 	typeVar := &typeVarModel
 	if !ok {
 		typeVar = nil
