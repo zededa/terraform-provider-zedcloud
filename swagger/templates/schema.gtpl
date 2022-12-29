@@ -30,11 +30,11 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 	{{- range .Properties }}
 		{{- if or (not .ReadOnly) (and (eq .Name "id") (not $isReadOnlyModel)) }}
 			{{- if .IsBase64 }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").(strfmt.Base64)
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(strfmt.Base64)
 			{{- else if and .IsInterface (not .IsAnonymous) }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").(models.{{ .GoType }}) // {{.GoType}}
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(models.{{ .GoType }}) // {{.GoType}}
 			{{- else if .IsMap }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").({{ .GoType }}) // {{.GoType}}
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").({{ .GoType }}) // {{.GoType}}
 			{{- else if .IsComplexObject }}
 	var {{ varname .Name }} *models.{{ pascalize .GoType }} // {{ .GoType }}
 	{{ .Name }}Interface, {{ .Name }}IsSet := d.GetOk("{{ snakize .Name }}")
@@ -46,35 +46,41 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 	{{ varname .Name }} := utils.GetPropertiesFromResource(d, "{{ snakize .Name }}")
 	{{ varname .Name }} := d.Get("{{ snakize .Name }}")
 			{{- else if eq .GoType "strfmt.DateTime" }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").(strfmt.DateTime)
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(strfmt.DateTime)
 			{{- else if eq .GoType "interface{}" }}
 	{{ varname .Name }} := d.Get("{{ snakize .Name }}")
 			{{- else if eq .GoType "[]float64" }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").([]float64)
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").([]float64)
 			{{- else if or (eq .GoType "int32") ( eq .GoType "int64") }}
-	{{ varname .Name }} := {{ .GoType }}(d.Get("{{ snakize .Name }}").(int))
+	{{ varname .Name }}Int, _ := d.Get("{{ snakize .Name }}").(int)
+	{{ varname .Name }} := {{ .GoType }}({{ varname .Name }}Int)
 			{{- else if and (not (eq .GoType "string")) (not (eq .GoType "[]string")) (not (eq .GoType "bool")) (not (eq .GoType "int")) (not (eq .GoType "float32")) (not (eq .GoType "float64")) (not (eq .GoType "uint32")) (not (eq .GoType "uint64")) }}
 				{{- if hasPrefix .GoType "[]*" }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").([]*models.{{ pascalize .GoType }}) // {{ .GoType }}
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").([]*models.{{ pascalize .GoType }}) // {{ .GoType }}
 				{{- else if hasPrefix .GoType "[]" }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").([]models.{{ pascalize .GoType }}) // {{ .GoType }}
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").([]models.{{ pascalize .GoType }}) // {{ .GoType }}
 				{{- else if .IsAliased }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").(*models.{{ pascalize .GoType }}) // {{ .GoType }}
+	{{ varname .Name }}Model, _ := d.Get("{{ snakize .Name }}").(models.{{ pascalize .GoType }}) // {{ .GoType }}
+	{{ varname .Name }} := &{{ varname .Name }}Model
+	if !ok {
+       {{ varname .Name }} = nil
+	}
 				{{- else }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").(models.{{ pascalize .GoType }}) // {{ .GoType }}
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(models.{{ pascalize .GoType }}) // {{ .GoType }}
 				{{- end }}
 			{{- else }}
-	{{ varname .Name }} := d.Get("{{ snakize .Name }}").({{ .GoType }})
+	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").({{ .GoType }})
 			{{- end }}
 		{{- end }}
 	{{- end }}
 
 	{{- if not .GenSchema.IsComplexObject }}
 		{{- if .GenSchema.IsAliased }}
-   {{ varname .Name }} := d.Get("{{ snakize .Name }}").(models.{{ $operationGroup }})
+   {{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(models.{{ $operationGroup }})
 	return &{{ varname .Name }}
 		{{- else }}
-	return d.Get("{{ snakize .Name }}").(models.{{ $operationGroup }})
+   {{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(models.{{ $operationGroup }})
+	return {{ varname .Name }}
 		{{- end }}
 	{{- else }}
 	return &models.{{ $operationGroup }} {
@@ -94,6 +100,7 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 	}
 	{{- end }}
 }
+
 
 func {{ $operationGroup }}ModelFromMap(m map[string]interface{}) *models.{{ $operationGroup }} {
 	{{- range .Properties }}
@@ -180,7 +187,7 @@ func Set{{ $operationGroup }}ResourceData(d *schema.ResourceData, m *models.{{ $
 	{{- end }}
 }
 
-// Iterate throught and update the {{ $operationGroup }} resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the {{ $operationGroup }} resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func Set{{ $operationGroup }}SubResourceData(m []*models.{{ $operationGroup }}) (d []*map[string]interface{}) {
 	{{- $model := camelize $operationGroup }}
 	{{- $model = print $operationGroup "Model" }}
