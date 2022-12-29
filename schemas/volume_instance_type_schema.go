@@ -9,7 +9,7 @@ import (
 // (1) Translate VolumeInstanceType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VolumeInstanceTypeModel(d *schema.ResourceData) *models.VolumeInstanceType {
-	volumeInstanceType := d.Get("volume_instance_type").(models.VolumeInstanceType)
+	volumeInstanceType, _ := d.Get("volume_instance_type").(models.VolumeInstanceType)
 	return &volumeInstanceType
 }
 
@@ -22,7 +22,7 @@ func VolumeInstanceTypeModelFromMap(m map[string]interface{}) *models.VolumeInst
 func SetVolumeInstanceTypeResourceData(d *schema.ResourceData, m *models.VolumeInstanceType) {
 }
 
-// Iterate throught and update the VolumeInstanceType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the VolumeInstanceType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVolumeInstanceTypeSubResourceData(m []*models.VolumeInstanceType) (d []*map[string]interface{}) {
 	for _, VolumeInstanceTypeModel := range m {
 		if VolumeInstanceTypeModel != nil {

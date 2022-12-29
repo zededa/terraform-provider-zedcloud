@@ -9,8 +9,8 @@ import (
 // (1) Translate SysBrands resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysBrandsModel(d *schema.ResourceData) *models.SysBrands {
-	list := d.Get("list").([]*models.SysBrand) // []*SysBrand
-	var next *models.Cursor                    // Cursor
+	list, _ := d.Get("list").([]*models.SysBrand) // []*SysBrand
+	var next *models.Cursor                       // Cursor
 	nextInterface, nextIsSet := d.GetOk("next")
 	if nextIsSet {
 		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
@@ -59,7 +59,7 @@ func SetSysBrandsResourceData(d *schema.ResourceData, m *models.SysBrands) {
 	d.Set("terse", SetSummarySubResourceData([]*models.Summary{m.Terse}))
 }
 
-// Iterate throught and update the SysBrands resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SysBrands resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysBrandsSubResourceData(m []*models.SysBrands) (d []*map[string]interface{}) {
 	for _, SysBrandsModel := range m {
 		if SysBrandsModel != nil {

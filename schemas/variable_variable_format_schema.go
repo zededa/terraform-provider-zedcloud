@@ -9,7 +9,7 @@ import (
 // (1) Translate VariableVariableFormat resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VariableVariableFormatModel(d *schema.ResourceData) *models.VariableVariableFormat {
-	variableVariableFormat := d.Get("variable_variable_format").(models.VariableVariableFormat)
+	variableVariableFormat, _ := d.Get("variable_variable_format").(models.VariableVariableFormat)
 	return &variableVariableFormat
 }
 
@@ -22,7 +22,7 @@ func VariableVariableFormatModelFromMap(m map[string]interface{}) *models.Variab
 func SetVariableVariableFormatResourceData(d *schema.ResourceData, m *models.VariableVariableFormat) {
 }
 
-// Iterate throught and update the VariableVariableFormat resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the VariableVariableFormat resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVariableVariableFormatSubResourceData(m []*models.VariableVariableFormat) (d []*map[string]interface{}) {
 	for _, VariableVariableFormatModel := range m {
 		if VariableVariableFormatModel != nil {

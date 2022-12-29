@@ -9,9 +9,9 @@ import (
 // (1) Translate StorageSummary resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func StorageSummaryModel(d *schema.ResourceData) *models.StorageSummary {
-	allocatedMB := d.Get("allocated_m_b").(float64)
-	totalMB := d.Get("total_m_b").(float64)
-	usedMB := d.Get("used_m_b").(float64)
+	allocatedMB, _ := d.Get("allocated_m_b").(float64)
+	totalMB, _ := d.Get("total_m_b").(float64)
+	usedMB, _ := d.Get("used_m_b").(float64)
 	return &models.StorageSummary{
 		AllocatedMB: allocatedMB,
 		TotalMB:     totalMB,
@@ -37,7 +37,7 @@ func SetStorageSummaryResourceData(d *schema.ResourceData, m *models.StorageSumm
 	d.Set("used_m_b", m.UsedMB)
 }
 
-// Iterate throught and update the StorageSummary resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the StorageSummary resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetStorageSummarySubResourceData(m []*models.StorageSummary) (d []*map[string]interface{}) {
 	for _, StorageSummaryModel := range m {
 		if StorageSummaryModel != nil {

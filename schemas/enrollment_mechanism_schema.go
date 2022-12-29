@@ -9,7 +9,7 @@ import (
 // (1) Translate EnrollmentMechanism resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EnrollmentMechanismModel(d *schema.ResourceData) *models.EnrollmentMechanism {
-	enrollmentMechanism := d.Get("enrollment_mechanism").(models.EnrollmentMechanism)
+	enrollmentMechanism, _ := d.Get("enrollment_mechanism").(models.EnrollmentMechanism)
 	return &enrollmentMechanism
 }
 
@@ -22,7 +22,7 @@ func EnrollmentMechanismModelFromMap(m map[string]interface{}) *models.Enrollmen
 func SetEnrollmentMechanismResourceData(d *schema.ResourceData, m *models.EnrollmentMechanism) {
 }
 
-// Iterate throught and update the EnrollmentMechanism resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the EnrollmentMechanism resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEnrollmentMechanismSubResourceData(m []*models.EnrollmentMechanism) (d []*map[string]interface{}) {
 	for _, EnrollmentMechanismModel := range m {
 		if EnrollmentMechanismModel != nil {

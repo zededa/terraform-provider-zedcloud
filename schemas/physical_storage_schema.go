@@ -9,16 +9,29 @@ import (
 // (1) Translate PhysicalStorage resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PhysicalStorageModel(d *schema.ResourceData) *models.PhysicalStorage {
-	compressionRatio := d.Get("compression_ratio").(float64)
-	countZvols := int64(d.Get("count_zvols").(int))
-	currentRaid := d.Get("current_raid").(*models.PhysicalStorageRaidType) // PhysicalStorageRaidType
-	disks := d.Get("disks").([]*models.PhysicalStorageDiskState)           // []*PhysicalStorageDiskState
-	poolName := d.Get("pool_name").(string)
-	poolStatusMsg := d.Get("pool_status_msg").(string)
-	storageState := d.Get("storage_state").(*models.PhysicalStorageStatus) // PhysicalStorageStatus
-	storageType := d.Get("storage_type").(*models.PhysicalStorageTypeInfo) // PhysicalStorageTypeInfo
-	zfsVersion := d.Get("zfs_version").(string)
-	zpoolSize := d.Get("zpool_size").(string)
+	compressionRatio, _ := d.Get("compression_ratio").(float64)
+	countZvolsInt, _ := d.Get("count_zvols").(int)
+	countZvols := int64(countZvolsInt)
+	currentRaidModel, _ := d.Get("current_raid").(models.PhysicalStorageRaidType) // PhysicalStorageRaidType
+	currentRaid := &currentRaidModel
+	if !ok {
+		currentRaid = nil
+	}
+	disks, _ := d.Get("disks").([]*models.PhysicalStorageDiskState) // []*PhysicalStorageDiskState
+	poolName, _ := d.Get("pool_name").(string)
+	poolStatusMsg, _ := d.Get("pool_status_msg").(string)
+	storageStateModel, _ := d.Get("storage_state").(models.PhysicalStorageStatus) // PhysicalStorageStatus
+	storageState := &storageStateModel
+	if !ok {
+		storageState = nil
+	}
+	storageTypeModel, _ := d.Get("storage_type").(models.PhysicalStorageTypeInfo) // PhysicalStorageTypeInfo
+	storageType := &storageTypeModel
+	if !ok {
+		storageType = nil
+	}
+	zfsVersion, _ := d.Get("zfs_version").(string)
+	zpoolSize, _ := d.Get("zpool_size").(string)
 	return &models.PhysicalStorage{
 		CompressionRatio: compressionRatio,
 		CountZvols:       countZvols,
@@ -72,7 +85,7 @@ func SetPhysicalStorageResourceData(d *schema.ResourceData, m *models.PhysicalSt
 	d.Set("zpool_size", m.ZpoolSize)
 }
 
-// Iterate throught and update the PhysicalStorage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the PhysicalStorage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPhysicalStorageSubResourceData(m []*models.PhysicalStorage) (d []*map[string]interface{}) {
 	for _, PhysicalStorageModel := range m {
 		if PhysicalStorageModel != nil {

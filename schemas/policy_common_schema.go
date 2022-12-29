@@ -9,17 +9,17 @@ import (
 // (1) Translate PolicyCommon resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PolicyCommonModel(d *schema.ResourceData) *models.PolicyCommon {
-	id := d.Get("id").(string)
-	name := d.Get("name").(string)
-	policyTargetCondition := d.Get("policy_target_condition").(map[string]string) // map[string]string
-	var revision *models.ObjectRevision                                           // ObjectRevision
+	id, _ := d.Get("id").(string)
+	name, _ := d.Get("name").(string)
+	policyTargetCondition, _ := d.Get("policy_target_condition").(map[string]string) // map[string]string
+	var revision *models.ObjectRevision                                              // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
 	if revisionIsSet {
 		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
 		revision = ObjectRevisionModelFromMap(revisionMap)
 	}
-	tags := d.Get("tags").(map[string]string) // map[string]string
-	title := d.Get("title").(string)
+	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	title, _ := d.Get("title").(string)
 	return &models.PolicyCommon{
 		ID:                    id,
 		Name:                  name,
@@ -63,7 +63,7 @@ func SetPolicyCommonResourceData(d *schema.ResourceData, m *models.PolicyCommon)
 	d.Set("title", m.Title)
 }
 
-// Iterate throught and update the PolicyCommon resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the PolicyCommon resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPolicyCommonSubResourceData(m []*models.PolicyCommon) (d []*map[string]interface{}) {
 	for _, PolicyCommonModel := range m {
 		if PolicyCommonModel != nil {

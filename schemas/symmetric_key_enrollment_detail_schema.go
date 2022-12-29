@@ -21,7 +21,11 @@ func SymmetricKeyEnrollmentDetailModel(d *schema.ResourceData) *models.Symmetric
 		individualSymmetricKeyEnrollmentMap := individualSymmetricKeyEnrollmentInterface.([]interface{})[0].(map[string]interface{})
 		individualSymmetricKeyEnrollment = IndividualSymmetricKeyEnrollmentModelFromMap(individualSymmetricKeyEnrollmentMap)
 	}
-	typeVar := d.Get("type").(*models.EnrollmentType) // EnrollmentType
+	typeVarModel, _ := d.Get("type").(models.EnrollmentType) // EnrollmentType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.SymmetricKeyEnrollmentDetail{
 		GroupSymmetricKeyEnrollment:      groupSymmetricKeyEnrollment,
 		IndividualSymmetricKeyEnrollment: individualSymmetricKeyEnrollment,
@@ -59,7 +63,7 @@ func SetSymmetricKeyEnrollmentDetailResourceData(d *schema.ResourceData, m *mode
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the SymmetricKeyEnrollmentDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SymmetricKeyEnrollmentDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSymmetricKeyEnrollmentDetailSubResourceData(m []*models.SymmetricKeyEnrollmentDetail) (d []*map[string]interface{}) {
 	for _, SymmetricKeyEnrollmentDetailModel := range m {
 		if SymmetricKeyEnrollmentDetailModel != nil {

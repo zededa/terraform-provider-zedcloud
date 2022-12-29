@@ -9,26 +9,34 @@ import (
 // (1) Translate DeviceConfigSummary resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceConfigSummaryModel(d *schema.ResourceData) *models.DeviceConfigSummary {
-	adminState := d.Get("admin_state").(*models.AdminState)  // AdminState
-	baseImage := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
-	clusterID := d.Get("cluster_id").(string)
+	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminState := &adminStateModel
+	if !ok {
+		adminState = nil
+	}
+	baseImage, _ := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
+	clusterID, _ := d.Get("cluster_id").(string)
 	var debugKnob *models.DebugKnobDetail // DebugKnobDetail
 	debugKnobInterface, debugKnobIsSet := d.GetOk("debug_knob")
 	if debugKnobIsSet {
 		debugKnobMap := debugKnobInterface.([]interface{})[0].(map[string]interface{})
 		debugKnob = DebugKnobDetailModelFromMap(debugKnobMap)
 	}
-	deploymentTag := d.Get("deployment_tag").(string)
-	description := d.Get("description").(string)
-	id := d.Get("id").(string)
-	interfaces := d.Get("interfaces").([]*models.SysInterface) // []*SysInterface
-	modelID := d.Get("model_id").(string)
-	name := d.Get("name").(string)
-	projectID := d.Get("project_id").(string)
-	serialno := d.Get("serialno").(string)
-	tags := d.Get("tags").(map[string]string) // map[string]string
-	title := d.Get("title").(string)
-	utype := d.Get("utype").(*models.ModelArchType) // ModelArchType
+	deploymentTag, _ := d.Get("deployment_tag").(string)
+	description, _ := d.Get("description").(string)
+	id, _ := d.Get("id").(string)
+	interfaces, _ := d.Get("interfaces").([]*models.SysInterface) // []*SysInterface
+	modelID, _ := d.Get("model_id").(string)
+	name, _ := d.Get("name").(string)
+	projectID, _ := d.Get("project_id").(string)
+	serialno, _ := d.Get("serialno").(string)
+	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	title, _ := d.Get("title").(string)
+	utypeModel, _ := d.Get("utype").(models.ModelArchType) // ModelArchType
+	utype := &utypeModel
+	if !ok {
+		utype = nil
+	}
 	return &models.DeviceConfigSummary{
 		AdminState:    adminState,
 		BaseImage:     baseImage,
@@ -108,7 +116,7 @@ func SetDeviceConfigSummaryResourceData(d *schema.ResourceData, m *models.Device
 	d.Set("utype", m.Utype)
 }
 
-// Iterate throught and update the DeviceConfigSummary resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceConfigSummary resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceConfigSummarySubResourceData(m []*models.DeviceConfigSummary) (d []*map[string]interface{}) {
 	for _, DeviceConfigSummaryModel := range m {
 		if DeviceConfigSummaryModel != nil {

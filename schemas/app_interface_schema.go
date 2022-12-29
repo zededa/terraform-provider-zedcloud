@@ -9,31 +9,33 @@ import (
 // (1) Translate AppInterface resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppInterfaceModel(d *schema.ResourceData) *models.AppInterface {
-	accessVlanID := int64(d.Get("access_vlan_id").(int))
-	acls := d.Get("acls").([]*models.AppACE) // []*AppACE
-	defaultNetInstance := d.Get("default_net_instance").(bool)
-	directattach := d.Get("directattach").(bool)
+	accessVlanIDInt, _ := d.Get("access_vlan_id").(int)
+	accessVlanID := int64(accessVlanIDInt)
+	acls, _ := d.Get("acls").([]*models.AppACE) // []*AppACE
+	defaultNetInstance, _ := d.Get("default_net_instance").(bool)
+	directattach, _ := d.Get("directattach").(bool)
 	var eidregister *models.EIDRegister // EIDRegister
 	eidregisterInterface, eidregisterIsSet := d.GetOk("eidregister")
 	if eidregisterIsSet {
 		eidregisterMap := eidregisterInterface.([]interface{})[0].(map[string]interface{})
 		eidregister = EIDRegisterModelFromMap(eidregisterMap)
 	}
-	intfname := d.Get("intfname").(string)
-	intforder := int64(d.Get("intforder").(int))
+	intfname, _ := d.Get("intfname").(string)
+	intforderInt, _ := d.Get("intforder").(int)
+	intforder := int64(intforderInt)
 	var io *models.PhyAdapter // PhyAdapter
 	ioInterface, ioIsSet := d.GetOk("io")
 	if ioIsSet {
 		ioMap := ioInterface.([]interface{})[0].(map[string]interface{})
 		io = PhyAdapterModelFromMap(ioMap)
 	}
-	ipaddr := d.Get("ipaddr").(string)
-	macaddr := d.Get("macaddr").(string)
-	netinstid := d.Get("netinstid").(string)
-	netinstname := d.Get("netinstname").(string)
-	netinsttag := d.Get("netinsttag").(map[string]string) // map[string]string
-	netname := d.Get("netname").(string)
-	privateip := d.Get("privateip").(string)
+	ipaddr, _ := d.Get("ipaddr").(string)
+	macaddr, _ := d.Get("macaddr").(string)
+	netinstid, _ := d.Get("netinstid").(string)
+	netinstname, _ := d.Get("netinstname").(string)
+	netinsttag, _ := d.Get("netinsttag").(map[string]string) // map[string]string
+	netname, _ := d.Get("netname").(string)
+	privateip, _ := d.Get("privateip").(string)
 	return &models.AppInterface{
 		AccessVlanID:       accessVlanID,
 		Acls:               acls,
@@ -119,7 +121,7 @@ func SetAppInterfaceResourceData(d *schema.ResourceData, m *models.AppInterface)
 	d.Set("privateip", m.Privateip)
 }
 
-// Iterate throught and update the AppInterface resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppInterface resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppInterfaceSubResourceData(m []*models.AppInterface) (d []*map[string]interface{}) {
 	for _, AppInterfaceModel := range m {
 		if AppInterfaceModel != nil {

@@ -9,7 +9,7 @@ import (
 // (1) Translate AppNamingSchemeV2 resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppNamingSchemeV2Model(d *schema.ResourceData) *models.AppNamingSchemeV2 {
-	appNamingSchemeV2 := d.Get("app_naming_scheme_v2").(models.AppNamingSchemeV2)
+	appNamingSchemeV2, _ := d.Get("app_naming_scheme_v2").(models.AppNamingSchemeV2)
 	return &appNamingSchemeV2
 }
 
@@ -22,7 +22,7 @@ func AppNamingSchemeV2ModelFromMap(m map[string]interface{}) *models.AppNamingSc
 func SetAppNamingSchemeV2ResourceData(d *schema.ResourceData, m *models.AppNamingSchemeV2) {
 }
 
-// Iterate throught and update the AppNamingSchemeV2 resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppNamingSchemeV2 resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppNamingSchemeV2SubResourceData(m []*models.AppNamingSchemeV2) (d []*map[string]interface{}) {
 	for _, AppNamingSchemeV2Model := range m {
 		if AppNamingSchemeV2Model != nil {

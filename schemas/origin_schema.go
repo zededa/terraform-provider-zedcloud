@@ -9,7 +9,7 @@ import (
 // (1) Translate Origin resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func OriginModel(d *schema.ResourceData) *models.Origin {
-	origin := d.Get("origin").(models.Origin)
+	origin, _ := d.Get("origin").(models.Origin)
 	return &origin
 }
 
@@ -22,7 +22,7 @@ func OriginModelFromMap(m map[string]interface{}) *models.Origin {
 func SetOriginResourceData(d *schema.ResourceData, m *models.Origin) {
 }
 
-// Iterate throught and update the Origin resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Origin resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetOriginSubResourceData(m []*models.Origin) (d []*map[string]interface{}) {
 	for _, OriginModel := range m {
 		if OriginModel != nil {

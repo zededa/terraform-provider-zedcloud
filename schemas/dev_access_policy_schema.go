@@ -9,7 +9,7 @@ import (
 // (1) Translate DevAccessPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DevAccessPolicyModel(d *schema.ResourceData) *models.DevAccessPolicy {
-	allowDev := d.Get("allow_dev").(bool)
+	allowDev, _ := d.Get("allow_dev").(bool)
 	return &models.DevAccessPolicy{
 		AllowDev: allowDev,
 	}
@@ -27,7 +27,7 @@ func SetDevAccessPolicyResourceData(d *schema.ResourceData, m *models.DevAccessP
 	d.Set("allow_dev", m.AllowDev)
 }
 
-// Iterate throught and update the DevAccessPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DevAccessPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDevAccessPolicySubResourceData(m []*models.DevAccessPolicy) (d []*map[string]interface{}) {
 	for _, DevAccessPolicyModel := range m {
 		if DevAccessPolicyModel != nil {

@@ -9,7 +9,7 @@ import (
 // (1) Translate AppPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppPolicyModel(d *schema.ResourceData) *models.AppPolicy {
-	apps := d.Get("apps").([]*models.AppConfig) // []*AppConfig
+	apps, _ := d.Get("apps").([]*models.AppConfig) // []*AppConfig
 	return &models.AppPolicy{
 		Apps: apps,
 	}
@@ -27,7 +27,7 @@ func SetAppPolicyResourceData(d *schema.ResourceData, m *models.AppPolicy) {
 	d.Set("apps", SetAppConfigSubResourceData(m.Apps))
 }
 
-// Iterate throught and update the AppPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppPolicySubResourceData(m []*models.AppPolicy) (d []*map[string]interface{}) {
 	for _, AppPolicyModel := range m {
 		if AppPolicyModel != nil {

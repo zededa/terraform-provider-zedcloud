@@ -27,14 +27,15 @@ func EdgeviewCfgModel(d *schema.ResourceData) *models.EdgeviewCfg {
 		extPolicyMap := extPolicyInterface.([]interface{})[0].(map[string]interface{})
 		extPolicy = ExtAccessPolicyModelFromMap(extPolicyMap)
 	}
-	generationID := int64(d.Get("generation_id").(int))
+	generationIDInt, _ := d.Get("generation_id").(int)
+	generationID := int64(generationIDInt)
 	var jwtInfo *models.JWTInfo // JWTInfo
 	jwtInfoInterface, jwtInfoIsSet := d.GetOk("jwt_info")
 	if jwtInfoIsSet {
 		jwtInfoMap := jwtInfoInterface.([]interface{})[0].(map[string]interface{})
 		jwtInfo = JWTInfoModelFromMap(jwtInfoMap)
 	}
-	token := d.Get("token").(string)
+	token, _ := d.Get("token").(string)
 	return &models.EdgeviewCfg{
 		AppPolicy:    appPolicy,
 		DevPolicy:    devPolicy,
@@ -96,7 +97,7 @@ func SetEdgeviewCfgResourceData(d *schema.ResourceData, m *models.EdgeviewCfg) {
 	d.Set("token", m.Token)
 }
 
-// Iterate throught and update the EdgeviewCfg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the EdgeviewCfg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEdgeviewCfgSubResourceData(m []*models.EdgeviewCfg) (d []*map[string]interface{}) {
 	for _, EdgeviewCfgModel := range m {
 		if EdgeviewCfgModel != nil {

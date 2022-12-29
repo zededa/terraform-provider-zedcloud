@@ -9,7 +9,7 @@ import (
 // (1) Translate IoAddresses resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IoAddressesModel(d *schema.ResourceData) *models.IoAddresses {
-	macAddress := d.Get("mac_address").(string)
+	macAddress, _ := d.Get("mac_address").(string)
 	return &models.IoAddresses{
 		MacAddress: macAddress,
 	}
@@ -27,7 +27,7 @@ func SetIoAddressesResourceData(d *schema.ResourceData, m *models.IoAddresses) {
 	d.Set("mac_address", m.MacAddress)
 }
 
-// Iterate throught and update the IoAddresses resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the IoAddresses resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIoAddressesSubResourceData(m []*models.IoAddresses) (d []*map[string]interface{}) {
 	for _, IoAddressesModel := range m {
 		if IoAddressesModel != nil {

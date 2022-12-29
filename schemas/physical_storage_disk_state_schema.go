@@ -15,7 +15,11 @@ func PhysicalStorageDiskStateModel(d *schema.ResourceData) *models.PhysicalStora
 		diskMap := diskInterface.([]interface{})[0].(map[string]interface{})
 		disk = DiskDescriptionModelFromMap(diskMap)
 	}
-	status := d.Get("status").(*models.PhysicalStorageStatus) // PhysicalStorageStatus
+	statusModel, _ := d.Get("status").(models.PhysicalStorageStatus) // PhysicalStorageStatus
+	status := &statusModel
+	if !ok {
+		status = nil
+	}
 	return &models.PhysicalStorageDiskState{
 		Disk:   disk,
 		Status: status,
@@ -43,7 +47,7 @@ func SetPhysicalStorageDiskStateResourceData(d *schema.ResourceData, m *models.P
 	d.Set("status", m.Status)
 }
 
-// Iterate throught and update the PhysicalStorageDiskState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the PhysicalStorageDiskState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPhysicalStorageDiskStateSubResourceData(m []*models.PhysicalStorageDiskState) (d []*map[string]interface{}) {
 	for _, PhysicalStorageDiskStateModel := range m {
 		if PhysicalStorageDiskStateModel != nil {

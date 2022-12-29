@@ -9,8 +9,8 @@ import (
 // (1) Translate AzurePolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AzurePolicyModel(d *schema.ResourceData) *models.AzurePolicy {
-	appID := d.Get("app_id").(string)
-	appPassword := d.Get("app_password").(string)
+	appID, _ := d.Get("app_id").(string)
+	appPassword, _ := d.Get("app_password").(string)
 	var azureResourceAndServices *models.AzureResourceAndServices // AzureResourceAndServices
 	azureResourceAndServicesInterface, azureResourceAndServicesIsSet := d.GetOk("azure_resource_and_services")
 	if azureResourceAndServicesIsSet {
@@ -23,10 +23,10 @@ func AzurePolicyModel(d *schema.ResourceData) *models.AzurePolicy {
 		certificateMap := certificateInterface.([]interface{})[0].(map[string]interface{})
 		certificate = CertificateModelFromMap(certificateMap)
 	}
-	cryptoKey := d.Get("crypto_key").(string)
-	customDeploymentManaged := d.Get("custom_deployment_managed").(bool)
-	encryptedSecrets := d.Get("encrypted_secrets").(map[string]string) // map[string]string
-	tenantID := d.Get("tenant_id").(string)
+	cryptoKey, _ := d.Get("crypto_key").(string)
+	customDeploymentManaged, _ := d.Get("custom_deployment_managed").(bool)
+	encryptedSecrets, _ := d.Get("encrypted_secrets").(map[string]string) // map[string]string
+	tenantID, _ := d.Get("tenant_id").(string)
 	return &models.AzurePolicy{
 		AppID:                    &appID,       // string true false false
 		AppPassword:              &appPassword, // string true false false
@@ -84,7 +84,7 @@ func SetAzurePolicyResourceData(d *schema.ResourceData, m *models.AzurePolicy) {
 	d.Set("tenant_id", m.TenantID)
 }
 
-// Iterate throught and update the AzurePolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AzurePolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAzurePolicySubResourceData(m []*models.AzurePolicy) (d []*map[string]interface{}) {
 	for _, AzurePolicyModel := range m {
 		if AzurePolicyModel != nil {

@@ -9,9 +9,9 @@ import (
 // (1) Translate SKUDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SKUDetailModel(d *schema.ResourceData) *models.SKUDetail {
-	capacity := d.Get("capacity").(string)
-	name := d.Get("name").(string)
-	tier := d.Get("tier").(string)
+	capacity, _ := d.Get("capacity").(string)
+	name, _ := d.Get("name").(string)
+	tier, _ := d.Get("tier").(string)
 	return &models.SKUDetail{
 		Capacity: capacity,
 		Name:     name,
@@ -37,7 +37,7 @@ func SetSKUDetailResourceData(d *schema.ResourceData, m *models.SKUDetail) {
 	d.Set("tier", m.Tier)
 }
 
-// Iterate throught and update the SKUDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SKUDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSKUDetailSubResourceData(m []*models.SKUDetail) (d []*map[string]interface{}) {
 	for _, SKUDetailModel := range m {
 		if SKUDetailModel != nil {

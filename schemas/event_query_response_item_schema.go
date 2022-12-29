@@ -9,20 +9,24 @@ import (
 // (1) Translate EventQueryResponseItem resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EventQueryResponseItemModel(d *schema.ResourceData) *models.EventQueryResponseItem {
-	clusterInstance := d.Get("cluster_instance").(string)
-	description := d.Get("description").(string)
-	device := d.Get("device").(string)
-	eventType := d.Get("event_type").(string)
-	instance := d.Get("instance").(string)
-	jSONData := d.Get("json_data").(interface{}) // interface{}
-	project := d.Get("project").(string)
-	resource := d.Get("resource").(string)
-	resourceName := d.Get("resource_name").(string)
-	severity := d.Get("severity").(string)
-	source := d.Get("source").(*models.EventSource) // EventSource
-	tags := d.Get("tags").([]string)
-	timestamp := d.Get("timestamp").(interface{}) // interface{}
-	user := d.Get("user").(string)
+	clusterInstance, _ := d.Get("cluster_instance").(string)
+	description, _ := d.Get("description").(string)
+	device, _ := d.Get("device").(string)
+	eventType, _ := d.Get("event_type").(string)
+	instance, _ := d.Get("instance").(string)
+	jSONData, _ := d.Get("json_data").(interface{}) // interface{}
+	project, _ := d.Get("project").(string)
+	resource, _ := d.Get("resource").(string)
+	resourceName, _ := d.Get("resource_name").(string)
+	severity, _ := d.Get("severity").(string)
+	sourceModel, _ := d.Get("source").(models.EventSource) // EventSource
+	source := &sourceModel
+	if !ok {
+		source = nil
+	}
+	tags, _ := d.Get("tags").([]string)
+	timestamp, _ := d.Get("timestamp").(interface{}) // interface{}
+	user, _ := d.Get("user").(string)
 	return &models.EventQueryResponseItem{
 		ClusterInstance: clusterInstance,
 		Description:     description,
@@ -92,7 +96,7 @@ func SetEventQueryResponseItemResourceData(d *schema.ResourceData, m *models.Eve
 	d.Set("user", m.User)
 }
 
-// Iterate throught and update the EventQueryResponseItem resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the EventQueryResponseItem resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEventQueryResponseItemSubResourceData(m []*models.EventQueryResponseItem) (d []*map[string]interface{}) {
 	for _, EventQueryResponseItemModel := range m {
 		if EventQueryResponseItemModel != nil {

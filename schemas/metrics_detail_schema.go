@@ -9,8 +9,8 @@ import (
 // (1) Translate MetricsDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func MetricsDetailModel(d *schema.ResourceData) *models.MetricsDetail {
-	queries := d.Get("queries").(map[string]string) // map[string]string
-	results := d.Get("results").(map[string]string) // map[string]string
+	queries, _ := d.Get("queries").(map[string]string) // map[string]string
+	results, _ := d.Get("results").(map[string]string) // map[string]string
 	return &models.MetricsDetail{
 		Queries: queries,
 		Results: results,
@@ -32,7 +32,7 @@ func SetMetricsDetailResourceData(d *schema.ResourceData, m *models.MetricsDetai
 	d.Set("results", m.Results)
 }
 
-// Iterate throught and update the MetricsDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the MetricsDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetMetricsDetailSubResourceData(m []*models.MetricsDetail) (d []*map[string]interface{}) {
 	for _, MetricsDetailModel := range m {
 		if MetricsDetailModel != nil {

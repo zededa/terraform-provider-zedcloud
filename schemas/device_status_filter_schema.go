@@ -9,13 +9,21 @@ import (
 // (1) Translate DeviceStatusFilter resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceStatusFilterModel(d *schema.ResourceData) *models.DeviceStatusFilter {
-	deviceName := d.Get("device_name").(string)
-	load := d.Get("load").(*models.DeviceLoad) // DeviceLoad
-	namePattern := d.Get("name_pattern").(string)
-	projectName := d.Get("project_name").(string)
-	projectNamePattern := d.Get("project_name_pattern").(string)
-	runState := d.Get("run_state").(*models.RunState) // RunState
-	tags := d.Get("tags").(map[string]string)         // map[string]string
+	deviceName, _ := d.Get("device_name").(string)
+	loadModel, _ := d.Get("load").(models.DeviceLoad) // DeviceLoad
+	load := &loadModel
+	if !ok {
+		load = nil
+	}
+	namePattern, _ := d.Get("name_pattern").(string)
+	projectName, _ := d.Get("project_name").(string)
+	projectNamePattern, _ := d.Get("project_name_pattern").(string)
+	runStateModel, _ := d.Get("run_state").(models.RunState) // RunState
+	runState := &runStateModel
+	if !ok {
+		runState = nil
+	}
+	tags, _ := d.Get("tags").(map[string]string) // map[string]string
 	return &models.DeviceStatusFilter{
 		DeviceName:         deviceName,
 		Load:               load,
@@ -57,7 +65,7 @@ func SetDeviceStatusFilterResourceData(d *schema.ResourceData, m *models.DeviceS
 	d.Set("tags", m.Tags)
 }
 
-// Iterate throught and update the DeviceStatusFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceStatusFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceStatusFilterSubResourceData(m []*models.DeviceStatusFilter) (d []*map[string]interface{}) {
 	for _, DeviceStatusFilterModel := range m {
 		if DeviceStatusFilterModel != nil {

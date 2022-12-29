@@ -9,7 +9,7 @@ import (
 // (1) Translate ZsrvErrorCode resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZsrvErrorCodeModel(d *schema.ResourceData) *models.ZsrvErrorCode {
-	zsrvErrorCode := d.Get("zsrv_error_code").(models.ZsrvErrorCode)
+	zsrvErrorCode, _ := d.Get("zsrv_error_code").(models.ZsrvErrorCode)
 	return &zsrvErrorCode
 }
 
@@ -22,7 +22,7 @@ func ZsrvErrorCodeModelFromMap(m map[string]interface{}) *models.ZsrvErrorCode {
 func SetZsrvErrorCodeResourceData(d *schema.ResourceData, m *models.ZsrvErrorCode) {
 }
 
-// Iterate throught and update the ZsrvErrorCode resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ZsrvErrorCode resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetZsrvErrorCodeSubResourceData(m []*models.ZsrvErrorCode) (d []*map[string]interface{}) {
 	for _, ZsrvErrorCodeModel := range m {
 		if ZsrvErrorCodeModel != nil {

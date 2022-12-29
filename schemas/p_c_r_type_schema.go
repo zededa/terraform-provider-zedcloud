@@ -9,7 +9,7 @@ import (
 // (1) Translate PCRType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PCRTypeModel(d *schema.ResourceData) *models.PCRType {
-	pCRType := d.Get("p_c_r_type").(models.PCRType)
+	pCRType, _ := d.Get("p_c_r_type").(models.PCRType)
 	return &pCRType
 }
 
@@ -22,7 +22,7 @@ func PCRTypeModelFromMap(m map[string]interface{}) *models.PCRType {
 func SetPCRTypeResourceData(d *schema.ResourceData, m *models.PCRType) {
 }
 
-// Iterate throught and update the PCRType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the PCRType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPCRTypeSubResourceData(m []*models.PCRType) (d []*map[string]interface{}) {
 	for _, PCRTypeModel := range m {
 		if PCRTypeModel != nil {

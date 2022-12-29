@@ -11,8 +11,8 @@ import (
 // (1) Translate DeviceCerts resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceCertsModel(d *schema.ResourceData) *models.DeviceCerts {
-	pemCert := d.Get("pem_cert").(strfmt.Base64)
-	pemKey := d.Get("pem_key").(strfmt.Base64)
+	pemCert, _ := d.Get("pem_cert").(strfmt.Base64)
+	pemKey, _ := d.Get("pem_key").(strfmt.Base64)
 	return &models.DeviceCerts{
 		PemCert: pemCert,
 		PemKey:  pemKey,
@@ -34,7 +34,7 @@ func SetDeviceCertsResourceData(d *schema.ResourceData, m *models.DeviceCerts) {
 	d.Set("pem_key", m.PemKey)
 }
 
-// Iterate throught and update the DeviceCerts resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceCerts resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceCertsSubResourceData(m []*models.DeviceCerts) (d []*map[string]interface{}) {
 	for _, DeviceCertsModel := range m {
 		if DeviceCertsModel != nil {

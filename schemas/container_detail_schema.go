@@ -9,7 +9,7 @@ import (
 // (1) Translate ContainerDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ContainerDetailModel(d *schema.ResourceData) *models.ContainerDetail {
-	containerCreateOption := d.Get("container_create_option").(string)
+	containerCreateOption, _ := d.Get("container_create_option").(string)
 	return &models.ContainerDetail{
 		ContainerCreateOption: containerCreateOption,
 	}
@@ -27,7 +27,7 @@ func SetContainerDetailResourceData(d *schema.ResourceData, m *models.ContainerD
 	d.Set("container_create_option", m.ContainerCreateOption)
 }
 
-// Iterate throught and update the ContainerDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ContainerDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetContainerDetailSubResourceData(m []*models.ContainerDetail) (d []*map[string]interface{}) {
 	for _, ContainerDetailModel := range m {
 		if ContainerDetailModel != nil {

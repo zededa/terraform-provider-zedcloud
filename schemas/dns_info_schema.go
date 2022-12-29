@@ -9,9 +9,9 @@ import (
 // (1) Translate DNSInfo resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DNSInfoModel(d *schema.ResourceData) *models.DNSInfo {
-	domain := d.Get("domain").(string)
-	search := d.Get("search").([]string)
-	servers := d.Get("servers").([]string)
+	domain, _ := d.Get("domain").(string)
+	search, _ := d.Get("search").([]string)
+	servers, _ := d.Get("servers").([]string)
 	return &models.DNSInfo{
 		Domain:  &domain, // string true false false
 		Search:  search,
@@ -37,7 +37,7 @@ func SetDNSInfoResourceData(d *schema.ResourceData, m *models.DNSInfo) {
 	d.Set("servers", m.Servers)
 }
 
-// Iterate throught and update the DNSInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DNSInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDNSInfoSubResourceData(m []*models.DNSInfo) (d []*map[string]interface{}) {
 	for _, DNSInfoModel := range m {
 		if DNSInfoModel != nil {

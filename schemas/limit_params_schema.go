@@ -9,9 +9,11 @@ import (
 // (1) Translate LimitParams resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func LimitParamsModel(d *schema.ResourceData) *models.LimitParams {
-	limitburst := int64(d.Get("limitburst").(int))
-	limitrate := int64(d.Get("limitrate").(int))
-	limitunit := d.Get("limitunit").(string)
+	limitburstInt, _ := d.Get("limitburst").(int)
+	limitburst := int64(limitburstInt)
+	limitrateInt, _ := d.Get("limitrate").(int)
+	limitrate := int64(limitrateInt)
+	limitunit, _ := d.Get("limitunit").(string)
 	return &models.LimitParams{
 		Limitburst: limitburst,
 		Limitrate:  limitrate,
@@ -37,7 +39,7 @@ func SetLimitParamsResourceData(d *schema.ResourceData, m *models.LimitParams) {
 	d.Set("limitunit", m.Limitunit)
 }
 
-// Iterate throught and update the LimitParams resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the LimitParams resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetLimitParamsSubResourceData(m []*models.LimitParams) (d []*map[string]interface{}) {
 	for _, LimitParamsModel := range m {
 		if LimitParamsModel != nil {

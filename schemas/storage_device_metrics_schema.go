@@ -9,9 +9,12 @@ import (
 // (1) Translate StorageDeviceMetrics resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func StorageDeviceMetricsModel(d *schema.ResourceData) *models.StorageDeviceMetrics {
-	checksumErrors := int64(d.Get("checksum_errors").(int))
-	readErrors := int64(d.Get("read_errors").(int))
-	writeErrors := int64(d.Get("write_errors").(int))
+	checksumErrorsInt, _ := d.Get("checksum_errors").(int)
+	checksumErrors := int64(checksumErrorsInt)
+	readErrorsInt, _ := d.Get("read_errors").(int)
+	readErrors := int64(readErrorsInt)
+	writeErrorsInt, _ := d.Get("write_errors").(int)
+	writeErrors := int64(writeErrorsInt)
 	return &models.StorageDeviceMetrics{
 		ChecksumErrors: checksumErrors,
 		ReadErrors:     readErrors,
@@ -37,7 +40,7 @@ func SetStorageDeviceMetricsResourceData(d *schema.ResourceData, m *models.Stora
 	d.Set("write_errors", m.WriteErrors)
 }
 
-// Iterate throught and update the StorageDeviceMetrics resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the StorageDeviceMetrics resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetStorageDeviceMetricsSubResourceData(m []*models.StorageDeviceMetrics) (d []*map[string]interface{}) {
 	for _, StorageDeviceMetricsModel := range m {
 		if StorageDeviceMetricsModel != nil {

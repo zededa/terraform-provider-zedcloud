@@ -9,8 +9,8 @@ import (
 // (1) Translate Resource resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ResourceModel(d *schema.ResourceData) *models.Resource {
-	name := d.Get("name").(string)
-	value := d.Get("value").(string)
+	name, _ := d.Get("name").(string)
+	value, _ := d.Get("value").(string)
 	return &models.Resource{
 		Name:  name,
 		Value: value,
@@ -32,7 +32,7 @@ func SetResourceResourceData(d *schema.ResourceData, m *models.Resource) {
 	d.Set("value", m.Value)
 }
 
-// Iterate throught and update the Resource resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Resource resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetResourceSubResourceData(m []*models.Resource) (d []*map[string]interface{}) {
 	for _, ResourceModel := range m {
 		if ResourceModel != nil {

@@ -15,7 +15,7 @@ func ObjectTagsListModel(d *schema.ResourceData) *models.ObjectTagsList {
 		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
 		next = CursorModelFromMap(nextMap)
 	}
-	objectTags := d.Get("object_tags").([]*models.ObjectTag) // []*ObjectTag
+	objectTags, _ := d.Get("object_tags").([]*models.ObjectTag) // []*ObjectTag
 	return &models.ObjectTagsList{
 		Next:       next,
 		ObjectTags: objectTags,
@@ -43,7 +43,7 @@ func SetObjectTagsListResourceData(d *schema.ResourceData, m *models.ObjectTagsL
 	d.Set("object_tags", SetObjectTagSubResourceData(m.ObjectTags))
 }
 
-// Iterate throught and update the ObjectTagsList resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ObjectTagsList resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetObjectTagsListSubResourceData(m []*models.ObjectTagsList) (d []*map[string]interface{}) {
 	for _, ObjectTagsListModel := range m {
 		if ObjectTagsListModel != nil {

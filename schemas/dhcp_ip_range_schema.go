@@ -9,8 +9,8 @@ import (
 // (1) Translate DhcpIPRange resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DhcpIPRangeModel(d *schema.ResourceData) *models.DhcpIPRange {
-	end := d.Get("end").(string)
-	start := d.Get("start").(string)
+	end, _ := d.Get("end").(string)
+	start, _ := d.Get("start").(string)
 	return &models.DhcpIPRange{
 		End:   end,
 		Start: start,
@@ -32,7 +32,7 @@ func SetDhcpIPRangeResourceData(d *schema.ResourceData, m *models.DhcpIPRange) {
 	d.Set("start", m.Start)
 }
 
-// Iterate throught and update the DhcpIPRange resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DhcpIPRange resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDhcpIPRangeSubResourceData(m []*models.DhcpIPRange) (d []*map[string]interface{}) {
 	for _, DhcpIPRangeModel := range m {
 		if DhcpIPRangeModel != nil {

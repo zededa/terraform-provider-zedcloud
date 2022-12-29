@@ -9,21 +9,34 @@ import (
 // (1) Translate ZsrvResponse resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZsrvResponseModel(d *schema.ResourceData) *models.ZsrvResponse {
-	endTime := d.Get("end_time").(string)
-	error := d.Get("error").([]*models.ZsrvError) // []*ZsrvError
-	hTTPStatusCode := int32(d.Get("http_status_code").(int))
-	hTTPStatusMsg := d.Get("http_status_msg").(string)
-	jobID := d.Get("job_id").(string)
-	objectID := d.Get("object_id").(string)
-	objectKind := d.Get("object_kind").(string)
-	objectName := d.Get("object_name").(string)
-	objectRevision := d.Get("object_revision").(string)
-	objectType := d.Get("object_type").(*models.ObjectType)            // ObjectType
-	operationStatus := d.Get("operation_status").(*models.ZcOpsStatus) // ZcOpsStatus
-	operationTime := d.Get("operation_time").(string)
-	operationType := d.Get("operation_type").(*models.ZcOpsType) // ZcOpsType
-	startTime := d.Get("start_time").(string)
-	user := d.Get("user").(string)
+	endTime, _ := d.Get("end_time").(string)
+	error, _ := d.Get("error").([]*models.ZsrvError) // []*ZsrvError
+	hTTPStatusCodeInt, _ := d.Get("http_status_code").(int)
+	hTTPStatusCode := int32(hTTPStatusCodeInt)
+	hTTPStatusMsg, _ := d.Get("http_status_msg").(string)
+	jobID, _ := d.Get("job_id").(string)
+	objectID, _ := d.Get("object_id").(string)
+	objectKind, _ := d.Get("object_kind").(string)
+	objectName, _ := d.Get("object_name").(string)
+	objectRevision, _ := d.Get("object_revision").(string)
+	objectTypeModel, _ := d.Get("object_type").(models.ObjectType) // ObjectType
+	objectType := &objectTypeModel
+	if !ok {
+		objectType = nil
+	}
+	operationStatusModel, _ := d.Get("operation_status").(models.ZcOpsStatus) // ZcOpsStatus
+	operationStatus := &operationStatusModel
+	if !ok {
+		operationStatus = nil
+	}
+	operationTime, _ := d.Get("operation_time").(string)
+	operationTypeModel, _ := d.Get("operation_type").(models.ZcOpsType) // ZcOpsType
+	operationType := &operationTypeModel
+	if !ok {
+		operationType = nil
+	}
+	startTime, _ := d.Get("start_time").(string)
+	user, _ := d.Get("user").(string)
 	return &models.ZsrvResponse{
 		EndTime:         endTime,
 		Error:           error,
@@ -97,7 +110,7 @@ func SetZsrvResponseResourceData(d *schema.ResourceData, m *models.ZsrvResponse)
 	d.Set("user", m.User)
 }
 
-// Iterate throught and update the ZsrvResponse resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ZsrvResponse resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetZsrvResponseSubResourceData(m []*models.ZsrvResponse) (d []*map[string]interface{}) {
 	for _, ZsrvResponseModel := range m {
 		if ZsrvResponseModel != nil {

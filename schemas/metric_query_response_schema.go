@@ -9,16 +9,16 @@ import (
 // (1) Translate MetricQueryResponse resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func MetricQueryResponseModel(d *schema.ResourceData) *models.MetricQueryResponse {
-	list := d.Get("list").([]*models.MetricQueryResponseItem) // []*MetricQueryResponseItem
-	metricType := d.Get("metric_type").(string)
+	list, _ := d.Get("list").([]*models.MetricQueryResponseItem) // []*MetricQueryResponseItem
+	metricType, _ := d.Get("metric_type").(string)
 	var threshold *models.MetricThreshold // MetricThreshold
 	thresholdInterface, thresholdIsSet := d.GetOk("threshold")
 	if thresholdIsSet {
 		thresholdMap := thresholdInterface.([]interface{})[0].(map[string]interface{})
 		threshold = MetricThresholdModelFromMap(thresholdMap)
 	}
-	xLabel := d.Get("x_label").(string)
-	yLabels := d.Get("y_labels").([]string)
+	xLabel, _ := d.Get("x_label").(string)
+	yLabels, _ := d.Get("y_labels").([]string)
 	return &models.MetricQueryResponse{
 		List:       list,
 		MetricType: metricType,
@@ -58,7 +58,7 @@ func SetMetricQueryResponseResourceData(d *schema.ResourceData, m *models.Metric
 	d.Set("y_labels", m.YLabels)
 }
 
-// Iterate throught and update the MetricQueryResponse resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the MetricQueryResponse resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetMetricQueryResponseSubResourceData(m []*models.MetricQueryResponse) (d []*map[string]interface{}) {
 	for _, MetricQueryResponseModel := range m {
 		if MetricQueryResponseModel != nil {

@@ -9,9 +9,17 @@ import (
 // (1) Translate TagStatusFilter resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagStatusFilterModel(d *schema.ResourceData) *models.TagStatusFilter {
-	namePattern := d.Get("name_pattern").(string)
-	status := d.Get("status").(*models.TagStatus) // TagStatus
-	typeVar := d.Get("type").(*models.TagType)    // TagType
+	namePattern, _ := d.Get("name_pattern").(string)
+	statusModel, _ := d.Get("status").(models.TagStatus) // TagStatus
+	status := &statusModel
+	if !ok {
+		status = nil
+	}
+	typeVarModel, _ := d.Get("type").(models.TagType) // TagType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.TagStatusFilter{
 		NamePattern: namePattern,
 		Status:      status,
@@ -37,7 +45,7 @@ func SetTagStatusFilterResourceData(d *schema.ResourceData, m *models.TagStatusF
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the TagStatusFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the TagStatusFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagStatusFilterSubResourceData(m []*models.TagStatusFilter) (d []*map[string]interface{}) {
 	for _, TagStatusFilterModel := range m {
 		if TagStatusFilterModel != nil {

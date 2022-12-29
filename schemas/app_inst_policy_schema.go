@@ -54,7 +54,7 @@ func SetAppInstPolicyResourceData(d *schema.ResourceData, m *models.AppInstPolic
 	d.Set("meta_data", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.MetaData}))
 }
 
-// Iterate throught and update the AppInstPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppInstPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppInstPolicySubResourceData(m []*models.AppInstPolicy) (d []*map[string]interface{}) {
 	for _, AppInstPolicyModel := range m {
 		if AppInstPolicyModel != nil {

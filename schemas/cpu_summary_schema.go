@@ -9,7 +9,7 @@ import (
 // (1) Translate CPUSummary resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CPUSummaryModel(d *schema.ResourceData) *models.CPUSummary {
-	utilization := d.Get("utilization").(float64)
+	utilization, _ := d.Get("utilization").(float64)
 	return &models.CPUSummary{
 		Utilization: utilization,
 	}
@@ -27,7 +27,7 @@ func SetCPUSummaryResourceData(d *schema.ResourceData, m *models.CPUSummary) {
 	d.Set("utilization", m.Utilization)
 }
 
-// Iterate throught and update the CPUSummary resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the CPUSummary resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCPUSummarySubResourceData(m []*models.CPUSummary) (d []*map[string]interface{}) {
 	for _, CPUSummaryModel := range m {
 		if CPUSummaryModel != nil {

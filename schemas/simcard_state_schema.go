@@ -9,7 +9,7 @@ import (
 // (1) Translate SimcardState resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SimcardStateModel(d *schema.ResourceData) *models.SimcardState {
-	simcardState := d.Get("simcard_state").(models.SimcardState)
+	simcardState, _ := d.Get("simcard_state").(models.SimcardState)
 	return &simcardState
 }
 
@@ -22,7 +22,7 @@ func SimcardStateModelFromMap(m map[string]interface{}) *models.SimcardState {
 func SetSimcardStateResourceData(d *schema.ResourceData, m *models.SimcardState) {
 }
 
-// Iterate throught and update the SimcardState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SimcardState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSimcardStateSubResourceData(m []*models.SimcardState) (d []*map[string]interface{}) {
 	for _, SimcardStateModel := range m {
 		if SimcardStateModel != nil {

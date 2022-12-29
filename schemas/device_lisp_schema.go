@@ -11,15 +11,18 @@ import (
 // (1) Translate DeviceLisp resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceLispModel(d *schema.ResourceData) *models.DeviceLisp {
-	eID := d.Get("e_id").(string)
-	eIDHashLen := int64(d.Get("e_id_hash_len").(int))
-	clientAddr := d.Get("client_addr").(string)
-	eidAllocationPrefix := d.Get("eid_allocation_prefix").(strfmt.Base64)
-	eidAllocationPrefixLen := int64(d.Get("eid_allocation_prefix_len").(int))
-	lispInstance := int64(d.Get("lisp_instance").(int))
-	lispMapServers := d.Get("lisp_map_servers").([]*models.LispServer) // []*LispServer
-	mode := d.Get("mode").(string)
-	zedServers := d.Get("zed_servers").([]*models.DevZedServer) // []*DevZedServer
+	eID, _ := d.Get("e_id").(string)
+	eIDHashLenInt, _ := d.Get("e_id_hash_len").(int)
+	eIDHashLen := int64(eIDHashLenInt)
+	clientAddr, _ := d.Get("client_addr").(string)
+	eidAllocationPrefix, _ := d.Get("eid_allocation_prefix").(strfmt.Base64)
+	eidAllocationPrefixLenInt, _ := d.Get("eid_allocation_prefix_len").(int)
+	eidAllocationPrefixLen := int64(eidAllocationPrefixLenInt)
+	lispInstanceInt, _ := d.Get("lisp_instance").(int)
+	lispInstance := int64(lispInstanceInt)
+	lispMapServers, _ := d.Get("lisp_map_servers").([]*models.LispServer) // []*LispServer
+	mode, _ := d.Get("mode").(string)
+	zedServers, _ := d.Get("zed_servers").([]*models.DevZedServer) // []*DevZedServer
 	return &models.DeviceLisp{
 		EID:                    &eID,                    // string true false false
 		EIDHashLen:             &eIDHashLen,             // int64 true false false
@@ -69,7 +72,7 @@ func SetDeviceLispResourceData(d *schema.ResourceData, m *models.DeviceLisp) {
 	d.Set("zed_servers", SetDevZedServerSubResourceData(m.ZedServers))
 }
 
-// Iterate throught and update the DeviceLisp resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceLisp resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceLispSubResourceData(m []*models.DeviceLisp) (d []*map[string]interface{}) {
 	for _, DeviceLispModel := range m {
 		if DeviceLispModel != nil {

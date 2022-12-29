@@ -9,16 +9,16 @@ import (
 // (1) Translate GeoLocation resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func GeoLocationModel(d *schema.ResourceData) *models.GeoLocation {
-	city := d.Get("city").(string)
-	country := d.Get("country").(string)
-	freeloc := d.Get("freeloc").(string)
-	hostname := d.Get("hostname").(string)
-	latlong := d.Get("latlong").(string)
-	loc := d.Get("loc").(string)
-	org := d.Get("org").(string)
-	postal := d.Get("postal").(string)
-	region := d.Get("region").(string)
-	underlayIP := d.Get("underlay_ip").(string)
+	city, _ := d.Get("city").(string)
+	country, _ := d.Get("country").(string)
+	freeloc, _ := d.Get("freeloc").(string)
+	hostname, _ := d.Get("hostname").(string)
+	latlong, _ := d.Get("latlong").(string)
+	loc, _ := d.Get("loc").(string)
+	org, _ := d.Get("org").(string)
+	postal, _ := d.Get("postal").(string)
+	region, _ := d.Get("region").(string)
+	underlayIP, _ := d.Get("underlay_ip").(string)
 	return &models.GeoLocation{
 		City:       city,
 		Country:    country,
@@ -72,7 +72,7 @@ func SetGeoLocationResourceData(d *schema.ResourceData, m *models.GeoLocation) {
 	d.Set("underlay_ip", m.UnderlayIP)
 }
 
-// Iterate throught and update the GeoLocation resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the GeoLocation resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetGeoLocationSubResourceData(m []*models.GeoLocation) (d []*map[string]interface{}) {
 	for _, GeoLocationModel := range m {
 		if GeoLocationModel != nil {

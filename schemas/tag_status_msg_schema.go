@@ -9,10 +9,15 @@ import (
 // (1) Translate TagStatusMsg resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagStatusMsgModel(d *schema.ResourceData) *models.TagStatusMsg {
-	edgeviewSessionCount := int64(d.Get("edgeview_session_count").(int))
-	id := d.Get("id").(string)
-	name := d.Get("name").(string)
-	typeVar := d.Get("type").(*models.TagType) // TagType
+	edgeviewSessionCountInt, _ := d.Get("edgeview_session_count").(int)
+	edgeviewSessionCount := int64(edgeviewSessionCountInt)
+	id, _ := d.Get("id").(string)
+	name, _ := d.Get("name").(string)
+	typeVarModel, _ := d.Get("type").(models.TagType) // TagType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.TagStatusMsg{
 		EdgeviewSessionCount: edgeviewSessionCount,
 		ID:                   id,
@@ -43,7 +48,7 @@ func SetTagStatusMsgResourceData(d *schema.ResourceData, m *models.TagStatusMsg)
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the TagStatusMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the TagStatusMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagStatusMsgSubResourceData(m []*models.TagStatusMsg) (d []*map[string]interface{}) {
 	for _, TagStatusMsgModel := range m {
 		if TagStatusMsgModel != nil {

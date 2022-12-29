@@ -9,10 +9,14 @@ import (
 // (1) Translate DeviceFilter resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceFilterModel(d *schema.ResourceData) *models.DeviceFilter {
-	adminState := d.Get("admin_state").(*models.AdminState) // AdminState
-	namePattern := d.Get("name_pattern").(string)
-	project := d.Get("project").(string)
-	projectNamePattern := d.Get("project_name_pattern").(string)
+	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminState := &adminStateModel
+	if !ok {
+		adminState = nil
+	}
+	namePattern, _ := d.Get("name_pattern").(string)
+	project, _ := d.Get("project").(string)
+	projectNamePattern, _ := d.Get("project_name_pattern").(string)
 	return &models.DeviceFilter{
 		AdminState:         adminState,
 		NamePattern:        &namePattern, // string true false false
@@ -42,7 +46,7 @@ func SetDeviceFilterResourceData(d *schema.ResourceData, m *models.DeviceFilter)
 	d.Set("project_name_pattern", m.ProjectNamePattern)
 }
 
-// Iterate throught and update the DeviceFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceFilterSubResourceData(m []*models.DeviceFilter) (d []*map[string]interface{}) {
 	for _, DeviceFilterModel := range m {
 		if DeviceFilterModel != nil {

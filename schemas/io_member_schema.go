@@ -9,15 +9,24 @@ import (
 // (1) Translate IoMember resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IoMemberModel(d *schema.ResourceData) *models.IoMember {
-	assigngrp := d.Get("assigngrp").(string)
-	cbattr := d.Get("cbattr").(map[string]string) // map[string]string
-	cost := int64(d.Get("cost").(int))
-	logicallabel := d.Get("logicallabel").(string)
-	phyaddrs := d.Get("phyaddrs").(map[string]string) // map[string]string
-	phylabel := d.Get("phylabel").(string)
-	usage := d.Get("usage").(*models.AdapterUsage)         // AdapterUsage
-	usagePolicy := d.Get("usage_policy").(map[string]bool) // map[string]bool
-	ztype := d.Get("ztype").(*models.IoType)               // IoType
+	assigngrp, _ := d.Get("assigngrp").(string)
+	cbattr, _ := d.Get("cbattr").(map[string]string) // map[string]string
+	costInt, _ := d.Get("cost").(int)
+	cost := int64(costInt)
+	logicallabel, _ := d.Get("logicallabel").(string)
+	phyaddrs, _ := d.Get("phyaddrs").(map[string]string) // map[string]string
+	phylabel, _ := d.Get("phylabel").(string)
+	usageModel, _ := d.Get("usage").(models.AdapterUsage) // AdapterUsage
+	usage := &usageModel
+	if !ok {
+		usage = nil
+	}
+	usagePolicy, _ := d.Get("usage_policy").(map[string]bool) // map[string]bool
+	ztypeModel, _ := d.Get("ztype").(models.IoType)           // IoType
+	ztype := &ztypeModel
+	if !ok {
+		ztype = nil
+	}
 	return &models.IoMember{
 		Assigngrp:    &assigngrp, // string true false false
 		Cbattr:       cbattr,
@@ -67,7 +76,7 @@ func SetIoMemberResourceData(d *schema.ResourceData, m *models.IoMember) {
 	d.Set("ztype", m.Ztype)
 }
 
-// Iterate throught and update the IoMember resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the IoMember resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIoMemberSubResourceData(m []*models.IoMember) (d []*map[string]interface{}) {
 	for _, IoMemberModel := range m {
 		if IoMemberModel != nil {

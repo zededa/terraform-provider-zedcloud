@@ -9,13 +9,18 @@ import (
 // (1) Translate SysInterface resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
-	cost := int64(d.Get("cost").(int))
-	intfUsage := d.Get("intf_usage").(*models.AdapterUsage) // AdapterUsage
-	intfname := d.Get("intfname").(string)
-	ipaddr := d.Get("ipaddr").(string)
-	macaddr := d.Get("macaddr").(string)
-	netname := d.Get("netname").(string)
-	tags := d.Get("tags").(map[string]string) // map[string]string
+	costInt, _ := d.Get("cost").(int)
+	cost := int64(costInt)
+	intfUsageModel, _ := d.Get("intf_usage").(models.AdapterUsage) // AdapterUsage
+	intfUsage := &intfUsageModel
+	if !ok {
+		intfUsage = nil
+	}
+	intfname, _ := d.Get("intfname").(string)
+	ipaddr, _ := d.Get("ipaddr").(string)
+	macaddr, _ := d.Get("macaddr").(string)
+	netname, _ := d.Get("netname").(string)
+	tags, _ := d.Get("tags").(map[string]string) // map[string]string
 	return &models.SysInterface{
 		Cost:      cost,
 		IntfUsage: intfUsage,
@@ -57,7 +62,7 @@ func SetSysInterfaceResourceData(d *schema.ResourceData, m *models.SysInterface)
 	d.Set("tags", m.Tags)
 }
 
-// Iterate throught and update the SysInterface resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SysInterface resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysInterfaceSubResourceData(m []*models.SysInterface) (d []*map[string]interface{}) {
 	for _, SysInterfaceModel := range m {
 		if SysInterfaceModel != nil {

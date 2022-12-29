@@ -9,7 +9,7 @@ import (
 // (1) Translate AppAccessPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppAccessPolicyModel(d *schema.ResourceData) *models.AppAccessPolicy {
-	allowApp := d.Get("allow_app").(bool)
+	allowApp, _ := d.Get("allow_app").(bool)
 	return &models.AppAccessPolicy{
 		AllowApp: allowApp,
 	}
@@ -27,7 +27,7 @@ func SetAppAccessPolicyResourceData(d *schema.ResourceData, m *models.AppAccessP
 	d.Set("allow_app", m.AllowApp)
 }
 
-// Iterate throught and update the AppAccessPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppAccessPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppAccessPolicySubResourceData(m []*models.AppAccessPolicy) (d []*map[string]interface{}) {
 	for _, AppAccessPolicyModel := range m {
 		if AppAccessPolicyModel != nil {

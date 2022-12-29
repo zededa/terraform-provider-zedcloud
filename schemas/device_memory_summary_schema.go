@@ -9,11 +9,11 @@ import (
 // (1) Translate DeviceMemorySummary resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceMemorySummaryModel(d *schema.ResourceData) *models.DeviceMemorySummary {
-	allocatedAppsMB := d.Get("allocated_apps_m_b").(float64)
-	allocatedEveMB := d.Get("allocated_eve_m_b").(float64)
-	availableForNewApps := d.Get("available_for_new_apps").(float64)
-	deviceMemoryMB := d.Get("device_memory_m_b").(float64)
-	usedEveMB := d.Get("used_eve_m_b").(float64)
+	allocatedAppsMB, _ := d.Get("allocated_apps_m_b").(float64)
+	allocatedEveMB, _ := d.Get("allocated_eve_m_b").(float64)
+	availableForNewApps, _ := d.Get("available_for_new_apps").(float64)
+	deviceMemoryMB, _ := d.Get("device_memory_m_b").(float64)
+	usedEveMB, _ := d.Get("used_eve_m_b").(float64)
 	return &models.DeviceMemorySummary{
 		AllocatedAppsMB:     allocatedAppsMB,
 		AllocatedEveMB:      allocatedEveMB,
@@ -47,7 +47,7 @@ func SetDeviceMemorySummaryResourceData(d *schema.ResourceData, m *models.Device
 	d.Set("used_eve_m_b", m.UsedEveMB)
 }
 
-// Iterate throught and update the DeviceMemorySummary resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceMemorySummary resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceMemorySummarySubResourceData(m []*models.DeviceMemorySummary) (d []*map[string]interface{}) {
 	for _, DeviceMemorySummaryModel := range m {
 		if DeviceMemorySummaryModel != nil {

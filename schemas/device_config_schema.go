@@ -11,15 +11,21 @@ import (
 // (1) Translate DeviceConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
-	adminState := d.Get("admin_state").(*models.AdminState) // AdminState
-	assetID := d.Get("asset_id").(string)
-	baseImage := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
-	baseOsRetryCounter := int64(d.Get("base_os_retry_counter").(int))
-	baseOsRetryTime := d.Get("base_os_retry_time").(string)
-	clientIP := d.Get("client_ip").(string)
-	clusterID := d.Get("cluster_id").(string)
-	configItem := d.Get("config_item").([]*models.EDConfigItem) // []*EDConfigItem
-	cpu := int64(d.Get("cpu").(int))
+	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminState := &adminStateModel
+	if !ok {
+		adminState = nil
+	}
+	assetID, _ := d.Get("asset_id").(string)
+	baseImage, _ := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
+	baseOsRetryCounterInt, _ := d.Get("base_os_retry_counter").(int)
+	baseOsRetryCounter := int64(baseOsRetryCounterInt)
+	baseOsRetryTime, _ := d.Get("base_os_retry_time").(string)
+	clientIP, _ := d.Get("client_ip").(string)
+	clusterID, _ := d.Get("cluster_id").(string)
+	configItem, _ := d.Get("config_item").([]*models.EDConfigItem) // []*EDConfigItem
+	cpuInt, _ := d.Get("cpu").(int)
+	cpu := int64(cpuInt)
 	var debugKnob *models.DebugKnobDetail // DebugKnobDetail
 	debugKnobInterface, debugKnobIsSet := d.GetOk("debug_knob")
 	if debugKnobIsSet {
@@ -32,9 +38,9 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 		defaultNetInstMap := defaultNetInstInterface.([]interface{})[0].(map[string]interface{})
 		defaultNetInst = NetInstConfigModelFromMap(defaultNetInstMap)
 	}
-	deploymentTag := d.Get("deployment_tag").(string)
-	deprecated := d.Get("deprecated").(string)
-	description := d.Get("description").(string)
+	deploymentTag, _ := d.Get("deployment_tag").(string)
+	deprecated, _ := d.Get("deprecated").(string)
+	description, _ := d.Get("description").(string)
 	var devLocation *models.GeoLocation // GeoLocation
 	devLocationInterface, devLocationIsSet := d.GetOk("dev_location")
 	if devLocationIsSet {
@@ -53,40 +59,49 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})[0].(map[string]interface{})
 		edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap)
 	}
-	generateSoftSerial := d.Get("generate_soft_serial").(bool)
-	id := d.Get("id").(string)
-	identity := d.Get("identity").(strfmt.Base64)
-	interfaces := d.Get("interfaces").([]*models.SysInterface) // []*SysInterface
-	location := d.Get("location").(string)
-	memory := int64(d.Get("memory").(int))
-	modelID := d.Get("model_id").(string)
-	name := d.Get("name").(string)
-	obkey := d.Get("obkey").(string)
+	generateSoftSerial, _ := d.Get("generate_soft_serial").(bool)
+	id, _ := d.Get("id").(string)
+	identity, _ := d.Get("identity").(strfmt.Base64)
+	interfaces, _ := d.Get("interfaces").([]*models.SysInterface) // []*SysInterface
+	location, _ := d.Get("location").(string)
+	memoryInt, _ := d.Get("memory").(int)
+	memory := int64(memoryInt)
+	modelID, _ := d.Get("model_id").(string)
+	name, _ := d.Get("name").(string)
+	obkey, _ := d.Get("obkey").(string)
 	var onboarding *models.DeviceCerts // DeviceCerts
 	onboardingInterface, onboardingIsSet := d.GetOk("onboarding")
 	if onboardingIsSet {
 		onboardingMap := onboardingInterface.([]interface{})[0].(map[string]interface{})
 		onboarding = DeviceCertsModelFromMap(onboardingMap)
 	}
-	preparePowerOffCounter := int64(d.Get("prepare_power_off_counter").(int))
-	preparePowerOffTime := d.Get("prepare_power_off_time").(string)
-	projectID := d.Get("project_id").(string)
-	resetCounter := int64(d.Get("reset_counter").(int))
-	resetTime := d.Get("reset_time").(string)
+	preparePowerOffCounterInt, _ := d.Get("prepare_power_off_counter").(int)
+	preparePowerOffCounter := int64(preparePowerOffCounterInt)
+	preparePowerOffTime, _ := d.Get("prepare_power_off_time").(string)
+	projectID, _ := d.Get("project_id").(string)
+	resetCounterInt, _ := d.Get("reset_counter").(int)
+	resetCounter := int64(resetCounterInt)
+	resetTime, _ := d.Get("reset_time").(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
 	if revisionIsSet {
 		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
 		revision = ObjectRevisionModelFromMap(revisionMap)
 	}
-	serialno := d.Get("serialno").(string)
-	sitePictures := d.Get("site_pictures").([]string)
-	storage := int64(d.Get("storage").(int))
-	tags := d.Get("tags").(map[string]string) // map[string]string
-	thread := int64(d.Get("thread").(int))
-	title := d.Get("title").(string)
-	token := d.Get("token").(string)
-	utype := d.Get("utype").(*models.ModelArchType) // ModelArchType
+	serialno, _ := d.Get("serialno").(string)
+	sitePictures, _ := d.Get("site_pictures").([]string)
+	storageInt, _ := d.Get("storage").(int)
+	storage := int64(storageInt)
+	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	threadInt, _ := d.Get("thread").(int)
+	thread := int64(threadInt)
+	title, _ := d.Get("title").(string)
+	token, _ := d.Get("token").(string)
+	utypeModel, _ := d.Get("utype").(models.ModelArchType) // ModelArchType
+	utype := &utypeModel
+	if !ok {
+		utype = nil
+	}
 	return &models.DeviceConfig{
 		AdminState:             adminState,
 		AssetID:                assetID,
@@ -306,7 +321,7 @@ func SetDeviceConfigResourceData(d *schema.ResourceData, m *models.DeviceConfig)
 	d.Set("utype", m.Utype)
 }
 
-// Iterate throught and update the DeviceConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceConfigSubResourceData(m []*models.DeviceConfig) (d []*map[string]interface{}) {
 	for _, DeviceConfigModel := range m {
 		if DeviceConfigModel != nil {

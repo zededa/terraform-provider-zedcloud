@@ -9,7 +9,7 @@ import (
 // (1) Translate DeviceAttestPolicyType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceAttestPolicyTypeModel(d *schema.ResourceData) *models.DeviceAttestPolicyType {
-	deviceAttestPolicyType := d.Get("device_attest_policy_type").(models.DeviceAttestPolicyType)
+	deviceAttestPolicyType, _ := d.Get("device_attest_policy_type").(models.DeviceAttestPolicyType)
 	return &deviceAttestPolicyType
 }
 
@@ -22,7 +22,7 @@ func DeviceAttestPolicyTypeModelFromMap(m map[string]interface{}) *models.Device
 func SetDeviceAttestPolicyTypeResourceData(d *schema.ResourceData, m *models.DeviceAttestPolicyType) {
 }
 
-// Iterate throught and update the DeviceAttestPolicyType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceAttestPolicyType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceAttestPolicyTypeSubResourceData(m []*models.DeviceAttestPolicyType) (d []*map[string]interface{}) {
 	for _, DeviceAttestPolicyTypeModel := range m {
 		if DeviceAttestPolicyTypeModel != nil {

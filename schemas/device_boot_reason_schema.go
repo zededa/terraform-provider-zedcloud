@@ -9,7 +9,7 @@ import (
 // (1) Translate DeviceBootReason resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceBootReasonModel(d *schema.ResourceData) *models.DeviceBootReason {
-	deviceBootReason := d.Get("device_boot_reason").(models.DeviceBootReason)
+	deviceBootReason, _ := d.Get("device_boot_reason").(models.DeviceBootReason)
 	return &deviceBootReason
 }
 
@@ -22,7 +22,7 @@ func DeviceBootReasonModelFromMap(m map[string]interface{}) *models.DeviceBootRe
 func SetDeviceBootReasonResourceData(d *schema.ResourceData, m *models.DeviceBootReason) {
 }
 
-// Iterate throught and update the DeviceBootReason resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceBootReason resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceBootReasonSubResourceData(m []*models.DeviceBootReason) (d []*map[string]interface{}) {
 	for _, DeviceBootReasonModel := range m {
 		if DeviceBootReasonModel != nil {

@@ -9,9 +9,13 @@ import (
 // (1) Translate ZsrvError resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZsrvErrorModel(d *schema.ResourceData) *models.ZsrvError {
-	details := d.Get("details").(string)
-	ec := d.Get("ec").(*models.ZsrvErrorCode) // ZsrvErrorCode
-	location := d.Get("location").(string)
+	details, _ := d.Get("details").(string)
+	ecModel, _ := d.Get("ec").(models.ZsrvErrorCode) // ZsrvErrorCode
+	ec := &ecModel
+	if !ok {
+		ec = nil
+	}
+	location, _ := d.Get("location").(string)
 	return &models.ZsrvError{
 		Details:  details,
 		Ec:       ec,
@@ -37,7 +41,7 @@ func SetZsrvErrorResourceData(d *schema.ResourceData, m *models.ZsrvError) {
 	d.Set("location", m.Location)
 }
 
-// Iterate throught and update the ZsrvError resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ZsrvError resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetZsrvErrorSubResourceData(m []*models.ZsrvError) (d []*map[string]interface{}) {
 	for _, ZsrvErrorModel := range m {
 		if ZsrvErrorModel != nil {

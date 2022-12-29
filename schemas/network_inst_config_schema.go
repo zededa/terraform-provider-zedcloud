@@ -9,25 +9,33 @@ import (
 // (1) Translate NetworkInstConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
-	deviceDefault := d.Get("device_default").(string)
-	dNSList := d.Get("dns_list").([]*models.StaticDNSList) // []*StaticDNSList
-	var ip *models.DhcpServerConfig                        // DhcpServerConfig
+	deviceDefault, _ := d.Get("device_default").(string)
+	dNSList, _ := d.Get("dns_list").([]*models.StaticDNSList) // []*StaticDNSList
+	var ip *models.DhcpServerConfig                           // DhcpServerConfig
 	ipInterface, ipIsSet := d.GetOk("ip")
 	if ipIsSet {
 		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
 		ip = DhcpServerConfigModelFromMap(ipMap)
 	}
-	kind := d.Get("kind").(*models.NetworkInstanceKind) // NetworkInstanceKind
-	var opaque *models.NetInstOpaqueConfig              // NetInstOpaqueConfig
+	kindModel, _ := d.Get("kind").(models.NetworkInstanceKind) // NetworkInstanceKind
+	kind := &kindModel
+	if !ok {
+		kind = nil
+	}
+	var opaque *models.NetInstOpaqueConfig // NetInstOpaqueConfig
 	opaqueInterface, opaqueIsSet := d.GetOk("opaque")
 	if opaqueIsSet {
 		opaqueMap := opaqueInterface.([]interface{})[0].(map[string]interface{})
 		opaque = NetInstOpaqueConfigModelFromMap(opaqueMap)
 	}
-	port := d.Get("port").(string)
-	portTags := d.Get("port_tags").(map[string]string)         // map[string]string
-	tags := d.Get("tags").(map[string]string)                  // map[string]string
-	typeVar := d.Get("type").(*models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
+	port, _ := d.Get("port").(string)
+	portTags, _ := d.Get("port_tags").(map[string]string)             // map[string]string
+	tags, _ := d.Get("tags").(map[string]string)                      // map[string]string
+	typeVarModel, _ := d.Get("type").(models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.NetworkInstConfig{
 		DeviceDefault: deviceDefault,
 		DNSList:       dNSList,
@@ -89,7 +97,7 @@ func SetNetworkInstConfigResourceData(d *schema.ResourceData, m *models.NetworkI
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the NetworkInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the NetworkInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetworkInstConfigSubResourceData(m []*models.NetworkInstConfig) (d []*map[string]interface{}) {
 	for _, NetworkInstConfigModel := range m {
 		if NetworkInstConfigModel != nil {

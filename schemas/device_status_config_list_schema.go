@@ -9,8 +9,8 @@ import (
 // (1) Translate DeviceStatusConfigList resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceStatusConfigListModel(d *schema.ResourceData) *models.DeviceStatusConfigList {
-	list := d.Get("list").([]*models.DeviceStatusConfig) // []*DeviceStatusConfig
-	var next *models.Cursor                              // Cursor
+	list, _ := d.Get("list").([]*models.DeviceStatusConfig) // []*DeviceStatusConfig
+	var next *models.Cursor                                 // Cursor
 	nextInterface, nextIsSet := d.GetOk("next")
 	if nextIsSet {
 		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
@@ -34,8 +34,10 @@ func DeviceStatusConfigListModel(d *schema.ResourceData) *models.DeviceStatusCon
 		summaryByStateMap := summaryByStateInterface.([]interface{})[0].(map[string]interface{})
 		summaryByState = SummaryModelFromMap(summaryByStateMap)
 	}
-	totalCount := int64(d.Get("total_count").(int))
-	totalEvActiveCount := int64(d.Get("total_ev_active_count").(int))
+	totalCountInt, _ := d.Get("total_count").(int)
+	totalCount := int64(totalCountInt)
+	totalEvActiveCountInt, _ := d.Get("total_ev_active_count").(int)
+	totalEvActiveCount := int64(totalEvActiveCountInt)
 	return &models.DeviceStatusConfigList{
 		List:                      list,
 		Next:                      next,
@@ -101,7 +103,7 @@ func SetDeviceStatusConfigListResourceData(d *schema.ResourceData, m *models.Dev
 	d.Set("total_ev_active_count", m.TotalEvActiveCount)
 }
 
-// Iterate throught and update the DeviceStatusConfigList resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceStatusConfigList resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceStatusConfigListSubResourceData(m []*models.DeviceStatusConfigList) (d []*map[string]interface{}) {
 	for _, DeviceStatusConfigListModel := range m {
 		if DeviceStatusConfigListModel != nil {

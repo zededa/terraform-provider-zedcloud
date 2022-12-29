@@ -15,9 +15,9 @@ func CustomConfigVariableGroupModel(d *schema.ResourceData) *models.CustomConfig
 		conditionMap := conditionInterface.([]interface{})[0].(map[string]interface{})
 		condition = VariableGroupConditionModelFromMap(conditionMap)
 	}
-	name := d.Get("name").(string)
-	required := d.Get("required").(bool)
-	variables := d.Get("variables").([]*models.VariableGroupVariable) // []*VariableGroupVariable
+	name, _ := d.Get("name").(string)
+	required, _ := d.Get("required").(bool)
+	variables, _ := d.Get("variables").([]*models.VariableGroupVariable) // []*VariableGroupVariable
 	return &models.CustomConfigVariableGroup{
 		Condition: condition,
 		Name:      name,
@@ -53,7 +53,7 @@ func SetCustomConfigVariableGroupResourceData(d *schema.ResourceData, m *models.
 	d.Set("variables", SetVariableGroupVariableSubResourceData(m.Variables))
 }
 
-// Iterate throught and update the CustomConfigVariableGroup resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the CustomConfigVariableGroup resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCustomConfigVariableGroupSubResourceData(m []*models.CustomConfigVariableGroup) (d []*map[string]interface{}) {
 	for _, CustomConfigVariableGroupModel := range m {
 		if CustomConfigVariableGroupModel != nil {

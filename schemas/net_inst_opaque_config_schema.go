@@ -15,8 +15,12 @@ func NetInstOpaqueConfigModel(d *schema.ResourceData) *models.NetInstOpaqueConfi
 		lispMap := lispInterface.([]interface{})[0].(map[string]interface{})
 		lisp = LispConfigModelFromMap(lispMap)
 	}
-	oconfig := d.Get("oconfig").(string)
-	typeVar := d.Get("type").(*models.OpaqueConfigType) // OpaqueConfigType
+	oconfig, _ := d.Get("oconfig").(string)
+	typeVarModel, _ := d.Get("type").(models.OpaqueConfigType) // OpaqueConfigType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.NetInstOpaqueConfig{
 		Lisp:    lisp,
 		Oconfig: oconfig,
@@ -48,7 +52,7 @@ func SetNetInstOpaqueConfigResourceData(d *schema.ResourceData, m *models.NetIns
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the NetInstOpaqueConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the NetInstOpaqueConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetInstOpaqueConfigSubResourceData(m []*models.NetInstOpaqueConfig) (d []*map[string]interface{}) {
 	for _, NetInstOpaqueConfigModel := range m {
 		if NetInstOpaqueConfigModel != nil {

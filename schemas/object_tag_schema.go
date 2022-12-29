@@ -9,9 +9,9 @@ import (
 // (1) Translate ObjectTag resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ObjectTagModel(d *schema.ResourceData) *models.ObjectTag {
-	description := d.Get("description").(string)
-	key := d.Get("key").(string)
-	value := d.Get("value").(string)
+	description, _ := d.Get("description").(string)
+	key, _ := d.Get("key").(string)
+	value, _ := d.Get("value").(string)
 	return &models.ObjectTag{
 		Description: description,
 		Key:         key,
@@ -37,7 +37,7 @@ func SetObjectTagResourceData(d *schema.ResourceData, m *models.ObjectTag) {
 	d.Set("value", m.Value)
 }
 
-// Iterate throught and update the ObjectTag resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ObjectTag resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetObjectTagSubResourceData(m []*models.ObjectTag) (d []*map[string]interface{}) {
 	for _, ObjectTagModel := range m {
 		if ObjectTagModel != nil {

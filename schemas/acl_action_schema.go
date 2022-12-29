@@ -9,18 +9,20 @@ import (
 // (1) Translate ACLAction resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ACLActionModel(d *schema.ResourceData) *models.ACLAction {
-	drop := d.Get("drop").(bool)
-	limit := d.Get("limit").(bool)
+	drop, _ := d.Get("drop").(bool)
+	limit, _ := d.Get("limit").(bool)
 	var limitValue *models.LimitParams // LimitParams
 	limitValueInterface, limitValueIsSet := d.GetOk("limit_value")
 	if limitValueIsSet {
 		limitValueMap := limitValueInterface.([]interface{})[0].(map[string]interface{})
 		limitValue = LimitParamsModelFromMap(limitValueMap)
 	}
-	limitburst := int64(d.Get("limitburst").(int))
-	limitrate := int64(d.Get("limitrate").(int))
-	limitunit := d.Get("limitunit").(string)
-	portmap := d.Get("portmap").(bool)
+	limitburstInt, _ := d.Get("limitburst").(int)
+	limitburst := int64(limitburstInt)
+	limitrateInt, _ := d.Get("limitrate").(int)
+	limitrate := int64(limitrateInt)
+	limitunit, _ := d.Get("limitunit").(string)
+	portmap, _ := d.Get("portmap").(bool)
 	var portmapto *models.MapParams // MapParams
 	portmaptoInterface, portmaptoIsSet := d.GetOk("portmapto")
 	if portmaptoIsSet {
@@ -84,7 +86,7 @@ func SetACLActionResourceData(d *schema.ResourceData, m *models.ACLAction) {
 	d.Set("portmapto", SetMapParamsSubResourceData([]*models.MapParams{m.Portmapto}))
 }
 
-// Iterate throught and update the ACLAction resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ACLAction resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetACLActionSubResourceData(m []*models.ACLAction) (d []*map[string]interface{}) {
 	for _, ACLActionModel := range m {
 		if ACLActionModel != nil {

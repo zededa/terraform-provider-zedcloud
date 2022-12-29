@@ -9,7 +9,7 @@ import (
 // (1) Translate MetricType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func MetricTypeModel(d *schema.ResourceData) *models.MetricType {
-	metricType := d.Get("metric_type").(models.MetricType)
+	metricType, _ := d.Get("metric_type").(models.MetricType)
 	return &metricType
 }
 
@@ -22,7 +22,7 @@ func MetricTypeModelFromMap(m map[string]interface{}) *models.MetricType {
 func SetMetricTypeResourceData(d *schema.ResourceData, m *models.MetricType) {
 }
 
-// Iterate throught and update the MetricType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the MetricType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetMetricTypeSubResourceData(m []*models.MetricType) (d []*map[string]interface{}) {
 	for _, MetricTypeModel := range m {
 		if MetricTypeModel != nil {

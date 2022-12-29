@@ -9,7 +9,7 @@ import (
 // (1) Translate PhysicalStorageStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PhysicalStorageStatusModel(d *schema.ResourceData) *models.PhysicalStorageStatus {
-	physicalStorageStatus := d.Get("physical_storage_status").(models.PhysicalStorageStatus)
+	physicalStorageStatus, _ := d.Get("physical_storage_status").(models.PhysicalStorageStatus)
 	return &physicalStorageStatus
 }
 
@@ -22,7 +22,7 @@ func PhysicalStorageStatusModelFromMap(m map[string]interface{}) *models.Physica
 func SetPhysicalStorageStatusResourceData(d *schema.ResourceData, m *models.PhysicalStorageStatus) {
 }
 
-// Iterate throught and update the PhysicalStorageStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the PhysicalStorageStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPhysicalStorageStatusSubResourceData(m []*models.PhysicalStorageStatus) (d []*map[string]interface{}) {
 	for _, PhysicalStorageStatusModel := range m {
 		if PhysicalStorageStatusModel != nil {

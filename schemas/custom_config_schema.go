@@ -9,13 +9,13 @@ import (
 // (1) Translate CustomConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CustomConfigModel(d *schema.ResourceData) *models.CustomConfig {
-	add := d.Get("add").(bool)
-	allowStorageResize := d.Get("allow_storage_resize").(bool)
-	fieldDelimiter := d.Get("field_delimiter").(string)
-	name := d.Get("name").(string)
-	override := d.Get("override").(bool)
-	template := d.Get("template").(string)
-	variableGroups := d.Get("variable_groups").([]*models.CustomConfigVariableGroup) // []*CustomConfigVariableGroup
+	add, _ := d.Get("add").(bool)
+	allowStorageResize, _ := d.Get("allow_storage_resize").(bool)
+	fieldDelimiter, _ := d.Get("field_delimiter").(string)
+	name, _ := d.Get("name").(string)
+	override, _ := d.Get("override").(bool)
+	template, _ := d.Get("template").(string)
+	variableGroups, _ := d.Get("variable_groups").([]*models.CustomConfigVariableGroup) // []*CustomConfigVariableGroup
 	return &models.CustomConfig{
 		Add:                add,
 		AllowStorageResize: allowStorageResize,
@@ -57,7 +57,7 @@ func SetCustomConfigResourceData(d *schema.ResourceData, m *models.CustomConfig)
 	d.Set("variable_groups", SetCustomConfigVariableGroupSubResourceData(m.VariableGroups))
 }
 
-// Iterate throught and update the CustomConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the CustomConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCustomConfigSubResourceData(m []*models.CustomConfig) (d []*map[string]interface{}) {
 	for _, CustomConfigModel := range m {
 		if CustomConfigModel != nil {

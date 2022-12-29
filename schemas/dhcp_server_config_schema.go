@@ -15,12 +15,12 @@ func DhcpServerConfigModel(d *schema.ResourceData) *models.DhcpServerConfig {
 		dhcpRangeMap := dhcpRangeInterface.([]interface{})[0].(map[string]interface{})
 		dhcpRange = DhcpIPRangeModelFromMap(dhcpRangeMap)
 	}
-	dns := d.Get("dns").([]string)
-	domain := d.Get("domain").(string)
-	gateway := d.Get("gateway").(string)
-	mask := d.Get("mask").(string)
-	ntp := d.Get("ntp").(string)
-	subnet := d.Get("subnet").(string)
+	dns, _ := d.Get("dns").([]string)
+	domain, _ := d.Get("domain").(string)
+	gateway, _ := d.Get("gateway").(string)
+	mask, _ := d.Get("mask").(string)
+	ntp, _ := d.Get("ntp").(string)
+	subnet, _ := d.Get("subnet").(string)
 	return &models.DhcpServerConfig{
 		DhcpRange: dhcpRange,
 		DNS:       dns,
@@ -68,7 +68,7 @@ func SetDhcpServerConfigResourceData(d *schema.ResourceData, m *models.DhcpServe
 	d.Set("subnet", m.Subnet)
 }
 
-// Iterate throught and update the DhcpServerConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DhcpServerConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDhcpServerConfigSubResourceData(m []*models.DhcpServerConfig) (d []*map[string]interface{}) {
 	for _, DhcpServerConfigModel := range m {
 		if DhcpServerConfigModel != nil {

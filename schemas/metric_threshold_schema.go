@@ -9,8 +9,8 @@ import (
 // (1) Translate MetricThreshold resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func MetricThresholdModel(d *schema.ResourceData) *models.MetricThreshold {
-	red := d.Get("red").(float64)
-	yellow := d.Get("yellow").(float64)
+	red, _ := d.Get("red").(float64)
+	yellow, _ := d.Get("yellow").(float64)
 	return &models.MetricThreshold{
 		Red:    red,
 		Yellow: yellow,
@@ -32,7 +32,7 @@ func SetMetricThresholdResourceData(d *schema.ResourceData, m *models.MetricThre
 	d.Set("yellow", m.Yellow)
 }
 
-// Iterate throught and update the MetricThreshold resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the MetricThreshold resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetMetricThresholdSubResourceData(m []*models.MetricThreshold) (d []*map[string]interface{}) {
 	for _, MetricThresholdModel := range m {
 		if MetricThresholdModel != nil {

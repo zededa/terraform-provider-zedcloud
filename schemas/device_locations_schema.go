@@ -9,8 +9,8 @@ import (
 // (1) Translate DeviceLocations resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceLocationsModel(d *schema.ResourceData) *models.DeviceLocations {
-	deviceLocations := d.Get("device_locations").([]*models.DeviceLocation) // []*DeviceLocation
-	var next *models.Cursor                                                 // Cursor
+	deviceLocations, _ := d.Get("device_locations").([]*models.DeviceLocation) // []*DeviceLocation
+	var next *models.Cursor                                                    // Cursor
 	nextInterface, nextIsSet := d.GetOk("next")
 	if nextIsSet {
 		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
@@ -43,7 +43,7 @@ func SetDeviceLocationsResourceData(d *schema.ResourceData, m *models.DeviceLoca
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
 }
 
-// Iterate throught and update the DeviceLocations resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceLocations resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceLocationsSubResourceData(m []*models.DeviceLocations) (d []*map[string]interface{}) {
 	for _, DeviceLocationsModel := range m {
 		if DeviceLocationsModel != nil {

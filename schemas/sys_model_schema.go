@@ -9,27 +9,39 @@ import (
 // (1) Translate SysModel resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysModelModel(d *schema.ResourceData) *models.SysModel {
-	pCRTemplates := d.Get("p_c_r_templates").([]*models.PCRTemplate) // []*PCRTemplate
-	attr := d.Get("attr").(map[string]string)                        // map[string]string
-	brandID := d.Get("brand_id").(string)
-	description := d.Get("description").(string)
-	id := d.Get("id").(string)
-	ioMemberList := d.Get("io_member_list").([]*models.IoMember) // []*IoMember
-	isImported := d.Get("is_imported").(bool)
-	logo := d.Get("logo").(map[string]string) // map[string]string
-	name := d.Get("name").(string)
-	originType := d.Get("origin_type").(*models.Origin) // Origin
-	var parentDetail *models.ObjectParentDetail         // ObjectParentDetail
+	pCRTemplates, _ := d.Get("p_c_r_templates").([]*models.PCRTemplate) // []*PCRTemplate
+	attr, _ := d.Get("attr").(map[string]string)                        // map[string]string
+	brandID, _ := d.Get("brand_id").(string)
+	description, _ := d.Get("description").(string)
+	id, _ := d.Get("id").(string)
+	ioMemberList, _ := d.Get("io_member_list").([]*models.IoMember) // []*IoMember
+	isImported, _ := d.Get("is_imported").(bool)
+	logo, _ := d.Get("logo").(map[string]string) // map[string]string
+	name, _ := d.Get("name").(string)
+	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originType := &originTypeModel
+	if !ok {
+		originType = nil
+	}
+	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")
 	if parentDetailIsSet {
 		parentDetailMap := parentDetailInterface.([]interface{})[0].(map[string]interface{})
 		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
 	}
-	productStatus := d.Get("product_status").(string)
-	productURL := d.Get("product_url").(string)
-	state := d.Get("state").(*models.SysModelState) // SysModelState
-	title := d.Get("title").(string)
-	typeVar := d.Get("type").(*models.ModelArchType) // ModelArchType
+	productStatus, _ := d.Get("product_status").(string)
+	productURL, _ := d.Get("product_url").(string)
+	stateModel, _ := d.Get("state").(models.SysModelState) // SysModelState
+	state := &stateModel
+	if !ok {
+		state = nil
+	}
+	title, _ := d.Get("title").(string)
+	typeVarModel, _ := d.Get("type").(models.ModelArchType) // ModelArchType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.SysModel{
 		PCRTemplates:  pCRTemplates,
 		Attr:          attr,
@@ -114,7 +126,7 @@ func SetSysModelResourceData(d *schema.ResourceData, m *models.SysModel) {
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the SysModel resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SysModel resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysModelSubResourceData(m []*models.SysModel) (d []*map[string]interface{}) {
 	for _, SysModelModel := range m {
 		if SysModelModel != nil {

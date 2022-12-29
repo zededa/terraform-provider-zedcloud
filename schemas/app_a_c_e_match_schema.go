@@ -9,8 +9,8 @@ import (
 // (1) Translate AppACEMatch resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppACEMatchModel(d *schema.ResourceData) *models.AppACEMatch {
-	typeVar := d.Get("type").(string)
-	value := d.Get("value").(string)
+	typeVar, _ := d.Get("type").(string)
+	value, _ := d.Get("value").(string)
 	return &models.AppACEMatch{
 		Type:  &typeVar, // string true false false
 		Value: &value,   // string true false false
@@ -32,7 +32,7 @@ func SetAppACEMatchResourceData(d *schema.ResourceData, m *models.AppACEMatch) {
 	d.Set("value", m.Value)
 }
 
-// Iterate throught and update the AppACEMatch resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppACEMatch resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppACEMatchSubResourceData(m []*models.AppACEMatch) (d []*map[string]interface{}) {
 	for _, AppACEMatchModel := range m {
 		if AppACEMatchModel != nil {

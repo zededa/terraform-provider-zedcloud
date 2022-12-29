@@ -9,25 +9,33 @@ import (
 // (1) Translate DeviceStatusConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceStatusConfigModel(d *schema.ResourceData) *models.DeviceStatusConfig {
-	adminState := d.Get("admin_state").(*models.AdminState) // AdminState
-	appInstCount := d.Get("app_inst_count").(string)
+	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminState := &adminStateModel
+	if !ok {
+		adminState = nil
+	}
+	appInstCount, _ := d.Get("app_inst_count").(string)
 	var dinfo *models.DeviceInfo // DeviceInfo
 	dinfoInterface, dinfoIsSet := d.GetOk("dinfo")
 	if dinfoIsSet {
 		dinfoMap := dinfoInterface.([]interface{})[0].(map[string]interface{})
 		dinfo = DeviceInfoModelFromMap(dinfoMap)
 	}
-	eveImageName := d.Get("eve_image_name").(string)
-	id := d.Get("id").(string)
-	isEveLatest := d.Get("is_eve_latest").(string)
-	location := d.Get("location").(string)
-	name := d.Get("name").(string)
-	projectID := d.Get("project_id").(string)
-	projectName := d.Get("project_name").(string)
-	runState := d.Get("run_state").(*models.RunState) // RunState
-	serialNo := d.Get("serial_no").(string)
-	swInfo := d.Get("sw_info").([]*models.DeviceSWInfo) // []*DeviceSWInfo
-	title := d.Get("title").(string)
+	eveImageName, _ := d.Get("eve_image_name").(string)
+	id, _ := d.Get("id").(string)
+	isEveLatest, _ := d.Get("is_eve_latest").(string)
+	location, _ := d.Get("location").(string)
+	name, _ := d.Get("name").(string)
+	projectID, _ := d.Get("project_id").(string)
+	projectName, _ := d.Get("project_name").(string)
+	runStateModel, _ := d.Get("run_state").(models.RunState) // RunState
+	runState := &runStateModel
+	if !ok {
+		runState = nil
+	}
+	serialNo, _ := d.Get("serial_no").(string)
+	swInfo, _ := d.Get("sw_info").([]*models.DeviceSWInfo) // []*DeviceSWInfo
+	title, _ := d.Get("title").(string)
 	return &models.DeviceStatusConfig{
 		AdminState:   adminState,
 		AppInstCount: appInstCount,
@@ -103,7 +111,7 @@ func SetDeviceStatusConfigResourceData(d *schema.ResourceData, m *models.DeviceS
 	d.Set("title", m.Title)
 }
 
-// Iterate throught and update the DeviceStatusConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceStatusConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceStatusConfigSubResourceData(m []*models.DeviceStatusConfig) (d []*map[string]interface{}) {
 	for _, DeviceStatusConfigModel := range m {
 		if DeviceStatusConfigModel != nil {

@@ -9,11 +9,11 @@ import (
 // (1) Translate PCRTemplate resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PCRTemplateModel(d *schema.ResourceData) *models.PCRTemplate {
-	pCRValues := d.Get("p_c_r_values").([]*models.PCRValue) // []*PCRValue
-	eveVersion := d.Get("eve_version").(string)
-	firmwareVersion := d.Get("firmware_version").(string)
-	id := d.Get("id").(string)
-	name := d.Get("name").(string)
+	pCRValues, _ := d.Get("p_c_r_values").([]*models.PCRValue) // []*PCRValue
+	eveVersion, _ := d.Get("eve_version").(string)
+	firmwareVersion, _ := d.Get("firmware_version").(string)
+	id, _ := d.Get("id").(string)
+	name, _ := d.Get("name").(string)
 	return &models.PCRTemplate{
 		PCRValues:       pCRValues,
 		EveVersion:      &eveVersion, // string true false false
@@ -47,7 +47,7 @@ func SetPCRTemplateResourceData(d *schema.ResourceData, m *models.PCRTemplate) {
 	d.Set("name", m.Name)
 }
 
-// Iterate throught and update the PCRTemplate resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the PCRTemplate resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPCRTemplateSubResourceData(m []*models.PCRTemplate) (d []*map[string]interface{}) {
 	for _, PCRTemplateModel := range m {
 		if PCRTemplateModel != nil {

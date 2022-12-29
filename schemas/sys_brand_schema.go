@@ -9,22 +9,30 @@ import (
 // (1) Translate SysBrand resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysBrandModel(d *schema.ResourceData) *models.SysBrand {
-	attr := d.Get("attr").(map[string]string) // map[string]string
-	description := d.Get("description").(string)
-	id := d.Get("id").(string)
-	logo := d.Get("logo").(map[string]string) // map[string]string
-	name := d.Get("name").(string)
-	originType := d.Get("origin_type").(*models.Origin) // Origin
-	var revision *models.ObjectRevision                 // ObjectRevision
+	attr, _ := d.Get("attr").(map[string]string) // map[string]string
+	description, _ := d.Get("description").(string)
+	id, _ := d.Get("id").(string)
+	logo, _ := d.Get("logo").(map[string]string) // map[string]string
+	name, _ := d.Get("name").(string)
+	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originType := &originTypeModel
+	if !ok {
+		originType = nil
+	}
+	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
 	if revisionIsSet {
 		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
 		revision = ObjectRevisionModelFromMap(revisionMap)
 	}
-	state := d.Get("state").(*models.SysModelState) // SysModelState
-	svg := d.Get("svg").(string)
-	systemMfgName := d.Get("system_mfg_name").(string)
-	title := d.Get("title").(string)
+	stateModel, _ := d.Get("state").(models.SysModelState) // SysModelState
+	state := &stateModel
+	if !ok {
+		state = nil
+	}
+	svg, _ := d.Get("svg").(string)
+	systemMfgName, _ := d.Get("system_mfg_name").(string)
+	title, _ := d.Get("title").(string)
 	return &models.SysBrand{
 		Attr:          attr,
 		Description:   description,
@@ -88,7 +96,7 @@ func SetSysBrandResourceData(d *schema.ResourceData, m *models.SysBrand) {
 	d.Set("title", m.Title)
 }
 
-// Iterate throught and update the SysBrand resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SysBrand resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysBrandSubResourceData(m []*models.SysBrand) (d []*map[string]interface{}) {
 	for _, SysBrandModel := range m {
 		if SysBrandModel != nil {

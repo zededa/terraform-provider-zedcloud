@@ -9,12 +9,13 @@ import (
 // (1) Translate DeviceInfo resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceInfoModel(d *schema.ResourceData) *models.DeviceInfo {
-	cPUArch := d.Get("cpu_arch").(string)
-	machineArch := d.Get("machine_arch").(string)
-	memMB := d.Get("mem_m_b").(string)
-	nCPU := int64(d.Get("n_cpu").(int))
-	platform := d.Get("platform").(string)
-	storageMB := d.Get("storage_m_b").(string)
+	cPUArch, _ := d.Get("cpu_arch").(string)
+	machineArch, _ := d.Get("machine_arch").(string)
+	memMB, _ := d.Get("mem_m_b").(string)
+	nCPUInt, _ := d.Get("n_cpu").(int)
+	nCPU := int64(nCPUInt)
+	platform, _ := d.Get("platform").(string)
+	storageMB, _ := d.Get("storage_m_b").(string)
 	return &models.DeviceInfo{
 		CPUArch:     cPUArch,
 		MachineArch: machineArch,
@@ -52,7 +53,7 @@ func SetDeviceInfoResourceData(d *schema.ResourceData, m *models.DeviceInfo) {
 	d.Set("storage_m_b", m.StorageMB)
 }
 
-// Iterate throught and update the DeviceInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceInfoSubResourceData(m []*models.DeviceInfo) (d []*map[string]interface{}) {
 	for _, DeviceInfoModel := range m {
 		if DeviceInfoModel != nil {

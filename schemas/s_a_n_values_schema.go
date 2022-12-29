@@ -9,12 +9,12 @@ import (
 // (1) Translate SANValues resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SANValuesModel(d *schema.ResourceData) *models.SANValues {
-	dns := d.Get("dns").([]string)
-	emaildIds := d.Get("emaild_ids").([]string)
-	hosts := d.Get("hosts").([]string)
-	ips := d.Get("ips").([]string)
-	upns := d.Get("upns").([]string)
-	uris := d.Get("uris").([]string)
+	dns, _ := d.Get("dns").([]string)
+	emaildIds, _ := d.Get("emaild_ids").([]string)
+	hosts, _ := d.Get("hosts").([]string)
+	ips, _ := d.Get("ips").([]string)
+	upns, _ := d.Get("upns").([]string)
+	uris, _ := d.Get("uris").([]string)
 	return &models.SANValues{
 		DNS:       dns,
 		EmaildIds: emaildIds,
@@ -52,7 +52,7 @@ func SetSANValuesResourceData(d *schema.ResourceData, m *models.SANValues) {
 	d.Set("uris", m.Uris)
 }
 
-// Iterate throught and update the SANValues resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SANValues resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSANValuesSubResourceData(m []*models.SANValues) (d []*map[string]interface{}) {
 	for _, SANValuesModel := range m {
 		if SANValuesModel != nil {

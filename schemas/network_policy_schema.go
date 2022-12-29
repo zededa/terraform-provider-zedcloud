@@ -9,7 +9,7 @@ import (
 // (1) Translate NetworkPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetworkPolicyModel(d *schema.ResourceData) *models.NetworkPolicy {
-	netInstanceConfig := d.Get("net_instance_config").([]*models.NetInstConfig) // []*NetInstConfig
+	netInstanceConfig, _ := d.Get("net_instance_config").([]*models.NetInstConfig) // []*NetInstConfig
 	return &models.NetworkPolicy{
 		NetInstanceConfig: netInstanceConfig,
 	}
@@ -27,7 +27,7 @@ func SetNetworkPolicyResourceData(d *schema.ResourceData, m *models.NetworkPolic
 	d.Set("net_instance_config", SetNetInstConfigSubResourceData(m.NetInstanceConfig))
 }
 
-// Iterate throught and update the NetworkPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the NetworkPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetworkPolicySubResourceData(m []*models.NetworkPolicy) (d []*map[string]interface{}) {
 	for _, NetworkPolicyModel := range m {
 		if NetworkPolicyModel != nil {

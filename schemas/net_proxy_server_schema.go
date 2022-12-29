@@ -9,9 +9,14 @@ import (
 // (1) Translate NetProxyServer resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
-	port := int64(d.Get("port").(int))
-	proto := d.Get("proto").(*models.NetworkProxyProto) // NetworkProxyProto
-	server := d.Get("server").(string)
+	portInt, _ := d.Get("port").(int)
+	port := int64(portInt)
+	protoModel, _ := d.Get("proto").(models.NetworkProxyProto) // NetworkProxyProto
+	proto := &protoModel
+	if !ok {
+		proto = nil
+	}
+	server, _ := d.Get("server").(string)
 	return &models.NetProxyServer{
 		Port:   port,
 		Proto:  proto,
@@ -37,7 +42,7 @@ func SetNetProxyServerResourceData(d *schema.ResourceData, m *models.NetProxySer
 	d.Set("server", m.Server)
 }
 
-// Iterate throught and update the NetProxyServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the NetProxyServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetProxyServerSubResourceData(m []*models.NetProxyServer) (d []*map[string]interface{}) {
 	for _, NetProxyServerModel := range m {
 		if NetProxyServerModel != nil {

@@ -11,12 +11,14 @@ import (
 // (1) Translate LispConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func LispConfigModel(d *schema.ResourceData) *models.LispConfig {
-	allocate := d.Get("allocate").(bool)
-	allocationprefix := d.Get("allocationprefix").(strfmt.Base64)
-	allocationprefixlen := int64(d.Get("allocationprefixlen").(int))
-	exportprivate := d.Get("exportprivate").(bool)
-	lispiid := int64(d.Get("lispiid").(int))
-	sp := d.Get("sp").([]*models.ServicePoint) // []*ServicePoint
+	allocate, _ := d.Get("allocate").(bool)
+	allocationprefix, _ := d.Get("allocationprefix").(strfmt.Base64)
+	allocationprefixlenInt, _ := d.Get("allocationprefixlen").(int)
+	allocationprefixlen := int64(allocationprefixlenInt)
+	exportprivate, _ := d.Get("exportprivate").(bool)
+	lispiidInt, _ := d.Get("lispiid").(int)
+	lispiid := int64(lispiidInt)
+	sp, _ := d.Get("sp").([]*models.ServicePoint) // []*ServicePoint
 	return &models.LispConfig{
 		Allocate:            allocate,
 		Allocationprefix:    allocationprefix,
@@ -54,7 +56,7 @@ func SetLispConfigResourceData(d *schema.ResourceData, m *models.LispConfig) {
 	d.Set("sp", SetServicePointSubResourceData(m.Sp))
 }
 
-// Iterate throught and update the LispConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the LispConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetLispConfigSubResourceData(m []*models.LispConfig) (d []*map[string]interface{}) {
 	for _, LispConfigModel := range m {
 		if LispConfigModel != nil {

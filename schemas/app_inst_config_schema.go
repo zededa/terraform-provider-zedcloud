@@ -9,11 +9,13 @@ import (
 // (1) Translate AppInstConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
-	bundleID := d.Get("bundle_id").(string)
-	bundleVersion := int64(d.Get("bundle_version").(int))
-	cpus := int64(d.Get("cpus").(int))
-	interfaces := d.Get("interfaces").([]*models.AppInterface) // []*AppInterface
-	var logs *models.AppInstanceLogs                           // AppInstanceLogs
+	bundleID, _ := d.Get("bundle_id").(string)
+	bundleVersionInt, _ := d.Get("bundle_version").(int)
+	bundleVersion := int64(bundleVersionInt)
+	cpusInt, _ := d.Get("cpus").(int)
+	cpus := int64(cpusInt)
+	interfaces, _ := d.Get("interfaces").([]*models.AppInterface) // []*AppInterface
+	var logs *models.AppInstanceLogs                              // AppInstanceLogs
 	logsInterface, logsIsSet := d.GetOk("logs")
 	if logsIsSet {
 		logsMap := logsInterface.([]interface{})[0].(map[string]interface{})
@@ -25,24 +27,36 @@ func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 		manifestJSONMap := manifestJSONInterface.([]interface{})[0].(map[string]interface{})
 		manifestJSON = VMManifestModelFromMap(manifestJSONMap)
 	}
-	memory := int64(d.Get("memory").(int))
-	nameAppPart := d.Get("name_app_part").(string)
-	nameProjectPart := d.Get("name_project_part").(string)
-	namingScheme := d.Get("naming_scheme").(*models.AppNamingSchemeV2) // AppNamingSchemeV2
-	networks := int64(d.Get("networks").(int))
-	newBundleVersionAvailable := d.Get("new_bundle_version_available").(bool)
-	originType := d.Get("origin_type").(*models.Origin) // Origin
-	var parentDetail *models.ObjectParentDetail         // ObjectParentDetail
+	memoryInt, _ := d.Get("memory").(int)
+	memory := int64(memoryInt)
+	nameAppPart, _ := d.Get("name_app_part").(string)
+	nameProjectPart, _ := d.Get("name_project_part").(string)
+	namingSchemeModel, _ := d.Get("naming_scheme").(models.AppNamingSchemeV2) // AppNamingSchemeV2
+	namingScheme := &namingSchemeModel
+	if !ok {
+		namingScheme = nil
+	}
+	networksInt, _ := d.Get("networks").(int)
+	networks := int64(networksInt)
+	newBundleVersionAvailable, _ := d.Get("new_bundle_version_available").(bool)
+	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originType := &originTypeModel
+	if !ok {
+		originType = nil
+	}
+	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")
 	if parentDetailIsSet {
 		parentDetailMap := parentDetailInterface.([]interface{})[0].(map[string]interface{})
 		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
 	}
-	remoteConsole := d.Get("remote_console").(bool)
-	startDelayInSeconds := int64(d.Get("start_delay_in_seconds").(int))
-	storage := int64(d.Get("storage").(int))
-	tags := d.Get("tags").(map[string]string) // map[string]string
-	var vminfo *models.VM                     // VM
+	remoteConsole, _ := d.Get("remote_console").(bool)
+	startDelayInSecondsInt, _ := d.Get("start_delay_in_seconds").(int)
+	startDelayInSeconds := int64(startDelayInSecondsInt)
+	storageInt, _ := d.Get("storage").(int)
+	storage := int64(storageInt)
+	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	var vminfo *models.VM                        // VM
 	vminfoInterface, vminfoIsSet := d.GetOk("vminfo")
 	if vminfoIsSet {
 		vminfoMap := vminfoInterface.([]interface{})[0].(map[string]interface{})
@@ -162,7 +176,7 @@ func SetAppInstConfigResourceData(d *schema.ResourceData, m *models.AppInstConfi
 	d.Set("vminfo", SetVMSubResourceData([]*models.VM{m.Vminfo}))
 }
 
-// Iterate throught and update the AppInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppInstConfigSubResourceData(m []*models.AppInstConfig) (d []*map[string]interface{}) {
 	for _, AppInstConfigModel := range m {
 		if AppInstConfigModel != nil {

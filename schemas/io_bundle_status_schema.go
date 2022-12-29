@@ -9,7 +9,7 @@ import (
 // (1) Translate IoBundleStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IoBundleStatusModel(d *schema.ResourceData) *models.IoBundleStatus {
-	appName := d.Get("app_name").(string)
+	appName, _ := d.Get("app_name").(string)
 	var err *models.DeviceError // DeviceError
 	errInterface, errIsSet := d.GetOk("err")
 	if errIsSet {
@@ -22,10 +22,14 @@ func IoBundleStatusModel(d *schema.ResourceData) *models.IoBundleStatus {
 		lteInfoMap := lteInfoInterface.([]interface{})[0].(map[string]interface{})
 		lteInfo = LTEAdapterModelFromMap(lteInfoMap)
 	}
-	memberList := d.Get("member_list").([]*models.IoMemberStatus) // []*IoMemberStatus
-	members := d.Get("members").([]string)
-	name := d.Get("name").(string)
-	typeVar := d.Get("type").(*models.IoType) // IoType
+	memberList, _ := d.Get("member_list").([]*models.IoMemberStatus) // []*IoMemberStatus
+	members, _ := d.Get("members").([]string)
+	name, _ := d.Get("name").(string)
+	typeVarModel, _ := d.Get("type").(models.IoType) // IoType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.IoBundleStatus{
 		AppName:    &appName, // string true false false
 		Err:        err,
@@ -79,7 +83,7 @@ func SetIoBundleStatusResourceData(d *schema.ResourceData, m *models.IoBundleSta
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the IoBundleStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the IoBundleStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIoBundleStatusSubResourceData(m []*models.IoBundleStatus) (d []*map[string]interface{}) {
 	for _, IoBundleStatusModel := range m {
 		if IoBundleStatusModel != nil {

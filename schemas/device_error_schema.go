@@ -9,11 +9,15 @@ import (
 // (1) Translate DeviceError resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceErrorModel(d *schema.ResourceData) *models.DeviceError {
-	description := d.Get("description").(string)
-	entities := d.Get("entities").([]*models.DeviceEntity) // []*DeviceEntity
-	retryCondition := d.Get("retry_condition").(string)
-	severity := d.Get("severity").(*models.Severity) // Severity
-	timestamp := d.Get("timestamp").(interface{})    // interface{}
+	description, _ := d.Get("description").(string)
+	entities, _ := d.Get("entities").([]*models.DeviceEntity) // []*DeviceEntity
+	retryCondition, _ := d.Get("retry_condition").(string)
+	severityModel, _ := d.Get("severity").(models.Severity) // Severity
+	severity := &severityModel
+	if !ok {
+		severity = nil
+	}
+	timestamp, _ := d.Get("timestamp").(interface{}) // interface{}
 	return &models.DeviceError{
 		Description:    &description, // string true false false
 		Entities:       entities,
@@ -47,7 +51,7 @@ func SetDeviceErrorResourceData(d *schema.ResourceData, m *models.DeviceError) {
 	d.Set("timestamp", m.Timestamp)
 }
 
-// Iterate throught and update the DeviceError resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceError resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceErrorSubResourceData(m []*models.DeviceError) (d []*map[string]interface{}) {
 	for _, DeviceErrorModel := range m {
 		if DeviceErrorModel != nil {

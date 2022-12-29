@@ -38,7 +38,7 @@ func SetIotHubServiceDetailResourceData(d *schema.ResourceData, m *models.IotHub
 	d.Set("service_detail", SetAzureResourceAndServiceDetailSubResourceData([]*models.AzureResourceAndServiceDetail{m.ServiceDetail}))
 }
 
-// Iterate throught and update the IotHubServiceDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the IotHubServiceDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIotHubServiceDetailSubResourceData(m []*models.IotHubServiceDetail) (d []*map[string]interface{}) {
 	for _, IotHubServiceDetailModel := range m {
 		if IotHubServiceDetailModel != nil {

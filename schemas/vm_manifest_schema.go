@@ -9,10 +9,14 @@ import (
 // (1) Translate VMManifest resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
-	acKind := d.Get("ac_kind").(string)
-	acVersion := d.Get("ac_version").(string)
-	appType := d.Get("app_type").(*models.AppType) // AppType
-	var configuration *models.UserDataTemplate     // UserDataTemplate
+	acKind, _ := d.Get("ac_kind").(string)
+	acVersion, _ := d.Get("ac_version").(string)
+	appTypeModel, _ := d.Get("app_type").(models.AppType) // AppType
+	appType := &appTypeModel
+	if !ok {
+		appType = nil
+	}
+	var configuration *models.UserDataTemplate // UserDataTemplate
 	configurationInterface, configurationIsSet := d.GetOk("configuration")
 	if configurationIsSet {
 		configurationMap := configurationInterface.([]interface{})[0].(map[string]interface{})
@@ -24,35 +28,39 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 		containerDetailMap := containerDetailInterface.([]interface{})[0].(map[string]interface{})
 		containerDetail = ContainerDetailModelFromMap(containerDetailMap)
 	}
-	cPUPinningEnabled := d.Get("cpu_pinning_enabled").(bool)
-	deploymentType := d.Get("deployment_type").(*models.DeploymentType) // DeploymentType
-	var desc *models.Details                                            // Details
+	cPUPinningEnabled, _ := d.Get("cpu_pinning_enabled").(bool)
+	deploymentTypeModel, _ := d.Get("deployment_type").(models.DeploymentType) // DeploymentType
+	deploymentType := &deploymentTypeModel
+	if !ok {
+		deploymentType = nil
+	}
+	var desc *models.Details // Details
 	descInterface, descIsSet := d.GetOk("desc")
 	if descIsSet {
 		descMap := descInterface.([]interface{})[0].(map[string]interface{})
 		desc = DetailsModelFromMap(descMap)
 	}
-	description := d.Get("description").(string)
-	displayName := d.Get("display_name").(string)
-	enablevnc := d.Get("enablevnc").(bool)
-	images := d.Get("images").([]*models.VMManifestImage)   // []*VMManifestImage
-	interfaces := d.Get("interfaces").([]*models.Interface) // []*Interface
-	var module *models.ModuleDetail                         // ModuleDetail
+	description, _ := d.Get("description").(string)
+	displayName, _ := d.Get("display_name").(string)
+	enablevnc, _ := d.Get("enablevnc").(bool)
+	images, _ := d.Get("images").([]*models.VMManifestImage)   // []*VMManifestImage
+	interfaces, _ := d.Get("interfaces").([]*models.Interface) // []*Interface
+	var module *models.ModuleDetail                            // ModuleDetail
 	moduleInterface, moduleIsSet := d.GetOk("module")
 	if moduleIsSet {
 		moduleMap := moduleInterface.([]interface{})[0].(map[string]interface{})
 		module = ModuleDetailModelFromMap(moduleMap)
 	}
-	name := d.Get("name").(string)
+	name, _ := d.Get("name").(string)
 	var owner *models.Author // Author
 	ownerInterface, ownerIsSet := d.GetOk("owner")
 	if ownerIsSet {
 		ownerMap := ownerInterface.([]interface{})[0].(map[string]interface{})
 		owner = AuthorModelFromMap(ownerMap)
 	}
-	permissions := d.Get("permissions").([]models.Permission) // []Permission
-	resources := d.Get("resources").([]*models.Resource)      // []*Resource
-	vmmode := d.Get("vmmode").(string)
+	permissions, _ := d.Get("permissions").([]models.Permission) // []Permission
+	resources, _ := d.Get("resources").([]*models.Resource)      // []*Resource
+	vmmode, _ := d.Get("vmmode").(string)
 	return &models.VMManifest{
 		AcKind:            &acKind,    // string true false false
 		AcVersion:         &acVersion, // string true false false
@@ -172,7 +180,7 @@ func SetVMManifestResourceData(d *schema.ResourceData, m *models.VMManifest) {
 	d.Set("vmmode", m.Vmmode)
 }
 
-// Iterate throught and update the VMManifest resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the VMManifest resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]interface{}) {
 	for _, VMManifestModel := range m {
 		if VMManifestModel != nil {

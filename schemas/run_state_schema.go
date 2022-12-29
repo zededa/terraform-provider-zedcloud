@@ -9,7 +9,7 @@ import (
 // (1) Translate RunState resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func RunStateModel(d *schema.ResourceData) *models.RunState {
-	runState := d.Get("run_state").(models.RunState)
+	runState, _ := d.Get("run_state").(models.RunState)
 	return &runState
 }
 
@@ -22,7 +22,7 @@ func RunStateModelFromMap(m map[string]interface{}) *models.RunState {
 func SetRunStateResourceData(d *schema.ResourceData, m *models.RunState) {
 }
 
-// Iterate throught and update the RunState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the RunState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetRunStateSubResourceData(m []*models.RunState) (d []*map[string]interface{}) {
 	for _, RunStateModel := range m {
 		if RunStateModel != nil {

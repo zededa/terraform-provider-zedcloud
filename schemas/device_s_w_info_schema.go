@@ -9,24 +9,38 @@ import (
 // (1) Translate DeviceSWInfo resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceSWInfoModel(d *schema.ResourceData) *models.DeviceSWInfo {
-	activated := d.Get("activated").(bool)
-	downloadProgress := int64(d.Get("download_progress").(int))
-	longVersion := d.Get("long_version").(string)
-	partitionDevice := d.Get("partition_device").(string)
-	partitionLabel := d.Get("partition_label").(string)
-	partitionState := d.Get("partition_state").(string)
-	shortVersion := d.Get("short_version").(string)
-	status := d.Get("status").(*models.SWState) // SWState
-	subStatusProgress := int64(d.Get("sub_status_progress").(int))
+	activated, _ := d.Get("activated").(bool)
+	downloadProgressInt, _ := d.Get("download_progress").(int)
+	downloadProgress := int64(downloadProgressInt)
+	longVersion, _ := d.Get("long_version").(string)
+	partitionDevice, _ := d.Get("partition_device").(string)
+	partitionLabel, _ := d.Get("partition_label").(string)
+	partitionState, _ := d.Get("partition_state").(string)
+	shortVersion, _ := d.Get("short_version").(string)
+	statusModel, _ := d.Get("status").(models.SWState) // SWState
+	status := &statusModel
+	if !ok {
+		status = nil
+	}
+	subStatusProgressInt, _ := d.Get("sub_status_progress").(int)
+	subStatusProgress := int64(subStatusProgressInt)
 	var swError *models.DeviceError // DeviceError
 	swErrorInterface, swErrorIsSet := d.GetOk("sw_error")
 	if swErrorIsSet {
 		swErrorMap := swErrorInterface.([]interface{})[0].(map[string]interface{})
 		swError = DeviceErrorModelFromMap(swErrorMap)
 	}
-	swStatus := d.Get("sw_status").(*models.DeviceSWStatus)           // DeviceSWStatus
-	swSubStatus := d.Get("sw_sub_status").(*models.DeviceSWSubStatus) // DeviceSWSubStatus
-	swSubStatusStr := d.Get("sw_sub_status_str").(string)
+	swStatusModel, _ := d.Get("sw_status").(models.DeviceSWStatus) // DeviceSWStatus
+	swStatus := &swStatusModel
+	if !ok {
+		swStatus = nil
+	}
+	swSubStatusModel, _ := d.Get("sw_sub_status").(models.DeviceSWSubStatus) // DeviceSWSubStatus
+	swSubStatus := &swSubStatusModel
+	if !ok {
+		swSubStatus = nil
+	}
+	swSubStatusStr, _ := d.Get("sw_sub_status_str").(string)
 	return &models.DeviceSWInfo{
 		Activated:         activated,
 		DownloadProgress:  downloadProgress,
@@ -98,7 +112,7 @@ func SetDeviceSWInfoResourceData(d *schema.ResourceData, m *models.DeviceSWInfo)
 	d.Set("sw_sub_status_str", m.SwSubStatusStr)
 }
 
-// Iterate throught and update the DeviceSWInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceSWInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceSWInfoSubResourceData(m []*models.DeviceSWInfo) (d []*map[string]interface{}) {
 	for _, DeviceSWInfoModel := range m {
 		if DeviceSWInfoModel != nil {

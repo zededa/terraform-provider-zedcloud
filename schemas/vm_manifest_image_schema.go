@@ -9,19 +9,23 @@ import (
 // (1) Translate VMManifestImage resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VMManifestImageModel(d *schema.ResourceData) *models.VMManifestImage {
-	cleartext := d.Get("cleartext").(bool)
-	drvtype := d.Get("drvtype").(string)
-	ignorepurge := d.Get("ignorepurge").(bool)
-	imageformat := d.Get("imageformat").(*models.ConfigFormat) // ConfigFormat
-	imageid := d.Get("imageid").(string)
-	imagename := d.Get("imagename").(string)
-	maxsize := d.Get("maxsize").(string)
-	mountpath := d.Get("mountpath").(string)
-	params := d.Get("params").([]*models.Param) // []*Param
-	preserve := d.Get("preserve").(bool)
-	readonly := d.Get("readonly").(bool)
-	target := d.Get("target").(string)
-	volumelabel := d.Get("volumelabel").(string)
+	cleartext, _ := d.Get("cleartext").(bool)
+	drvtype, _ := d.Get("drvtype").(string)
+	ignorepurge, _ := d.Get("ignorepurge").(bool)
+	imageformatModel, _ := d.Get("imageformat").(models.ConfigFormat) // ConfigFormat
+	imageformat := &imageformatModel
+	if !ok {
+		imageformat = nil
+	}
+	imageid, _ := d.Get("imageid").(string)
+	imagename, _ := d.Get("imagename").(string)
+	maxsize, _ := d.Get("maxsize").(string)
+	mountpath, _ := d.Get("mountpath").(string)
+	params, _ := d.Get("params").([]*models.Param) // []*Param
+	preserve, _ := d.Get("preserve").(bool)
+	readonly, _ := d.Get("readonly").(bool)
+	target, _ := d.Get("target").(string)
+	volumelabel, _ := d.Get("volumelabel").(string)
 	return &models.VMManifestImage{
 		Cleartext:   cleartext,
 		Drvtype:     drvtype,
@@ -87,7 +91,7 @@ func SetVMManifestImageResourceData(d *schema.ResourceData, m *models.VMManifest
 	d.Set("volumelabel", m.Volumelabel)
 }
 
-// Iterate throught and update the VMManifestImage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the VMManifestImage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVMManifestImageSubResourceData(m []*models.VMManifestImage) (d []*map[string]interface{}) {
 	for _, VMManifestImageModel := range m {
 		if VMManifestImageModel != nil {

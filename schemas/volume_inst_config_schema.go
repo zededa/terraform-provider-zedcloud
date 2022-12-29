@@ -9,22 +9,30 @@ import (
 // (1) Translate VolumeInstConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VolumeInstConfigModel(d *schema.ResourceData) *models.VolumeInstConfig {
-	accessmode := d.Get("accessmode").(*models.VolumeInstanceAccessMode) // VolumeInstanceAccessMode
-	blockStorageTags := d.Get("block_storage_tags").(map[string]string)  // map[string]string
-	cleartext := d.Get("cleartext").(bool)
-	contentTreeID := d.Get("content_tree_id").(string)
-	contentTreeTargetCondition := d.Get("content_tree_target_condition").(map[string]string) // map[string]string
-	image := d.Get("image").(string)
-	label := d.Get("label").(string)
-	multiattach := d.Get("multiattach").(bool)
+	accessmodeModel, _ := d.Get("accessmode").(models.VolumeInstanceAccessMode) // VolumeInstanceAccessMode
+	accessmode := &accessmodeModel
+	if !ok {
+		accessmode = nil
+	}
+	blockStorageTags, _ := d.Get("block_storage_tags").(map[string]string) // map[string]string
+	cleartext, _ := d.Get("cleartext").(bool)
+	contentTreeID, _ := d.Get("content_tree_id").(string)
+	contentTreeTargetCondition, _ := d.Get("content_tree_target_condition").(map[string]string) // map[string]string
+	image, _ := d.Get("image").(string)
+	label, _ := d.Get("label").(string)
+	multiattach, _ := d.Get("multiattach").(bool)
 	var purge *models.ZedCloudOpsCmd // ZedCloudOpsCmd
 	purgeInterface, purgeIsSet := d.GetOk("purge")
 	if purgeIsSet {
 		purgeMap := purgeInterface.([]interface{})[0].(map[string]interface{})
 		purge = ZedCloudOpsCmdModelFromMap(purgeMap)
 	}
-	sizeBytes := d.Get("size_bytes").(uint64)
-	typeVar := d.Get("type").(*models.VolumeInstanceType) // VolumeInstanceType
+	sizeBytes, _ := d.Get("size_bytes").(uint64)
+	typeVarModel, _ := d.Get("type").(models.VolumeInstanceType) // VolumeInstanceType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.VolumeInstConfig{
 		Accessmode:                 accessmode,
 		BlockStorageTags:           blockStorageTags,
@@ -88,7 +96,7 @@ func SetVolumeInstConfigResourceData(d *schema.ResourceData, m *models.VolumeIns
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the VolumeInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the VolumeInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVolumeInstConfigSubResourceData(m []*models.VolumeInstConfig) (d []*map[string]interface{}) {
 	for _, VolumeInstConfigModel := range m {
 		if VolumeInstConfigModel != nil {

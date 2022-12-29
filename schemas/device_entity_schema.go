@@ -9,9 +9,13 @@ import (
 // (1) Translate DeviceEntity resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceEntityModel(d *schema.ResourceData) *models.DeviceEntity {
-	entity := d.Get("entity").(*models.Entity) // Entity
-	entityID := d.Get("entity_id").(string)
-	entityName := d.Get("entity_name").(string)
+	entityModel, _ := d.Get("entity").(models.Entity) // Entity
+	entity := &entityModel
+	if !ok {
+		entity = nil
+	}
+	entityID, _ := d.Get("entity_id").(string)
+	entityName, _ := d.Get("entity_name").(string)
 	return &models.DeviceEntity{
 		Entity:     entity,
 		EntityID:   entityID,
@@ -37,7 +41,7 @@ func SetDeviceEntityResourceData(d *schema.ResourceData, m *models.DeviceEntity)
 	d.Set("entity_name", m.EntityName)
 }
 
-// Iterate throught and update the DeviceEntity resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceEntity resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceEntitySubResourceData(m []*models.DeviceEntity) (d []*map[string]interface{}) {
 	for _, DeviceEntityModel := range m {
 		if DeviceEntityModel != nil {

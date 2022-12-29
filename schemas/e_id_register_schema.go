@@ -11,16 +11,18 @@ import (
 // (1) Translate EIDRegister resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EIDRegisterModel(d *schema.ResourceData) *models.EIDRegister {
-	appCert := d.Get("app_cert").(strfmt.Base64)
-	appPrivateKey := d.Get("app_private_key").(strfmt.Base64)
-	appPublicKey := d.Get("app_public_key").(strfmt.Base64)
-	displayName := d.Get("display_name").(string)
-	eID := d.Get("e_id").(string)
-	eIDHashLen := int64(d.Get("e_id_hash_len").(int))
-	lispInstance := int64(d.Get("lisp_instance").(int))
-	lispMapServers := d.Get("lisp_map_servers").([]*models.LispServer) // []*LispServer
-	lispSignature := d.Get("lisp_signature").(string)
-	uuid := d.Get("uuid").(string)
+	appCert, _ := d.Get("app_cert").(strfmt.Base64)
+	appPrivateKey, _ := d.Get("app_private_key").(strfmt.Base64)
+	appPublicKey, _ := d.Get("app_public_key").(strfmt.Base64)
+	displayName, _ := d.Get("display_name").(string)
+	eID, _ := d.Get("e_id").(string)
+	eIDHashLenInt, _ := d.Get("e_id_hash_len").(int)
+	eIDHashLen := int64(eIDHashLenInt)
+	lispInstanceInt, _ := d.Get("lisp_instance").(int)
+	lispInstance := int64(lispInstanceInt)
+	lispMapServers, _ := d.Get("lisp_map_servers").([]*models.LispServer) // []*LispServer
+	lispSignature, _ := d.Get("lisp_signature").(string)
+	uuid, _ := d.Get("uuid").(string)
 	return &models.EIDRegister{
 		AppCert:        &appCert,       // strfmt.Base64 true false false
 		AppPrivateKey:  &appPrivateKey, // strfmt.Base64 true false false
@@ -74,7 +76,7 @@ func SetEIDRegisterResourceData(d *schema.ResourceData, m *models.EIDRegister) {
 	d.Set("uuid", m.UUID)
 }
 
-// Iterate throught and update the EIDRegister resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the EIDRegister resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEIDRegisterSubResourceData(m []*models.EIDRegister) (d []*map[string]interface{}) {
 	for _, EIDRegisterModel := range m {
 		if EIDRegisterModel != nil {

@@ -9,7 +9,7 @@ import (
 // (1) Translate IndividualSymmetricKeyEnrollment resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IndividualSymmetricKeyEnrollmentModel(d *schema.ResourceData) *models.IndividualSymmetricKeyEnrollment {
-	registrationID := d.Get("registration_id").(string)
+	registrationID, _ := d.Get("registration_id").(string)
 	return &models.IndividualSymmetricKeyEnrollment{
 		RegistrationID: registrationID,
 	}
@@ -27,7 +27,7 @@ func SetIndividualSymmetricKeyEnrollmentResourceData(d *schema.ResourceData, m *
 	d.Set("registration_id", m.RegistrationID)
 }
 
-// Iterate throught and update the IndividualSymmetricKeyEnrollment resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the IndividualSymmetricKeyEnrollment resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIndividualSymmetricKeyEnrollmentSubResourceData(m []*models.IndividualSymmetricKeyEnrollment) (d []*map[string]interface{}) {
 	for _, IndividualSymmetricKeyEnrollmentModel := range m {
 		if IndividualSymmetricKeyEnrollmentModel != nil {

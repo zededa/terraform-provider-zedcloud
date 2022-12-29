@@ -9,17 +9,25 @@ import (
 // (1) Translate VariableGroupVariable resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VariableGroupVariableModel(d *schema.ResourceData) *models.VariableGroupVariable {
-	defaultVar := d.Get("default").(string)
-	encode := d.Get("encode").(*models.VariableFileEncoding)   // VariableFileEncoding
-	format := d.Get("format").(*models.VariableVariableFormat) // VariableVariableFormat
-	label := d.Get("label").(string)
-	maxLength := d.Get("max_length").(string)
-	name := d.Get("name").(string)
-	options := d.Get("options").([]*models.VariableOptionVal) // []*VariableOptionVal
-	processInput := d.Get("process_input").(string)
-	required := d.Get("required").(bool)
-	typeVar := d.Get("type").(string)
-	value := d.Get("value").(string)
+	defaultVar, _ := d.Get("default").(string)
+	encodeModel, _ := d.Get("encode").(models.VariableFileEncoding) // VariableFileEncoding
+	encode := &encodeModel
+	if !ok {
+		encode = nil
+	}
+	formatModel, _ := d.Get("format").(models.VariableVariableFormat) // VariableVariableFormat
+	format := &formatModel
+	if !ok {
+		format = nil
+	}
+	label, _ := d.Get("label").(string)
+	maxLength, _ := d.Get("max_length").(string)
+	name, _ := d.Get("name").(string)
+	options, _ := d.Get("options").([]*models.VariableOptionVal) // []*VariableOptionVal
+	processInput, _ := d.Get("process_input").(string)
+	required, _ := d.Get("required").(bool)
+	typeVar, _ := d.Get("type").(string)
+	value, _ := d.Get("value").(string)
 	return &models.VariableGroupVariable{
 		Default:      defaultVar,
 		Encode:       encode,
@@ -77,7 +85,7 @@ func SetVariableGroupVariableResourceData(d *schema.ResourceData, m *models.Vari
 	d.Set("value", m.Value)
 }
 
-// Iterate throught and update the VariableGroupVariable resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the VariableGroupVariable resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVariableGroupVariableSubResourceData(m []*models.VariableGroupVariable) (d []*map[string]interface{}) {
 	for _, VariableGroupVariableModel := range m {
 		if VariableGroupVariableModel != nil {

@@ -9,7 +9,7 @@ import (
 // (1) Translate DeviceCmdsSubType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceCmdsSubTypeModel(d *schema.ResourceData) *models.DeviceCmdsSubType {
-	deviceCmdsSubType := d.Get("device_cmds_sub_type").(models.DeviceCmdsSubType)
+	deviceCmdsSubType, _ := d.Get("device_cmds_sub_type").(models.DeviceCmdsSubType)
 	return &deviceCmdsSubType
 }
 
@@ -22,7 +22,7 @@ func DeviceCmdsSubTypeModelFromMap(m map[string]interface{}) *models.DeviceCmdsS
 func SetDeviceCmdsSubTypeResourceData(d *schema.ResourceData, m *models.DeviceCmdsSubType) {
 }
 
-// Iterate throught and update the DeviceCmdsSubType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceCmdsSubType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceCmdsSubTypeSubResourceData(m []*models.DeviceCmdsSubType) (d []*map[string]interface{}) {
 	for _, DeviceCmdsSubTypeModel := range m {
 		if DeviceCmdsSubTypeModel != nil {

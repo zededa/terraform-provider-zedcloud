@@ -9,9 +9,9 @@ import (
 // (1) Translate ResourceGroupDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ResourceGroupDetailModel(d *schema.ResourceData) *models.ResourceGroupDetail {
-	name := d.Get("name").(string)
-	region := d.Get("region").(string)
-	subscriptionID := d.Get("subscription_id").(string)
+	name, _ := d.Get("name").(string)
+	region, _ := d.Get("region").(string)
+	subscriptionID, _ := d.Get("subscription_id").(string)
 	return &models.ResourceGroupDetail{
 		Name:           &name, // string true false false
 		Region:         region,
@@ -37,7 +37,7 @@ func SetResourceGroupDetailResourceData(d *schema.ResourceData, m *models.Resour
 	d.Set("subscription_id", m.SubscriptionID)
 }
 
-// Iterate throught and update the ResourceGroupDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ResourceGroupDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetResourceGroupDetailSubResourceData(m []*models.ResourceGroupDetail) (d []*map[string]interface{}) {
 	for _, ResourceGroupDetailModel := range m {
 		if ResourceGroupDetailModel != nil {

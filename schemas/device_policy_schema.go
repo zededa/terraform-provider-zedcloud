@@ -21,7 +21,11 @@ func DevicePolicyModel(d *schema.ResourceData) *models.DevicePolicy {
 		metaDataMap := metaDataInterface.([]interface{})[0].(map[string]interface{})
 		metaData = PolicyCommonModelFromMap(metaDataMap)
 	}
-	policySubType := d.Get("policy_sub_type").(*models.DevicePolicyType) // DevicePolicyType
+	policySubTypeModel, _ := d.Get("policy_sub_type").(models.DevicePolicyType) // DevicePolicyType
+	policySubType := &policySubTypeModel
+	if !ok {
+		policySubType = nil
+	}
 	return &models.DevicePolicy{
 		AttestationPolicy: attestationPolicy,
 		MetaData:          metaData,
@@ -59,7 +63,7 @@ func SetDevicePolicyResourceData(d *schema.ResourceData, m *models.DevicePolicy)
 	d.Set("policy_sub_type", m.PolicySubType)
 }
 
-// Iterate throught and update the DevicePolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DevicePolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDevicePolicySubResourceData(m []*models.DevicePolicy) (d []*map[string]interface{}) {
 	for _, DevicePolicyModel := range m {
 		if DevicePolicyModel != nil {

@@ -9,7 +9,7 @@ import (
 // (1) Translate SWState resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SWStateModel(d *schema.ResourceData) *models.SWState {
-	sWState := d.Get("s_w_state").(models.SWState)
+	sWState, _ := d.Get("s_w_state").(models.SWState)
 	return &sWState
 }
 
@@ -22,7 +22,7 @@ func SWStateModelFromMap(m map[string]interface{}) *models.SWState {
 func SetSWStateResourceData(d *schema.ResourceData, m *models.SWState) {
 }
 
-// Iterate throught and update the SWState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SWState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSWStateSubResourceData(m []*models.SWState) (d []*map[string]interface{}) {
 	for _, SWStateModel := range m {
 		if SWStateModel != nil {

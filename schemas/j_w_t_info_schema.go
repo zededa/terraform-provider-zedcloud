@@ -9,11 +9,13 @@ import (
 // (1) Translate JWTInfo resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func JWTInfoModel(d *schema.ResourceData) *models.JWTInfo {
-	allowSec := int64(d.Get("allow_sec").(int))
-	dispURL := d.Get("disp_url").(string)
-	encrypt := d.Get("encrypt").(bool)
-	expireSec := d.Get("expire_sec").(string)
-	numInst := int64(d.Get("num_inst").(int))
+	allowSecInt, _ := d.Get("allow_sec").(int)
+	allowSec := int64(allowSecInt)
+	dispURL, _ := d.Get("disp_url").(string)
+	encrypt, _ := d.Get("encrypt").(bool)
+	expireSec, _ := d.Get("expire_sec").(string)
+	numInstInt, _ := d.Get("num_inst").(int)
+	numInst := int64(numInstInt)
 	return &models.JWTInfo{
 		AllowSec:  allowSec,
 		DispURL:   dispURL,
@@ -47,7 +49,7 @@ func SetJWTInfoResourceData(d *schema.ResourceData, m *models.JWTInfo) {
 	d.Set("num_inst", m.NumInst)
 }
 
-// Iterate throught and update the JWTInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the JWTInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetJWTInfoSubResourceData(m []*models.JWTInfo) (d []*map[string]interface{}) {
 	for _, JWTInfoModel := range m {
 		if JWTInfoModel != nil {

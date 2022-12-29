@@ -9,8 +9,8 @@ import (
 // (1) Translate Capabilities resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CapabilitiesModel(d *schema.ResourceData) *models.Capabilities {
-	hWAssistedVirtualization := d.Get("h_w_assisted_virtualization").(bool)
-	iOVirtualization := d.Get("i_o_virtualization").(bool)
+	hWAssistedVirtualization, _ := d.Get("h_w_assisted_virtualization").(bool)
+	iOVirtualization, _ := d.Get("i_o_virtualization").(bool)
 	return &models.Capabilities{
 		HWAssistedVirtualization: hWAssistedVirtualization,
 		IOVirtualization:         iOVirtualization,
@@ -32,7 +32,7 @@ func SetCapabilitiesResourceData(d *schema.ResourceData, m *models.Capabilities)
 	d.Set("i_o_virtualization", m.IOVirtualization)
 }
 
-// Iterate throught and update the Capabilities resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Capabilities resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCapabilitiesSubResourceData(m []*models.Capabilities) (d []*map[string]interface{}) {
 	for _, CapabilitiesModel := range m {
 		if CapabilitiesModel != nil {

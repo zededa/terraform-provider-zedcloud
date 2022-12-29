@@ -9,7 +9,7 @@ import (
 // (1) Translate IoType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IoTypeModel(d *schema.ResourceData) *models.IoType {
-	ioType := d.Get("io_type").(models.IoType)
+	ioType, _ := d.Get("io_type").(models.IoType)
 	return &ioType
 }
 
@@ -22,7 +22,7 @@ func IoTypeModelFromMap(m map[string]interface{}) *models.IoType {
 func SetIoTypeResourceData(d *schema.ResourceData, m *models.IoType) {
 }
 
-// Iterate throught and update the IoType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the IoType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIoTypeSubResourceData(m []*models.IoType) (d []*map[string]interface{}) {
 	for _, IoTypeModel := range m {
 		if IoTypeModel != nil {

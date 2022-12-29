@@ -15,8 +15,8 @@ func AzureResourceAndServicesModel(d *schema.ResourceData) *models.AzureResource
 		dpsServiceMap := dpsServiceInterface.([]interface{})[0].(map[string]interface{})
 		dpsService = DPSServiceDetailModelFromMap(dpsServiceMap)
 	}
-	iotHubService := d.Get("iot_hub_service").([]*models.IotHubServiceDetail) // []*IotHubServiceDetail
-	resourceGroup := d.Get("resource_group").([]*models.ResourceGroupDetail)  // []*ResourceGroupDetail
+	iotHubService, _ := d.Get("iot_hub_service").([]*models.IotHubServiceDetail) // []*IotHubServiceDetail
+	resourceGroup, _ := d.Get("resource_group").([]*models.ResourceGroupDetail)  // []*ResourceGroupDetail
 	return &models.AzureResourceAndServices{
 		DpsService:    dpsService,
 		IotHubService: iotHubService,
@@ -48,7 +48,7 @@ func SetAzureResourceAndServicesResourceData(d *schema.ResourceData, m *models.A
 	d.Set("resource_group", SetResourceGroupDetailSubResourceData(m.ResourceGroup))
 }
 
-// Iterate throught and update the AzureResourceAndServices resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AzureResourceAndServices resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAzureResourceAndServicesSubResourceData(m []*models.AzureResourceAndServices) (d []*map[string]interface{}) {
 	for _, AzureResourceAndServicesModel := range m {
 		if AzureResourceAndServicesModel != nil {

@@ -9,10 +9,14 @@ import (
 // (1) Translate BlobStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func BlobStatusModel(d *schema.ResourceData) *models.BlobStatus {
-	hash := d.Get("hash").(string)
-	refCount := d.Get("ref_count").(string)
-	sizeMB := d.Get("size_m_b").(string)
-	swState := d.Get("sw_state").(*models.SWState) // SWState
+	hash, _ := d.Get("hash").(string)
+	refCount, _ := d.Get("ref_count").(string)
+	sizeMB, _ := d.Get("size_m_b").(string)
+	swStateModel, _ := d.Get("sw_state").(models.SWState) // SWState
+	swState := &swStateModel
+	if !ok {
+		swState = nil
+	}
 	return &models.BlobStatus{
 		Hash:     hash,
 		RefCount: refCount,
@@ -42,7 +46,7 @@ func SetBlobStatusResourceData(d *schema.ResourceData, m *models.BlobStatus) {
 	d.Set("sw_state", m.SwState)
 }
 
-// Iterate throught and update the BlobStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the BlobStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetBlobStatusSubResourceData(m []*models.BlobStatus) (d []*map[string]interface{}) {
 	for _, BlobStatusModel := range m {
 		if BlobStatusModel != nil {

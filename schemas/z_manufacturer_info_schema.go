@@ -9,18 +9,22 @@ import (
 // (1) Translate ZManufacturerInfo resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZManufacturerInfoModel(d *schema.ResourceData) *models.ZManufacturerInfo {
-	biosReleaseDate := d.Get("bios_release_date").(string)
-	biosVendor := d.Get("bios_vendor").(string)
-	biosVersion := d.Get("bios_version").(string)
-	compatible := d.Get("compatible").(string)
-	endorsementKey := d.Get("endorsement_key").(string)
-	hSMInfo := d.Get("h_s_m_info").(string)
-	hSMStatus := d.Get("h_s_m_status").(*models.DeviceHWSecurityModuleStatus) // DeviceHWSecurityModuleStatus
-	manufacturer := d.Get("manufacturer").(string)
-	productName := d.Get("product_name").(string)
-	serialNumber := d.Get("serial_number").(string)
-	uuid := d.Get("uuid").(string)
-	version := d.Get("version").(string)
+	biosReleaseDate, _ := d.Get("bios_release_date").(string)
+	biosVendor, _ := d.Get("bios_vendor").(string)
+	biosVersion, _ := d.Get("bios_version").(string)
+	compatible, _ := d.Get("compatible").(string)
+	endorsementKey, _ := d.Get("endorsement_key").(string)
+	hSMInfo, _ := d.Get("h_s_m_info").(string)
+	hSMStatusModel, _ := d.Get("h_s_m_status").(models.DeviceHWSecurityModuleStatus) // DeviceHWSecurityModuleStatus
+	hSMStatus := &hSMStatusModel
+	if !ok {
+		hSMStatus = nil
+	}
+	manufacturer, _ := d.Get("manufacturer").(string)
+	productName, _ := d.Get("product_name").(string)
+	serialNumber, _ := d.Get("serial_number").(string)
+	uuid, _ := d.Get("uuid").(string)
+	version, _ := d.Get("version").(string)
 	return &models.ZManufacturerInfo{
 		BiosReleaseDate: biosReleaseDate,
 		BiosVendor:      biosVendor,
@@ -82,7 +86,7 @@ func SetZManufacturerInfoResourceData(d *schema.ResourceData, m *models.ZManufac
 	d.Set("version", m.Version)
 }
 
-// Iterate throught and update the ZManufacturerInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ZManufacturerInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetZManufacturerInfoSubResourceData(m []*models.ZManufacturerInfo) (d []*map[string]interface{}) {
 	for _, ZManufacturerInfoModel := range m {
 		if ZManufacturerInfoModel != nil {

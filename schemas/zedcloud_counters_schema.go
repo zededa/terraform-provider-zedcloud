@@ -9,11 +9,11 @@ import (
 // (1) Translate ZedcloudCounters resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZedcloudCountersModel(d *schema.ResourceData) *models.ZedcloudCounters {
-	failures := d.Get("failures").(uint64)
-	ifName := d.Get("if_name").(string)
-	lastFailure := d.Get("last_failure").(interface{}) // interface{}
-	lastSuccess := d.Get("last_success").(interface{}) // interface{}
-	success := d.Get("success").(uint64)
+	failures, _ := d.Get("failures").(uint64)
+	ifName, _ := d.Get("if_name").(string)
+	lastFailure, _ := d.Get("last_failure").(interface{}) // interface{}
+	lastSuccess, _ := d.Get("last_success").(interface{}) // interface{}
+	success, _ := d.Get("success").(uint64)
 	return &models.ZedcloudCounters{
 		Failures:    failures,
 		IfName:      ifName,
@@ -47,7 +47,7 @@ func SetZedcloudCountersResourceData(d *schema.ResourceData, m *models.ZedcloudC
 	d.Set("success", m.Success)
 }
 
-// Iterate throught and update the ZedcloudCounters resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ZedcloudCounters resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetZedcloudCountersSubResourceData(m []*models.ZedcloudCounters) (d []*map[string]interface{}) {
 	for _, ZedcloudCountersModel := range m {
 		if ZedcloudCountersModel != nil {

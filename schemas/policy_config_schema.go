@@ -21,8 +21,8 @@ func PolicyConfigModel(d *schema.ResourceData) *models.PolicyConfig {
 		attestationPolicyMap := attestationPolicyInterface.([]interface{})[0].(map[string]interface{})
 		attestationPolicy = AttestationPolicyModelFromMap(attestationPolicyMap)
 	}
-	attr := d.Get("attr").(map[string]string) // map[string]string
-	var azurePolicy *models.AzurePolicy       // AzurePolicy
+	attr, _ := d.Get("attr").(map[string]string) // map[string]string
+	var azurePolicy *models.AzurePolicy          // AzurePolicy
 	azurePolicyInterface, azurePolicyIsSet := d.GetOk("azure_policy")
 	if azurePolicyIsSet {
 		azurePolicyMap := azurePolicyInterface.([]interface{})[0].(map[string]interface{})
@@ -34,30 +34,34 @@ func PolicyConfigModel(d *schema.ResourceData) *models.PolicyConfig {
 		clusterPolicyMap := clusterPolicyInterface.([]interface{})[0].(map[string]interface{})
 		clusterPolicy = ClusterPolicyModelFromMap(clusterPolicyMap)
 	}
-	description := d.Get("description").(string)
+	description, _ := d.Get("description").(string)
 	var edgeviewPolicy *models.EdgeviewPolicy // EdgeviewPolicy
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
 	if edgeviewPolicyIsSet {
 		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})[0].(map[string]interface{})
 		edgeviewPolicy = EdgeviewPolicyModelFromMap(edgeviewPolicyMap)
 	}
-	id := d.Get("id").(string)
+	id, _ := d.Get("id").(string)
 	var modulePolicy *models.ModulePolicy // ModulePolicy
 	modulePolicyInterface, modulePolicyIsSet := d.GetOk("module_policy")
 	if modulePolicyIsSet {
 		modulePolicyMap := modulePolicyInterface.([]interface{})[0].(map[string]interface{})
 		modulePolicy = ModulePolicyModelFromMap(modulePolicyMap)
 	}
-	name := d.Get("name").(string)
+	name, _ := d.Get("name").(string)
 	var networkPolicy *models.NetworkPolicy // NetworkPolicy
 	networkPolicyInterface, networkPolicyIsSet := d.GetOk("network_policy")
 	if networkPolicyIsSet {
 		networkPolicyMap := networkPolicyInterface.([]interface{})[0].(map[string]interface{})
 		networkPolicy = NetworkPolicyModelFromMap(networkPolicyMap)
 	}
-	statusMessage := d.Get("status_message").(string)
-	title := d.Get("title").(string)
-	typeVar := d.Get("type").(*models.PolicyType) // PolicyType
+	statusMessage, _ := d.Get("status_message").(string)
+	title, _ := d.Get("title").(string)
+	typeVarModel, _ := d.Get("type").(models.PolicyType) // PolicyType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.PolicyConfig{
 		AppPolicy:         appPolicy,
 		AttestationPolicy: attestationPolicy,
@@ -171,7 +175,7 @@ func SetPolicyConfigResourceData(d *schema.ResourceData, m *models.PolicyConfig)
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the PolicyConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the PolicyConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPolicyConfigSubResourceData(m []*models.PolicyConfig) (d []*map[string]interface{}) {
 	for _, PolicyConfigModel := range m {
 		if PolicyConfigModel != nil {

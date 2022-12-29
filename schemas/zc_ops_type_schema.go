@@ -9,7 +9,7 @@ import (
 // (1) Translate ZcOpsType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZcOpsTypeModel(d *schema.ResourceData) *models.ZcOpsType {
-	zcOpsType := d.Get("zc_ops_type").(models.ZcOpsType)
+	zcOpsType, _ := d.Get("zc_ops_type").(models.ZcOpsType)
 	return &zcOpsType
 }
 
@@ -22,7 +22,7 @@ func ZcOpsTypeModelFromMap(m map[string]interface{}) *models.ZcOpsType {
 func SetZcOpsTypeResourceData(d *schema.ResourceData, m *models.ZcOpsType) {
 }
 
-// Iterate throught and update the ZcOpsType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ZcOpsType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetZcOpsTypeSubResourceData(m []*models.ZcOpsType) (d []*map[string]interface{}) {
 	for _, ZcOpsTypeModel := range m {
 		if ZcOpsTypeModel != nil {

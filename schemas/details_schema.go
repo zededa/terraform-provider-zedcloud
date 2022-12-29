@@ -9,14 +9,18 @@ import (
 // (1) Translate Details resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DetailsModel(d *schema.ResourceData) *models.Details {
-	agreementList := d.Get("agreement_list").(map[string]string) // map[string]string
-	appCategory := d.Get("app_category").(*models.AppCategory)   // AppCategory
-	category := d.Get("category").(string)
-	licenseList := d.Get("license_list").(map[string]string) // map[string]string
-	logo := d.Get("logo").(map[string]string)                // map[string]string
-	os := d.Get("os").(string)
-	screenshotList := d.Get("screenshot_list").(map[string]string) // map[string]string
-	support := d.Get("support").(string)
+	agreementList, _ := d.Get("agreement_list").(map[string]string)   // map[string]string
+	appCategoryModel, _ := d.Get("app_category").(models.AppCategory) // AppCategory
+	appCategory := &appCategoryModel
+	if !ok {
+		appCategory = nil
+	}
+	category, _ := d.Get("category").(string)
+	licenseList, _ := d.Get("license_list").(map[string]string) // map[string]string
+	logo, _ := d.Get("logo").(map[string]string)                // map[string]string
+	os, _ := d.Get("os").(string)
+	screenshotList, _ := d.Get("screenshot_list").(map[string]string) // map[string]string
+	support, _ := d.Get("support").(string)
 	return &models.Details{
 		AgreementList:  agreementList,
 		AppCategory:    appCategory,
@@ -62,7 +66,7 @@ func SetDetailsResourceData(d *schema.ResourceData, m *models.Details) {
 	d.Set("support", m.Support)
 }
 
-// Iterate throught and update the Details resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Details resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDetailsSubResourceData(m []*models.Details) (d []*map[string]interface{}) {
 	for _, DetailsModel := range m {
 		if DetailsModel != nil {

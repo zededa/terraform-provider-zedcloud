@@ -9,18 +9,26 @@ import (
 // (1) Translate EnrollmentDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
-	allocationPolicy := d.Get("allocation_policy").(*models.AllocationPolicy) // AllocationPolicy
-	attachedIotHubsName := d.Get("attached_iot_hubs_name").([]string)
-	certificateEnrollment := d.Get("certificate_enrollment").(models.CertificateEnrollmentDetail) // CertificateEnrollmentDetail
-	enableIotEdgeDevice := d.Get("enable_iot_edge_device").(bool)
-	mechanism := d.Get("mechanism").(*models.EnrollmentMechanism)   // EnrollmentMechanism
+	allocationPolicyModel, _ := d.Get("allocation_policy").(models.AllocationPolicy) // AllocationPolicy
+	allocationPolicy := &allocationPolicyModel
+	if !ok {
+		allocationPolicy = nil
+	}
+	attachedIotHubsName, _ := d.Get("attached_iot_hubs_name").([]string)
+	certificateEnrollment, _ := d.Get("certificate_enrollment").(models.CertificateEnrollmentDetail) // CertificateEnrollmentDetail
+	enableIotEdgeDevice, _ := d.Get("enable_iot_edge_device").(bool)
+	mechanismModel, _ := d.Get("mechanism").(models.EnrollmentMechanism) // EnrollmentMechanism
+	mechanism := &mechanismModel
+	if !ok {
+		mechanism = nil
+	}
 	var symmetricKeyEnrollment *models.SymmetricKeyEnrollmentDetail // SymmetricKeyEnrollmentDetail
 	symmetricKeyEnrollmentInterface, symmetricKeyEnrollmentIsSet := d.GetOk("symmetric_key_enrollment")
 	if symmetricKeyEnrollmentIsSet {
 		symmetricKeyEnrollmentMap := symmetricKeyEnrollmentInterface.([]interface{})[0].(map[string]interface{})
 		symmetricKeyEnrollment = SymmetricKeyEnrollmentDetailModelFromMap(symmetricKeyEnrollmentMap)
 	}
-	tags := d.Get("tags").(map[string]string)     // map[string]string
+	tags, _ := d.Get("tags").(map[string]string)  // map[string]string
 	var tpmEnrollment *models.TPMEnrollmentDetail // TPMEnrollmentDetail
 	tpmEnrollmentInterface, tpmEnrollmentIsSet := d.GetOk("tpm_enrollment")
 	if tpmEnrollmentIsSet {
@@ -84,7 +92,7 @@ func SetEnrollmentDetailResourceData(d *schema.ResourceData, m *models.Enrollmen
 	d.Set("tpm_enrollment", SetTPMEnrollmentDetailSubResourceData([]*models.TPMEnrollmentDetail{m.TpmEnrollment}))
 }
 
-// Iterate throught and update the EnrollmentDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the EnrollmentDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEnrollmentDetailSubResourceData(m []*models.EnrollmentDetail) (d []*map[string]interface{}) {
 	for _, EnrollmentDetailModel := range m {
 		if EnrollmentDetailModel != nil {

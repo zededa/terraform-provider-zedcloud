@@ -9,7 +9,7 @@ import (
 // (1) Translate ZcOpsStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZcOpsStatusModel(d *schema.ResourceData) *models.ZcOpsStatus {
-	zcOpsStatus := d.Get("zc_ops_status").(models.ZcOpsStatus)
+	zcOpsStatus, _ := d.Get("zc_ops_status").(models.ZcOpsStatus)
 	return &zcOpsStatus
 }
 
@@ -22,7 +22,7 @@ func ZcOpsStatusModelFromMap(m map[string]interface{}) *models.ZcOpsStatus {
 func SetZcOpsStatusResourceData(d *schema.ResourceData, m *models.ZcOpsStatus) {
 }
 
-// Iterate throught and update the ZcOpsStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ZcOpsStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetZcOpsStatusSubResourceData(m []*models.ZcOpsStatus) (d []*map[string]interface{}) {
 	for _, ZcOpsStatusModel := range m {
 		if ZcOpsStatusModel != nil {

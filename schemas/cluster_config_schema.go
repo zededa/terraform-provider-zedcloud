@@ -9,7 +9,8 @@ import (
 // (1) Translate ClusterConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ClusterConfigModel(d *schema.ResourceData) *models.ClusterConfig {
-	minNodesRequired := int64(d.Get("min_nodes_required").(int))
+	minNodesRequiredInt, _ := d.Get("min_nodes_required").(int)
+	minNodesRequired := int64(minNodesRequiredInt)
 	return &models.ClusterConfig{
 		MinNodesRequired: minNodesRequired,
 	}
@@ -27,7 +28,7 @@ func SetClusterConfigResourceData(d *schema.ResourceData, m *models.ClusterConfi
 	d.Set("min_nodes_required", m.MinNodesRequired)
 }
 
-// Iterate throught and update the ClusterConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ClusterConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetClusterConfigSubResourceData(m []*models.ClusterConfig) (d []*map[string]interface{}) {
 	for _, ClusterConfigModel := range m {
 		if ClusterConfigModel != nil {

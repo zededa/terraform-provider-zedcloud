@@ -9,7 +9,8 @@ import (
 // (1) Translate MapParams resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func MapParamsModel(d *schema.ResourceData) *models.MapParams {
-	appPort := int64(d.Get("app_port").(int))
+	appPortInt, _ := d.Get("app_port").(int)
+	appPort := int64(appPortInt)
 	return &models.MapParams{
 		AppPort: appPort,
 	}
@@ -27,7 +28,7 @@ func SetMapParamsResourceData(d *schema.ResourceData, m *models.MapParams) {
 	d.Set("app_port", m.AppPort)
 }
 
-// Iterate throught and update the MapParams resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the MapParams resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetMapParamsSubResourceData(m []*models.MapParams) (d []*map[string]interface{}) {
 	for _, MapParamsModel := range m {
 		if MapParamsModel != nil {

@@ -38,7 +38,7 @@ func SetUserDataTemplateResourceData(d *schema.ResourceData, m *models.UserDataT
 	d.Set("custom_config", SetCustomConfigSubResourceData([]*models.CustomConfig{m.CustomConfig}))
 }
 
-// Iterate throught and update the UserDataTemplate resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the UserDataTemplate resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetUserDataTemplateSubResourceData(m []*models.UserDataTemplate) (d []*map[string]interface{}) {
 	for _, UserDataTemplateModel := range m {
 		if UserDataTemplateModel != nil {

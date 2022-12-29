@@ -28,23 +28,35 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 		StorageMap := StorageInterface.([]interface{})[0].(map[string]interface{})
 		storage = StorageSummaryModelFromMap(StorageMap)
 	}
-	adminState := d.Get("admin_state").(*models.AdminState)    // AdminState
-	attestState := d.Get("attest_state").(*models.AttestState) // AttestState
-	blobList := d.Get("blob_list").([]*models.BlobStatus)      // []*BlobStatus
-	bootTime := d.Get("boot_time").(strfmt.DateTime)
+	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminState := &adminStateModel
+	if !ok {
+		adminState = nil
+	}
+	attestStateModel, _ := d.Get("attest_state").(models.AttestState) // AttestState
+	attestState := &attestStateModel
+	if !ok {
+		attestState = nil
+	}
+	blobList, _ := d.Get("blob_list").([]*models.BlobStatus) // []*BlobStatus
+	bootTime, _ := d.Get("boot_time").(strfmt.DateTime)
 	var capabilities *models.Capabilities // Capabilities
 	capabilitiesInterface, capabilitiesIsSet := d.GetOk("capabilities")
 	if capabilitiesIsSet {
 		capabilitiesMap := capabilitiesInterface.([]interface{})[0].(map[string]interface{})
 		capabilities = CapabilitiesModelFromMap(capabilitiesMap)
 	}
-	clusterID := d.Get("cluster_id").(string)
-	dataSecInfo := d.Get("data_sec_info").([]*models.DevDataSecAtRest) // []*DevDataSecAtRest
-	debugKnob := d.Get("debug_knob").(bool)
-	debugKnobExpiryTime := d.Get("debug_knob_expiry_time").(strfmt.DateTime)
-	devError := d.Get("dev_error").([]*models.DeviceError)                         // []*DeviceError
-	deviceRebootReason := d.Get("device_reboot_reason").(*models.DeviceBootReason) // DeviceBootReason
-	var dinfo *models.DeviceInfo                                                   // DeviceInfo
+	clusterID, _ := d.Get("cluster_id").(string)
+	dataSecInfo, _ := d.Get("data_sec_info").([]*models.DevDataSecAtRest) // []*DevDataSecAtRest
+	debugKnob, _ := d.Get("debug_knob").(bool)
+	debugKnobExpiryTime, _ := d.Get("debug_knob_expiry_time").(strfmt.DateTime)
+	devError, _ := d.Get("dev_error").([]*models.DeviceError)                             // []*DeviceError
+	deviceRebootReasonModel, _ := d.Get("device_reboot_reason").(models.DeviceBootReason) // DeviceBootReason
+	deviceRebootReason := &deviceRebootReasonModel
+	if !ok {
+		deviceRebootReason = nil
+	}
+	var dinfo *models.DeviceInfo // DeviceInfo
 	dinfoInterface, dinfoIsSet := d.GetOk("dinfo")
 	if dinfoIsSet {
 		dinfoMap := dinfoInterface.([]interface{})[0].(map[string]interface{})
@@ -56,12 +68,12 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 		dnsMap := dnsInterface.([]interface{})[0].(map[string]interface{})
 		dns = DNSInfoModelFromMap(dnsMap)
 	}
-	hostName := d.Get("host_name").(string)
-	id := d.Get("id").(string)
-	ioStatusList := d.Get("io_status_list").([]*models.IoBundleStatus) // []*IoBundleStatus
-	lastRebootReason := d.Get("last_reboot_reason").(string)
-	lastRebootTime := d.Get("last_reboot_time").(strfmt.DateTime)
-	lastUpdate := d.Get("last_update").(strfmt.DateTime)
+	hostName, _ := d.Get("host_name").(string)
+	id, _ := d.Get("id").(string)
+	ioStatusList, _ := d.Get("io_status_list").([]*models.IoBundleStatus) // []*IoBundleStatus
+	lastRebootReason, _ := d.Get("last_reboot_reason").(string)
+	lastRebootTime, _ := d.Get("last_reboot_time").(strfmt.DateTime)
+	lastUpdate, _ := d.Get("last_update").(strfmt.DateTime)
 	var memorySummary *models.DeviceMemorySummary // DeviceMemorySummary
 	memorySummaryInterface, memorySummaryIsSet := d.GetOk("memory_summary")
 	if memorySummaryIsSet {
@@ -74,20 +86,24 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 		minfoMap := minfoInterface.([]interface{})[0].(map[string]interface{})
 		minfo = ZManufacturerInfoModelFromMap(minfoMap)
 	}
-	name := d.Get("name").(string)
-	netCounterList := d.Get("net_counter_list").([]*models.NetworkCounters)  // []*NetworkCounters
-	netStatusList := d.Get("net_status_list").([]*models.NetworkStatus)      // []*NetworkStatus
-	physicalStorage := d.Get("physical_storage").([]*models.PhysicalStorage) // []*PhysicalStorage
-	projectID := d.Get("project_id").(string)
-	rawStatus := d.Get("raw_status").(string)
-	runState := d.Get("run_state").(*models.RunState)              // RunState
-	storageList := d.Get("storage_list").([]*models.StorageStatus) // []*StorageStatus
-	swInfo := d.Get("sw_info").([]*models.DeviceSWInfo)            // []*DeviceSWInfo
-	tags := d.Get("tags").(map[string]string)                      // map[string]string
-	title := d.Get("title").(string)
-	upTime := d.Get("up_time").(strfmt.DateTime)
-	zcCounters := d.Get("zc_counters").([]*models.ZedcloudCounters) // []*ZedcloudCounters
-	var zpoolMetrics *models.StorageDeviceMetrics                   // StorageDeviceMetrics
+	name, _ := d.Get("name").(string)
+	netCounterList, _ := d.Get("net_counter_list").([]*models.NetworkCounters)  // []*NetworkCounters
+	netStatusList, _ := d.Get("net_status_list").([]*models.NetworkStatus)      // []*NetworkStatus
+	physicalStorage, _ := d.Get("physical_storage").([]*models.PhysicalStorage) // []*PhysicalStorage
+	projectID, _ := d.Get("project_id").(string)
+	rawStatus, _ := d.Get("raw_status").(string)
+	runStateModel, _ := d.Get("run_state").(models.RunState) // RunState
+	runState := &runStateModel
+	if !ok {
+		runState = nil
+	}
+	storageList, _ := d.Get("storage_list").([]*models.StorageStatus) // []*StorageStatus
+	swInfo, _ := d.Get("sw_info").([]*models.DeviceSWInfo)            // []*DeviceSWInfo
+	tags, _ := d.Get("tags").(map[string]string)                      // map[string]string
+	title, _ := d.Get("title").(string)
+	upTime, _ := d.Get("up_time").(strfmt.DateTime)
+	zcCounters, _ := d.Get("zc_counters").([]*models.ZedcloudCounters) // []*ZedcloudCounters
+	var zpoolMetrics *models.StorageDeviceMetrics                      // StorageDeviceMetrics
 	zpoolMetricsInterface, zpoolMetricsIsSet := d.GetOk("zpool_metrics")
 	if zpoolMetricsIsSet {
 		zpoolMetricsMap := zpoolMetricsInterface.([]interface{})[0].(map[string]interface{})
@@ -312,7 +328,7 @@ func SetDeviceInfoMsgResourceData(d *schema.ResourceData, m *models.DeviceInfoMs
 	d.Set("zpool_metrics", SetStorageDeviceMetricsSubResourceData([]*models.StorageDeviceMetrics{m.ZpoolMetrics}))
 }
 
-// Iterate throught and update the DeviceInfoMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceInfoMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceInfoMsgSubResourceData(m []*models.DeviceInfoMsg) (d []*map[string]interface{}) {
 	for _, DeviceInfoMsgModel := range m {
 		if DeviceInfoMsgModel != nil {

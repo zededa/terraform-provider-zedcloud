@@ -13,14 +13,14 @@ layout:
     #   source: asset:model
     #   target: "{{ joinFilePath .Target .ModelPackage }}"
     #   file_name: "{{ (snakize (pascalize .Name)) }}.go"
-    # - name: schema
-    #   source: "swagger/templates/schema.gtpl"
-    #   target: "{{ joinFilePath .Target }}/schemas"
-    #   file_name: "{{ camelize .Name }}_schema.go"
-    - name: tf_config
-      source: "swagger/templates/tf_config.gtpl"
-      target: "{{ joinFilePath .Target }}/tf_config"
-      file_name: "{{ camelize .Name }}_schema.tf"
+    - name: schema
+      source: "swagger/templates/schema.gtpl"
+      target: "{{ joinFilePath .Target }}/schemas"
+      file_name: "{{ camelize .Name }}_schema.go"
+    # - name: tf_config
+    #   source: "swagger/templates/tf_config.gtpl"
+    #   target: "{{ joinFilePath .Target }}/tf_config"
+    #   file_name: "{{ camelize .Name }}_schema.tf"
     # - name: datadump
     #   source: "swagger/templates/datadump.gtpl"
     #   target: "{{ joinFilePath .Target }}/data_profile"

@@ -9,7 +9,7 @@ import (
 // (1) Translate GroupSymmetricKeyEnrollment resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func GroupSymmetricKeyEnrollmentModel(d *schema.ResourceData) *models.GroupSymmetricKeyEnrollment {
-	groupName := d.Get("group_name").(string)
+	groupName, _ := d.Get("group_name").(string)
 	return &models.GroupSymmetricKeyEnrollment{
 		GroupName: groupName,
 	}
@@ -27,7 +27,7 @@ func SetGroupSymmetricKeyEnrollmentResourceData(d *schema.ResourceData, m *model
 	d.Set("group_name", m.GroupName)
 }
 
-// Iterate throught and update the GroupSymmetricKeyEnrollment resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the GroupSymmetricKeyEnrollment resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetGroupSymmetricKeyEnrollmentSubResourceData(m []*models.GroupSymmetricKeyEnrollment) (d []*map[string]interface{}) {
 	for _, GroupSymmetricKeyEnrollmentModel := range m {
 		if GroupSymmetricKeyEnrollmentModel != nil {

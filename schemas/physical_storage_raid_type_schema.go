@@ -9,7 +9,7 @@ import (
 // (1) Translate PhysicalStorageRaidType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PhysicalStorageRaidTypeModel(d *schema.ResourceData) *models.PhysicalStorageRaidType {
-	physicalStorageRaidType := d.Get("physical_storage_raid_type").(models.PhysicalStorageRaidType)
+	physicalStorageRaidType, _ := d.Get("physical_storage_raid_type").(models.PhysicalStorageRaidType)
 	return &physicalStorageRaidType
 }
 
@@ -22,7 +22,7 @@ func PhysicalStorageRaidTypeModelFromMap(m map[string]interface{}) *models.Physi
 func SetPhysicalStorageRaidTypeResourceData(d *schema.ResourceData, m *models.PhysicalStorageRaidType) {
 }
 
-// Iterate throught and update the PhysicalStorageRaidType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the PhysicalStorageRaidType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPhysicalStorageRaidTypeSubResourceData(m []*models.PhysicalStorageRaidType) (d []*map[string]interface{}) {
 	for _, PhysicalStorageRaidTypeModel := range m {
 		if PhysicalStorageRaidTypeModel != nil {

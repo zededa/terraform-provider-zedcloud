@@ -54,7 +54,7 @@ func SetDPSServiceDetailResourceData(d *schema.ResourceData, m *models.DPSServic
 	d.Set("service_detail", SetAzureResourceAndServiceDetailSubResourceData([]*models.AzureResourceAndServiceDetail{m.ServiceDetail}))
 }
 
-// Iterate throught and update the DPSServiceDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DPSServiceDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDPSServiceDetailSubResourceData(m []*models.DPSServiceDetail) (d []*map[string]interface{}) {
 	for _, DPSServiceDetailModel := range m {
 		if DPSServiceDetailModel != nil {

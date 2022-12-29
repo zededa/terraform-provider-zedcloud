@@ -9,7 +9,7 @@ import (
 // (1) Translate DeviceSWSubStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceSWSubStatusModel(d *schema.ResourceData) *models.DeviceSWSubStatus {
-	deviceSWSubStatus := d.Get("device_s_w_sub_status").(models.DeviceSWSubStatus)
+	deviceSWSubStatus, _ := d.Get("device_s_w_sub_status").(models.DeviceSWSubStatus)
 	return &deviceSWSubStatus
 }
 
@@ -22,7 +22,7 @@ func DeviceSWSubStatusModelFromMap(m map[string]interface{}) *models.DeviceSWSub
 func SetDeviceSWSubStatusResourceData(d *schema.ResourceData, m *models.DeviceSWSubStatus) {
 }
 
-// Iterate throught and update the DeviceSWSubStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceSWSubStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceSWSubStatusSubResourceData(m []*models.DeviceSWSubStatus) (d []*map[string]interface{}) {
 	for _, DeviceSWSubStatusModel := range m {
 		if DeviceSWSubStatusModel != nil {

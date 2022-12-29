@@ -9,14 +9,14 @@ import (
 // (1) Translate Subject resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SubjectModel(d *schema.ResourceData) *models.Subject {
-	commonName := d.Get("common_name").(string)
-	country := d.Get("country").([]string)
-	locality := d.Get("locality").([]string)
-	organization := d.Get("organization").([]string)
-	organizationalUnit := d.Get("organizational_unit").([]string)
-	postalCode := d.Get("postal_code").([]string)
-	province := d.Get("province").([]string)
-	serialNumber := d.Get("serial_number").(string)
+	commonName, _ := d.Get("common_name").(string)
+	country, _ := d.Get("country").([]string)
+	locality, _ := d.Get("locality").([]string)
+	organization, _ := d.Get("organization").([]string)
+	organizationalUnit, _ := d.Get("organizational_unit").([]string)
+	postalCode, _ := d.Get("postal_code").([]string)
+	province, _ := d.Get("province").([]string)
+	serialNumber, _ := d.Get("serial_number").(string)
 	return &models.Subject{
 		CommonName:         commonName,
 		Country:            country,
@@ -62,7 +62,7 @@ func SetSubjectResourceData(d *schema.ResourceData, m *models.Subject) {
 	d.Set("serial_number", m.SerialNumber)
 }
 
-// Iterate throught and update the Subject resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Subject resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSubjectSubResourceData(m []*models.Subject) (d []*map[string]interface{}) {
 	for _, SubjectModel := range m {
 		if SubjectModel != nil {

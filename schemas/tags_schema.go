@@ -9,8 +9,8 @@ import (
 // (1) Translate Tags resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagsModel(d *schema.ResourceData) *models.Tags {
-	list := d.Get("list").([]*models.Tag) // []*Tag
-	var next *models.Cursor               // Cursor
+	list, _ := d.Get("list").([]*models.Tag) // []*Tag
+	var next *models.Cursor                  // Cursor
 	nextInterface, nextIsSet := d.GetOk("next")
 	if nextIsSet {
 		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
@@ -75,7 +75,7 @@ func SetTagsResourceData(d *schema.ResourceData, m *models.Tags) {
 	d.Set("summary_by_type", SetSummarySubResourceData([]*models.Summary{m.SummaryByType}))
 }
 
-// Iterate throught and update the Tags resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Tags resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagsSubResourceData(m []*models.Tags) (d []*map[string]interface{}) {
 	for _, TagsModel := range m {
 		if TagsModel != nil {

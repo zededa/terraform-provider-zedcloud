@@ -9,7 +9,7 @@ import (
 // (1) Translate ClusterType resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ClusterTypeModel(d *schema.ResourceData) *models.ClusterType {
-	clusterType := d.Get("cluster_type").(models.ClusterType)
+	clusterType, _ := d.Get("cluster_type").(models.ClusterType)
 	return &clusterType
 }
 
@@ -22,7 +22,7 @@ func ClusterTypeModelFromMap(m map[string]interface{}) *models.ClusterType {
 func SetClusterTypeResourceData(d *schema.ResourceData, m *models.ClusterType) {
 }
 
-// Iterate throught and update the ClusterType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ClusterType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetClusterTypeSubResourceData(m []*models.ClusterType) (d []*map[string]interface{}) {
 	for _, ClusterTypeModel := range m {
 		if ClusterTypeModel != nil {

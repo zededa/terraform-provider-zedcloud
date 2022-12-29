@@ -9,12 +9,12 @@ import (
 // (1) Translate NetProxyStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetProxyStatusModel(d *schema.ResourceData) *models.NetProxyStatus {
-	exceptions := d.Get("exceptions").(string)
-	networkProxy := d.Get("network_proxy").(bool)
-	networkProxyURL := d.Get("network_proxy_url").(string)
-	pacfile := d.Get("pacfile").(string)
-	proxies := d.Get("proxies").([]*models.NetProxyServer) // []*NetProxyServer
-	wpadProxyURL := d.Get("wpad_proxy_url").(string)
+	exceptions, _ := d.Get("exceptions").(string)
+	networkProxy, _ := d.Get("network_proxy").(bool)
+	networkProxyURL, _ := d.Get("network_proxy_url").(string)
+	pacfile, _ := d.Get("pacfile").(string)
+	proxies, _ := d.Get("proxies").([]*models.NetProxyServer) // []*NetProxyServer
+	wpadProxyURL, _ := d.Get("wpad_proxy_url").(string)
 	return &models.NetProxyStatus{
 		Exceptions:      exceptions,
 		NetworkProxy:    networkProxy,
@@ -52,7 +52,7 @@ func SetNetProxyStatusResourceData(d *schema.ResourceData, m *models.NetProxySta
 	d.Set("wpad_proxy_url", m.WpadProxyURL)
 }
 
-// Iterate throught and update the NetProxyStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the NetProxyStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetProxyStatusSubResourceData(m []*models.NetProxyStatus) (d []*map[string]interface{}) {
 	for _, NetProxyStatusModel := range m {
 		if NetProxyStatusModel != nil {

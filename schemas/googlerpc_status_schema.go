@@ -9,9 +9,10 @@ import (
 // (1) Translate GooglerpcStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func GooglerpcStatusModel(d *schema.ResourceData) *models.GooglerpcStatus {
-	code := int32(d.Get("code").(int))
-	details := d.Get("details").([]*models.ProtobufAny) // []*ProtobufAny
-	message := d.Get("message").(string)
+	codeInt, _ := d.Get("code").(int)
+	code := int32(codeInt)
+	details, _ := d.Get("details").([]*models.ProtobufAny) // []*ProtobufAny
+	message, _ := d.Get("message").(string)
 	return &models.GooglerpcStatus{
 		Code:    code,
 		Details: details,
@@ -37,7 +38,7 @@ func SetGooglerpcStatusResourceData(d *schema.ResourceData, m *models.GooglerpcS
 	d.Set("message", m.Message)
 }
 
-// Iterate throught and update the GooglerpcStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the GooglerpcStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetGooglerpcStatusSubResourceData(m []*models.GooglerpcStatus) (d []*map[string]interface{}) {
 	for _, GooglerpcStatusModel := range m {
 		if GooglerpcStatusModel != nil {

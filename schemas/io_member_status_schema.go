@@ -15,7 +15,7 @@ func IoMemberStatusModel(d *schema.ResourceData) *models.IoMemberStatus {
 		ioAddressMap := ioAddressInterface.([]interface{})[0].(map[string]interface{})
 		ioAddress = IoAddressesModelFromMap(ioAddressMap)
 	}
-	name := d.Get("name").(string)
+	name, _ := d.Get("name").(string)
 	return &models.IoMemberStatus{
 		IoAddress: ioAddress,
 		Name:      name,
@@ -43,7 +43,7 @@ func SetIoMemberStatusResourceData(d *schema.ResourceData, m *models.IoMemberSta
 	d.Set("name", m.Name)
 }
 
-// Iterate throught and update the IoMemberStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the IoMemberStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIoMemberStatusSubResourceData(m []*models.IoMemberStatus) (d []*map[string]interface{}) {
 	for _, IoMemberStatusModel := range m {
 		if IoMemberStatusModel != nil {

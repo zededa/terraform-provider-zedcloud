@@ -9,7 +9,7 @@ import (
 // (1) Translate AppCategory resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppCategoryModel(d *schema.ResourceData) *models.AppCategory {
-	appCategory := d.Get("app_category").(models.AppCategory)
+	appCategory, _ := d.Get("app_category").(models.AppCategory)
 	return &appCategory
 }
 
@@ -22,7 +22,7 @@ func AppCategoryModelFromMap(m map[string]interface{}) *models.AppCategory {
 func SetAppCategoryResourceData(d *schema.ResourceData, m *models.AppCategory) {
 }
 
-// Iterate throught and update the AppCategory resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppCategory resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppCategorySubResourceData(m []*models.AppCategory) (d []*map[string]interface{}) {
 	for _, AppCategoryModel := range m {
 		if AppCategoryModel != nil {

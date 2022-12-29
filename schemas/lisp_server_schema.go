@@ -9,8 +9,8 @@ import (
 // (1) Translate LispServer resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func LispServerModel(d *schema.ResourceData) *models.LispServer {
-	credential := d.Get("credential").(string)
-	nameOrIP := d.Get("name_or_ip").(string)
+	credential, _ := d.Get("credential").(string)
+	nameOrIP, _ := d.Get("name_or_ip").(string)
 	return &models.LispServer{
 		Credential: &credential, // string true false false
 		NameOrIP:   &nameOrIP,   // string true false false
@@ -32,7 +32,7 @@ func SetLispServerResourceData(d *schema.ResourceData, m *models.LispServer) {
 	d.Set("name_or_ip", m.NameOrIP)
 }
 
-// Iterate throught and update the LispServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the LispServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetLispServerSubResourceData(m []*models.LispServer) (d []*map[string]interface{}) {
 	for _, LispServerModel := range m {
 		if LispServerModel != nil {

@@ -9,13 +9,17 @@ import (
 // (1) Translate LTEAdapter resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func LTEAdapterModel(d *schema.ResourceData) *models.LTEAdapter {
-	cellModuleName := d.Get("cell_module_name").(string)
-	firmwareVersion := d.Get("firmware_version").(string)
-	iccid := d.Get("iccid").(string)
-	imei := d.Get("imei").(string)
-	imsi := d.Get("imsi").(string)
-	simName := d.Get("sim_name").(string)
-	simcardState := d.Get("simcard_state").(*models.SimcardState) // SimcardState
+	cellModuleName, _ := d.Get("cell_module_name").(string)
+	firmwareVersion, _ := d.Get("firmware_version").(string)
+	iccid, _ := d.Get("iccid").(string)
+	imei, _ := d.Get("imei").(string)
+	imsi, _ := d.Get("imsi").(string)
+	simName, _ := d.Get("sim_name").(string)
+	simcardStateModel, _ := d.Get("simcard_state").(models.SimcardState) // SimcardState
+	simcardState := &simcardStateModel
+	if !ok {
+		simcardState = nil
+	}
 	return &models.LTEAdapter{
 		CellModuleName:  cellModuleName,
 		FirmwareVersion: firmwareVersion,
@@ -57,7 +61,7 @@ func SetLTEAdapterResourceData(d *schema.ResourceData, m *models.LTEAdapter) {
 	d.Set("simcard_state", m.SimcardState)
 }
 
-// Iterate throught and update the LTEAdapter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the LTEAdapter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetLTEAdapterSubResourceData(m []*models.LTEAdapter) (d []*map[string]interface{}) {
 	for _, LTEAdapterModel := range m {
 		if LTEAdapterModel != nil {

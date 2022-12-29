@@ -9,7 +9,7 @@ import (
 // (1) Translate Entity resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EntityModel(d *schema.ResourceData) *models.Entity {
-	entity := d.Get("entity").(models.Entity)
+	entity, _ := d.Get("entity").(models.Entity)
 	return &entity
 }
 
@@ -22,7 +22,7 @@ func EntityModelFromMap(m map[string]interface{}) *models.Entity {
 func SetEntityResourceData(d *schema.ResourceData, m *models.Entity) {
 }
 
-// Iterate throught and update the Entity resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Entity resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEntitySubResourceData(m []*models.Entity) (d []*map[string]interface{}) {
 	for _, EntityModel := range m {
 		if EntityModel != nil {

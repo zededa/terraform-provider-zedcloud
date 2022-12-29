@@ -9,35 +9,48 @@ import (
 // (1) Translate AppConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppConfigModel(d *schema.ResourceData) *models.AppConfig {
-	appID := d.Get("app_id").(string)
-	appVersion := d.Get("app_version").(string)
-	cpus := int64(d.Get("cpus").(int))
-	description := d.Get("description").(string)
-	id := d.Get("id").(string)
-	interfaces := d.Get("interfaces").([]*models.AppInterface) // []*AppInterface
-	var manifestJSON *models.VMManifest                        // VMManifest
+	appID, _ := d.Get("app_id").(string)
+	appVersion, _ := d.Get("app_version").(string)
+	cpusInt, _ := d.Get("cpus").(int)
+	cpus := int64(cpusInt)
+	description, _ := d.Get("description").(string)
+	id, _ := d.Get("id").(string)
+	interfaces, _ := d.Get("interfaces").([]*models.AppInterface) // []*AppInterface
+	var manifestJSON *models.VMManifest                           // VMManifest
 	manifestJSONInterface, manifestJSONIsSet := d.GetOk("manifest_json")
 	if manifestJSONIsSet {
 		manifestJSONMap := manifestJSONInterface.([]interface{})[0].(map[string]interface{})
 		manifestJSON = VMManifestModelFromMap(manifestJSONMap)
 	}
-	memory := int64(d.Get("memory").(int))
-	name := d.Get("name").(string)
-	nameAppPart := d.Get("name_app_part").(string)
-	nameProjectPart := d.Get("name_project_part").(string)
-	namingScheme := d.Get("naming_scheme").(*models.AppNamingScheme) // AppNamingScheme
-	networks := int64(d.Get("networks").(int))
-	originType := d.Get("origin_type").(*models.Origin) // Origin
-	var parentDetail *models.ObjectParentDetail         // ObjectParentDetail
+	memoryInt, _ := d.Get("memory").(int)
+	memory := int64(memoryInt)
+	name, _ := d.Get("name").(string)
+	nameAppPart, _ := d.Get("name_app_part").(string)
+	nameProjectPart, _ := d.Get("name_project_part").(string)
+	namingSchemeModel, _ := d.Get("naming_scheme").(models.AppNamingScheme) // AppNamingScheme
+	namingScheme := &namingSchemeModel
+	if !ok {
+		namingScheme = nil
+	}
+	networksInt, _ := d.Get("networks").(int)
+	networks := int64(networksInt)
+	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originType := &originTypeModel
+	if !ok {
+		originType = nil
+	}
+	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")
 	if parentDetailIsSet {
 		parentDetailMap := parentDetailInterface.([]interface{})[0].(map[string]interface{})
 		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
 	}
-	startDelayInSeconds := int64(d.Get("start_delay_in_seconds").(int))
-	storage := int64(d.Get("storage").(int))
-	tags := d.Get("tags").(map[string]string) // map[string]string
-	title := d.Get("title").(string)
+	startDelayInSecondsInt, _ := d.Get("start_delay_in_seconds").(int)
+	startDelayInSeconds := int64(startDelayInSecondsInt)
+	storageInt, _ := d.Get("storage").(int)
+	storage := int64(storageInt)
+	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	title, _ := d.Get("title").(string)
 	return &models.AppConfig{
 		AppID:               appID,
 		AppVersion:          appVersion,
@@ -140,7 +153,7 @@ func SetAppConfigResourceData(d *schema.ResourceData, m *models.AppConfig) {
 	d.Set("title", m.Title)
 }
 
-// Iterate throught and update the AppConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppConfigSubResourceData(m []*models.AppConfig) (d []*map[string]interface{}) {
 	for _, AppConfigModel := range m {
 		if AppConfigModel != nil {

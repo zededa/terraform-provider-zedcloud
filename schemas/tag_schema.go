@@ -21,23 +21,27 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		deploymentMap := deploymentInterface.([]interface{})[0].(map[string]interface{})
 		deployment = DeploymentModelFromMap(deploymentMap)
 	}
-	description := d.Get("description").(string)
+	description, _ := d.Get("description").(string)
 	var edgeviewPolicy *models.PolicyConfig // PolicyConfig
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
 	if edgeviewPolicyIsSet {
 		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})[0].(map[string]interface{})
 		edgeviewPolicy = PolicyConfigModelFromMap(edgeviewPolicyMap)
 	}
-	id := d.Get("id").(string)
-	name := d.Get("name").(string)
+	id, _ := d.Get("id").(string)
+	name, _ := d.Get("name").(string)
 	var networkPolicy *models.PolicyConfig // PolicyConfig
 	networkPolicyInterface, networkPolicyIsSet := d.GetOk("network_policy")
 	if networkPolicyIsSet {
 		networkPolicyMap := networkPolicyInterface.([]interface{})[0].(map[string]interface{})
 		networkPolicy = PolicyConfigModelFromMap(networkPolicyMap)
 	}
-	title := d.Get("title").(string)
-	typeVar := d.Get("type").(*models.TagType) // TagType
+	title, _ := d.Get("title").(string)
+	typeVarModel, _ := d.Get("type").(models.TagType) // TagType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.Tag{
 		AttestationPolicy: attestationPolicy,
 		Deployment:        deployment,
@@ -117,7 +121,7 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the Tag resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Tag resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 	for _, TagModel := range m {
 		if TagModel != nil {

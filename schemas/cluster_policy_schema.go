@@ -9,15 +9,19 @@ import (
 // (1) Translate ClusterPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ClusterPolicyModel(d *schema.ResourceData) *models.ClusterPolicy {
-	appPolicyID := d.Get("app_policy_id").(string)
+	appPolicyID, _ := d.Get("app_policy_id").(string)
 	var clusterConfig *models.ClusterConfig // ClusterConfig
 	clusterConfigInterface, clusterConfigIsSet := d.GetOk("cluster_config")
 	if clusterConfigIsSet {
 		clusterConfigMap := clusterConfigInterface.([]interface{})[0].(map[string]interface{})
 		clusterConfig = ClusterConfigModelFromMap(clusterConfigMap)
 	}
-	networkPolicyID := d.Get("network_policy_id").(string)
-	typeVar := d.Get("type").(*models.ClusterType) // ClusterType
+	networkPolicyID, _ := d.Get("network_policy_id").(string)
+	typeVarModel, _ := d.Get("type").(models.ClusterType) // ClusterType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.ClusterPolicy{
 		AppPolicyID:     &appPolicyID, // string true false false
 		ClusterConfig:   clusterConfig,
@@ -53,7 +57,7 @@ func SetClusterPolicyResourceData(d *schema.ResourceData, m *models.ClusterPolic
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the ClusterPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ClusterPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetClusterPolicySubResourceData(m []*models.ClusterPolicy) (d []*map[string]interface{}) {
 	for _, ClusterPolicyModel := range m {
 		if ClusterPolicyModel != nil {

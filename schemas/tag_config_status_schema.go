@@ -9,16 +9,25 @@ import (
 // (1) Translate TagConfigStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagConfigStatusModel(d *schema.ResourceData) *models.TagConfigStatus {
-	appPolicyID := d.Get("app_policy_id").(string)
-	appPolicyName := d.Get("app_policy_name").(string)
-	attestPolicyType := d.Get("attest_policy_type").(*models.AttestPolicyType) // AttestPolicyType
-	cloudPolicyType := d.Get("cloud_policy_type").(*models.PolicyType)         // PolicyType
-	edgeviewAllow := d.Get("edgeview_allow").(bool)
-	edgeviewSessionCount := int64(d.Get("edgeview_session_count").(int))
-	id := d.Get("id").(string)
-	name := d.Get("name").(string)
-	networkDeviceDefault := d.Get("network_device_default").(string)
-	networkPolicyID := d.Get("network_policy_id").(string)
+	appPolicyID, _ := d.Get("app_policy_id").(string)
+	appPolicyName, _ := d.Get("app_policy_name").(string)
+	attestPolicyTypeModel, _ := d.Get("attest_policy_type").(models.AttestPolicyType) // AttestPolicyType
+	attestPolicyType := &attestPolicyTypeModel
+	if !ok {
+		attestPolicyType = nil
+	}
+	cloudPolicyTypeModel, _ := d.Get("cloud_policy_type").(models.PolicyType) // PolicyType
+	cloudPolicyType := &cloudPolicyTypeModel
+	if !ok {
+		cloudPolicyType = nil
+	}
+	edgeviewAllow, _ := d.Get("edgeview_allow").(bool)
+	edgeviewSessionCountInt, _ := d.Get("edgeview_session_count").(int)
+	edgeviewSessionCount := int64(edgeviewSessionCountInt)
+	id, _ := d.Get("id").(string)
+	name, _ := d.Get("name").(string)
+	networkDeviceDefault, _ := d.Get("network_device_default").(string)
+	networkPolicyID, _ := d.Get("network_policy_id").(string)
 	return &models.TagConfigStatus{
 		AppPolicyID:          appPolicyID,
 		AppPolicyName:        appPolicyName,
@@ -73,7 +82,7 @@ func SetTagConfigStatusResourceData(d *schema.ResourceData, m *models.TagConfigS
 	d.Set("status", m.Status)
 }
 
-// Iterate throught and update the TagConfigStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the TagConfigStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagConfigStatusSubResourceData(m []*models.TagConfigStatus) (d []*map[string]interface{}) {
 	for _, TagConfigStatusModel := range m {
 		if TagConfigStatusModel != nil {

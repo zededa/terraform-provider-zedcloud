@@ -9,32 +9,32 @@ import (
 // (1) Translate Deployment resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeploymentModel(d *schema.ResourceData) *models.Deployment {
-	appInstPolicies := d.Get("app_inst_policies").([]*models.AppInstPolicy) // []*AppInstPolicy
-	var clusterPolicy *models.ClusterInstPolicy                             // ClusterInstPolicy
+	appInstPolicies, _ := d.Get("app_inst_policies").([]*models.AppInstPolicy) // []*AppInstPolicy
+	var clusterPolicy *models.ClusterInstPolicy                                // ClusterInstPolicy
 	clusterPolicyInterface, clusterPolicyIsSet := d.GetOk("cluster_policy")
 	if clusterPolicyIsSet {
 		clusterPolicyMap := clusterPolicyInterface.([]interface{})[0].(map[string]interface{})
 		clusterPolicy = ClusterInstPolicyModelFromMap(clusterPolicyMap)
 	}
-	deploymentTag := d.Get("deployment_tag").(string)
-	devicePolicies := d.Get("device_policies").([]*models.DevicePolicy) // []*DevicePolicy
-	id := d.Get("id").(string)
+	deploymentTag, _ := d.Get("deployment_tag").(string)
+	devicePolicies, _ := d.Get("device_policies").([]*models.DevicePolicy) // []*DevicePolicy
+	id, _ := d.Get("id").(string)
 	var integrationPolicy *models.IntegrationPolicy // IntegrationPolicy
 	integrationPolicyInterface, integrationPolicyIsSet := d.GetOk("integration_policy")
 	if integrationPolicyIsSet {
 		integrationPolicyMap := integrationPolicyInterface.([]interface{})[0].(map[string]interface{})
 		integrationPolicy = IntegrationPolicyModelFromMap(integrationPolicyMap)
 	}
-	name := d.Get("name").(string)
-	networkInstPolicies := d.Get("network_inst_policies").([]*models.NetworkInstPolicy) // []*NetworkInstPolicy
-	var revision *models.ObjectRevision                                                 // ObjectRevision
+	name, _ := d.Get("name").(string)
+	networkInstPolicies, _ := d.Get("network_inst_policies").([]*models.NetworkInstPolicy) // []*NetworkInstPolicy
+	var revision *models.ObjectRevision                                                    // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
 	if revisionIsSet {
 		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
 		revision = ObjectRevisionModelFromMap(revisionMap)
 	}
-	title := d.Get("title").(string)
-	volumeInstPolicies := d.Get("volume_inst_policies").([]*models.VolumeInstPolicy) // []*VolumeInstPolicy
+	title, _ := d.Get("title").(string)
+	volumeInstPolicies, _ := d.Get("volume_inst_policies").([]*models.VolumeInstPolicy) // []*VolumeInstPolicy
 	return &models.Deployment{
 		AppInstPolicies:     appInstPolicies,
 		ClusterPolicy:       clusterPolicy,
@@ -110,7 +110,7 @@ func SetDeploymentResourceData(d *schema.ResourceData, m *models.Deployment) {
 	d.Set("volume_inst_policies", SetVolumeInstPolicySubResourceData(m.VolumeInstPolicies))
 }
 
-// Iterate throught and update the Deployment resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Deployment resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeploymentSubResourceData(m []*models.Deployment) (d []*map[string]interface{}) {
 	for _, DeploymentModel := range m {
 		if DeploymentModel != nil {

@@ -9,8 +9,8 @@ import (
 // (1) Translate DevZedServer resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DevZedServerModel(d *schema.ResourceData) *models.DevZedServer {
-	eID := d.Get("e_id").([]string)
-	hostName := d.Get("host_name").(string)
+	eID, _ := d.Get("e_id").([]string)
+	hostName, _ := d.Get("host_name").(string)
 	return &models.DevZedServer{
 		EID:      eID,
 		HostName: &hostName, // string true false false
@@ -32,7 +32,7 @@ func SetDevZedServerResourceData(d *schema.ResourceData, m *models.DevZedServer)
 	d.Set("host_name", m.HostName)
 }
 
-// Iterate throught and update the DevZedServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DevZedServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDevZedServerSubResourceData(m []*models.DevZedServer) (d []*map[string]interface{}) {
 	for _, DevZedServerModel := range m {
 		if DevZedServerModel != nil {

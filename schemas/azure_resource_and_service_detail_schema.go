@@ -15,11 +15,11 @@ func AzureResourceAndServiceDetailModel(d *schema.ResourceData) *models.AzureRes
 		SKUMap := SKUInterface.([]interface{})[0].(map[string]interface{})
 		sKU = SKUDetailModelFromMap(SKUMap)
 	}
-	createByDefault := d.Get("create_by_default").(bool)
-	name := d.Get("name").(string)
-	region := d.Get("region").(string)
-	resourceGroupName := d.Get("resource_group_name").(string)
-	subscriptionID := d.Get("subscription_id").(string)
+	createByDefault, _ := d.Get("create_by_default").(bool)
+	name, _ := d.Get("name").(string)
+	region, _ := d.Get("region").(string)
+	resourceGroupName, _ := d.Get("resource_group_name").(string)
+	subscriptionID, _ := d.Get("subscription_id").(string)
 	return &models.AzureResourceAndServiceDetail{
 		SKU:               sKU,
 		CreateByDefault:   createByDefault,
@@ -63,7 +63,7 @@ func SetAzureResourceAndServiceDetailResourceData(d *schema.ResourceData, m *mod
 	d.Set("subscription_id", m.SubscriptionID)
 }
 
-// Iterate throught and update the AzureResourceAndServiceDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AzureResourceAndServiceDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAzureResourceAndServiceDetailSubResourceData(m []*models.AzureResourceAndServiceDetail) (d []*map[string]interface{}) {
 	for _, AzureResourceAndServiceDetailModel := range m {
 		if AzureResourceAndServiceDetailModel != nil {

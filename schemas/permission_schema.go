@@ -9,7 +9,7 @@ import (
 // (1) Translate Permission resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PermissionModel(d *schema.ResourceData) *models.Permission {
-	permission := d.Get("permission").(models.Permission)
+	permission, _ := d.Get("permission").(models.Permission)
 	return &permission
 }
 
@@ -22,7 +22,7 @@ func PermissionModelFromMap(m map[string]interface{}) *models.Permission {
 func SetPermissionResourceData(d *schema.ResourceData, m *models.Permission) {
 }
 
-// Iterate throught and update the Permission resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Permission resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPermissionSubResourceData(m []*models.Permission) (d []*map[string]interface{}) {
 	for _, PermissionModel := range m {
 		if PermissionModel != nil {

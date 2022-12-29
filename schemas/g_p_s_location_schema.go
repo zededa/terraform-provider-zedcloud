@@ -9,15 +9,17 @@ import (
 // (1) Translate GPSLocation resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func GPSLocationModel(d *schema.ResourceData) *models.GPSLocation {
-	altitude := d.Get("altitude").(float64)
-	horizontalReliability := int64(d.Get("horizontal_reliability").(int))
-	horizontalUncertainty := d.Get("horizontal_uncertainty").(float64)
-	latitude := d.Get("latitude").(float64)
-	logicalLabel := d.Get("logical_label").(string)
-	longitude := d.Get("longitude").(float64)
-	timestamp := d.Get("timestamp").(interface{}) // interface{}
-	verticalReliability := int64(d.Get("vertical_reliability").(int))
-	verticalUncertainty := d.Get("vertical_uncertainty").(float64)
+	altitude, _ := d.Get("altitude").(float64)
+	horizontalReliabilityInt, _ := d.Get("horizontal_reliability").(int)
+	horizontalReliability := int64(horizontalReliabilityInt)
+	horizontalUncertainty, _ := d.Get("horizontal_uncertainty").(float64)
+	latitude, _ := d.Get("latitude").(float64)
+	logicalLabel, _ := d.Get("logical_label").(string)
+	longitude, _ := d.Get("longitude").(float64)
+	timestamp, _ := d.Get("timestamp").(interface{}) // interface{}
+	verticalReliabilityInt, _ := d.Get("vertical_reliability").(int)
+	verticalReliability := int64(verticalReliabilityInt)
+	verticalUncertainty, _ := d.Get("vertical_uncertainty").(float64)
 	return &models.GPSLocation{
 		Altitude:              altitude,
 		HorizontalReliability: horizontalReliability,
@@ -67,7 +69,7 @@ func SetGPSLocationResourceData(d *schema.ResourceData, m *models.GPSLocation) {
 	d.Set("vertical_uncertainty", m.VerticalUncertainty)
 }
 
-// Iterate throught and update the GPSLocation resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the GPSLocation resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetGPSLocationSubResourceData(m []*models.GPSLocation) (d []*map[string]interface{}) {
 	for _, GPSLocationModel := range m {
 		if GPSLocationModel != nil {

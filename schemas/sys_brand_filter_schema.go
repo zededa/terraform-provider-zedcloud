@@ -9,8 +9,12 @@ import (
 // (1) Translate SysBrandFilter resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysBrandFilterModel(d *schema.ResourceData) *models.SysBrandFilter {
-	namePattern := d.Get("name_pattern").(string)
-	originType := d.Get("origin_type").(*models.Origin) // Origin
+	namePattern, _ := d.Get("name_pattern").(string)
+	originTypeModel, _ := d.Get("origin_type").(models.Origin) // Origin
+	originType := &originTypeModel
+	if !ok {
+		originType = nil
+	}
 	return &models.SysBrandFilter{
 		NamePattern: namePattern,
 		OriginType:  originType,
@@ -32,7 +36,7 @@ func SetSysBrandFilterResourceData(d *schema.ResourceData, m *models.SysBrandFil
 	d.Set("origin_type", m.OriginType)
 }
 
-// Iterate throught and update the SysBrandFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SysBrandFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysBrandFilterSubResourceData(m []*models.SysBrandFilter) (d []*map[string]interface{}) {
 	for _, SysBrandFilterModel := range m {
 		if SysBrandFilterModel != nil {

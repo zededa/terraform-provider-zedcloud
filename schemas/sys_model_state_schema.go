@@ -9,7 +9,7 @@ import (
 // (1) Translate SysModelState resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysModelStateModel(d *schema.ResourceData) *models.SysModelState {
-	sysModelState := d.Get("sys_model_state").(models.SysModelState)
+	sysModelState, _ := d.Get("sys_model_state").(models.SysModelState)
 	return &sysModelState
 }
 
@@ -22,7 +22,7 @@ func SysModelStateModelFromMap(m map[string]interface{}) *models.SysModelState {
 func SetSysModelStateResourceData(d *schema.ResourceData, m *models.SysModelState) {
 }
 
-// Iterate throught and update the SysModelState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the SysModelState resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysModelStateSubResourceData(m []*models.SysModelState) (d []*map[string]interface{}) {
 	for _, SysModelStateModel := range m {
 		if SysModelStateModel != nil {

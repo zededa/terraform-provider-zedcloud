@@ -9,19 +9,19 @@ import (
 // (1) Translate NetworkCounters resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetworkCountersModel(d *schema.ResourceData) *models.NetworkCounters {
-	ifName := d.Get("if_name").(string)
-	rxACLDrops := d.Get("rx_acl_drops").(uint64)
-	rxACLRateLimitDrops := d.Get("rx_acl_rate_limit_drops").(uint64)
-	rxBytes := d.Get("rx_bytes").(uint64)
-	rxDrops := d.Get("rx_drops").(uint64)
-	rxErrors := d.Get("rx_errors").(uint64)
-	rxPkts := d.Get("rx_pkts").(uint64)
-	txACLDrops := d.Get("tx_acl_drops").(uint64)
-	txACLRateLimitDrops := d.Get("tx_acl_rate_limit_drops").(uint64)
-	txBytes := d.Get("tx_bytes").(uint64)
-	txDrops := d.Get("tx_drops").(uint64)
-	txErrors := d.Get("tx_errors").(uint64)
-	txPkts := d.Get("tx_pkts").(uint64)
+	ifName, _ := d.Get("if_name").(string)
+	rxACLDrops, _ := d.Get("rx_acl_drops").(uint64)
+	rxACLRateLimitDrops, _ := d.Get("rx_acl_rate_limit_drops").(uint64)
+	rxBytes, _ := d.Get("rx_bytes").(uint64)
+	rxDrops, _ := d.Get("rx_drops").(uint64)
+	rxErrors, _ := d.Get("rx_errors").(uint64)
+	rxPkts, _ := d.Get("rx_pkts").(uint64)
+	txACLDrops, _ := d.Get("tx_acl_drops").(uint64)
+	txACLRateLimitDrops, _ := d.Get("tx_acl_rate_limit_drops").(uint64)
+	txBytes, _ := d.Get("tx_bytes").(uint64)
+	txDrops, _ := d.Get("tx_drops").(uint64)
+	txErrors, _ := d.Get("tx_errors").(uint64)
+	txPkts, _ := d.Get("tx_pkts").(uint64)
 	return &models.NetworkCounters{
 		IfName:              ifName,
 		RxACLDrops:          rxACLDrops,
@@ -87,7 +87,7 @@ func SetNetworkCountersResourceData(d *schema.ResourceData, m *models.NetworkCou
 	d.Set("tx_pkts", m.TxPkts)
 }
 
-// Iterate throught and update the NetworkCounters resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the NetworkCounters resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetworkCountersSubResourceData(m []*models.NetworkCounters) (d []*map[string]interface{}) {
 	for _, NetworkCountersModel := range m {
 		if NetworkCountersModel != nil {

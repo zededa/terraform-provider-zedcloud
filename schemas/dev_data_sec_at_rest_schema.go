@@ -15,8 +15,12 @@ func DevDataSecAtRestModel(d *schema.ResourceData) *models.DevDataSecAtRest {
 		errInfoMap := errInfoInterface.([]interface{})[0].(map[string]interface{})
 		errInfo = DeviceErrorModelFromMap(errInfoMap)
 	}
-	name := d.Get("name").(string)
-	status := d.Get("status").(*models.DeviceDataSecurityAtRestStatus) // DeviceDataSecurityAtRestStatus
+	name, _ := d.Get("name").(string)
+	statusModel, _ := d.Get("status").(models.DeviceDataSecurityAtRestStatus) // DeviceDataSecurityAtRestStatus
+	status := &statusModel
+	if !ok {
+		status = nil
+	}
 	return &models.DevDataSecAtRest{
 		ErrInfo: errInfo,
 		Name:    name,
@@ -48,7 +52,7 @@ func SetDevDataSecAtRestResourceData(d *schema.ResourceData, m *models.DevDataSe
 	d.Set("status", m.Status)
 }
 
-// Iterate throught and update the DevDataSecAtRest resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DevDataSecAtRest resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDevDataSecAtRestSubResourceData(m []*models.DevDataSecAtRest) (d []*map[string]interface{}) {
 	for _, DevDataSecAtRestModel := range m {
 		if DevDataSecAtRestModel != nil {

@@ -9,8 +9,8 @@ import (
 // (1) Translate TagsConfigStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagsConfigStatusModel(d *schema.ResourceData) *models.TagsConfigStatus {
-	list := d.Get("list").([]*models.TagConfigStatus) // []*TagConfigStatus
-	var next *models.Cursor                           // Cursor
+	list, _ := d.Get("list").([]*models.TagConfigStatus) // []*TagConfigStatus
+	var next *models.Cursor                              // Cursor
 	nextInterface, nextIsSet := d.GetOk("next")
 	if nextIsSet {
 		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
@@ -28,7 +28,8 @@ func TagsConfigStatusModel(d *schema.ResourceData) *models.TagsConfigStatus {
 		summaryByTypeMap := summaryByTypeInterface.([]interface{})[0].(map[string]interface{})
 		summaryByType = SummaryModelFromMap(summaryByTypeMap)
 	}
-	totalCount := int32(d.Get("total_count").(int))
+	totalCountInt, _ := d.Get("total_count").(int)
+	totalCount := int32(totalCountInt)
 	return &models.TagsConfigStatus{
 		List:           list,
 		Next:           next,
@@ -80,7 +81,7 @@ func SetTagsConfigStatusResourceData(d *schema.ResourceData, m *models.TagsConfi
 	d.Set("total_count", m.TotalCount)
 }
 
-// Iterate throught and update the TagsConfigStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the TagsConfigStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagsConfigStatusSubResourceData(m []*models.TagsConfigStatus) (d []*map[string]interface{}) {
 	for _, TagsConfigStatusModel := range m {
 		if TagsConfigStatusModel != nil {

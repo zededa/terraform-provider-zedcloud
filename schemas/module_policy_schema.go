@@ -9,20 +9,21 @@ import (
 // (1) Translate ModulePolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ModulePolicyModel(d *schema.ResourceData) *models.ModulePolicy {
-	etag := d.Get("etag").(string)
-	apps := d.Get("apps").([]*models.AppConfig) // []*AppConfig
-	id := d.Get("id").(string)
-	labels := d.Get("labels").(map[string]string) // map[string]string
-	var metrics *models.MetricsDetail             // MetricsDetail
+	etag, _ := d.Get("etag").(string)
+	apps, _ := d.Get("apps").([]*models.AppConfig) // []*AppConfig
+	id, _ := d.Get("id").(string)
+	labels, _ := d.Get("labels").(map[string]string) // map[string]string
+	var metrics *models.MetricsDetail                // MetricsDetail
 	metricsInterface, metricsIsSet := d.GetOk("metrics")
 	if metricsIsSet {
 		metricsMap := metricsInterface.([]interface{})[0].(map[string]interface{})
 		metrics = MetricsDetailModelFromMap(metricsMap)
 	}
-	priority := int64(d.Get("priority").(int))
-	routes := d.Get("routes").(map[string]string) // map[string]string
-	targetCondition := d.Get("target_condition").(string)
-	targetConditionNew := d.Get("target_condition_new").(map[string]string) // map[string]string
+	priorityInt, _ := d.Get("priority").(int)
+	priority := int64(priorityInt)
+	routes, _ := d.Get("routes").(map[string]string) // map[string]string
+	targetCondition, _ := d.Get("target_condition").(string)
+	targetConditionNew, _ := d.Get("target_condition_new").(map[string]string) // map[string]string
 	return &models.ModulePolicy{
 		Etag:               etag,
 		Apps:               apps,
@@ -78,7 +79,7 @@ func SetModulePolicyResourceData(d *schema.ResourceData, m *models.ModulePolicy)
 	d.Set("target_condition_new", m.TargetConditionNew)
 }
 
-// Iterate throught and update the ModulePolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ModulePolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetModulePolicySubResourceData(m []*models.ModulePolicy) (d []*map[string]interface{}) {
 	for _, ModulePolicyModel := range m {
 		if ModulePolicyModel != nil {

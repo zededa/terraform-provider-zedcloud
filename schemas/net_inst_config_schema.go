@@ -9,47 +9,55 @@ import (
 // (1) Translate NetInstConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
-	clusterID := d.Get("cluster_id").(string)
-	description := d.Get("description").(string)
-	deviceDefault := d.Get("device_default").(string)
-	deviceID := d.Get("device_id").(string)
-	dhcp := d.Get("dhcp").(bool)
-	dNSList := d.Get("dns_list").([]*models.StaticDNSList) // []*StaticDNSList
-	id := d.Get("id").(string)
+	clusterID, _ := d.Get("cluster_id").(string)
+	description, _ := d.Get("description").(string)
+	deviceDefault, _ := d.Get("device_default").(string)
+	deviceID, _ := d.Get("device_id").(string)
+	dhcp, _ := d.Get("dhcp").(bool)
+	dNSList, _ := d.Get("dns_list").([]*models.StaticDNSList) // []*StaticDNSList
+	id, _ := d.Get("id").(string)
 	var ip *models.DhcpServerConfig // DhcpServerConfig
 	ipInterface, ipIsSet := d.GetOk("ip")
 	if ipIsSet {
 		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
 		ip = DhcpServerConfigModelFromMap(ipMap)
 	}
-	kind := d.Get("kind").(*models.NetworkInstanceKind) // NetworkInstanceKind
-	var lisp *models.LispConfig                         // LispConfig
+	kindModel, _ := d.Get("kind").(models.NetworkInstanceKind) // NetworkInstanceKind
+	kind := &kindModel
+	if !ok {
+		kind = nil
+	}
+	var lisp *models.LispConfig // LispConfig
 	lispInterface, lispIsSet := d.GetOk("lisp")
 	if lispIsSet {
 		lispMap := lispInterface.([]interface{})[0].(map[string]interface{})
 		lisp = LispConfigModelFromMap(lispMap)
 	}
-	name := d.Get("name").(string)
-	networkPolicyID := d.Get("network_policy_id").(string)
-	oconfig := d.Get("oconfig").(string)
+	name, _ := d.Get("name").(string)
+	networkPolicyID, _ := d.Get("network_policy_id").(string)
+	oconfig, _ := d.Get("oconfig").(string)
 	var opaque *models.NetInstOpaqueConfig // NetInstOpaqueConfig
 	opaqueInterface, opaqueIsSet := d.GetOk("opaque")
 	if opaqueIsSet {
 		opaqueMap := opaqueInterface.([]interface{})[0].(map[string]interface{})
 		opaque = NetInstOpaqueConfigModelFromMap(opaqueMap)
 	}
-	port := d.Get("port").(string)
-	portTags := d.Get("port_tags").(map[string]string) // map[string]string
-	projectID := d.Get("project_id").(string)
+	port, _ := d.Get("port").(string)
+	portTags, _ := d.Get("port_tags").(map[string]string) // map[string]string
+	projectID, _ := d.Get("project_id").(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
 	if revisionIsSet {
 		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
 		revision = ObjectRevisionModelFromMap(revisionMap)
 	}
-	tags := d.Get("tags").(map[string]string) // map[string]string
-	title := d.Get("title").(string)
-	typeVar := d.Get("type").(*models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
+	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	title, _ := d.Get("title").(string)
+	typeVarModel, _ := d.Get("type").(models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.NetInstConfig{
 		ClusterID:       clusterID,
 		Description:     description,
@@ -171,7 +179,7 @@ func SetNetInstConfigResourceData(d *schema.ResourceData, m *models.NetInstConfi
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the NetInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the NetInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetInstConfigSubResourceData(m []*models.NetInstConfig) (d []*map[string]interface{}) {
 	for _, NetInstConfigModel := range m {
 		if NetInstConfigModel != nil {

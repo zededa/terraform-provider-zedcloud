@@ -9,8 +9,12 @@ import (
 // (1) Translate TagFilter resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagFilterModel(d *schema.ResourceData) *models.TagFilter {
-	namePattern := d.Get("name_pattern").(string)
-	typeVar := d.Get("type").(*models.TagType) // TagType
+	namePattern, _ := d.Get("name_pattern").(string)
+	typeVarModel, _ := d.Get("type").(models.TagType) // TagType
+	typeVar := &typeVarModel
+	if !ok {
+		typeVar = nil
+	}
 	return &models.TagFilter{
 		NamePattern: namePattern,
 		Type:        typeVar,
@@ -32,7 +36,7 @@ func SetTagFilterResourceData(d *schema.ResourceData, m *models.TagFilter) {
 	d.Set("type", m.Type)
 }
 
-// Iterate throught and update the TagFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the TagFilter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagFilterSubResourceData(m []*models.TagFilter) (d []*map[string]interface{}) {
 	for _, TagFilterModel := range m {
 		if TagFilterModel != nil {

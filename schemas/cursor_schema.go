@@ -9,11 +9,14 @@ import (
 // (1) Translate Cursor resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CursorModel(d *schema.ResourceData) *models.Cursor {
-	orderBy := d.Get("order_by").([]string)
-	pageNum := int64(d.Get("page_num").(int))
-	pageSize := int64(d.Get("page_size").(int))
-	pageToken := d.Get("page_token").(string)
-	totalPages := int64(d.Get("total_pages").(int))
+	orderBy, _ := d.Get("order_by").([]string)
+	pageNumInt, _ := d.Get("page_num").(int)
+	pageNum := int64(pageNumInt)
+	pageSizeInt, _ := d.Get("page_size").(int)
+	pageSize := int64(pageSizeInt)
+	pageToken, _ := d.Get("page_token").(string)
+	totalPagesInt, _ := d.Get("total_pages").(int)
+	totalPages := int64(totalPagesInt)
 	return &models.Cursor{
 		OrderBy:    orderBy,
 		PageNum:    pageNum,
@@ -47,7 +50,7 @@ func SetCursorResourceData(d *schema.ResourceData, m *models.Cursor) {
 	d.Set("total_pages", m.TotalPages)
 }
 
-// Iterate throught and update the Cursor resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Cursor resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCursorSubResourceData(m []*models.Cursor) (d []*map[string]interface{}) {
 	for _, CursorModel := range m {
 		if CursorModel != nil {

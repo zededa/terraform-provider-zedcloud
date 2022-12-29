@@ -9,13 +9,13 @@ import (
 // (1) Translate EDConfigItem resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EDConfigItemModel(d *schema.ResourceData) *models.EDConfigItem {
-	boolValue := d.Get("bool_value").(bool)
-	floatValue := d.Get("float_value").(float32)
-	key := d.Get("key").(string)
-	stringValue := d.Get("string_value").(string)
-	uint32Value := d.Get("uint32_value").(uint32)
-	uint64Value := d.Get("uint64_value").(string)
-	valueType := d.Get("value_type").(string)
+	boolValue, _ := d.Get("bool_value").(bool)
+	floatValue, _ := d.Get("float_value").(float32)
+	key, _ := d.Get("key").(string)
+	stringValue, _ := d.Get("string_value").(string)
+	uint32Value, _ := d.Get("uint32_value").(uint32)
+	uint64Value, _ := d.Get("uint64_value").(string)
+	valueType, _ := d.Get("value_type").(string)
 	return &models.EDConfigItem{
 		BoolValue:   boolValue,
 		FloatValue:  floatValue,
@@ -57,7 +57,7 @@ func SetEDConfigItemResourceData(d *schema.ResourceData, m *models.EDConfigItem)
 	d.Set("value_type", m.ValueType)
 }
 
-// Iterate throught and update the EDConfigItem resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the EDConfigItem resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEDConfigItemSubResourceData(m []*models.EDConfigItem) (d []*map[string]interface{}) {
 	for _, EDConfigItemModel := range m {
 		if EDConfigItemModel != nil {

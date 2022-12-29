@@ -28,21 +28,26 @@ func DeviceStatusSummaryMsgModel(d *schema.ResourceData) *models.DeviceStatusSum
 		StorageMap := StorageInterface.([]interface{})[0].(map[string]interface{})
 		storage = StorageSummaryModelFromMap(StorageMap)
 	}
-	adminState := d.Get("admin_state").(*models.AdminState) // AdminState
-	appInstCount := int64(d.Get("app_inst_count").(int))
-	clusterID := d.Get("cluster_id").(string)
-	debugKnob := d.Get("debug_knob").(bool)
-	debugKnobExpiryTime := d.Get("debug_knob_expiry_time").(strfmt.DateTime)
-	devError := d.Get("dev_error").([]*models.DeviceError) // []*DeviceError
-	var dinfo *models.DeviceInfo                           // DeviceInfo
+	adminStateModel, _ := d.Get("admin_state").(models.AdminState) // AdminState
+	adminState := &adminStateModel
+	if !ok {
+		adminState = nil
+	}
+	appInstCountInt, _ := d.Get("app_inst_count").(int)
+	appInstCount := int64(appInstCountInt)
+	clusterID, _ := d.Get("cluster_id").(string)
+	debugKnob, _ := d.Get("debug_knob").(bool)
+	debugKnobExpiryTime, _ := d.Get("debug_knob_expiry_time").(strfmt.DateTime)
+	devError, _ := d.Get("dev_error").([]*models.DeviceError) // []*DeviceError
+	var dinfo *models.DeviceInfo                              // DeviceInfo
 	dinfoInterface, dinfoIsSet := d.GetOk("dinfo")
 	if dinfoIsSet {
 		dinfoMap := dinfoInterface.([]interface{})[0].(map[string]interface{})
 		dinfo = DeviceInfoModelFromMap(dinfoMap)
 	}
-	edgeviewActive := d.Get("edgeview_active").(bool)
-	id := d.Get("id").(string)
-	location := d.Get("location").(string)
+	edgeviewActive, _ := d.Get("edgeview_active").(bool)
+	id, _ := d.Get("id").(string)
+	location, _ := d.Get("location").(string)
 	var memorySummary *models.DeviceMemorySummary // DeviceMemorySummary
 	memorySummaryInterface, memorySummaryIsSet := d.GetOk("memory_summary")
 	if memorySummaryIsSet {
@@ -55,14 +60,18 @@ func DeviceStatusSummaryMsgModel(d *schema.ResourceData) *models.DeviceStatusSum
 		minfoMap := minfoInterface.([]interface{})[0].(map[string]interface{})
 		minfo = ZManufacturerInfoModelFromMap(minfoMap)
 	}
-	name := d.Get("name").(string)
-	netStatusList := d.Get("net_status_list").([]*models.NetworkStatus) // []*NetworkStatus
-	projectID := d.Get("project_id").(string)
-	projectName := d.Get("project_name").(string)
-	runState := d.Get("run_state").(*models.RunState)   // RunState
-	swInfo := d.Get("sw_info").([]*models.DeviceSWInfo) // []*DeviceSWInfo
-	tags := d.Get("tags").(map[string]string)           // map[string]string
-	title := d.Get("title").(string)
+	name, _ := d.Get("name").(string)
+	netStatusList, _ := d.Get("net_status_list").([]*models.NetworkStatus) // []*NetworkStatus
+	projectID, _ := d.Get("project_id").(string)
+	projectName, _ := d.Get("project_name").(string)
+	runStateModel, _ := d.Get("run_state").(models.RunState) // RunState
+	runState := &runStateModel
+	if !ok {
+		runState = nil
+	}
+	swInfo, _ := d.Get("sw_info").([]*models.DeviceSWInfo) // []*DeviceSWInfo
+	tags, _ := d.Get("tags").(map[string]string)           // map[string]string
+	title, _ := d.Get("title").(string)
 	return &models.DeviceStatusSummaryMsg{
 		CPU:                 cpu,
 		Memory:              memory,
@@ -204,7 +213,7 @@ func SetDeviceStatusSummaryMsgResourceData(d *schema.ResourceData, m *models.Dev
 	d.Set("title", m.Title)
 }
 
-// Iterate throught and update the DeviceStatusSummaryMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceStatusSummaryMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceStatusSummaryMsgSubResourceData(m []*models.DeviceStatusSummaryMsg) (d []*map[string]interface{}) {
 	for _, DeviceStatusSummaryMsgModel := range m {
 		if DeviceStatusSummaryMsgModel != nil {

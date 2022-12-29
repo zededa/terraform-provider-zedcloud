@@ -9,7 +9,7 @@ import (
 // (1) Translate NetworkStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetworkStatusModel(d *schema.ResourceData) *models.NetworkStatus {
-	defaultRouters := d.Get("default_routers").([]string)
+	defaultRouters, _ := d.Get("default_routers").([]string)
 	var dns *models.DNSInfo // DNSInfo
 	dnsInterface, dnsIsSet := d.GetOk("dns")
 	if dnsIsSet {
@@ -28,23 +28,23 @@ func NetworkStatusModel(d *schema.ResourceData) *models.NetworkStatus {
 		gpsLocationMap := gpsLocationInterface.([]interface{})[0].(map[string]interface{})
 		gpsLocation = GPSLocationModelFromMap(gpsLocationMap)
 	}
-	ifName := d.Get("if_name").(string)
-	iPAddrs := d.Get("ip_addrs").([]string)
+	ifName, _ := d.Get("if_name").(string)
+	iPAddrs, _ := d.Get("ip_addrs").([]string)
 	var location *models.GeoLocation // GeoLocation
 	locationInterface, locationIsSet := d.GetOk("location")
 	if locationIsSet {
 		locationMap := locationInterface.([]interface{})[0].(map[string]interface{})
 		location = GeoLocationModelFromMap(locationMap)
 	}
-	macAddr := d.Get("mac_addr").(string)
+	macAddr, _ := d.Get("mac_addr").(string)
 	var proxy *models.NetProxyStatus // NetProxyStatus
 	proxyInterface, proxyIsSet := d.GetOk("proxy")
 	if proxyIsSet {
 		proxyMap := proxyInterface.([]interface{})[0].(map[string]interface{})
 		proxy = NetProxyStatusModelFromMap(proxyMap)
 	}
-	up := d.Get("up").(bool)
-	uplink := d.Get("uplink").(bool)
+	up, _ := d.Get("up").(bool)
+	uplink, _ := d.Get("uplink").(bool)
 	return &models.NetworkStatus{
 		DefaultRouters: defaultRouters,
 		DNS:            dns,
@@ -132,7 +132,7 @@ func SetNetworkStatusResourceData(d *schema.ResourceData, m *models.NetworkStatu
 	d.Set("uplink", m.Uplink)
 }
 
-// Iterate throught and update the NetworkStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the NetworkStatus resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetworkStatusSubResourceData(m []*models.NetworkStatus) (d []*map[string]interface{}) {
 	for _, NetworkStatusModel := range m {
 		if NetworkStatusModel != nil {

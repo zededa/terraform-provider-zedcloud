@@ -9,11 +9,11 @@ import (
 // (1) Translate Author resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AuthorModel(d *schema.ResourceData) *models.Author {
-	company := d.Get("company").(string)
-	email := d.Get("email").(string)
-	group := d.Get("group").(string)
-	user := d.Get("user").(string)
-	website := d.Get("website").(string)
+	company, _ := d.Get("company").(string)
+	email, _ := d.Get("email").(string)
+	group, _ := d.Get("group").(string)
+	user, _ := d.Get("user").(string)
+	website, _ := d.Get("website").(string)
 	return &models.Author{
 		Company: company,
 		Email:   email,
@@ -47,7 +47,7 @@ func SetAuthorResourceData(d *schema.ResourceData, m *models.Author) {
 	d.Set("website", m.Website)
 }
 
-// Iterate throught and update the Author resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Author resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAuthorSubResourceData(m []*models.Author) (d []*map[string]interface{}) {
 	for _, AuthorModel := range m {
 		if AuthorModel != nil {

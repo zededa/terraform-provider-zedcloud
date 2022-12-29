@@ -9,7 +9,7 @@ import (
 // (1) Translate DeviceLoad resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceLoadModel(d *schema.ResourceData) *models.DeviceLoad {
-	deviceLoad := d.Get("device_load").(models.DeviceLoad)
+	deviceLoad, _ := d.Get("device_load").(models.DeviceLoad)
 	return &deviceLoad
 }
 
@@ -22,7 +22,7 @@ func DeviceLoadModelFromMap(m map[string]interface{}) *models.DeviceLoad {
 func SetDeviceLoadResourceData(d *schema.ResourceData, m *models.DeviceLoad) {
 }
 
-// Iterate throught and update the DeviceLoad resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DeviceLoad resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceLoadSubResourceData(m []*models.DeviceLoad) (d []*map[string]interface{}) {
 	for _, DeviceLoadModel := range m {
 		if DeviceLoadModel != nil {

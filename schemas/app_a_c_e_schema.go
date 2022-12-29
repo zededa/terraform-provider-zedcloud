@@ -9,10 +9,11 @@ import (
 // (1) Translate AppACE resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppACEModel(d *schema.ResourceData) *models.AppACE {
-	actions := d.Get("actions").([]*models.AppACEAction) // []*AppACEAction
-	id := int32(d.Get("id").(int))
-	matches := d.Get("matches").([]*models.AppACEMatch) // []*AppACEMatch
-	name := d.Get("name").(string)
+	actions, _ := d.Get("actions").([]*models.AppACEAction) // []*AppACEAction
+	idInt, _ := d.Get("id").(int)
+	id := int32(idInt)
+	matches, _ := d.Get("matches").([]*models.AppACEMatch) // []*AppACEMatch
+	name, _ := d.Get("name").(string)
 	return &models.AppACE{
 		Actions: actions,
 		ID:      &id, // int32 true false false
@@ -42,7 +43,7 @@ func SetAppACEResourceData(d *schema.ResourceData, m *models.AppACE) {
 	d.Set("name", m.Name)
 }
 
-// Iterate throught and update the AppACE resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the AppACE resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppACESubResourceData(m []*models.AppACE) (d []*map[string]interface{}) {
 	for _, AppACEModel := range m {
 		if AppACEModel != nil {

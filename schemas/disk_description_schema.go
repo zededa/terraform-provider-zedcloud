@@ -9,9 +9,9 @@ import (
 // (1) Translate DiskDescription resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DiskDescriptionModel(d *schema.ResourceData) *models.DiskDescription {
-	logicalName := d.Get("logical_name").(string)
-	name := d.Get("name").(string)
-	serial := d.Get("serial").(string)
+	logicalName, _ := d.Get("logical_name").(string)
+	name, _ := d.Get("name").(string)
+	serial, _ := d.Get("serial").(string)
 	return &models.DiskDescription{
 		LogicalName: logicalName,
 		Name:        name,
@@ -37,7 +37,7 @@ func SetDiskDescriptionResourceData(d *schema.ResourceData, m *models.DiskDescri
 	d.Set("serial", m.Serial)
 }
 
-// Iterate throught and update the DiskDescription resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the DiskDescription resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDiskDescriptionSubResourceData(m []*models.DiskDescription) (d []*map[string]interface{}) {
 	for _, DiskDescriptionModel := range m {
 		if DiskDescriptionModel != nil {

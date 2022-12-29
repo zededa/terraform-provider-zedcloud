@@ -9,8 +9,8 @@ import (
 // (1) Translate Match resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func MatchModel(d *schema.ResourceData) *models.Match {
-	typeVar := d.Get("type").(string)
-	value := d.Get("value").(string)
+	typeVar, _ := d.Get("type").(string)
+	value, _ := d.Get("value").(string)
 	return &models.Match{
 		Type:  typeVar,
 		Value: value,
@@ -32,7 +32,7 @@ func SetMatchResourceData(d *schema.ResourceData, m *models.Match) {
 	d.Set("value", m.Value)
 }
 
-// Iterate throught and update the Match resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the Match resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetMatchSubResourceData(m []*models.Match) (d []*map[string]interface{}) {
 	for _, MatchModel := range m {
 		if MatchModel != nil {

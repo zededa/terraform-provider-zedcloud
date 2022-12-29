@@ -9,9 +9,9 @@ import (
 // (1) Translate ACL resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ACLModel(d *schema.ResourceData) *models.ACL {
-	actions := d.Get("actions").([]*models.ACLAction) // []*ACLAction
-	matches := d.Get("matches").([]*models.Match)     // []*Match
-	name := d.Get("name").(string)
+	actions, _ := d.Get("actions").([]*models.ACLAction) // []*ACLAction
+	matches, _ := d.Get("matches").([]*models.Match)     // []*Match
+	name, _ := d.Get("name").(string)
 	return &models.ACL{
 		Actions: actions,
 		Matches: matches,
@@ -37,7 +37,7 @@ func SetACLResourceData(d *schema.ResourceData, m *models.ACL) {
 	d.Set("name", m.Name)
 }
 
-// Iterate throught and update the ACL resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ACL resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetACLSubResourceData(m []*models.ACL) (d []*map[string]interface{}) {
 	for _, ACLModel := range m {
 		if ACLModel != nil {

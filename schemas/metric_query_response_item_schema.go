@@ -10,8 +10,8 @@ import (
 // (1) Translate MetricQueryResponseItem resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func MetricQueryResponseItemModel(d *schema.ResourceData) *models.MetricQueryResponseItem {
-	timestamp := d.Get("timestamp").(strfmt.DateTime)
-	values := d.Get("values").([]float64)
+	timestamp, _ := d.Get("timestamp").(strfmt.DateTime)
+	values, _ := d.Get("values").([]float64)
 	return &models.MetricQueryResponseItem{
 		Timestamp: timestamp,
 		Values:    values,
@@ -33,7 +33,7 @@ func SetMetricQueryResponseItemResourceData(d *schema.ResourceData, m *models.Me
 	d.Set("values", m.Values)
 }
 
-// Iterate throught and update the MetricQueryResponseItem resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the MetricQueryResponseItem resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetMetricQueryResponseItemSubResourceData(m []*models.MetricQueryResponseItem) (d []*map[string]interface{}) {
 	for _, MetricQueryResponseItemModel := range m {
 		if MetricQueryResponseItemModel != nil {

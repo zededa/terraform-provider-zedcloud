@@ -9,16 +9,18 @@ import (
 // (1) Translate EdgeviewPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EdgeviewPolicyModel(d *schema.ResourceData) *models.EdgeviewPolicy {
-	accessAllowChange := d.Get("access_allow_change").(bool)
-	edgeviewAllow := d.Get("edgeview_allow").(bool)
+	accessAllowChange, _ := d.Get("access_allow_change").(bool)
+	edgeviewAllow, _ := d.Get("edgeview_allow").(bool)
 	var edgeviewcfg *models.EdgeviewCfg // EdgeviewCfg
 	edgeviewcfgInterface, edgeviewcfgIsSet := d.GetOk("edgeviewcfg")
 	if edgeviewcfgIsSet {
 		edgeviewcfgMap := edgeviewcfgInterface.([]interface{})[0].(map[string]interface{})
 		edgeviewcfg = EdgeviewCfgModelFromMap(edgeviewcfgMap)
 	}
-	maxExpireSec := int64(d.Get("max_expire_sec").(int))
-	maxInst := int64(d.Get("max_inst").(int))
+	maxExpireSecInt, _ := d.Get("max_expire_sec").(int)
+	maxExpireSec := int64(maxExpireSecInt)
+	maxInstInt, _ := d.Get("max_inst").(int)
+	maxInst := int64(maxInstInt)
 	return &models.EdgeviewPolicy{
 		AccessAllowChange: accessAllowChange,
 		EdgeviewAllow:     &edgeviewAllow, // bool true false false
@@ -58,7 +60,7 @@ func SetEdgeviewPolicyResourceData(d *schema.ResourceData, m *models.EdgeviewPol
 	d.Set("max_inst", m.MaxInst)
 }
 
-// Iterate throught and update the EdgeviewPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the EdgeviewPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEdgeviewPolicySubResourceData(m []*models.EdgeviewPolicy) (d []*map[string]interface{}) {
 	for _, EdgeviewPolicyModel := range m {
 		if EdgeviewPolicyModel != nil {

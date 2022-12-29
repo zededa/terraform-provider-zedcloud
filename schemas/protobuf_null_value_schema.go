@@ -9,7 +9,7 @@ import (
 // (1) Translate ProtobufNullValue resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ProtobufNullValueModel(d *schema.ResourceData) *models.ProtobufNullValue {
-	protobufNullValue := d.Get("protobuf_null_value").(models.ProtobufNullValue)
+	protobufNullValue, _ := d.Get("protobuf_null_value").(models.ProtobufNullValue)
 	return &protobufNullValue
 }
 
@@ -22,7 +22,7 @@ func ProtobufNullValueModelFromMap(m map[string]interface{}) *models.ProtobufNul
 func SetProtobufNullValueResourceData(d *schema.ResourceData, m *models.ProtobufNullValue) {
 }
 
-// Iterate throught and update the ProtobufNullValue resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the ProtobufNullValue resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetProtobufNullValueSubResourceData(m []*models.ProtobufNullValue) (d []*map[string]interface{}) {
 	for _, ProtobufNullValueModel := range m {
 		if ProtobufNullValueModel != nil {

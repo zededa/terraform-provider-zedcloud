@@ -9,11 +9,11 @@ import (
 // (1) Translate BaseOSImage resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func BaseOSImageModel(d *schema.ResourceData) *models.BaseOSImage {
-	activate := d.Get("activate").(bool)
-	imageName := d.Get("image_name").(string)
-	imvolID := d.Get("imvol_id").(string)
-	uuid := d.Get("uuid").(string)
-	version := d.Get("version").(string)
+	activate, _ := d.Get("activate").(bool)
+	imageName, _ := d.Get("image_name").(string)
+	imvolID, _ := d.Get("imvol_id").(string)
+	uuid, _ := d.Get("uuid").(string)
+	version, _ := d.Get("version").(string)
 	return &models.BaseOSImage{
 		Activate:  &activate,  // bool true false false
 		ImageName: &imageName, // string true false false
@@ -47,7 +47,7 @@ func SetBaseOSImageResourceData(d *schema.ResourceData, m *models.BaseOSImage) {
 	d.Set("version", m.Version)
 }
 
-// Iterate throught and update the BaseOSImage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
+// Iterate through and update the BaseOSImage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetBaseOSImageSubResourceData(m []*models.BaseOSImage) (d []*map[string]interface{}) {
 	for _, BaseOSImageModel := range m {
 		if BaseOSImageModel != nil {
