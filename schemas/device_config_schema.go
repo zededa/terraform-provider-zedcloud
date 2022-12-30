@@ -10,10 +10,11 @@ import (
 // (1) Translate DeviceConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
-	adminStateModel, ok := d.Get("admin_state").(models.AdminState) // AdminState
-	adminState := &adminStateModel
-	if !ok {
-		adminState = nil
+	var adminState *models.AdminState // AdminState
+	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
+	if adminStateIsSet {
+		adminStateModel := adminStateInterface.(models.AdminState)
+		adminState = &adminStateModel
 	}
 	assetID, _ := d.Get("asset_id").(string)
 	baseImage, _ := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
@@ -96,10 +97,11 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	thread := int64(threadInt)
 	title, _ := d.Get("title").(string)
 	token, _ := d.Get("token").(string)
-	utypeModel, ok := d.Get("utype").(models.ModelArchType) // ModelArchType
-	utype := &utypeModel
-	if !ok {
-		utype = nil
+	var utype *models.ModelArchType // ModelArchType
+	utypeInterface, utypeIsSet := d.GetOk("utype")
+	if utypeIsSet {
+		utypeModel := utypeInterface.(models.ModelArchType)
+		utype = &utypeModel
 	}
 	return &models.DeviceConfig{
 		AdminState:             adminState,
@@ -437,15 +439,6 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
-		"debug_knob": {
-			Description: `debug knob details for the device`,
-			Type:        schema.TypeList, //GoType: DebugKnobDetail
-			Elem: &schema.Resource{
-				Schema: DebugKnobDetailSchema(),
-			},
-			Optional: true,
-		},
-
 		"default_net_inst": {
 			Description: `default network instance details`,
 			Type:        schema.TypeList, //GoType: NetInstConfig
@@ -555,16 +548,8 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 		"obkey": {
 			Description: `Object key`,
 			Type:        schema.TypeString,
+			Computed:    true,
 			Optional:    true,
-		},
-
-		"onboarding": {
-			Description: `Device level certificates used while onboarding`,
-			Type:        schema.TypeList, //GoType: DeviceCerts
-			Elem: &schema.Resource{
-				Schema: DeviceCertsSchema(),
-			},
-			Optional: true,
 		},
 
 		"prepare_power_off_counter": {
@@ -589,12 +574,14 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `devicereset counter`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"reset_time": {
 			Description: `device reset time`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"revision": {
@@ -604,6 +591,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 				Schema: ObjectRevisionSchema(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"serialno": {
@@ -657,7 +645,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 		"utype": {
 			Description: `device model arch type`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 	}
 }
