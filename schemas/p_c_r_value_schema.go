@@ -11,10 +11,11 @@ import (
 func PCRValueModel(d *schema.ResourceData) *models.PCRValue {
 	indexInt, _ := d.Get("index").(int)
 	index := int64(indexInt)
-	typeVarModel, ok := d.Get("type").(models.PCRType) // PCRType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.PCRType // PCRType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.PCRType)
+		typeVar = &typeModel
 	}
 	value, _ := d.Get("value").(string)
 	return &models.PCRValue{

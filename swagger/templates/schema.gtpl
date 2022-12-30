@@ -60,10 +60,11 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 				{{- else if hasPrefix .GoType "[]" }}
 	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").([]models.{{ pascalize .GoType }}) // {{ .GoType }}
 				{{- else if .IsAliased }}
-	{{ varname .Name }}Model, ok := d.Get("{{ snakize .Name }}").(models.{{ pascalize .GoType }}) // {{ .GoType }}
-	{{ varname .Name }} := &{{ varname .Name }}Model
-	if !ok {
-       {{ varname .Name }} = nil
+	var {{ varname .Name }} *models.{{ pascalize .GoType }} // {{ .GoType }}
+	{{ .Name }}Interface, {{ .Name }}IsSet := d.GetOk("{{ snakize .Name }}")
+	if {{ .Name }}IsSet {
+	    {{ .Name }}Model := {{ .Name }}Interface.(models.{{ pascalize .GoType }})
+	    {{ varname .Name }} = &{{ .Name }}Model
 	}
 				{{- else }}
 	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(models.{{ pascalize .GoType }}) // {{ .GoType }}

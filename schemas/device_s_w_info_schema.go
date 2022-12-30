@@ -17,10 +17,11 @@ func DeviceSWInfoModel(d *schema.ResourceData) *models.DeviceSWInfo {
 	partitionLabel, _ := d.Get("partition_label").(string)
 	partitionState, _ := d.Get("partition_state").(string)
 	shortVersion, _ := d.Get("short_version").(string)
-	statusModel, ok := d.Get("status").(models.SWState) // SWState
-	status := &statusModel
-	if !ok {
-		status = nil
+	var status *models.SWState // SWState
+	statusInterface, statusIsSet := d.GetOk("status")
+	if statusIsSet {
+		statusModel := statusInterface.(models.SWState)
+		status = &statusModel
 	}
 	subStatusProgressInt, _ := d.Get("sub_status_progress").(int)
 	subStatusProgress := int64(subStatusProgressInt)
@@ -30,15 +31,17 @@ func DeviceSWInfoModel(d *schema.ResourceData) *models.DeviceSWInfo {
 		swErrorMap := swErrorInterface.([]interface{})[0].(map[string]interface{})
 		swError = DeviceErrorModelFromMap(swErrorMap)
 	}
-	swStatusModel, ok := d.Get("sw_status").(models.DeviceSWStatus) // DeviceSWStatus
-	swStatus := &swStatusModel
-	if !ok {
-		swStatus = nil
+	var swStatus *models.DeviceSWStatus // DeviceSWStatus
+	swStatusInterface, swStatusIsSet := d.GetOk("sw_status")
+	if swStatusIsSet {
+		swStatusModel := swStatusInterface.(models.DeviceSWStatus)
+		swStatus = &swStatusModel
 	}
-	swSubStatusModel, ok := d.Get("sw_sub_status").(models.DeviceSWSubStatus) // DeviceSWSubStatus
-	swSubStatus := &swSubStatusModel
-	if !ok {
-		swSubStatus = nil
+	var swSubStatus *models.DeviceSWSubStatus // DeviceSWSubStatus
+	swSubStatusInterface, swSubStatusIsSet := d.GetOk("sw_sub_status")
+	if swSubStatusIsSet {
+		swSubStatusModel := swSubStatusInterface.(models.DeviceSWSubStatus)
+		swSubStatus = &swSubStatusModel
 	}
 	swSubStatusStr, _ := d.Get("sw_sub_status_str").(string)
 	return &models.DeviceSWInfo{

@@ -10,18 +10,20 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceStatusFilterModel(d *schema.ResourceData) *models.DeviceStatusFilter {
 	deviceName, _ := d.Get("device_name").(string)
-	loadModel, ok := d.Get("load").(models.DeviceLoad) // DeviceLoad
-	load := &loadModel
-	if !ok {
-		load = nil
+	var load *models.DeviceLoad // DeviceLoad
+	loadInterface, loadIsSet := d.GetOk("load")
+	if loadIsSet {
+		loadModel := loadInterface.(models.DeviceLoad)
+		load = &loadModel
 	}
 	namePattern, _ := d.Get("name_pattern").(string)
 	projectName, _ := d.Get("project_name").(string)
 	projectNamePattern, _ := d.Get("project_name_pattern").(string)
-	runStateModel, ok := d.Get("run_state").(models.RunState) // RunState
-	runState := &runStateModel
-	if !ok {
-		runState = nil
+	var runState *models.RunState // RunState
+	runStateInterface, runStateIsSet := d.GetOk("run_state")
+	if runStateIsSet {
+		runStateModel := runStateInterface.(models.RunState)
+		runState = &runStateModel
 	}
 	tags, _ := d.Get("tags").(map[string]string) // map[string]string
 	return &models.DeviceStatusFilter{

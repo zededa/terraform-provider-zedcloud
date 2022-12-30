@@ -25,10 +25,11 @@ func IoBundleStatusModel(d *schema.ResourceData) *models.IoBundleStatus {
 	memberList, _ := d.Get("member_list").([]*models.IoMemberStatus) // []*IoMemberStatus
 	members, _ := d.Get("members").([]string)
 	name, _ := d.Get("name").(string)
-	typeVarModel, ok := d.Get("type").(models.IoType) // IoType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.IoType // IoType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.IoType)
+		typeVar = &typeModel
 	}
 	return &models.IoBundleStatus{
 		AppName:    &appName, // string true false false

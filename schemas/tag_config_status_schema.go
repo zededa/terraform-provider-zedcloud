@@ -11,15 +11,17 @@ import (
 func TagConfigStatusModel(d *schema.ResourceData) *models.TagConfigStatus {
 	appPolicyID, _ := d.Get("app_policy_id").(string)
 	appPolicyName, _ := d.Get("app_policy_name").(string)
-	attestPolicyTypeModel, ok := d.Get("attest_policy_type").(models.AttestPolicyType) // AttestPolicyType
-	attestPolicyType := &attestPolicyTypeModel
-	if !ok {
-		attestPolicyType = nil
+	var attestPolicyType *models.AttestPolicyType // AttestPolicyType
+	attestPolicyTypeInterface, attestPolicyTypeIsSet := d.GetOk("attest_policy_type")
+	if attestPolicyTypeIsSet {
+		attestPolicyTypeModel := attestPolicyTypeInterface.(models.AttestPolicyType)
+		attestPolicyType = &attestPolicyTypeModel
 	}
-	cloudPolicyTypeModel, ok := d.Get("cloud_policy_type").(models.PolicyType) // PolicyType
-	cloudPolicyType := &cloudPolicyTypeModel
-	if !ok {
-		cloudPolicyType = nil
+	var cloudPolicyType *models.PolicyType // PolicyType
+	cloudPolicyTypeInterface, cloudPolicyTypeIsSet := d.GetOk("cloud_policy_type")
+	if cloudPolicyTypeIsSet {
+		cloudPolicyTypeModel := cloudPolicyTypeInterface.(models.PolicyType)
+		cloudPolicyType = &cloudPolicyTypeModel
 	}
 	edgeviewAllow, _ := d.Get("edgeview_allow").(bool)
 	edgeviewSessionCountInt, _ := d.Get("edgeview_session_count").(int)

@@ -29,10 +29,11 @@ func DeviceStatusSummaryMsgModel(d *schema.ResourceData) *models.DeviceStatusSum
 		StorageMap := StorageInterface.([]interface{})[0].(map[string]interface{})
 		storage = StorageSummaryModelFromMap(StorageMap)
 	}
-	adminStateModel, ok := d.Get("admin_state").(models.AdminState) // AdminState
-	adminState := &adminStateModel
-	if !ok {
-		adminState = nil
+	var adminState *models.AdminState // AdminState
+	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
+	if adminStateIsSet {
+		adminStateModel := adminStateInterface.(models.AdminState)
+		adminState = &adminStateModel
 	}
 	appInstCountInt, _ := d.Get("app_inst_count").(int)
 	appInstCount := int64(appInstCountInt)
@@ -65,10 +66,11 @@ func DeviceStatusSummaryMsgModel(d *schema.ResourceData) *models.DeviceStatusSum
 	netStatusList, _ := d.Get("net_status_list").([]*models.NetworkStatus) // []*NetworkStatus
 	projectID, _ := d.Get("project_id").(string)
 	projectName, _ := d.Get("project_name").(string)
-	runStateModel, ok := d.Get("run_state").(models.RunState) // RunState
-	runState := &runStateModel
-	if !ok {
-		runState = nil
+	var runState *models.RunState // RunState
+	runStateInterface, runStateIsSet := d.GetOk("run_state")
+	if runStateIsSet {
+		runStateModel := runStateInterface.(models.RunState)
+		runState = &runStateModel
 	}
 	swInfo, _ := d.Get("sw_info").([]*models.DeviceSWInfo) // []*DeviceSWInfo
 	tags, _ := d.Get("tags").(map[string]string)           // map[string]string

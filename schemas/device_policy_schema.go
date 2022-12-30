@@ -21,10 +21,11 @@ func DevicePolicyModel(d *schema.ResourceData) *models.DevicePolicy {
 		metaDataMap := metaDataInterface.([]interface{})[0].(map[string]interface{})
 		metaData = PolicyCommonModelFromMap(metaDataMap)
 	}
-	policySubTypeModel, ok := d.Get("policy_sub_type").(models.DevicePolicyType) // DevicePolicyType
-	policySubType := &policySubTypeModel
-	if !ok {
-		policySubType = nil
+	var policySubType *models.DevicePolicyType // DevicePolicyType
+	policySubTypeInterface, policySubTypeIsSet := d.GetOk("policy_sub_type")
+	if policySubTypeIsSet {
+		policySubTypeModel := policySubTypeInterface.(models.DevicePolicyType)
+		policySubType = &policySubTypeModel
 	}
 	return &models.DevicePolicy{
 		AttestationPolicy: attestationPolicy,

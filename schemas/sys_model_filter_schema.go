@@ -12,10 +12,11 @@ func SysModelFilterModel(d *schema.ResourceData) *models.SysModelFilter {
 	brandID, _ := d.Get("brand_id").(string)
 	brandIds, _ := d.Get("brand_ids").([]string)
 	namePattern, _ := d.Get("name_pattern").(string)
-	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
-	originType := &originTypeModel
-	if !ok {
-		originType = nil
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(models.Origin)
+		originType = &originTypeModel
 	}
 	return &models.SysModelFilter{
 		BrandID:     brandID,

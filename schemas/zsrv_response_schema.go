@@ -19,21 +19,24 @@ func ZsrvResponseModel(d *schema.ResourceData) *models.ZsrvResponse {
 	objectKind, _ := d.Get("object_kind").(string)
 	objectName, _ := d.Get("object_name").(string)
 	objectRevision, _ := d.Get("object_revision").(string)
-	objectTypeModel, ok := d.Get("object_type").(models.ObjectType) // ObjectType
-	objectType := &objectTypeModel
-	if !ok {
-		objectType = nil
+	var objectType *models.ObjectType // ObjectType
+	objectTypeInterface, objectTypeIsSet := d.GetOk("object_type")
+	if objectTypeIsSet {
+		objectTypeModel := objectTypeInterface.(models.ObjectType)
+		objectType = &objectTypeModel
 	}
-	operationStatusModel, ok := d.Get("operation_status").(models.ZcOpsStatus) // ZcOpsStatus
-	operationStatus := &operationStatusModel
-	if !ok {
-		operationStatus = nil
+	var operationStatus *models.ZcOpsStatus // ZcOpsStatus
+	operationStatusInterface, operationStatusIsSet := d.GetOk("operation_status")
+	if operationStatusIsSet {
+		operationStatusModel := operationStatusInterface.(models.ZcOpsStatus)
+		operationStatus = &operationStatusModel
 	}
 	operationTime, _ := d.Get("operation_time").(string)
-	operationTypeModel, ok := d.Get("operation_type").(models.ZcOpsType) // ZcOpsType
-	operationType := &operationTypeModel
-	if !ok {
-		operationType = nil
+	var operationType *models.ZcOpsType // ZcOpsType
+	operationTypeInterface, operationTypeIsSet := d.GetOk("operation_type")
+	if operationTypeIsSet {
+		operationTypeModel := operationTypeInterface.(models.ZcOpsType)
+		operationType = &operationTypeModel
 	}
 	startTime, _ := d.Get("start_time").(string)
 	user, _ := d.Get("user").(string)

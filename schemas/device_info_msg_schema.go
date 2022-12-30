@@ -29,15 +29,17 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 		StorageMap := StorageInterface.([]interface{})[0].(map[string]interface{})
 		storage = StorageSummaryModelFromMap(StorageMap)
 	}
-	adminStateModel, ok := d.Get("admin_state").(models.AdminState) // AdminState
-	adminState := &adminStateModel
-	if !ok {
-		adminState = nil
+	var adminState *models.AdminState // AdminState
+	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
+	if adminStateIsSet {
+		adminStateModel := adminStateInterface.(models.AdminState)
+		adminState = &adminStateModel
 	}
-	attestStateModel, ok := d.Get("attest_state").(models.AttestState) // AttestState
-	attestState := &attestStateModel
-	if !ok {
-		attestState = nil
+	var attestState *models.AttestState // AttestState
+	attestStateInterface, attestStateIsSet := d.GetOk("attest_state")
+	if attestStateIsSet {
+		attestStateModel := attestStateInterface.(models.AttestState)
+		attestState = &attestStateModel
 	}
 	blobList, _ := d.Get("blob_list").([]*models.BlobStatus) // []*BlobStatus
 	bootTime, _ := d.Get("boot_time").(strfmt.DateTime)
@@ -51,11 +53,12 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 	dataSecInfo, _ := d.Get("data_sec_info").([]*models.DevDataSecAtRest) // []*DevDataSecAtRest
 	debugKnob, _ := d.Get("debug_knob").(bool)
 	debugKnobExpiryTime, _ := d.Get("debug_knob_expiry_time").(strfmt.DateTime)
-	devError, _ := d.Get("dev_error").([]*models.DeviceError)                              // []*DeviceError
-	deviceRebootReasonModel, ok := d.Get("device_reboot_reason").(models.DeviceBootReason) // DeviceBootReason
-	deviceRebootReason := &deviceRebootReasonModel
-	if !ok {
-		deviceRebootReason = nil
+	devError, _ := d.Get("dev_error").([]*models.DeviceError) // []*DeviceError
+	var deviceRebootReason *models.DeviceBootReason           // DeviceBootReason
+	deviceRebootReasonInterface, deviceRebootReasonIsSet := d.GetOk("device_reboot_reason")
+	if deviceRebootReasonIsSet {
+		deviceRebootReasonModel := deviceRebootReasonInterface.(models.DeviceBootReason)
+		deviceRebootReason = &deviceRebootReasonModel
 	}
 	var dinfo *models.DeviceInfo // DeviceInfo
 	dinfoInterface, dinfoIsSet := d.GetOk("dinfo")
@@ -93,10 +96,11 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 	physicalStorage, _ := d.Get("physical_storage").([]*models.PhysicalStorage) // []*PhysicalStorage
 	projectID, _ := d.Get("project_id").(string)
 	rawStatus, _ := d.Get("raw_status").(string)
-	runStateModel, ok := d.Get("run_state").(models.RunState) // RunState
-	runState := &runStateModel
-	if !ok {
-		runState = nil
+	var runState *models.RunState // RunState
+	runStateInterface, runStateIsSet := d.GetOk("run_state")
+	if runStateIsSet {
+		runStateModel := runStateInterface.(models.RunState)
+		runState = &runStateModel
 	}
 	storageList, _ := d.Get("storage_list").([]*models.StorageStatus) // []*StorageStatus
 	swInfo, _ := d.Get("sw_info").([]*models.DeviceSWInfo)            // []*DeviceSWInfo

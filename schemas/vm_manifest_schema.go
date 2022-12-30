@@ -11,10 +11,11 @@ import (
 func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	acKind, _ := d.Get("ac_kind").(string)
 	acVersion, _ := d.Get("ac_version").(string)
-	appTypeModel, ok := d.Get("app_type").(models.AppType) // AppType
-	appType := &appTypeModel
-	if !ok {
-		appType = nil
+	var appType *models.AppType // AppType
+	appTypeInterface, appTypeIsSet := d.GetOk("app_type")
+	if appTypeIsSet {
+		appTypeModel := appTypeInterface.(models.AppType)
+		appType = &appTypeModel
 	}
 	var configuration *models.UserDataTemplate // UserDataTemplate
 	configurationInterface, configurationIsSet := d.GetOk("configuration")
@@ -29,10 +30,11 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 		containerDetail = ContainerDetailModelFromMap(containerDetailMap)
 	}
 	cPUPinningEnabled, _ := d.Get("cpu_pinning_enabled").(bool)
-	deploymentTypeModel, ok := d.Get("deployment_type").(models.DeploymentType) // DeploymentType
-	deploymentType := &deploymentTypeModel
-	if !ok {
-		deploymentType = nil
+	var deploymentType *models.DeploymentType // DeploymentType
+	deploymentTypeInterface, deploymentTypeIsSet := d.GetOk("deployment_type")
+	if deploymentTypeIsSet {
+		deploymentTypeModel := deploymentTypeInterface.(models.DeploymentType)
+		deploymentType = &deploymentTypeModel
 	}
 	var desc *models.Details // Details
 	descInterface, descIsSet := d.GetOk("desc")

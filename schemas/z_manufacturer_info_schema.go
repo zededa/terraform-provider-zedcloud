@@ -15,10 +15,11 @@ func ZManufacturerInfoModel(d *schema.ResourceData) *models.ZManufacturerInfo {
 	compatible, _ := d.Get("compatible").(string)
 	endorsementKey, _ := d.Get("endorsement_key").(string)
 	hSMInfo, _ := d.Get("h_s_m_info").(string)
-	hSMStatusModel, ok := d.Get("h_s_m_status").(models.DeviceHWSecurityModuleStatus) // DeviceHWSecurityModuleStatus
-	hSMStatus := &hSMStatusModel
-	if !ok {
-		hSMStatus = nil
+	var hSMStatus *models.DeviceHWSecurityModuleStatus // DeviceHWSecurityModuleStatus
+	hSMStatusInterface, hSMStatusIsSet := d.GetOk("h_s_m_status")
+	if hSMStatusIsSet {
+		hSMStatusModel := hSMStatusInterface.(models.DeviceHWSecurityModuleStatus)
+		hSMStatus = &hSMStatusModel
 	}
 	manufacturer, _ := d.Get("manufacturer").(string)
 	productName, _ := d.Get("product_name").(string)

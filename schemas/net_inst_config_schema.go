@@ -22,10 +22,11 @@ func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
 		ip = DhcpServerConfigModelFromMap(ipMap)
 	}
-	kindModel, ok := d.Get("kind").(models.NetworkInstanceKind) // NetworkInstanceKind
-	kind := &kindModel
-	if !ok {
-		kind = nil
+	var kind *models.NetworkInstanceKind // NetworkInstanceKind
+	kindInterface, kindIsSet := d.GetOk("kind")
+	if kindIsSet {
+		kindModel := kindInterface.(models.NetworkInstanceKind)
+		kind = &kindModel
 	}
 	var lisp *models.LispConfig // LispConfig
 	lispInterface, lispIsSet := d.GetOk("lisp")
@@ -53,10 +54,11 @@ func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 	}
 	tags, _ := d.Get("tags").(map[string]string) // map[string]string
 	title, _ := d.Get("title").(string)
-	typeVarModel, ok := d.Get("type").(models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.NetworkInstanceDhcpType // NetworkInstanceDhcpType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.NetworkInstanceDhcpType)
+		typeVar = &typeModel
 	}
 	return &models.NetInstConfig{
 		ClusterID:       clusterID,

@@ -9,10 +9,11 @@ import (
 // (1) Translate DeviceConfigSummary resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceConfigSummaryModel(d *schema.ResourceData) *models.DeviceConfigSummary {
-	adminStateModel, ok := d.Get("admin_state").(models.AdminState) // AdminState
-	adminState := &adminStateModel
-	if !ok {
-		adminState = nil
+	var adminState *models.AdminState // AdminState
+	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
+	if adminStateIsSet {
+		adminStateModel := adminStateInterface.(models.AdminState)
+		adminState = &adminStateModel
 	}
 	baseImage, _ := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
 	clusterID, _ := d.Get("cluster_id").(string)
@@ -32,10 +33,11 @@ func DeviceConfigSummaryModel(d *schema.ResourceData) *models.DeviceConfigSummar
 	serialno, _ := d.Get("serialno").(string)
 	tags, _ := d.Get("tags").(map[string]string) // map[string]string
 	title, _ := d.Get("title").(string)
-	utypeModel, ok := d.Get("utype").(models.ModelArchType) // ModelArchType
-	utype := &utypeModel
-	if !ok {
-		utype = nil
+	var utype *models.ModelArchType // ModelArchType
+	utypeInterface, utypeIsSet := d.GetOk("utype")
+	if utypeIsSet {
+		utypeModel := utypeInterface.(models.ModelArchType)
+		utype = &utypeModel
 	}
 	return &models.DeviceConfigSummary{
 		AdminState:    adminState,

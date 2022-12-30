@@ -16,16 +16,18 @@ func IoMemberModel(d *schema.ResourceData) *models.IoMember {
 	logicallabel, _ := d.Get("logicallabel").(string)
 	phyaddrs, _ := d.Get("phyaddrs").(map[string]string) // map[string]string
 	phylabel, _ := d.Get("phylabel").(string)
-	usageModel, ok := d.Get("usage").(models.AdapterUsage) // AdapterUsage
-	usage := &usageModel
-	if !ok {
-		usage = nil
+	var usage *models.AdapterUsage // AdapterUsage
+	usageInterface, usageIsSet := d.GetOk("usage")
+	if usageIsSet {
+		usageModel := usageInterface.(models.AdapterUsage)
+		usage = &usageModel
 	}
 	usagePolicy, _ := d.Get("usage_policy").(map[string]bool) // map[string]bool
-	ztypeModel, ok := d.Get("ztype").(models.IoType)          // IoType
-	ztype := &ztypeModel
-	if !ok {
-		ztype = nil
+	var ztype *models.IoType                                  // IoType
+	ztypeInterface, ztypeIsSet := d.GetOk("ztype")
+	if ztypeIsSet {
+		ztypeModel := ztypeInterface.(models.IoType)
+		ztype = &ztypeModel
 	}
 	return &models.IoMember{
 		Assigngrp:    &assigngrp, // string true false false

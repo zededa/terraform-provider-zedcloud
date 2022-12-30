@@ -10,15 +10,17 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagStatusFilterModel(d *schema.ResourceData) *models.TagStatusFilter {
 	namePattern, _ := d.Get("name_pattern").(string)
-	statusModel, ok := d.Get("status").(models.TagStatus) // TagStatus
-	status := &statusModel
-	if !ok {
-		status = nil
+	var status *models.TagStatus // TagStatus
+	statusInterface, statusIsSet := d.GetOk("status")
+	if statusIsSet {
+		statusModel := statusInterface.(models.TagStatus)
+		status = &statusModel
 	}
-	typeVarModel, ok := d.Get("type").(models.TagType) // TagType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.TagType // TagType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.TagType)
+		typeVar = &typeModel
 	}
 	return &models.TagStatusFilter{
 		NamePattern: namePattern,

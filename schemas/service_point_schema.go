@@ -11,10 +11,11 @@ import (
 func ServicePointModel(d *schema.ResourceData) *models.ServicePoint {
 	credential, _ := d.Get("credential").(string)
 	nameOrIP, _ := d.Get("name_or_ip").(string)
-	typeVarModel, ok := d.Get("type").(models.SpType) // SpType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.SpType // SpType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.SpType)
+		typeVar = &typeModel
 	}
 	return &models.ServicePoint{
 		Credential: credential,

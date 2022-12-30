@@ -9,18 +9,20 @@ import (
 // (1) Translate EnrollmentDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
-	allocationPolicyModel, ok := d.Get("allocation_policy").(models.AllocationPolicy) // AllocationPolicy
-	allocationPolicy := &allocationPolicyModel
-	if !ok {
-		allocationPolicy = nil
+	var allocationPolicy *models.AllocationPolicy // AllocationPolicy
+	allocationPolicyInterface, allocationPolicyIsSet := d.GetOk("allocation_policy")
+	if allocationPolicyIsSet {
+		allocationPolicyModel := allocationPolicyInterface.(models.AllocationPolicy)
+		allocationPolicy = &allocationPolicyModel
 	}
 	attachedIotHubsName, _ := d.Get("attached_iot_hubs_name").([]string)
 	certificateEnrollment, _ := d.Get("certificate_enrollment").(models.CertificateEnrollmentDetail) // CertificateEnrollmentDetail
 	enableIotEdgeDevice, _ := d.Get("enable_iot_edge_device").(bool)
-	mechanismModel, ok := d.Get("mechanism").(models.EnrollmentMechanism) // EnrollmentMechanism
-	mechanism := &mechanismModel
-	if !ok {
-		mechanism = nil
+	var mechanism *models.EnrollmentMechanism // EnrollmentMechanism
+	mechanismInterface, mechanismIsSet := d.GetOk("mechanism")
+	if mechanismIsSet {
+		mechanismModel := mechanismInterface.(models.EnrollmentMechanism)
+		mechanism = &mechanismModel
 	}
 	var symmetricKeyEnrollment *models.SymmetricKeyEnrollmentDetail // SymmetricKeyEnrollmentDetail
 	symmetricKeyEnrollmentInterface, symmetricKeyEnrollmentIsSet := d.GetOk("symmetric_key_enrollment")

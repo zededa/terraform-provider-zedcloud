@@ -10,10 +10,11 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VariableGroupConditionModel(d *schema.ResourceData) *models.VariableGroupCondition {
 	name, _ := d.Get("name").(string)
-	operatorModel, ok := d.Get("operator").(models.VariableGroupConditionOperator) // VariableGroupConditionOperator
-	operator := &operatorModel
-	if !ok {
-		operator = nil
+	var operator *models.VariableGroupConditionOperator // VariableGroupConditionOperator
+	operatorInterface, operatorIsSet := d.GetOk("operator")
+	if operatorIsSet {
+		operatorModel := operatorInterface.(models.VariableGroupConditionOperator)
+		operator = &operatorModel
 	}
 	value, _ := d.Get("value").(string)
 	return &models.VariableGroupCondition{

@@ -9,11 +9,12 @@ import (
 // (1) Translate Details resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DetailsModel(d *schema.ResourceData) *models.Details {
-	agreementList, _ := d.Get("agreement_list").(map[string]string)    // map[string]string
-	appCategoryModel, ok := d.Get("app_category").(models.AppCategory) // AppCategory
-	appCategory := &appCategoryModel
-	if !ok {
-		appCategory = nil
+	agreementList, _ := d.Get("agreement_list").(map[string]string) // map[string]string
+	var appCategory *models.AppCategory                             // AppCategory
+	appCategoryInterface, appCategoryIsSet := d.GetOk("app_category")
+	if appCategoryIsSet {
+		appCategoryModel := appCategoryInterface.(models.AppCategory)
+		appCategory = &appCategoryModel
 	}
 	category, _ := d.Get("category").(string)
 	licenseList, _ := d.Get("license_list").(map[string]string) // map[string]string

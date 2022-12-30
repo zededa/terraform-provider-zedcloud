@@ -10,10 +10,11 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AttestationPolicyModel(d *schema.ResourceData) *models.AttestationPolicy {
 	id, _ := d.Get("id").(string)
-	typeVarModel, ok := d.Get("type").(models.AttestPolicyType) // AttestPolicyType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.AttestPolicyType // AttestPolicyType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.AttestPolicyType)
+		typeVar = &typeModel
 	}
 	return &models.AttestationPolicy{
 		ID:   id,

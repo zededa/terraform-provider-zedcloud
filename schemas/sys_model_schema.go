@@ -18,10 +18,11 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	isImported, _ := d.Get("is_imported").(bool)
 	logo, _ := d.Get("logo").(map[string]string) // map[string]string
 	name, _ := d.Get("name").(string)
-	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
-	originType := &originTypeModel
-	if !ok {
-		originType = nil
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(models.Origin)
+		originType = &originTypeModel
 	}
 	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")
@@ -31,16 +32,18 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	}
 	productStatus, _ := d.Get("product_status").(string)
 	productURL, _ := d.Get("product_url").(string)
-	stateModel, ok := d.Get("state").(models.SysModelState) // SysModelState
-	state := &stateModel
-	if !ok {
-		state = nil
+	var state *models.SysModelState // SysModelState
+	stateInterface, stateIsSet := d.GetOk("state")
+	if stateIsSet {
+		stateModel := stateInterface.(models.SysModelState)
+		state = &stateModel
 	}
 	title, _ := d.Get("title").(string)
-	typeVarModel, ok := d.Get("type").(models.ModelArchType) // ModelArchType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.ModelArchType // ModelArchType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.ModelArchType)
+		typeVar = &typeModel
 	}
 	return &models.SysModel{
 		PCRTemplates:  pCRTemplates,

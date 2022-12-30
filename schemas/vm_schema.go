@@ -14,10 +14,11 @@ func VMModel(d *schema.ResourceData) *models.VM {
 	cpus := int64(cpusInt)
 	memoryInt, _ := d.Get("memory").(int)
 	memory := int64(memoryInt)
-	modeModel, ok := d.Get("mode").(models.HvMode) // HvMode
-	mode := &modeModel
-	if !ok {
-		mode = nil
+	var mode *models.HvMode // HvMode
+	modeInterface, modeIsSet := d.GetOk("mode")
+	if modeIsSet {
+		modeModel := modeInterface.(models.HvMode)
+		mode = &modeModel
 	}
 	vnc, _ := d.Get("vnc").(bool)
 	return &models.VM{

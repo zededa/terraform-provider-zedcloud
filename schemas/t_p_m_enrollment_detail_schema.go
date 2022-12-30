@@ -9,10 +9,11 @@ import (
 // (1) Translate TPMEnrollmentDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TPMEnrollmentDetailModel(d *schema.ResourceData) *models.TPMEnrollmentDetail {
-	typeVarModel, ok := d.Get("type").(models.EnrollmentType) // EnrollmentType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.EnrollmentType // EnrollmentType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.EnrollmentType)
+		typeVar = &typeModel
 	}
 	return &models.TPMEnrollmentDetail{
 		Type: typeVar,

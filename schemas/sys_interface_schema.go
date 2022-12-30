@@ -11,10 +11,11 @@ import (
 func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	costInt, _ := d.Get("cost").(int)
 	cost := int64(costInt)
-	intfUsageModel, ok := d.Get("intf_usage").(models.AdapterUsage) // AdapterUsage
-	intfUsage := &intfUsageModel
-	if !ok {
-		intfUsage = nil
+	var intfUsage *models.AdapterUsage // AdapterUsage
+	intfUsageInterface, intfUsageIsSet := d.GetOk("intf_usage")
+	if intfUsageIsSet {
+		intfUsageModel := intfUsageInterface.(models.AdapterUsage)
+		intfUsage = &intfUsageModel
 	}
 	intfname, _ := d.Get("intfname").(string)
 	ipaddr, _ := d.Get("ipaddr").(string)

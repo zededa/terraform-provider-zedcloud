@@ -31,18 +31,20 @@ func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 	memory := int64(memoryInt)
 	nameAppPart, _ := d.Get("name_app_part").(string)
 	nameProjectPart, _ := d.Get("name_project_part").(string)
-	namingSchemeModel, ok := d.Get("naming_scheme").(models.AppNamingSchemeV2) // AppNamingSchemeV2
-	namingScheme := &namingSchemeModel
-	if !ok {
-		namingScheme = nil
+	var namingScheme *models.AppNamingSchemeV2 // AppNamingSchemeV2
+	namingSchemeInterface, namingSchemeIsSet := d.GetOk("naming_scheme")
+	if namingSchemeIsSet {
+		namingSchemeModel := namingSchemeInterface.(models.AppNamingSchemeV2)
+		namingScheme = &namingSchemeModel
 	}
 	networksInt, _ := d.Get("networks").(int)
 	networks := int64(networksInt)
 	newBundleVersionAvailable, _ := d.Get("new_bundle_version_available").(bool)
-	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
-	originType := &originTypeModel
-	if !ok {
-		originType = nil
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(models.Origin)
+		originType = &originTypeModel
 	}
 	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")

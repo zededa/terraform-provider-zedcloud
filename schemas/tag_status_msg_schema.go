@@ -13,10 +13,11 @@ func TagStatusMsgModel(d *schema.ResourceData) *models.TagStatusMsg {
 	edgeviewSessionCount := int64(edgeviewSessionCountInt)
 	id, _ := d.Get("id").(string)
 	name, _ := d.Get("name").(string)
-	typeVarModel, ok := d.Get("type").(models.TagType) // TagType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.TagType // TagType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.TagType)
+		typeVar = &typeModel
 	}
 	return &models.TagStatusMsg{
 		EdgeviewSessionCount: edgeviewSessionCount,

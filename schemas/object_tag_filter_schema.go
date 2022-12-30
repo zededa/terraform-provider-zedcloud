@@ -11,10 +11,11 @@ import (
 func ObjectTagFilterModel(d *schema.ResourceData) *models.ObjectTagFilter {
 	objID, _ := d.Get("obj_id").(string)
 	objName, _ := d.Get("obj_name").(string)
-	objTypeModel, ok := d.Get("obj_type").(models.ObjectType) // ObjectType
-	objType := &objTypeModel
-	if !ok {
-		objType = nil
+	var objType *models.ObjectType // ObjectType
+	objTypeInterface, objTypeIsSet := d.GetOk("obj_type")
+	if objTypeIsSet {
+		objTypeModel := objTypeInterface.(models.ObjectType)
+		objType = &objTypeModel
 	}
 	return &models.ObjectTagFilter{
 		ObjID:   objID,

@@ -57,10 +57,11 @@ func PolicyConfigModel(d *schema.ResourceData) *models.PolicyConfig {
 	}
 	statusMessage, _ := d.Get("status_message").(string)
 	title, _ := d.Get("title").(string)
-	typeVarModel, ok := d.Get("type").(models.PolicyType) // PolicyType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.PolicyType // PolicyType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.PolicyType)
+		typeVar = &typeModel
 	}
 	return &models.PolicyConfig{
 		AppPolicy:         appPolicy,

@@ -21,10 +21,11 @@ func SymmetricKeyEnrollmentDetailModel(d *schema.ResourceData) *models.Symmetric
 		individualSymmetricKeyEnrollmentMap := individualSymmetricKeyEnrollmentInterface.([]interface{})[0].(map[string]interface{})
 		individualSymmetricKeyEnrollment = IndividualSymmetricKeyEnrollmentModelFromMap(individualSymmetricKeyEnrollmentMap)
 	}
-	typeVarModel, ok := d.Get("type").(models.EnrollmentType) // EnrollmentType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	var typeVar *models.EnrollmentType // EnrollmentType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.EnrollmentType)
+		typeVar = &typeModel
 	}
 	return &models.SymmetricKeyEnrollmentDetail{
 		GroupSymmetricKeyEnrollment:      groupSymmetricKeyEnrollment,

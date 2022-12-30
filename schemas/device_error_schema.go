@@ -12,10 +12,11 @@ func DeviceErrorModel(d *schema.ResourceData) *models.DeviceError {
 	description, _ := d.Get("description").(string)
 	entities, _ := d.Get("entities").([]*models.DeviceEntity) // []*DeviceEntity
 	retryCondition, _ := d.Get("retry_condition").(string)
-	severityModel, ok := d.Get("severity").(models.Severity) // Severity
-	severity := &severityModel
-	if !ok {
-		severity = nil
+	var severity *models.Severity // Severity
+	severityInterface, severityIsSet := d.GetOk("severity")
+	if severityIsSet {
+		severityModel := severityInterface.(models.Severity)
+		severity = &severityModel
 	}
 	timestamp, _ := d.Get("timestamp").(interface{}) // interface{}
 	return &models.DeviceError{

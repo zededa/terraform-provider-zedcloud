@@ -14,10 +14,11 @@ func SysBrandModel(d *schema.ResourceData) *models.SysBrand {
 	id, _ := d.Get("id").(string)
 	logo, _ := d.Get("logo").(map[string]string) // map[string]string
 	name, _ := d.Get("name").(string)
-	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
-	originType := &originTypeModel
-	if !ok {
-		originType = nil
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(models.Origin)
+		originType = &originTypeModel
 	}
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
@@ -25,10 +26,11 @@ func SysBrandModel(d *schema.ResourceData) *models.SysBrand {
 		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
 		revision = ObjectRevisionModelFromMap(revisionMap)
 	}
-	stateModel, ok := d.Get("state").(models.SysModelState) // SysModelState
-	state := &stateModel
-	if !ok {
-		state = nil
+	var state *models.SysModelState // SysModelState
+	stateInterface, stateIsSet := d.GetOk("state")
+	if stateIsSet {
+		stateModel := stateInterface.(models.SysModelState)
+		state = &stateModel
 	}
 	svg, _ := d.Get("svg").(string)
 	systemMfgName, _ := d.Get("system_mfg_name").(string)

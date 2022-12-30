@@ -9,10 +9,11 @@ import (
 // (1) Translate DeviceEntity resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceEntityModel(d *schema.ResourceData) *models.DeviceEntity {
-	entityModel, ok := d.Get("entity").(models.Entity) // Entity
-	entity := &entityModel
-	if !ok {
-		entity = nil
+	var entity *models.Entity // Entity
+	entityInterface, entityIsSet := d.GetOk("entity")
+	if entityIsSet {
+		entityModel := entityInterface.(models.Entity)
+		entity = &entityModel
 	}
 	entityID, _ := d.Get("entity_id").(string)
 	entityName, _ := d.Get("entity_name").(string)

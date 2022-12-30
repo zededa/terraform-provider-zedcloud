@@ -9,11 +9,12 @@ import (
 // (1) Translate ModuleDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ModuleDetailModel(d *schema.ResourceData) *models.ModuleDetail {
-	environment, _ := d.Get("environment").(map[string]string)      // map[string]string
-	moduleTypeModel, ok := d.Get("module_type").(models.ModuleType) // ModuleType
-	moduleType := &moduleTypeModel
-	if !ok {
-		moduleType = nil
+	environment, _ := d.Get("environment").(map[string]string) // map[string]string
+	var moduleType *models.ModuleType                          // ModuleType
+	moduleTypeInterface, moduleTypeIsSet := d.GetOk("module_type")
+	if moduleTypeIsSet {
+		moduleTypeModel := moduleTypeInterface.(models.ModuleType)
+		moduleType = &moduleTypeModel
 	}
 	routes, _ := d.Get("routes").(map[string]string) // map[string]string
 	twinDetail, _ := d.Get("twin_detail").(string)

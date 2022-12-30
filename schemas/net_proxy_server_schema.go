@@ -11,10 +11,11 @@ import (
 func NetProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
 	portInt, _ := d.Get("port").(int)
 	port := int64(portInt)
-	protoModel, ok := d.Get("proto").(models.NetworkProxyProto) // NetworkProxyProto
-	proto := &protoModel
-	if !ok {
-		proto = nil
+	var proto *models.NetworkProxyProto // NetworkProxyProto
+	protoInterface, protoIsSet := d.GetOk("proto")
+	if protoIsSet {
+		protoModel := protoInterface.(models.NetworkProxyProto)
+		proto = &protoModel
 	}
 	server, _ := d.Get("server").(string)
 	return &models.NetProxyServer{

@@ -12,23 +12,26 @@ func PhysicalStorageModel(d *schema.ResourceData) *models.PhysicalStorage {
 	compressionRatio, _ := d.Get("compression_ratio").(float64)
 	countZvolsInt, _ := d.Get("count_zvols").(int)
 	countZvols := int64(countZvolsInt)
-	currentRaidModel, ok := d.Get("current_raid").(models.PhysicalStorageRaidType) // PhysicalStorageRaidType
-	currentRaid := &currentRaidModel
-	if !ok {
-		currentRaid = nil
+	var currentRaid *models.PhysicalStorageRaidType // PhysicalStorageRaidType
+	currentRaidInterface, currentRaidIsSet := d.GetOk("current_raid")
+	if currentRaidIsSet {
+		currentRaidModel := currentRaidInterface.(models.PhysicalStorageRaidType)
+		currentRaid = &currentRaidModel
 	}
 	disks, _ := d.Get("disks").([]*models.PhysicalStorageDiskState) // []*PhysicalStorageDiskState
 	poolName, _ := d.Get("pool_name").(string)
 	poolStatusMsg, _ := d.Get("pool_status_msg").(string)
-	storageStateModel, ok := d.Get("storage_state").(models.PhysicalStorageStatus) // PhysicalStorageStatus
-	storageState := &storageStateModel
-	if !ok {
-		storageState = nil
+	var storageState *models.PhysicalStorageStatus // PhysicalStorageStatus
+	storageStateInterface, storageStateIsSet := d.GetOk("storage_state")
+	if storageStateIsSet {
+		storageStateModel := storageStateInterface.(models.PhysicalStorageStatus)
+		storageState = &storageStateModel
 	}
-	storageTypeModel, ok := d.Get("storage_type").(models.PhysicalStorageTypeInfo) // PhysicalStorageTypeInfo
-	storageType := &storageTypeModel
-	if !ok {
-		storageType = nil
+	var storageType *models.PhysicalStorageTypeInfo // PhysicalStorageTypeInfo
+	storageTypeInterface, storageTypeIsSet := d.GetOk("storage_type")
+	if storageTypeIsSet {
+		storageTypeModel := storageTypeInterface.(models.PhysicalStorageTypeInfo)
+		storageType = &storageTypeModel
 	}
 	zfsVersion, _ := d.Get("zfs_version").(string)
 	zpoolSize, _ := d.Get("zpool_size").(string)

@@ -27,17 +27,19 @@ func AppConfigModel(d *schema.ResourceData) *models.AppConfig {
 	name, _ := d.Get("name").(string)
 	nameAppPart, _ := d.Get("name_app_part").(string)
 	nameProjectPart, _ := d.Get("name_project_part").(string)
-	namingSchemeModel, ok := d.Get("naming_scheme").(models.AppNamingScheme) // AppNamingScheme
-	namingScheme := &namingSchemeModel
-	if !ok {
-		namingScheme = nil
+	var namingScheme *models.AppNamingScheme // AppNamingScheme
+	namingSchemeInterface, namingSchemeIsSet := d.GetOk("naming_scheme")
+	if namingSchemeIsSet {
+		namingSchemeModel := namingSchemeInterface.(models.AppNamingScheme)
+		namingScheme = &namingSchemeModel
 	}
 	networksInt, _ := d.Get("networks").(int)
 	networks := int64(networksInt)
-	originTypeModel, ok := d.Get("origin_type").(models.Origin) // Origin
-	originType := &originTypeModel
-	if !ok {
-		originType = nil
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(models.Origin)
+		originType = &originTypeModel
 	}
 	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")

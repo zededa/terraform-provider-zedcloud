@@ -10,15 +10,17 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VariableGroupVariableModel(d *schema.ResourceData) *models.VariableGroupVariable {
 	defaultVar, _ := d.Get("default").(string)
-	encodeModel, ok := d.Get("encode").(models.VariableFileEncoding) // VariableFileEncoding
-	encode := &encodeModel
-	if !ok {
-		encode = nil
+	var encode *models.VariableFileEncoding // VariableFileEncoding
+	encodeInterface, encodeIsSet := d.GetOk("encode")
+	if encodeIsSet {
+		encodeModel := encodeInterface.(models.VariableFileEncoding)
+		encode = &encodeModel
 	}
-	formatModel, ok := d.Get("format").(models.VariableVariableFormat) // VariableVariableFormat
-	format := &formatModel
-	if !ok {
-		format = nil
+	var format *models.VariableVariableFormat // VariableVariableFormat
+	formatInterface, formatIsSet := d.GetOk("format")
+	if formatIsSet {
+		formatModel := formatInterface.(models.VariableVariableFormat)
+		format = &formatModel
 	}
 	label, _ := d.Get("label").(string)
 	maxLength, _ := d.Get("max_length").(string)

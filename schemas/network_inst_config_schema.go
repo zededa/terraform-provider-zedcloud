@@ -17,10 +17,11 @@ func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
 		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
 		ip = DhcpServerConfigModelFromMap(ipMap)
 	}
-	kindModel, ok := d.Get("kind").(models.NetworkInstanceKind) // NetworkInstanceKind
-	kind := &kindModel
-	if !ok {
-		kind = nil
+	var kind *models.NetworkInstanceKind // NetworkInstanceKind
+	kindInterface, kindIsSet := d.GetOk("kind")
+	if kindIsSet {
+		kindModel := kindInterface.(models.NetworkInstanceKind)
+		kind = &kindModel
 	}
 	var opaque *models.NetInstOpaqueConfig // NetInstOpaqueConfig
 	opaqueInterface, opaqueIsSet := d.GetOk("opaque")
@@ -29,12 +30,13 @@ func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
 		opaque = NetInstOpaqueConfigModelFromMap(opaqueMap)
 	}
 	port, _ := d.Get("port").(string)
-	portTags, _ := d.Get("port_tags").(map[string]string)              // map[string]string
-	tags, _ := d.Get("tags").(map[string]string)                       // map[string]string
-	typeVarModel, ok := d.Get("type").(models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
-	typeVar := &typeVarModel
-	if !ok {
-		typeVar = nil
+	portTags, _ := d.Get("port_tags").(map[string]string) // map[string]string
+	tags, _ := d.Get("tags").(map[string]string)          // map[string]string
+	var typeVar *models.NetworkInstanceDhcpType           // NetworkInstanceDhcpType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(models.NetworkInstanceDhcpType)
+		typeVar = &typeModel
 	}
 	return &models.NetworkInstConfig{
 		DeviceDefault: deviceDefault,
