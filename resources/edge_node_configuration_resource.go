@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	apiclient "github.com/zededa/terraform-provider/client"
@@ -46,6 +47,9 @@ func EdgeNodeConfiguration_CreateEdgeNode(ctx context.Context, d *schema.Resourc
 	params := edge_node_configuration.NewEdgeNodeConfigurationCreateEdgeNodeParams()
 	params.SetBody(model)
 
+	fmt.Println("------CREATE---------------------------------------")
+	spew.Dump(params)
+
 	client := m.(*apiclient.Zedcloudapi)
 
 	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationCreateEdgeNode(params, nil)
@@ -55,7 +59,6 @@ func EdgeNodeConfiguration_CreateEdgeNode(ctx context.Context, d *schema.Resourc
 		return diags
 	}
 
-	fmt.Println("CREATE ---------------------------------------")
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
@@ -67,7 +70,6 @@ func EdgeNodeConfiguration_CreateEdgeNode(ctx context.Context, d *schema.Resourc
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
 		if len(diags) > 0 {
-			fmt.Println("END CREATE with ERRS---------------------------------------")
 			return diags
 		}
 	}
@@ -75,18 +77,16 @@ func EdgeNodeConfiguration_CreateEdgeNode(ctx context.Context, d *schema.Resourc
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
 	if errs := EdgeNodeConfiguration_GetEdgeNodeByName(ctx, d, m); err != nil {
-		fmt.Println("END CREATE with ERRS---------------------------------------")
 		return append(diags, errs...)
 	}
 
-	fmt.Println(len(diags))
-	fmt.Println("END CREATE---------------------------------------")
-
+	fmt.Println("------END CREATE---------------------------------------")
 	return diags
 }
 
 func EdgeNodeConfiguration_GetEdgeNodeByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
+	fmt.Println("------GET---------------------------------------")
 
 	params := edge_node_configuration.NewEdgeNodeConfigurationGetEdgeNodeByNameParams()
 
@@ -112,8 +112,10 @@ func EdgeNodeConfiguration_GetEdgeNodeByName(ctx context.Context, d *schema.Reso
 	}
 
 	respModel := resp.GetPayload()
+	spew.Dump(respModel)
 	zschema.SetDeviceConfigResourceData(d, respModel)
 	d.SetId(resp.Payload.ID)
+	fmt.Println("------END GET---------------------------------------")
 
 	return diags
 }

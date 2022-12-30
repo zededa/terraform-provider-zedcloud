@@ -381,10 +381,10 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `administrative state of device`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Default:     models.AdminStateADMINSTATECREATED, // FIXME: name properly in API spec
+			Default:     models.ADMINSTATE_CREATED, // FIXME: name properly in API spec
 			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
-				if oldValue == string(models.AdminStateADMINSTATE_REGISTERED) &&
-					newValue == string(models.AdminStateADMINSTATE_ACTIVE) {
+				if oldValue == string(models.ADMINSTATE_REGISTERED) &&
+					newValue == string(models.ADMINSTATE_ACTIVE) {
 					return true
 				}
 				return false
