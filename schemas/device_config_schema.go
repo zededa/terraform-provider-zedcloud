@@ -381,6 +381,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `administrative state of device`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     models.AdminStateADMINSTATECREATED, // FIXME: name properly in API spec
 		},
 
 		"asset_id": {
@@ -437,6 +438,16 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `CPU (configured values)`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+		},
+
+		"debug_knob": {
+			Description: `debug knob details for the device`,
+			Type:        schema.TypeList, //GoType: DebugKnobDetail
+			Elem: &schema.Resource{
+				Schema: DebugKnobDetailSchema(),
+			},
+			Computed:  true,
+			Sensitive: true,
 		},
 
 		"default_net_inst": {
@@ -550,6 +561,16 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Computed:    true,
 			Optional:    true,
+		},
+
+		"onboarding": {
+			Description: `Device level certificates used while onboarding`,
+			Type:        schema.TypeList, //GoType: DeviceCerts
+			Elem: &schema.Resource{
+				Schema: DeviceCertsSchema(),
+			},
+			Computed:  true,
+			Sensitive: true,
 		},
 
 		"prepare_power_off_counter": {
