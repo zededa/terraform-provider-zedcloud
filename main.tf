@@ -12,70 +12,101 @@ terraform {
 }
 // export TF_VAR_username=
 variable "username" {
-  description = "ZEDCloud username"
-  sensitive = true
-  type        = string
+    description = "ZEDCloud username"
+    sensitive = true
+    type        = string
 }
 
 // export TF_VAR_password=
 variable "password" {
-  description = "ZEDCloud password"
-  sensitive = true
-  type        = string
+    description = "ZEDCloud password"
+    sensitive = true
+    type        = string
 }
 
 // export TF_VAR_zedcloud_token=
 variable "zedcloud_token" {
-  description = "ZEDCloud token"
-  sensitive = true
-  type        = string
+    description = "ZEDCloud token"
+    sensitive = true
+    type        = string
 }
 
 provider "zedcloud" {
 	  zedcloud_url = "zedcontrol.local.zededa.net"
-	# zedcloud_url = "https://zedcontrol.alpha.zededa.net"
-    token = var.zedcloud_token
     username = var.username
     password = var.password
+    zedcloud_token = var.zedcloud_token
 }
 
-data "zedcloud_edgenode" "data-test_tf_provider_4" {
-    name = "test_tf_provider_4"
+# data "zedcloud_edgenode" "data-test_tf_provider" {
+# 		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
+# 		name = "test_tf_provider-create_edgenode"
+# 		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
+# 		title = "test_tf_provider-create_edgenode-title"
+# }
+
+# data "zedcloud_datastore" "docker-registry" {
+#    name = "Zededa-Dockerhub"
+# }
+
+resource "zedcloud_edgenode" "test_tf_provider" {
+		# computed
+    # id = data-test_tf_provider.id
+
+		# required
+		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
+		name = "test_tf_provider-create_edgenode"
+		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
+		title = "test_tf_provider-create_edgenode-title"
+    admin_state = "ADMIN_STATE_ACTIVE"
 }
 
-data "zedcloud_datastore" "docker-registry" {
-   name = "Zededa-Dockerhub"
-}
+# resource "zedcloud_edgenode" "test_tf_provider" {
+#     admin_state = "ADMIN_STATE_ACTIVE"
+#     asset_id = "asset_id"
+#     # base_image = "eve_image"
+#     base_os_retry_counter = 1
+#     base_os_retry_time = ""
+#     client_ip = ""
+#     cluster_id = ""
+#     config_item = [
+#         {
+# 	          bool_value = false
+# 	          float_value = 0.0
+# 	        	key = ""
+# 	        	string_value = ""
+# 	        	uint32_value = 0
+# 	        	uint64_value = 0
+# 	        	value_type = ""
+#         }
+#     ]
+#     cpu = 0
+#     debug_knob_detail = {
+#         debug_knob = false
+#         expired = false
+#         expiry = 1000000
+#     }
 
-resource "zedcloud_edgenode" "test_tf_provider_4" {
-    name = "test_tf_provider_4"
-    asset_id = ""
-    adminstate_config = "ADMIN_STATE_ACTIVE"
-    # adminstate_config = "ADMIN_STATE_REGISTERED"
-    model_id = "c39a0aaf-e1eb-4396-a45e-5dc146da0244"
-    project_id = "e1ee569c-2118-447a-b6ba-e40bcd3f12fb"
-    serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b"
-    title = "test_tf_provider"
-    eve_image_version = "eve_image"
-    tags = {
-        "edgenode-tag1" = "tag-value"
-        "edgenode-tag2" = "tag-value2"
-    }
-    dev_location {
-        city = "San Jose"
-        country = "USA"
-        freeloc = ""
-        hostname = "sample-device"
-        loc = ""
-        org = "Zededa Engineering"
-        postal = "95116"
-        region = "Alameda County"
-        underlay_ip = "10.1.1.1"
-    }
-    lifecycle {
-        //prevent_destroy = true
-    }
-}
+# 		default_net_inst = {
+# 		cluster_id = ""
+# 		description = ""
+# 		device_default = ""
+# 		device_id = ""
+# 		dhcp = false
+# 		dns_list = {
+# 		  addrs = ""
+# 		  hostname = ""
+# 		}
+# 		ip = {
+# 	  	dhcp_range = [
+# 		    end = ""
+# 		    start = ""
+# 		  ]
+# 		dns = ""
+# 		domain = ""
+# 		gateway = ""
+# 		mask = ""
+# }
 
 # data "zedcloud_edgeapp" "ds_vmware_velocloud_sd_wan_medium" {
 #    name = "vmware-velocloud-sd-wan-medium"
