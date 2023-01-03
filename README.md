@@ -27,15 +27,15 @@
 - The general approach seems to be to address issues with workarounds and conditions instead of identifying the cause and fixing it. These workaround then impose new issues, that get addressed in the same manner. Thus, a tree of conditional workarounds builds up that is responsible for most of the complexity in the zedcloud codebase. The business requirements themselves are not that complex. This makes the code and system very flaky, slow and bloated. And the developer (and probably user) experience very bad.
 
 #### Changes in swagger spec files
-- Rename tag/operation-group EdgeNodeConfigurtaion -> DeviceConfig
-- Change /v1/devices endpoint operationId: QueryEdgeNodes -> GetDeviceList
+- Rename tag/operation-group EdgeNodeConfiguration -> DeviceConfig
+- Change /v1/devices endpoint operationId: EdgeNodeConfiguration_QueryEdgeNodes -> GetDeviceList
 
 - Rename DeviceStatusMsg -> DeviceStatus
 
-- Change /v1/devices/id/{id}/status endpoint operationId: GetDeviceStatusByID
+- Change /v1/devices/id/{id}/status endpoint operationId: EdgeNodeConfiguration_GetEdgeNode -> GetDeviceStatusByID
 
-- Change /v1/devices/id/{objid}/events endpoint operationId: GetDeviceEventListByID
-- Change /v1/devices/name/{objname}/events endpoint operationId: -> GetDeviceEventListByName
+- Change /v1/devices/id/{objid}/events endpoint operationId: EdgeNodeStatus_GetEdgeNodeEvents -> GetDeviceEventListByID
+- Change /v1/devices/name/{objname}/events endpoint operationId: -> EdgeNodeStatus_GetEdgeNodeEventsByName
 
 ### TODO
 - rename Device to EdgeNode to stay consistent even though endpoints use device?
