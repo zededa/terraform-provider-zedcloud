@@ -3,6 +3,7 @@ module github.com/zededa/terraform-provider
 go 1.19
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/go-openapi/errors v0.20.3
 	github.com/go-openapi/runtime v0.24.2
 	github.com/go-openapi/strfmt v0.21.3
