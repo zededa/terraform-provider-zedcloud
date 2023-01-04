@@ -445,7 +445,8 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DebugKnobDetailSchema(),
 			},
-			Optional: true,
+			Computed:  true,
+			Sensitive: true,
 		},
 
 		"default_net_inst": {
@@ -558,6 +559,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `Object key`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"onboarding": {
@@ -566,7 +568,8 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DeviceCertsSchema(),
 			},
-			Optional: true,
+			Computed:  true,
+			Sensitive: true,
 		},
 
 		"prepare_power_off_counter": {
@@ -591,12 +594,14 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `devicereset counter`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"reset_time": {
 			Description: `device reset time`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"revision": {
@@ -606,6 +611,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 				Schema: ObjectRevisionSchema(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"serialno": {
@@ -660,6 +666,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `device model arch type`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 	}
 }

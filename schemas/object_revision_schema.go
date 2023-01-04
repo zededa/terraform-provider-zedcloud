@@ -3,7 +3,6 @@ package schemas
 import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -75,41 +74,39 @@ func SetObjectRevisionSubResourceData(m []*models.ObjectRevision) (d []*map[stri
 func ObjectRevisionSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"created_at": {
-			Description:  `The time, in milliseconds since the epoch, when the record was created.`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Required:     true,
+			Description: `The time, in milliseconds since the epoch, when the record was created.`,
+			Type:        schema.TypeString,
+			Computed:    true,
 		},
 
 		"created_by": {
 			Description: `User data: Created By`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Computed:    true,
 		},
 
 		"curr": {
 			Description: `Current Database version of the record`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Computed:    true,
 		},
 
 		"prev": {
 			Description: `Previous`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"updated_at": {
-			Description:  `The time, in milliseconds since the epoch, when the record was last updated.`,
-			Type:         schema.TypeString,
-			ValidateFunc: validation.IsRFC3339Time,
-			Required:     true,
+			Description: `The time, in milliseconds since the epoch, when the record was last updated.`,
+			Type:        schema.TypeString,
+			Computed:    true,
 		},
 
 		"updated_by": {
 			Description: `User data: Updated By`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Computed:    true,
 		},
 	}
 }
