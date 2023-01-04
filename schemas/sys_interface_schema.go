@@ -14,8 +14,8 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	var intfUsage *models.AdapterUsage // AdapterUsage
 	intfUsageInterface, intfUsageIsSet := d.GetOk("intf_usage")
 	if intfUsageIsSet {
-		intfUsageModel := intfUsageInterface.(models.AdapterUsage)
-		intfUsage = &intfUsageModel
+		intfUsageModel := intfUsageInterface.(string)
+		intfUsage = models.NewAdapterUsage(models.AdapterUsage(intfUsageModel))
 	}
 	intfname, _ := d.Get("intfname").(string)
 	ipaddr, _ := d.Get("ipaddr").(string)

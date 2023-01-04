@@ -13,8 +13,8 @@ func VariableGroupConditionModel(d *schema.ResourceData) *models.VariableGroupCo
 	var operator *models.VariableGroupConditionOperator // VariableGroupConditionOperator
 	operatorInterface, operatorIsSet := d.GetOk("operator")
 	if operatorIsSet {
-		operatorModel := operatorInterface.(models.VariableGroupConditionOperator)
-		operator = &operatorModel
+		operatorModel := operatorInterface.(string)
+		operator = models.NewVariableGroupConditionOperator(models.VariableGroupConditionOperator(operatorModel))
 	}
 	value, _ := d.Get("value").(string)
 	return &models.VariableGroupCondition{

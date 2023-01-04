@@ -20,8 +20,8 @@ func ClusterPolicyModel(d *schema.ResourceData) *models.ClusterPolicy {
 	var typeVar *models.ClusterType // ClusterType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.ClusterType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewClusterType(models.ClusterType(typeModel))
 	}
 	return &models.ClusterPolicy{
 		AppPolicyID:     &appPolicyID, // string true false false

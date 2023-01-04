@@ -24,8 +24,8 @@ func SymmetricKeyEnrollmentDetailModel(d *schema.ResourceData) *models.Symmetric
 	var typeVar *models.EnrollmentType // EnrollmentType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.EnrollmentType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewEnrollmentType(models.EnrollmentType(typeModel))
 	}
 	return &models.SymmetricKeyEnrollmentDetail{
 		GroupSymmetricKeyEnrollment:      groupSymmetricKeyEnrollment,

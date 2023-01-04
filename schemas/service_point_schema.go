@@ -14,8 +14,8 @@ func ServicePointModel(d *schema.ResourceData) *models.ServicePoint {
 	var typeVar *models.SpType // SpType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.SpType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewSpType(models.SpType(typeModel))
 	}
 	return &models.ServicePoint{
 		Credential: credential,

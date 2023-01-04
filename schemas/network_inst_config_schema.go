@@ -20,8 +20,8 @@ func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
 	var kind *models.NetworkInstanceKind // NetworkInstanceKind
 	kindInterface, kindIsSet := d.GetOk("kind")
 	if kindIsSet {
-		kindModel := kindInterface.(models.NetworkInstanceKind)
-		kind = &kindModel
+		kindModel := kindInterface.(string)
+		kind = models.NewNetworkInstanceKind(models.NetworkInstanceKind(kindModel))
 	}
 	var opaque *models.NetInstOpaqueConfig // NetInstOpaqueConfig
 	opaqueInterface, opaqueIsSet := d.GetOk("opaque")
@@ -35,8 +35,8 @@ func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
 	var typeVar *models.NetworkInstanceDhcpType           // NetworkInstanceDhcpType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.NetworkInstanceDhcpType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
 	}
 	return &models.NetworkInstConfig{
 		DeviceDefault: deviceDefault,

@@ -40,8 +40,8 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 	var typeVar *models.TagType // TagType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.TagType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewTagType(models.TagType(typeModel))
 	}
 	return &models.Tag{
 		AttestationPolicy: attestationPolicy,

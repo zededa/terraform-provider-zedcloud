@@ -12,8 +12,8 @@ func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
 	var allocationPolicy *models.AllocationPolicy // AllocationPolicy
 	allocationPolicyInterface, allocationPolicyIsSet := d.GetOk("allocation_policy")
 	if allocationPolicyIsSet {
-		allocationPolicyModel := allocationPolicyInterface.(models.AllocationPolicy)
-		allocationPolicy = &allocationPolicyModel
+		allocationPolicyModel := allocationPolicyInterface.(string)
+		allocationPolicy = models.NewAllocationPolicy(models.AllocationPolicy(allocationPolicyModel))
 	}
 	attachedIotHubsName, _ := d.Get("attached_iot_hubs_name").([]string)
 	certificateEnrollment, _ := d.Get("certificate_enrollment").(models.CertificateEnrollmentDetail) // CertificateEnrollmentDetail
@@ -21,8 +21,8 @@ func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
 	var mechanism *models.EnrollmentMechanism // EnrollmentMechanism
 	mechanismInterface, mechanismIsSet := d.GetOk("mechanism")
 	if mechanismIsSet {
-		mechanismModel := mechanismInterface.(models.EnrollmentMechanism)
-		mechanism = &mechanismModel
+		mechanismModel := mechanismInterface.(string)
+		mechanism = models.NewEnrollmentMechanism(models.EnrollmentMechanism(mechanismModel))
 	}
 	var symmetricKeyEnrollment *models.SymmetricKeyEnrollmentDetail // SymmetricKeyEnrollmentDetail
 	symmetricKeyEnrollmentInterface, symmetricKeyEnrollmentIsSet := d.GetOk("symmetric_key_enrollment")

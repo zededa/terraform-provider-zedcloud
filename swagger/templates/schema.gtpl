@@ -63,8 +63,8 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 	var {{ varname .Name }} *models.{{ pascalize .GoType }} // {{ .GoType }}
 	{{ .Name }}Interface, {{ .Name }}IsSet := d.GetOk("{{ snakize .Name }}")
 	if {{ .Name }}IsSet {
-	    {{ .Name }}Model := {{ .Name }}Interface.(models.{{ pascalize .GoType }})
-	    {{ varname .Name }} = &{{ .Name }}Model
+	    {{ .Name }}Model := {{ .Name }}Interface.(string)
+	    {{ varname .Name }} = models.New{{.GoType}}(models.{{.GoType}}({{ .Name }}Model))
 	}
 				{{- else }}
 	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(models.{{ pascalize .GoType }}) // {{ .GoType }}

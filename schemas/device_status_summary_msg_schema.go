@@ -32,8 +32,8 @@ func DeviceStatusSummaryMsgModel(d *schema.ResourceData) *models.DeviceStatusSum
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
 	if adminStateIsSet {
-		adminStateModel := adminStateInterface.(models.AdminState)
-		adminState = &adminStateModel
+		adminStateModel := adminStateInterface.(string)
+		adminState = models.NewAdminState(models.AdminState(adminStateModel))
 	}
 	appInstCountInt, _ := d.Get("app_inst_count").(int)
 	appInstCount := int64(appInstCountInt)
@@ -69,8 +69,8 @@ func DeviceStatusSummaryMsgModel(d *schema.ResourceData) *models.DeviceStatusSum
 	var runState *models.RunState // RunState
 	runStateInterface, runStateIsSet := d.GetOk("run_state")
 	if runStateIsSet {
-		runStateModel := runStateInterface.(models.RunState)
-		runState = &runStateModel
+		runStateModel := runStateInterface.(string)
+		runState = models.NewRunState(models.RunState(runStateModel))
 	}
 	swInfo, _ := d.Get("sw_info").([]*models.DeviceSWInfo) // []*DeviceSWInfo
 	tags, _ := d.Get("tags").(map[string]string)           // map[string]string

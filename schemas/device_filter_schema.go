@@ -12,8 +12,8 @@ func DeviceFilterModel(d *schema.ResourceData) *models.DeviceFilter {
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
 	if adminStateIsSet {
-		adminStateModel := adminStateInterface.(models.AdminState)
-		adminState = &adminStateModel
+		adminStateModel := adminStateInterface.(string)
+		adminState = models.NewAdminState(models.AdminState(adminStateModel))
 	}
 	namePattern, _ := d.Get("name_pattern").(string)
 	project, _ := d.Get("project").(string)

@@ -15,8 +15,8 @@ func VMManifestImageModel(d *schema.ResourceData) *models.VMManifestImage {
 	var imageformat *models.ConfigFormat // ConfigFormat
 	imageformatInterface, imageformatIsSet := d.GetOk("imageformat")
 	if imageformatIsSet {
-		imageformatModel := imageformatInterface.(models.ConfigFormat)
-		imageformat = &imageformatModel
+		imageformatModel := imageformatInterface.(string)
+		imageformat = models.NewConfigFormat(models.ConfigFormat(imageformatModel))
 	}
 	imageid, _ := d.Get("imageid").(string)
 	imagename, _ := d.Get("imagename").(string)

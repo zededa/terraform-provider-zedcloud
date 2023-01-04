@@ -22,21 +22,21 @@ func ZsrvResponseModel(d *schema.ResourceData) *models.ZsrvResponse {
 	var objectType *models.ObjectType // ObjectType
 	objectTypeInterface, objectTypeIsSet := d.GetOk("object_type")
 	if objectTypeIsSet {
-		objectTypeModel := objectTypeInterface.(models.ObjectType)
-		objectType = &objectTypeModel
+		objectTypeModel := objectTypeInterface.(string)
+		objectType = models.NewObjectType(models.ObjectType(objectTypeModel))
 	}
 	var operationStatus *models.ZcOpsStatus // ZcOpsStatus
 	operationStatusInterface, operationStatusIsSet := d.GetOk("operation_status")
 	if operationStatusIsSet {
-		operationStatusModel := operationStatusInterface.(models.ZcOpsStatus)
-		operationStatus = &operationStatusModel
+		operationStatusModel := operationStatusInterface.(string)
+		operationStatus = models.NewZcOpsStatus(models.ZcOpsStatus(operationStatusModel))
 	}
 	operationTime, _ := d.Get("operation_time").(string)
 	var operationType *models.ZcOpsType // ZcOpsType
 	operationTypeInterface, operationTypeIsSet := d.GetOk("operation_type")
 	if operationTypeIsSet {
-		operationTypeModel := operationTypeInterface.(models.ZcOpsType)
-		operationType = &operationTypeModel
+		operationTypeModel := operationTypeInterface.(string)
+		operationType = models.NewZcOpsType(models.ZcOpsType(operationTypeModel))
 	}
 	startTime, _ := d.Get("start_time").(string)
 	user, _ := d.Get("user").(string)

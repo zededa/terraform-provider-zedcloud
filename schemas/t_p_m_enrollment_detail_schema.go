@@ -12,8 +12,8 @@ func TPMEnrollmentDetailModel(d *schema.ResourceData) *models.TPMEnrollmentDetai
 	var typeVar *models.EnrollmentType // EnrollmentType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.EnrollmentType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewEnrollmentType(models.EnrollmentType(typeModel))
 	}
 	return &models.TPMEnrollmentDetail{
 		Type: typeVar,

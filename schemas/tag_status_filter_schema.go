@@ -13,14 +13,14 @@ func TagStatusFilterModel(d *schema.ResourceData) *models.TagStatusFilter {
 	var status *models.TagStatus // TagStatus
 	statusInterface, statusIsSet := d.GetOk("status")
 	if statusIsSet {
-		statusModel := statusInterface.(models.TagStatus)
-		status = &statusModel
+		statusModel := statusInterface.(string)
+		status = models.NewTagStatus(models.TagStatus(statusModel))
 	}
 	var typeVar *models.TagType // TagType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.TagType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewTagType(models.TagType(typeModel))
 	}
 	return &models.TagStatusFilter{
 		NamePattern: namePattern,

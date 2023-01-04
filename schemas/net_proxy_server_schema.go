@@ -14,8 +14,8 @@ func NetProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
 	var proto *models.NetworkProxyProto // NetworkProxyProto
 	protoInterface, protoIsSet := d.GetOk("proto")
 	if protoIsSet {
-		protoModel := protoInterface.(models.NetworkProxyProto)
-		proto = &protoModel
+		protoModel := protoInterface.(string)
+		proto = models.NewNetworkProxyProto(models.NetworkProxyProto(protoModel))
 	}
 	server, _ := d.Get("server").(string)
 	return &models.NetProxyServer{

@@ -18,8 +18,8 @@ func ZManufacturerInfoModel(d *schema.ResourceData) *models.ZManufacturerInfo {
 	var hSMStatus *models.DeviceHWSecurityModuleStatus // DeviceHWSecurityModuleStatus
 	hSMStatusInterface, hSMStatusIsSet := d.GetOk("h_s_m_status")
 	if hSMStatusIsSet {
-		hSMStatusModel := hSMStatusInterface.(models.DeviceHWSecurityModuleStatus)
-		hSMStatus = &hSMStatusModel
+		hSMStatusModel := hSMStatusInterface.(string)
+		hSMStatus = models.NewDeviceHWSecurityModuleStatus(models.DeviceHWSecurityModuleStatus(hSMStatusModel))
 	}
 	manufacturer, _ := d.Get("manufacturer").(string)
 	productName, _ := d.Get("product_name").(string)

@@ -24,8 +24,8 @@ func DevicePolicyModel(d *schema.ResourceData) *models.DevicePolicy {
 	var policySubType *models.DevicePolicyType // DevicePolicyType
 	policySubTypeInterface, policySubTypeIsSet := d.GetOk("policy_sub_type")
 	if policySubTypeIsSet {
-		policySubTypeModel := policySubTypeInterface.(models.DevicePolicyType)
-		policySubType = &policySubTypeModel
+		policySubTypeModel := policySubTypeInterface.(string)
+		policySubType = models.NewDevicePolicyType(models.DevicePolicyType(policySubTypeModel))
 	}
 	return &models.DevicePolicy{
 		AttestationPolicy: attestationPolicy,

@@ -15,8 +15,8 @@ func BlobStatusModel(d *schema.ResourceData) *models.BlobStatus {
 	var swState *models.SWState // SWState
 	swStateInterface, swStateIsSet := d.GetOk("sw_state")
 	if swStateIsSet {
-		swStateModel := swStateInterface.(models.SWState)
-		swState = &swStateModel
+		swStateModel := swStateInterface.(string)
+		swState = models.NewSWState(models.SWState(swStateModel))
 	}
 	return &models.BlobStatus{
 		Hash:     hash,

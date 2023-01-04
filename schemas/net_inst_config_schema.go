@@ -25,8 +25,8 @@ func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 	var kind *models.NetworkInstanceKind // NetworkInstanceKind
 	kindInterface, kindIsSet := d.GetOk("kind")
 	if kindIsSet {
-		kindModel := kindInterface.(models.NetworkInstanceKind)
-		kind = &kindModel
+		kindModel := kindInterface.(string)
+		kind = models.NewNetworkInstanceKind(models.NetworkInstanceKind(kindModel))
 	}
 	var lisp *models.LispConfig // LispConfig
 	lispInterface, lispIsSet := d.GetOk("lisp")
@@ -57,8 +57,8 @@ func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 	var typeVar *models.NetworkInstanceDhcpType // NetworkInstanceDhcpType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.NetworkInstanceDhcpType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
 	}
 	return &models.NetInstConfig{
 		ClusterID:       clusterID,

@@ -14,8 +14,8 @@ func ObjectTagFilterModel(d *schema.ResourceData) *models.ObjectTagFilter {
 	var objType *models.ObjectType // ObjectType
 	objTypeInterface, objTypeIsSet := d.GetOk("obj_type")
 	if objTypeIsSet {
-		objTypeModel := objTypeInterface.(models.ObjectType)
-		objType = &objTypeModel
+		objTypeModel := objTypeInterface.(string)
+		objType = models.NewObjectType(models.ObjectType(objTypeModel))
 	}
 	return &models.ObjectTagFilter{
 		ObjID:   objID,

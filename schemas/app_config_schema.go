@@ -30,16 +30,16 @@ func AppConfigModel(d *schema.ResourceData) *models.AppConfig {
 	var namingScheme *models.AppNamingScheme // AppNamingScheme
 	namingSchemeInterface, namingSchemeIsSet := d.GetOk("naming_scheme")
 	if namingSchemeIsSet {
-		namingSchemeModel := namingSchemeInterface.(models.AppNamingScheme)
-		namingScheme = &namingSchemeModel
+		namingSchemeModel := namingSchemeInterface.(string)
+		namingScheme = models.NewAppNamingScheme(models.AppNamingScheme(namingSchemeModel))
 	}
 	networksInt, _ := d.Get("networks").(int)
 	networks := int64(networksInt)
 	var originType *models.Origin // Origin
 	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
 	if originTypeIsSet {
-		originTypeModel := originTypeInterface.(models.Origin)
-		originType = &originTypeModel
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
 	}
 	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")

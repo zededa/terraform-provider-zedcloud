@@ -13,8 +13,8 @@ func DetailsModel(d *schema.ResourceData) *models.Details {
 	var appCategory *models.AppCategory                             // AppCategory
 	appCategoryInterface, appCategoryIsSet := d.GetOk("app_category")
 	if appCategoryIsSet {
-		appCategoryModel := appCategoryInterface.(models.AppCategory)
-		appCategory = &appCategoryModel
+		appCategoryModel := appCategoryInterface.(string)
+		appCategory = models.NewAppCategory(models.AppCategory(appCategoryModel))
 	}
 	category, _ := d.Get("category").(string)
 	licenseList, _ := d.Get("license_list").(map[string]string) // map[string]string

@@ -34,8 +34,8 @@ func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 	var namingScheme *models.AppNamingSchemeV2 // AppNamingSchemeV2
 	namingSchemeInterface, namingSchemeIsSet := d.GetOk("naming_scheme")
 	if namingSchemeIsSet {
-		namingSchemeModel := namingSchemeInterface.(models.AppNamingSchemeV2)
-		namingScheme = &namingSchemeModel
+		namingSchemeModel := namingSchemeInterface.(string)
+		namingScheme = models.NewAppNamingSchemeV2(models.AppNamingSchemeV2(namingSchemeModel))
 	}
 	networksInt, _ := d.Get("networks").(int)
 	networks := int64(networksInt)
@@ -43,8 +43,8 @@ func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 	var originType *models.Origin // Origin
 	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
 	if originTypeIsSet {
-		originTypeModel := originTypeInterface.(models.Origin)
-		originType = &originTypeModel
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
 	}
 	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")

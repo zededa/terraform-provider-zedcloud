@@ -14,8 +14,8 @@ func PhyAdapterModel(d *schema.ResourceData) *models.PhyAdapter {
 	var typeVar *models.IoType                   // IoType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.IoType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewIoType(models.IoType(typeModel))
 	}
 	return &models.PhyAdapter{
 		Name: name,

@@ -12,8 +12,8 @@ func DeviceEntityModel(d *schema.ResourceData) *models.DeviceEntity {
 	var entity *models.Entity // Entity
 	entityInterface, entityIsSet := d.GetOk("entity")
 	if entityIsSet {
-		entityModel := entityInterface.(models.Entity)
-		entity = &entityModel
+		entityModel := entityInterface.(string)
+		entity = models.NewEntity(models.Entity(entityModel))
 	}
 	entityID, _ := d.Get("entity_id").(string)
 	entityName, _ := d.Get("entity_name").(string)

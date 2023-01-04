@@ -28,8 +28,8 @@ func IoBundleStatusModel(d *schema.ResourceData) *models.IoBundleStatus {
 	var typeVar *models.IoType // IoType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.IoType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewIoType(models.IoType(typeModel))
 	}
 	return &models.IoBundleStatus{
 		AppName:    &appName, // string true false false

@@ -12,8 +12,8 @@ func DeviceStatusConfigModel(d *schema.ResourceData) *models.DeviceStatusConfig 
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
 	if adminStateIsSet {
-		adminStateModel := adminStateInterface.(models.AdminState)
-		adminState = &adminStateModel
+		adminStateModel := adminStateInterface.(string)
+		adminState = models.NewAdminState(models.AdminState(adminStateModel))
 	}
 	appInstCount, _ := d.Get("app_inst_count").(string)
 	var dinfo *models.DeviceInfo // DeviceInfo
@@ -32,8 +32,8 @@ func DeviceStatusConfigModel(d *schema.ResourceData) *models.DeviceStatusConfig 
 	var runState *models.RunState // RunState
 	runStateInterface, runStateIsSet := d.GetOk("run_state")
 	if runStateIsSet {
-		runStateModel := runStateInterface.(models.RunState)
-		runState = &runStateModel
+		runStateModel := runStateInterface.(string)
+		runState = models.NewRunState(models.RunState(runStateModel))
 	}
 	serialNo, _ := d.Get("serial_no").(string)
 	swInfo, _ := d.Get("sw_info").([]*models.DeviceSWInfo) // []*DeviceSWInfo

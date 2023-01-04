@@ -13,14 +13,14 @@ func VariableGroupVariableModel(d *schema.ResourceData) *models.VariableGroupVar
 	var encode *models.VariableFileEncoding // VariableFileEncoding
 	encodeInterface, encodeIsSet := d.GetOk("encode")
 	if encodeIsSet {
-		encodeModel := encodeInterface.(models.VariableFileEncoding)
-		encode = &encodeModel
+		encodeModel := encodeInterface.(string)
+		encode = models.NewVariableFileEncoding(models.VariableFileEncoding(encodeModel))
 	}
 	var format *models.VariableVariableFormat // VariableVariableFormat
 	formatInterface, formatIsSet := d.GetOk("format")
 	if formatIsSet {
-		formatModel := formatInterface.(models.VariableVariableFormat)
-		format = &formatModel
+		formatModel := formatInterface.(string)
+		format = models.NewVariableVariableFormat(models.VariableVariableFormat(formatModel))
 	}
 	label, _ := d.Get("label").(string)
 	maxLength, _ := d.Get("max_length").(string)

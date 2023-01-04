@@ -13,8 +13,8 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
 	if adminStateIsSet {
-		adminStateModel := adminStateInterface.(models.AdminState)
-		adminState = &adminStateModel
+		adminStateModel := adminStateInterface.(string)
+		adminState = models.NewAdminState(models.AdminState(adminStateModel))
 	}
 	assetID, _ := d.Get("asset_id").(string)
 	baseImage, _ := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
@@ -100,8 +100,8 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	var utype *models.ModelArchType // ModelArchType
 	utypeInterface, utypeIsSet := d.GetOk("utype")
 	if utypeIsSet {
-		utypeModel := utypeInterface.(models.ModelArchType)
-		utype = &utypeModel
+		utypeModel := utypeInterface.(string)
+		utype = models.NewModelArchType(models.ModelArchType(utypeModel))
 	}
 	return &models.DeviceConfig{
 		AdminState:             adminState,
@@ -381,14 +381,6 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `administrative state of device`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Default:     models.ADMINSTATE_CREATED, // FIXME: name properly in API spec
-			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
-				if oldValue == string(models.ADMINSTATE_REGISTERED) &&
-					newValue == string(models.ADMINSTATE_ACTIVE) {
-					return true
-				}
-				return false
-			},
 		},
 
 		"asset_id": {
@@ -453,8 +445,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DebugKnobDetailSchema(),
 			},
-			Computed:  true,
-			Sensitive: true,
+			Optional: true,
 		},
 
 		"default_net_inst": {
@@ -566,7 +557,6 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 		"obkey": {
 			Description: `Object key`,
 			Type:        schema.TypeString,
-			Computed:    true,
 			Optional:    true,
 		},
 
@@ -576,8 +566,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DeviceCertsSchema(),
 			},
-			Computed:  true,
-			Sensitive: true,
+			Optional: true,
 		},
 
 		"prepare_power_off_counter": {
@@ -602,14 +591,12 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `devicereset counter`,
 			Type:        schema.TypeInt,
 			Optional:    true,
-			Computed:    true,
 		},
 
 		"reset_time": {
 			Description: `device reset time`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Computed:    true,
 		},
 
 		"revision": {
@@ -619,7 +606,6 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 				Schema: ObjectRevisionSchema(),
 			},
 			Optional: true,
-			Computed: true,
 		},
 
 		"serialno": {
@@ -673,7 +659,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 		"utype": {
 			Description: `device model arch type`,
 			Type:        schema.TypeString,
-			Computed:    true,
+			Optional:    true,
 		},
 	}
 }

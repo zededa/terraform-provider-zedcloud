@@ -20,8 +20,8 @@ func DeviceSWInfoModel(d *schema.ResourceData) *models.DeviceSWInfo {
 	var status *models.SWState // SWState
 	statusInterface, statusIsSet := d.GetOk("status")
 	if statusIsSet {
-		statusModel := statusInterface.(models.SWState)
-		status = &statusModel
+		statusModel := statusInterface.(string)
+		status = models.NewSWState(models.SWState(statusModel))
 	}
 	subStatusProgressInt, _ := d.Get("sub_status_progress").(int)
 	subStatusProgress := int64(subStatusProgressInt)
@@ -34,14 +34,14 @@ func DeviceSWInfoModel(d *schema.ResourceData) *models.DeviceSWInfo {
 	var swStatus *models.DeviceSWStatus // DeviceSWStatus
 	swStatusInterface, swStatusIsSet := d.GetOk("sw_status")
 	if swStatusIsSet {
-		swStatusModel := swStatusInterface.(models.DeviceSWStatus)
-		swStatus = &swStatusModel
+		swStatusModel := swStatusInterface.(string)
+		swStatus = models.NewDeviceSWStatus(models.DeviceSWStatus(swStatusModel))
 	}
 	var swSubStatus *models.DeviceSWSubStatus // DeviceSWSubStatus
 	swSubStatusInterface, swSubStatusIsSet := d.GetOk("sw_sub_status")
 	if swSubStatusIsSet {
-		swSubStatusModel := swSubStatusInterface.(models.DeviceSWSubStatus)
-		swSubStatus = &swSubStatusModel
+		swSubStatusModel := swSubStatusInterface.(string)
+		swSubStatus = models.NewDeviceSWSubStatus(models.DeviceSWSubStatus(swSubStatusModel))
 	}
 	swSubStatusStr, _ := d.Get("sw_sub_status_str").(string)
 	return &models.DeviceSWInfo{

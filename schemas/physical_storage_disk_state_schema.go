@@ -18,8 +18,8 @@ func PhysicalStorageDiskStateModel(d *schema.ResourceData) *models.PhysicalStora
 	var status *models.PhysicalStorageStatus // PhysicalStorageStatus
 	statusInterface, statusIsSet := d.GetOk("status")
 	if statusIsSet {
-		statusModel := statusInterface.(models.PhysicalStorageStatus)
-		status = &statusModel
+		statusModel := statusInterface.(string)
+		status = models.NewPhysicalStorageStatus(models.PhysicalStorageStatus(statusModel))
 	}
 	return &models.PhysicalStorageDiskState{
 		Disk:   disk,

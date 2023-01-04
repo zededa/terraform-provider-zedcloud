@@ -12,8 +12,8 @@ func DeviceConfigSummaryModel(d *schema.ResourceData) *models.DeviceConfigSummar
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
 	if adminStateIsSet {
-		adminStateModel := adminStateInterface.(models.AdminState)
-		adminState = &adminStateModel
+		adminStateModel := adminStateInterface.(string)
+		adminState = models.NewAdminState(models.AdminState(adminStateModel))
 	}
 	baseImage, _ := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
 	clusterID, _ := d.Get("cluster_id").(string)
@@ -36,8 +36,8 @@ func DeviceConfigSummaryModel(d *schema.ResourceData) *models.DeviceConfigSummar
 	var utype *models.ModelArchType // ModelArchType
 	utypeInterface, utypeIsSet := d.GetOk("utype")
 	if utypeIsSet {
-		utypeModel := utypeInterface.(models.ModelArchType)
-		utype = &utypeModel
+		utypeModel := utypeInterface.(string)
+		utype = models.NewModelArchType(models.ModelArchType(utypeModel))
 	}
 	return &models.DeviceConfigSummary{
 		AdminState:    adminState,

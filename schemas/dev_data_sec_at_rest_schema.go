@@ -19,8 +19,8 @@ func DevDataSecAtRestModel(d *schema.ResourceData) *models.DevDataSecAtRest {
 	var status *models.DeviceDataSecurityAtRestStatus // DeviceDataSecurityAtRestStatus
 	statusInterface, statusIsSet := d.GetOk("status")
 	if statusIsSet {
-		statusModel := statusInterface.(models.DeviceDataSecurityAtRestStatus)
-		status = &statusModel
+		statusModel := statusInterface.(string)
+		status = models.NewDeviceDataSecurityAtRestStatus(models.DeviceDataSecurityAtRestStatus(statusModel))
 	}
 	return &models.DevDataSecAtRest{
 		ErrInfo: errInfo,

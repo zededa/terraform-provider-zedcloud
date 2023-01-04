@@ -12,8 +12,8 @@ func VolumeInstConfigModel(d *schema.ResourceData) *models.VolumeInstConfig {
 	var accessmode *models.VolumeInstanceAccessMode // VolumeInstanceAccessMode
 	accessmodeInterface, accessmodeIsSet := d.GetOk("accessmode")
 	if accessmodeIsSet {
-		accessmodeModel := accessmodeInterface.(models.VolumeInstanceAccessMode)
-		accessmode = &accessmodeModel
+		accessmodeModel := accessmodeInterface.(string)
+		accessmode = models.NewVolumeInstanceAccessMode(models.VolumeInstanceAccessMode(accessmodeModel))
 	}
 	blockStorageTags, _ := d.Get("block_storage_tags").(map[string]string) // map[string]string
 	cleartext, _ := d.Get("cleartext").(bool)
@@ -32,8 +32,8 @@ func VolumeInstConfigModel(d *schema.ResourceData) *models.VolumeInstConfig {
 	var typeVar *models.VolumeInstanceType // VolumeInstanceType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.VolumeInstanceType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewVolumeInstanceType(models.VolumeInstanceType(typeModel))
 	}
 	return &models.VolumeInstConfig{
 		Accessmode:                 accessmode,

@@ -15,8 +15,8 @@ func DeviceErrorModel(d *schema.ResourceData) *models.DeviceError {
 	var severity *models.Severity // Severity
 	severityInterface, severityIsSet := d.GetOk("severity")
 	if severityIsSet {
-		severityModel := severityInterface.(models.Severity)
-		severity = &severityModel
+		severityModel := severityInterface.(string)
+		severity = models.NewSeverity(models.Severity(severityModel))
 	}
 	timestamp, _ := d.Get("timestamp").(interface{}) // interface{}
 	return &models.DeviceError{

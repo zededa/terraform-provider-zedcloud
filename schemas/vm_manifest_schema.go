@@ -14,8 +14,8 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	var appType *models.AppType // AppType
 	appTypeInterface, appTypeIsSet := d.GetOk("app_type")
 	if appTypeIsSet {
-		appTypeModel := appTypeInterface.(models.AppType)
-		appType = &appTypeModel
+		appTypeModel := appTypeInterface.(string)
+		appType = models.NewAppType(models.AppType(appTypeModel))
 	}
 	var configuration *models.UserDataTemplate // UserDataTemplate
 	configurationInterface, configurationIsSet := d.GetOk("configuration")
@@ -33,8 +33,8 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	var deploymentType *models.DeploymentType // DeploymentType
 	deploymentTypeInterface, deploymentTypeIsSet := d.GetOk("deployment_type")
 	if deploymentTypeIsSet {
-		deploymentTypeModel := deploymentTypeInterface.(models.DeploymentType)
-		deploymentType = &deploymentTypeModel
+		deploymentTypeModel := deploymentTypeInterface.(string)
+		deploymentType = models.NewDeploymentType(models.DeploymentType(deploymentTypeModel))
 	}
 	var desc *models.Details // Details
 	descInterface, descIsSet := d.GetOk("desc")

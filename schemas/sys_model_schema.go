@@ -21,8 +21,8 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	var originType *models.Origin // Origin
 	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
 	if originTypeIsSet {
-		originTypeModel := originTypeInterface.(models.Origin)
-		originType = &originTypeModel
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
 	}
 	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")
@@ -35,15 +35,15 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	var state *models.SysModelState // SysModelState
 	stateInterface, stateIsSet := d.GetOk("state")
 	if stateIsSet {
-		stateModel := stateInterface.(models.SysModelState)
-		state = &stateModel
+		stateModel := stateInterface.(string)
+		state = models.NewSysModelState(models.SysModelState(stateModel))
 	}
 	title, _ := d.Get("title").(string)
 	var typeVar *models.ModelArchType // ModelArchType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.ModelArchType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewModelArchType(models.ModelArchType(typeModel))
 	}
 	return &models.SysModel{
 		PCRTemplates:  pCRTemplates,

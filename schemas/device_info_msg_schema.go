@@ -32,14 +32,14 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
 	if adminStateIsSet {
-		adminStateModel := adminStateInterface.(models.AdminState)
-		adminState = &adminStateModel
+		adminStateModel := adminStateInterface.(string)
+		adminState = models.NewAdminState(models.AdminState(adminStateModel))
 	}
 	var attestState *models.AttestState // AttestState
 	attestStateInterface, attestStateIsSet := d.GetOk("attest_state")
 	if attestStateIsSet {
-		attestStateModel := attestStateInterface.(models.AttestState)
-		attestState = &attestStateModel
+		attestStateModel := attestStateInterface.(string)
+		attestState = models.NewAttestState(models.AttestState(attestStateModel))
 	}
 	blobList, _ := d.Get("blob_list").([]*models.BlobStatus) // []*BlobStatus
 	bootTime, _ := d.Get("boot_time").(strfmt.DateTime)
@@ -57,8 +57,8 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 	var deviceRebootReason *models.DeviceBootReason           // DeviceBootReason
 	deviceRebootReasonInterface, deviceRebootReasonIsSet := d.GetOk("device_reboot_reason")
 	if deviceRebootReasonIsSet {
-		deviceRebootReasonModel := deviceRebootReasonInterface.(models.DeviceBootReason)
-		deviceRebootReason = &deviceRebootReasonModel
+		deviceRebootReasonModel := deviceRebootReasonInterface.(string)
+		deviceRebootReason = models.NewDeviceBootReason(models.DeviceBootReason(deviceRebootReasonModel))
 	}
 	var dinfo *models.DeviceInfo // DeviceInfo
 	dinfoInterface, dinfoIsSet := d.GetOk("dinfo")
@@ -99,8 +99,8 @@ func DeviceInfoMsgModel(d *schema.ResourceData) *models.DeviceInfoMsg {
 	var runState *models.RunState // RunState
 	runStateInterface, runStateIsSet := d.GetOk("run_state")
 	if runStateIsSet {
-		runStateModel := runStateInterface.(models.RunState)
-		runState = &runStateModel
+		runStateModel := runStateInterface.(string)
+		runState = models.NewRunState(models.RunState(runStateModel))
 	}
 	storageList, _ := d.Get("storage_list").([]*models.StorageStatus) // []*StorageStatus
 	swInfo, _ := d.Get("sw_info").([]*models.DeviceSWInfo)            // []*DeviceSWInfo

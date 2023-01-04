@@ -17,8 +17,8 @@ func SysBrandModel(d *schema.ResourceData) *models.SysBrand {
 	var originType *models.Origin // Origin
 	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
 	if originTypeIsSet {
-		originTypeModel := originTypeInterface.(models.Origin)
-		originType = &originTypeModel
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
 	}
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
@@ -29,8 +29,8 @@ func SysBrandModel(d *schema.ResourceData) *models.SysBrand {
 	var state *models.SysModelState // SysModelState
 	stateInterface, stateIsSet := d.GetOk("state")
 	if stateIsSet {
-		stateModel := stateInterface.(models.SysModelState)
-		state = &stateModel
+		stateModel := stateInterface.(string)
+		state = models.NewSysModelState(models.SysModelState(stateModel))
 	}
 	svg, _ := d.Get("svg").(string)
 	systemMfgName, _ := d.Get("system_mfg_name").(string)

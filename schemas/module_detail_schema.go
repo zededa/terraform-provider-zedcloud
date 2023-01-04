@@ -13,8 +13,8 @@ func ModuleDetailModel(d *schema.ResourceData) *models.ModuleDetail {
 	var moduleType *models.ModuleType                          // ModuleType
 	moduleTypeInterface, moduleTypeIsSet := d.GetOk("module_type")
 	if moduleTypeIsSet {
-		moduleTypeModel := moduleTypeInterface.(models.ModuleType)
-		moduleType = &moduleTypeModel
+		moduleTypeModel := moduleTypeInterface.(string)
+		moduleType = models.NewModuleType(models.ModuleType(moduleTypeModel))
 	}
 	routes, _ := d.Get("routes").(map[string]string) // map[string]string
 	twinDetail, _ := d.Get("twin_detail").(string)

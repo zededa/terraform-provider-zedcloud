@@ -19,8 +19,8 @@ func NetInstOpaqueConfigModel(d *schema.ResourceData) *models.NetInstOpaqueConfi
 	var typeVar *models.OpaqueConfigType // OpaqueConfigType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.OpaqueConfigType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewOpaqueConfigType(models.OpaqueConfigType(typeModel))
 	}
 	return &models.NetInstOpaqueConfig{
 		Lisp:    lisp,

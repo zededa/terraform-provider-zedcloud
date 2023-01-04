@@ -14,8 +14,8 @@ func PCRValueModel(d *schema.ResourceData) *models.PCRValue {
 	var typeVar *models.PCRType // PCRType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.PCRType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewPCRType(models.PCRType(typeModel))
 	}
 	value, _ := d.Get("value").(string)
 	return &models.PCRValue{

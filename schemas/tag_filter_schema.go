@@ -13,8 +13,8 @@ func TagFilterModel(d *schema.ResourceData) *models.TagFilter {
 	var typeVar *models.TagType // TagType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.TagType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewTagType(models.TagType(typeModel))
 	}
 	return &models.TagFilter{
 		NamePattern: namePattern,

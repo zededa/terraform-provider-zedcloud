@@ -17,8 +17,8 @@ func VMModel(d *schema.ResourceData) *models.VM {
 	var mode *models.HvMode // HvMode
 	modeInterface, modeIsSet := d.GetOk("mode")
 	if modeIsSet {
-		modeModel := modeInterface.(models.HvMode)
-		mode = &modeModel
+		modeModel := modeInterface.(string)
+		mode = models.NewHvMode(models.HvMode(modeModel))
 	}
 	vnc, _ := d.Get("vnc").(bool)
 	return &models.VM{

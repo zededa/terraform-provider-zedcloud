@@ -22,8 +22,8 @@ func EventQueryResponseItemModel(d *schema.ResourceData) *models.EventQueryRespo
 	var source *models.EventSource // EventSource
 	sourceInterface, sourceIsSet := d.GetOk("source")
 	if sourceIsSet {
-		sourceModel := sourceInterface.(models.EventSource)
-		source = &sourceModel
+		sourceModel := sourceInterface.(string)
+		source = models.NewEventSource(models.EventSource(sourceModel))
 	}
 	tags, _ := d.Get("tags").([]string)
 	timestamp, _ := d.Get("timestamp").(interface{}) // interface{}

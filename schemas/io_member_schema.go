@@ -19,15 +19,15 @@ func IoMemberModel(d *schema.ResourceData) *models.IoMember {
 	var usage *models.AdapterUsage // AdapterUsage
 	usageInterface, usageIsSet := d.GetOk("usage")
 	if usageIsSet {
-		usageModel := usageInterface.(models.AdapterUsage)
-		usage = &usageModel
+		usageModel := usageInterface.(string)
+		usage = models.NewAdapterUsage(models.AdapterUsage(usageModel))
 	}
 	usagePolicy, _ := d.Get("usage_policy").(map[string]bool) // map[string]bool
 	var ztype *models.IoType                                  // IoType
 	ztypeInterface, ztypeIsSet := d.GetOk("ztype")
 	if ztypeIsSet {
-		ztypeModel := ztypeInterface.(models.IoType)
-		ztype = &ztypeModel
+		ztypeModel := ztypeInterface.(string)
+		ztype = models.NewIoType(models.IoType(ztypeModel))
 	}
 	return &models.IoMember{
 		Assigngrp:    &assigngrp, // string true false false

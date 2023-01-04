@@ -12,8 +12,8 @@ func DeviceAttestationPolicyModel(d *schema.ResourceData) *models.DeviceAttestat
 	var typeVar *models.DeviceAttestPolicyType // DeviceAttestPolicyType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.DeviceAttestPolicyType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewDeviceAttestPolicyType(models.DeviceAttestPolicyType(typeModel))
 	}
 	return &models.DeviceAttestationPolicy{
 		Type: typeVar,

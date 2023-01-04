@@ -13,8 +13,8 @@ func SysBrandFilterModel(d *schema.ResourceData) *models.SysBrandFilter {
 	var originType *models.Origin // Origin
 	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
 	if originTypeIsSet {
-		originTypeModel := originTypeInterface.(models.Origin)
-		originType = &originTypeModel
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
 	}
 	return &models.SysBrandFilter{
 		NamePattern: namePattern,

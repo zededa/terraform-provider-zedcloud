@@ -13,8 +13,8 @@ func AttestationPolicyModel(d *schema.ResourceData) *models.AttestationPolicy {
 	var typeVar *models.AttestPolicyType // AttestPolicyType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.AttestPolicyType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewAttestPolicyType(models.AttestPolicyType(typeModel))
 	}
 	return &models.AttestationPolicy{
 		ID:   id,

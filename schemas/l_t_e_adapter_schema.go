@@ -18,8 +18,8 @@ func LTEAdapterModel(d *schema.ResourceData) *models.LTEAdapter {
 	var simcardState *models.SimcardState // SimcardState
 	simcardStateInterface, simcardStateIsSet := d.GetOk("simcard_state")
 	if simcardStateIsSet {
-		simcardStateModel := simcardStateInterface.(models.SimcardState)
-		simcardState = &simcardStateModel
+		simcardStateModel := simcardStateInterface.(string)
+		simcardState = models.NewSimcardState(models.SimcardState(simcardStateModel))
 	}
 	return &models.LTEAdapter{
 		CellModuleName:  cellModuleName,

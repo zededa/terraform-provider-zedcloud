@@ -13,8 +13,8 @@ func DeviceStatusFilterModel(d *schema.ResourceData) *models.DeviceStatusFilter 
 	var load *models.DeviceLoad // DeviceLoad
 	loadInterface, loadIsSet := d.GetOk("load")
 	if loadIsSet {
-		loadModel := loadInterface.(models.DeviceLoad)
-		load = &loadModel
+		loadModel := loadInterface.(string)
+		load = models.NewDeviceLoad(models.DeviceLoad(loadModel))
 	}
 	namePattern, _ := d.Get("name_pattern").(string)
 	projectName, _ := d.Get("project_name").(string)
@@ -22,8 +22,8 @@ func DeviceStatusFilterModel(d *schema.ResourceData) *models.DeviceStatusFilter 
 	var runState *models.RunState // RunState
 	runStateInterface, runStateIsSet := d.GetOk("run_state")
 	if runStateIsSet {
-		runStateModel := runStateInterface.(models.RunState)
-		runState = &runStateModel
+		runStateModel := runStateInterface.(string)
+		runState = models.NewRunState(models.RunState(runStateModel))
 	}
 	tags, _ := d.Get("tags").(map[string]string) // map[string]string
 	return &models.DeviceStatusFilter{

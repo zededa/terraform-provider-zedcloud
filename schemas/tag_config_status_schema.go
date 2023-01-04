@@ -14,14 +14,14 @@ func TagConfigStatusModel(d *schema.ResourceData) *models.TagConfigStatus {
 	var attestPolicyType *models.AttestPolicyType // AttestPolicyType
 	attestPolicyTypeInterface, attestPolicyTypeIsSet := d.GetOk("attest_policy_type")
 	if attestPolicyTypeIsSet {
-		attestPolicyTypeModel := attestPolicyTypeInterface.(models.AttestPolicyType)
-		attestPolicyType = &attestPolicyTypeModel
+		attestPolicyTypeModel := attestPolicyTypeInterface.(string)
+		attestPolicyType = models.NewAttestPolicyType(models.AttestPolicyType(attestPolicyTypeModel))
 	}
 	var cloudPolicyType *models.PolicyType // PolicyType
 	cloudPolicyTypeInterface, cloudPolicyTypeIsSet := d.GetOk("cloud_policy_type")
 	if cloudPolicyTypeIsSet {
-		cloudPolicyTypeModel := cloudPolicyTypeInterface.(models.PolicyType)
-		cloudPolicyType = &cloudPolicyTypeModel
+		cloudPolicyTypeModel := cloudPolicyTypeInterface.(string)
+		cloudPolicyType = models.NewPolicyType(models.PolicyType(cloudPolicyTypeModel))
 	}
 	edgeviewAllow, _ := d.Get("edgeview_allow").(bool)
 	edgeviewSessionCountInt, _ := d.Get("edgeview_session_count").(int)

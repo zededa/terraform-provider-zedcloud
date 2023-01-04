@@ -60,8 +60,8 @@ func PolicyConfigModel(d *schema.ResourceData) *models.PolicyConfig {
 	var typeVar *models.PolicyType // PolicyType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
-		typeModel := typeInterface.(models.PolicyType)
-		typeVar = &typeModel
+		typeModel := typeInterface.(string)
+		typeVar = models.NewPolicyType(models.PolicyType(typeModel))
 	}
 	return &models.PolicyConfig{
 		AppPolicy:         appPolicy,

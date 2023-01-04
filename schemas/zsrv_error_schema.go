@@ -13,8 +13,8 @@ func ZsrvErrorModel(d *schema.ResourceData) *models.ZsrvError {
 	var ec *models.ZsrvErrorCode // ZsrvErrorCode
 	ecInterface, ecIsSet := d.GetOk("ec")
 	if ecIsSet {
-		ecModel := ecInterface.(models.ZsrvErrorCode)
-		ec = &ecModel
+		ecModel := ecInterface.(string)
+		ec = models.NewZsrvErrorCode(models.ZsrvErrorCode(ecModel))
 	}
 	location, _ := d.Get("location").(string)
 	return &models.ZsrvError{
