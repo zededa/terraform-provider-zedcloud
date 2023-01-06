@@ -137,28 +137,30 @@ func setBaseImage(
 	localImageVersion := *(localImages[0].Version)
 
 	// image in api response
-	var remoteImageVersion string
+	var remoteImageName string
 	var remoteImageIsActive bool
 	if len(remoteImages) == 1 && remoteImages[0] != nil {
-		if remoteImages[0].Version != nil {
-			remoteImageVersion = *(remoteImages[0].Version)
+		if remoteImages[0].ImageName != nil {
+			remoteImageName = *(remoteImages[0].ImageName)
 		}
 		if remoteImages[0].Activate != nil {
 			remoteImageIsActive = *(remoteImages[0].Activate)
 		}
 	}
 
-	// FIXME: why do we only update if remote image is active?
 	// do not update if local config euqals api config
-	updateImage := localImageVersion != remoteImageVersion && remoteImageIsActive
-	if updateImage {
-		if diags := PublishBaseOS2(ctx, d, m); len(diags) != 0 {
-			return diags
-		}
-		if diags := ApplyBaseOS(ctx, d, m); len(diags) != 0 {
-			return diags
-		}
+	// for some reason, we compare version against name
+	if localImageVersion == remoteImageName && remoteImageIsActive {
+		return nil
 	}
+
+	if diags := PublishBaseOS2(ctx, d, m); len(diags) != 0 {
+		return diags
+	}
+	if diags := ApplyBaseOS(ctx, d, m); len(diags) != 0 {
+		return diags
+	}
+
 	return nil
 }
 
