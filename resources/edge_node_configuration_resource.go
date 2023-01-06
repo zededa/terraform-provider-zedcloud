@@ -154,7 +154,7 @@ func setBaseImage(
 		return nil
 	}
 
-	if diags := PublishBaseOS2(ctx, d, m); len(diags) != 0 {
+	if diags := PublishBaseOS(ctx, d, m); len(diags) != 0 {
 		return diags
 	}
 	if diags := ApplyBaseOS(ctx, d, m); len(diags) != 0 {
@@ -1150,7 +1150,7 @@ func ApplyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	return diags
 }
 
-func PublishBaseOS2(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func PublishBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := edge_node_configuration.NewEdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params()
