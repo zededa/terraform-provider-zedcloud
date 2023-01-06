@@ -80,7 +80,6 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/device-config
-	// and update the the base os in a subsequent request
 	deviceConfig, diags := getEdgeNode(ctx, d, m)
 	if len(diags) > 0 {
 		return diags
@@ -257,58 +256,55 @@ func GetEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	// d.Partial(true)
 
-	// params := edge_node_configuration.NewEdgeNodeConfigurationUpdateEdgeNodeParams()
+	params := edge_node_configuration.NewEdgeNodeConfigurationUpdateEdgeNodeParams()
 
-	// xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-	// if xRequestIdIsSet {
-	// 	params.XRequestID = xRequestIdVal.(*string)
-	// }
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
 
-	// params.SetBody(zschema.DeviceConfigModel(d))
+	params.SetBody(zschema.DeviceConfigModel(d))
 
-	// idVal, idIsSet := d.GetOk("id")
-	// if idIsSet {
-	// 	id, _ := idVal.(string)
-	// 	params.ID = id
-	// } else {
-	// 	diags = append(diags, diag.Errorf("missing client parameter: id")...)
-	// 	return diags
-	// }
+	idVal, idIsSet := d.GetOk("id")
+	if idIsSet {
+		id, _ := idVal.(string)
+		params.ID = id
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		return diags
+	}
 
-	// // loops through array of properties to see which one has changed, the ones that did not change are removed from the list
-	// // props := zschema.GetEdgeNodeConfigurationPropertyFields()
-	// // for _, v := range props {
-	// // 	if d.HasChange(v) {
-	// // 	} else {
-	// // 		props = utils.Remove(props, v)
-	// // 	}
-	// // }
-
-	// // makes a bulk update for all properties that were changed
-	// client := m.(*apiclient.Zedcloudapi)
-	// resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationUpdateEdgeNode(params, nil)
-	// log.Printf("[TRACE] response: %v", resp)
-	// if err != nil {
-	// 	return append(diags, diag.Errorf("unexpected: %s", err)...)
-	// }
-
-	// responseData := resp.GetPayload()
-	// if responseData != nil && len(responseData.Error) > 0 {
-	// 	for _, err := range responseData.Error {
-	// 		diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+	// loops through array of properties to see which one has changed, the ones that did not change are removed from the list
+	// props := zschema.GetDeviceConfigPropertyFields()
+	// for _, v := range props {
+	// 	if d.HasChange(v) {
+	// 	} else {
+	// 		props = utils.Remove(props, v)
 	// 	}
-	// 	return diags
 	// }
 
-	// // the zedcloud API does not return the partially updated object but a custom response.
-	// // thus, we need to fetch the object and populate the state.
-	// if errs := EdgeNodeConfiguration_GetEdgeNodeByName(ctx, d, m); err != nil {
-	// 	return append(diags, errs...)
-	// }
+	// makes a bulk update for all properties that were changed
+	client := m.(*apiclient.Zedcloudapi)
+	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationUpdateEdgeNode(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
 
-	d.Partial(false)
+	responseData := resp.GetPayload()
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, err := range responseData.Error {
+			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+		}
+		return diags
+	}
+
+	// the zedcloud API does not return the partially updated object but a custom response.
+	// thus, we need to fetch the object and populate the state.
+	if errs := EdgeNodeConfiguration_GetEdgeNodeByName(ctx, d, m); err != nil {
+		return append(diags, errs...)
+	}
 
 	return diags
 }
