@@ -85,45 +85,16 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	if len(diags) > 0 {
 		return diags
 	}
-	// publish the api response to local state and d
+	// publish the api response to local state and the d instance
 	zschema.SetDeviceConfigResourceData(d, deviceConfig)
 	d.SetId(deviceConfig.ID)
 
-	// to update the base-os-image, the api requires several requests.
-	// 1. set the image config with a create or udpate request
-	// 2. publish the image config
-	// 3. apply the image config
-	// image in tf config file
-	// var localBaseImageVersion string
-	// localBaseImages := params.Body.BaseImage
-	// if len(localBaseImages) == 1 && localBaseImages[0] != nil && localBaseImages[0].Version != nil {
-	// 	localBaseImageVersion = *(localBaseImages[0].Version)
-	// }
-	// // image in api response
-	// var remoteBaseImageVersion string
-	// var remoteBaseImageIsActive bool
-	// remoteBaseImages := deviceConfig.BaseImage
-	// if len(remoteBaseImages) == 1 && remoteBaseImages[0] != nil {
-	// 	if remoteBaseImages[0].Version != nil {
-	// 		remoteBaseImageVersion = *(remoteBaseImages[0].Version)
-	// 	}
-	// 	if remoteBaseImages[0].Activate != nil {
-	// 		remoteBaseImageIsActive = *(remoteBaseImages[0].Activate)
-	// 	}
-	// }
+	// to set base-image the api requires separate requests
+	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, deviceConfig.BaseImage); len(diags) > 0 {
+		return diags
+	}
 
-	// // do not update if local config euqals api config
-	// updateBaseImage := localBaseImageVersion != remoteBaseImageVersion && remoteBaseImageIsActive
-	// if updateBaseImage {
-	// 	if diags := PublishBaseOS2(ctx, d, m); len(diags) != 0 {
-	// 		return diags
-	// 	}
-	// 	if diags := ApplyBaseOS(ctx, d, m); len(diags) != 0 {
-	// 		return diags
-	// 	}
-	// }
-
-	// to update admin-state the api requires separate requests
+	// to set admin-state the api requires separate requests
 	if diags := setAdminState(ctx, d, m, params.Body.AdminState, deviceConfig.AdminState); len(diags) > 0 {
 		return diags
 	}
@@ -136,6 +107,59 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	fmt.Println("------END CREATE---------------------------------------")
 	return diags
+}
+
+// to set the base-os-image, the api requires several requests.
+// 1. set the image config with a create or udpate request
+// 2. publish the image config
+// 3. apply the image config
+func setBaseImage(
+	ctx context.Context,
+	d *schema.ResourceData,
+	m interface{},
+	localImages, remoteImages []*models.BaseOSImage,
+) diag.Diagnostics {
+
+	if len(localImages) == 0 {
+		return nil
+	}
+	if len(localImages) > 1 {
+		return diag.Errorf("expect exactly one base image definition but got: %d", len(localImages))
+	}
+	if localImages[0] == nil {
+		return diag.FromErr(errors.New("expect non-nil base image definition"))
+	}
+	if localImages[0].Version == nil {
+		return diag.FromErr(errors.New("expect version to be set in base image definition"))
+	}
+
+	// image in tf-config file
+	localImageVersion := *(localImages[0].Version)
+
+	// image in api response
+	var remoteImageVersion string
+	var remoteImageIsActive bool
+	if len(remoteImages) == 1 && remoteImages[0] != nil {
+		if remoteImages[0].Version != nil {
+			remoteImageVersion = *(remoteImages[0].Version)
+		}
+		if remoteImages[0].Activate != nil {
+			remoteImageIsActive = *(remoteImages[0].Activate)
+		}
+	}
+
+	// FIXME: why do we only update if remote image is active?
+	// do not update if local config euqals api config
+	updateImage := localImageVersion != remoteImageVersion && remoteImageIsActive
+	if updateImage {
+		if diags := PublishBaseOS2(ctx, d, m); len(diags) != 0 {
+			return diags
+		}
+		if diags := ApplyBaseOS(ctx, d, m); len(diags) != 0 {
+			return diags
+		}
+	}
+	return nil
 }
 
 func setAdminState(
