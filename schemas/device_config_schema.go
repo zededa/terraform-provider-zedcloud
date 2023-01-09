@@ -69,12 +69,6 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	modelID, _ := d.Get("model_id").(string)
 	name, _ := d.Get("name").(string)
 	obkey, _ := d.Get("obkey").(string)
-	var onboarding *models.DeviceCerts // DeviceCerts
-	onboardingInterface, onboardingIsSet := d.GetOk("onboarding")
-	if onboardingIsSet {
-		onboardingMap := onboardingInterface.([]interface{})[0].(map[string]interface{})
-		onboarding = DeviceCertsModelFromMap(onboardingMap)
-	}
 	preparePowerOffCounterInt, _ := d.Get("prepare_power_off_counter").(int)
 	preparePowerOffCounter := int64(preparePowerOffCounterInt)
 	preparePowerOffTime, _ := d.Get("prepare_power_off_time").(string)
@@ -130,7 +124,6 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 		ModelID:                &modelID, // string true false false
 		Name:                   &name,    // string true false false
 		Obkey:                  obkey,
-		Onboarding:             onboarding,
 		PreparePowerOffCounter: preparePowerOffCounter,
 		PreparePowerOffTime:    preparePowerOffTime,
 		ProjectID:              &projectID, // string true false false
@@ -205,13 +198,6 @@ func DeviceConfigModelFromMap(m map[string]interface{}) *models.DeviceConfig {
 	modelID := m["model_id"].(string)
 	name := m["name"].(string)
 	obkey := m["obkey"].(string)
-	var onboarding *models.DeviceCerts // DeviceCerts
-	onboardingInterface, onboardingIsSet := m["onboarding"]
-	if onboardingIsSet {
-		onboardingMap := onboardingInterface.([]interface{})[0].(map[string]interface{})
-		onboarding = DeviceCertsModelFromMap(onboardingMap)
-	}
-	//
 	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64 false false false
 	preparePowerOffTime := m["prepare_power_off_time"].(string)
 	projectID := m["project_id"].(string)
@@ -259,7 +245,6 @@ func DeviceConfigModelFromMap(m map[string]interface{}) *models.DeviceConfig {
 		ModelID:                &modelID,
 		Name:                   &name,
 		Obkey:                  obkey,
-		Onboarding:             onboarding,
 		PreparePowerOffCounter: preparePowerOffCounter,
 		PreparePowerOffTime:    preparePowerOffTime,
 		ProjectID:              &projectID,
@@ -305,7 +290,6 @@ func SetDeviceConfigResourceData(d *schema.ResourceData, m *models.DeviceConfig)
 	d.Set("model_id", m.ModelID)
 	d.Set("name", m.Name)
 	d.Set("obkey", m.Obkey)
-	d.Set("onboarding", SetDeviceCertsSubResourceData([]*models.DeviceCerts{m.Onboarding}))
 	d.Set("prepare_power_off_counter", m.PreparePowerOffCounter)
 	d.Set("prepare_power_off_time", m.PreparePowerOffTime)
 	d.Set("project_id", m.ProjectID)
@@ -353,7 +337,6 @@ func SetDeviceConfigSubResourceData(m []*models.DeviceConfig) (d []*map[string]i
 			properties["model_id"] = DeviceConfigModel.ModelID
 			properties["name"] = DeviceConfigModel.Name
 			properties["obkey"] = DeviceConfigModel.Obkey
-			properties["onboarding"] = SetDeviceCertsSubResourceData([]*models.DeviceCerts{DeviceConfigModel.Onboarding})
 			properties["prepare_power_off_counter"] = DeviceConfigModel.PreparePowerOffCounter
 			properties["prepare_power_off_time"] = DeviceConfigModel.PreparePowerOffTime
 			properties["project_id"] = DeviceConfigModel.ProjectID
@@ -568,16 +551,6 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 			Computed:    true,
-		},
-
-		"onboarding": {
-			Description: `Device level certificates used while onboarding`,
-			Type:        schema.TypeList, //GoType: DeviceCerts
-			Elem: &schema.Resource{
-				Schema: DeviceCertsSchema(),
-			},
-			Computed:  true,
-			Sensitive: true,
 		},
 
 		"prepare_power_off_counter": {
