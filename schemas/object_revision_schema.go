@@ -1,6 +1,8 @@
 package schemas
 
 import (
+	"time"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
@@ -27,11 +29,21 @@ func ObjectRevisionModel(d *schema.ResourceData) *models.ObjectRevision {
 }
 
 func ObjectRevisionModelFromMap(m map[string]interface{}) *models.ObjectRevision {
-	createdAt := m["created_at"].(strfmt.DateTime)
+	t, err := time.Parse(time.RFC3339, m["created_at"].(string))
+	if err != nil {
+		panic(err)
+	}
+	createdAt := strfmt.DateTime(t)
+
 	createdBy := m["created_by"].(string)
 	curr := m["curr"].(string)
 	prev := m["prev"].(string)
-	updatedAt := m["updated_at"].(strfmt.DateTime)
+
+	t, err = time.Parse(time.RFC3339, m["updated_at"].(string))
+	if err != nil {
+		panic(err)
+	}
+	updatedAt := strfmt.DateTime(t)
 	updatedBy := m["updated_by"].(string)
 	return &models.ObjectRevision{
 		CreatedAt: &createdAt,
