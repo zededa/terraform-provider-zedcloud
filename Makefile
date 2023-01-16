@@ -56,3 +56,8 @@ gen:
 build:
 	go build -o terraform-provider-zedcloud_v0.0.0
 	chmod a+x terraform-provider-zedcloud_v0.0.0
+
+.PHONY: testacc
+testacc:
+	TF_ACC=1 go test -v ./...
+
