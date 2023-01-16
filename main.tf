@@ -10,33 +10,6 @@ terraform {
     }
   }
 }
-// export TF_VAR_username=
-variable "username" {
-    description = "ZEDCloud username"
-    sensitive = true
-    type        = string
-}
-
-// export TF_VAR_password=
-variable "password" {
-    description = "ZEDCloud password"
-    sensitive = true
-    type        = string
-}
-
-// export TF_VAR_zedcloud_token=
-variable "zedcloud_token" {
-    description = "ZEDCloud token"
-    sensitive = true
-    type        = string
-}
-
-provider "zedcloud" {
-	  zedcloud_url = "zedcontrol.local.zededa.net"
-    username = var.username
-    password = var.password
-    zedcloud_token = var.zedcloud_token
-}
 
 # data "zedcloud_edgenode" "data-test_tf_provider" {
 # 		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
@@ -53,20 +26,203 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		# computed
     # id = data-test_tf_provider.id
 
+    obkey = "5d0767ee-0547-4569-b530-387e526f8cb9"
+		serialno = "2293dbe8-29ce-420c-8264-962857efc46b"
+    identity = "identity"
+
 		# required
-		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
 		name = "test_tf_provider-create_edgenode"
+		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
 		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
 		title = "test_tf_provider-create_edgenode-title"
+
     admin_state = "ADMIN_STATE_ACTIVE"
+    asset_id = "asset_id"
+    client_ip = "1.1.1.1"
+    location = "berlin"
+    # cluster_id = "1" conflict
+    # base_image {}
+    config_item {
+	      bool_value = true
+	      float_value = 1.0
+	    	key = "key"
+	    	string_value = "string"
+	    	uint32_value = 32
+	    	uint64_value = 64
+	    	value_type = "value type"
+    }
+    # cpu = 2
+    deployment_tag = "depl_tag"
+    deprecated = false
+    description = "description"
+		dev_location {
+    		city = "berlin"
+    		country = "germany"
+    		freeloc = "freeloc"
+    		hostname = "hostname"
+    		loc = "52.520008, 13.404954"
+    		org = "zededa"
+    		postal = "10115"
+    		region = "europe/west"
+    		underlay_ip = ""
+    }
+		generate_soft_serial = false
+		interfaces {}
+    memory = 32
+    prepare_power_off_counter = 0
+    prepare_power_off_time = "undocumented format"
+		site_pictures = []
+    storage = 64
+		tags = {
+        "tag-key-1" = "tag-value-1"
+    }
+    thread = 1
+    token = "token"
+
+		# default_net_inst = {
+	    	# # required
+	    	# device_id = ""
+	    	# kind = ""
+	    	# name = ""
+	    	# port = ""
+	    	# title = ""
+
+	    	# # optional
+	    	# cluster_id = ""
+	    	# description = ""
+	    	# device_default = ""
+	    	# dhcp = false
+	    	# dns_list = []
+	    	# ip = {
+	        	# # optional
+	        	# dhcp_range = {
+             		# # optional
+            		# end = ""
+            		# start = ""
+            # }
+	        	# dns = []
+	        	# domain = ""
+	        	# gateway = ""
+	        	# mask = ""
+	        	# ntp = ""
+	        	# subnet = ""
+		# 		}
+	    	# lisp = {
+        		# # optional
+        		# allocate = false
+        		# allocationprefix = ""
+        		# allocationprefixlen = 0
+        		# exportprivate = false
+        		# lispiid = 0
+        		# sp = []
+        # }
+	    	# network_policy_id = ""
+	    	# oconfig = ""
+	    	# opaque = {
+        		# # computed
+            # # id =
+
+        		# # required
+        		# device_id = ""
+        		# kind = ""
+        		# name = ""
+        		# port = ""
+        		# title = ""
+
+        		# # optional
+        		# cluster_id = ""
+        		# description = ""
+        		# device_default = ""
+        		# dhcp = false
+        		# dns_list = []
+        		# ip = {
+            		# # optional
+            		# dhcp_range = {
+                		# # optional
+                		# end = ""
+                		# start = ""
+                # }
+            		# dns = []
+            		# domain = ""
+            		# gateway = ""
+            		# mask = ""
+            		# ntp = ""
+            		# subnet = ""
+            # }
+        		# lisp = # LispConfig
+        		# network_policy_id = ""
+        		# oconfig = ""
+        		# opaque =
+        		# port_tags {}
+        		# project_id = ""
+	         	# revision = {
+             		# # required
+             		# created_at =
+             		# created_by = ""
+             		# curr = ""
+             		# updated_at =
+             		# updated_by = ""
+             		# # optional
+             		# prev = ""
+            # }
+        		# tags {}
+        		# type = ""
+        # }
+	    	# port_tags {}
+	    	# project_id = ""
+	    	# revision = {
+        		# # required
+        		# created_at =
+        		# created_by = ""
+        		# curr = ""
+        		# updated_at =
+        		# updated_by = ""
+        		# # optional
+        		# prev = ""
+        # }
+	    	# tags {}
+	    	# type = ""
+    # }
+		# dlisp = {
+    		# e_id = "e id"
+    		# e_id_hash_len = 1
+    		# client_addr = ""
+    		# eid_allocation_prefix = "prefix"
+    		# eid_allocation_prefix_len = 0
+    		# lisp_instance = 0
+    		# lisp_map_servers = []
+    		# mode = ""
+    		# zed_servers = []
+    # }
+		# edgeviewconfig = {
+    		# # optional
+    		# app_policy = {
+        		# # optional
+        		# allow_app = false
+        # }
+    		# dev_policy = {
+        		# # optional
+        		# allow_dev = false
+        # }
+    		# ext_policy = {
+        		# # optional
+        		# allow_ext = false
+        # }
+    		# generation_id = 0
+    		# jwt_info = {
+        		# # optional
+        		# allow_sec = 0
+        		# disp_url = ""
+        		# encrypt = false
+        		# expire_sec = ""
+        		# num_inst = 0
+        # }
+    		# token = ""
+    # }
 }
 
 # resource "zedcloud_edgenode" "test_tf_provider" {
 #     admin_state = "ADMIN_STATE_ACTIVE"
-#     asset_id = "asset_id"
-#     # base_image = "eve_image"
-#     base_os_retry_counter = 1
-#     base_os_retry_time = ""
 #     client_ip = ""
 #     cluster_id = ""
 #     config_item = [
