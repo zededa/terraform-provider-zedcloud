@@ -3,8 +3,8 @@ package resources
 import (
 	"errors"
 	"fmt"
-	"net/http"
 	"os"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -30,14 +30,22 @@ func TestAccGetEdgeNode(t *testing.T) {
 	// }
 
 	resource.Test(t, resource.TestCase{
-		PreCheck: func() { testAccPreCheck(t) },
-		// CheckDestroy: testEdgeNodeDestroy,
-		Providers: testAccProviders,
+		PreCheck:     func() { testAccPreCheck(t) },
+		CheckDestroy: testEdgeNodeDestroy,
+		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: configCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testEdgeNodeExists("zedcloud_edgenode.required_only", &edgeNodeBefore),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "required_only"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "title", "required_only-title"),
+					resource.TestMatchResourceAttr(
+						"zedcloud_edgenode.required_only",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
 				),
 			},
 			// {
@@ -66,21 +74,17 @@ func testEdgeNodeDestroy(s *terraform.State) error {
 		params.ID = rs.Primary.ID
 		response, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationGetEdgeNode(params, nil)
 		if err == nil {
-			return fmt.Errorf("could not fetch EdgeNode (%s): %w", rs.Primary.ID, err)
+			if deviceConfig := response.GetPayload(); deviceConfig != nil && deviceConfig.ID == rs.Primary.ID {
+				return fmt.Errorf("destroy failed, EdgeNode (%s) still exists", deviceConfig.ID)
+			}
+			return nil
 		}
 
-		// if the error is equivalent to 404 not found, the EdgeNode is destroyed.
-		if response.IsCode(http.StatusNotFound) {
-			return err
+		// if the error is equivalent to 404 not found, the EdgeNode is destroyed
+		_, ok := err.(*edge_node_configuration.EdgeNodeConfigurationGetEdgeNodeNotFound)
+		if !ok {
+			return fmt.Errorf("destroy failed, expect status code 404 for EdgeNode (%s)", params.ID)
 		}
-
-		// 		deviceConfig := response.GetPayload()
-		// 		if err == nil {
-		// 			if deviceConfig != nil && deviceConfig.ID == rs.Primary.ID {
-		// 				return fmt.Errorf("EdgeNode (%s) still exists.", rs.Primary.ID)
-		// 			}
-		// 			return nil
-		// }
 	}
 	return nil
 }
@@ -112,23 +116,20 @@ func testEdgeNodeExists(resourceName string, device *models.DeviceConfig) resour
 		// retrieve the client established in Provider configuration
 		client := testAccProvider.Meta().(*apiclient.Zedcloudapi)
 
-		// retrieve the EdgeNode by referencing it's state ID for API lookup
+		// retrieve the EdgeNode by referencing its state ID for API lookup
 		params := edge_node_configuration.NewEdgeNodeConfigurationGetEdgeNodeParams()
 		params.ID = rs.Primary.ID
 		response, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationGetEdgeNode(params, nil)
-		if err == nil {
+		if err != nil {
 			return fmt.Errorf("could not fetch EdgeNode (%s): %w", rs.Primary.ID, err)
 		}
 
 		deviceConfig := response.GetPayload()
-		if err != nil {
-			return fmt.Errorf("could not get response payload in EdgeNode existence test: %w", err)
-		}
 		if deviceConfig == nil {
 			return errors.New("could not get response payload in EdgeNode existence test: deviceConfig is nil")
 		}
 
-		// store the resulting widget in the *example.WidgetDescription pointer
+		// store the resulting EdgeNode config in the *models.DeviceConfig variable
 		*device = *deviceConfig
 		return nil
 	}
