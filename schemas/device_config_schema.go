@@ -1,14 +1,14 @@
 package schemas
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate DeviceConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
@@ -62,6 +62,9 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	generateSoftSerial, _ := d.Get("generate_soft_serial").(bool)
 	id, _ := d.Get("id").(string)
 	identity, _ := d.Get("identity").(strfmt.Base64)
+	fmt.Println("----------------------------------------")
+	fmt.Println(identity)
+	fmt.Println("----------------------------------------")
 	interfaces, _ := d.Get("interfaces").([]*models.SysInterface) // []*SysInterface
 	location, _ := d.Get("location").(string)
 	memoryInt, _ := d.Get("memory").(int)
@@ -69,6 +72,12 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	modelID, _ := d.Get("model_id").(string)
 	name, _ := d.Get("name").(string)
 	obkey, _ := d.Get("obkey").(string)
+	var onboarding *models.DeviceCerts // DeviceCerts
+	onboardingInterface, onboardingIsSet := d.GetOk("onboarding")
+	if onboardingIsSet {
+		onboardingMap := onboardingInterface.([]interface{})[0].(map[string]interface{})
+		onboarding = DeviceCertsModelFromMap(onboardingMap)
+	}
 	preparePowerOffCounterInt, _ := d.Get("prepare_power_off_counter").(int)
 	preparePowerOffCounter := int64(preparePowerOffCounterInt)
 	preparePowerOffTime, _ := d.Get("prepare_power_off_time").(string)
@@ -86,7 +95,14 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	sitePictures, _ := d.Get("site_pictures").([]string)
 	storageInt, _ := d.Get("storage").(int)
 	storage := int64(storageInt)
-	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := d.GetOk("tags")
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			tags[k] = v.(string)
+		}
+	}
 	threadInt, _ := d.Get("thread").(int)
 	thread := int64(threadInt)
 	title, _ := d.Get("title").(string)
@@ -124,6 +140,7 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 		ModelID:                &modelID, // string true false false
 		Name:                   &name,    // string true false false
 		Obkey:                  obkey,
+		Onboarding:             onboarding,
 		PreparePowerOffCounter: preparePowerOffCounter,
 		PreparePowerOffTime:    preparePowerOffTime,
 		ProjectID:              &projectID, // string true false false
@@ -141,126 +158,134 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	}
 }
 
-func DeviceConfigModelFromMap(m map[string]interface{}) *models.DeviceConfig {
-	adminState := m["admin_state"].(*models.AdminState) // AdminState
-	assetID := m["asset_id"].(string)
-	baseImage := m["base_image"].([]*models.BaseOSImage)          // []*BaseOSImage
-	baseOsRetryCounter := int64(m["base_os_retry_counter"].(int)) // int64 false false false
-	baseOsRetryTime := m["base_os_retry_time"].(string)
-	clientIP := m["client_ip"].(string)
-	clusterID := m["cluster_id"].(string)
-	configItem := m["config_item"].([]*models.EDConfigItem) // []*EDConfigItem
-	cpu := int64(m["cpu"].(int))                            // int64 false false false
-	var debugKnob *models.DebugKnobDetail                   // DebugKnobDetail
-	debugKnobInterface, debugKnobIsSet := m["debug_knob"]
-	if debugKnobIsSet {
-		debugKnobMap := debugKnobInterface.([]interface{})[0].(map[string]interface{})
-		debugKnob = DebugKnobDetailModelFromMap(debugKnobMap)
-	}
-	//
-	var defaultNetInst *models.NetInstConfig // NetInstConfig
-	defaultNetInstInterface, defaultNetInstIsSet := m["default_net_inst"]
-	if defaultNetInstIsSet {
-		defaultNetInstMap := defaultNetInstInterface.([]interface{})[0].(map[string]interface{})
-		defaultNetInst = NetInstConfigModelFromMap(defaultNetInstMap)
-	}
-	//
-	deploymentTag := m["deployment_tag"].(string)
-	deprecated := m["deprecated"].(string)
-	description := m["description"].(string)
-	var devLocation *models.GeoLocation // GeoLocation
-	devLocationInterface, devLocationIsSet := m["dev_location"]
-	if devLocationIsSet {
-		devLocationMap := devLocationInterface.([]interface{})[0].(map[string]interface{})
-		devLocation = GeoLocationModelFromMap(devLocationMap)
-	}
-	//
-	var dlisp *models.DeviceLisp // DeviceLisp
-	dlispInterface, dlispIsSet := m["dlisp"]
-	if dlispIsSet {
-		dlispMap := dlispInterface.([]interface{})[0].(map[string]interface{})
-		dlisp = DeviceLispModelFromMap(dlispMap)
-	}
-	//
-	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
-	edgeviewconfigInterface, edgeviewconfigIsSet := m["edgeviewconfig"]
-	if edgeviewconfigIsSet {
-		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})[0].(map[string]interface{})
-		edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap)
-	}
-	//
-	generateSoftSerial := m["generate_soft_serial"].(bool)
-	id := m["id"].(string)
-	identity := m["identity"].(strfmt.Base64)
-	interfaces := m["interfaces"].([]*models.SysInterface) // []*SysInterface
-	location := m["location"].(string)
-	memory := int64(m["memory"].(int)) // int64 false false false
-	modelID := m["model_id"].(string)
-	name := m["name"].(string)
-	obkey := m["obkey"].(string)
-	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64 false false false
-	preparePowerOffTime := m["prepare_power_off_time"].(string)
-	projectID := m["project_id"].(string)
-	resetCounter := int64(m["reset_counter"].(int)) // int64 false false false
-	resetTime := m["reset_time"].(string)
-	var revision *models.ObjectRevision // ObjectRevision
-	revisionInterface, revisionIsSet := m["revision"]
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
-	}
-	//
-	serialno := m["serialno"].(string)
-	sitePictures := m["site_pictures"].([]string)
-	storage := int64(m["storage"].(int)) // int64 false false false
-	tags := m["tags"].(map[string]string)
-	thread := int64(m["thread"].(int)) // int64 false false false
-	title := m["title"].(string)
-	token := m["token"].(string)
-	utype := m["utype"].(*models.ModelArchType) // ModelArchType
-	return &models.DeviceConfig{
-		AdminState:             adminState,
-		AssetID:                assetID,
-		BaseImage:              baseImage,
-		BaseOsRetryCounter:     baseOsRetryCounter,
-		BaseOsRetryTime:        baseOsRetryTime,
-		ClientIP:               clientIP,
-		ClusterID:              clusterID,
-		ConfigItem:             configItem,
-		CPU:                    cpu,
-		DebugKnob:              debugKnob,
-		DefaultNetInst:         defaultNetInst,
-		DeploymentTag:          deploymentTag,
-		Deprecated:             deprecated,
-		Description:            description,
-		DevLocation:            devLocation,
-		Dlisp:                  dlisp,
-		Edgeviewconfig:         edgeviewconfig,
-		GenerateSoftSerial:     generateSoftSerial,
-		ID:                     id,
-		Identity:               identity,
-		Interfaces:             interfaces,
-		Location:               location,
-		Memory:                 memory,
-		ModelID:                &modelID,
-		Name:                   &name,
-		Obkey:                  obkey,
-		PreparePowerOffCounter: preparePowerOffCounter,
-		PreparePowerOffTime:    preparePowerOffTime,
-		ProjectID:              &projectID,
-		ResetCounter:           resetCounter,
-		ResetTime:              resetTime,
-		Revision:               revision,
-		Serialno:               serialno,
-		SitePictures:           sitePictures,
-		Storage:                storage,
-		Tags:                   tags,
-		Thread:                 thread,
-		Title:                  &title,
-		Token:                  token,
-		Utype:                  utype,
-	}
-}
+//func DeviceConfigModelFromMap(m map[string]interface{}) *models.DeviceConfig {
+//	adminState := m["admin_state"].(*models.AdminState) // AdminState
+//	assetID := m["asset_id"].(string)
+//	baseImage := m["base_image"].([]*models.BaseOSImage)          // []*BaseOSImage
+//	baseOsRetryCounter := int64(m["base_os_retry_counter"].(int)) // int64 false false false
+//	baseOsRetryTime := m["base_os_retry_time"].(string)
+//	clientIP := m["client_ip"].(string)
+//	clusterID := m["cluster_id"].(string)
+//	configItem := m["config_item"].([]*models.EDConfigItem) // []*EDConfigItem
+//	cpu := int64(m["cpu"].(int))                            // int64 false false false
+//	var debugKnob *models.DebugKnobDetail                   // DebugKnobDetail
+//	debugKnobInterface, debugKnobIsSet := m["debug_knob"]
+//	if debugKnobIsSet {
+//		debugKnobMap := debugKnobInterface.([]interface{})[0].(map[string]interface{})
+//		debugKnob = DebugKnobDetailModelFromMap(debugKnobMap)
+//	}
+//	//
+//	var defaultNetInst *models.NetInstConfig // NetInstConfig
+//	defaultNetInstInterface, defaultNetInstIsSet := m["default_net_inst"]
+//	if defaultNetInstIsSet {
+//		defaultNetInstMap := defaultNetInstInterface.([]interface{})[0].(map[string]interface{})
+//		defaultNetInst = NetInstConfigModelFromMap(defaultNetInstMap)
+//	}
+//	//
+//	deploymentTag := m["deployment_tag"].(string)
+//	deprecated := m["deprecated"].(string)
+//	description := m["description"].(string)
+//	var devLocation *models.GeoLocation // GeoLocation
+//	devLocationInterface, devLocationIsSet := m["dev_location"]
+//	if devLocationIsSet {
+//		devLocationMap := devLocationInterface.([]interface{})[0].(map[string]interface{})
+//		devLocation = GeoLocationModelFromMap(devLocationMap)
+//	}
+//	//
+//	var dlisp *models.DeviceLisp // DeviceLisp
+//	dlispInterface, dlispIsSet := m["dlisp"]
+//	if dlispIsSet {
+//		dlispMap := dlispInterface.([]interface{})[0].(map[string]interface{})
+//		dlisp = DeviceLispModelFromMap(dlispMap)
+//	}
+//	//
+//	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
+//	edgeviewconfigInterface, edgeviewconfigIsSet := m["edgeviewconfig"]
+//	if edgeviewconfigIsSet {
+//		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})[0].(map[string]interface{})
+//		edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap)
+//	}
+//	//
+//	generateSoftSerial := m["generate_soft_serial"].(bool)
+//	id := m["id"].(string)
+//	identity := m["identity"].(strfmt.Base64)
+//	interfaces := m["interfaces"].([]*models.SysInterface) // []*SysInterface
+//	location := m["location"].(string)
+//	memory := int64(m["memory"].(int)) // int64 false false false
+//	modelID := m["model_id"].(string)
+//	name := m["name"].(string)
+//	obkey := m["obkey"].(string)
+//	var onboarding *models.DeviceCerts // DeviceCerts
+//	onboardingInterface, onboardingIsSet := m["onboarding"]
+//	if onboardingIsSet {
+//		onboardingMap := onboardingInterface.([]interface{})[0].(map[string]interface{})
+//		onboarding = DeviceCertsModelFromMap(onboardingMap)
+//	}
+//	//
+//	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64 false false false
+//	preparePowerOffTime := m["prepare_power_off_time"].(string)
+//	projectID := m["project_id"].(string)
+//	resetCounter := int64(m["reset_counter"].(int)) // int64 false false false
+//	resetTime := m["reset_time"].(string)
+//	var revision *models.ObjectRevision // ObjectRevision
+//	revisionInterface, revisionIsSet := m["revision"]
+//	if revisionIsSet {
+//		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
+//		revision = ObjectRevisionModelFromMap(revisionMap)
+//	}
+//	//
+//	serialno := m["serialno"].(string)
+//	sitePictures := m["site_pictures"].([]string)
+//	storage := int64(m["storage"].(int)) // int64 false false false
+//	tags := m["tags"].(map[string]string)
+//	thread := int64(m["thread"].(int)) // int64 false false false
+//	title := m["title"].(string)
+//	token := m["token"].(string)
+//	utype := m["utype"].(*models.ModelArchType) // ModelArchType
+//	return &models.DeviceConfig{
+//		AdminState:             adminState,
+//		AssetID:                assetID,
+//		BaseImage:              baseImage,
+//		BaseOsRetryCounter:     baseOsRetryCounter,
+//		BaseOsRetryTime:        baseOsRetryTime,
+//		ClientIP:               clientIP,
+//		ClusterID:              clusterID,
+//		ConfigItem:             configItem,
+//		CPU:                    cpu,
+//		DebugKnob:              debugKnob,
+//		DefaultNetInst:         defaultNetInst,
+//		DeploymentTag:          deploymentTag,
+//		Deprecated:             deprecated,
+//		Description:            description,
+//		DevLocation:            devLocation,
+//		Dlisp:                  dlisp,
+//		Edgeviewconfig:         edgeviewconfig,
+//		GenerateSoftSerial:     generateSoftSerial,
+//		ID:                     id,
+//		Identity:               identity,
+//		Interfaces:             interfaces,
+//		Location:               location,
+//		Memory:                 memory,
+//		ModelID:                &modelID,
+//		Name:                   &name,
+//		Obkey:                  obkey,
+//		Onboarding:             onboarding,
+//		PreparePowerOffCounter: preparePowerOffCounter,
+//		PreparePowerOffTime:    preparePowerOffTime,
+//		ProjectID:              &projectID,
+//		ResetCounter:           resetCounter,
+//		ResetTime:              resetTime,
+//		Revision:               revision,
+//		Serialno:               serialno,
+//		SitePictures:           sitePictures,
+//		Storage:                storage,
+//		Tags:                   tags,
+//		Thread:                 thread,
+//		Title:                  &title,
+//		Token:                  token,
+//		Utype:                  utype,
+//	}
+//}
 
 // Update the underlying DeviceConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetDeviceConfigResourceData(d *schema.ResourceData, m *models.DeviceConfig) {
@@ -551,6 +576,16 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 			Computed:    true,
+			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+				parts := strings.Split(newValue, ":")
+				if len(parts) != 2 {
+					return true
+				}
+				if parts[0] != oldValue {
+					return true
+				}
+				return false
+			},
 		},
 
 		"prepare_power_off_counter": {
