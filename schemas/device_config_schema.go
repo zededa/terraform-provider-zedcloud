@@ -1,7 +1,6 @@
 package schemas
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/go-openapi/strfmt"
@@ -17,13 +16,33 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 		adminState = models.NewAdminState(models.AdminState(adminStateModel))
 	}
 	assetID, _ := d.Get("asset_id").(string)
-	baseImage, _ := d.Get("base_image").([]*models.BaseOSImage) // []*BaseOSImage
+	var baseImage []*models.BaseOSImage // []*BaseOSImage
+	baseImageInterface, baseImageIsSet := d.GetOk("base_image")
+	if baseImageIsSet {
+		for _, v := range baseImageInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := BaseOSImageModelFromMap(v.(map[string]interface{}))
+			baseImage = append(baseImage, m)
+		}
+	}
 	baseOsRetryCounterInt, _ := d.Get("base_os_retry_counter").(int)
 	baseOsRetryCounter := int64(baseOsRetryCounterInt)
 	baseOsRetryTime, _ := d.Get("base_os_retry_time").(string)
 	clientIP, _ := d.Get("client_ip").(string)
 	clusterID, _ := d.Get("cluster_id").(string)
-	configItem, _ := d.Get("config_item").([]*models.EDConfigItem) // []*EDConfigItem
+	var configItem []*models.EDConfigItem // []*EDConfigItem
+	configItemInterface, configItemIsSet := d.GetOk("config_item")
+	if configItemIsSet {
+		for _, v := range configItemInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := EDConfigItemModelFromMap(v.(map[string]interface{}))
+			configItem = append(configItem, m)
+		}
+	}
 	cpuInt, _ := d.Get("cpu").(int)
 	cpu := int64(cpuInt)
 	var debugKnob *models.DebugKnobDetail // DebugKnobDetail
@@ -62,10 +81,17 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	generateSoftSerial, _ := d.Get("generate_soft_serial").(bool)
 	id, _ := d.Get("id").(string)
 	identity, _ := d.Get("identity").(strfmt.Base64)
-	fmt.Println("----------------------------------------")
-	fmt.Println(identity)
-	fmt.Println("----------------------------------------")
-	interfaces, _ := d.Get("interfaces").([]*models.SysInterface) // []*SysInterface
+	var interfaces []*models.SysInterface // []*SysInterface
+	interfacesInterface, interfacesIsSet := d.GetOk("interfaces")
+	if interfacesIsSet {
+		for _, v := range interfacesInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := SysInterfaceModelFromMap(v.(map[string]interface{}))
+			interfaces = append(interfaces, m)
+		}
+	}
 	location, _ := d.Get("location").(string)
 	memoryInt, _ := d.Get("memory").(int)
 	memory := int64(memoryInt)
@@ -100,6 +126,9 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	if tagsIsSet {
 		tagsMap := tagsInterface.(map[string]interface{})
 		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
 			tags[k] = v.(string)
 		}
 	}
