@@ -29,18 +29,18 @@ func EDConfigItemModel(d *schema.ResourceData) *models.EDConfigItem {
 
 func EDConfigItemModelFromMap(m map[string]interface{}) *models.EDConfigItem {
 	boolValue := m["bool_value"].(bool)
-	floatValue := m["float_value"].(float32)
+	floatValue := m["float_value"].(float64)
 	key := m["key"].(string)
 	stringValue := m["string_value"].(string)
-	uint32Value := m["uint32_value"].(uint32)
+	uint32Value := m["uint32_value"].(int)
 	uint64Value := m["uint64_value"].(string)
 	valueType := m["value_type"].(string)
 	return &models.EDConfigItem{
 		BoolValue:   boolValue,
-		FloatValue:  floatValue,
+		FloatValue:  float32(floatValue),
 		Key:         key,
 		StringValue: stringValue,
-		Uint32Value: uint32Value,
+		Uint32Value: uint32(uint32Value),
 		Uint64Value: uint64Value,
 		ValueType:   valueType,
 	}
