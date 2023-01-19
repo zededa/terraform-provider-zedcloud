@@ -577,6 +577,9 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Computed:    true,
 			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+				if oldValue == "" {
+					return false
+				}
 				parts := strings.Split(newValue, ":")
 				if len(parts) != 2 {
 					return true
