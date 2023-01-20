@@ -23,9 +23,6 @@ import (
     "github.com/go-openapi/strfmt"
 )
 
-// Function to perform the following actions:
-// (1) Translate {{ $operationGroup }} resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGroup }} {
 	{{- range .Properties }}
 		{{- if or (not .ReadOnly) (and (eq .Name "id") (not $isReadOnlyModel)) }}
@@ -34,13 +31,29 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 			{{- else if and .IsInterface (not .IsAnonymous) }}
 	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").(models.{{ .GoType }}) // {{.GoType}}
 			{{- else if .IsMap }}
+			  {{- if stringContains .GoType "map[string]string" }}
+	{{ varname .Name }} := map[string]string{}
+	{{ varname .Name }}Interface, {{ varname .Name }}IsSet := d.GetOk("{{ varname .Name }}")
+	if {{ varname .Name }}IsSet {
+		{{ varname .Name }}Map := {{ varname .Name }}Interface.(map[string]interface{})
+		for k, v := range {{ varname .Name }}Map {
+			if v == nil {
+				continue
+			}
+			{{ varname .Name }}[k] = v.(string)
+		}
+	}
+              {{else}}
 	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").({{ .GoType }}) // {{.GoType}}
+              {{end}}
 			{{- else if .IsComplexObject }}
 	var {{ varname .Name }} *models.{{ pascalize .GoType }} // {{ .GoType }}
 	{{ .Name }}Interface, {{ .Name }}IsSet := d.GetOk("{{ snakize .Name }}")
-	if {{ .Name }}IsSet {
-		{{ .Name }}Map := {{ .Name }}Interface.([]interface{})[0].(map[string]interface{})
-		{{ varname .Name }} = {{ .GoType }}ModelFromMap({{ .Name }}Map)
+	if {{ .Name }}IsSet && {{ .Name }}Interface != nil {
+		{{ .Name }}Map := {{ .Name }}Interface.([]interface{})
+		if len({{ .Name }}Map) > 0{
+		    {{ varname .Name }} = {{ .GoType }}ModelFromMap({{ .Name }}Map[0].(map[string]interface{}))
+		}
 	}
 			{{- else if stringContains .Name "Properties" }}
 	{{ varname .Name }} := utils.GetPropertiesFromResource(d, "{{ snakize .Name }}")
@@ -54,9 +67,28 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 			{{- else if or (eq .GoType "int32") ( eq .GoType "int64") }}
 	{{ varname .Name }}Int, _ := d.Get("{{ snakize .Name }}").(int)
 	{{ varname .Name }} := {{ .GoType }}({{ varname .Name }}Int)
-			{{- else if and (not (eq .GoType "string")) (not (eq .GoType "[]string")) (not (eq .GoType "bool")) (not (eq .GoType "int")) (not (eq .GoType "float32")) (not (eq .GoType "float64")) (not (eq .GoType "uint32")) (not (eq .GoType "uint64")) }}
+			{{- else if and (not (eq .GoType "string")) (not (eq .GoType "bool")) (not (eq .GoType "int")) (not (eq .GoType "float32")) (not (eq .GoType "float64")) (not (eq .GoType "uint32")) (not (eq .GoType "uint64")) }}
 				{{- if hasPrefix .GoType "[]*" }}
-	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").([]*models.{{ pascalize .GoType }}) // {{ .GoType }}
+	var {{ varname .Name }} []*models.{{ pascalize .GoType }} // {{ .GoType }}
+	{{ .Name }}Interface, {{ .Name }}IsSet := d.GetOk("{{ snakize .Name }}")
+	if {{ .Name }}IsSet {
+		for _, v := range {{ .Name }}Interface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := {{ pascalize .GoType }}ModelFromMap(v.(map[string]interface{}))
+			{{ varname .Name }} = append({{ varname .Name }}, m)
+		}
+	}
+				{{- else if eq .GoType "[]string" }}
+	var {{ varname .Name }} []string
+	{{ varname .Name }}Interface, {{ varname .Name }}IsSet := d.GetOk("{{ varname .Name }}")
+	if {{ varname .Name }}IsSet {
+    	{{ varname .Name }}Slice := {{ varname .Name }}Interface.([]interface{})
+		for _, i := range {{ varname .Name }}Slice {
+			{{ varname .Name }}Slice = append({{ varname .Name }}Slice, i.(string))
+		}
+	}
 				{{- else if hasPrefix .GoType "[]" }}
 	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").([]models.{{ pascalize .GoType }}) // {{ .GoType }}
 				{{- else if .IsAliased }}
@@ -111,13 +143,29 @@ func {{ $operationGroup }}ModelFromMap(m map[string]interface{}) *models.{{ $ope
 			{{- else if and .IsInterface (not .IsAnonymous)}}
 	{{ varname .Name }} := m["{{ snakize .Name }}"].(models.{{ .GoType }}) // {{.GoType}}
 			{{- else if .IsMap }}
+			  {{- if stringContains .GoType "map[string]string" }}
+	{{ varname .Name }} := map[string]string{}
+	{{ varname .Name }}Interface, {{ varname .Name }}IsSet := m["{{ snakize .Name }}"]
+	if {{ varname .Name }}IsSet {
+		{{ varname .Name }}Map := {{ varname .Name }}Interface.(map[string]interface{})
+		for k, v := range {{ varname .Name }}Map {
+			if v == nil {
+				continue
+			}
+			{{ varname .Name }}[k] = v.(string)
+		}
+	}
+              {{else}}
 	{{ varname .Name }} := m["{{ snakize .Name }}"].({{ .GoType }})
+              {{end}}
 			{{- else if .IsComplexObject }}
 	var {{ varname .Name }} *models.{{ pascalize .GoType }} // {{ .GoType }}
 	{{ .Name }}Interface, {{ .Name }}IsSet := m["{{ snakize .Name }}"]
-	if {{ .Name }}IsSet {
-		{{ .Name }}Map := {{ .Name }}Interface.([]interface{})[0].(map[string]interface{})
-		{{ varname .Name }} = {{ .GoType }}ModelFromMap({{ .Name }}Map)
+	if {{ .Name }}IsSet && {{ .Name }}Interface != nil {
+		{{ .Name }}Map := {{ .Name }}Interface.([]interface{})
+		if len({{ .Name }}Map) > 0{
+		    {{ varname .Name }} = {{ .GoType }}ModelFromMap({{ .Name }}Map[0].(map[string]interface{}))
+		}
 	}
 			// {{- else if stringContains .Name "Properties" }}
 	// {{ varname .Name }} := utils.GetPropertiesFromResource(d, "{{ snakize .Name }}")
@@ -128,14 +176,38 @@ func {{ $operationGroup }}ModelFromMap(m map[string]interface{}) *models.{{ $ope
 			{{- else if eq .GoType "strfmt.DateTime" }}
 	{{ varname .Name }} := m["{{ snakize .Name }}"].(strfmt.DateTime)
 			{{- else if or (eq .GoType "int32") ( eq .GoType "int64") }}
-	{{ varname .Name }} := {{ .GoType }}(m["{{ snakize .Name }}"].(int)) // {{ .GoType }} {{ .IsNullable }} {{ .IsSuperAlias }} {{ .IsAliased }}
-			{{- else if and (not (eq .GoType "string")) (not (eq .GoType "[]string")) (not (eq .GoType "bool")) (not (eq .GoType "int")) (not (eq .GoType "float32")) (not (eq .GoType "float64")) (not (eq .GoType "uint32")) (not (eq .GoType "uint64")) }}
+	{{ varname .Name }} := {{ .GoType }}(m["{{ snakize .Name }}"].(int)) // {{ .GoType }}
+			{{- else if and (not (eq .GoType "string")) (not (eq .GoType "bool")) (not (eq .GoType "int")) (not (eq .GoType "float32")) (not (eq .GoType "float64")) (not (eq .GoType "uint32")) (not (eq .GoType "uint64")) }}
 				{{- if hasPrefix .GoType "[]*" }}
-	{{ varname .Name }} := m["{{ snakize .Name }}"].([]*models.{{ pascalize .GoType }}) // {{ .GoType }}
+	var {{ varname .Name }} []*models.{{ pascalize .GoType }} // {{ .GoType }}
+	{{ .Name }}Interface, {{ .Name }}IsSet := m["{{ snakize .Name }}"]
+	if {{ .Name }}IsSet {
+		for _, v := range {{ .Name }}Interface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := {{ pascalize .GoType }}ModelFromMap(v.(map[string]interface{}))
+			{{ varname .Name }} = append({{ varname .Name }}, m)
+		}
+	}
+				{{- else if hasPrefix .GoType "[]string" }}
+	var {{ varname .Name }} []string
+	{{ varname .Name }}Interface, {{ varname .Name }}IsSet := m["{{ varname .Name }}"]
+	if {{ varname .Name }}IsSet {
+    	{{ varname .Name }}Slice := {{ varname .Name }}Interface.([]interface{})
+		for _, i := range {{ varname .Name }}Slice {
+			{{ varname .Name }}Slice = append({{ varname .Name }}Slice, i.(string))
+		}
+	}
 				{{- else if hasPrefix .GoType "[]" }}
 	{{ varname .Name }} := m["{{ snakize .Name }}"].([]models.{{ pascalize .GoType }}) // {{ .GoType }}
 				{{- else if .IsAliased }}
-	{{ varname .Name }} := m["{{ snakize .Name }}"].(*models.{{ pascalize .GoType }}) // {{ .GoType }}
+	var {{ varname .Name }} *models.{{ pascalize .GoType }} // {{ .GoType }}
+	{{ .Name }}Interface, {{ .Name }}IsSet := m["{{ snakize .Name }}"]
+	if {{ .Name }}IsSet {
+	    {{ .Name }}Model := {{ .Name }}Interface.(string)
+	    {{ varname .Name }} = models.New{{.GoType}}(models.{{.GoType}}({{ .Name }}Model))
+	}
 				{{- else }}
 	{{ varname .Name }} := m["{{ snakize .Name }}"].(models.{{ pascalize .GoType }}) // {{ .GoType }}
 				{{- end }}

@@ -2,13 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 
-// export TF_VAR_zedcloud_token=
-variable "zedcloud_token" {
-    description = "ZEDCloud token"
-    sensitive = true
-    type        = string
-}
-
 resource "zedcloud_edgenode" "required_only" {
 		name = "required_only"
 		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"

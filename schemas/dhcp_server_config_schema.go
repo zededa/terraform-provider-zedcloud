@@ -5,17 +5,21 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate DhcpServerConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DhcpServerConfigModel(d *schema.ResourceData) *models.DhcpServerConfig {
 	var dhcpRange *models.DhcpIPRange // DhcpIPRange
 	dhcpRangeInterface, dhcpRangeIsSet := d.GetOk("dhcp_range")
-	if dhcpRangeIsSet {
+	if dhcpRangeIsSet && dhcpRangeInterface != nil {
 		dhcpRangeMap := dhcpRangeInterface.([]interface{})[0].(map[string]interface{})
 		dhcpRange = DhcpIPRangeModelFromMap(dhcpRangeMap)
 	}
-	dns, _ := d.Get("dns").([]string)
+	var dns []string
+	dnsInterface, dnsIsSet := d.GetOk("dns")
+	if dnsIsSet {
+		dnsSlice := dnsInterface.([]interface{})
+		for _, i := range dnsSlice {
+			dnsSlice = append(dnsSlice, i.(string))
+		}
+	}
 	domain, _ := d.Get("domain").(string)
 	gateway, _ := d.Get("gateway").(string)
 	mask, _ := d.Get("mask").(string)
@@ -35,12 +39,19 @@ func DhcpServerConfigModel(d *schema.ResourceData) *models.DhcpServerConfig {
 func DhcpServerConfigModelFromMap(m map[string]interface{}) *models.DhcpServerConfig {
 	var dhcpRange *models.DhcpIPRange // DhcpIPRange
 	dhcpRangeInterface, dhcpRangeIsSet := m["dhcp_range"]
-	if dhcpRangeIsSet {
+	if dhcpRangeIsSet && dhcpRangeInterface != nil {
 		dhcpRangeMap := dhcpRangeInterface.([]interface{})[0].(map[string]interface{})
 		dhcpRange = DhcpIPRangeModelFromMap(dhcpRangeMap)
 	}
 	//
-	dns := m["dns"].([]string)
+	var dns []string
+	dnsInterface, dnsIsSet := m["dns"]
+	if dnsIsSet {
+		dnsSlice := dnsInterface.([]interface{})
+		for _, i := range dnsSlice {
+			dnsSlice = append(dnsSlice, i.(string))
+		}
+	}
 	domain := m["domain"].(string)
 	gateway := m["gateway"].(string)
 	mask := m["mask"].(string)

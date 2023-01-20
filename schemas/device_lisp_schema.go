@@ -1,27 +1,43 @@
 package schemas
 
 import (
-	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate DeviceLisp resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeviceLispModel(d *schema.ResourceData) *models.DeviceLisp {
 	eID, _ := d.Get("e_id").(string)
 	eIDHashLenInt, _ := d.Get("e_id_hash_len").(int)
 	eIDHashLen := int64(eIDHashLenInt)
 	clientAddr, _ := d.Get("client_addr").(string)
-	eidAllocationPrefix, _ := d.Get("eid_allocation_prefix").(strfmt.Base64)
+	eidAllocationPrefix, _ := d.Get("eid_allocation_prefix").(string)
 	eidAllocationPrefixLenInt, _ := d.Get("eid_allocation_prefix_len").(int)
 	eidAllocationPrefixLen := int64(eidAllocationPrefixLenInt)
 	lispInstanceInt, _ := d.Get("lisp_instance").(int)
 	lispInstance := int64(lispInstanceInt)
-	lispMapServers, _ := d.Get("lisp_map_servers").([]*models.LispServer) // []*LispServer
+	var lispMapServers []*models.LispServer // []*LispServer
+	lispMapServersInterface, lispMapServersIsSet := d.GetOk("lisp_map_servers")
+	if lispMapServersIsSet {
+		for _, v := range lispMapServersInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := LispServerModelFromMap(v.(map[string]interface{}))
+			lispMapServers = append(lispMapServers, m)
+		}
+	}
 	mode, _ := d.Get("mode").(string)
-	zedServers, _ := d.Get("zed_servers").([]*models.DevZedServer) // []*DevZedServer
+	var zedServers []*models.DevZedServer // []*DevZedServer
+	zedServersInterface, zedServersIsSet := d.GetOk("zed_servers")
+	if zedServersIsSet {
+		for _, v := range zedServersInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := DevZedServerModelFromMap(v.(map[string]interface{}))
+			zedServers = append(zedServers, m)
+		}
+	}
 	return &models.DeviceLisp{
 		EID:                    &eID,                    // string true false false
 		EIDHashLen:             &eIDHashLen,             // int64 true false false
@@ -39,12 +55,32 @@ func DeviceLispModelFromMap(m map[string]interface{}) *models.DeviceLisp {
 	eID := m["e_id"].(string)
 	eIDHashLen := int64(m["e_id_hash_len"].(int)) // int64 true false false
 	clientAddr := m["client_addr"].(string)
-	eidAllocationPrefix := m["eid_allocation_prefix"].(strfmt.Base64)
+	eidAllocationPrefix := m["eid_allocation_prefix"].(string)
 	eidAllocationPrefixLen := int64(m["eid_allocation_prefix_len"].(int)) // int64 true false false
 	lispInstance := int64(m["lisp_instance"].(int))                       // int64 true false false
-	lispMapServers := m["lisp_map_servers"].([]*models.LispServer)        // []*LispServer
+	var lispMapServers []*models.LispServer                               // []*LispServer
+	lispMapServersInterface, lispMapServersIsSet := m["lisp_map_servers"]
+	if lispMapServersIsSet {
+		for _, v := range lispMapServersInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := LispServerModelFromMap(v.(map[string]interface{}))
+			lispMapServers = append(lispMapServers, m)
+		}
+	}
 	mode := m["mode"].(string)
-	zedServers := m["zed_servers"].([]*models.DevZedServer) // []*DevZedServer
+	var zedServers []*models.DevZedServer // []*DevZedServer
+	zedServersInterface, zedServersIsSet := m["zed_servers"]
+	if zedServersIsSet {
+		for _, v := range zedServersInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := DevZedServerModelFromMap(v.(map[string]interface{}))
+			zedServers = append(zedServers, m)
+		}
+	}
 	return &models.DeviceLisp{
 		EID:                    &eID,
 		EIDHashLen:             &eIDHashLen,
@@ -63,7 +99,7 @@ func SetDeviceLispResourceData(d *schema.ResourceData, m *models.DeviceLisp) {
 	d.Set("e_id", m.EID)
 	d.Set("e_id_hash_len", m.EIDHashLen)
 	d.Set("client_addr", m.ClientAddr)
-	d.Set("eid_allocation_prefix", m.EidAllocationPrefix.String())
+	d.Set("eid_allocation_prefix", m.EidAllocationPrefix)
 	d.Set("eid_allocation_prefix_len", m.EidAllocationPrefixLen)
 	d.Set("lisp_instance", m.LispInstance)
 	d.Set("lisp_map_servers", SetLispServerSubResourceData(m.LispMapServers))
@@ -79,7 +115,7 @@ func SetDeviceLispSubResourceData(m []*models.DeviceLisp) (d []*map[string]inter
 			properties["e_id"] = DeviceLispModel.EID
 			properties["e_id_hash_len"] = DeviceLispModel.EIDHashLen
 			properties["client_addr"] = DeviceLispModel.ClientAddr
-			properties["eid_allocation_prefix"] = DeviceLispModel.EidAllocationPrefix.String()
+			properties["eid_allocation_prefix"] = DeviceLispModel.EidAllocationPrefix
 			properties["eid_allocation_prefix_len"] = DeviceLispModel.EidAllocationPrefixLen
 			properties["lisp_instance"] = DeviceLispModel.LispInstance
 			properties["lisp_map_servers"] = SetLispServerSubResourceData(DeviceLispModel.LispMapServers)

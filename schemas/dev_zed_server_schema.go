@@ -5,11 +5,11 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate DevZedServer resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DevZedServerModel(d *schema.ResourceData) *models.DevZedServer {
-	eID, _ := d.Get("e_id").([]string)
+	var eID []string
+	for _, i := range d.Get("e_id").([]interface{}) {
+		eID = append(eID, i.(string))
+	}
 	hostName, _ := d.Get("host_name").(string)
 	return &models.DevZedServer{
 		EID:      eID,
@@ -18,7 +18,10 @@ func DevZedServerModel(d *schema.ResourceData) *models.DevZedServer {
 }
 
 func DevZedServerModelFromMap(m map[string]interface{}) *models.DevZedServer {
-	eID := m["e_id"].([]string)
+	var eID []string
+	for _, i := range m["e_id"].([]interface{}) {
+		eID = append(eID, i.(string))
+	}
 	hostName := m["host_name"].(string)
 	return &models.DevZedServer{
 		EID:      eID,

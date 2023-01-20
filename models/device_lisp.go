@@ -37,7 +37,7 @@ type DeviceLisp struct {
 	// EID allocation prefix
 	// Required: true
 	// Format: byte
-	EidAllocationPrefix *strfmt.Base64 `json:"eidAllocationPrefix"`
+	EidAllocationPrefix *string `json:"eidAllocationPrefix"`
 
 	// EID allocation prefix length
 	// Required: true

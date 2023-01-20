@@ -1,23 +1,29 @@
 package schemas
 
 import (
-	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate LispConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func LispConfigModel(d *schema.ResourceData) *models.LispConfig {
 	allocate, _ := d.Get("allocate").(bool)
-	allocationprefix, _ := d.Get("allocationprefix").(strfmt.Base64)
+	allocationprefix, _ := d.Get("allocationprefix").(string)
 	allocationprefixlenInt, _ := d.Get("allocationprefixlen").(int)
 	allocationprefixlen := int64(allocationprefixlenInt)
 	exportprivate, _ := d.Get("exportprivate").(bool)
 	lispiidInt, _ := d.Get("lispiid").(int)
 	lispiid := int64(lispiidInt)
-	sp, _ := d.Get("sp").([]*models.ServicePoint) // []*ServicePoint
+	var sp []*models.ServicePoint // []*ServicePoint
+	spInterface, spIsSet := d.GetOk("sp")
+	if spIsSet {
+		for _, v := range spInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := ServicePointModelFromMap(v.(map[string]interface{}))
+			sp = append(sp, m)
+		}
+	}
 	return &models.LispConfig{
 		Allocate:            allocate,
 		Allocationprefix:    allocationprefix,
@@ -30,11 +36,21 @@ func LispConfigModel(d *schema.ResourceData) *models.LispConfig {
 
 func LispConfigModelFromMap(m map[string]interface{}) *models.LispConfig {
 	allocate := m["allocate"].(bool)
-	allocationprefix := m["allocationprefix"].(strfmt.Base64)
-	allocationprefixlen := int64(m["allocationprefixlen"].(int)) // int64 false false false
+	allocationprefix := m["allocationprefix"].(string)
+	allocationprefixlen := int64(m["allocationprefixlen"].(int)) // int64
 	exportprivate := m["exportprivate"].(bool)
-	lispiid := int64(m["lispiid"].(int))   // int64 false false false
-	sp := m["sp"].([]*models.ServicePoint) // []*ServicePoint
+	lispiid := int64(m["lispiid"].(int)) // int64
+	var sp []*models.ServicePoint        // []*ServicePoint
+	spInterface, spIsSet := m["sp"]
+	if spIsSet {
+		for _, v := range spInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := ServicePointModelFromMap(v.(map[string]interface{}))
+			sp = append(sp, m)
+		}
+	}
 	return &models.LispConfig{
 		Allocate:            allocate,
 		Allocationprefix:    allocationprefix,
@@ -48,7 +64,7 @@ func LispConfigModelFromMap(m map[string]interface{}) *models.LispConfig {
 // Update the underlying LispConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetLispConfigResourceData(d *schema.ResourceData, m *models.LispConfig) {
 	d.Set("allocate", m.Allocate)
-	d.Set("allocationprefix", m.Allocationprefix.String())
+	d.Set("allocationprefix", m.Allocationprefix)
 	d.Set("allocationprefixlen", m.Allocationprefixlen)
 	d.Set("exportprivate", m.Exportprivate)
 	d.Set("lispiid", m.Lispiid)
@@ -61,7 +77,7 @@ func SetLispConfigSubResourceData(m []*models.LispConfig) (d []*map[string]inter
 		if LispConfigModel != nil {
 			properties := make(map[string]interface{})
 			properties["allocate"] = LispConfigModel.Allocate
-			properties["allocationprefix"] = LispConfigModel.Allocationprefix.String()
+			properties["allocationprefix"] = LispConfigModel.Allocationprefix
 			properties["allocationprefixlen"] = LispConfigModel.Allocationprefixlen
 			properties["exportprivate"] = LispConfigModel.Exportprivate
 			properties["lispiid"] = LispConfigModel.Lispiid

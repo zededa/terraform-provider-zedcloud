@@ -15,47 +15,69 @@ import (
 )
 
 func TestAccGetEdgeNode(t *testing.T) {
-	var edgeNodeBefore models.DeviceConfig
+	// var edgeNodeBefore models.DeviceConfig
 	// var edgeNodeAfter models.DeviceConfig
 
-	createConfigPath := "edge_node/required_only.tf"
-	configCreate, err := getTestConfig(createConfigPath)
-	if err != nil {
-		t.Fatal(fmt.Sprintf("could not get testdata for %s", createConfigPath))
-	}
-	// removeCreateConfigPath := "edge_node/remove_required_only.tf"
-	// removeConfigCreate, err := getTestConfig(removeCreateConfigPath)
+	// // create with required and computed fields
+	// requiredOnlyConfigPath := "edge_node/required_only.tf"
+	// requiredOnlyConfig, err := getTestConfig(requiredOnlyConfigPath)
 	// if err != nil {
-	// 	t.Fatal(fmt.Sprintf("could not get testdata for %s", removeCreateConfigPath))
+	// 	t.Fatal(fmt.Sprintf("could not get testdata for %s", requiredOnlyConfigPath))
 	// }
+	// resource.Test(t, resource.TestCase{
+	// 	PreCheck:     func() { testAccPreCheck(t) },
+	// 	CheckDestroy: testEdgeNodeDestroy,
+	// 	Providers:    testAccProviders,
+	// 	Steps: []resource.TestStep{
+	// 		{
+	// 			Config: requiredOnlyConfig,
+	// 			Check: resource.ComposeTestCheckFunc(
+	// 				testEdgeNodeExists("zedcloud_edgenode.required_only", &edgeNodeBefore),
+	// 				resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "required_only"),
+	// 				resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+	// 				resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "title", "required_only-title"),
+	// 				resource.TestMatchResourceAttr(
+	// 					"zedcloud_edgenode.required_only",
+	// 					"id",
+	// 					regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+	// 				),
+	// 			),
+	// 		},
+	// 	},
+	// })
 
+	// create with all fields
+	var edgeNodeComplete models.DeviceConfig
+	// var edgeNodeAfter models.DeviceConfig
+	completeConfigPath := "edge_node/complete.tf"
+	completeConfig, err := getTestConfig(completeConfigPath)
+	if err != nil {
+		t.Fatal(fmt.Sprintf("could not get testdata for %s", completeConfigPath))
+	}
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		CheckDestroy: testEdgeNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: configCreate,
+				Config: completeConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testEdgeNodeExists("zedcloud_edgenode.required_only", &edgeNodeBefore),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "required_only"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "title", "required_only-title"),
+					testEdgeNodeExists("zedcloud_edgenode.complete", &edgeNodeComplete),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "name", "complete"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "title", "complete-title"),
 					resource.TestMatchResourceAttr(
-						"zedcloud_edgenode.required_only",
+						"zedcloud_edgenode.complete",
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
 				),
 			},
-			// {
-			// 	Config: removeConfigCreate,
-			// 	Check: resource.ComposeTestCheckFunc(
-			// 		testEdgeNodeExists("zedcloud_edgenode.remove_required_only", &edgeNodeAfter),
-			// 	),
-			// },
 		},
 	})
+
+	// update all fields
+	// create and update fields with custom logic and separate api requests
 }
 
 // testEdgeNodeDestroy verifies the EdgeNode has been destroyed.

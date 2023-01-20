@@ -5,22 +5,31 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate NetInstConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 	clusterID, _ := d.Get("cluster_id").(string)
 	description, _ := d.Get("description").(string)
 	deviceDefault, _ := d.Get("device_default").(string)
 	deviceID, _ := d.Get("device_id").(string)
 	dhcp, _ := d.Get("dhcp").(bool)
-	dNSList, _ := d.Get("dns_list").([]*models.StaticDNSList) // []*StaticDNSList
+	var dNSList []*models.StaticDNSList // []*StaticDNSList
+	dnsListInterface, dnsListIsSet := d.GetOk("dns_list")
+	if dnsListIsSet {
+		for _, v := range dnsListInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := StaticDNSListModelFromMap(v.(map[string]interface{}))
+			dNSList = append(dNSList, m)
+		}
+	}
 	id, _ := d.Get("id").(string)
 	var ip *models.DhcpServerConfig // DhcpServerConfig
 	ipInterface, ipIsSet := d.GetOk("ip")
-	if ipIsSet {
-		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
-		ip = DhcpServerConfigModelFromMap(ipMap)
+	if ipIsSet && ipInterface != nil {
+		ipMap := ipInterface.([]interface{})
+		if len(ipMap) > 0 {
+			ip = DhcpServerConfigModelFromMap(ipMap[0].(map[string]interface{}))
+		}
 	}
 	var kind *models.NetworkInstanceKind // NetworkInstanceKind
 	kindInterface, kindIsSet := d.GetOk("kind")
@@ -30,29 +39,57 @@ func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 	}
 	var lisp *models.LispConfig // LispConfig
 	lispInterface, lispIsSet := d.GetOk("lisp")
-	if lispIsSet {
-		lispMap := lispInterface.([]interface{})[0].(map[string]interface{})
-		lisp = LispConfigModelFromMap(lispMap)
+	if lispIsSet && lispInterface != nil {
+		lispMap := lispInterface.([]interface{})
+		if len(lispMap) > 0 {
+			lisp = LispConfigModelFromMap(lispMap[0].(map[string]interface{}))
+		}
 	}
 	name, _ := d.Get("name").(string)
 	networkPolicyID, _ := d.Get("network_policy_id").(string)
 	oconfig, _ := d.Get("oconfig").(string)
 	var opaque *models.NetInstOpaqueConfig // NetInstOpaqueConfig
 	opaqueInterface, opaqueIsSet := d.GetOk("opaque")
-	if opaqueIsSet {
-		opaqueMap := opaqueInterface.([]interface{})[0].(map[string]interface{})
-		opaque = NetInstOpaqueConfigModelFromMap(opaqueMap)
+	if opaqueIsSet && opaqueInterface != nil {
+		opaqueMap := opaqueInterface.([]interface{})
+		if len(opaqueMap) > 0 {
+			opaque = NetInstOpaqueConfigModelFromMap(opaqueMap[0].(map[string]interface{}))
+		}
 	}
 	port, _ := d.Get("port").(string)
-	portTags, _ := d.Get("port_tags").(map[string]string) // map[string]string
+	portTags := map[string]string{}
+	portTagsInterface, portTagsIsSet := d.GetOk("portTags")
+	if portTagsIsSet {
+		portTagsMap := portTagsInterface.(map[string]interface{})
+		for k, v := range portTagsMap {
+			if v == nil {
+				continue
+			}
+			portTags[k] = v.(string)
+		}
+	}
+
 	projectID, _ := d.Get("project_id").(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
-	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := d.GetOk("tags")
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	title, _ := d.Get("title").(string)
 	var typeVar *models.NetworkInstanceDhcpType // NetworkInstanceDhcpType
 	typeInterface, typeIsSet := d.GetOk("type")
@@ -91,21 +128,40 @@ func NetInstConfigModelFromMap(m map[string]interface{}) *models.NetInstConfig {
 	deviceDefault := m["device_default"].(string)
 	deviceID := m["device_id"].(string)
 	dhcp := m["dhcp"].(bool)
-	dNSList := m["dns_list"].([]*models.StaticDNSList) // []*StaticDNSList
+	var dNSList []*models.StaticDNSList // []*StaticDNSList
+	dnsListInterface, dnsListIsSet := m["dns_list"]
+	if dnsListIsSet {
+		for _, v := range dnsListInterface.([]interface{}) {
+			if v == nil {
+				continue
+			}
+			m := StaticDNSListModelFromMap(v.(map[string]interface{}))
+			dNSList = append(dNSList, m)
+		}
+	}
 	id := m["id"].(string)
 	var ip *models.DhcpServerConfig // DhcpServerConfig
 	ipInterface, ipIsSet := m["ip"]
-	if ipIsSet {
-		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
-		ip = DhcpServerConfigModelFromMap(ipMap)
+	if ipIsSet && ipInterface != nil {
+		ipMap := ipInterface.([]interface{})
+		if len(ipMap) > 0 {
+			ip = DhcpServerConfigModelFromMap(ipMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	kind := m["kind"].(*models.NetworkInstanceKind) // NetworkInstanceKind
-	var lisp *models.LispConfig                     // LispConfig
+	var kind *models.NetworkInstanceKind // NetworkInstanceKind
+	kindInterface, kindIsSet := m["kind"]
+	if kindIsSet {
+		kindModel := kindInterface.(string)
+		kind = models.NewNetworkInstanceKind(models.NetworkInstanceKind(kindModel))
+	}
+	var lisp *models.LispConfig // LispConfig
 	lispInterface, lispIsSet := m["lisp"]
-	if lispIsSet {
-		lispMap := lispInterface.([]interface{})[0].(map[string]interface{})
-		lisp = LispConfigModelFromMap(lispMap)
+	if lispIsSet && lispInterface != nil {
+		lispMap := lispInterface.([]interface{})
+		if len(lispMap) > 0 {
+			lisp = LispConfigModelFromMap(lispMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	name := m["name"].(string)
@@ -113,24 +169,55 @@ func NetInstConfigModelFromMap(m map[string]interface{}) *models.NetInstConfig {
 	oconfig := m["oconfig"].(string)
 	var opaque *models.NetInstOpaqueConfig // NetInstOpaqueConfig
 	opaqueInterface, opaqueIsSet := m["opaque"]
-	if opaqueIsSet {
-		opaqueMap := opaqueInterface.([]interface{})[0].(map[string]interface{})
-		opaque = NetInstOpaqueConfigModelFromMap(opaqueMap)
+	if opaqueIsSet && opaqueInterface != nil {
+		opaqueMap := opaqueInterface.([]interface{})
+		if len(opaqueMap) > 0 {
+			opaque = NetInstOpaqueConfigModelFromMap(opaqueMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	port := m["port"].(string)
-	portTags := m["port_tags"].(map[string]string)
+	portTags := map[string]string{}
+	portTagsInterface, portTagsIsSet := m["port_tags"]
+	if portTagsIsSet {
+		portTagsMap := portTagsInterface.(map[string]interface{})
+		for k, v := range portTagsMap {
+			if v == nil {
+				continue
+			}
+			portTags[k] = v.(string)
+		}
+	}
+
 	projectID := m["project_id"].(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := m["revision"]
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	tags := m["tags"].(map[string]string)
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := m["tags"]
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	title := m["title"].(string)
-	typeVar := m["type"].(*models.NetworkInstanceDhcpType) // NetworkInstanceDhcpType
+	var typeVar *models.NetworkInstanceDhcpType // NetworkInstanceDhcpType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
+	}
 	return &models.NetInstConfig{
 		ClusterID:       clusterID,
 		Description:     description,

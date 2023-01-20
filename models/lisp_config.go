@@ -25,8 +25,7 @@ type LispConfig struct {
 	Allocate bool `json:"allocate,omitempty"`
 
 	// Allocation Prefix
-	// Format: byte
-	Allocationprefix strfmt.Base64 `json:"allocationprefix,omitempty"`
+	Allocationprefix string `json:"allocationprefix,omitempty"`
 
 	// Allocation Prefix Length
 	Allocationprefixlen int64 `json:"allocationprefixlen,omitempty"`

@@ -39,7 +39,7 @@ func DataResourceEdgeNodeConfiguration() *schema.Resource {
 func GetEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	fmt.Println("------GET---------------------------------------")
 	deviceConfig, diags := getEdgeNode(ctx, d, m)
-	if len(diags) > 0 {
+	if diags.HasError() {
 		return diags
 	}
 	zschema.SetDeviceConfigResourceData(d, deviceConfig)
@@ -54,12 +54,17 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	fmt.Println("------POST---------------------------------------")
 	// we need to fetch the edge-node/device-config and add/change the fields according to config
-	deviceConfig, diags := getEdgeNode(ctx, d, m)
-	if len(diags) > 0 {
-		return diags
-	}
-	// publish the api response to local state and the d instance
-	zschema.SetDeviceConfigResourceData(d, deviceConfig)
+	// deviceConfig, diags := getEdgeNode(ctx, d, m)
+	// if diags.HasError() {
+	// 	return diags
+	// }
+
+	// fmt.Println("d.admin_state: ")
+	// fmt.Println(d.Get("admin_state"))
+	// fmt.Println("deviceConfig: ")
+	// spew.Dump(deviceConfig)
+	// // publish the api response to local state and the d instance
+	// zschema.SetDeviceConfigResourceData(d, deviceConfig)
 
 	params := edge_node_configuration.NewEdgeNodeConfigurationUpdateEdgeNodeParams()
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
@@ -96,14 +101,14 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		if len(diags) > 0 {
+		if diags.HasError() {
 			return diags
 		}
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/device-config
-	deviceConfig, diags = getEdgeNode(ctx, d, m)
-	if len(diags) > 0 {
+	deviceConfig, diags := getEdgeNode(ctx, d, m)
+	if diags.HasError() {
 		return diags
 	}
 	// publish the api response to local state and the d instance
@@ -133,11 +138,12 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	fmt.Println("------CREATE---------------------------------------")
+
 	model := zschema.DeviceConfigModel(d)
 	params := edge_node_configuration.NewEdgeNodeConfigurationCreateEdgeNodeParams()
 	params.SetBody(model)
 
-	fmt.Println("------CREATE---------------------------------------")
 	if err := os.WriteFile("/tmp/req", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
 		fmt.Println(err)
 	}
@@ -161,14 +167,14 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		if len(diags) > 0 {
+		if diags.HasError() {
 			return diags
 		}
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/device-config
 	deviceConfig, diags := getEdgeNode(ctx, d, m)
-	if len(diags) > 0 {
+	if diags.HasError() {
 		return diags
 	}
 	// publish the api response to local state and the d instance
@@ -265,7 +271,7 @@ func activateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}
 			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		if len(diags) > 0 {
+		if diags.HasError() {
 			return diags
 		}
 	}
@@ -309,7 +315,7 @@ func deactivateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface
 			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		if len(diags) > 0 {
+		if diags.HasError() {
 			return diags
 		}
 	}
@@ -474,10 +480,10 @@ func setAdminState(
 	}
 
 	// states differ
-	fmt.Println("====================================")
-	fmt.Println(*localAdminState)
-	fmt.Println(*remoteAdminState)
-	fmt.Println("====================================")
+	// fmt.Println("====================================")
+	// fmt.Println(*localAdminState)
+	// fmt.Println(*remoteAdminState)
+	// fmt.Println("====================================")
 
 	if *localAdminState == models.ADMINSTATE_ACTIVE {
 		// do not activate if already registered
@@ -524,7 +530,7 @@ func getEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 	}
 
 	deviceConfig := resp.GetPayload()
-	if err := os.WriteFile("/tmp/req", []byte("==========RESP=============\n"+spew.Sdump(deviceConfig)), 0644); err != nil {
+	if err := os.WriteFile("/tmp/get_resp", []byte("==========RESP=============\n"+spew.Sdump(deviceConfig)), 0644); err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println("------END get---------------------------------------")

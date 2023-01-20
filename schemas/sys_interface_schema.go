@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate SysInterface resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	costInt, _ := d.Get("cost").(int)
 	cost := int64(costInt)
@@ -21,7 +18,18 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	ipaddr, _ := d.Get("ipaddr").(string)
 	macaddr, _ := d.Get("macaddr").(string)
 	netname, _ := d.Get("netname").(string)
-	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := d.GetOk("tags")
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	return &models.SysInterface{
 		Cost:      cost,
 		IntfUsage: intfUsage,
@@ -34,16 +42,26 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 }
 
 func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
-	cost := int64(m["cost"].(int))                      // int64 false false false
-	intfUsage := m["intf_usage"].(*models.AdapterUsage) // AdapterUsage
+	cost := int64(m["cost"].(int))        // int64 false false false
+	intfUsage := m["intf_usage"].(string) // AdapterUsage
 	intfname := m["intfname"].(string)
 	ipaddr := m["ipaddr"].(string)
 	macaddr := m["macaddr"].(string)
 	netname := m["netname"].(string)
-	tags := m["tags"].(map[string]string)
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := m["tags"]
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
 	return &models.SysInterface{
 		Cost:      cost,
-		IntfUsage: intfUsage,
+		IntfUsage: models.NewAdapterUsage(models.AdapterUsage(intfUsage)),
 		Intfname:  intfname,
 		Ipaddr:    ipaddr,
 		Macaddr:   macaddr,
