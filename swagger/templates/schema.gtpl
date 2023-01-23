@@ -72,7 +72,13 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 	var {{ varname .Name }} []*models.{{ pascalize .GoType }} // {{ .GoType }}
 	{{ .Name }}Interface, {{ .Name }}IsSet := d.GetOk("{{ snakize .Name }}")
 	if {{ .Name }}IsSet {
-		for _, v := range {{ .Name }}Interface.([]interface{}) {
+		var items []interface{}
+		if listItems, isList := {{ .Name }}Interface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = {{ .Name }}Interface.(*schema.Set).List()
+		}
+		for _, v := range items {
 			if v == nil {
 				continue
 			}
@@ -182,7 +188,13 @@ func {{ $operationGroup }}ModelFromMap(m map[string]interface{}) *models.{{ $ope
 	var {{ varname .Name }} []*models.{{ pascalize .GoType }} // {{ .GoType }}
 	{{ .Name }}Interface, {{ .Name }}IsSet := m["{{ snakize .Name }}"]
 	if {{ .Name }}IsSet {
-		for _, v := range {{ .Name }}Interface.([]interface{}) {
+		var items []interface{}
+		if listItems, isList := {{ .Name }}Interface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = {{ .Name }}Interface.(*schema.Set).List()
+		}
+		for _, v := range items {
 			if v == nil {
 				continue
 			}

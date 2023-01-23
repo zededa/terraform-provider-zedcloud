@@ -35,7 +35,13 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	var configItem []*models.EDConfigItem // []*EDConfigItem
 	configItemInterface, configItemIsSet := d.GetOk("config_item")
 	if configItemIsSet {
-		for _, v := range configItemInterface.([]interface{}) {
+		var items []interface{}
+		if listItems, isList := configItemInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = configItemInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
 			if v == nil {
 				continue
 			}
@@ -84,7 +90,13 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	var interfaces []*models.SysInterface // []*SysInterface
 	interfacesInterface, interfacesIsSet := d.GetOk("interfaces")
 	if interfacesIsSet {
-		for _, v := range interfacesInterface.([]interface{}) {
+		var items []interface{}
+		if listItems, isList := interfacesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = interfacesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
 			if v == nil {
 				continue
 			}
@@ -187,134 +199,224 @@ func DeviceConfigModel(d *schema.ResourceData) *models.DeviceConfig {
 	}
 }
 
-//func DeviceConfigModelFromMap(m map[string]interface{}) *models.DeviceConfig {
-//	adminState := m["admin_state"].(*models.AdminState) // AdminState
-//	assetID := m["asset_id"].(string)
-//	baseImage := m["base_image"].([]*models.BaseOSImage)          // []*BaseOSImage
-//	baseOsRetryCounter := int64(m["base_os_retry_counter"].(int)) // int64 false false false
-//	baseOsRetryTime := m["base_os_retry_time"].(string)
-//	clientIP := m["client_ip"].(string)
-//	clusterID := m["cluster_id"].(string)
-//	configItem := m["config_item"].([]*models.EDConfigItem) // []*EDConfigItem
-//	cpu := int64(m["cpu"].(int))                            // int64 false false false
-//	var debugKnob *models.DebugKnobDetail                   // DebugKnobDetail
-//	debugKnobInterface, debugKnobIsSet := m["debug_knob"]
-//	if debugKnobIsSet {
-//		debugKnobMap := debugKnobInterface.([]interface{})[0].(map[string]interface{})
-//		debugKnob = DebugKnobDetailModelFromMap(debugKnobMap)
-//	}
-//	//
-//	var defaultNetInst *models.NetInstConfig // NetInstConfig
-//	defaultNetInstInterface, defaultNetInstIsSet := m["default_net_inst"]
-//	if defaultNetInstIsSet {
-//		defaultNetInstMap := defaultNetInstInterface.([]interface{})[0].(map[string]interface{})
-//		defaultNetInst = NetInstConfigModelFromMap(defaultNetInstMap)
-//	}
-//	//
-//	deploymentTag := m["deployment_tag"].(string)
-//	deprecated := m["deprecated"].(string)
-//	description := m["description"].(string)
-//	var devLocation *models.GeoLocation // GeoLocation
-//	devLocationInterface, devLocationIsSet := m["dev_location"]
-//	if devLocationIsSet {
-//		devLocationMap := devLocationInterface.([]interface{})[0].(map[string]interface{})
-//		devLocation = GeoLocationModelFromMap(devLocationMap)
-//	}
-//	//
-//	var dlisp *models.DeviceLisp // DeviceLisp
-//	dlispInterface, dlispIsSet := m["dlisp"]
-//	if dlispIsSet {
-//		dlispMap := dlispInterface.([]interface{})[0].(map[string]interface{})
-//		dlisp = DeviceLispModelFromMap(dlispMap)
-//	}
-//	//
-//	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
-//	edgeviewconfigInterface, edgeviewconfigIsSet := m["edgeviewconfig"]
-//	if edgeviewconfigIsSet {
-//		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})[0].(map[string]interface{})
-//		edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap)
-//	}
-//	//
-//	generateSoftSerial := m["generate_soft_serial"].(bool)
-//	id := m["id"].(string)
-//	identity := m["identity"].(strfmt.Base64)
-//	interfaces := m["interfaces"].([]*models.SysInterface) // []*SysInterface
-//	location := m["location"].(string)
-//	memory := int64(m["memory"].(int)) // int64 false false false
-//	modelID := m["model_id"].(string)
-//	name := m["name"].(string)
-//	obkey := m["obkey"].(string)
-//	var onboarding *models.DeviceCerts // DeviceCerts
-//	onboardingInterface, onboardingIsSet := m["onboarding"]
-//	if onboardingIsSet {
-//		onboardingMap := onboardingInterface.([]interface{})[0].(map[string]interface{})
-//		onboarding = DeviceCertsModelFromMap(onboardingMap)
-//	}
-//	//
-//	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64 false false false
-//	preparePowerOffTime := m["prepare_power_off_time"].(string)
-//	projectID := m["project_id"].(string)
-//	resetCounter := int64(m["reset_counter"].(int)) // int64 false false false
-//	resetTime := m["reset_time"].(string)
-//	var revision *models.ObjectRevision // ObjectRevision
-//	revisionInterface, revisionIsSet := m["revision"]
-//	if revisionIsSet {
-//		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-//		revision = ObjectRevisionModelFromMap(revisionMap)
-//	}
-//	//
-//	serialno := m["serialno"].(string)
-//	sitePictures := m["site_pictures"].([]string)
-//	storage := int64(m["storage"].(int)) // int64 false false false
-//	tags := m["tags"].(map[string]string)
-//	thread := int64(m["thread"].(int)) // int64 false false false
-//	title := m["title"].(string)
-//	token := m["token"].(string)
-//	utype := m["utype"].(*models.ModelArchType) // ModelArchType
-//	return &models.DeviceConfig{
-//		AdminState:             adminState,
-//		AssetID:                assetID,
-//		BaseImage:              baseImage,
-//		BaseOsRetryCounter:     baseOsRetryCounter,
-//		BaseOsRetryTime:        baseOsRetryTime,
-//		ClientIP:               clientIP,
-//		ClusterID:              clusterID,
-//		ConfigItem:             configItem,
-//		CPU:                    cpu,
-//		DebugKnob:              debugKnob,
-//		DefaultNetInst:         defaultNetInst,
-//		DeploymentTag:          deploymentTag,
-//		Deprecated:             deprecated,
-//		Description:            description,
-//		DevLocation:            devLocation,
-//		Dlisp:                  dlisp,
-//		Edgeviewconfig:         edgeviewconfig,
-//		GenerateSoftSerial:     generateSoftSerial,
-//		ID:                     id,
-//		Identity:               identity,
-//		Interfaces:             interfaces,
-//		Location:               location,
-//		Memory:                 memory,
-//		ModelID:                &modelID,
-//		Name:                   &name,
-//		Obkey:                  obkey,
-//		Onboarding:             onboarding,
-//		PreparePowerOffCounter: preparePowerOffCounter,
-//		PreparePowerOffTime:    preparePowerOffTime,
-//		ProjectID:              &projectID,
-//		ResetCounter:           resetCounter,
-//		ResetTime:              resetTime,
-//		Revision:               revision,
-//		Serialno:               serialno,
-//		SitePictures:           sitePictures,
-//		Storage:                storage,
-//		Tags:                   tags,
-//		Thread:                 thread,
-//		Title:                  &title,
-//		Token:                  token,
-//		Utype:                  utype,
-//	}
-//}
+func DeviceConfigModelFromMap(m map[string]interface{}) *models.DeviceConfig {
+	var adminState *models.AdminState // AdminState
+	adminStateInterface, adminStateIsSet := m["admin_state"]
+	if adminStateIsSet {
+		adminStateModel := adminStateInterface.(string)
+		adminState = models.NewAdminState(models.AdminState(adminStateModel))
+	}
+	assetID := m["asset_id"].(string)
+	var baseImage []*models.BaseOSImage // []*BaseOSImage
+	baseImageInterface, baseImageIsSet := m["base_image"]
+	if baseImageIsSet {
+		var items []interface{}
+		if listItems, isList := baseImageInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = baseImageInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := BaseOSImageModelFromMap(v.(map[string]interface{}))
+			baseImage = append(baseImage, m)
+		}
+	}
+	baseOsRetryCounter := int64(m["base_os_retry_counter"].(int)) // int64
+	baseOsRetryTime := m["base_os_retry_time"].(string)
+	clientIP := m["client_ip"].(string)
+	clusterID := m["cluster_id"].(string)
+	var configItem []*models.EDConfigItem // []*EDConfigItem
+	configItemInterface, configItemIsSet := m["config_item"]
+	if configItemIsSet {
+		var items []interface{}
+		if listItems, isList := configItemInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = configItemInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := EDConfigItemModelFromMap(v.(map[string]interface{}))
+			configItem = append(configItem, m)
+		}
+	}
+	cpu := int64(m["cpu"].(int))          // int64
+	var debugKnob *models.DebugKnobDetail // DebugKnobDetail
+	debugKnobInterface, debugKnobIsSet := m["debug_knob"]
+	if debugKnobIsSet && debugKnobInterface != nil {
+		debugKnobMap := debugKnobInterface.([]interface{})
+		if len(debugKnobMap) > 0 {
+			debugKnob = DebugKnobDetailModelFromMap(debugKnobMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	var defaultNetInst *models.NetInstConfig // NetInstConfig
+	defaultNetInstInterface, defaultNetInstIsSet := m["default_net_inst"]
+	if defaultNetInstIsSet && defaultNetInstInterface != nil {
+		defaultNetInstMap := defaultNetInstInterface.([]interface{})
+		if len(defaultNetInstMap) > 0 {
+			defaultNetInst = NetInstConfigModelFromMap(defaultNetInstMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	deploymentTag := m["deployment_tag"].(string)
+	deprecated := m["deprecated"].(string)
+	description := m["description"].(string)
+	var devLocation *models.GeoLocation // GeoLocation
+	devLocationInterface, devLocationIsSet := m["dev_location"]
+	if devLocationIsSet && devLocationInterface != nil {
+		devLocationMap := devLocationInterface.([]interface{})
+		if len(devLocationMap) > 0 {
+			devLocation = GeoLocationModelFromMap(devLocationMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	var dlisp *models.DeviceLisp // DeviceLisp
+	dlispInterface, dlispIsSet := m["dlisp"]
+	if dlispIsSet && dlispInterface != nil {
+		dlispMap := dlispInterface.([]interface{})
+		if len(dlispMap) > 0 {
+			dlisp = DeviceLispModelFromMap(dlispMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
+	edgeviewconfigInterface, edgeviewconfigIsSet := m["edgeviewconfig"]
+	if edgeviewconfigIsSet && edgeviewconfigInterface != nil {
+		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})
+		if len(edgeviewconfigMap) > 0 {
+			edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	generateSoftSerial := m["generate_soft_serial"].(bool)
+	id := m["id"].(string)
+	identity := m["identity"].(strfmt.Base64)
+	var interfaces []*models.SysInterface // []*SysInterface
+	interfacesInterface, interfacesIsSet := m["interfaces"]
+	if interfacesIsSet {
+		var items []interface{}
+		if listItems, isList := interfacesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = interfacesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := SysInterfaceModelFromMap(v.(map[string]interface{}))
+			interfaces = append(interfaces, m)
+		}
+	}
+	location := m["location"].(string)
+	memory := int64(m["memory"].(int)) // int64
+	modelID := m["model_id"].(string)
+	name := m["name"].(string)
+	obkey := m["obkey"].(string)
+	var onboarding *models.DeviceCerts // DeviceCerts
+	onboardingInterface, onboardingIsSet := m["onboarding"]
+	if onboardingIsSet && onboardingInterface != nil {
+		onboardingMap := onboardingInterface.([]interface{})
+		if len(onboardingMap) > 0 {
+			onboarding = DeviceCertsModelFromMap(onboardingMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64
+	preparePowerOffTime := m["prepare_power_off_time"].(string)
+	projectID := m["project_id"].(string)
+	resetCounter := int64(m["reset_counter"].(int)) // int64
+	resetTime := m["reset_time"].(string)
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := m["revision"]
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	serialno := m["serialno"].(string)
+	var sitePictures []string
+	sitePicturesInterface, sitePicturesIsSet := m["sitePictures"]
+	if sitePicturesIsSet {
+		sitePicturesSlice := sitePicturesInterface.([]interface{})
+		for _, i := range sitePicturesSlice {
+			sitePicturesSlice = append(sitePicturesSlice, i.(string))
+		}
+	}
+	storage := int64(m["storage"].(int)) // int64
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := m["tags"]
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
+	thread := int64(m["thread"].(int)) // int64
+	title := m["title"].(string)
+	token := m["token"].(string)
+	var utype *models.ModelArchType // ModelArchType
+	utypeInterface, utypeIsSet := m["utype"]
+	if utypeIsSet {
+		utypeModel := utypeInterface.(string)
+		utype = models.NewModelArchType(models.ModelArchType(utypeModel))
+	}
+	return &models.DeviceConfig{
+		AdminState:             adminState,
+		AssetID:                assetID,
+		BaseImage:              baseImage,
+		BaseOsRetryCounter:     baseOsRetryCounter,
+		BaseOsRetryTime:        baseOsRetryTime,
+		ClientIP:               clientIP,
+		ClusterID:              clusterID,
+		ConfigItem:             configItem,
+		CPU:                    cpu,
+		DebugKnob:              debugKnob,
+		DefaultNetInst:         defaultNetInst,
+		DeploymentTag:          deploymentTag,
+		Deprecated:             deprecated,
+		Description:            description,
+		DevLocation:            devLocation,
+		Dlisp:                  dlisp,
+		Edgeviewconfig:         edgeviewconfig,
+		GenerateSoftSerial:     generateSoftSerial,
+		ID:                     id,
+		Identity:               identity,
+		Interfaces:             interfaces,
+		Location:               location,
+		Memory:                 memory,
+		ModelID:                &modelID,
+		Name:                   &name,
+		Obkey:                  obkey,
+		Onboarding:             onboarding,
+		PreparePowerOffCounter: preparePowerOffCounter,
+		PreparePowerOffTime:    preparePowerOffTime,
+		ProjectID:              &projectID,
+		ResetCounter:           resetCounter,
+		ResetTime:              resetTime,
+		Revision:               revision,
+		Serialno:               serialno,
+		SitePictures:           sitePictures,
+		Storage:                storage,
+		Tags:                   tags,
+		Thread:                 thread,
+		Title:                  &title,
+		Token:                  token,
+		Utype:                  utype,
+	}
+}
 
 // Update the underlying DeviceConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetDeviceConfigResourceData(d *schema.ResourceData, m *models.DeviceConfig) {
@@ -567,8 +669,8 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 		},
 
 		"interfaces": {
-			Description: `System Interface list`,
-			Type:        schema.TypeList, //GoType: []*SysInterface
+			Description: `System Interface set`,
+			Type:        schema.TypeSet, //GoType: []*SysInterface
 			Elem: &schema.Resource{
 				Schema: SysInterfaceSchema(),
 			},
@@ -670,7 +772,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 
 		"site_pictures": {
 			Description: `Site captured pictures`,
-			Type:        schema.TypeList, //GoType: []string
+			Type:        schema.TypeSet, //GoType: []string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},

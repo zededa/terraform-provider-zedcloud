@@ -6,7 +6,14 @@ import (
 )
 
 func StaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
-	addrs, _ := d.Get("addrs").([]string)
+	var addrs []string
+	addrsInterface, addrsIsSet := d.GetOk("addrs")
+	if addrsIsSet {
+		addrsSlice := addrsInterface.([]interface{})
+		for _, i := range addrsSlice {
+			addrsSlice = append(addrsSlice, i.(string))
+		}
+	}
 	hostname, _ := d.Get("hostname").(string)
 	return &models.StaticDNSList{
 		Addrs:    addrs,
@@ -15,7 +22,14 @@ func StaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
 }
 
 func StaticDNSListModelFromMap(m map[string]interface{}) *models.StaticDNSList {
-	addrs := m["addrs"].([]string)
+	var addrs []string
+	addrsInterface, addrsIsSet := m["addrs"]
+	if addrsIsSet {
+		addrsSlice := addrsInterface.([]interface{})
+		for _, i := range addrsSlice {
+			addrsSlice = append(addrsSlice, i.(string))
+		}
+	}
 	hostname := m["hostname"].(string)
 	return &models.StaticDNSList{
 		Addrs:    addrs,
