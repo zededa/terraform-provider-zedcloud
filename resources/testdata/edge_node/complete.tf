@@ -19,6 +19,7 @@ resource "zedcloud_edgenode" "complete" {
     		macaddr = "00:00:00:00:00:00"
     		tags = {
           "system_interface_1_key" = "system_interface_1_value"
+          "system_interface_2_key" = "system_interface_2_value"
         }
     }
 
@@ -31,11 +32,6 @@ resource "zedcloud_edgenode" "complete" {
 	    	uint64_value = 64
 	    	value_type = "value type"
     }
-
-		# default_net_inst {
-        # id = ""
-        # name = "default-test-network"
-    # }
 
     obkey = "5d0767ee-0547-4569-b530-387e526f8cb9"
 		serialno = "2293dbe8-29ce-420c-8264-962857efc46b"
@@ -60,6 +56,7 @@ resource "zedcloud_edgenode" "complete" {
 		site_pictures = []
 		tags = {
         "tag-key-1" = "tag-value-1"
+        "tag-key-2" = "tag-value-2"
     }
     token = "token"
 
@@ -68,7 +65,6 @@ resource "zedcloud_edgenode" "complete" {
     # client_ip = "1.1.1.1"
     # deprecated = "false"
     # identity = "identity"
-    # location = "berlin"
     # memory = 32
     # prepare_power_off_time = "undocumented format"
     # prepare_power_off_counter = 2
@@ -120,6 +116,11 @@ resource "zedcloud_edgenode" "complete" {
         # }
     # }
 }
+
+		# default_net_inst {
+        # id = ""
+        # name = "default-test-network"
+    # }
 
 		# default_net_inst {
 	    	# # required

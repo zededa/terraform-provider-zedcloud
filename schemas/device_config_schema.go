@@ -462,7 +462,6 @@ func SetDeviceConfigResourceData(d *schema.ResourceData, m *models.DeviceConfig)
 	d.Set("utype", m.Utype)
 }
 
-// Iterate through and update the DeviceConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceConfigSubResourceData(m []*models.DeviceConfig) (d []*map[string]interface{}) {
 	for _, DeviceConfigModel := range m {
 		if DeviceConfigModel != nil {
