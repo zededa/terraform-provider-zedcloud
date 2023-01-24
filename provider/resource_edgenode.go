@@ -6,10 +6,11 @@ package provider
 import (
 	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"log"
 	"net/http"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	zschemas "github.com/zededa/terraform-provider-zedcloud/schemas"
 	zedcloudapi "github.com/zededa/zedcloud-api"
@@ -227,7 +228,7 @@ func setSystemInterface(cfg *swagger_models.DeviceConfig, d *schema.ResourceData
 func checkAdminStateValue(d *schema.ResourceData) (string, error) {
 	strVal := rdEntryStr(d, "adminstate_config")
 	switch strVal {
-	case "ADMIN_STATE_ACTIVE":
+	case "ADMIN_STATE_ACTIVE", "ADMIN_STATE_REGISTERED":
 		return "activate", nil
 	case "ADMIN_STATE_INACTIVE":
 		return "deactivate", nil
