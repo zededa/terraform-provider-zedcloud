@@ -5,6 +5,7 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/zededa/zedcloud-api/swagger_models"
 )
 
 // Schema for swagger_models.GeoLocation
@@ -127,6 +128,14 @@ var EdgeNodeSchema = map[string]*schema.Schema{
 		Optional: true,
 		Description: "Administrative state of device. Required field. " +
 			"Valid Values to configure: ADMIN_STATE_ACTIVE, ADMIN_STATE_INACTIVE",
+		Default: swagger_models.AdminStateADMINSTATECREATED,
+		DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+			if oldValue == string(swagger_models.AdminStateADMINSTATEREGISTERED) &&
+				newValue == string(swagger_models.AdminStateADMINSTATEACTIVE) {
+				return true
+			}
+			return false
+		},
 	},
 	"asset_id": {
 		Type:        schema.TypeString,
