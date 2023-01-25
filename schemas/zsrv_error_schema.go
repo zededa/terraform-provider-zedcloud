@@ -15,9 +15,9 @@ func ZsrvErrorModel(d *schema.ResourceData) *models.ZsrvError {
 	}
 	location, _ := d.Get("location").(string)
 	return &models.ZsrvError{
-		Details:  details,
-		Ec:       ec,
-		Location: location,
+		Details:   details,
+		ErrorCode: ec,
+		Location:  location,
 	}
 }
 
@@ -31,16 +31,16 @@ func ZsrvErrorModelFromMap(m map[string]interface{}) *models.ZsrvError {
 	}
 	location := m["location"].(string)
 	return &models.ZsrvError{
-		Details:  details,
-		Ec:       ec,
-		Location: location,
+		Details:   details,
+		ErrorCode: ec,
+		Location:  location,
 	}
 }
 
 // Update the underlying ZsrvError resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetZsrvErrorResourceData(d *schema.ResourceData, m *models.ZsrvError) {
 	d.Set("details", m.Details)
-	d.Set("ec", m.Ec)
+	d.Set("ec", m.ErrorCode)
 	d.Set("location", m.Location)
 }
 
@@ -50,7 +50,7 @@ func SetZsrvErrorSubResourceData(m []*models.ZsrvError) (d []*map[string]interfa
 		if ZsrvErrorModel != nil {
 			properties := make(map[string]interface{})
 			properties["details"] = ZsrvErrorModel.Details
-			properties["ec"] = ZsrvErrorModel.Ec
+			properties["ec"] = ZsrvErrorModel.ErrorCode
 			properties["location"] = ZsrvErrorModel.Location
 			d = append(d, &properties)
 		}

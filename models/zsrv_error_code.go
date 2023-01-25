@@ -41,8 +41,8 @@ const (
 	// ZsrvErrorCodeZMsgErrorNone captures enum value "zMsgErrorNone"
 	ZsrvErrorCodeZMsgErrorNone ZsrvErrorCode = "zMsgErrorNone"
 
-	// ZsrvErrorCodeZMsgSuccess captures enum value "zMsgSucess"
-	ZsrvErrorCodeZMsgSuccess ZsrvErrorCode = "zMsgSucess"
+	// ErrorCodeSuccess captures enum value "zMsgSucess"
+	ErrorCodeSuccess ZsrvErrorCode = "zMsgSucess"
 
 	// ZsrvErrorCodeNotFound captures enum value "NotFound"
 	ZsrvErrorCodeNotFound ZsrvErrorCode = "NotFound"

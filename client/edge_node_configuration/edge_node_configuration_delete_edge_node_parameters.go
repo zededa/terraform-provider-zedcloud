@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewEdgeNodeConfigurationDeleteEdgeNodeParams creates a new EdgeNodeConfigurationDeleteEdgeNodeParams object,
+// DeleteParams creates a new EdgeNodeConfigurationDeleteEdgeNodeParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeNodeConfigurationDeleteEdgeNodeParams() *EdgeNodeConfigurationDeleteEdgeNodeParams {
+func DeleteParams() *EdgeNodeConfigurationDeleteEdgeNodeParams {
 	return &EdgeNodeConfigurationDeleteEdgeNodeParams{
 		timeout: cr.DefaultTimeout,
 	}

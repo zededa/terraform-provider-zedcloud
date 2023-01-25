@@ -10,14 +10,12 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
+	"github.com/zededa/terraform-provider/client/edge_network_configuration"
+	"github.com/zededa/terraform-provider/client/edge_network_instance_configuration"
 	"github.com/zededa/terraform-provider/client/edge_node_configuration"
 	"github.com/zededa/terraform-provider/client/edge_node_status"
 	"github.com/zededa/terraform-provider/client/hardware_model"
 	"github.com/zededa/terraform-provider/client/resource_group"
-	"github.com/zededa/terraform-provider/client/resource_group_status"
-	"github.com/zededa/terraform-provider/client/edge_network_configuration"
-	"github.com/zededa/terraform-provider/client/edge_network_instance_configuration"
-	"github.com/zededa/terraform-provider/client/edge_network_instance_status"
 )
 
 // Default zedcloudapi HTTP client.
@@ -62,14 +60,12 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *Zedcloudap
 
 	cli := new(Zedcloudapi)
 	cli.Transport = transport
-	cli.EdgeNodeConfiguration = edge_node_configuration.New(transport, formats)
+	cli.EdgeNode = edge_node_configuration.New(transport, formats)
 	cli.EdgeNodeStatus = edge_node_status.New(transport, formats)
 	cli.HardwareModel = hardware_model.New(transport, formats)
 	cli.ResourceGroup = resource_group.New(transport, formats)
-	cli.ResourceGroupStatus = resource_group_status.New(transport, formats)
-	cli.EdgeNetworkConfiguration = edge_network_configuration.New(transport, formats)
+	cli.Network = edge_network_configuration.New(transport, formats)
 	cli.EdgeNetworkInstanceConfiguration = edge_network_instance_configuration.New(transport, formats)
-	cli.EdgeNetworkInstanceStatus = edge_network_instance_status.New(transport, formats)
 	return cli
 }
 
@@ -114,7 +110,7 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // Zedcloudapi is a client for zedcloudapi
 type Zedcloudapi struct {
-	EdgeNodeConfiguration edge_node_configuration.ClientService
+	EdgeNode edge_node_configuration.ClientService
 
 	EdgeNodeStatus edge_node_status.ClientService
 
@@ -122,13 +118,9 @@ type Zedcloudapi struct {
 
 	ResourceGroup resource_group.ClientService
 
-	ResourceGroupStatus resource_group_status.ClientService
+	Network edge_network_configuration.ClientService
 
-+	EdgeNetworkConfiguration edge_network_configuration.ClientService
-
-+	EdgeNetworkInstanceConfiguration edge_network_instance_configuration.ClientService
-
-+	EdgeNetworkInstanceStatus edge_network_instance_status.ClientService
+	EdgeNetworkInstanceConfiguration edge_network_instance_configuration.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -136,12 +128,10 @@ type Zedcloudapi struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *Zedcloudapi) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-	c.EdgeNodeConfiguration.SetTransport(transport)
+	c.EdgeNode.SetTransport(transport)
 	c.EdgeNodeStatus.SetTransport(transport)
 	c.HardwareModel.SetTransport(transport)
 	c.ResourceGroup.SetTransport(transport)
-	c.ResourceGroupStatus.SetTransport(transport)
-	c.EdgeNetworkConfiguration.SetTransport(transport)
+	c.Network.SetTransport(transport)
 	c.EdgeNetworkInstanceConfiguration.SetTransport(transport)
-	c.EdgeNetworkInstanceStatus.SetTransport(transport)
 }

@@ -16,7 +16,7 @@ import (
 )
 
 func TestAccGetEdgeNode(t *testing.T) {
-	var edgeNodeBefore models.DeviceConfig
+	var edgeNodeBefore models.EdgeNode
 	// var edgeNodeAfter models.DeviceConfig
 
 	// create with required and computed fields
@@ -48,7 +48,7 @@ func TestAccGetEdgeNode(t *testing.T) {
 	})
 
 	// create with all fields
-	var edgeNodeComplete models.DeviceConfig
+	var edgeNodeComplete models.EdgeNode
 	completeConfigPath := "edge_node/complete.tf"
 	completeConfig, err := getTestConfig(completeConfigPath)
 	if err != nil {
@@ -93,7 +93,7 @@ func testAccPreCheck(t *testing.T) {
 }
 
 // testEdgeNodeExists retrieves the EdgeNode and stores it in the provided *models.DeviceConfig.
-func testEdgeNodeExists(resourceName string, device *models.DeviceConfig) resource.TestCheckFunc {
+func testEdgeNodeExists(resourceName string, device *models.EdgeNode) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
 		rs, ok := s.RootModule().Resources[resourceName]
@@ -111,7 +111,7 @@ func testEdgeNodeExists(resourceName string, device *models.DeviceConfig) resour
 		// retrieve the EdgeNode by referencing its state ID for API lookup
 		params := edge_node_configuration.NewEdgeNodeConfigurationGetEdgeNodeParams()
 		params.ID = rs.Primary.ID
-		response, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationGetEdgeNode(params, nil)
+		response, err := client.EdgeNode.EdgeNodeConfigurationGetEdgeNode(params, nil)
 		if err != nil {
 			return fmt.Errorf("could not fetch EdgeNode (%s): %w", rs.Primary.ID, err)
 		}
@@ -128,7 +128,7 @@ func testEdgeNodeExists(resourceName string, device *models.DeviceConfig) resour
 }
 
 // testEdgeNodeAttributes verifies attributes are set correctly by Terraform
-func testEdgeNodeAttributes(device *models.DeviceConfig) resource.TestCheckFunc {
+func testEdgeNodeAttributes(device *models.EdgeNode) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if string(*device.AdminState) != "ADMIN_STATE_ACTIVE" {
 			return fmt.Errorf("expect device.AdminState == ADMIN_STATE_ACTIVE but got %+v", device.AdminState)
@@ -286,7 +286,7 @@ func testEdgeNodeDestroy(s *terraform.State) error {
 		// retrieve the EdgeNode by referencing it's state ID for API lookup
 		params := edge_node_configuration.NewEdgeNodeConfigurationGetEdgeNodeParams()
 		params.ID = rs.Primary.ID
-		response, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationGetEdgeNode(params, nil)
+		response, err := client.EdgeNode.EdgeNodeConfigurationGetEdgeNode(params, nil)
 		if err == nil {
 			if deviceConfig := response.GetPayload(); deviceConfig != nil && deviceConfig.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, EdgeNode (%s) still exists", deviceConfig.ID)

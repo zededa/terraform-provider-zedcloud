@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewEdgeNodeConfigurationUpdateEdgeNodeBaseOSParams creates a new EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams object,
+// UpdateBaseOSParams creates a new EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeNodeConfigurationUpdateEdgeNodeBaseOSParams() *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams {
+func UpdateBaseOSParams() *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams {
 	return &EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams{
 		timeout: cr.DefaultTimeout,
 	}

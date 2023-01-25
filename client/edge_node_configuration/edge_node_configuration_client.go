@@ -28,15 +28,15 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	EdgeNodeConfigurationActivateEdgeNode(params *EdgeNodeConfigurationActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationActivateEdgeNodeOK, error)
+	Activate(params *EdgeNodeConfigurationActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationActivateEdgeNodeOK, error)
 
 	EdgeNodeConfigurationBaseOsUpgradeRetryEdgeNode(params *EdgeNodeConfigurationBaseOsUpgradeRetryEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationBaseOsUpgradeRetryEdgeNodeOK, error)
 
-	EdgeNodeConfigurationCreateEdgeNode(params *EdgeNodeConfigurationCreateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationCreateEdgeNodeOK, error)
+	Create(params *EdgeNodeConfigurationCreateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationCreateEdgeNodeOK, error)
 
-	EdgeNodeConfigurationDeActivateEdgeNode(params *EdgeNodeConfigurationDeActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeActivateEdgeNodeOK, error)
+	Deactivate(params *EdgeNodeConfigurationDeActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeActivateEdgeNodeOK, error)
 
-	EdgeNodeConfigurationDeleteEdgeNode(params *EdgeNodeConfigurationDeleteEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeleteEdgeNodeOK, error)
+	Delete(params *EdgeNodeConfigurationDeleteEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeleteEdgeNodeOK, error)
 
 	EdgeNodeConfigurationGetDeviceInterfaceTags(params *EdgeNodeConfigurationGetDeviceInterfaceTagsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetDeviceInterfaceTagsOK, error)
 
@@ -44,7 +44,7 @@ type ClientService interface {
 
 	EdgeNodeConfigurationGetEdgeNodeAttestation(params *EdgeNodeConfigurationGetEdgeNodeAttestationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeAttestationOK, error)
 
-	EdgeNodeConfigurationGetEdgeNodeByName(params *EdgeNodeConfigurationGetEdgeNodeByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeByNameOK, error)
+	GetEdgeNodeByName(params *EdgeNodeConfigurationGetEdgeNodeByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeByNameOK, error)
 
 	EdgeNodeConfigurationGetEdgeNodeBySerial(params *EdgeNodeConfigurationGetEdgeNodeBySerialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeBySerialOK, error)
 
@@ -68,11 +68,11 @@ type ClientService interface {
 
 	EdgeNodeConfigurationStopEdgeviewEdgeNode(params *EdgeNodeConfigurationStopEdgeviewEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationStopEdgeviewEdgeNodeOK, error)
 
-	EdgeNodeConfigurationUpdateEdgeNode(params *EdgeNodeConfigurationUpdateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeOK, error)
+	Update(params *EdgeNodeConfigurationUpdateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeOK, error)
 
-	EdgeNodeConfigurationUpdateEdgeNodeBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOSOK, error)
+	UpdateBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOSOK, error)
 
-	EdgeNodeConfigurationUpdateEdgeNodeBaseOS2(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS2OK, error)
+	PublishBaseOSParams(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS2OK, error)
 
 	EdgeNodeConfigurationUpdateEdgeNodeBaseOS3(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK, error)
 
@@ -80,14 +80,14 @@ type ClientService interface {
 }
 
 /*
-EdgeNodeConfigurationActivateEdgeNode activates edge node
+Activate activates edge node
 
 Activate an edge node. If already in active state no action is taken.
 */
-func (a *Client) EdgeNodeConfigurationActivateEdgeNode(params *EdgeNodeConfigurationActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationActivateEdgeNodeOK, error) {
+func (a *Client) Activate(params *EdgeNodeConfigurationActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationActivateEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationActivateEdgeNodeParams()
+		params = ActivateEdgeNodeParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_ActivateEdgeNode",
@@ -160,14 +160,14 @@ func (a *Client) EdgeNodeConfigurationBaseOsUpgradeRetryEdgeNode(params *EdgeNod
 }
 
 /*
-EdgeNodeConfigurationCreateEdgeNode creates edge node
+Create creates edge node
 
 Create an edge node record.
 */
-func (a *Client) EdgeNodeConfigurationCreateEdgeNode(params *EdgeNodeConfigurationCreateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationCreateEdgeNodeOK, error) {
+func (a *Client) Create(params *EdgeNodeConfigurationCreateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationCreateEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationCreateEdgeNodeParams()
+		params = CreateEdgeNodeParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_CreateEdgeNode",
@@ -200,14 +200,14 @@ func (a *Client) EdgeNodeConfigurationCreateEdgeNode(params *EdgeNodeConfigurati
 }
 
 /*
-EdgeNodeConfigurationDeActivateEdgeNode deactivates edge node
+Deactivate deactivates edge node
 
 Deactivate an edge node. If already in inactive state no action is taken.
 */
-func (a *Client) EdgeNodeConfigurationDeActivateEdgeNode(params *EdgeNodeConfigurationDeActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeActivateEdgeNodeOK, error) {
+func (a *Client) Deactivate(params *EdgeNodeConfigurationDeActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeActivateEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationDeActivateEdgeNodeParams()
+		params = DeactivateEdgeNodeParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_DeActivateEdgeNode",
@@ -240,14 +240,14 @@ func (a *Client) EdgeNodeConfigurationDeActivateEdgeNode(params *EdgeNodeConfigu
 }
 
 /*
-EdgeNodeConfigurationDeleteEdgeNode deletes edge node
+Delete deletes edge node
 
 Delete an edge node record.
 */
-func (a *Client) EdgeNodeConfigurationDeleteEdgeNode(params *EdgeNodeConfigurationDeleteEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeleteEdgeNodeOK, error) {
+func (a *Client) Delete(params *EdgeNodeConfigurationDeleteEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeleteEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationDeleteEdgeNodeParams()
+		params = DeleteParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_DeleteEdgeNode",
@@ -400,14 +400,14 @@ func (a *Client) EdgeNodeConfigurationGetEdgeNodeAttestation(params *EdgeNodeCon
 }
 
 /*
-EdgeNodeConfigurationGetEdgeNodeByName gets edge node by name
+GetEdgeNodeByNameets edge node by name
 
 Get the configuration (without security details) of an edge node record.
 */
-func (a *Client) EdgeNodeConfigurationGetEdgeNodeByName(params *EdgeNodeConfigurationGetEdgeNodeByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeByNameOK, error) {
+func (a *Client) GetEdgeNodeByName(params *EdgeNodeConfigurationGetEdgeNodeByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationGetEdgeNodeByNameParams()
+		params = GetEdgeNodeByNameParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_GetEdgeNodeByName",
@@ -880,14 +880,14 @@ func (a *Client) EdgeNodeConfigurationStopEdgeviewEdgeNode(params *EdgeNodeConfi
 }
 
 /*
-EdgeNodeConfigurationUpdateEdgeNode updates edge node
+Update updates edge node
 
 Update an edge node record. The usual pattern to update an edge node record is to retrieve the record and update with the modified values in a new body to update the edge node record.
 */
-func (a *Client) EdgeNodeConfigurationUpdateEdgeNode(params *EdgeNodeConfigurationUpdateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeOK, error) {
+func (a *Client) Update(params *EdgeNodeConfigurationUpdateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationUpdateEdgeNodeParams()
+		params = UpdateEdgeNodeParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_UpdateEdgeNode",
@@ -920,14 +920,14 @@ func (a *Client) EdgeNodeConfigurationUpdateEdgeNode(params *EdgeNodeConfigurati
 }
 
 /*
-EdgeNodeConfigurationUpdateEdgeNodeBaseOS updates e v e image on edge node
+UpdateBaseOS updates e v e image on edge node
 
 Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.
 */
-func (a *Client) EdgeNodeConfigurationUpdateEdgeNodeBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOSOK, error) {
+func (a *Client) UpdateBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOSOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationUpdateEdgeNodeBaseOSParams()
+		params = UpdateBaseOSParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_UpdateEdgeNodeBaseOS",
@@ -960,14 +960,14 @@ func (a *Client) EdgeNodeConfigurationUpdateEdgeNodeBaseOS(params *EdgeNodeConfi
 }
 
 /*
-EdgeNodeConfigurationUpdateEdgeNodeBaseOS2 updates e v e image on edge node
+PublishBaseOSParams updates e v e image on edge node
 
 Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.
 */
-func (a *Client) EdgeNodeConfigurationUpdateEdgeNodeBaseOS2(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS2OK, error) {
+func (a *Client) PublishBaseOSParams(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS2OK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params()
+		params = PublishBaseOSParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_UpdateEdgeNodeBaseOS2",

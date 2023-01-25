@@ -23,7 +23,7 @@ type ZsrvError struct {
 
 	// Enumrated error code, describes more granular numerical
 	// value than just httpStatus
-	Ec *ZsrvErrorCode `json:"ec,omitempty"`
+	ErrorCode *ZsrvErrorCode `json:"ec,omitempty"`
 
 	// Ignore: Internal field only
 	Location string `json:"location,omitempty"`
@@ -44,12 +44,12 @@ func (m *ZsrvError) Validate(formats strfmt.Registry) error {
 }
 
 func (m *ZsrvError) validateEc(formats strfmt.Registry) error {
-	if swag.IsZero(m.Ec) { // not required
+	if swag.IsZero(m.ErrorCode) { // not required
 		return nil
 	}
 
-	if m.Ec != nil {
-		if err := m.Ec.Validate(formats); err != nil {
+	if m.ErrorCode != nil {
+		if err := m.ErrorCode.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("ec")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
@@ -78,8 +78,8 @@ func (m *ZsrvError) ContextValidate(ctx context.Context, formats strfmt.Registry
 
 func (m *ZsrvError) contextValidateEc(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.Ec != nil {
-		if err := m.Ec.ContextValidate(ctx, formats); err != nil {
+	if m.ErrorCode != nil {
+		if err := m.ErrorCode.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("ec")
 			} else if ce, ok := err.(*errors.CompositeError); ok {

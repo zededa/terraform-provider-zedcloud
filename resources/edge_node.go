@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	apiclient "github.com/zededa/terraform-provider/client"
-	"github.com/zededa/terraform-provider/client/edge_node_configuration"
+	edge_node "github.com/zededa/terraform-provider/client/edge_node_configuration"
 	"github.com/zededa/terraform-provider/models"
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
@@ -25,7 +25,7 @@ func EdgeNodeConfiguration() *schema.Resource {
 		ReadContext:   ReadEdgeNode,
 		UpdateContext: UpdateEdgeNode,
 		DeleteContext: DeleteEdgeNode,
-		Schema:        zschema.DeviceConfigSchema(),
+		Schema:        zschema.EdgeNodeSchema(),
 	}
 }
 
@@ -40,7 +40,7 @@ func EdgeNodeConfiguration() *schema.Resource {
 func DataResourceEdgeNodeConfiguration() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: ReadEdgeNode,
-		Schema:      zschema.DeviceConfigSchema(),
+		Schema:      zschema.EdgeNodeSchema(),
 	}
 }
 
@@ -49,8 +49,8 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	fmt.Println("------CREATE---------------------------------------")
 
-	model := zschema.DeviceConfigModel(d)
-	params := edge_node_configuration.NewEdgeNodeConfigurationCreateEdgeNodeParams()
+	model := zschema.EdgeNodeModel(d)
+	params := edge_node.CreateEdgeNodeParams()
 	params.SetBody(model)
 
 	if err := os.WriteFile("/tmp/req", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
@@ -59,7 +59,7 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationCreateEdgeNode(params, nil)
+	resp, err := client.EdgeNode.Create(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -71,7 +71,7 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 		for _, err := range responseData.Error {
 			// FIXME: zedcloud api returns a response that contains and error even in case of success.
 			// remove this code once it is fixed on API side.
-			if err.Ec != nil && *err.Ec == models.ZsrvErrorCodeZMsgSuccess {
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
 				continue
 			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
@@ -82,21 +82,21 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/device-config
-	deviceConfig, diags := getEdgeNode(ctx, d, m)
+	device, diags := getEdgeNode(ctx, d, m)
 	if diags.HasError() {
 		return diags
 	}
 	// publish the api response to local state and the d instance
-	zschema.SetDeviceConfigResourceData(d, deviceConfig)
-	d.SetId(deviceConfig.ID)
+	zschema.SetEdgeNodeResourceData(d, device)
+	d.SetId(device.ID)
 
 	// to set base-image the api requires separate requests
-	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, deviceConfig.BaseImage); len(diags) > 0 {
+	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, device.BaseImage); len(diags) > 0 {
 		return diags
 	}
 
 	// to set admin-state the api requires separate requests
-	if diags := setAdminState(ctx, d, m, params.Body.AdminState, deviceConfig.AdminState); len(diags) > 0 {
+	if diags := setAdminState(ctx, d, m, params.Body.AdminState, device.AdminState); len(diags) > 0 {
 		return diags
 	}
 
@@ -116,7 +116,7 @@ func ReadEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) di
 	if diags.HasError() {
 		return diags
 	}
-	zschema.SetDeviceConfigResourceData(d, deviceConfig)
+	zschema.SetEdgeNodeResourceData(d, deviceConfig)
 	d.SetId(deviceConfig.ID)
 	fmt.Println("------END GET---------------------------------------")
 
@@ -140,7 +140,7 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	// // publish the api response to local state and the d instance
 	// zschema.SetDeviceConfigResourceData(d, deviceConfig)
 
-	params := edge_node_configuration.NewEdgeNodeConfigurationUpdateEdgeNodeParams()
+	params := edge_node.UpdateEdgeNodeParams()
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
@@ -151,7 +151,7 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	} else {
 		return diag.Errorf("missing client parameter: id")
 	}
-	params.SetBody(zschema.DeviceConfigModel(d))
+	params.SetBody(zschema.EdgeNodeModel(d))
 
 	if err := os.WriteFile("/tmp/req-update", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
 		fmt.Println(err)
@@ -159,7 +159,7 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationUpdateEdgeNode(params, nil)
+	resp, err := client.EdgeNode.Update(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -170,7 +170,7 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 		for _, err := range responseData.Error {
 			// FIXME: zedcloud api returns a response that contains and error even in case of success.
 			// remove this code once it is fixed on API side.
-			if err.Ec != nil && *err.Ec == models.ZsrvErrorCodeZMsgSuccess {
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
 				continue
 			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
@@ -181,21 +181,21 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/device-config
-	deviceConfig, diags := getEdgeNode(ctx, d, m)
+	edgeNode, diags := getEdgeNode(ctx, d, m)
 	if diags.HasError() {
 		return diags
 	}
 	// publish the api response to local state and the d instance
-	zschema.SetDeviceConfigResourceData(d, deviceConfig)
-	d.SetId(deviceConfig.ID)
+	zschema.SetEdgeNodeResourceData(d, edgeNode)
+	d.SetId(edgeNode.ID)
 
 	// to set base-image the api requires separate requests
-	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, deviceConfig.BaseImage); len(diags) > 0 {
+	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, edgeNode.BaseImage); len(diags) > 0 {
 		return diags
 	}
 
 	// to set admin-state the api requires separate requests
-	if diags := setAdminState(ctx, d, m, params.Body.AdminState, deviceConfig.AdminState); len(diags) > 0 {
+	if diags := setAdminState(ctx, d, m, params.Body.AdminState, edgeNode.AdminState); len(diags) > 0 {
 		return diags
 	}
 
@@ -213,7 +213,7 @@ func DeleteEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	fmt.Println("------DELETE---------------------------------------")
 	var diags diag.Diagnostics
 
-	params := edge_node_configuration.NewEdgeNodeConfigurationDeleteEdgeNodeParams()
+	params := edge_node.DeleteParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -231,7 +231,7 @@ func DeleteEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationDeleteEdgeNode(params, nil)
+	resp, err := client.EdgeNode.Delete(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -246,7 +246,7 @@ func DeleteEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 func activateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := edge_node_configuration.NewEdgeNodeConfigurationActivateEdgeNodeParams()
+	params := edge_node.ActivateEdgeNodeParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -263,7 +263,7 @@ func activateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}
 	}
 
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationActivateEdgeNode(params, nil)
+	resp, err := client.EdgeNode.Activate(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -274,7 +274,7 @@ func activateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}
 		for _, err := range responseData.Error {
 			// FIXME: zedcloud api returns a response that contains and error even in case of success.
 			// remove this code once it is fixed on API side.
-			if err.Ec != nil && *err.Ec == models.ZsrvErrorCodeZMsgSuccess {
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
 				continue
 			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
@@ -290,7 +290,7 @@ func activateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}
 func deactivateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := edge_node_configuration.NewEdgeNodeConfigurationDeActivateEdgeNodeParams()
+	params := edge_node.DeactivateEdgeNodeParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -307,7 +307,7 @@ func deactivateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface
 	}
 
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationDeActivateEdgeNode(params, nil)
+	resp, err := client.EdgeNode.Deactivate(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -318,7 +318,7 @@ func deactivateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface
 		for _, err := range responseData.Error {
 			// FIXME: zedcloud api returns a response that contains and error even in case of success.
 			// remove this code once it is fixed on API side.
-			if err.Ec != nil && *err.Ec == models.ZsrvErrorCodeZMsgSuccess {
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
 				continue
 			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
@@ -334,7 +334,7 @@ func deactivateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface
 func applyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := edge_node_configuration.NewEdgeNodeConfigurationUpdateEdgeNodeBaseOSParams()
+	params := edge_node.UpdateBaseOSParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -352,7 +352,7 @@ func applyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationUpdateEdgeNodeBaseOS(params, nil)
+	resp, err := client.EdgeNode.UpdateBaseOS(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -372,7 +372,7 @@ func applyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 func publishBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := edge_node_configuration.NewEdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params()
+	params := edge_node.PublishBaseOSParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -390,7 +390,7 @@ func publishBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationUpdateEdgeNodeBaseOS2(params, nil)
+	resp, err := client.EdgeNode.PublishBaseOSParams(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -511,11 +511,11 @@ func setAdminState(
 	return nil
 }
 
-func getEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.DeviceConfig, diag.Diagnostics) {
+func getEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.EdgeNode, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	fmt.Println("------get---------------------------------------")
 
-	params := edge_node_configuration.NewEdgeNodeConfigurationGetEdgeNodeByNameParams()
+	params := edge_node.GetEdgeNodeByNameParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -531,7 +531,7 @@ func getEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 
 	client := m.(*apiclient.Zedcloudapi)
 
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationGetEdgeNodeByName(params, nil)
+	resp, err := client.EdgeNode.GetEdgeNodeByName(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
