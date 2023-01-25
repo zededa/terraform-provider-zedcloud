@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// GetEdgeNodeByNameParams creates a new EdgeNodeConfigurationGetEdgeNodeByNameParams object,
+// GetByNameParams creates a new EdgeNodeConfigurationGetEdgeNodeByNameParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func GetEdgeNodeByNameParams() *EdgeNodeConfigurationGetEdgeNodeByNameParams {
+func GetByNameParams() *EdgeNodeConfigurationGetEdgeNodeByNameParams {
 	return &EdgeNodeConfigurationGetEdgeNodeByNameParams{
 		timeout: cr.DefaultTimeout,
 	}
