@@ -317,14 +317,14 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 
 		"device_default": {
 			Description: `flag to indicate if this is the default network instance for the device`,
-			Type:        schema.TypeString,
+			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
 		"device_id": {
 			Description: `id of the device on which network instance is created`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"dhcp": {

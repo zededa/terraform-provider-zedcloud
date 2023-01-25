@@ -519,7 +519,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `administrative state of device`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Default:     models.ADMINSTATE_CREATED, // FIXME: name properly in API spec
+			Default:     models.ADMINSTATE_CREATED,
 			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
 				if oldValue == string(models.ADMINSTATE_REGISTERED) &&
 					newValue == string(models.ADMINSTATE_ACTIVE) {
@@ -665,6 +665,7 @@ func DeviceConfigSchema() map[string]*schema.Schema {
 			Description: `Device identity`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"interfaces": {

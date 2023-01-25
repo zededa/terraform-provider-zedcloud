@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate BaseOSImage resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func BaseOSImageModel(d *schema.ResourceData) *models.BaseOSImage {
 	activate, _ := d.Get("activate").(bool)
 	imageName, _ := d.Get("image_name").(string)

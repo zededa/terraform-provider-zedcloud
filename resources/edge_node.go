@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,22 +22,154 @@ import (
 
 func EdgeNodeConfiguration() *schema.Resource {
 	return &schema.Resource{
-		ReadContext:   GetEdgeNode,
 		CreateContext: CreateEdgeNode,
+		ReadContext:   ReadEdgeNode,
 		UpdateContext: UpdateEdgeNode,
 		DeleteContext: DeleteEdgeNode,
 		Schema:        zschema.DeviceConfigSchema(),
 	}
 }
 
+// 	b, err := yaml.Marshal(model)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+
+// 	fmt.Println(formatTest("device", string(b)))
+
+// os.Exit(1)
 func DataResourceEdgeNodeConfiguration() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: GetEdgeNode,
+		ReadContext: ReadEdgeNode,
 		Schema:      zschema.DeviceConfigSchema(),
 	}
 }
+func formatTest(name, obj string) string {
+	fmt.Println(obj)
+	countLeadingSpaces := func(line string) int {
+		return len(line) - len(strings.TrimSpace(line))
+	}
+	res := ""
+	lines := strings.Split(obj, "\n")
+	prevIndent := 0
+	newName := name
+	arrayIndex := 0
+	isArray := false
+	for _, line := range lines {
+		parts := strings.Split(line, ": ")
+		currentIndent := countLeadingSpaces(line)
+		if currentIndent < prevIndent {
+			if !strings.HasPrefix(strings.TrimSpace(parts[0]), "-") {
+				newName = name
+				arrayIndex = 0
+				isArray = false
+			} else {
+				parts[0] = strings.TrimLeft(parts[0], "- ")
+				arrayIndex++
+			}
+		}
+		prevIndent = currentIndent
+		if len(parts) != 2 {
+			newName += "." + strings.Title(strings.TrimRight(strings.TrimSpace(parts[0]), ":"))
+			isArray = true
+			continue
+		}
+		newLine := "if "
+		newObj := newName
+		if isArray {
+			newObj += fmt.Sprintf("[%d]", arrayIndex)
+		}
+		newObj += "."
+		newObj += strings.Title(strings.TrimSpace(parts[0]))
+		newLine += newObj
+		newLine += " != "
+		newLine += "\""
+		newValue := strings.TrimSpace(parts[1])
+		newLine += newValue
+		newLine += "\" {"
+		newLine += "\n    return fmt.Errorf(\"expect "
+		newLine += newObj
+		newLine += " == "
+		newLine += newValue
+		newLine += " but got %+v\", "
+		newLine += newObj
+		newLine += ")\n}"
 
-func GetEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+		newLine += "\n"
+
+		res += newLine
+	}
+	return res
+
+}
+
+func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	fmt.Println("------CREATE---------------------------------------")
+
+	model := zschema.DeviceConfigModel(d)
+	params := edge_node_configuration.NewEdgeNodeConfigurationCreateEdgeNodeParams()
+	params.SetBody(model)
+
+	if err := os.WriteFile("/tmp/req", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
+		fmt.Println(err)
+	}
+
+	client := m.(*apiclient.Zedcloudapi)
+
+	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationCreateEdgeNode(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return diags
+	}
+
+	responseData := resp.GetPayload()
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.Ec != nil && *err.Ec == models.ZsrvErrorCodeZMsgSuccess {
+				continue
+			}
+			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+		}
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	// due to api design, we need to fetch the newly created edge-node/device-config
+	deviceConfig, diags := getEdgeNode(ctx, d, m)
+	if diags.HasError() {
+		return diags
+	}
+	// publish the api response to local state and the d instance
+	zschema.SetDeviceConfigResourceData(d, deviceConfig)
+	d.SetId(deviceConfig.ID)
+
+	// to set base-image the api requires separate requests
+	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, deviceConfig.BaseImage); len(diags) > 0 {
+		return diags
+	}
+
+	// to set admin-state the api requires separate requests
+	if diags := setAdminState(ctx, d, m, params.Body.AdminState, deviceConfig.AdminState); len(diags) > 0 {
+		return diags
+	}
+
+	// the zedcloud API does not return the partially updated object but a custom response.
+	// thus, we need to fetch the object and populate the state.
+	if errs := ReadEdgeNode(ctx, d, m); err != nil {
+		return append(diags, errs...)
+	}
+
+	fmt.Println("------END CREATE---------------------------------------")
+	return diags
+}
+
+func ReadEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	fmt.Println("------GET---------------------------------------")
 	deviceConfig, diags := getEdgeNode(ctx, d, m)
 	if diags.HasError() {
@@ -127,77 +260,11 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := GetEdgeNode(ctx, d, m); err != nil {
+	if errs := ReadEdgeNode(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
 	fmt.Println("------END POST---------------------------------------")
-	return diags
-}
-
-func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	fmt.Println("------CREATE---------------------------------------")
-
-	model := zschema.DeviceConfigModel(d)
-	params := edge_node_configuration.NewEdgeNodeConfigurationCreateEdgeNodeParams()
-	params.SetBody(model)
-
-	if err := os.WriteFile("/tmp/req", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
-		fmt.Println(err)
-	}
-
-	client := m.(*apiclient.Zedcloudapi)
-
-	resp, err := client.EdgeNodeConfiguration.EdgeNodeConfigurationCreateEdgeNode(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
-	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
-		return diags
-	}
-
-	responseData := resp.GetPayload()
-	if responseData != nil && len(responseData.Error) > 0 {
-		for _, err := range responseData.Error {
-			// FIXME: zedcloud api returns a response that contains and error even in case of success.
-			// remove this code once it is fixed on API side.
-			if err.Ec != nil && *err.Ec == models.ZsrvErrorCodeZMsgSuccess {
-				continue
-			}
-			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
-		}
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	// due to api design, we need to fetch the newly created edge-node/device-config
-	deviceConfig, diags := getEdgeNode(ctx, d, m)
-	if diags.HasError() {
-		return diags
-	}
-	// publish the api response to local state and the d instance
-	zschema.SetDeviceConfigResourceData(d, deviceConfig)
-	d.SetId(deviceConfig.ID)
-
-	// to set base-image the api requires separate requests
-	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, deviceConfig.BaseImage); len(diags) > 0 {
-		return diags
-	}
-
-	// to set admin-state the api requires separate requests
-	if diags := setAdminState(ctx, d, m, params.Body.AdminState, deviceConfig.AdminState); len(diags) > 0 {
-		return diags
-	}
-
-	// the zedcloud API does not return the partially updated object but a custom response.
-	// thus, we need to fetch the object and populate the state.
-	if errs := GetEdgeNode(ctx, d, m); err != nil {
-		return append(diags, errs...)
-	}
-
-	fmt.Println("------END CREATE---------------------------------------")
 	return diags
 }
 

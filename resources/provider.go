@@ -48,7 +48,7 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	transport := httptransport.New(zedCloudURL, "/api", []string{"https"})
-	transport.SetDebug(true)
+	transport.SetDebug(false)
 	transport.DefaultAuthentication = BearerToken(token)
 
 	return client.New(transport, strfmt.Default), nil

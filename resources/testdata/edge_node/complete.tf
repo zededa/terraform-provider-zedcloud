@@ -5,6 +5,25 @@ resource "zedcloud_edgenode" "complete" {
 		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
 		title = "complete-title"
 
+    # optional
+    obkey = "5d0767ee-0547-4569-b530-387e526f8cb9"
+		serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b"
+    admin_state = "ADMIN_STATE_ACTIVE"
+    asset_id = "asset_id"
+    deployment_tag = "depl_tag"
+    description = "description"
+		generate_soft_serial = false
+    token = "token"
+
+		site_pictures = []
+
+    # base_image {
+    #    	activate = true
+    #    	image_name = ""
+    #    	imvol_id = ""
+    #    	uuid = ""
+    #    	version = "1.0"
+    # }
 
     interfaces {
         intfname = "eth0"
@@ -33,14 +52,6 @@ resource "zedcloud_edgenode" "complete" {
 	    	value_type = "value type"
     }
 
-    obkey = "5d0767ee-0547-4569-b530-387e526f8cb9"
-		serialno = "2293dbe8-29ce-420c-8264-962857efc46b"
-
-    admin_state = "ADMIN_STATE_ACTIVE"
-    asset_id = "asset_id"
-    # base_image {}
-    deployment_tag = "depl_tag"
-    description = "description"
 		dev_location {
     		city = "berlin"
     		country = "germany"
@@ -52,13 +63,11 @@ resource "zedcloud_edgenode" "complete" {
     		region = "europe/west"
     		underlay_ip = ""
     }
-		generate_soft_serial = false
-		site_pictures = []
+
 		tags = {
         "tag-key-1" = "tag-value-1"
         "tag-key-2" = "tag-value-2"
     }
-    token = "token"
 
     # not supported by api
     # storage = 64

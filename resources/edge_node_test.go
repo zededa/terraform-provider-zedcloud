@@ -250,8 +250,8 @@ func testEdgeNodeAttributes(device *models.DeviceConfig) resource.TestCheckFunc 
 		if *device.ProjectID != "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf" {
 			return fmt.Errorf("expect device.ProjectId == 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf but got %+v", *device.ProjectID)
 		}
-		if device.Serialno != "2293dbe8-29ce-420c-8264-962857efc46b" {
-			return fmt.Errorf("expect device.Serialno == 2293dbe8-29ce-420c-8264-962857efc46b but got %+v", device.Serialno)
+		if device.Serialno != "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b" {
+			return fmt.Errorf("expect device.Serialno == d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b but got %+v", device.Serialno)
 		}
 		if len(device.SitePictures) != 0 {
 			return fmt.Errorf("expect device.SitePictures == [] but got %+v", device.SitePictures)
