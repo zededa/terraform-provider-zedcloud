@@ -5,13 +5,26 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate GooglerpcStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func GooglerpcStatusModel(d *schema.ResourceData) *models.GooglerpcStatus {
 	codeInt, _ := d.Get("code").(int)
 	code := int32(codeInt)
-	details, _ := d.Get("details").([]*models.ProtobufAny) // []*ProtobufAny
+	var details []*models.ProtobufAny // []*ProtobufAny
+	detailsInterface, detailsIsSet := d.GetOk("details")
+	if detailsIsSet {
+		var items []interface{}
+		if listItems, isList := detailsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = detailsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ProtobufAnyModelFromMap(v.(map[string]interface{}))
+			details = append(details, m)
+		}
+	}
 	message, _ := d.Get("message").(string)
 	return &models.GooglerpcStatus{
 		Code:    code,
@@ -21,8 +34,24 @@ func GooglerpcStatusModel(d *schema.ResourceData) *models.GooglerpcStatus {
 }
 
 func GooglerpcStatusModelFromMap(m map[string]interface{}) *models.GooglerpcStatus {
-	code := int32(m["code"].(int))                  // int32 false false false
-	details := m["details"].([]*models.ProtobufAny) // []*ProtobufAny
+	code := int32(m["code"].(int))    // int32
+	var details []*models.ProtobufAny // []*ProtobufAny
+	detailsInterface, detailsIsSet := m["details"]
+	if detailsIsSet {
+		var items []interface{}
+		if listItems, isList := detailsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = detailsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ProtobufAnyModelFromMap(v.(map[string]interface{}))
+			details = append(details, m)
+		}
+	}
 	message := m["message"].(string)
 	return &models.GooglerpcStatus{
 		Code:    code,

@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate NetProxyServer resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
 	portInt, _ := d.Get("port").(int)
 	port := int64(portInt)
@@ -26,8 +23,13 @@ func NetProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
 }
 
 func NetProxyServerModelFromMap(m map[string]interface{}) *models.NetProxyServer {
-	port := int64(m["port"].(int))                  // int64 false false false
-	proto := m["proto"].(*models.NetworkProxyProto) // NetworkProxyProto
+	port := int64(m["port"].(int))      // int64
+	var proto *models.NetworkProxyProto // NetworkProxyProto
+	protoInterface, protoIsSet := m["proto"]
+	if protoIsSet {
+		protoModel := protoInterface.(string)
+		proto = models.NewNetworkProxyProto(models.NetworkProxyProto(protoModel))
+	}
 	server := m["server"].(string)
 	return &models.NetProxyServer{
 		Port:   port,

@@ -9,8 +9,10 @@ func DhcpServerConfigModel(d *schema.ResourceData) *models.DhcpServerConfig {
 	var dhcpRange *models.DhcpIPRange // DhcpIPRange
 	dhcpRangeInterface, dhcpRangeIsSet := d.GetOk("dhcp_range")
 	if dhcpRangeIsSet && dhcpRangeInterface != nil {
-		dhcpRangeMap := dhcpRangeInterface.([]interface{})[0].(map[string]interface{})
-		dhcpRange = DhcpIPRangeModelFromMap(dhcpRangeMap)
+		dhcpRangeMap := dhcpRangeInterface.([]interface{})
+		if len(dhcpRangeMap) > 0 {
+			dhcpRange = DhcpIPRangeModelFromMap(dhcpRangeMap[0].(map[string]interface{}))
+		}
 	}
 	var dns []string
 	dnsInterface, dnsIsSet := d.GetOk("dns")
@@ -40,8 +42,10 @@ func DhcpServerConfigModelFromMap(m map[string]interface{}) *models.DhcpServerCo
 	var dhcpRange *models.DhcpIPRange // DhcpIPRange
 	dhcpRangeInterface, dhcpRangeIsSet := m["dhcp_range"]
 	if dhcpRangeIsSet && dhcpRangeInterface != nil {
-		dhcpRangeMap := dhcpRangeInterface.([]interface{})[0].(map[string]interface{})
-		dhcpRange = DhcpIPRangeModelFromMap(dhcpRangeMap)
+		dhcpRangeMap := dhcpRangeInterface.([]interface{})
+		if len(dhcpRangeMap) > 0 {
+			dhcpRange = DhcpIPRangeModelFromMap(dhcpRangeMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var dns []string

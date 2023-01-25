@@ -5,25 +5,49 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate IoBundleStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IoBundleStatusModel(d *schema.ResourceData) *models.IoBundleStatus {
 	appName, _ := d.Get("app_name").(string)
 	var err *models.DeviceError // DeviceError
 	errInterface, errIsSet := d.GetOk("err")
-	if errIsSet {
-		errMap := errInterface.([]interface{})[0].(map[string]interface{})
-		err = DeviceErrorModelFromMap(errMap)
+	if errIsSet && errInterface != nil {
+		errMap := errInterface.([]interface{})
+		if len(errMap) > 0 {
+			err = DeviceErrorModelFromMap(errMap[0].(map[string]interface{}))
+		}
 	}
 	var lteInfo *models.LTEAdapter // LTEAdapter
 	lteInfoInterface, lteInfoIsSet := d.GetOk("lte_info")
-	if lteInfoIsSet {
-		lteInfoMap := lteInfoInterface.([]interface{})[0].(map[string]interface{})
-		lteInfo = LTEAdapterModelFromMap(lteInfoMap)
+	if lteInfoIsSet && lteInfoInterface != nil {
+		lteInfoMap := lteInfoInterface.([]interface{})
+		if len(lteInfoMap) > 0 {
+			lteInfo = LTEAdapterModelFromMap(lteInfoMap[0].(map[string]interface{}))
+		}
 	}
-	memberList, _ := d.Get("member_list").([]*models.IoMemberStatus) // []*IoMemberStatus
-	members, _ := d.Get("members").([]string)
+	var memberList []*models.IoMemberStatus // []*IoMemberStatus
+	memberListInterface, memberListIsSet := d.GetOk("member_list")
+	if memberListIsSet {
+		var items []interface{}
+		if listItems, isList := memberListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = memberListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := IoMemberStatusModelFromMap(v.(map[string]interface{}))
+			memberList = append(memberList, m)
+		}
+	}
+	var members []string
+	membersInterface, membersIsSet := d.GetOk("members")
+	if membersIsSet {
+		membersSlice := membersInterface.([]interface{})
+		for _, i := range membersSlice {
+			membersSlice = append(membersSlice, i.(string))
+		}
+	}
 	name, _ := d.Get("name").(string)
 	var typeVar *models.IoType // IoType
 	typeInterface, typeIsSet := d.GetOk("type")
@@ -46,22 +70,54 @@ func IoBundleStatusModelFromMap(m map[string]interface{}) *models.IoBundleStatus
 	appName := m["app_name"].(string)
 	var err *models.DeviceError // DeviceError
 	errInterface, errIsSet := m["err"]
-	if errIsSet {
-		errMap := errInterface.([]interface{})[0].(map[string]interface{})
-		err = DeviceErrorModelFromMap(errMap)
+	if errIsSet && errInterface != nil {
+		errMap := errInterface.([]interface{})
+		if len(errMap) > 0 {
+			err = DeviceErrorModelFromMap(errMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var lteInfo *models.LTEAdapter // LTEAdapter
 	lteInfoInterface, lteInfoIsSet := m["lte_info"]
-	if lteInfoIsSet {
-		lteInfoMap := lteInfoInterface.([]interface{})[0].(map[string]interface{})
-		lteInfo = LTEAdapterModelFromMap(lteInfoMap)
+	if lteInfoIsSet && lteInfoInterface != nil {
+		lteInfoMap := lteInfoInterface.([]interface{})
+		if len(lteInfoMap) > 0 {
+			lteInfo = LTEAdapterModelFromMap(lteInfoMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	memberList := m["member_list"].([]*models.IoMemberStatus) // []*IoMemberStatus
-	members := m["members"].([]string)
+	var memberList []*models.IoMemberStatus // []*IoMemberStatus
+	memberListInterface, memberListIsSet := m["member_list"]
+	if memberListIsSet {
+		var items []interface{}
+		if listItems, isList := memberListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = memberListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := IoMemberStatusModelFromMap(v.(map[string]interface{}))
+			memberList = append(memberList, m)
+		}
+	}
+	var members []string
+	membersInterface, membersIsSet := m["members"]
+	if membersIsSet {
+		membersSlice := membersInterface.([]interface{})
+		for _, i := range membersSlice {
+			membersSlice = append(membersSlice, i.(string))
+		}
+	}
 	name := m["name"].(string)
-	typeVar := m["type"].(*models.IoType) // IoType
+	var typeVar *models.IoType // IoType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewIoType(models.IoType(typeModel))
+	}
 	return &models.IoBundleStatus{
 		AppName:    &appName,
 		Err:        err,

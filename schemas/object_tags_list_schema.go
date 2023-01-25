@@ -5,17 +5,32 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ObjectTagsList resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ObjectTagsListModel(d *schema.ResourceData) *models.ObjectTagsList {
 	var next *models.Cursor // Cursor
 	nextInterface, nextIsSet := d.GetOk("next")
-	if nextIsSet {
-		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
-		next = CursorModelFromMap(nextMap)
+	if nextIsSet && nextInterface != nil {
+		nextMap := nextInterface.([]interface{})
+		if len(nextMap) > 0 {
+			next = CursorModelFromMap(nextMap[0].(map[string]interface{}))
+		}
 	}
-	objectTags, _ := d.Get("object_tags").([]*models.ObjectTag) // []*ObjectTag
+	var objectTags []*models.ObjectTag // []*ObjectTag
+	objectTagsInterface, objectTagsIsSet := d.GetOk("object_tags")
+	if objectTagsIsSet {
+		var items []interface{}
+		if listItems, isList := objectTagsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = objectTagsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ObjectTagModelFromMap(v.(map[string]interface{}))
+			objectTags = append(objectTags, m)
+		}
+	}
 	return &models.ObjectTagsList{
 		Next:       next,
 		ObjectTags: objectTags,
@@ -25,12 +40,30 @@ func ObjectTagsListModel(d *schema.ResourceData) *models.ObjectTagsList {
 func ObjectTagsListModelFromMap(m map[string]interface{}) *models.ObjectTagsList {
 	var next *models.Cursor // Cursor
 	nextInterface, nextIsSet := m["next"]
-	if nextIsSet {
-		nextMap := nextInterface.([]interface{})[0].(map[string]interface{})
-		next = CursorModelFromMap(nextMap)
+	if nextIsSet && nextInterface != nil {
+		nextMap := nextInterface.([]interface{})
+		if len(nextMap) > 0 {
+			next = CursorModelFromMap(nextMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	objectTags := m["object_tags"].([]*models.ObjectTag) // []*ObjectTag
+	var objectTags []*models.ObjectTag // []*ObjectTag
+	objectTagsInterface, objectTagsIsSet := m["object_tags"]
+	if objectTagsIsSet {
+		var items []interface{}
+		if listItems, isList := objectTagsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = objectTagsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ObjectTagModelFromMap(v.(map[string]interface{}))
+			objectTags = append(objectTags, m)
+		}
+	}
 	return &models.ObjectTagsList{
 		Next:       next,
 		ObjectTags: objectTags,

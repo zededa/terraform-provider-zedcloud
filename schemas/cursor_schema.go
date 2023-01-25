@@ -5,11 +5,15 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Cursor resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CursorModel(d *schema.ResourceData) *models.Cursor {
-	orderBy, _ := d.Get("order_by").([]string)
+	var orderBy []string
+	orderByInterface, orderByIsSet := d.GetOk("orderBy")
+	if orderByIsSet {
+		orderBySlice := orderByInterface.([]interface{})
+		for _, i := range orderBySlice {
+			orderBySlice = append(orderBySlice, i.(string))
+		}
+	}
 	pageNumInt, _ := d.Get("page_num").(int)
 	pageNum := int64(pageNumInt)
 	pageSizeInt, _ := d.Get("page_size").(int)
@@ -27,11 +31,18 @@ func CursorModel(d *schema.ResourceData) *models.Cursor {
 }
 
 func CursorModelFromMap(m map[string]interface{}) *models.Cursor {
-	orderBy := m["order_by"].([]string)
-	pageNum := int64(m["page_num"].(int))   // int64 false false false
-	pageSize := int64(m["page_size"].(int)) // int64 false false false
+	var orderBy []string
+	orderByInterface, orderByIsSet := m["orderBy"]
+	if orderByIsSet {
+		orderBySlice := orderByInterface.([]interface{})
+		for _, i := range orderBySlice {
+			orderBySlice = append(orderBySlice, i.(string))
+		}
+	}
+	pageNum := int64(m["page_num"].(int))   // int64
+	pageSize := int64(m["page_size"].(int)) // int64
 	pageToken := m["page_token"].(string)
-	totalPages := int64(m["total_pages"].(int)) // int64 false false false
+	totalPages := int64(m["total_pages"].(int)) // int64
 	return &models.Cursor{
 		OrderBy:    orderBy,
 		PageNum:    pageNum,

@@ -5,14 +5,12 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Summary resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SummaryModel(d *schema.ResourceData) *models.Summary {
 	description, _ := d.Get("description").(string)
 	totalInt, _ := d.Get("total").(int)
 	total := int64(totalInt)
 	values, _ := d.Get("values").(map[string]int64) // map[string]int64
+
 	return &models.Summary{
 		Description: description,
 		Total:       total,
@@ -22,8 +20,9 @@ func SummaryModel(d *schema.ResourceData) *models.Summary {
 
 func SummaryModelFromMap(m map[string]interface{}) *models.Summary {
 	description := m["description"].(string)
-	total := int64(m["total"].(int)) // int64 false false false
+	total := int64(m["total"].(int)) // int64
 	values := m["values"].(map[string]int64)
+
 	return &models.Summary{
 		Description: description,
 		Total:       total,

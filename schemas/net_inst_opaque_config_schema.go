@@ -5,15 +5,14 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate NetInstOpaqueConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func NetInstOpaqueConfigModel(d *schema.ResourceData) *models.NetInstOpaqueConfig {
 	var lisp *models.LispConfig // LispConfig
 	lispInterface, lispIsSet := d.GetOk("lisp")
-	if lispIsSet {
-		lispMap := lispInterface.([]interface{})[0].(map[string]interface{})
-		lisp = LispConfigModelFromMap(lispMap)
+	if lispIsSet && lispInterface != nil {
+		lispMap := lispInterface.([]interface{})
+		if len(lispMap) > 0 {
+			lisp = LispConfigModelFromMap(lispMap[0].(map[string]interface{}))
+		}
 	}
 	oconfig, _ := d.Get("oconfig").(string)
 	var typeVar *models.OpaqueConfigType // OpaqueConfigType
@@ -32,13 +31,20 @@ func NetInstOpaqueConfigModel(d *schema.ResourceData) *models.NetInstOpaqueConfi
 func NetInstOpaqueConfigModelFromMap(m map[string]interface{}) *models.NetInstOpaqueConfig {
 	var lisp *models.LispConfig // LispConfig
 	lispInterface, lispIsSet := m["lisp"]
-	if lispIsSet {
-		lispMap := lispInterface.([]interface{})[0].(map[string]interface{})
-		lisp = LispConfigModelFromMap(lispMap)
+	if lispIsSet && lispInterface != nil {
+		lispMap := lispInterface.([]interface{})
+		if len(lispMap) > 0 {
+			lisp = LispConfigModelFromMap(lispMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	oconfig := m["oconfig"].(string)
-	typeVar := m["type"].(*models.OpaqueConfigType) // OpaqueConfigType
+	var typeVar *models.OpaqueConfigType // OpaqueConfigType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewOpaqueConfigType(models.OpaqueConfigType(typeModel))
+	}
 	return &models.NetInstOpaqueConfig{
 		Lisp:    lisp,
 		Oconfig: oconfig,

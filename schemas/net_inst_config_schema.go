@@ -14,7 +14,13 @@ func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 	var dNSList []*models.StaticDNSList // []*StaticDNSList
 	dnsListInterface, dnsListIsSet := d.GetOk("dns_list")
 	if dnsListIsSet {
-		for _, v := range dnsListInterface.([]interface{}) {
+		var items []interface{}
+		if listItems, isList := dnsListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = dnsListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
 			if v == nil {
 				continue
 			}
@@ -131,7 +137,13 @@ func NetInstConfigModelFromMap(m map[string]interface{}) *models.NetInstConfig {
 	var dNSList []*models.StaticDNSList // []*StaticDNSList
 	dnsListInterface, dnsListIsSet := m["dns_list"]
 	if dnsListIsSet {
-		for _, v := range dnsListInterface.([]interface{}) {
+		var items []interface{}
+		if listItems, isList := dnsListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = dnsListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
 			if v == nil {
 				continue
 			}
@@ -317,14 +329,14 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 
 		"device_default": {
 			Description: `flag to indicate if this is the default network instance for the device`,
-			Type:        schema.TypeBool,
+			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"device_id": {
 			Description: `id of the device on which network instance is created`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"dhcp": {

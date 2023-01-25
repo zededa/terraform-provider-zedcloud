@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ServicePoint resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ServicePointModel(d *schema.ResourceData) *models.ServicePoint {
 	credential, _ := d.Get("credential").(string)
 	nameOrIP, _ := d.Get("name_or_ip").(string)
@@ -27,7 +24,12 @@ func ServicePointModel(d *schema.ResourceData) *models.ServicePoint {
 func ServicePointModelFromMap(m map[string]interface{}) *models.ServicePoint {
 	credential := m["credential"].(string)
 	nameOrIP := m["name_or_ip"].(string)
-	typeVar := m["type"].(*models.SpType) // SpType
+	var typeVar *models.SpType // SpType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewSpType(models.SpType(typeModel))
+	}
 	return &models.ServicePoint{
 		Credential: credential,
 		NameOrIP:   nameOrIP,

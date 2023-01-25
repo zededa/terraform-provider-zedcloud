@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ZsrvError resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZsrvErrorModel(d *schema.ResourceData) *models.ZsrvError {
 	details, _ := d.Get("details").(string)
 	var ec *models.ZsrvErrorCode // ZsrvErrorCode
@@ -26,7 +23,12 @@ func ZsrvErrorModel(d *schema.ResourceData) *models.ZsrvError {
 
 func ZsrvErrorModelFromMap(m map[string]interface{}) *models.ZsrvError {
 	details := m["details"].(string)
-	ec := m["ec"].(*models.ZsrvErrorCode) // ZsrvErrorCode
+	var ec *models.ZsrvErrorCode // ZsrvErrorCode
+	ecInterface, ecIsSet := m["ec"]
+	if ecIsSet {
+		ecModel := ecInterface.(string)
+		ec = models.NewZsrvErrorCode(models.ZsrvErrorCode(ecModel))
+	}
 	location := m["location"].(string)
 	return &models.ZsrvError{
 		Details:  details,

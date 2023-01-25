@@ -5,15 +5,14 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate IoMemberStatus resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IoMemberStatusModel(d *schema.ResourceData) *models.IoMemberStatus {
 	var ioAddress *models.IoAddresses // IoAddresses
 	ioAddressInterface, ioAddressIsSet := d.GetOk("io_address")
-	if ioAddressIsSet {
-		ioAddressMap := ioAddressInterface.([]interface{})[0].(map[string]interface{})
-		ioAddress = IoAddressesModelFromMap(ioAddressMap)
+	if ioAddressIsSet && ioAddressInterface != nil {
+		ioAddressMap := ioAddressInterface.([]interface{})
+		if len(ioAddressMap) > 0 {
+			ioAddress = IoAddressesModelFromMap(ioAddressMap[0].(map[string]interface{}))
+		}
 	}
 	name, _ := d.Get("name").(string)
 	return &models.IoMemberStatus{
@@ -25,9 +24,11 @@ func IoMemberStatusModel(d *schema.ResourceData) *models.IoMemberStatus {
 func IoMemberStatusModelFromMap(m map[string]interface{}) *models.IoMemberStatus {
 	var ioAddress *models.IoAddresses // IoAddresses
 	ioAddressInterface, ioAddressIsSet := m["io_address"]
-	if ioAddressIsSet {
-		ioAddressMap := ioAddressInterface.([]interface{})[0].(map[string]interface{})
-		ioAddress = IoAddressesModelFromMap(ioAddressMap)
+	if ioAddressIsSet && ioAddressInterface != nil {
+		ioAddressMap := ioAddressInterface.([]interface{})
+		if len(ioAddressMap) > 0 {
+			ioAddress = IoAddressesModelFromMap(ioAddressMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	name := m["name"].(string)

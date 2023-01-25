@@ -5,12 +5,25 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ZsrvResponse resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ZsrvResponseModel(d *schema.ResourceData) *models.ZsrvResponse {
 	endTime, _ := d.Get("end_time").(string)
-	error, _ := d.Get("error").([]*models.ZsrvError) // []*ZsrvError
+	var error []*models.ZsrvError // []*ZsrvError
+	errorInterface, errorIsSet := d.GetOk("error")
+	if errorIsSet {
+		var items []interface{}
+		if listItems, isList := errorInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = errorInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ZsrvErrorModelFromMap(v.(map[string]interface{}))
+			error = append(error, m)
+		}
+	}
 	hTTPStatusCodeInt, _ := d.Get("http_status_code").(int)
 	hTTPStatusCode := int32(hTTPStatusCodeInt)
 	hTTPStatusMsg, _ := d.Get("http_status_msg").(string)
@@ -61,18 +74,49 @@ func ZsrvResponseModel(d *schema.ResourceData) *models.ZsrvResponse {
 
 func ZsrvResponseModelFromMap(m map[string]interface{}) *models.ZsrvResponse {
 	endTime := m["end_time"].(string)
-	error := m["error"].([]*models.ZsrvError)            // []*ZsrvError
-	hTTPStatusCode := int32(m["http_status_code"].(int)) // int32 false false false
+	var error []*models.ZsrvError // []*ZsrvError
+	errorInterface, errorIsSet := m["error"]
+	if errorIsSet {
+		var items []interface{}
+		if listItems, isList := errorInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = errorInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ZsrvErrorModelFromMap(v.(map[string]interface{}))
+			error = append(error, m)
+		}
+	}
+	hTTPStatusCode := int32(m["http_status_code"].(int)) // int32
 	hTTPStatusMsg := m["http_status_msg"].(string)
 	jobID := m["job_id"].(string)
 	objectID := m["object_id"].(string)
 	objectKind := m["object_kind"].(string)
 	objectName := m["object_name"].(string)
 	objectRevision := m["object_revision"].(string)
-	objectType := m["object_type"].(*models.ObjectType)            // ObjectType
-	operationStatus := m["operation_status"].(*models.ZcOpsStatus) // ZcOpsStatus
+	var objectType *models.ObjectType // ObjectType
+	objectTypeInterface, objectTypeIsSet := m["object_type"]
+	if objectTypeIsSet {
+		objectTypeModel := objectTypeInterface.(string)
+		objectType = models.NewObjectType(models.ObjectType(objectTypeModel))
+	}
+	var operationStatus *models.ZcOpsStatus // ZcOpsStatus
+	operationStatusInterface, operationStatusIsSet := m["operation_status"]
+	if operationStatusIsSet {
+		operationStatusModel := operationStatusInterface.(string)
+		operationStatus = models.NewZcOpsStatus(models.ZcOpsStatus(operationStatusModel))
+	}
 	operationTime := m["operation_time"].(string)
-	operationType := m["operation_type"].(*models.ZcOpsType) // ZcOpsType
+	var operationType *models.ZcOpsType // ZcOpsType
+	operationTypeInterface, operationTypeIsSet := m["operation_type"]
+	if operationTypeIsSet {
+		operationTypeModel := operationTypeInterface.(string)
+		operationType = models.NewZcOpsType(models.ZcOpsType(operationTypeModel))
+	}
 	startTime := m["start_time"].(string)
 	user := m["user"].(string)
 	return &models.ZsrvResponse{
