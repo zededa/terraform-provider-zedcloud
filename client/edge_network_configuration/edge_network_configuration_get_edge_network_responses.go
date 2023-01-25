@@ -82,7 +82,7 @@ EdgeNetworkConfigurationGetEdgeNetworkOK describes a response with status code 2
 A successful response.
 */
 type EdgeNetworkConfigurationGetEdgeNetworkOK struct {
-	Payload *models.NetConfig
+	Payload *models.Network
 }
 
 // IsSuccess returns true when this edge network configuration get edge network o k response has a 2xx status code
@@ -123,13 +123,13 @@ func (o *EdgeNetworkConfigurationGetEdgeNetworkOK) String() string {
 	return fmt.Sprintf("[GET /v1/networks/id/{id}][%d] edgeNetworkConfigurationGetEdgeNetworkOK  %+v", 200, o.Payload)
 }
 
-func (o *EdgeNetworkConfigurationGetEdgeNetworkOK) GetPayload() *models.NetConfig {
+func (o *EdgeNetworkConfigurationGetEdgeNetworkOK) GetPayload() *models.Network {
 	return o.Payload
 }
 
 func (o *EdgeNetworkConfigurationGetEdgeNetworkOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.NetConfig)
+	o.Payload = new(models.Network)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

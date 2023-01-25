@@ -18,13 +18,13 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// NewEdgeNetworkConfigurationCreateEdgeNetworkParams creates a new EdgeNetworkConfigurationCreateEdgeNetworkParams object,
+// CreateNetworkParams creates a new EdgeNetworkConfigurationCreateEdgeNetworkParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeNetworkConfigurationCreateEdgeNetworkParams() *EdgeNetworkConfigurationCreateEdgeNetworkParams {
+func CreateNetworkParams() *EdgeNetworkConfigurationCreateEdgeNetworkParams {
 	return &EdgeNetworkConfigurationCreateEdgeNetworkParams{
 		timeout: cr.DefaultTimeout,
 	}
@@ -70,7 +70,7 @@ type EdgeNetworkConfigurationCreateEdgeNetworkParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.NetConfig
+	Body *models.Network
 
 	timeout    time.Duration
 	Context    context.Context
@@ -137,13 +137,13 @@ func (o *EdgeNetworkConfigurationCreateEdgeNetworkParams) SetXRequestID(xRequest
 }
 
 // WithBody adds the body to the edge network configuration create edge network params
-func (o *EdgeNetworkConfigurationCreateEdgeNetworkParams) WithBody(body *models.NetConfig) *EdgeNetworkConfigurationCreateEdgeNetworkParams {
+func (o *EdgeNetworkConfigurationCreateEdgeNetworkParams) WithBody(body *models.Network) *EdgeNetworkConfigurationCreateEdgeNetworkParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge network configuration create edge network params
-func (o *EdgeNetworkConfigurationCreateEdgeNetworkParams) SetBody(body *models.NetConfig) {
+func (o *EdgeNetworkConfigurationCreateEdgeNetworkParams) SetBody(body *models.Network) {
 	o.Body = body
 }
 

@@ -1,7 +1,6 @@
 package schemas
 
 import (
-	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
@@ -9,7 +8,7 @@ import (
 func NetProxyConfigModel(d *schema.ResourceData) *models.NetProxyConfig {
 	exceptions, _ := d.Get("exceptions").(string)
 	networkProxy, _ := d.Get("network_proxy").(bool)
-	networkProxyCerts, _ := d.Get("network_proxy_certs").([]models.StrfmtBase64) // []strfmt.Base64
+	networkProxyCerts, _ := d.Get("network_proxy_certs").([]string) // []strfmt.Base64
 	networkProxyURL, _ := d.Get("network_proxy_url").(string)
 	pacfile, _ := d.Get("pacfile").(string)
 	var proxies []*models.NetProxyServer // []*NetProxyServer
@@ -42,7 +41,7 @@ func NetProxyConfigModel(d *schema.ResourceData) *models.NetProxyConfig {
 func NetProxyConfigModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
 	exceptions := m["exceptions"].(string)
 	networkProxy := m["network_proxy"].(bool)
-	networkProxyCerts := m["network_proxy_certs"].([]models.StrfmtBase64) // []strfmt.Base64
+	networkProxyCerts := m["network_proxy_certs"].([]string) // []strfmt.Base64
 	networkProxyURL := m["network_proxy_url"].(string)
 	pacfile := m["pacfile"].(string)
 	var proxies []*models.NetProxyServer // []*NetProxyServer
@@ -117,10 +116,8 @@ func NetProxyConfigSchema() map[string]*schema.Schema {
 		"network_proxy_certs": {
 			Description: `Network Proxy Certificates`,
 			Type:        schema.TypeList, //GoType: []strfmt.Base64
-			Elem: &schema.Resource{
-				Schema: strfmt.Base64Schema(),
-			},
-			Optional: true,
+			Elem:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"network_proxy_url": {

@@ -28,30 +28,26 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	EdgeNetworkConfigurationCreateEdgeNetwork(params *EdgeNetworkConfigurationCreateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationCreateEdgeNetworkOK, error)
+	CreateNetwork(params *EdgeNetworkConfigurationCreateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationCreateEdgeNetworkOK, error)
 
-	EdgeNetworkConfigurationDeleteEdgeNetwork(params *EdgeNetworkConfigurationDeleteEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationDeleteEdgeNetworkOK, error)
+	DeleteNetwork(params *EdgeNetworkConfigurationDeleteEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationDeleteEdgeNetworkOK, error)
 
-	EdgeNetworkConfigurationGetEdgeNetwork(params *EdgeNetworkConfigurationGetEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkOK, error)
+	ReadNetwork(params *EdgeNetworkConfigurationGetEdgeNetworkByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkByNameOK, error)
 
-	EdgeNetworkConfigurationGetEdgeNetworkByName(params *EdgeNetworkConfigurationGetEdgeNetworkByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkByNameOK, error)
-
-	EdgeNetworkConfigurationQueryEdgeNetworks(params *EdgeNetworkConfigurationQueryEdgeNetworksParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationQueryEdgeNetworksOK, error)
-
-	EdgeNetworkConfigurationUpdateEdgeNetwork(params *EdgeNetworkConfigurationUpdateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationUpdateEdgeNetworkOK, error)
+	UpdateNetwork(params *EdgeNetworkConfigurationUpdateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationUpdateEdgeNetworkOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-EdgeNetworkConfigurationCreateEdgeNetwork creates edge network
+CreateNetwork creates edge network
 
 Create an edge network record.
 */
-func (a *Client) EdgeNetworkConfigurationCreateEdgeNetwork(params *EdgeNetworkConfigurationCreateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationCreateEdgeNetworkOK, error) {
+func (a *Client) CreateNetwork(params *EdgeNetworkConfigurationCreateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationCreateEdgeNetworkOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNetworkConfigurationCreateEdgeNetworkParams()
+		params = CreateNetworkParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkConfiguration_CreateEdgeNetwork",
@@ -84,11 +80,11 @@ func (a *Client) EdgeNetworkConfigurationCreateEdgeNetwork(params *EdgeNetworkCo
 }
 
 /*
-EdgeNetworkConfigurationDeleteEdgeNetwork deletes edge network
+DeleteNetwork deletes edge network
 
 Delete an edge network record.
 */
-func (a *Client) EdgeNetworkConfigurationDeleteEdgeNetwork(params *EdgeNetworkConfigurationDeleteEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationDeleteEdgeNetworkOK, error) {
+func (a *Client) DeleteNetwork(params *EdgeNetworkConfigurationDeleteEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationDeleteEdgeNetworkOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewEdgeNetworkConfigurationDeleteEdgeNetworkParams()
@@ -164,14 +160,14 @@ func (a *Client) EdgeNetworkConfigurationGetEdgeNetwork(params *EdgeNetworkConfi
 }
 
 /*
-EdgeNetworkConfigurationGetEdgeNetworkByName gets edge network
+ReadNetwork gets edge network
 
 Get the configuration (without security details) of an edge network record.
 */
-func (a *Client) EdgeNetworkConfigurationGetEdgeNetworkByName(params *EdgeNetworkConfigurationGetEdgeNetworkByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkByNameOK, error) {
+func (a *Client) ReadNetwork(params *EdgeNetworkConfigurationGetEdgeNetworkByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNetworkConfigurationGetEdgeNetworkByNameParams()
+		params = GetNetworkByNameParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkConfiguration_GetEdgeNetworkByName",
@@ -244,11 +240,11 @@ func (a *Client) EdgeNetworkConfigurationQueryEdgeNetworks(params *EdgeNetworkCo
 }
 
 /*
-EdgeNetworkConfigurationUpdateEdgeNetwork updates edge network
+UpdateNetwork updates edge network
 
 Update an edge network. The usual pattern to update an edge network record is to retrieve the record and update with the modified values in a new body to update the edge network record.
 */
-func (a *Client) EdgeNetworkConfigurationUpdateEdgeNetwork(params *EdgeNetworkConfigurationUpdateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationUpdateEdgeNetworkOK, error) {
+func (a *Client) UpdateNetwork(params *EdgeNetworkConfigurationUpdateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationUpdateEdgeNetworkOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewEdgeNetworkConfigurationUpdateEdgeNetworkParams()

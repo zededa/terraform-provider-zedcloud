@@ -6,7 +6,7 @@ import (
 )
 
 func NetConfigListModel(d *schema.ResourceData) *models.NetConfigList {
-	var list []*models.NetConfig // []*NetConfig
+	var list []*models.Network // []*NetConfig
 	listInterface, listIsSet := d.GetOk("list")
 	if listIsSet {
 		var items []interface{}
@@ -74,7 +74,7 @@ func NetConfigListModel(d *schema.ResourceData) *models.NetConfigList {
 }
 
 func NetConfigListModelFromMap(m map[string]interface{}) *models.NetConfigList {
-	var list []*models.NetConfig // []*NetConfig
+	var list []*models.Network // []*NetConfig
 	listInterface, listIsSet := m["list"]
 	if listIsSet {
 		var items []interface{}
@@ -180,7 +180,7 @@ func NetConfigListSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: []*NetConfig
 			Elem: &schema.Resource{
-				Schema: NetConfigSchema(),
+				Schema: NetworkSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

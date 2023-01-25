@@ -30,7 +30,7 @@ type NetProxyConfig struct {
 	// Proxy Certificates
 	//
 	// Network Proxy Certificates
-	NetworkProxyCerts []strfmt.Base64 `json:"networkProxyCerts"`
+	NetworkProxyCerts []string `json:"networkProxyCerts"`
 
 	// Direct URL for wpad.dat download
 	//

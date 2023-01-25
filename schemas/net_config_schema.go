@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetConfigModel(d *schema.ResourceData) *models.NetConfig {
+func NetworkModel(d *schema.ResourceData) *models.Network {
 	description, _ := d.Get("description").(string)
 	var dNSList []*models.StaticDNSList // []*StaticDNSList
 	dnsListInterface, dnsListIsSet := d.GetOk("dns_list")
@@ -67,7 +67,7 @@ func NetConfigModel(d *schema.ResourceData) *models.NetConfig {
 			wireless = NetWirelessConfigModelFromMap(wirelessMap[0].(map[string]interface{}))
 		}
 	}
-	return &models.NetConfig{
+	return &models.Network{
 		Description:       description,
 		DNSList:           dNSList,
 		EnterpriseDefault: enterpriseDefault,
@@ -83,7 +83,7 @@ func NetConfigModel(d *schema.ResourceData) *models.NetConfig {
 	}
 }
 
-func NetConfigModelFromMap(m map[string]interface{}) *models.NetConfig {
+func NetConfigModelFromMap(m map[string]interface{}) *models.Network {
 	description := m["description"].(string)
 	var dNSList []*models.StaticDNSList // []*StaticDNSList
 	dnsListInterface, dnsListIsSet := m["dns_list"]
@@ -149,7 +149,7 @@ func NetConfigModelFromMap(m map[string]interface{}) *models.NetConfig {
 		}
 	}
 	//
-	return &models.NetConfig{
+	return &models.Network{
 		Description:       description,
 		DNSList:           dNSList,
 		EnterpriseDefault: enterpriseDefault,
@@ -166,7 +166,7 @@ func NetConfigModelFromMap(m map[string]interface{}) *models.NetConfig {
 }
 
 // Update the underlying NetConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetNetConfigResourceData(d *schema.ResourceData, m *models.NetConfig) {
+func SetNetworkResourceData(d *schema.ResourceData, m *models.Network) {
 	d.Set("description", m.Description)
 	d.Set("dns_list", SetStaticDNSListSubResourceData(m.DNSList))
 	d.Set("enterprise_default", m.EnterpriseDefault)
@@ -182,7 +182,7 @@ func SetNetConfigResourceData(d *schema.ResourceData, m *models.NetConfig) {
 }
 
 // Iterate through and update the NetConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetNetConfigSubResourceData(m []*models.NetConfig) (d []*map[string]interface{}) {
+func SetNetConfigSubResourceData(m []*models.Network) (d []*map[string]interface{}) {
 	for _, NetConfigModel := range m {
 		if NetConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -205,7 +205,7 @@ func SetNetConfigSubResourceData(m []*models.NetConfig) (d []*map[string]interfa
 }
 
 // Schema mapping representing the NetConfig resource defined in the Terraform configuration
-func NetConfigSchema() map[string]*schema.Schema {
+func NetworkSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"description": {
 			Description: `Detailed description of the network`,
