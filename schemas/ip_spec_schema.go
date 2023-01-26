@@ -124,7 +124,7 @@ func SetIPSpecSubResourceData(m []*models.IPSpec) (d []*map[string]interface{}) 
 }
 
 // Schema mapping representing the IPSpec resource defined in the Terraform configuration
-func IPSpecSchema() map[string]*schema.Schema {
+func IPSpec() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"deprecated_dhcp": {
 			Description: ``,
@@ -192,7 +192,7 @@ NETWORK_DHCP_TYPE_CLIENT`,
 }
 
 // Retrieve property field names for updating the IPSpec resource
-func GetIPSpecPropertyFields() (t []string) {
+func IPSpecPropertyFields() (t []string) {
 	return []string{
 		"deprecated_dhcp",
 		"dhcp",
