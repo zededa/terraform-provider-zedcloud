@@ -48,7 +48,7 @@ func SetNetProxyStatusResourceData(d *schema.ResourceData, m *models.NetProxySta
 	d.Set("network_proxy", m.NetworkProxy)
 	d.Set("network_proxy_url", m.NetworkProxyURL)
 	d.Set("pacfile", m.Pacfile)
-	d.Set("proxies", SetNetProxyServerSubResourceData(m.Proxies))
+	d.Set("proxies", SetNetworkProxyServerSubResourceData(m.Proxies))
 	d.Set("wpad_proxy_url", m.WpadProxyURL)
 }
 
@@ -61,7 +61,7 @@ func SetNetProxyStatusSubResourceData(m []*models.NetProxyStatus) (d []*map[stri
 			properties["network_proxy"] = NetProxyStatusModel.NetworkProxy
 			properties["network_proxy_url"] = NetProxyStatusModel.NetworkProxyURL
 			properties["pacfile"] = NetProxyStatusModel.Pacfile
-			properties["proxies"] = SetNetProxyServerSubResourceData(NetProxyStatusModel.Proxies)
+			properties["proxies"] = SetNetworkProxyServerSubResourceData(NetProxyStatusModel.Proxies)
 			properties["wpad_proxy_url"] = NetProxyStatusModel.WpadProxyURL
 			d = append(d, &properties)
 		}
@@ -100,7 +100,7 @@ func NetProxyStatusSchema() map[string]*schema.Schema {
 			Description: `protocol level proxies`,
 			Type:        schema.TypeList, //GoType: []*NetProxyServer
 			Elem: &schema.Resource{
-				Schema: NetworkProxyServerSchema(),
+				Schema: NetworkProxyServer(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
