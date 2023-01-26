@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func LispConfigModel(d *schema.ResourceData) *models.LispConfig {
+func LispModel(d *schema.ResourceData) *models.LispConfig {
 	allocate, _ := d.Get("allocate").(bool)
 	allocationprefix, _ := d.Get("allocationprefix").(string)
 	allocationprefixlenInt, _ := d.Get("allocationprefixlen").(int)
@@ -34,7 +34,7 @@ func LispConfigModel(d *schema.ResourceData) *models.LispConfig {
 	}
 }
 
-func LispConfigModelFromMap(m map[string]interface{}) *models.LispConfig {
+func LispModelFromMap(m map[string]interface{}) *models.LispConfig {
 	allocate := m["allocate"].(bool)
 	allocationprefix := m["allocationprefix"].(string)
 	allocationprefixlen := int64(m["allocationprefixlen"].(int)) // int64
@@ -61,8 +61,7 @@ func LispConfigModelFromMap(m map[string]interface{}) *models.LispConfig {
 	}
 }
 
-// Update the underlying LispConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetLispConfigResourceData(d *schema.ResourceData, m *models.LispConfig) {
+func SetLispResourceData(d *schema.ResourceData, m *models.LispConfig) {
 	d.Set("allocate", m.Allocate)
 	d.Set("allocationprefix", m.Allocationprefix)
 	d.Set("allocationprefixlen", m.Allocationprefixlen)
@@ -71,8 +70,7 @@ func SetLispConfigResourceData(d *schema.ResourceData, m *models.LispConfig) {
 	d.Set("sp", SetServicePointSubResourceData(m.Sp))
 }
 
-// Iterate through and update the LispConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetLispConfigSubResourceData(m []*models.LispConfig) (d []*map[string]interface{}) {
+func SetLispSubResourceData(m []*models.LispConfig) (d []*map[string]interface{}) {
 	for _, LispConfigModel := range m {
 		if LispConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -88,8 +86,7 @@ func SetLispConfigSubResourceData(m []*models.LispConfig) (d []*map[string]inter
 	return
 }
 
-// Schema mapping representing the LispConfig resource defined in the Terraform configuration
-func LispConfigSchema() map[string]*schema.Schema {
+func Lisp() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"allocate": {
 			Description: `Allocate flag`,
@@ -133,7 +130,6 @@ func LispConfigSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the LispConfig resource
 func GetLispConfigPropertyFields() (t []string) {
 	return []string{
 		"allocate",
