@@ -64,7 +64,7 @@ func ToNetworkModel(d *schema.ResourceData) *models.Network {
 	if wirelessIsSet && wirelessInterface != nil {
 		wirelessMap := wirelessInterface.([]interface{})
 		if len(wirelessMap) > 0 {
-			wireless = NetWirelessConfigModelFromMap(wirelessMap[0].(map[string]interface{}))
+			wireless = NetworkWirelessModelFromMap(wirelessMap[0].(map[string]interface{}))
 		}
 	}
 	return &models.Network{
@@ -145,7 +145,7 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 	if wirelessIsSet && wirelessInterface != nil {
 		wirelessMap := wirelessInterface.([]interface{})
 		if len(wirelessMap) > 0 {
-			wireless = NetWirelessConfigModelFromMap(wirelessMap[0].(map[string]interface{}))
+			wireless = NetworkWirelessModelFromMap(wirelessMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -297,7 +297,7 @@ NETWORK_KIND_V6`,
 			Description: ``,
 			Type:        schema.TypeList, //GoType: NetWirelessConfig
 			Elem: &schema.Resource{
-				Schema: NetWirelessConfigSchema(),
+				Schema: NetworkWireless(),
 			},
 			Optional: true,
 		},
