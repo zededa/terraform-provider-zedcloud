@@ -107,7 +107,6 @@ func SetDeviceLispResourceData(d *schema.ResourceData, m *models.DeviceLisp) {
 	d.Set("zed_servers", SetDevZedServerSubResourceData(m.ZedServers))
 }
 
-// Iterate through and update the DeviceLisp resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeviceLispSubResourceData(m []*models.DeviceLisp) (d []*map[string]interface{}) {
 	for _, DeviceLispModel := range m {
 		if DeviceLispModel != nil {
@@ -128,7 +127,7 @@ func SetDeviceLispSubResourceData(m []*models.DeviceLisp) (d []*map[string]inter
 }
 
 // Schema mapping representing the DeviceLisp resource defined in the Terraform configuration
-func DeviceLispSchema() map[string]*schema.Schema {
+func DeviceLisp() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"e_id": {
 			Description: `EID`,
