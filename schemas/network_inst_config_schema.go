@@ -27,7 +27,7 @@ func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
 	opaqueInterface, opaqueIsSet := d.GetOk("opaque")
 	if opaqueIsSet {
 		opaqueMap := opaqueInterface.([]interface{})[0].(map[string]interface{})
-		opaque = NetInstOpaqueConfigModelFromMap(opaqueMap)
+		opaque = NetworkInstanceOpaqueModelFromMap(opaqueMap)
 	}
 	port, _ := d.Get("port").(string)
 	portTags, _ := d.Get("port_tags").(map[string]string) // map[string]string
@@ -66,7 +66,7 @@ func NetworkInstConfigModelFromMap(m map[string]interface{}) *models.NetworkInst
 	opaqueInterface, opaqueIsSet := m["opaque"]
 	if opaqueIsSet {
 		opaqueMap := opaqueInterface.([]interface{})[0].(map[string]interface{})
-		opaque = NetInstOpaqueConfigModelFromMap(opaqueMap)
+		opaque = NetworkInstanceOpaqueModelFromMap(opaqueMap)
 	}
 	//
 	port := m["port"].(string)
@@ -92,7 +92,7 @@ func SetNetworkInstConfigResourceData(d *schema.ResourceData, m *models.NetworkI
 	d.Set("dns_list", SetStaticDNSListSubResourceData(m.DNSList))
 	d.Set("ip", SetDHCPServerSubResourceData([]*models.DhcpServerConfig{m.IP}))
 	d.Set("kind", m.Kind)
-	d.Set("opaque", SetNetInstOpaqueConfigSubResourceData([]*models.NetInstOpaqueConfig{m.Opaque}))
+	d.Set("opaque", SetNetworkInstanceOpaqueSubResourceData([]*models.NetInstOpaqueConfig{m.Opaque}))
 	d.Set("port", m.Port)
 	d.Set("port_tags", m.PortTags)
 	d.Set("tags", m.Tags)
@@ -108,7 +108,7 @@ func SetNetworkInstConfigSubResourceData(m []*models.NetworkInstConfig) (d []*ma
 			properties["dns_list"] = SetStaticDNSListSubResourceData(NetworkInstConfigModel.DNSList)
 			properties["ip"] = SetDHCPServerSubResourceData([]*models.DhcpServerConfig{NetworkInstConfigModel.IP})
 			properties["kind"] = NetworkInstConfigModel.Kind
-			properties["opaque"] = SetNetInstOpaqueConfigSubResourceData([]*models.NetInstOpaqueConfig{NetworkInstConfigModel.Opaque})
+			properties["opaque"] = SetNetworkInstanceOpaqueSubResourceData([]*models.NetInstOpaqueConfig{NetworkInstConfigModel.Opaque})
 			properties["port"] = NetworkInstConfigModel.Port
 			properties["port_tags"] = NetworkInstConfigModel.PortTags
 			properties["tags"] = NetworkInstConfigModel.Tags
@@ -157,7 +157,7 @@ func NetworkInstConfigSchema() map[string]*schema.Schema {
 			Description: `Service specific Config`,
 			Type:        schema.TypeList, //GoType: NetInstOpaqueConfig
 			Elem: &schema.Resource{
-				Schema: NetInstOpaqueConfigSchema(),
+				Schema: NetworkInstanceOpaque(),
 			},
 			Optional: true,
 		},

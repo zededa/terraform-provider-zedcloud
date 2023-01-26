@@ -59,7 +59,7 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetInstConfig {
 	if opaqueIsSet && opaqueInterface != nil {
 		opaqueMap := opaqueInterface.([]interface{})
 		if len(opaqueMap) > 0 {
-			opaque = NetInstOpaqueConfigModelFromMap(opaqueMap[0].(map[string]interface{}))
+			opaque = NetworkInstanceOpaqueModelFromMap(opaqueMap[0].(map[string]interface{}))
 		}
 	}
 	port, _ := d.Get("port").(string)
@@ -184,7 +184,7 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetInstConfig
 	if opaqueIsSet && opaqueInterface != nil {
 		opaqueMap := opaqueInterface.([]interface{})
 		if len(opaqueMap) > 0 {
-			opaque = NetInstOpaqueConfigModelFromMap(opaqueMap[0].(map[string]interface{}))
+			opaque = NetworkInstanceOpaqueModelFromMap(opaqueMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -269,7 +269,7 @@ func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetInstCon
 	d.Set("name", m.Name)
 	d.Set("network_policy_id", m.NetworkPolicyID)
 	d.Set("oconfig", m.Oconfig)
-	d.Set("opaque", SetNetInstOpaqueConfigSubResourceData([]*models.NetInstOpaqueConfig{m.Opaque}))
+	d.Set("opaque", SetNetworkInstanceOpaqueSubResourceData([]*models.NetInstOpaqueConfig{m.Opaque}))
 	d.Set("port", m.Port)
 	d.Set("port_tags", m.PortTags)
 	d.Set("project_id", m.ProjectID)
@@ -296,7 +296,7 @@ func SetNetworkInstanceSubResourceData(m []*models.NetInstConfig) (d []*map[stri
 			properties["name"] = NetInstConfigModel.Name
 			properties["network_policy_id"] = NetInstConfigModel.NetworkPolicyID
 			properties["oconfig"] = NetInstConfigModel.Oconfig
-			properties["opaque"] = SetNetInstOpaqueConfigSubResourceData([]*models.NetInstOpaqueConfig{NetInstConfigModel.Opaque})
+			properties["opaque"] = SetNetworkInstanceOpaqueSubResourceData([]*models.NetInstOpaqueConfig{NetInstConfigModel.Opaque})
 			properties["port"] = NetInstConfigModel.Port
 			properties["port_tags"] = NetInstConfigModel.PortTags
 			properties["project_id"] = NetInstConfigModel.ProjectID
@@ -405,7 +405,7 @@ func NetworkInstance() map[string]*schema.Schema {
 			Description: `Service specific Config`,
 			Type:        schema.TypeList, //GoType: NetInstOpaqueConfig
 			Elem: &schema.Resource{
-				Schema: NetInstOpaqueConfigSchema(),
+				Schema: NetworkInstanceOpaque(),
 			},
 			Optional: true,
 		},
