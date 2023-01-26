@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate EDConfigItem resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EDConfigItemModel(d *schema.ResourceData) *models.EDConfigItem {
 	boolValue, _ := d.Get("bool_value").(bool)
 	floatValue, _ := d.Get("float_value").(float32)
@@ -46,7 +43,6 @@ func EDConfigItemModelFromMap(m map[string]interface{}) *models.EDConfigItem {
 	}
 }
 
-// Update the underlying EDConfigItem resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetEDConfigItemResourceData(d *schema.ResourceData, m *models.EDConfigItem) {
 	d.Set("bool_value", m.BoolValue)
 	d.Set("float_value", m.FloatValue)
@@ -57,7 +53,6 @@ func SetEDConfigItemResourceData(d *schema.ResourceData, m *models.EDConfigItem)
 	d.Set("value_type", m.ValueType)
 }
 
-// Iterate through and update the EDConfigItem resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEDConfigItemSubResourceData(m []*models.EDConfigItem) (d []*map[string]interface{}) {
 	for _, EDConfigItemModel := range m {
 		if EDConfigItemModel != nil {
@@ -76,7 +71,7 @@ func SetEDConfigItemSubResourceData(m []*models.EDConfigItem) (d []*map[string]i
 }
 
 // Schema mapping representing the EDConfigItem resource defined in the Terraform configuration
-func EDConfigItemSchema() map[string]*schema.Schema {
+func EDConfigItem() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"bool_value": {
 			Description: `boolean value`,
