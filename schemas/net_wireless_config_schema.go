@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetWirelessConfigModel(d *schema.ResourceData) *models.NetWirelessConfig {
+func NetworkWirelessModel(d *schema.ResourceData) *models.NetWirelessConfig {
 	var cellularCfg *models.NetCellularConfig // NetCellularConfig
 	cellularCfgInterface, cellularCfgIsSet := d.GetOk("cellular_cfg")
 	if cellularCfgIsSet && cellularCfgInterface != nil {
@@ -35,7 +35,7 @@ func NetWirelessConfigModel(d *schema.ResourceData) *models.NetWirelessConfig {
 	}
 }
 
-func NetWirelessConfigModelFromMap(m map[string]interface{}) *models.NetWirelessConfig {
+func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessConfig {
 	var cellularCfg *models.NetCellularConfig // NetCellularConfig
 	cellularCfgInterface, cellularCfgIsSet := m["cellular_cfg"]
 	if cellularCfgIsSet && cellularCfgInterface != nil {
@@ -67,8 +67,7 @@ func NetWirelessConfigModelFromMap(m map[string]interface{}) *models.NetWireless
 	}
 }
 
-// Update the underlying NetWirelessConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetNetWirelessConfigResourceData(d *schema.ResourceData, m *models.NetWirelessConfig) {
+func SetNetworkWirelessResourceData(d *schema.ResourceData, m *models.NetWirelessConfig) {
 	d.Set("cellular_cfg", SetNetCellularConfigSubResourceData([]*models.NetCellularConfig{m.CellularCfg}))
 	d.Set("type", m.Type)
 	d.Set("wifi_cfg", SetNetWifiConfigSubResourceData([]*models.NetWifiConfig{m.WifiCfg}))
@@ -89,7 +88,7 @@ func SetNetWirelessConfigSubResourceData(m []*models.NetWirelessConfig) (d []*ma
 }
 
 // Schema mapping representing the NetWirelessConfig resource defined in the Terraform configuration
-func NetWirelessConfigSchema() map[string]*schema.Schema {
+func NetworkWireless() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cellular_cfg": {
 			Description: "Cellular configuration",
@@ -120,7 +119,7 @@ NETWORK_WIRELESS_TYPE_CELLULAR`,
 }
 
 // Retrieve property field names for updating the NetWirelessConfig resource
-func GetNetWirelessConfigPropertyFields() (t []string) {
+func GetNetworkWirelessPropertyFields() (t []string) {
 	return []string{
 		"cellular_cfg",
 		"type",
