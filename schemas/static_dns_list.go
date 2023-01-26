@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func StaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
+func ToStaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
 	var addrs []string
 	addrsInterface, addrsIsSet := d.GetOk("addrs")
 	if addrsIsSet {
@@ -55,7 +55,7 @@ func SetStaticDNSListSubResourceData(m []*models.StaticDNSList) (d []*map[string
 }
 
 // Schema mapping representing the StaticDNSList resource defined in the Terraform configuration
-func StaticDNSListSchema() map[string]*schema.Schema {
+func StaticDNSList() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"addrs": {
 			Description: "Set of IP addresses for the specified hostname",
@@ -74,7 +74,7 @@ func StaticDNSListSchema() map[string]*schema.Schema {
 	}
 }
 
-func GetStaticDNSListPropertyFields() (t []string) {
+func StaticDNSListPropertyFields() (t []string) {
 	return []string{
 		"addrs",
 		"hostname",
