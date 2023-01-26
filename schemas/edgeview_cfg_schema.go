@@ -5,10 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate EdgeviewCfg resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
-func EdgeviewCfgModel(d *schema.ResourceData) *models.EdgeviewCfg {
+func EdgeViewModel(d *schema.ResourceData) *models.EdgeviewCfg {
 	var appPolicy *models.AppAccessPolicy // AppAccessPolicy
 	appPolicyInterface, appPolicyIsSet := d.GetOk("app_policy")
 	if appPolicyIsSet {
@@ -46,7 +43,7 @@ func EdgeviewCfgModel(d *schema.ResourceData) *models.EdgeviewCfg {
 	}
 }
 
-func EdgeviewCfgModelFromMap(m map[string]interface{}) *models.EdgeviewCfg {
+func EdgeViewModelFromMap(m map[string]interface{}) *models.EdgeviewCfg {
 	var appPolicy *models.AppAccessPolicy // AppAccessPolicy
 	appPolicyInterface, appPolicyIsSet := m["app_policy"]
 	if appPolicyIsSet {
@@ -87,8 +84,7 @@ func EdgeviewCfgModelFromMap(m map[string]interface{}) *models.EdgeviewCfg {
 	}
 }
 
-// Update the underlying EdgeviewCfg resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetEdgeviewCfgResourceData(d *schema.ResourceData, m *models.EdgeviewCfg) {
+func SetEdgeViewResourceData(d *schema.ResourceData, m *models.EdgeviewCfg) {
 	d.Set("app_policy", SetAppAccessPolicySubResourceData([]*models.AppAccessPolicy{m.AppPolicy}))
 	d.Set("dev_policy", SetDevAccessPolicySubResourceData([]*models.DevAccessPolicy{m.DevPolicy}))
 	d.Set("ext_policy", SetExtAccessPolicySubResourceData([]*models.ExtAccessPolicy{m.ExtPolicy}))
@@ -97,8 +93,7 @@ func SetEdgeviewCfgResourceData(d *schema.ResourceData, m *models.EdgeviewCfg) {
 	d.Set("token", m.Token)
 }
 
-// Iterate through and update the EdgeviewCfg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetEdgeviewCfgSubResourceData(m []*models.EdgeviewCfg) (d []*map[string]interface{}) {
+func SetEdgeViewSubResourceData(m []*models.EdgeviewCfg) (d []*map[string]interface{}) {
 	for _, EdgeviewCfgModel := range m {
 		if EdgeviewCfgModel != nil {
 			properties := make(map[string]interface{})
@@ -114,8 +109,7 @@ func SetEdgeviewCfgSubResourceData(m []*models.EdgeviewCfg) (d []*map[string]int
 	return
 }
 
-// Schema mapping representing the EdgeviewCfg resource defined in the Terraform configuration
-func EdgeviewCfgSchema() map[string]*schema.Schema {
+func Edgeview() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: ``,
@@ -168,7 +162,7 @@ func EdgeviewCfgSchema() map[string]*schema.Schema {
 }
 
 // Retrieve property field names for updating the EdgeviewCfg resource
-func GetEdgeviewCfgPropertyFields() (t []string) {
+func GetEdgeViewPropertyFields() (t []string) {
 	return []string{
 		"app_policy",
 		"dev_policy",
