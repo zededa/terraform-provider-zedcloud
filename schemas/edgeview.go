@@ -133,7 +133,7 @@ func Edgeview() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: ExtAccessPolicy
 			Elem: &schema.Resource{
-				Schema: ExtAccessPolicySchema(),
+				Schema: ExtAccessPolicy(),
 			},
 			Optional: true,
 		},
