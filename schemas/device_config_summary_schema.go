@@ -173,7 +173,7 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 			Description: `debug knob details for the device`,
 			Type:        schema.TypeList, //GoType: DebugKnobDetail
 			Elem: &schema.Resource{
-				Schema: DebugKnobDetailSchema(),
+				Schema: DebugKnobDetail(),
 			},
 			Optional: true,
 		},
