@@ -61,7 +61,7 @@ func EdgeNodeModel(d *schema.ResourceData) *models.EdgeNode {
 	defaultNetInstInterface, defaultNetInstIsSet := d.GetOk("default_net_inst")
 	if defaultNetInstIsSet {
 		defaultNetInstMap := defaultNetInstInterface.([]interface{})[0].(map[string]interface{})
-		defaultNetInst = NetInstConfigModelFromMap(defaultNetInstMap)
+		defaultNetInst = NetworkInstanceModelFromMap(defaultNetInstMap)
 	}
 	deploymentTag, _ := d.Get("deployment_tag").(string)
 	deprecated, _ := d.Get("deprecated").(string)
@@ -260,7 +260,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.EdgeNode {
 	if defaultNetInstIsSet && defaultNetInstInterface != nil {
 		defaultNetInstMap := defaultNetInstInterface.([]interface{})
 		if len(defaultNetInstMap) > 0 {
-			defaultNetInst = NetInstConfigModelFromMap(defaultNetInstMap[0].(map[string]interface{}))
+			defaultNetInst = NetworkInstanceModelFromMap(defaultNetInstMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -429,7 +429,7 @@ func SetEdgeNodeResourceData(d *schema.ResourceData, m *models.EdgeNode) {
 	d.Set("config_item", SetEDConfigItemSubResourceData(m.ConfigItem))
 	d.Set("cpu", m.CPU)
 	d.Set("debug_knob", SetDebugKnobDetailSubResourceData([]*models.DebugKnobDetail{m.DebugKnob}))
-	d.Set("default_net_inst", SetNetInstConfigSubResourceData([]*models.NetInstConfig{m.DefaultNetInst}))
+	d.Set("default_net_inst", SetNetworkInstanceSubResourceData([]*models.NetInstConfig{m.DefaultNetInst}))
 	d.Set("deployment_tag", m.DeploymentTag)
 	d.Set("deprecated", m.Deprecated)
 	d.Set("description", m.Description)
@@ -475,7 +475,7 @@ func SetEdgeNodeSubResourceData(m []*models.EdgeNode) (d []*map[string]interface
 			properties["config_item"] = SetEDConfigItemSubResourceData(DeviceConfigModel.ConfigItem)
 			properties["cpu"] = DeviceConfigModel.CPU
 			properties["debug_knob"] = SetDebugKnobDetailSubResourceData([]*models.DebugKnobDetail{DeviceConfigModel.DebugKnob})
-			properties["default_net_inst"] = SetNetInstConfigSubResourceData([]*models.NetInstConfig{DeviceConfigModel.DefaultNetInst})
+			properties["default_net_inst"] = SetNetworkInstanceSubResourceData([]*models.NetInstConfig{DeviceConfigModel.DefaultNetInst})
 			properties["deployment_tag"] = DeviceConfigModel.DeploymentTag
 			properties["deprecated"] = DeviceConfigModel.Deprecated
 			properties["description"] = DeviceConfigModel.Description
@@ -598,7 +598,7 @@ func EdgeNode() map[string]*schema.Schema {
 			Description: `default network instance details`,
 			Type:        schema.TypeList, //GoType: NetInstConfig
 			Elem: &schema.Resource{
-				Schema: NetInstConfigSchema(),
+				Schema: NetworkInstance(),
 			},
 			Optional: true,
 		},

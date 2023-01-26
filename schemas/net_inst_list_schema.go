@@ -19,7 +19,7 @@ func NetInstListModel(d *schema.ResourceData) *models.NetInstList {
 			if v == nil {
 				continue
 			}
-			m := NetInstConfigModelFromMap(v.(map[string]interface{}))
+			m := NetworkInstanceModelFromMap(v.(map[string]interface{}))
 			cfgList = append(cfgList, m)
 		}
 	}
@@ -87,7 +87,7 @@ func NetInstListModelFromMap(m map[string]interface{}) *models.NetInstList {
 			if v == nil {
 				continue
 			}
-			m := NetInstConfigModelFromMap(v.(map[string]interface{}))
+			m := NetworkInstanceModelFromMap(v.(map[string]interface{}))
 			cfgList = append(cfgList, m)
 		}
 	}
@@ -146,7 +146,7 @@ func NetInstListModelFromMap(m map[string]interface{}) *models.NetInstList {
 
 // Update the underlying NetInstList resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetNetInstListResourceData(d *schema.ResourceData, m *models.NetInstList) {
-	d.Set("cfg_list", SetNetInstConfigSubResourceData(m.CfgList))
+	d.Set("cfg_list", SetNetworkInstanceSubResourceData(m.CfgList))
 	d.Set("list", SetNetInstShortConfigSubResourceData(m.List))
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
 	d.Set("summary_by_address_type", SetSummarySubResourceData([]*models.Summary{m.SummaryByAddressType}))
@@ -158,7 +158,7 @@ func SetNetInstListSubResourceData(m []*models.NetInstList) (d []*map[string]int
 	for _, NetInstListModel := range m {
 		if NetInstListModel != nil {
 			properties := make(map[string]interface{})
-			properties["cfg_list"] = SetNetInstConfigSubResourceData(NetInstListModel.CfgList)
+			properties["cfg_list"] = SetNetworkInstanceSubResourceData(NetInstListModel.CfgList)
 			properties["list"] = SetNetInstShortConfigSubResourceData(NetInstListModel.List)
 			properties["next"] = SetCursorSubResourceData([]*models.Cursor{NetInstListModel.Next})
 			properties["summary_by_address_type"] = SetSummarySubResourceData([]*models.Summary{NetInstListModel.SummaryByAddressType})
@@ -176,7 +176,7 @@ func NetInstListSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: []*NetInstConfig
 			Elem: &schema.Resource{
-				Schema: NetInstConfigSchema(),
+				Schema: NetworkInstance(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

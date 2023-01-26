@@ -24,7 +24,7 @@ func NetworkPolicyModelFromMap(m map[string]interface{}) *models.NetworkPolicy {
 
 // Update the underlying NetworkPolicy resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetNetworkPolicyResourceData(d *schema.ResourceData, m *models.NetworkPolicy) {
-	d.Set("net_instance_config", SetNetInstConfigSubResourceData(m.NetInstanceConfig))
+	d.Set("net_instance_config", SetNetworkInstanceSubResourceData(m.NetInstanceConfig))
 }
 
 // Iterate through and update the NetworkPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -32,7 +32,7 @@ func SetNetworkPolicySubResourceData(m []*models.NetworkPolicy) (d []*map[string
 	for _, NetworkPolicyModel := range m {
 		if NetworkPolicyModel != nil {
 			properties := make(map[string]interface{})
-			properties["net_instance_config"] = SetNetInstConfigSubResourceData(NetworkPolicyModel.NetInstanceConfig)
+			properties["net_instance_config"] = SetNetworkInstanceSubResourceData(NetworkPolicyModel.NetInstanceConfig)
 			d = append(d, &properties)
 		}
 	}
@@ -46,7 +46,7 @@ func NetworkPolicySchema() map[string]*schema.Schema {
 			Description: `list of network details that will be created on all the devices of the project to which this policy is attached`,
 			Type:        schema.TypeList, //GoType: []*NetInstConfig
 			Elem: &schema.Resource{
-				Schema: NetInstConfigSchema(),
+				Schema: NetworkInstance(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Required: true,
