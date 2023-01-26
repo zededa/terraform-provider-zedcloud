@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetWifiConfigModel(d *schema.ResourceData) *models.NetWifiConfig {
+func NetworkWifiModel(d *schema.ResourceData) *models.NetWifiConfig {
 	// var crypto *models.NetWifiConfigNetcryptoblock // NetWifiConfigNetcryptoblock
 	// cryptoInterface, cryptoIsSet := d.GetOk("crypto")
 	// if cryptoIsSet && cryptoInterface != nil {
@@ -57,7 +57,7 @@ func NetWifiConfigModel(d *schema.ResourceData) *models.NetWifiConfig {
 	}
 }
 
-func NetWifiConfigModelFromMap(m map[string]interface{}) *models.NetWifiConfig {
+func NetworkWifiModelFromMap(m map[string]interface{}) *models.NetWifiConfig {
 	// var crypto *models.NetWifiConfigNetcryptoblock // NetWifiConfigNetcryptoblock
 	// cryptoInterface, cryptoIsSet := m["crypto"]
 	// if cryptoIsSet && cryptoInterface != nil {
@@ -109,8 +109,7 @@ func NetWifiConfigModelFromMap(m map[string]interface{}) *models.NetWifiConfig {
 	}
 }
 
-// Update the underlying NetWifiConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetNetWifiConfigResourceData(d *schema.ResourceData, m *models.NetWifiConfig) {
+func SetNetworkWifiResourceData(d *schema.ResourceData, m *models.NetWifiConfig) {
 	// d.Set("crypto", SetNetWifiConfigNetcryptoblockSubResourceData([]*models.NetWifiConfigNetcryptoblock{m.Crypto}))
 	// d.Set("crypto_key", m.CryptoKey)
 	// d.Set("encrypted_secrets", m.EncryptedSecrets)
@@ -121,7 +120,7 @@ func SetNetWifiConfigResourceData(d *schema.ResourceData, m *models.NetWifiConfi
 	d.Set("wifi_ssid", m.WifiSSID)
 }
 
-func SetNetWifiConfigSubResourceData(m []*models.NetWifiConfig) (d []*map[string]interface{}) {
+func SetNetworkWifiSubResourceData(m []*models.NetWifiConfig) (d []*map[string]interface{}) {
 	for _, NetWifiConfigModel := range m {
 		if NetWifiConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -140,7 +139,7 @@ func SetNetWifiConfigSubResourceData(m []*models.NetWifiConfig) (d []*map[string
 }
 
 // Schema mapping representing the NetWifiConfig resource defined in the Terraform configuration
-func NetWifiConfigSchema() map[string]*schema.Schema {
+func NetworkWifi() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		// "crypto": {
 		// 	Description: ``,
@@ -210,7 +209,7 @@ NETWORK_WIFIKEY_SCHEME_WPAEAPPSK`,
 }
 
 // Retrieve property field names for updating the NetWifiConfig resource
-func GetNetWifiConfigPropertyFields() (t []string) {
+func GetNetworkWifiPropertyFields() (t []string) {
 	return []string{
 		"crypto",
 		"crypto_key",
