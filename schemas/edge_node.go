@@ -539,7 +539,7 @@ func EdgeNodeSchema() map[string]*schema.Schema {
 			Description: `base images`,
 			Type:        schema.TypeList, //GoType: []*BaseOSImage
 			Elem: &schema.Resource{
-				Schema: BaseOSImageSchema(),
+				Schema: BaseOSImage(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
