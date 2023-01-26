@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
+func SystemInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	costInt, _ := d.Get("cost").(int)
 	cost := int64(costInt)
 	var intfUsage *models.AdapterUsage // AdapterUsage
@@ -41,7 +41,7 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	}
 }
 
-func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
+func SystemInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	cost := int64(m["cost"].(int))        // int64 false false false
 	intfUsage := m["intf_usage"].(string) // AdapterUsage
 	intfname := m["intfname"].(string)
@@ -70,7 +70,6 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	}
 }
 
-// Update the underlying SysInterface resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetSysInterfaceResourceData(d *schema.ResourceData, m *models.SysInterface) {
 	d.Set("cost", m.Cost)
 	d.Set("intf_usage", m.IntfUsage)
@@ -81,7 +80,6 @@ func SetSysInterfaceResourceData(d *schema.ResourceData, m *models.SysInterface)
 	d.Set("tags", m.Tags)
 }
 
-// Iterate through and update the SysInterface resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysInterfaceSubResourceData(m []*models.SysInterface) (d []*map[string]interface{}) {
 	for _, SysInterfaceModel := range m {
 		if SysInterfaceModel != nil {
@@ -100,7 +98,7 @@ func SetSysInterfaceSubResourceData(m []*models.SysInterface) (d []*map[string]i
 }
 
 // Schema mapping representing the SysInterface resource defined in the Terraform configuration
-func SysInterfaceSchema() map[string]*schema.Schema {
+func SystemInterface() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cost": {
 			Description: `cost of using this interface. Default is 0.`,
