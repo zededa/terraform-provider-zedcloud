@@ -185,7 +185,7 @@ func DeviceLisp() map[string]*schema.Schema {
 			Description: `Zed development servers`,
 			Type:        schema.TypeList, //GoType: []*DevZedServer
 			Elem: &schema.Resource{
-				Schema: DevZedServerSchema(),
+				Schema: DevZedServer(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Required: true,
