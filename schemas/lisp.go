@@ -122,7 +122,7 @@ func Lisp() map[string]*schema.Schema {
 			Description: `Service Point List`,
 			Type:        schema.TypeList, //GoType: []*ServicePoint
 			Elem: &schema.Resource{
-				Schema: ServicePointSchema(),
+				Schema: ServicePoint(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
