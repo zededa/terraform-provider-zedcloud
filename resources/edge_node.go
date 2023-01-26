@@ -25,14 +25,14 @@ func EdgeNodeResource() *schema.Resource {
 		ReadContext:   ReadEdgeNode,
 		UpdateContext: UpdateEdgeNode,
 		DeleteContext: DeleteEdgeNode,
-		Schema:        zschema.EdgeNodeSchema(),
+		Schema:        zschema.EdgeNode(),
 	}
 }
 
 func EdgeNodeDataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: ReadEdgeNode,
-		Schema:      zschema.EdgeNodeSchema(),
+		Schema:      zschema.EdgeNode(),
 	}
 }
 
