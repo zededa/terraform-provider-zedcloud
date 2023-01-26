@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
+func NetworkInstanceModel(d *schema.ResourceData) *models.NetInstConfig {
 	clusterID, _ := d.Get("cluster_id").(string)
 	description, _ := d.Get("description").(string)
 	deviceDefault, _ := d.Get("device_default").(string)
@@ -128,7 +128,7 @@ func NetInstConfigModel(d *schema.ResourceData) *models.NetInstConfig {
 	}
 }
 
-func NetInstConfigModelFromMap(m map[string]interface{}) *models.NetInstConfig {
+func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetInstConfig {
 	clusterID := m["cluster_id"].(string)
 	description := m["description"].(string)
 	deviceDefault := m["device_default"].(string)
@@ -255,8 +255,7 @@ func NetInstConfigModelFromMap(m map[string]interface{}) *models.NetInstConfig {
 	}
 }
 
-// Update the underlying NetInstConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetNetInstConfigResourceData(d *schema.ResourceData, m *models.NetInstConfig) {
+func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetInstConfig) {
 	d.Set("cluster_id", m.ClusterID)
 	d.Set("description", m.Description)
 	d.Set("device_default", m.DeviceDefault)
@@ -280,8 +279,7 @@ func SetNetInstConfigResourceData(d *schema.ResourceData, m *models.NetInstConfi
 	d.Set("type", m.Type)
 }
 
-// Iterate through and update the NetInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetNetInstConfigSubResourceData(m []*models.NetInstConfig) (d []*map[string]interface{}) {
+func SetNetworkInstanceSubResourceData(m []*models.NetInstConfig) (d []*map[string]interface{}) {
 	for _, NetInstConfigModel := range m {
 		if NetInstConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -312,8 +310,8 @@ func SetNetInstConfigSubResourceData(m []*models.NetInstConfig) (d []*map[string
 	return
 }
 
-// Schema mapping representing the NetInstConfig resource defined in the Terraform configuration
-func NetInstConfigSchema() map[string]*schema.Schema {
+// Schema mapping representing the NetworkInstance resource defined in the Terraform configuration
+func NetworkInstance() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cluster_id": {
 			Description: `id of the Cluster in which the network instance is configured`,
@@ -466,7 +464,7 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 }
 
 // Retrieve property field names for updating the NetInstConfig resource
-func GetNetInstConfigPropertyFields() (t []string) {
+func GetNetworkInstancePropertyFields() (t []string) {
 	return []string{
 		"cluster_id",
 		"description",
