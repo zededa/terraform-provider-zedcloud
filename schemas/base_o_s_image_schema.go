@@ -12,11 +12,11 @@ func BaseOSImageModel(d *schema.ResourceData) *models.BaseOSImage {
 	uuid, _ := d.Get("uuid").(string)
 	version, _ := d.Get("version").(string)
 	return &models.BaseOSImage{
-		Activate:  &activate,  // bool true false false
-		ImageName: &imageName, // string true false false
+		Activate:  &activate,
+		ImageName: &imageName,
 		ImvolID:   imvolID,
-		UUID:      &uuid,    // string true false false
-		Version:   &version, // string true false false
+		UUID:      &uuid,
+		Version:   &version,
 	}
 }
 
@@ -35,7 +35,6 @@ func BaseOSImageModelFromMap(m map[string]interface{}) *models.BaseOSImage {
 	}
 }
 
-// Update the underlying BaseOSImage resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetBaseOSImageResourceData(d *schema.ResourceData, m *models.BaseOSImage) {
 	d.Set("activate", m.Activate)
 	d.Set("image_name", m.ImageName)
@@ -44,7 +43,6 @@ func SetBaseOSImageResourceData(d *schema.ResourceData, m *models.BaseOSImage) {
 	d.Set("version", m.Version)
 }
 
-// Iterate through and update the BaseOSImage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetBaseOSImageSubResourceData(m []*models.BaseOSImage) (d []*map[string]interface{}) {
 	for _, BaseOSImageModel := range m {
 		if BaseOSImageModel != nil {
@@ -61,7 +59,7 @@ func SetBaseOSImageSubResourceData(m []*models.BaseOSImage) (d []*map[string]int
 }
 
 // Schema mapping representing the BaseOSImage resource defined in the Terraform configuration
-func BaseOSImageSchema() map[string]*schema.Schema {
+func BaseOSImage() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"activate": {
 			Description: `activation flag`,

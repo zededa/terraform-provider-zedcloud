@@ -25,7 +25,7 @@ func NetworkWirelessModel(d *schema.ResourceData) *models.NetWirelessConfig {
 	if wifiCfgIsSet && wifiCfgInterface != nil {
 		wifiCfgMap := wifiCfgInterface.([]interface{})
 		if len(wifiCfgMap) > 0 {
-			wifiCfg = NetWifiConfigModelFromMap(wifiCfgMap[0].(map[string]interface{}))
+			wifiCfg = NetworkWifiModelFromMap(wifiCfgMap[0].(map[string]interface{}))
 		}
 	}
 	return &models.NetWirelessConfig{
@@ -56,7 +56,7 @@ func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessCo
 	if wifiCfgIsSet && wifiCfgInterface != nil {
 		wifiCfgMap := wifiCfgInterface.([]interface{})
 		if len(wifiCfgMap) > 0 {
-			wifiCfg = NetWifiConfigModelFromMap(wifiCfgMap[0].(map[string]interface{}))
+			wifiCfg = NetworkWifiModelFromMap(wifiCfgMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -70,7 +70,7 @@ func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessCo
 func SetNetworkWirelessResourceData(d *schema.ResourceData, m *models.NetWirelessConfig) {
 	d.Set("cellular_cfg", SetNetworkCellularSubResourceData([]*models.NetCellularConfig{m.CellularCfg}))
 	d.Set("type", m.Type)
-	d.Set("wifi_cfg", SetNetWifiConfigSubResourceData([]*models.NetWifiConfig{m.WifiCfg}))
+	d.Set("wifi_cfg", SetNetworkWifiSubResourceData([]*models.NetWifiConfig{m.WifiCfg}))
 }
 
 // Iterate through and update the NetWirelessConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -80,7 +80,7 @@ func SetNetWirelessConfigSubResourceData(m []*models.NetWirelessConfig) (d []*ma
 			properties := make(map[string]interface{})
 			properties["cellular_cfg"] = SetNetworkCellularSubResourceData([]*models.NetCellularConfig{NetWirelessConfigModel.CellularCfg})
 			properties["type"] = NetWirelessConfigModel.Type
-			properties["wifi_cfg"] = SetNetWifiConfigSubResourceData([]*models.NetWifiConfig{NetWirelessConfigModel.WifiCfg})
+			properties["wifi_cfg"] = SetNetworkWifiSubResourceData([]*models.NetWifiConfig{NetWirelessConfigModel.WifiCfg})
 			d = append(d, &properties)
 		}
 	}
@@ -111,7 +111,7 @@ NETWORK_WIRELESS_TYPE_CELLULAR`,
 			Description: "Can be multiple APs on a single wlan, e.g. one for 2.5Ghz, other 5Ghz SSIDs",
 			Type:        schema.TypeList, //GoType: NetWifiConfig
 			Elem: &schema.Resource{
-				Schema: NetWifiConfigSchema(),
+				Schema: NetworkWifi(),
 			},
 			Optional: true,
 		},
