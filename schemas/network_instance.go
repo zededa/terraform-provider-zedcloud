@@ -34,7 +34,7 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetInstConfig {
 	if ipIsSet && ipInterface != nil {
 		ipMap := ipInterface.([]interface{})
 		if len(ipMap) > 0 {
-			ip = DhcpServerConfigModelFromMap(ipMap[0].(map[string]interface{}))
+			ip = DHCPServerModelFromMap(ipMap[0].(map[string]interface{}))
 		}
 	}
 	var kind *models.NetworkInstanceKind // NetworkInstanceKind
@@ -157,7 +157,7 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetInstConfig
 	if ipIsSet && ipInterface != nil {
 		ipMap := ipInterface.([]interface{})
 		if len(ipMap) > 0 {
-			ip = DhcpServerConfigModelFromMap(ipMap[0].(map[string]interface{}))
+			ip = DHCPServerModelFromMap(ipMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -263,7 +263,7 @@ func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetInstCon
 	d.Set("dhcp", m.Dhcp)
 	d.Set("dns_list", SetStaticDNSListSubResourceData(m.DNSList))
 	d.Set("id", m.ID)
-	d.Set("ip", SetDhcpServerConfigSubResourceData([]*models.DhcpServerConfig{m.IP}))
+	d.Set("ip", SetDHCPServerSubResourceData([]*models.DhcpServerConfig{m.IP}))
 	d.Set("kind", m.Kind)
 	d.Set("lisp", SetLispConfigSubResourceData([]*models.LispConfig{m.Lisp}))
 	d.Set("name", m.Name)
@@ -290,7 +290,7 @@ func SetNetworkInstanceSubResourceData(m []*models.NetInstConfig) (d []*map[stri
 			properties["dhcp"] = NetInstConfigModel.Dhcp
 			properties["dns_list"] = SetStaticDNSListSubResourceData(NetInstConfigModel.DNSList)
 			properties["id"] = NetInstConfigModel.ID
-			properties["ip"] = SetDhcpServerConfigSubResourceData([]*models.DhcpServerConfig{NetInstConfigModel.IP})
+			properties["ip"] = SetDHCPServerSubResourceData([]*models.DhcpServerConfig{NetInstConfigModel.IP})
 			properties["kind"] = NetInstConfigModel.Kind
 			properties["lisp"] = SetLispConfigSubResourceData([]*models.LispConfig{NetInstConfigModel.Lisp})
 			properties["name"] = NetInstConfigModel.Name
@@ -363,7 +363,7 @@ func NetworkInstance() map[string]*schema.Schema {
 			Description: `Dhcp Server Configuration`,
 			Type:        schema.TypeList, //GoType: DhcpServerConfig
 			Elem: &schema.Resource{
-				Schema: DhcpServerConfigSchema(),
+				Schema: DHCPServer(),
 			},
 			Optional: true,
 		},

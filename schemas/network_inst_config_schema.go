@@ -15,7 +15,7 @@ func NetworkInstConfigModel(d *schema.ResourceData) *models.NetworkInstConfig {
 	ipInterface, ipIsSet := d.GetOk("ip")
 	if ipIsSet {
 		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
-		ip = DhcpServerConfigModelFromMap(ipMap)
+		ip = DHCPServerModelFromMap(ipMap)
 	}
 	var kind *models.NetworkInstanceKind // NetworkInstanceKind
 	kindInterface, kindIsSet := d.GetOk("kind")
@@ -58,7 +58,7 @@ func NetworkInstConfigModelFromMap(m map[string]interface{}) *models.NetworkInst
 	ipInterface, ipIsSet := m["ip"]
 	if ipIsSet {
 		ipMap := ipInterface.([]interface{})[0].(map[string]interface{})
-		ip = DhcpServerConfigModelFromMap(ipMap)
+		ip = DHCPServerModelFromMap(ipMap)
 	}
 	//
 	kind := m["kind"].(*models.NetworkInstanceKind) // NetworkInstanceKind
@@ -90,7 +90,7 @@ func NetworkInstConfigModelFromMap(m map[string]interface{}) *models.NetworkInst
 func SetNetworkInstConfigResourceData(d *schema.ResourceData, m *models.NetworkInstConfig) {
 	d.Set("device_default", m.DeviceDefault)
 	d.Set("dns_list", SetStaticDNSListSubResourceData(m.DNSList))
-	d.Set("ip", SetDhcpServerConfigSubResourceData([]*models.DhcpServerConfig{m.IP}))
+	d.Set("ip", SetDHCPServerSubResourceData([]*models.DhcpServerConfig{m.IP}))
 	d.Set("kind", m.Kind)
 	d.Set("opaque", SetNetInstOpaqueConfigSubResourceData([]*models.NetInstOpaqueConfig{m.Opaque}))
 	d.Set("port", m.Port)
@@ -106,7 +106,7 @@ func SetNetworkInstConfigSubResourceData(m []*models.NetworkInstConfig) (d []*ma
 			properties := make(map[string]interface{})
 			properties["device_default"] = NetworkInstConfigModel.DeviceDefault
 			properties["dns_list"] = SetStaticDNSListSubResourceData(NetworkInstConfigModel.DNSList)
-			properties["ip"] = SetDhcpServerConfigSubResourceData([]*models.DhcpServerConfig{NetworkInstConfigModel.IP})
+			properties["ip"] = SetDHCPServerSubResourceData([]*models.DhcpServerConfig{NetworkInstConfigModel.IP})
 			properties["kind"] = NetworkInstConfigModel.Kind
 			properties["opaque"] = SetNetInstOpaqueConfigSubResourceData([]*models.NetInstOpaqueConfig{NetworkInstConfigModel.Opaque})
 			properties["port"] = NetworkInstConfigModel.Port
@@ -142,7 +142,7 @@ func NetworkInstConfigSchema() map[string]*schema.Schema {
 			Description: `Dhcp Server Configuration`,
 			Type:        schema.TypeList, //GoType: DhcpServerConfig
 			Elem: &schema.Resource{
-				Schema: DhcpServerConfigSchema(),
+				Schema: DHCPServer(),
 			},
 			Optional: true,
 		},
