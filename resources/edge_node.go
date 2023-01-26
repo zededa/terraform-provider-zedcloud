@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	apiclient "github.com/zededa/terraform-provider/client"
-	edge_node "github.com/zededa/terraform-provider/client/edge_node_configuration"
+	config "github.com/zededa/terraform-provider/client/edge_node_configuration"
 	"github.com/zededa/terraform-provider/models"
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
@@ -19,7 +19,7 @@ import (
 // Note, an edge-node and a device-config are the same thing. Due is inconcistency in the API
 // definition both terms are used interchangeably.
 
-func EdgeNodeConfiguration() *schema.Resource {
+func EdgeNodeResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateEdgeNode,
 		ReadContext:   ReadEdgeNode,
@@ -29,7 +29,7 @@ func EdgeNodeConfiguration() *schema.Resource {
 	}
 }
 
-func DataResourceEdgeNodeConfiguration() *schema.Resource {
+func EdgeNodeDataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: ReadEdgeNode,
 		Schema:      zschema.EdgeNodeSchema(),
@@ -42,7 +42,7 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	fmt.Println("------CREATE---------------------------------------")
 
 	model := zschema.EdgeNodeModel(d)
-	params := edge_node.CreateEdgeNodeParams()
+	params := config.CreateEdgeNodeParams()
 	params.SetBody(model)
 
 	if err := os.WriteFile("/tmp/req", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
@@ -73,22 +73,22 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 		}
 	}
 
-	// due to api design, we need to fetch the newly created edge-node/device-config
-	device, diags := readEdgeNode(ctx, d, m)
+	// due to api design, we need to fetch the newly created edge-node/edgeNode-config
+	edgeNode, diags := readEdgeNode(ctx, d, m)
 	if diags.HasError() {
 		return diags
 	}
 	// publish the api response to local state and the d instance
-	zschema.SetEdgeNodeResourceData(d, device)
-	d.SetId(device.ID)
+	zschema.SetEdgeNodeResourceData(d, edgeNode)
+	d.SetId(edgeNode.ID)
 
 	// to set base-image the api requires separate requests
-	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, device.BaseImage); len(diags) > 0 {
+	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, edgeNode.BaseImage); len(diags) > 0 {
 		return diags
 	}
 
 	// to set admin-state the api requires separate requests
-	if diags := setAdminState(ctx, d, m, params.Body.AdminState, device.AdminState); len(diags) > 0 {
+	if diags := setAdminState(ctx, d, m, params.Body.AdminState, edgeNode.AdminState); len(diags) > 0 {
 		return diags
 	}
 
@@ -132,7 +132,7 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	// // publish the api response to local state and the d instance
 	// zschema.SetDeviceConfigResourceData(d, deviceConfig)
 
-	params := edge_node.UpdateEdgeNodeParams()
+	params := config.UpdateEdgeNodeParams()
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
@@ -205,7 +205,7 @@ func DeleteEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	fmt.Println("------DELETE---------------------------------------")
 	var diags diag.Diagnostics
 
-	params := edge_node.DeleteParams()
+	params := config.DeleteParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -238,7 +238,7 @@ func DeleteEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 func activateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := edge_node.ActivateEdgeNodeParams()
+	params := config.ActivateEdgeNodeParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -282,7 +282,7 @@ func activateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}
 func deactivateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := edge_node.DeactivateEdgeNodeParams()
+	params := config.DeactivateEdgeNodeParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -326,7 +326,7 @@ func deactivateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface
 func applyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := edge_node.UpdateBaseOSParams()
+	params := config.UpdateBaseOSParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -364,7 +364,7 @@ func applyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 func publishBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := edge_node.PublishBaseOSParams()
+	params := config.PublishBaseOSParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -507,7 +507,7 @@ func readEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*
 	var diags diag.Diagnostics
 	fmt.Println("------get---------------------------------------")
 
-	params := edge_node.GetByNameParams()
+	params := config.GetByNameParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
