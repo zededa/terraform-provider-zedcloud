@@ -43,7 +43,7 @@ func SetDhcpIPRangeSubResourceData(m []*models.DhcpIPRange) (d []*map[string]int
 }
 
 // Schema mapping representing the DhcpIPRange resource defined in the Terraform configuration
-func DhcpIPRangeSchema() map[string]*schema.Schema {
+func DhcpIPRange() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"end": {
 			Description: `ending IP`,
@@ -60,7 +60,7 @@ func DhcpIPRangeSchema() map[string]*schema.Schema {
 }
 
 // Retrieve property field names for updating the DhcpIPRange resource
-func GetDhcpIPRangePropertyFields() (t []string) {
+func DhcpIPRangePropertyFields() (t []string) {
 	return []string{
 		"end",
 		"start",
