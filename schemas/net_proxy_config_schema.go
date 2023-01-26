@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetProxyConfigModel(d *schema.ResourceData) *models.NetProxyConfig {
+func NetworkProxyModel(d *schema.ResourceData) *models.NetProxyConfig {
 	exceptions, _ := d.Get("exceptions").(string)
 	networkProxy, _ := d.Get("network_proxy").(bool)
 	networkProxyCerts, _ := d.Get("network_proxy_certs").([]string) // []strfmt.Base64
@@ -38,7 +38,7 @@ func NetProxyConfigModel(d *schema.ResourceData) *models.NetProxyConfig {
 	}
 }
 
-func NetProxyConfigModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
+func NetworkProxyModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
 	exceptions := m["exceptions"].(string)
 	networkProxy := m["network_proxy"].(bool)
 	networkProxyCerts := m["network_proxy_certs"].([]string) // []strfmt.Base64
@@ -71,8 +71,7 @@ func NetProxyConfigModelFromMap(m map[string]interface{}) *models.NetProxyConfig
 	}
 }
 
-// Update the underlying NetProxyConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetNetProxyConfigResourceData(d *schema.ResourceData, m *models.NetProxyConfig) {
+func SetNetworkProxyResourceData(d *schema.ResourceData, m *models.NetProxyConfig) {
 	d.Set("exceptions", m.Exceptions)
 	d.Set("network_proxy", m.NetworkProxy)
 	d.Set("network_proxy_certs", m.NetworkProxyCerts)
@@ -81,7 +80,6 @@ func SetNetProxyConfigResourceData(d *schema.ResourceData, m *models.NetProxyCon
 	d.Set("proxies", SetNetProxyServerSubResourceData(m.Proxies))
 }
 
-// Iterate through and update the NetProxyConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetNetProxyConfigSubResourceData(m []*models.NetProxyConfig) (d []*map[string]interface{}) {
 	for _, NetProxyConfigModel := range m {
 		if NetProxyConfigModel != nil {
@@ -98,8 +96,8 @@ func SetNetProxyConfigSubResourceData(m []*models.NetProxyConfig) (d []*map[stri
 	return
 }
 
-// Schema mapping representing the NetProxyConfig resource defined in the Terraform configuration
-func NetProxyConfigSchema() map[string]*schema.Schema {
+// Schema mapping representing the NetworkProxy resource defined in the Terraform configuration
+func NetworkProxy() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"exceptions": {
 			Description: `Proxy exceptions`,
@@ -145,7 +143,7 @@ func NetProxyConfigSchema() map[string]*schema.Schema {
 }
 
 // Retrieve property field names for updating the NetProxyConfig resource
-func GetNetProxyConfigPropertyFields() (t []string) {
+func NetworkProxyPropertyFields() (t []string) {
 	return []string{
 		"exceptions",
 		"network_proxy",
