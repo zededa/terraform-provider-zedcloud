@@ -29,13 +29,11 @@ func DevZedServerModelFromMap(m map[string]interface{}) *models.DevZedServer {
 	}
 }
 
-// Update the underlying DevZedServer resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetDevZedServerResourceData(d *schema.ResourceData, m *models.DevZedServer) {
 	d.Set("e_id", m.EID)
 	d.Set("host_name", m.HostName)
 }
 
-// Iterate through and update the DevZedServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDevZedServerSubResourceData(m []*models.DevZedServer) (d []*map[string]interface{}) {
 	for _, DevZedServerModel := range m {
 		if DevZedServerModel != nil {
@@ -49,7 +47,7 @@ func SetDevZedServerSubResourceData(m []*models.DevZedServer) (d []*map[string]i
 }
 
 // Schema mapping representing the DevZedServer resource defined in the Terraform configuration
-func DevZedServerSchema() map[string]*schema.Schema {
+func DevZedServer() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"e_id": {
 			Description: `EID`,
