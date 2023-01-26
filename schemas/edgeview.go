@@ -148,7 +148,7 @@ func Edgeview() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: JWTInfo
 			Elem: &schema.Resource{
-				Schema: JWTInfoSchema(),
+				Schema: JWT(),
 			},
 			Optional: true,
 		},
