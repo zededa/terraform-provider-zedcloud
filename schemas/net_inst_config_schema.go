@@ -349,7 +349,7 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 			Description: `List of Static DNS entries`,
 			Type:        schema.TypeList, //GoType: []*StaticDNSList
 			Elem: &schema.Resource{
-				Schema: StaticDNSListSchema(),
+				Schema: StaticDNSList(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

@@ -13,10 +13,6 @@ import (
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
 
-/*
-EdgeNetworkConfiguration edge network configuration API
-*/
-
 func NetworkResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateNetwork,
@@ -37,7 +33,7 @@ func NetworkDataSource() *schema.Resource {
 func CreateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	model := zschema.ToModel(d)
+	model := zschema.ToNetworkModel(d)
 	params := config.CreateNetworkParams()
 	params.SetBody(model)
 
@@ -127,7 +123,7 @@ func UpdateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.ToModel(d))
+	params.SetBody(zschema.ToNetworkModel(d))
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {

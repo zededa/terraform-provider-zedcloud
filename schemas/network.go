@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func ToModel(d *schema.ResourceData) *models.Network {
+func ToNetworkModel(d *schema.ResourceData) *models.Network {
 	description, _ := d.Get("description").(string)
 	var dNSList []*models.StaticDNSList // []*StaticDNSList
 	dnsListInterface, dnsListIsSet := d.GetOk("dns_list")
@@ -215,7 +215,7 @@ func Network() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: []*StaticDNSList
 			Elem: &schema.Resource{
-				Schema: StaticDNSListSchema(),
+				Schema: StaticDNSList(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -304,8 +304,8 @@ NETWORK_KIND_V6`,
 	}
 }
 
-// Retrieve property field names for updating the NetConfig resource
-func PropertyFields() (t []string) {
+// Retrieve property field names for updating the Network resource
+func NetworkPropertyFields() (t []string) {
 	return []string{
 		"description",
 		"dns_list",
