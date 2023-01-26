@@ -37,13 +37,11 @@ func StaticDNSListModelFromMap(m map[string]interface{}) *models.StaticDNSList {
 	}
 }
 
-// Update the underlying StaticDNSList resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetStaticDNSListResourceData(d *schema.ResourceData, m *models.StaticDNSList) {
 	d.Set("addrs", m.Addrs)
 	d.Set("hostname", m.Hostname)
 }
 
-// Iterate through and update the StaticDNSList resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetStaticDNSListSubResourceData(m []*models.StaticDNSList) (d []*map[string]interface{}) {
 	for _, StaticDNSListModel := range m {
 		if StaticDNSListModel != nil {
@@ -76,7 +74,6 @@ func StaticDNSListSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the StaticDNSList resource
 func GetStaticDNSListPropertyFields() (t []string) {
 	return []string{
 		"addrs",
