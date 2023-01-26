@@ -24,7 +24,7 @@ func NetworkProxyModel(d *schema.ResourceData) *models.NetProxyConfig {
 			if v == nil {
 				continue
 			}
-			m := NetProxyServerModelFromMap(v.(map[string]interface{}))
+			m := NetworkProxyServerModelFromMap(v.(map[string]interface{}))
 			proxies = append(proxies, m)
 		}
 	}
@@ -57,7 +57,7 @@ func NetworkProxyModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
 			if v == nil {
 				continue
 			}
-			m := NetProxyServerModelFromMap(v.(map[string]interface{}))
+			m := NetworkProxyServerModelFromMap(v.(map[string]interface{}))
 			proxies = append(proxies, m)
 		}
 	}
@@ -77,7 +77,7 @@ func SetNetworkProxyResourceData(d *schema.ResourceData, m *models.NetProxyConfi
 	d.Set("network_proxy_certs", m.NetworkProxyCerts)
 	d.Set("network_proxy_url", m.NetworkProxyURL)
 	d.Set("pacfile", m.Pacfile)
-	d.Set("proxies", SetNetProxyServerSubResourceData(m.Proxies))
+	d.Set("proxies", SetNetworkProxyServerSubResourceData(m.Proxies))
 }
 
 func SetNetProxyConfigSubResourceData(m []*models.NetProxyConfig) (d []*map[string]interface{}) {
@@ -89,7 +89,7 @@ func SetNetProxyConfigSubResourceData(m []*models.NetProxyConfig) (d []*map[stri
 			properties["network_proxy_certs"] = NetProxyConfigModel.NetworkProxyCerts
 			properties["network_proxy_url"] = NetProxyConfigModel.NetworkProxyURL
 			properties["pacfile"] = NetProxyConfigModel.Pacfile
-			properties["proxies"] = SetNetProxyServerSubResourceData(NetProxyConfigModel.Proxies)
+			properties["proxies"] = SetNetworkProxyServerSubResourceData(NetProxyConfigModel.Proxies)
 			d = append(d, &properties)
 		}
 	}
@@ -134,7 +134,7 @@ func NetworkProxy() map[string]*schema.Schema {
 			Description: "Net Proxy: protocol level proxies. Used when network_proxy is set to False.",
 			Type:        schema.TypeList, //GoType: []*NetProxyServer
 			Elem: &schema.Resource{
-				Schema: NetworkProxyServerSchema(),
+				Schema: NetworkProxyServer(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
