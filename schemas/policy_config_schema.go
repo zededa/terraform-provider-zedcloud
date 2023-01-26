@@ -300,7 +300,7 @@ func PolicyConfigSchema() map[string]*schema.Schema {
 			Description: `system defined info`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Computed: true,
 		},

@@ -205,7 +205,7 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Description: `object revision`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Optional: true,
 		},

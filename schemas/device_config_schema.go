@@ -758,7 +758,7 @@ func EdgeNodeSchema() map[string]*schema.Schema {
 			Description: `Object revision details`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Optional: true,
 			Computed: true,

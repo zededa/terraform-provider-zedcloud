@@ -437,7 +437,7 @@ func NetInstConfigSchema() map[string]*schema.Schema {
 			Description: `system defined info for the object`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Optional: true,
 		},

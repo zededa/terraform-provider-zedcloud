@@ -108,7 +108,7 @@ func PolicyCommonSchema() map[string]*schema.Schema {
 			Description: `object revision details`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Optional: true,
 		},

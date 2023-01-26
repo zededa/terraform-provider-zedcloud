@@ -259,7 +259,7 @@ func SysModelSchema() map[string]*schema.Schema {
 			Description: `Object Revision  of the model`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Computed: true,
 		},

@@ -169,7 +169,7 @@ func SysBrandSchema() map[string]*schema.Schema {
 			Description: `Object Revision  of the sys brand`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Optional: true,
 		},

@@ -282,7 +282,7 @@ NETWORK_KIND_V6`,
 			Description: `system defined info`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Optional: true,
 		},

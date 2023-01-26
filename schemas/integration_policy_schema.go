@@ -87,7 +87,7 @@ func IntegrationPolicySchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Optional: true,
 		},
