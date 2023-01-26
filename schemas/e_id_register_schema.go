@@ -145,7 +145,7 @@ func EIDRegisterSchema() map[string]*schema.Schema {
 			Description: `Lisp Map Server`,
 			Type:        schema.TypeList, //GoType: []*LispServer
 			Elem: &schema.Resource{
-				Schema: LispServerSchema(),
+				Schema: LispServer(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Required: true,

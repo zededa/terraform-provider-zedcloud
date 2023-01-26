@@ -169,7 +169,7 @@ func DeviceLisp() map[string]*schema.Schema {
 			Description: `List of Lisp servers`,
 			Type:        schema.TypeList, //GoType: []*LispServer
 			Elem: &schema.Resource{
-				Schema: LispServerSchema(),
+				Schema: LispServer(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Required: true,
