@@ -11,7 +11,7 @@ func NetInstOpaqueConfigModel(d *schema.ResourceData) *models.NetInstOpaqueConfi
 	if lispIsSet && lispInterface != nil {
 		lispMap := lispInterface.([]interface{})
 		if len(lispMap) > 0 {
-			lisp = LispConfigModelFromMap(lispMap[0].(map[string]interface{}))
+			lisp = LispModelFromMap(lispMap[0].(map[string]interface{}))
 		}
 	}
 	oconfig, _ := d.Get("oconfig").(string)
@@ -34,7 +34,7 @@ func NetInstOpaqueConfigModelFromMap(m map[string]interface{}) *models.NetInstOp
 	if lispIsSet && lispInterface != nil {
 		lispMap := lispInterface.([]interface{})
 		if len(lispMap) > 0 {
-			lisp = LispConfigModelFromMap(lispMap[0].(map[string]interface{}))
+			lisp = LispModelFromMap(lispMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -54,7 +54,7 @@ func NetInstOpaqueConfigModelFromMap(m map[string]interface{}) *models.NetInstOp
 
 // Update the underlying NetInstOpaqueConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetNetInstOpaqueConfigResourceData(d *schema.ResourceData, m *models.NetInstOpaqueConfig) {
-	d.Set("lisp", SetLispConfigSubResourceData([]*models.LispConfig{m.Lisp}))
+	d.Set("lisp", SetLispSubResourceData([]*models.LispConfig{m.Lisp}))
 	d.Set("oconfig", m.Oconfig)
 	d.Set("type", m.Type)
 }
@@ -64,7 +64,7 @@ func SetNetInstOpaqueConfigSubResourceData(m []*models.NetInstOpaqueConfig) (d [
 	for _, NetInstOpaqueConfigModel := range m {
 		if NetInstOpaqueConfigModel != nil {
 			properties := make(map[string]interface{})
-			properties["lisp"] = SetLispConfigSubResourceData([]*models.LispConfig{NetInstOpaqueConfigModel.Lisp})
+			properties["lisp"] = SetLispSubResourceData([]*models.LispConfig{NetInstOpaqueConfigModel.Lisp})
 			properties["oconfig"] = NetInstOpaqueConfigModel.Oconfig
 			properties["type"] = NetInstOpaqueConfigModel.Type
 			d = append(d, &properties)
@@ -80,7 +80,7 @@ func NetInstOpaqueConfigSchema() map[string]*schema.Schema {
 			Description: `Deprecated - Lisp config`,
 			Type:        schema.TypeList, //GoType: LispConfig
 			Elem: &schema.Resource{
-				Schema: LispConfigSchema(),
+				Schema: Lisp(),
 			},
 			Optional: true,
 		},

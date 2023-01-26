@@ -48,7 +48,7 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetInstConfig {
 	if lispIsSet && lispInterface != nil {
 		lispMap := lispInterface.([]interface{})
 		if len(lispMap) > 0 {
-			lisp = LispConfigModelFromMap(lispMap[0].(map[string]interface{}))
+			lisp = LispModelFromMap(lispMap[0].(map[string]interface{}))
 		}
 	}
 	name, _ := d.Get("name").(string)
@@ -172,7 +172,7 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetInstConfig
 	if lispIsSet && lispInterface != nil {
 		lispMap := lispInterface.([]interface{})
 		if len(lispMap) > 0 {
-			lisp = LispConfigModelFromMap(lispMap[0].(map[string]interface{}))
+			lisp = LispModelFromMap(lispMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -265,7 +265,7 @@ func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetInstCon
 	d.Set("id", m.ID)
 	d.Set("ip", SetDHCPServerSubResourceData([]*models.DhcpServerConfig{m.IP}))
 	d.Set("kind", m.Kind)
-	d.Set("lisp", SetLispConfigSubResourceData([]*models.LispConfig{m.Lisp}))
+	d.Set("lisp", SetLispSubResourceData([]*models.LispConfig{m.Lisp}))
 	d.Set("name", m.Name)
 	d.Set("network_policy_id", m.NetworkPolicyID)
 	d.Set("oconfig", m.Oconfig)
@@ -292,7 +292,7 @@ func SetNetworkInstanceSubResourceData(m []*models.NetInstConfig) (d []*map[stri
 			properties["id"] = NetInstConfigModel.ID
 			properties["ip"] = SetDHCPServerSubResourceData([]*models.DhcpServerConfig{NetInstConfigModel.IP})
 			properties["kind"] = NetInstConfigModel.Kind
-			properties["lisp"] = SetLispConfigSubResourceData([]*models.LispConfig{NetInstConfigModel.Lisp})
+			properties["lisp"] = SetLispSubResourceData([]*models.LispConfig{NetInstConfigModel.Lisp})
 			properties["name"] = NetInstConfigModel.Name
 			properties["network_policy_id"] = NetInstConfigModel.NetworkPolicyID
 			properties["oconfig"] = NetInstConfigModel.Oconfig
@@ -378,7 +378,7 @@ func NetworkInstance() map[string]*schema.Schema {
 			Description: `Lisp Config : read only for now. Deprecated.`,
 			Type:        schema.TypeList, //GoType: LispConfig
 			Elem: &schema.Resource{
-				Schema: LispConfigSchema(),
+				Schema: Lisp(),
 			},
 			Optional: true,
 		},

@@ -130,7 +130,7 @@ func Lisp() map[string]*schema.Schema {
 	}
 }
 
-func GetLispConfigPropertyFields() (t []string) {
+func GetLispPropertyFields() (t []string) {
 	return []string{
 		"allocate",
 		"allocationprefix",
