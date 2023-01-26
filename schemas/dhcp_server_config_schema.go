@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func DhcpServerConfigModel(d *schema.ResourceData) *models.DhcpServerConfig {
+func DHCPServerModel(d *schema.ResourceData) *models.DhcpServerConfig {
 	var dhcpRange *models.DhcpIPRange // DhcpIPRange
 	dhcpRangeInterface, dhcpRangeIsSet := d.GetOk("dhcp_range")
 	if dhcpRangeIsSet && dhcpRangeInterface != nil {
@@ -38,7 +38,7 @@ func DhcpServerConfigModel(d *schema.ResourceData) *models.DhcpServerConfig {
 	}
 }
 
-func DhcpServerConfigModelFromMap(m map[string]interface{}) *models.DhcpServerConfig {
+func DHCPServerModelFromMap(m map[string]interface{}) *models.DhcpServerConfig {
 	var dhcpRange *models.DhcpIPRange // DhcpIPRange
 	dhcpRangeInterface, dhcpRangeIsSet := m["dhcp_range"]
 	if dhcpRangeIsSet && dhcpRangeInterface != nil {
@@ -72,8 +72,7 @@ func DhcpServerConfigModelFromMap(m map[string]interface{}) *models.DhcpServerCo
 	}
 }
 
-// Update the underlying DhcpServerConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetDhcpServerConfigResourceData(d *schema.ResourceData, m *models.DhcpServerConfig) {
+func SetDHCPServerResourceData(d *schema.ResourceData, m *models.DhcpServerConfig) {
 	d.Set("dhcp_range", SetDhcpIPRangeSubResourceData([]*models.DhcpIPRange{m.DhcpRange}))
 	d.Set("dns", m.DNS)
 	d.Set("domain", m.Domain)
@@ -83,8 +82,7 @@ func SetDhcpServerConfigResourceData(d *schema.ResourceData, m *models.DhcpServe
 	d.Set("subnet", m.Subnet)
 }
 
-// Iterate through and update the DhcpServerConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetDhcpServerConfigSubResourceData(m []*models.DhcpServerConfig) (d []*map[string]interface{}) {
+func SetDHCPServerSubResourceData(m []*models.DhcpServerConfig) (d []*map[string]interface{}) {
 	for _, DhcpServerConfigModel := range m {
 		if DhcpServerConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -101,8 +99,8 @@ func SetDhcpServerConfigSubResourceData(m []*models.DhcpServerConfig) (d []*map[
 	return
 }
 
-// Schema mapping representing the DhcpServerConfig resource defined in the Terraform configuration
-func DhcpServerConfigSchema() map[string]*schema.Schema {
+// Schema mapping representing the DHCPServer resource defined in the Terraform configuration
+func DHCPServer() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"dhcp_range": {
 			Description: `Range of IP addresses to be used for DHCP`,
@@ -155,7 +153,7 @@ func DhcpServerConfigSchema() map[string]*schema.Schema {
 }
 
 // Retrieve property field names for updating the DhcpServerConfig resource
-func GetDhcpServerConfigPropertyFields() (t []string) {
+func GetDHCPServerPropertyFields() (t []string) {
 	return []string{
 		"dhcp_range",
 		"dns",
