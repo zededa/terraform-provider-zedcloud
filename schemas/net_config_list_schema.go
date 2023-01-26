@@ -19,7 +19,7 @@ func NetConfigListModel(d *schema.ResourceData) *models.NetConfigList {
 			if v == nil {
 				continue
 			}
-			m := NetConfigModelFromMap(v.(map[string]interface{}))
+			m := NetworkModelFromMap(v.(map[string]interface{}))
 			list = append(list, m)
 		}
 	}
@@ -87,7 +87,7 @@ func NetConfigListModelFromMap(m map[string]interface{}) *models.NetConfigList {
 			if v == nil {
 				continue
 			}
-			m := NetConfigModelFromMap(v.(map[string]interface{}))
+			m := NetworkModelFromMap(v.(map[string]interface{}))
 			list = append(list, m)
 		}
 	}
@@ -148,7 +148,7 @@ func NetConfigListModelFromMap(m map[string]interface{}) *models.NetConfigList {
 
 // Update the underlying NetConfigList resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetNetConfigListResourceData(d *schema.ResourceData, m *models.NetConfigList) {
-	d.Set("list", SetNetConfigSubResourceData(m.List))
+	d.Set("list", SetNetworkSubResourceData(m.List))
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
 	d.Set("summary", SetSummarySubResourceData([]*models.Summary{m.Summary}))
 	d.Set("summary_by_dist", SetSummarySubResourceData([]*models.Summary{m.SummaryByDist}))
@@ -161,7 +161,7 @@ func SetNetConfigListSubResourceData(m []*models.NetConfigList) (d []*map[string
 	for _, NetConfigListModel := range m {
 		if NetConfigListModel != nil {
 			properties := make(map[string]interface{})
-			properties["list"] = SetNetConfigSubResourceData(NetConfigListModel.List)
+			properties["list"] = SetNetworkSubResourceData(NetConfigListModel.List)
 			properties["next"] = SetCursorSubResourceData([]*models.Cursor{NetConfigListModel.Next})
 			properties["summary"] = SetSummarySubResourceData([]*models.Summary{NetConfigListModel.Summary})
 			properties["summary_by_dist"] = SetSummarySubResourceData([]*models.Summary{NetConfigListModel.SummaryByDist})
@@ -180,7 +180,7 @@ func NetConfigListSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: []*NetConfig
 			Elem: &schema.Resource{
-				Schema: NetworkSchema(),
+				Schema: Network(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

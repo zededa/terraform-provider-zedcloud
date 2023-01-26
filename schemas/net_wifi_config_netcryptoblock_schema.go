@@ -49,12 +49,14 @@ func NetWifiConfigNetcryptoblockSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Sensitive:   true,
 		},
 
 		"password": {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Sensitive:   true,
 		},
 	}
 }

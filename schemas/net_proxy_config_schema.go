@@ -108,7 +108,7 @@ func NetProxyConfigSchema() map[string]*schema.Schema {
 		},
 
 		"network_proxy": {
-			Description: `Network proxy`,
+			Description: "Enable WPAD (Web Proxy Auto Discovery) protocol to discover and download PAC file.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -121,19 +121,19 @@ func NetProxyConfigSchema() map[string]*schema.Schema {
 		},
 
 		"network_proxy_url": {
-			Description: `Network Proxy URL`,
+			Description: "URL for wpad.dat file to be downloaded. Used when network_proxy is set to False.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"pacfile": {
-			Description: `proxy configuration in a pacfile`,
+			Description: "Proxy configuration in a pacfile. Used when network_proxy is set to False.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"proxies": {
-			Description: `Net Proxy: protocol level proxies`,
+			Description: "Net Proxy: protocol level proxies. Used when network_proxy is set to False.",
 			Type:        schema.TypeList, //GoType: []*NetProxyServer
 			Elem: &schema.Resource{
 				Schema: NetProxyServerSchema(),

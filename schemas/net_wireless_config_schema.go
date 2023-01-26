@@ -92,7 +92,7 @@ func SetNetWirelessConfigSubResourceData(m []*models.NetWirelessConfig) (d []*ma
 func NetWirelessConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cellular_cfg": {
-			Description: ``,
+			Description: "Cellular configuration",
 			Type:        schema.TypeList, //GoType: NetCellularConfig
 			Elem: &schema.Resource{
 				Schema: NetCellularConfigSchema(),
@@ -101,13 +101,15 @@ func NetWirelessConfigSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description: `Type of Wireless Network:
+NETWORK_WIRELESS_TYPE_WIFI
+NETWORK_WIRELESS_TYPE_CELLULAR`,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"wifi_cfg": {
-			Description: ``,
+			Description: "Can be multiple APs on a single wlan, e.g. one for 2.5Ghz, other 5Ghz SSIDs",
 			Type:        schema.TypeList, //GoType: NetWifiConfig
 			Elem: &schema.Resource{
 				Schema: NetWifiConfigSchema(),

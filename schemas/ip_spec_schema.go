@@ -133,15 +133,17 @@ func IPSpecSchema() map[string]*schema.Schema {
 		},
 
 		"dhcp": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description: `DHCP type:
+NETWORK_DHCP_TYPE_STATIC
+NETWORK_DHCP_TYPE_PASSTHROUGH
+NETWORK_DHCP_TYPE_CLIENT`,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"dhcp_range": {
-			Description: `for IPAM management when dhcp is turned on.
-If none provided, system will default pool.`,
-			Type: schema.TypeList, //GoType: DhcpIPRange
+			Description: `Range of IP addresses to be used for DHCP for IPAM management when dhcp is turned on. If none provided, system will default pool.`,
+			Type:        schema.TypeList, //GoType: DhcpIPRange
 			Elem: &schema.Resource{
 				Schema: DhcpIPRangeSchema(),
 			},
@@ -149,7 +151,7 @@ If none provided, system will default pool.`,
 		},
 
 		"dns": {
-			Description: ``,
+			Description: "List of IP Addresses of DNS servers",
 			Type:        schema.TypeList, //GoType: []string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
@@ -158,31 +160,31 @@ If none provided, system will default pool.`,
 		},
 
 		"domain": {
-			Description: ``,
+			Description: "Network domain",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"gateway": {
-			Description: ``,
+			Description: "IP Address of Network Gateway",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"mask": {
-			Description: ``,
+			Description: "Subnet Mask",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"ntp": {
-			Description: ``,
+			Description: "IP Address of NTP Server",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"subnet": {
-			Description: ``,
+			Description: "Subnet address",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

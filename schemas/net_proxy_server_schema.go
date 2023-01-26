@@ -69,9 +69,14 @@ func NetProxyServerSchema() map[string]*schema.Schema {
 		},
 
 		"proto": {
-			Description: `Net Proxy proto`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description: `Net Proxy protocol:
+NETWORK_PROXY_PROTO_HTTP
+NETWORK_PROXY_PROTO_HTTPS
+NETWORK_PROXY_PROTO_SOCKS
+NETWORK_PROXY_PROTO_FTP
+NETWORK_PROXY_PROTO_OTHER`,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"server": {

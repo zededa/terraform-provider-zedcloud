@@ -60,7 +60,7 @@ func SetStaticDNSListSubResourceData(m []*models.StaticDNSList) (d []*map[string
 func StaticDNSListSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"addrs": {
-			Description: `Addresses`,
+			Description: "Set of IP addresses for the specified hostname",
 			Type:        schema.TypeList, //GoType: []string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
