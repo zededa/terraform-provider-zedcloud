@@ -47,7 +47,7 @@ func ToNetworkModel(d *schema.ResourceData) *models.Network {
 	if proxyIsSet && proxyInterface != nil {
 		proxyMap := proxyInterface.([]interface{})
 		if len(proxyMap) > 0 {
-			proxy = NetProxyConfigModelFromMap(proxyMap[0].(map[string]interface{}))
+			proxy = NetworkProxyModelFromMap(proxyMap[0].(map[string]interface{}))
 		}
 	}
 	var revision *models.ObjectRevision // ObjectRevision
@@ -126,7 +126,7 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 	if proxyIsSet && proxyInterface != nil {
 		proxyMap := proxyInterface.([]interface{})
 		if len(proxyMap) > 0 {
-			proxy = NetProxyConfigModelFromMap(proxyMap[0].(map[string]interface{}))
+			proxy = NetworkProxyModelFromMap(proxyMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -273,7 +273,7 @@ NETWORK_KIND_V6`,
 5) To configure Proxy setting manually instead of using a pacfile, use the 'proxy' and 'exceptions' blocks`,
 			Type: schema.TypeList, //GoType: NetProxyConfig
 			Elem: &schema.Resource{
-				Schema: NetProxyConfigSchema(),
+				Schema: NetworkProxy(),
 			},
 			Optional: true,
 		},

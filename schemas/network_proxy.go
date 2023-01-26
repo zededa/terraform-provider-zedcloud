@@ -134,7 +134,7 @@ func NetworkProxy() map[string]*schema.Schema {
 			Description: "Net Proxy: protocol level proxies. Used when network_proxy is set to False.",
 			Type:        schema.TypeList, //GoType: []*NetProxyServer
 			Elem: &schema.Resource{
-				Schema: NetProxyServerSchema(),
+				Schema: NetworkProxyServerSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

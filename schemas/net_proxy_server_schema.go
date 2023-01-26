@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
+func NetworkProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
 	portInt, _ := d.Get("port").(int)
 	port := int64(portInt)
 	var proto *models.NetworkProxyProto // NetworkProxyProto
@@ -22,7 +22,7 @@ func NetProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
 	}
 }
 
-func NetProxyServerModelFromMap(m map[string]interface{}) *models.NetProxyServer {
+func NetworkProxyServerModelFromMap(m map[string]interface{}) *models.NetProxyServer {
 	port := int64(m["port"].(int))      // int64
 	var proto *models.NetworkProxyProto // NetworkProxyProto
 	protoInterface, protoIsSet := m["proto"]
@@ -38,15 +38,13 @@ func NetProxyServerModelFromMap(m map[string]interface{}) *models.NetProxyServer
 	}
 }
 
-// Update the underlying NetProxyServer resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetNetProxyServerResourceData(d *schema.ResourceData, m *models.NetProxyServer) {
+func SetworkNetProxyServerResourceData(d *schema.ResourceData, m *models.NetProxyServer) {
 	d.Set("port", m.Port)
 	d.Set("proto", m.Proto)
 	d.Set("server", m.Server)
 }
 
-// Iterate through and update the NetProxyServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetNetProxyServerSubResourceData(m []*models.NetProxyServer) (d []*map[string]interface{}) {
+func SetNetworkProxyServerSubResourceData(m []*models.NetProxyServer) (d []*map[string]interface{}) {
 	for _, NetProxyServerModel := range m {
 		if NetProxyServerModel != nil {
 			properties := make(map[string]interface{})
@@ -60,7 +58,7 @@ func SetNetProxyServerSubResourceData(m []*models.NetProxyServer) (d []*map[stri
 }
 
 // Schema mapping representing the NetProxyServer resource defined in the Terraform configuration
-func NetProxyServerSchema() map[string]*schema.Schema {
+func NetworkProxyServer() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"port": {
 			Description: `Net Proxy Port`,
@@ -88,7 +86,7 @@ NETWORK_PROXY_PROTO_OTHER`,
 }
 
 // Retrieve property field names for updating the NetProxyServer resource
-func GetNetProxyServerPropertyFields() (t []string) {
+func NetworkProxyServerPropertyFields() (t []string) {
 	return []string{
 		"port",
 		"proto",

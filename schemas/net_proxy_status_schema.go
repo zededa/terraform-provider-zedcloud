@@ -100,7 +100,7 @@ func NetProxyStatusSchema() map[string]*schema.Schema {
 			Description: `protocol level proxies`,
 			Type:        schema.TypeList, //GoType: []*NetProxyServer
 			Elem: &schema.Resource{
-				Schema: NetProxyServerSchema(),
+				Schema: NetworkProxyServerSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
