@@ -634,7 +634,7 @@ func EdgeNode() map[string]*schema.Schema {
 			Description: `device Lisp`,
 			Type:        schema.TypeList, //GoType: DeviceLisp
 			Elem: &schema.Resource{
-				Schema: DeviceLispSchema(),
+				Schema: DeviceLisp(),
 			},
 			Optional: true,
 		},

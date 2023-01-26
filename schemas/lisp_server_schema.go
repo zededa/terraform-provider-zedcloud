@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate LispServer resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func LispServerModel(d *schema.ResourceData) *models.LispServer {
 	credential, _ := d.Get("credential").(string)
 	nameOrIP, _ := d.Get("name_or_ip").(string)
@@ -26,13 +23,11 @@ func LispServerModelFromMap(m map[string]interface{}) *models.LispServer {
 	}
 }
 
-// Update the underlying LispServer resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetLispServerResourceData(d *schema.ResourceData, m *models.LispServer) {
 	d.Set("credential", m.Credential)
 	d.Set("name_or_ip", m.NameOrIP)
 }
 
-// Iterate through and update the LispServer resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetLispServerSubResourceData(m []*models.LispServer) (d []*map[string]interface{}) {
 	for _, LispServerModel := range m {
 		if LispServerModel != nil {
@@ -46,7 +41,7 @@ func SetLispServerSubResourceData(m []*models.LispServer) (d []*map[string]inter
 }
 
 // Schema mapping representing the LispServer resource defined in the Terraform configuration
-func LispServerSchema() map[string]*schema.Schema {
+func LispServer() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"credential": {
 			Description: `lisp credential`,
