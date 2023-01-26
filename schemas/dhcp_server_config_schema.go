@@ -108,7 +108,7 @@ func DhcpServerConfigSchema() map[string]*schema.Schema {
 			Description: `Range of IP addresses to be used for DHCP`,
 			Type:        schema.TypeList, //GoType: DhcpIPRange
 			Elem: &schema.Resource{
-				Schema: DhcpIPRangeSchema(),
+				Schema: DhcpIPRange(),
 			},
 			Optional: true,
 		},

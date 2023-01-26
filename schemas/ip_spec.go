@@ -145,7 +145,7 @@ NETWORK_DHCP_TYPE_CLIENT`,
 			Description: `Range of IP addresses to be used for DHCP for IPAM management when dhcp is turned on. If none provided, system will default pool.`,
 			Type:        schema.TypeList, //GoType: DhcpIPRange
 			Elem: &schema.Resource{
-				Schema: DhcpIPRangeSchema(),
+				Schema: DhcpIPRange(),
 			},
 			Optional: true,
 		},

@@ -237,7 +237,7 @@ func Network() map[string]*schema.Schema {
 			Description: "IP configuration for the network",
 			Type:        schema.TypeList, //GoType: IPSpec
 			Elem: &schema.Resource{
-				Schema: IPSpecSchema(),
+				Schema: IPSpec(),
 			},
 			Required: true,
 		},
