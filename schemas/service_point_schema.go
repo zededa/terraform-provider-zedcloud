@@ -37,14 +37,12 @@ func ServicePointModelFromMap(m map[string]interface{}) *models.ServicePoint {
 	}
 }
 
-// Update the underlying ServicePoint resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetServicePointResourceData(d *schema.ResourceData, m *models.ServicePoint) {
 	d.Set("credential", m.Credential)
 	d.Set("name_or_ip", m.NameOrIP)
 	d.Set("type", m.Type)
 }
 
-// Iterate through and update the ServicePoint resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetServicePointSubResourceData(m []*models.ServicePoint) (d []*map[string]interface{}) {
 	for _, ServicePointModel := range m {
 		if ServicePointModel != nil {
@@ -59,7 +57,7 @@ func SetServicePointSubResourceData(m []*models.ServicePoint) (d []*map[string]i
 }
 
 // Schema mapping representing the ServicePoint resource defined in the Terraform configuration
-func ServicePointSchema() map[string]*schema.Schema {
+func ServicePoint() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"credential": {
 			Description: `Service credentials`,
