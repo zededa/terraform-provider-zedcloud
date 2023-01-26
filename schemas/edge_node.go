@@ -199,7 +199,7 @@ func EdgeNodeModel(d *schema.ResourceData) *models.EdgeNode {
 	}
 }
 
-func DeviceConfigModelFromMap(m map[string]interface{}) *models.EdgeNode {
+func EdgeNodeModelFromMap(m map[string]interface{}) *models.EdgeNode {
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := m["admin_state"]
 	if adminStateIsSet {
@@ -418,7 +418,6 @@ func DeviceConfigModelFromMap(m map[string]interface{}) *models.EdgeNode {
 	}
 }
 
-// Update the underlying DeviceConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetEdgeNodeResourceData(d *schema.ResourceData, m *models.EdgeNode) {
 	d.Set("admin_state", m.AdminState)
 	d.Set("asset_id", m.AssetID)
@@ -462,7 +461,7 @@ func SetEdgeNodeResourceData(d *schema.ResourceData, m *models.EdgeNode) {
 	d.Set("utype", m.Utype)
 }
 
-func SetDeviceConfigSubResourceData(m []*models.EdgeNode) (d []*map[string]interface{}) {
+func SetEdgeNodeSubResourceData(m []*models.EdgeNode) (d []*map[string]interface{}) {
 	for _, DeviceConfigModel := range m {
 		if DeviceConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -513,7 +512,7 @@ func SetDeviceConfigSubResourceData(m []*models.EdgeNode) (d []*map[string]inter
 }
 
 // Schema mapping representing the DeviceConfig resource defined in the Terraform configuration
-func EdgeNodeSchema() map[string]*schema.Schema {
+func EdgeNode() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"admin_state": {
 			Description: `administrative state of device`,
@@ -573,7 +572,7 @@ func EdgeNodeSchema() map[string]*schema.Schema {
 			Description: `ED configurations`,
 			Type:        schema.TypeList, //GoType: []*EDConfigItem
 			Elem: &schema.Resource{
-				Schema: EDConfigItemSchema(),
+				Schema: EDConfigItem(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -822,7 +821,7 @@ func EdgeNodeSchema() map[string]*schema.Schema {
 }
 
 // Retrieve property field names for updating the DeviceConfig resource
-func GetDeviceConfigPropertyFields() (t []string) {
+func GetEdgeNodePropertyFields() (t []string) {
 	return []string{
 		"admin_state",
 		"asset_id",
