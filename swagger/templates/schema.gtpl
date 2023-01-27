@@ -86,13 +86,21 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 			{{ varname .Name }} = append({{ varname .Name }}, m)
 		}
 	}
-				{{- else if eq .GoType "[]string" }}
+				{{- else if or (eq .GoType "[]string") (eq .GoType "[]strfmt.Base64") }}
 	var {{ varname .Name }} []string
 	{{ varname .Name }}Interface, {{ varname .Name }}IsSet := d.GetOk("{{ varname .Name }}")
 	if {{ varname .Name }}IsSet {
-    	{{ varname .Name }}Slice := {{ varname .Name }}Interface.([]interface{})
-		for _, i := range {{ varname .Name }}Slice {
-			{{ varname .Name }}Slice = append({{ varname .Name }}Slice, i.(string))
+		var items []interface{}
+		if listItems, isList := {{ .Name }}Interface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = {{ .Name }}Interface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			{{ varname .Name }} = append({{ varname .Name }}, v.(string))
 		}
 	}
 				{{- else if hasPrefix .GoType "[]" }}
@@ -202,13 +210,21 @@ func {{ $operationGroup }}ModelFromMap(m map[string]interface{}) *models.{{ $ope
 			{{ varname .Name }} = append({{ varname .Name }}, m)
 		}
 	}
-				{{- else if hasPrefix .GoType "[]string" }}
+				{{- else if or (hasPrefix .GoType "[]string") (hasPrefix .GoType "[]strfmt.Base64") }}
 	var {{ varname .Name }} []string
 	{{ varname .Name }}Interface, {{ varname .Name }}IsSet := m["{{ varname .Name }}"]
 	if {{ varname .Name }}IsSet {
-    	{{ varname .Name }}Slice := {{ varname .Name }}Interface.([]interface{})
-		for _, i := range {{ varname .Name }}Slice {
-			{{ varname .Name }}Slice = append({{ varname .Name }}Slice, i.(string))
+		var items []interface{}
+		if listItems, isList := {{ .Name }}Interface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = {{ .Name }}Interface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			{{ varname .Name }} = append({{ varname .Name }}, v.(string))
 		}
 	}
 				{{- else if hasPrefix .GoType "[]" }}
