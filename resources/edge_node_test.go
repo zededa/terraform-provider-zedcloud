@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider/client"
@@ -15,25 +17,23 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func TestAccGetEdgeNode(t *testing.T) {
-	var edgeNodeBefore models.EdgeNode
-	// var edgeNodeAfter models.DeviceConfig
+func TestCreateEdgeNode_RequiredAttributesOnly(t *testing.T) {
+	var got models.EdgeNode
 
-	// create with required and computed fields
-	requiredOnlyConfigPath := "edge_node/required_only.tf"
-	requiredOnlyConfig, err := getTestConfig(requiredOnlyConfigPath)
-	if err != nil {
-		t.Fatal(fmt.Sprintf("could not get testdata for %s", requiredOnlyConfigPath))
-	}
+	// input config
+	inputPath := "edge_node/required_only.tf"
+	input := mustGetTestInput(t, inputPath)
+
+	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		CheckDestroy: testEdgeNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: requiredOnlyConfig,
+				Config: input,
 				Check: resource.ComposeTestCheckFunc(
-					testEdgeNodeExists("zedcloud_edgenode.required_only", &edgeNodeBefore),
+					testEdgeNodeExists("zedcloud_edgenode.required_only", &got),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "required_only"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "title", "required_only-title"),
@@ -46,23 +46,30 @@ func TestAccGetEdgeNode(t *testing.T) {
 			},
 		},
 	})
+}
 
-	// create with all fields
-	var edgeNodeComplete models.EdgeNode
-	completeConfigPath := "edge_node/complete.tf"
-	completeConfig, err := getTestConfig(completeConfigPath)
-	if err != nil {
-		t.Fatal(fmt.Sprintf("could not get testdata for %s", completeConfigPath))
-	}
+func TestCreateEdgeNode_AllAttributes(t *testing.T) {
+	var got models.EdgeNode
+	var expected models.EdgeNode
+
+	// input config
+	inputPath := "edge_node/complete.tf"
+	input := mustGetTestInput(t, inputPath)
+
+	// expected output
+	expectedPath := "edge_node/complete.yaml"
+	mustGetExpectedOutput(t, expectedPath, &expected)
+
+	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		CheckDestroy: testEdgeNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: completeConfig,
+				Config: input,
 				Check: resource.ComposeTestCheckFunc(
-					testEdgeNodeExists("zedcloud_edgenode.complete", &edgeNodeComplete),
+					testEdgeNodeExists("zedcloud_edgenode.complete", &got),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "name", "complete"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "title", "complete-title"),
@@ -71,7 +78,7 @@ func TestAccGetEdgeNode(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					testEdgeNodeAttributes(&edgeNodeComplete),
+					testEdgeNodeAttributes(t, &got, &expected),
 				),
 			},
 		},
@@ -93,7 +100,7 @@ func testAccPreCheck(t *testing.T) {
 }
 
 // testEdgeNodeExists retrieves the EdgeNode and stores it in the provided *models.DeviceConfig.
-func testEdgeNodeExists(resourceName string, device *models.EdgeNode) resource.TestCheckFunc {
+func testEdgeNodeExists(resourceName string, edgeNodeModel *models.EdgeNode) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
 		rs, ok := s.RootModule().Resources[resourceName]
@@ -122,151 +129,30 @@ func testEdgeNodeExists(resourceName string, device *models.EdgeNode) resource.T
 		}
 
 		// store the resulting EdgeNode config in the *models.DeviceConfig variable
-		*device = *edgeNode
+		*edgeNodeModel = *edgeNode
 		return nil
 	}
 }
 
 // testEdgeNodeAttributes verifies attributes are set correctly by Terraform
-func testEdgeNodeAttributes(device *models.EdgeNode) resource.TestCheckFunc {
+func testEdgeNodeAttributes(t *testing.T, got, expected *models.EdgeNode) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		if string(*device.AdminState) != "ADMIN_STATE_ACTIVE" {
-			return fmt.Errorf("expect device.AdminState == ADMIN_STATE_ACTIVE but got %+v", device.AdminState)
+		if keyGot, keyExpect := strings.Split(got.Obkey, ":")[0], strings.Split(expected.Obkey, ":")[0]; keyGot != keyExpect {
+			return fmt.Errorf("expect Obkey %s but got %+v", keyExpect, keyGot)
 		}
-		if device.AssetID != "asset_id" {
-			return fmt.Errorf("expect device.AssetId == asset_id but got %+v", device.AssetID)
-		}
-		if len(device.BaseImage) != 0 {
-			return fmt.Errorf("expect device.BaseImage == [] but got %+v", device.BaseImage)
-		}
-		if device.ConfigItem[0].BoolValue != true {
-			return fmt.Errorf("expect device.ConfigItem[0].- Boolvalue == true but got %+v", device.ConfigItem[0].BoolValue)
-		}
-		if device.ConfigItem[0].FloatValue != 1.0 {
-			return fmt.Errorf("expect device.ConfigItem[0].Floatvalue == 1 but got %+v", device.ConfigItem[0].FloatValue)
-		}
-		if device.ConfigItem[0].Key != "key" {
-			return fmt.Errorf("expect device.ConfigItem[0].Key == key but got %+v", device.ConfigItem[0].Key)
-		}
-		if device.ConfigItem[0].StringValue != "string" {
-			return fmt.Errorf("expect device.ConfigItem[0].Stringvalue == string but got %+v", device.ConfigItem[0].StringValue)
-		}
-		if device.ConfigItem[0].Uint32Value != 32 {
-			return fmt.Errorf("expect device.ConfigItem[0].Uint32value == 32 but got %+v", device.ConfigItem[0].Uint32Value)
-		}
-		if device.ConfigItem[0].Uint64Value != "64" {
-			return fmt.Errorf("expect device.ConfigItem[0].Uint64value == 64 but got %+v", device.ConfigItem[0].Uint64Value)
-		}
-		if device.ConfigItem[0].ValueType != "value type" {
-			return fmt.Errorf("expect device.ConfigItem[0].Valuetype == value type but got %+v", device.ConfigItem[0].ValueType)
-		}
-		if device.DeploymentTag != "depl_tag" {
-			return fmt.Errorf("expect device.DeploymentTag == depl_tag but got %+v", device.DeploymentTag)
-		}
-		if device.Description != "description" {
-			return fmt.Errorf("expect device.Description == description but got %+v", device.Description)
-		}
-		if device.DevLocation.City != "berlin" {
-			return fmt.Errorf("expect device.DevLocation[0].City == berlin but got %+v", device.DevLocation.City)
-		}
-		if device.DevLocation.Country != "germany" {
-			return fmt.Errorf("expect device.DevLocation[0].Country == germany but got %+v", device.DevLocation.Country)
-		}
-		if device.DevLocation.Freeloc != "freeloc" {
-			return fmt.Errorf("expect device.DevLocation[0].Freeloc == freeloc but got %+v", device.DevLocation.Freeloc)
-		}
-		if device.DevLocation.Hostname != "hostname" {
-			return fmt.Errorf("expect device.DevLocation[0].Hostname == hostname but got %+v", device.DevLocation.Hostname)
-		}
-		if device.DevLocation.Latlong != "" {
-			return fmt.Errorf("expect device.DevLocation[0].Latlong == \"\" but got %+v", device.DevLocation.Latlong)
-		}
-		if device.DevLocation.Loc != "52.520008, 13.404954" {
-			return fmt.Errorf("expect device.DevLocation[0].Loc == 52.520008, 13.404954 but got %+v", device.DevLocation.Loc)
-		}
-		if device.DevLocation.Org != "zededa" {
-			return fmt.Errorf("expect device.DevLocation[0].Org == zededa but got %+v", device.DevLocation.Org)
-		}
-		if device.DevLocation.Postal != "10115" {
-			return fmt.Errorf("expect device.DevLocation[0].Postal == \"10115\" but got %+v", device.DevLocation.Postal)
-		}
-		if device.DevLocation.Region != "europe/west" {
-			return fmt.Errorf("expect device.DevLocation[0].Region == europe/west but got %+v", device.DevLocation.Region)
-		}
-		if device.DevLocation.UnderlayIP != "" {
-			return fmt.Errorf("expect device.DevLocation[0].Underlayip == \"\" but got %+v", device.DevLocation.UnderlayIP)
-		}
-		if device.Interfaces[0].Cost != 0 {
-			return fmt.Errorf("expect device.Interfaces[0].Cost == 0 but got %+v", device.Interfaces[0].Cost)
-		}
-		if string(*device.Interfaces[0].IntfUsage) != "ADAPTER_USAGE_UNSPECIFIED" {
-			return fmt.Errorf("expect device.Interfaces[0].Intfusage == ADAPTER_USAGE_UNSPECIFIED but got %+v", device.Interfaces[0].IntfUsage)
-		}
-		if device.Interfaces[0].Intfname != "eth0" {
-			return fmt.Errorf("expect device.Interfaces[0].Intfname == eth0 but got %+v", device.Interfaces[0].Intfname)
-		}
-		if device.Interfaces[0].Ipaddr != "" {
-			return fmt.Errorf("expect device.Interfaces[0].Ipaddr == \"\" but got %+v", device.Interfaces[0].Ipaddr)
-		}
-		if device.Interfaces[0].Macaddr != "" {
-			return fmt.Errorf("expect device.Interfaces[0].Macaddr == \"\" but got %+v", device.Interfaces[0].Macaddr)
-		}
-		if device.Interfaces[0].Netname != "" {
-			return fmt.Errorf("expect device.Interfaces[0].Netname == \"\" but got %+v", device.Interfaces[0].Netname)
-		}
-		if len(device.Interfaces[0].Tags) != 0 {
-			return fmt.Errorf("expect len(device.Interfaces[0].Tags) == 0 but got %+v", len(device.Interfaces[0].Tags))
-		}
-		if device.Interfaces[1].Cost != 255 {
-			return fmt.Errorf("expect device.Interfaces[1].Cost == 255 but got %+v", device.Interfaces[1].Cost)
-		}
-		if string(*device.Interfaces[1].IntfUsage) != "ADAPTER_USAGE_MANAGEMENT" {
-			return fmt.Errorf("expect device.Interfaces[1].IntfUsage == ADAPTER_USAGE_MANAGEMENT but got %+v", device.Interfaces[1].IntfUsage)
-		}
-		if device.Interfaces[1].Intfname != "defaultIPv4" {
-			return fmt.Errorf("expect device.Interfaces[1].Intfname == defaultIPv4 but got %+v", device.Interfaces[1].Intfname)
-		}
-		if device.Interfaces[1].Ipaddr != "127.0.0.1" {
-			return fmt.Errorf("expect device.Interfaces[1].Ipaddr == 127.0.0.1 but got %+v", device.Interfaces[1].Ipaddr)
-		}
-		if device.Interfaces[1].Macaddr != "00:00:00:00:00:00" {
-			return fmt.Errorf("expect device.Interfaces[1].Macaddr == \"00:00:00:00:00:00\" but got %+v", device.Interfaces[1].Macaddr)
-		}
-		if device.Interfaces[1].Netname != "" {
-			return fmt.Errorf("expect device.Interfaces[1].Netname == \"\" but got %+v", device.Interfaces[1].Netname)
-		}
-		if device.Interfaces[1].Tags["system_interface_1_key"] != "system_interface_1_value" {
-			return fmt.Errorf("expect device.Interfaces[1].Tags[\"system_interface_1_key\"] == system_interface_1_value but got %+v", device.Interfaces[1].Tags["system_interface_1_key"])
-		}
-		if *device.ModelID != "2f716b55-2639-486c-9a2f-55a2e94146a6" {
-			return fmt.Errorf("expect device.ModelId == 2f716b55-2639-486c-9a2f-55a2e94146a6 but got %+v", *device.ModelID)
-		}
-		if *device.Name != "complete" {
-			return fmt.Errorf("expect device.Name == complete but got %+v", device.Name)
-		}
-		if strings.Split(device.Obkey, ":")[0] != "5d0767ee-0547-4569-b530-387e526f8cb9" {
-			return fmt.Errorf("expect device.Obkey == 5d0767ee-0547-4569-b530-387e526f8cb9:* but got %+v", device.Obkey)
-		}
-		if *device.ProjectID != "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf" {
-			return fmt.Errorf("expect device.ProjectId == 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf but got %+v", *device.ProjectID)
-		}
-		if device.Serialno != "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b" {
-			return fmt.Errorf("expect device.Serialno == d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b but got %+v", device.Serialno)
-		}
-		if len(device.SitePictures) != 0 {
-			return fmt.Errorf("expect device.SitePictures == [] but got %+v", device.SitePictures)
-		}
-		if device.Tags["tag-key-1"] != "tag-value-1" {
-			return fmt.Errorf("expect device.Tags[\"tag-key-1\"] == tag-value-1 but got %+v", device.Tags["tag-key-1"])
-		}
-		if device.Tags["tag-key-2"] != "tag-value-2" {
-			return fmt.Errorf("expect device.Tags[\"tag-key-2\"] == tag-value-2 but got %+v", device.Tags["tag-key-2"])
-		}
-		if *device.Title != "complete-title" {
-			return fmt.Errorf("expect device.Title == complete-title but got %+v", device.Title)
-		}
-		if device.Token != "token" {
-			return fmt.Errorf("expect device.Token == token but got %+v", device.Token)
+		opts := cmpopts.IgnoreFields(
+			models.EdgeNode{},
+			"ID",
+			"ProjectID",
+			"Revision",
+			"ResetCounter",
+			"DebugKnob",
+			"Onboarding",
+			"Utype",
+			"Obkey",
+		)
+		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
+			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
 		return nil
 	}

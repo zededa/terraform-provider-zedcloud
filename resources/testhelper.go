@@ -1,65 +1,52 @@
 package resources
 
 import (
-	"fmt"
-	"strings"
+	"os"
+	"path/filepath"
+	"testing"
+
+	"gopkg.in/yaml.v3"
 )
 
-func formatTest(name, obj string) string {
-	fmt.Println(obj)
-	countLeadingSpaces := func(line string) int {
-		return len(line) - len(strings.TrimSpace(line))
+func mustGetTestInput(t *testing.T, path string) string {
+	testdataDir, err := filepath.Abs("./testdata")
+	if err != nil {
+		t.Fatal(err)
 	}
-	res := ""
-	lines := strings.Split(obj, "\n")
-	prevIndent := 0
-	newName := name
-	arrayIndex := 0
-	isArray := false
-	for _, line := range lines {
-		parts := strings.Split(line, ": ")
-		currentIndent := countLeadingSpaces(line)
-		if currentIndent < prevIndent {
-			if !strings.HasPrefix(strings.TrimSpace(parts[0]), "-") {
-				newName = name
-				arrayIndex = 0
-				isArray = false
-			} else {
-				parts[0] = strings.TrimLeft(parts[0], "- ")
-				arrayIndex++
-			}
-		}
-		prevIndent = currentIndent
-		if len(parts) != 2 {
-			newName += "." + strings.Title(strings.TrimRight(strings.TrimSpace(parts[0]), ":"))
-			isArray = true
-			continue
-		}
-		newLine := "if "
-		newObj := newName
-		if isArray {
-			newObj += fmt.Sprintf("[%d]", arrayIndex)
-		}
-		newObj += "."
-		newObj += strings.Title(strings.TrimSpace(parts[0]))
-		newLine += newObj
-		newLine += " != "
-		newLine += "\""
-		newValue := strings.TrimSpace(parts[1])
-		newLine += newValue
-		newLine += "\" {"
-		newLine += "\n    return fmt.Errorf(\"expect "
-		newLine += newObj
-		newLine += " == "
-		newLine += newValue
-		newLine += " but got %+v\", "
-		newLine += newObj
-		newLine += ")\n}"
-
-		newLine += "\n"
-
-		res += newLine
+	bytes, err := os.ReadFile(filepath.Join(testdataDir, path))
+	if err != nil {
+		t.Fatal(err)
 	}
-	return res
+	return string(bytes)
+}
 
+func mustGetExpectedOutput(t *testing.T, path string, i interface{}) {
+	testdataDir, err := filepath.Abs("./testdata")
+	if err != nil {
+		t.Fatal(err)
+	}
+	bytes, err := os.ReadFile(filepath.Join(testdataDir, path))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := yaml.Unmarshal(bytes, i); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func toYAML(path string, i interface{}) {
+	testdataDir, err := filepath.Abs("./testdata")
+	if err != nil {
+		panic(err)
+	}
+	file, err := os.OpenFile(filepath.Join(testdataDir, path), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	err = yaml.NewEncoder(file).Encode(i)
+	if err != nil {
+		panic(err)
+	}
 }

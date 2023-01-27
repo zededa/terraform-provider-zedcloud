@@ -1,9 +1,6 @@
 package resources
 
 import (
-	"os"
-	"path/filepath"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -15,16 +12,4 @@ func init() {
 	testAccProviders = map[string]*schema.Provider{
 		"zedcloud": testProvider,
 	}
-}
-
-func getTestConfig(path string) (string, error) {
-	testdataDir, err := filepath.Abs("./testdata")
-	if err != nil {
-		return "", err
-	}
-	bytes, err := os.ReadFile(filepath.Join(testdataDir, path))
-	if err != nil {
-		return "", err
-	}
-	return string(bytes), nil
 }
