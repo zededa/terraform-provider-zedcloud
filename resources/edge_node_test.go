@@ -42,6 +42,11 @@ func TestCreateEdgeNode_RequiredAttributesOnly(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_edgenode.required_only",
+						"projecy_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
 				),
 			},
 		},
@@ -76,6 +81,11 @@ func TestCreateEdgeNode_AllAttributes(t *testing.T) {
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.complete",
 						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_edgenode.complete",
+						"projecy_id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
 					testEdgeNodeAttributes(t, &got, &expected),

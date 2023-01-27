@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider/client"
@@ -14,24 +16,28 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func TestAccGetNetwork(t *testing.T) {
-	var networkBefore models.Network
+func TestCreateNetwork_RequiredAttributesOnly(t *testing.T) {
+	var got models.Network
+	var expected models.Network
 
-	// create with required and computed fields
-	requiredOnlyConfigPath := "network/required_only.tf"
-	requiredOnlyConfig, err := getTestConfig(requiredOnlyConfigPath)
-	if err != nil {
-		t.Fatal(fmt.Sprintf("could not get testdata for %s", requiredOnlyConfigPath))
-	}
+	// input config
+	inputPath := "network/required_only.tf"
+	input := mustGetTestInput(t, inputPath)
+
+	// expected output
+	expectedPath := "network/required_only_expected.yaml"
+	mustGetExpectedOutput(t, expectedPath, &expected)
+
+	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		CheckDestroy: testNetworkDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: requiredOnlyConfig,
+				Config: input,
 				Check: resource.ComposeTestCheckFunc(
-					testNetworkExists("zedcloud_network.required_only", &networkBefore),
+					testNetworkExists("zedcloud_network.required_only", &got),
 					resource.TestCheckResourceAttr("zedcloud_network.required_only", "name", "zedcloud_network.required_only.name"),
 					resource.TestCheckResourceAttr("zedcloud_network.required_only", "title", "zedcloud_network.required_only.title"),
 					resource.TestMatchResourceAttr(
@@ -44,51 +50,59 @@ func TestAccGetNetwork(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
+					testNetworkAttributes(t, &got, &expected),
 				),
 			},
 		},
 	})
-
-	// create with all fields
-	var networkComplete models.Network
-	completeConfigPath := "network/complete.tf"
-	completeConfig, err := getTestConfig(completeConfigPath)
-	if err != nil {
-		t.Fatal(fmt.Sprintf("could not get testdata for %s", completeConfigPath))
-	}
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
-		CheckDestroy: testNetworkDestroy,
-		Providers:    testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: completeConfig,
-				Check: resource.ComposeTestCheckFunc(
-					testNetworkExists("zedcloud_network.complete_with_proxy", &networkComplete),
-					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "name", "zedcloud_network.complete_with_proxy.name"),
-					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "title", "zedcloud_network.complete_with_proxy.title"),
-					resource.TestMatchResourceAttr(
-						"zedcloud_network.complete_with_proxy",
-						"project_id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
-					resource.TestMatchResourceAttr(
-						"zedcloud_network.complete_with_proxy",
-						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
-					testNetworkAttributes(&networkComplete),
-				),
-			},
-		},
-	})
-
-	// update all fields
-	// create and update fields with custom logic and separate api requests
 }
 
-// testNetworAccPreCheck validates the necessary test API keys exist in the testing environment
-func testNetworAccPreCheck(t *testing.T) {
+// func TestCreateNetwork_AllAttributes(t *testing.T) {
+// 	var got *models.Network
+// 	var expected *models.Network
+
+// 	// input config
+// 	inputPath := "network/complete_with_proxy.tf"
+// 	input := mustGetTestInput(t, inputPath)
+
+// 	// expected output
+// 	expectedPath := "network/complete_with_proxy.yaml"
+// 	mustGetExpectedOutput(t, expectedPath, expected)
+
+// 	// terraform acceptance test case
+// 	resource.Test(t, resource.TestCase{
+// 		PreCheck:     func() { testAccPreCheck(t) },
+// 		CheckDestroy: testNetworkDestroy,
+// 		Providers:    testAccProviders,
+// 		Steps: []resource.TestStep{
+// 			{
+// 				Config: input,
+// 				Check: resource.ComposeTestCheckFunc(
+// 					testNetworkExists("zedcloud_network.complete_with_proxy", got),
+// 					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "name", "zedcloud_network.complete_with_proxy.name"),
+// 					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "title", "zedcloud_network.complete_with_proxy.title"),
+// 					resource.TestMatchResourceAttr(
+// 						"zedcloud_network.complete_with_proxy",
+// 						"project_id",
+// 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+// 					),
+// 					resource.TestMatchResourceAttr(
+// 						"zedcloud_network.complete_with_proxy",
+// 						"id",
+// 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+// 					),
+// 					testNetworkAttributes(got, expected),
+// 				),
+// 			},
+// 		},
+// 	})
+
+// 	// update all fields
+// 	// create and update fields with custom logic and separate api requests
+// }
+
+// checkEnv validates the necessary test API keys exist in the testing environment.
+func checkEnv(t *testing.T) {
 	if v := os.Getenv("TF_CLI_CONFIG_FILE"); v == "" {
 		t.Fatal("TF_CLI_CONFIG_FILE must be set for acceptance tests, it should contain the dev_overrides config that points to local instance of the provider")
 	}
@@ -114,7 +128,6 @@ func testNetworkExists(resourceName string, networkModel *models.Network) resour
 		client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
 		// retrieve the Network by referencing its state ID for API lookup
-		// params := config.GetByIDParams()
 		params := config.GetByIDParams()
 		params.ID = rs.Primary.ID
 		response, err := client.Network.GetByID(params, nil)
@@ -134,8 +147,12 @@ func testNetworkExists(resourceName string, networkModel *models.Network) resour
 }
 
 // testNetworkAttributes verifies attributes are set correctly by Terraform
-func testNetworkAttributes(device *models.Network) resource.TestCheckFunc {
+func testNetworkAttributes(t *testing.T, got, expected *models.Network) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
+		opts := cmpopts.IgnoreFields(models.Network{}, "ID", "Revision")
+		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
+			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
+		}
 		return nil
 	}
 }
