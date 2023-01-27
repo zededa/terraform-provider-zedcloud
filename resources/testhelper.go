@@ -50,3 +50,13 @@ func toYAML(path string, i interface{}) {
 		panic(err)
 	}
 }
+
+// checkEnv validates the necessary test API keys exist in the testing environment.
+func checkEnv(t *testing.T) {
+	if v := os.Getenv("TF_CLI_CONFIG_FILE"); v == "" {
+		t.Fatal("TF_CLI_CONFIG_FILE must be set for acceptance tests, it should contain the dev_overrides config that points to local instance of the provider")
+	}
+	if v := os.Getenv("TF_VAR_zedcloud_token"); v == "" {
+		t.Fatal("TF_VAR_zedcloud_token must be set for acceptance tests to access the zedcloud API")
+	}
+}

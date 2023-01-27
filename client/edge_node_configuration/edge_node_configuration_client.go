@@ -56,7 +56,7 @@ type ClientService interface {
 
 	EdgeNodeConfigurationPreparePowerOff(params *EdgeNodeConfigurationPreparePowerOffParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationPreparePowerOffOK, error)
 
-	EdgeNodeConfigurationQueryEdgeNodes(params *EdgeNodeConfigurationQueryEdgeNodesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationQueryEdgeNodesOK, error)
+	GetEdgeNodes(params *GetAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationQueryEdgeNodesOK, error)
 
 	EdgeNodeConfigurationReboot(params *EdgeNodeConfigurationRebootParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationRebootOK, error)
 
@@ -640,11 +640,11 @@ func (a *Client) EdgeNodeConfigurationPreparePowerOff(params *EdgeNodeConfigurat
 }
 
 /*
-EdgeNodeConfigurationQueryEdgeNodes queries edge nodes
+GetEdgeNodes queries edge nodes
 
 Query the edge node records.
 */
-func (a *Client) EdgeNodeConfigurationQueryEdgeNodes(params *EdgeNodeConfigurationQueryEdgeNodesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationQueryEdgeNodesOK, error) {
+func (a *Client) GetEdgeNodes(params *GetAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationQueryEdgeNodesOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewEdgeNodeConfigurationQueryEdgeNodesParams()

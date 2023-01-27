@@ -23,44 +23,44 @@ import (
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeNodeConfigurationQueryEdgeNodesParams() *EdgeNodeConfigurationQueryEdgeNodesParams {
-	return &EdgeNodeConfigurationQueryEdgeNodesParams{
+func NewEdgeNodeConfigurationQueryEdgeNodesParams() *GetAllParams {
+	return &GetAllParams{
 		timeout: cr.DefaultTimeout,
 	}
 }
 
 // NewEdgeNodeConfigurationQueryEdgeNodesParamsWithTimeout creates a new EdgeNodeConfigurationQueryEdgeNodesParams object
 // with the ability to set a timeout on a request.
-func NewEdgeNodeConfigurationQueryEdgeNodesParamsWithTimeout(timeout time.Duration) *EdgeNodeConfigurationQueryEdgeNodesParams {
-	return &EdgeNodeConfigurationQueryEdgeNodesParams{
+func NewEdgeNodeConfigurationQueryEdgeNodesParamsWithTimeout(timeout time.Duration) *GetAllParams {
+	return &GetAllParams{
 		timeout: timeout,
 	}
 }
 
 // NewEdgeNodeConfigurationQueryEdgeNodesParamsWithContext creates a new EdgeNodeConfigurationQueryEdgeNodesParams object
 // with the ability to set a context for a request.
-func NewEdgeNodeConfigurationQueryEdgeNodesParamsWithContext(ctx context.Context) *EdgeNodeConfigurationQueryEdgeNodesParams {
-	return &EdgeNodeConfigurationQueryEdgeNodesParams{
+func NewEdgeNodeConfigurationQueryEdgeNodesParamsWithContext(ctx context.Context) *GetAllParams {
+	return &GetAllParams{
 		Context: ctx,
 	}
 }
 
 // NewEdgeNodeConfigurationQueryEdgeNodesParamsWithHTTPClient creates a new EdgeNodeConfigurationQueryEdgeNodesParams object
 // with the ability to set a custom HTTPClient for a request.
-func NewEdgeNodeConfigurationQueryEdgeNodesParamsWithHTTPClient(client *http.Client) *EdgeNodeConfigurationQueryEdgeNodesParams {
-	return &EdgeNodeConfigurationQueryEdgeNodesParams{
+func NewEdgeNodeConfigurationQueryEdgeNodesParamsWithHTTPClient(client *http.Client) *GetAllParams {
+	return &GetAllParams{
 		HTTPClient: client,
 	}
 }
 
 /*
-EdgeNodeConfigurationQueryEdgeNodesParams contains all the parameters to send to the API endpoint
+GetAllParams contains all the parameters to send to the API endpoint
 
 	for the edge node configuration query edge nodes operation.
 
 	Typically these are written to a http.Request.
 */
-type EdgeNodeConfigurationQueryEdgeNodesParams struct {
+type GetAllParams struct {
 
 	/* XRequestID.
 
@@ -88,7 +88,7 @@ type EdgeNodeConfigurationQueryEdgeNodesParams struct {
 // WithDefaults hydrates default values in the edge node configuration query edge nodes params (not the query body).
 //
 // All values with no default are reset to their zero value.
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WithDefaults() *EdgeNodeConfigurationQueryEdgeNodesParams {
+func (o *GetAllParams) WithDefaults() *GetAllParams {
 	o.SetDefaults()
 	return o
 }
@@ -96,78 +96,78 @@ func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WithDefaults() *EdgeNodeConf
 // SetDefaults hydrates default values in the edge node configuration query edge nodes params (not the query body).
 //
 // All values with no default are reset to their zero value.
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) SetDefaults() {
+func (o *GetAllParams) SetDefaults() {
 	// no default values defined for this parameter
 }
 
 // WithTimeout adds the timeout to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WithTimeout(timeout time.Duration) *EdgeNodeConfigurationQueryEdgeNodesParams {
+func (o *GetAllParams) WithTimeout(timeout time.Duration) *GetAllParams {
 	o.SetTimeout(timeout)
 	return o
 }
 
 // SetTimeout adds the timeout to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) SetTimeout(timeout time.Duration) {
+func (o *GetAllParams) SetTimeout(timeout time.Duration) {
 	o.timeout = timeout
 }
 
 // WithContext adds the context to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WithContext(ctx context.Context) *EdgeNodeConfigurationQueryEdgeNodesParams {
+func (o *GetAllParams) WithContext(ctx context.Context) *GetAllParams {
 	o.SetContext(ctx)
 	return o
 }
 
 // SetContext adds the context to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) SetContext(ctx context.Context) {
+func (o *GetAllParams) SetContext(ctx context.Context) {
 	o.Context = ctx
 }
 
 // WithHTTPClient adds the HTTPClient to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WithHTTPClient(client *http.Client) *EdgeNodeConfigurationQueryEdgeNodesParams {
+func (o *GetAllParams) WithHTTPClient(client *http.Client) *GetAllParams {
 	o.SetHTTPClient(client)
 	return o
 }
 
 // SetHTTPClient adds the HTTPClient to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) SetHTTPClient(client *http.Client) {
+func (o *GetAllParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
 // WithXRequestID adds the xRequestID to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WithXRequestID(xRequestID *string) *EdgeNodeConfigurationQueryEdgeNodesParams {
+func (o *GetAllParams) WithXRequestID(xRequestID *string) *GetAllParams {
 	o.SetXRequestID(xRequestID)
 	return o
 }
 
 // SetXRequestID adds the xRequestId to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) SetXRequestID(xRequestID *string) {
+func (o *GetAllParams) SetXRequestID(xRequestID *string) {
 	o.XRequestID = xRequestID
 }
 
 // WithFields adds the fields to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WithFields(fields []string) *EdgeNodeConfigurationQueryEdgeNodesParams {
+func (o *GetAllParams) WithFields(fields []string) *GetAllParams {
 	o.SetFields(fields)
 	return o
 }
 
 // SetFields adds the fields to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) SetFields(fields []string) {
+func (o *GetAllParams) SetFields(fields []string) {
 	o.Fields = fields
 }
 
 // WithSummary adds the summary to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WithSummary(summary *bool) *EdgeNodeConfigurationQueryEdgeNodesParams {
+func (o *GetAllParams) WithSummary(summary *bool) *GetAllParams {
 	o.SetSummary(summary)
 	return o
 }
 
 // SetSummary adds the summary to the edge node configuration query edge nodes params
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) SetSummary(summary *bool) {
+func (o *GetAllParams) SetSummary(summary *bool) {
 	o.Summary = summary
 }
 
 // WriteToRequest writes these params to a swagger request
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
+func (o *GetAllParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
 	if err := r.SetTimeout(o.timeout); err != nil {
 		return err
@@ -217,7 +217,7 @@ func (o *EdgeNodeConfigurationQueryEdgeNodesParams) WriteToRequest(r runtime.Cli
 }
 
 // bindParamEdgeNodeConfigurationQueryEdgeNodes binds the parameter fields
-func (o *EdgeNodeConfigurationQueryEdgeNodesParams) bindParamFields(formats strfmt.Registry) []string {
+func (o *GetAllParams) bindParamFields(formats strfmt.Registry) []string {
 	fieldsIR := o.Fields
 
 	var fieldsIC []string

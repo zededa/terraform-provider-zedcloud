@@ -75,7 +75,7 @@ func StaticDNSList() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"addrs": {
 			Description: "Set of IP addresses for the specified hostname",
-			Type:        schema.TypeSet, //GoType: []string
+			Type:        schema.TypeList, //GoType: []string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},

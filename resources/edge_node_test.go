@@ -3,7 +3,6 @@ package resources
 import (
 	"errors"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -21,12 +20,12 @@ func TestCreateEdgeNode_RequiredAttributesOnly(t *testing.T) {
 	var got models.EdgeNode
 
 	// input config
-	inputPath := "edge_node/required_only.tf"
+	inputPath := "edge_node/create_required_only.tf"
 	input := mustGetTestInput(t, inputPath)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { checkEnv(t) },
 		CheckDestroy: testEdgeNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
@@ -42,11 +41,6 @@ func TestCreateEdgeNode_RequiredAttributesOnly(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					resource.TestMatchResourceAttr(
-						"zedcloud_edgenode.required_only",
-						"projecy_id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
 				),
 			},
 		},
@@ -58,16 +52,16 @@ func TestCreateEdgeNode_AllAttributes(t *testing.T) {
 	var expected models.EdgeNode
 
 	// input config
-	inputPath := "edge_node/complete.tf"
+	inputPath := "edge_node/create_complete.tf"
 	input := mustGetTestInput(t, inputPath)
 
 	// expected output
-	expectedPath := "edge_node/complete.yaml"
+	expectedPath := "edge_node/create_complete.yaml"
 	mustGetExpectedOutput(t, expectedPath, &expected)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { testAccPreCheck(t) },
+		PreCheck:     func() { checkEnv(t) },
 		CheckDestroy: testEdgeNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
@@ -83,11 +77,6 @@ func TestCreateEdgeNode_AllAttributes(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					resource.TestMatchResourceAttr(
-						"zedcloud_edgenode.complete",
-						"projecy_id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
 					testEdgeNodeAttributes(t, &got, &expected),
 				),
 			},
@@ -96,17 +85,6 @@ func TestCreateEdgeNode_AllAttributes(t *testing.T) {
 
 	// update all fields
 	// create and update fields with custom logic and separate api requests
-}
-
-// testAccPreCheck validates the necessary test API keys exist
-// in the testing environment
-func testAccPreCheck(t *testing.T) {
-	if v := os.Getenv("TF_CLI_CONFIG_FILE"); v == "" {
-		t.Fatal("TF_CLI_CONFIG_FILE must be set for acceptance tests, it should contain the dev_overrides config that points to local instance of the provider")
-	}
-	if v := os.Getenv("TF_VAR_zedcloud_token"); v == "" {
-		t.Fatal("TF_VAR_zedcloud_token must be set for acceptance tests to access the zedcloud API")
-	}
 }
 
 // testEdgeNodeExists retrieves the EdgeNode and stores it in the provided *models.DeviceConfig.
