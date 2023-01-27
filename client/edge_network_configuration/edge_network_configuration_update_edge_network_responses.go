@@ -78,62 +78,62 @@ func (o *EdgeNetworkConfigurationUpdateEdgeNetworkReader) ReadResponse(response 
 }
 
 // NewEdgeNetworkConfigurationUpdateEdgeNetworkOK creates a EdgeNetworkConfigurationUpdateEdgeNetworkOK with default headers values
-func NewEdgeNetworkConfigurationUpdateEdgeNetworkOK() *EdgeNetworkConfigurationUpdateEdgeNetworkOK {
-	return &EdgeNetworkConfigurationUpdateEdgeNetworkOK{}
+func NewEdgeNetworkConfigurationUpdateEdgeNetworkOK() *UpdateResult {
+	return &UpdateResult{}
 }
 
 /*
-EdgeNetworkConfigurationUpdateEdgeNetworkOK describes a response with status code 200, with default header values.
+UpdateResult describes a response with status code 200, with default header values.
 
 A successful response.
 */
-type EdgeNetworkConfigurationUpdateEdgeNetworkOK struct {
+type UpdateResult struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this edge network configuration update edge network o k response has a 2xx status code
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) IsSuccess() bool {
+func (o *UpdateResult) IsSuccess() bool {
 	return true
 }
 
 // IsRedirect returns true when this edge network configuration update edge network o k response has a 3xx status code
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) IsRedirect() bool {
+func (o *UpdateResult) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this edge network configuration update edge network o k response has a 4xx status code
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) IsClientError() bool {
+func (o *UpdateResult) IsClientError() bool {
 	return false
 }
 
 // IsServerError returns true when this edge network configuration update edge network o k response has a 5xx status code
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) IsServerError() bool {
+func (o *UpdateResult) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this edge network configuration update edge network o k response a status code equal to that given
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) IsCode(code int) bool {
+func (o *UpdateResult) IsCode(code int) bool {
 	return code == 200
 }
 
 // Code gets the status code for the edge network configuration update edge network o k response
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) Code() int {
+func (o *UpdateResult) Code() int {
 	return 200
 }
 
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) Error() string {
+func (o *UpdateResult) Error() string {
 	return fmt.Sprintf("[PUT /v1/networks/id/{id}][%d] edgeNetworkConfigurationUpdateEdgeNetworkOK  %+v", 200, o.Payload)
 }
 
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) String() string {
+func (o *UpdateResult) String() string {
 	return fmt.Sprintf("[PUT /v1/networks/id/{id}][%d] edgeNetworkConfigurationUpdateEdgeNetworkOK  %+v", 200, o.Payload)
 }
 
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) GetPayload() *models.ZsrvResponse {
+func (o *UpdateResult) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *EdgeNetworkConfigurationUpdateEdgeNetworkOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *UpdateResult) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

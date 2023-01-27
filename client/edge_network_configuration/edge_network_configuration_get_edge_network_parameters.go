@@ -22,7 +22,7 @@ import (
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func GetNetworkByIDParams() *EdgeNetworkConfigurationGetEdgeNetworkParams {
+func GetByIDParams() *EdgeNetworkConfigurationGetEdgeNetworkParams {
 	return &EdgeNetworkConfigurationGetEdgeNetworkParams{
 		timeout: cr.DefaultTimeout,
 	}

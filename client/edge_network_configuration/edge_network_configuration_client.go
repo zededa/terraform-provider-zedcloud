@@ -28,28 +28,28 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateNetwork(params *EdgeNetworkConfigurationCreateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationCreateEdgeNetworkOK, error)
+	Create(params *EdgeNetworkConfigurationCreateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationCreateEdgeNetworkOK, error)
 
 	DeleteNetwork(params *EdgeNetworkConfigurationDeleteEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationDeleteEdgeNetworkOK, error)
 
-	GetNetworkByID(params *EdgeNetworkConfigurationGetEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkOK, error)
+	GetByID(params *EdgeNetworkConfigurationGetEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkOK, error)
 
-	ReadNetwork(params *EdgeNetworkConfigurationGetEdgeNetworkByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkByNameOK, error)
+	GetByName(params *EdgeNetworkConfigurationGetEdgeNetworkByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkByNameOK, error)
 
-	UpdateNetwork(params *EdgeNetworkConfigurationUpdateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationUpdateEdgeNetworkOK, error)
+	Update(params *EdgeNetworkConfigurationUpdateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateResult, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-CreateNetwork creates edge network
+Create creates edge network
 
 Create an edge network record.
 */
-func (a *Client) CreateNetwork(params *EdgeNetworkConfigurationCreateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationCreateEdgeNetworkOK, error) {
+func (a *Client) Create(params *EdgeNetworkConfigurationCreateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationCreateEdgeNetworkOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = CreateNetworkParams()
+		params = CreateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkConfiguration_CreateEdgeNetwork",
@@ -89,7 +89,7 @@ Delete an edge network record.
 func (a *Client) DeleteNetwork(params *EdgeNetworkConfigurationDeleteEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationDeleteEdgeNetworkOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNetworkConfigurationDeleteEdgeNetworkParams()
+		params = DeleteParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkConfiguration_DeleteEdgeNetwork",
@@ -122,14 +122,14 @@ func (a *Client) DeleteNetwork(params *EdgeNetworkConfigurationDeleteEdgeNetwork
 }
 
 /*
-GetNetworkByID gets edge network
+GetByID gets edge network
 
 Get the configuration (without security details) of an edge network record.
 */
-func (a *Client) GetNetworkByID(params *EdgeNetworkConfigurationGetEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkOK, error) {
+func (a *Client) GetByID(params *EdgeNetworkConfigurationGetEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = GetNetworkByIDParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkConfiguration_GetEdgeNetwork",
@@ -162,14 +162,14 @@ func (a *Client) GetNetworkByID(params *EdgeNetworkConfigurationGetEdgeNetworkPa
 }
 
 /*
-ReadNetwork gets edge network
+GetByName gets edge network
 
 Get the configuration (without security details) of an edge network record.
 */
-func (a *Client) ReadNetwork(params *EdgeNetworkConfigurationGetEdgeNetworkByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkByNameOK, error) {
+func (a *Client) GetByName(params *EdgeNetworkConfigurationGetEdgeNetworkByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationGetEdgeNetworkByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = GetNetworkByNameParams()
+		params = GetByNameParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkConfiguration_GetEdgeNetworkByName",
@@ -242,14 +242,14 @@ func (a *Client) EdgeNetworkConfigurationQueryEdgeNetworks(params *EdgeNetworkCo
 }
 
 /*
-UpdateNetwork updates edge network
+Update updates edge network
 
 Update an edge network. The usual pattern to update an edge network record is to retrieve the record and update with the modified values in a new body to update the edge network record.
 */
-func (a *Client) UpdateNetwork(params *EdgeNetworkConfigurationUpdateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkConfigurationUpdateEdgeNetworkOK, error) {
+func (a *Client) Update(params *EdgeNetworkConfigurationUpdateEdgeNetworkParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateResult, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNetworkConfigurationUpdateEdgeNetworkParams()
+		params = UpdateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkConfiguration_UpdateEdgeNetwork",
@@ -272,7 +272,7 @@ func (a *Client) UpdateNetwork(params *EdgeNetworkConfigurationUpdateEdgeNetwork
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*EdgeNetworkConfigurationUpdateEdgeNetworkOK)
+	success, ok := result.(*UpdateResult)
 	if ok {
 		return success, nil
 	}
