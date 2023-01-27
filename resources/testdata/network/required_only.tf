@@ -3,7 +3,7 @@ resource "zedcloud_network" "required_only" {
     # id =
 
 		# required
-    name = "zedcloud_network.required_only"
+    name = "zedcloud_network.required_only.name"
 		title = "zedcloud_network.required_only.title"
 		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
     ip {

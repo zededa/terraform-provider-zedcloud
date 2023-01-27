@@ -16,7 +16,6 @@ import (
 
 func TestAccGetNetwork(t *testing.T) {
 	var networkBefore models.Network
-	// var networkAfter models.DeviceConfig
 
 	// create with required and computed fields
 	requiredOnlyConfigPath := "network/required_only.tf"
@@ -35,7 +34,11 @@ func TestAccGetNetwork(t *testing.T) {
 					testNetworkExists("zedcloud_network.required_only", &networkBefore),
 					resource.TestCheckResourceAttr("zedcloud_network.required_only", "name", "zedcloud_network.required_only.name"),
 					resource.TestCheckResourceAttr("zedcloud_network.required_only", "title", "zedcloud_network.required_only.title"),
-					resource.TestCheckResourceAttr("zedcloud_network.required_only", "project_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+					resource.TestMatchResourceAttr(
+						"zedcloud_network.required_only",
+						"project_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
 					resource.TestMatchResourceAttr(
 						"zedcloud_network.required_only",
 						"id",
@@ -61,12 +64,16 @@ func TestAccGetNetwork(t *testing.T) {
 			{
 				Config: completeConfig,
 				Check: resource.ComposeTestCheckFunc(
-					testNetworkExists("zedcloud_network.complete", &networkComplete),
-					resource.TestCheckResourceAttr("zedcloud_network.complete", "name", "zedcloud_network.complete.name"),
-					resource.TestCheckResourceAttr("zedcloud_network.complete", "title", "zedcloud_network.complete.title"),
-					resource.TestCheckResourceAttr("zedcloud_network.complete", "project_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+					testNetworkExists("zedcloud_network.complete_with_proxy", &networkComplete),
+					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "name", "zedcloud_network.complete_with_proxy.name"),
+					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "title", "zedcloud_network.complete_with_proxy.title"),
 					resource.TestMatchResourceAttr(
-						"zedcloud_network.complete",
+						"zedcloud_network.complete_with_proxy",
+						"project_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_network.complete_with_proxy",
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),

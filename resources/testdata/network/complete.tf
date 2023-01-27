@@ -66,9 +66,9 @@ resource "zedcloud_network" "complete_with_proxy" {
     # id =
 
 		# required
-    name = "complete"
+    name = "zedcloud_network.complete_with_proxy.name"
+		title = "zedcloud_network.complete_with_proxy.title"
 		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
-		title = "complete-title"
     ip {
         dhcp = "NETWORK_DHCP_TYPE_STATIC"
         dhcp_range {
