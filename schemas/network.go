@@ -275,7 +275,9 @@ NETWORK_KIND_V6`,
 			Elem: &schema.Resource{
 				Schema: NetworkProxy(),
 			},
+			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
+			Computed: true,
 		},
 
 		"revision": {
@@ -285,6 +287,7 @@ NETWORK_KIND_V6`,
 				Schema: ObjectRevision(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"title": {
@@ -300,6 +303,7 @@ NETWORK_KIND_V6`,
 				Schema: NetworkWireless(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 	}
 }

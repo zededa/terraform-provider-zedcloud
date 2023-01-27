@@ -9,9 +9,17 @@ func ToStaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
 	var addrs []string
 	addrsInterface, addrsIsSet := d.GetOk("addrs")
 	if addrsIsSet {
-		addrsSlice := addrsInterface.([]interface{})
-		for _, i := range addrsSlice {
-			addrsSlice = append(addrsSlice, i.(string))
+		var items []interface{}
+		if listItems, isList := addrsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = addrsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			addrs = append(addrs, v.(string))
 		}
 	}
 	hostname, _ := d.Get("hostname").(string)
@@ -25,9 +33,17 @@ func StaticDNSListModelFromMap(m map[string]interface{}) *models.StaticDNSList {
 	var addrs []string
 	addrsInterface, addrsIsSet := m["addrs"]
 	if addrsIsSet {
-		addrsSlice := addrsInterface.([]interface{})
-		for _, i := range addrsSlice {
-			addrsSlice = append(addrsSlice, i.(string))
+		var items []interface{}
+		if listItems, isList := addrsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = addrsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			addrs = append(addrs, v.(string))
 		}
 	}
 	hostname := m["hostname"].(string)
@@ -59,7 +75,7 @@ func StaticDNSList() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"addrs": {
 			Description: "Set of IP addresses for the specified hostname",
-			Type:        schema.TypeList, //GoType: []string
+			Type:        schema.TypeSet, //GoType: []string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},

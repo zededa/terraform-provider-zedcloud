@@ -7,7 +7,7 @@ import (
 
 func NetworkWirelessModel(d *schema.ResourceData) *models.NetWirelessConfig {
 	var cellularCfg *models.NetCellularConfig // NetCellularConfig
-	cellularCfgInterface, cellularCfgIsSet := d.GetOk("cellular_cfg")
+	cellularCfgInterface, cellularCfgIsSet := d.GetOk("cellular")
 	if cellularCfgIsSet && cellularCfgInterface != nil {
 		cellularCfgMap := cellularCfgInterface.([]interface{})
 		if len(cellularCfgMap) > 0 {
@@ -21,7 +21,7 @@ func NetworkWirelessModel(d *schema.ResourceData) *models.NetWirelessConfig {
 		typeVar = models.NewNetworkWirelessType(models.NetworkWirelessType(typeModel))
 	}
 	var wifiCfg *models.NetWifiConfig // NetWifiConfig
-	wifiCfgInterface, wifiCfgIsSet := d.GetOk("wifi_cfg")
+	wifiCfgInterface, wifiCfgIsSet := d.GetOk("wifi")
 	if wifiCfgIsSet && wifiCfgInterface != nil {
 		wifiCfgMap := wifiCfgInterface.([]interface{})
 		if len(wifiCfgMap) > 0 {
@@ -37,7 +37,7 @@ func NetworkWirelessModel(d *schema.ResourceData) *models.NetWirelessConfig {
 
 func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessConfig {
 	var cellularCfg *models.NetCellularConfig // NetCellularConfig
-	cellularCfgInterface, cellularCfgIsSet := m["cellular_cfg"]
+	cellularCfgInterface, cellularCfgIsSet := m["cellular"]
 	if cellularCfgIsSet && cellularCfgInterface != nil {
 		cellularCfgMap := cellularCfgInterface.([]interface{})
 		if len(cellularCfgMap) > 0 {
@@ -52,7 +52,7 @@ func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessCo
 		typeVar = models.NewNetworkWirelessType(models.NetworkWirelessType(typeModel))
 	}
 	var wifiCfg *models.NetWifiConfig // NetWifiConfig
-	wifiCfgInterface, wifiCfgIsSet := m["wifi_cfg"]
+	wifiCfgInterface, wifiCfgIsSet := m["wifi"]
 	if wifiCfgIsSet && wifiCfgInterface != nil {
 		wifiCfgMap := wifiCfgInterface.([]interface{})
 		if len(wifiCfgMap) > 0 {
@@ -68,9 +68,9 @@ func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessCo
 }
 
 func SetNetworkWirelessResourceData(d *schema.ResourceData, m *models.NetWirelessConfig) {
-	d.Set("cellular_cfg", SetNetworkCellularSubResourceData([]*models.NetCellularConfig{m.CellularCfg}))
+	d.Set("cellular", SetNetworkCellularSubResourceData([]*models.NetCellularConfig{m.CellularCfg}))
 	d.Set("type", m.Type)
-	d.Set("wifi_cfg", SetNetworkWifiSubResourceData([]*models.NetWifiConfig{m.WifiCfg}))
+	d.Set("wifi", SetNetworkWifiSubResourceData([]*models.NetWifiConfig{m.WifiCfg}))
 }
 
 // Iterate through and update the NetWirelessConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -78,9 +78,9 @@ func SetNetWirelessConfigSubResourceData(m []*models.NetWirelessConfig) (d []*ma
 	for _, NetWirelessConfigModel := range m {
 		if NetWirelessConfigModel != nil {
 			properties := make(map[string]interface{})
-			properties["cellular_cfg"] = SetNetworkCellularSubResourceData([]*models.NetCellularConfig{NetWirelessConfigModel.CellularCfg})
+			properties["cellular"] = SetNetworkCellularSubResourceData([]*models.NetCellularConfig{NetWirelessConfigModel.CellularCfg})
 			properties["type"] = NetWirelessConfigModel.Type
-			properties["wifi_cfg"] = SetNetworkWifiSubResourceData([]*models.NetWifiConfig{NetWirelessConfigModel.WifiCfg})
+			properties["wifi"] = SetNetworkWifiSubResourceData([]*models.NetWifiConfig{NetWirelessConfigModel.WifiCfg})
 			d = append(d, &properties)
 		}
 	}
@@ -90,7 +90,7 @@ func SetNetWirelessConfigSubResourceData(m []*models.NetWirelessConfig) (d []*ma
 // Schema mapping representing the NetWirelessConfig resource defined in the Terraform configuration
 func NetworkWireless() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"cellular_cfg": {
+		"cellular": {
 			Description: "Cellular configuration",
 			Type:        schema.TypeList, //GoType: NetCellularConfig
 			Elem: &schema.Resource{
@@ -107,7 +107,7 @@ NETWORK_WIRELESS_TYPE_CELLULAR`,
 			Optional: true,
 		},
 
-		"wifi_cfg": {
+		"wifi": {
 			Description: "Can be multiple APs on a single wlan, e.g. one for 2.5Ghz, other 5Ghz SSIDs",
 			Type:        schema.TypeList, //GoType: NetWifiConfig
 			Elem: &schema.Resource{
@@ -121,8 +121,8 @@ NETWORK_WIRELESS_TYPE_CELLULAR`,
 // Retrieve property field names for updating the NetWirelessConfig resource
 func GetNetworkWirelessPropertyFields() (t []string) {
 	return []string{
-		"cellular_cfg",
+		"cellular",
 		"type",
-		"wifi_cfg",
+		"wifi",
 	}
 }

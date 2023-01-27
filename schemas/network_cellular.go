@@ -6,7 +6,7 @@ import (
 )
 
 func NetworkCellularModel(d *schema.ResourceData) *models.NetCellularConfig {
-	aPN, _ := d.Get("a_p_n").(string)
+	aPN, _ := d.Get("apn").(string)
 	locationTracking, _ := d.Get("location_tracking").(bool)
 	return &models.NetCellularConfig{
 		APN:              aPN,
@@ -15,7 +15,7 @@ func NetworkCellularModel(d *schema.ResourceData) *models.NetCellularConfig {
 }
 
 func NetworkCellularModelFromMap(m map[string]interface{}) *models.NetCellularConfig {
-	aPN := m["a_p_n"].(string)
+	aPN := m["apn"].(string)
 	locationTracking := m["location_tracking"].(bool)
 	return &models.NetCellularConfig{
 		APN:              aPN,
@@ -24,7 +24,7 @@ func NetworkCellularModelFromMap(m map[string]interface{}) *models.NetCellularCo
 }
 
 func NetworkCellularResourceData(d *schema.ResourceData, m *models.NetCellularConfig) {
-	d.Set("a_p_n", m.APN)
+	d.Set("apn", m.APN)
 	d.Set("location_tracking", m.LocationTracking)
 }
 
@@ -32,7 +32,7 @@ func SetNetworkCellularSubResourceData(m []*models.NetCellularConfig) (d []*map[
 	for _, NetCellularConfigModel := range m {
 		if NetCellularConfigModel != nil {
 			properties := make(map[string]interface{})
-			properties["a_p_n"] = NetCellularConfigModel.APN
+			properties["apn"] = NetCellularConfigModel.APN
 			properties["location_tracking"] = NetCellularConfigModel.LocationTracking
 			d = append(d, &properties)
 		}
@@ -43,7 +43,7 @@ func SetNetworkCellularSubResourceData(m []*models.NetCellularConfig) (d []*map[
 // Schema mapping representing the NetCellularConfig resource defined in the Terraform configuration
 func NetworkCellular() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"a_p_n": {
+		"apn": {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
@@ -53,6 +53,7 @@ func NetworkCellular() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeBool,
 			Optional:    true,
+			Computed:    true,
 		},
 	}
 }
@@ -60,7 +61,7 @@ func NetworkCellular() map[string]*schema.Schema {
 // Retrieve property field names for updating the NetCellularConfig resource
 func GetNetworkCellularPropertyFields() (t []string) {
 	return []string{
-		"a_p_n",
+		"apn",
 		"location_tracking",
 	}
 }

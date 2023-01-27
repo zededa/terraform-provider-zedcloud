@@ -26,7 +26,7 @@ func IPSpecModel(d *schema.ResourceData) *models.IPSpec {
 	if dnsIsSet {
 		dnsSlice := dnsInterface.([]interface{})
 		for _, i := range dnsSlice {
-			dnsSlice = append(dnsSlice, i.(string))
+			dns = append(dns, i.(string))
 		}
 	}
 	domain, _ := d.Get("domain").(string)
@@ -69,7 +69,7 @@ func IPSpecModelFromMap(m map[string]interface{}) *models.IPSpec {
 	if dnsIsSet {
 		dnsSlice := dnsInterface.([]interface{})
 		for _, i := range dnsSlice {
-			dnsSlice = append(dnsSlice, i.(string))
+			dns = append(dns, i.(string))
 		}
 	}
 	domain := m["domain"].(string)

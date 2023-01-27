@@ -8,7 +8,14 @@ import (
 func NetworkProxyModel(d *schema.ResourceData) *models.NetProxyConfig {
 	exceptions, _ := d.Get("exceptions").(string)
 	networkProxy, _ := d.Get("network_proxy").(bool)
-	networkProxyCerts, _ := d.Get("network_proxy_certs").([]string) // []strfmt.Base64
+	var networkProxyCerts []string
+	networkProxyCertsInterface, networkProxyCertsIsSet := d.GetOk("networkProxyCerts")
+	if networkProxyCertsIsSet {
+		networkProxyCertsSlice := networkProxyCertsInterface.([]interface{})
+		for _, i := range networkProxyCertsSlice {
+			networkProxyCertsSlice = append(networkProxyCertsSlice, i.(string))
+		}
+	}
 	networkProxyURL, _ := d.Get("network_proxy_url").(string)
 	pacfile, _ := d.Get("pacfile").(string)
 	var proxies []*models.NetProxyServer // []*NetProxyServer
@@ -41,7 +48,14 @@ func NetworkProxyModel(d *schema.ResourceData) *models.NetProxyConfig {
 func NetworkProxyModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
 	exceptions := m["exceptions"].(string)
 	networkProxy := m["network_proxy"].(bool)
-	networkProxyCerts := m["network_proxy_certs"].([]string) // []strfmt.Base64
+	var networkProxyCerts []string
+	networkProxyCertsInterface, networkProxyCertsIsSet := m["networkProxyCerts"]
+	if networkProxyCertsIsSet {
+		networkProxyCertsSlice := networkProxyCertsInterface.([]interface{})
+		for _, i := range networkProxyCertsSlice {
+			networkProxyCertsSlice = append(networkProxyCertsSlice, i.(string))
+		}
+	}
 	networkProxyURL := m["network_proxy_url"].(string)
 	pacfile := m["pacfile"].(string)
 	var proxies []*models.NetProxyServer // []*NetProxyServer
@@ -114,8 +128,10 @@ func NetworkProxy() map[string]*schema.Schema {
 		"network_proxy_certs": {
 			Description: `Network Proxy Certificates`,
 			Type:        schema.TypeList, //GoType: []strfmt.Base64
-			Elem:        schema.TypeString,
-			Optional:    true,
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
 		},
 
 		"network_proxy_url": {
@@ -132,7 +148,7 @@ func NetworkProxy() map[string]*schema.Schema {
 
 		"proxies": {
 			Description: "Net Proxy: protocol level proxies. Used when network_proxy is set to False.",
-			Type:        schema.TypeList, //GoType: []*NetProxyServer
+			Type:        schema.TypeSet, //GoType: []*NetProxyServer
 			Elem: &schema.Resource{
 				Schema: NetworkProxyServer(),
 			},

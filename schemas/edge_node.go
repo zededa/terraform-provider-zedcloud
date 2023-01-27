@@ -100,7 +100,7 @@ func EdgeNodeModel(d *schema.ResourceData) *models.EdgeNode {
 			if v == nil {
 				continue
 			}
-			m := SysInterfaceModelFromMap(v.(map[string]interface{}))
+			m := SystemInterfaceModelFromMap(v.(map[string]interface{}))
 			interfaces = append(interfaces, m)
 		}
 	}
@@ -109,7 +109,7 @@ func EdgeNodeModel(d *schema.ResourceData) *models.EdgeNode {
 	memory := int64(memoryInt)
 	modelID, _ := d.Get("model_id").(string)
 	name, _ := d.Get("name").(string)
-	obkey, _ := d.Get("obkey").(string)
+	obkey, _ := d.Get("onboarding_key").(string)
 	var onboarding *models.DeviceCerts // DeviceCerts
 	onboardingInterface, onboardingIsSet := d.GetOk("onboarding")
 	if onboardingIsSet {
@@ -310,7 +310,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.EdgeNode {
 			if v == nil {
 				continue
 			}
-			m := SysInterfaceModelFromMap(v.(map[string]interface{}))
+			m := SystemInterfaceModelFromMap(v.(map[string]interface{}))
 			interfaces = append(interfaces, m)
 		}
 	}
@@ -318,7 +318,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.EdgeNode {
 	memory := int64(m["memory"].(int)) // int64
 	modelID := m["model_id"].(string)
 	name := m["name"].(string)
-	obkey := m["obkey"].(string)
+	obkey := m["onboarding_key"].(string)
 	var onboarding *models.DeviceCerts // DeviceCerts
 	onboardingInterface, onboardingIsSet := m["onboarding"]
 	if onboardingIsSet && onboardingInterface != nil {
@@ -444,7 +444,7 @@ func SetEdgeNodeResourceData(d *schema.ResourceData, m *models.EdgeNode) {
 	d.Set("memory", m.Memory)
 	d.Set("model_id", m.ModelID)
 	d.Set("name", m.Name)
-	d.Set("obkey", m.Obkey)
+	d.Set("onboarding_key", m.Obkey)
 	d.Set("prepare_power_off_counter", m.PreparePowerOffCounter)
 	d.Set("prepare_power_off_time", m.PreparePowerOffTime)
 	d.Set("project_id", m.ProjectID)
@@ -490,7 +490,7 @@ func SetEdgeNodeSubResourceData(m []*models.EdgeNode) (d []*map[string]interface
 			properties["memory"] = DeviceConfigModel.Memory
 			properties["model_id"] = DeviceConfigModel.ModelID
 			properties["name"] = DeviceConfigModel.Name
-			properties["obkey"] = DeviceConfigModel.Obkey
+			properties["onboarding_key"] = DeviceConfigModel.Obkey
 			properties["prepare_power_off_counter"] = DeviceConfigModel.PreparePowerOffCounter
 			properties["prepare_power_off_time"] = DeviceConfigModel.PreparePowerOffTime
 			properties["project_id"] = DeviceConfigModel.ProjectID
@@ -671,7 +671,7 @@ func EdgeNode() map[string]*schema.Schema {
 			Description: `System Interface set`,
 			Type:        schema.TypeSet, //GoType: []*SysInterface
 			Elem: &schema.Resource{
-				Schema: SysInterfaceSchema(),
+				Schema: SystemInterface(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -701,7 +701,7 @@ func EdgeNode() map[string]*schema.Schema {
 			Required:    true,
 		},
 
-		"obkey": {
+		"onboarding_key": {
 			Description: `Object key`,
 			Type:        schema.TypeString,
 			Optional:    true,
@@ -848,7 +848,7 @@ func GetEdgeNodePropertyFields() (t []string) {
 		"memory",
 		"model_id",
 		"name",
-		"obkey",
+		"onboarding_key",
 		"onboarding",
 		"prepare_power_off_counter",
 		"prepare_power_off_time",

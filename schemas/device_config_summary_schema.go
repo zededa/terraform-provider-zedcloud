@@ -200,7 +200,7 @@ func DeviceConfigSummarySchema() map[string]*schema.Schema {
 			Description: `System Interface list`,
 			Type:        schema.TypeList, //GoType: []*SysInterface
 			Elem: &schema.Resource{
-				Schema: SysInterfaceSchema(),
+				Schema: SystemInterface(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
