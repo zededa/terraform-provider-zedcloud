@@ -3,11 +3,14 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
+	"os"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	apiclient "github.com/zededa/terraform-provider/client"
+	api_client "github.com/zededa/terraform-provider/client"
 	config "github.com/zededa/terraform-provider/client/edge_network_configuration"
 	"github.com/zededa/terraform-provider/models"
 	zschema "github.com/zededa/terraform-provider/schemas"
@@ -37,7 +40,10 @@ func CreateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	params := config.CreateNetworkParams()
 	params.SetBody(model)
 
-	client := m.(*apiclient.Zedcloudapi)
+	if err := os.WriteFile("/tmp/req-net-create", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
+		fmt.Println(err)
+	}
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Network.CreateNetwork(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
@@ -99,7 +105,7 @@ func readNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 		return nil, diags
 	}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Network.ReadNetwork(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
@@ -110,6 +116,9 @@ func readNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 	network := resp.GetPayload()
 	zschema.SetNetworkResourceData(d, network)
 
+	if err := os.WriteFile("/tmp/resp-net-create", []byte("==========REQ=============\n"+spew.Sdump(network)), 0644); err != nil {
+		fmt.Println(err)
+	}
 	return network, diags
 }
 
@@ -135,7 +144,7 @@ func UpdateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	}
 
 	// makes a bulk update for all properties that were changed
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Network.UpdateNetwork(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -178,7 +187,7 @@ func DeleteNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 		return diags
 	}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Network.DeleteNetwork(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
