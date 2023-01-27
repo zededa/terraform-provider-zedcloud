@@ -36,8 +36,8 @@ func NetworkDataSource() *schema.Resource {
 func CreateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	model := zschema.ToNetworkModel(d)
-	params := config.CreateNetworkParams()
+	model := zschema.NetworkModel(d)
+	params := config.CreateParams()
 	params.SetBody(model)
 
 	if err := os.WriteFile("/tmp/req-net-create", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
@@ -45,7 +45,7 @@ func CreateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	}
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Network.CreateNetwork(params, nil)
+	resp, err := client.Network.Create(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -90,7 +90,7 @@ func ReadNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 func readNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Network, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	params := config.GetNetworkByNameParams()
+	params := config.GetByNameParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -107,7 +107,7 @@ func readNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Network.ReadNetwork(params, nil)
+	resp, err := client.Network.GetByName(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -125,14 +125,14 @@ func readNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 func UpdateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := config.NewEdgeNetworkConfigurationUpdateEdgeNetworkParams()
+	params := config.UpdateParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.ToNetworkModel(d))
+	params.SetBody(zschema.NetworkModel(d))
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {
@@ -145,7 +145,7 @@ func UpdateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
-	resp, err := client.Network.UpdateNetwork(params, nil)
+	resp, err := client.Network.Update(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -171,7 +171,7 @@ func UpdateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 func DeleteNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := config.NewEdgeNetworkConfigurationDeleteEdgeNetworkParams()
+	params := config.DeleteParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {

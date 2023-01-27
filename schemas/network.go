@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func ToNetworkModel(d *schema.ResourceData) *models.Network {
+func NetworkModel(d *schema.ResourceData) *models.Network {
 	description, _ := d.Get("description").(string)
 	var dNSList []*models.StaticDNSList // []*StaticDNSList
 	dnsListInterface, dnsListIsSet := d.GetOk("dns_list")
