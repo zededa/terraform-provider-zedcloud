@@ -30,7 +30,6 @@ resource "zedcloud_edgenode" "complete" {
         intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
     }
 		interfaces {
-	     	# optional
     		cost = 255
     		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
         intfname = "defaultIPv4"

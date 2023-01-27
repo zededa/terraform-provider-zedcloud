@@ -295,7 +295,7 @@ func testEdgeNodeDestroy(s *terraform.State) error {
 		}
 
 		// if the error is equivalent to 404 not found, the EdgeNode is destroyed
-		_, ok := err.(*config.EdgeNodeConfigurationGetEdgeNodeNotFound)
+		_, ok := err.(*config.EdgeNodeNotFound)
 		if !ok {
 			return fmt.Errorf("destroy failed, expect status code 404 for EdgeNode (%s)", params.ID)
 		}

@@ -261,57 +261,57 @@ func (o *EdgeNodeConfigurationGetEdgeNodeForbidden) readResponse(response runtim
 }
 
 // NewEdgeNodeConfigurationGetEdgeNodeNotFound creates a EdgeNodeConfigurationGetEdgeNodeNotFound with default headers values
-func NewEdgeNodeConfigurationGetEdgeNodeNotFound() *EdgeNodeConfigurationGetEdgeNodeNotFound {
-	return &EdgeNodeConfigurationGetEdgeNodeNotFound{}
+func NewEdgeNodeConfigurationGetEdgeNodeNotFound() *EdgeNodeNotFound {
+	return &EdgeNodeNotFound{}
 }
 
 /*
-EdgeNodeConfigurationGetEdgeNodeNotFound describes a response with status code 404, with default header values.
+EdgeNodeNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type EdgeNodeConfigurationGetEdgeNodeNotFound struct {
+type EdgeNodeNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this edge node configuration get edge node not found response has a 2xx status code
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) IsSuccess() bool {
+func (o *EdgeNodeNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this edge node configuration get edge node not found response has a 3xx status code
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) IsRedirect() bool {
+func (o *EdgeNodeNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this edge node configuration get edge node not found response has a 4xx status code
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) IsClientError() bool {
+func (o *EdgeNodeNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this edge node configuration get edge node not found response has a 5xx status code
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) IsServerError() bool {
+func (o *EdgeNodeNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this edge node configuration get edge node not found response a status code equal to that given
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) IsCode(code int) bool {
+func (o *EdgeNodeNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) Error() string {
+func (o *EdgeNodeNotFound) Error() string {
 	return fmt.Sprintf("[GET /v1/devices/id/{id}][%d] edgeNodeConfigurationGetEdgeNodeNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) String() string {
+func (o *EdgeNodeNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/devices/id/{id}][%d] edgeNodeConfigurationGetEdgeNodeNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) GetPayload() *models.ZsrvResponse {
+func (o *EdgeNodeNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *EdgeNodeConfigurationGetEdgeNodeNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *EdgeNodeNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 
