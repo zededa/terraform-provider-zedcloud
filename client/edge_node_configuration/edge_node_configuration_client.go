@@ -40,7 +40,7 @@ type ClientService interface {
 
 	EdgeNodeConfigurationGetDeviceInterfaceTags(params *EdgeNodeConfigurationGetDeviceInterfaceTagsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetDeviceInterfaceTagsOK, error)
 
-	EdgeNodeConfigurationGetEdgeNode(params *EdgeNodeConfigurationGetEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeOK, error)
+	GetByID(params *EdgeNodeConfigurationGetEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeOK, error)
 
 	EdgeNodeConfigurationGetEdgeNodeAttestation(params *EdgeNodeConfigurationGetEdgeNodeAttestationParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeAttestationOK, error)
 
@@ -320,14 +320,14 @@ func (a *Client) EdgeNodeConfigurationGetDeviceInterfaceTags(params *EdgeNodeCon
 }
 
 /*
-EdgeNodeConfigurationGetEdgeNode gets edge node
+GetByID gets edge node
 
 Get the configuration (without security details) of an edge node record.
 */
-func (a *Client) EdgeNodeConfigurationGetEdgeNode(params *EdgeNodeConfigurationGetEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeOK, error) {
+func (a *Client) GetByID(params *EdgeNodeConfigurationGetEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationGetEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationGetEdgeNodeParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_GetEdgeNode",

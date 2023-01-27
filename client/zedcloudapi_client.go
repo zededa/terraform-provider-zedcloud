@@ -34,13 +34,13 @@ const (
 var DefaultSchemes = []string{"https"}
 
 // NewHTTPClient creates a new zedcloudapi HTTP client.
-func NewHTTPClient(formats strfmt.Registry) *Zedcloudapi {
+func NewHTTPClient(formats strfmt.Registry) *ZedcloudAPI {
 	return NewHTTPClientWithConfig(formats, nil)
 }
 
 // NewHTTPClientWithConfig creates a new zedcloudapi HTTP client,
 // using a customizable transport config.
-func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Zedcloudapi {
+func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *ZedcloudAPI {
 	// ensure nullable parameters have default
 	if cfg == nil {
 		cfg = DefaultTransportConfig()
@@ -52,13 +52,13 @@ func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Zed
 }
 
 // New creates a new zedcloudapi client
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Zedcloudapi {
+func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAPI {
 	// ensure nullable parameters have default
 	if formats == nil {
 		formats = strfmt.Default
 	}
 
-	cli := new(Zedcloudapi)
+	cli := new(ZedcloudAPI)
 	cli.Transport = transport
 	cli.EdgeNode = edge_node_configuration.New(transport, formats)
 	cli.EdgeNodeStatus = edge_node_status.New(transport, formats)
@@ -108,8 +108,8 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 	return cfg
 }
 
-// Zedcloudapi is a client for zedcloudapi
-type Zedcloudapi struct {
+// ZedcloudAPI is a client for zedcloudapi
+type ZedcloudAPI struct {
 	EdgeNode edge_node_configuration.ClientService
 
 	EdgeNodeStatus edge_node_status.ClientService
@@ -126,7 +126,7 @@ type Zedcloudapi struct {
 }
 
 // SetTransport changes the transport on the client and all its subresources
-func (c *Zedcloudapi) SetTransport(transport runtime.ClientTransport) {
+func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.EdgeNode.SetTransport(transport)
 	c.EdgeNodeStatus.SetTransport(transport)

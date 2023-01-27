@@ -276,62 +276,62 @@ func (o *EdgeNetworkConfigurationGetEdgeNetworkForbidden) readResponse(response 
 }
 
 // NewEdgeNetworkConfigurationGetEdgeNetworkNotFound creates a EdgeNetworkConfigurationGetEdgeNetworkNotFound with default headers values
-func NewEdgeNetworkConfigurationGetEdgeNetworkNotFound() *EdgeNetworkConfigurationGetEdgeNetworkNotFound {
-	return &EdgeNetworkConfigurationGetEdgeNetworkNotFound{}
+func NewEdgeNetworkConfigurationGetEdgeNetworkNotFound() *NetworkNotFound {
+	return &NetworkNotFound{}
 }
 
 /*
-EdgeNetworkConfigurationGetEdgeNetworkNotFound describes a response with status code 404, with default header values.
+NetworkNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type EdgeNetworkConfigurationGetEdgeNetworkNotFound struct {
+type NetworkNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this edge network configuration get edge network not found response has a 2xx status code
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) IsSuccess() bool {
+func (o *NetworkNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this edge network configuration get edge network not found response has a 3xx status code
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) IsRedirect() bool {
+func (o *NetworkNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this edge network configuration get edge network not found response has a 4xx status code
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) IsClientError() bool {
+func (o *NetworkNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this edge network configuration get edge network not found response has a 5xx status code
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) IsServerError() bool {
+func (o *NetworkNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this edge network configuration get edge network not found response a status code equal to that given
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) IsCode(code int) bool {
+func (o *NetworkNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the edge network configuration get edge network not found response
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) Code() int {
+func (o *NetworkNotFound) Code() int {
 	return 404
 }
 
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) Error() string {
+func (o *NetworkNotFound) Error() string {
 	return fmt.Sprintf("[GET /v1/networks/id/{id}][%d] edgeNetworkConfigurationGetEdgeNetworkNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) String() string {
+func (o *NetworkNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/networks/id/{id}][%d] edgeNetworkConfigurationGetEdgeNetworkNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) GetPayload() *models.ZsrvResponse {
+func (o *NetworkNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *EdgeNetworkConfigurationGetEdgeNetworkNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *NetworkNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 
