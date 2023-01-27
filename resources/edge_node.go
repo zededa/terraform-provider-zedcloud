@@ -10,7 +10,7 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	apiclient "github.com/zededa/terraform-provider/client"
+	api_client "github.com/zededa/terraform-provider/client"
 	config "github.com/zededa/terraform-provider/client/edge_node_configuration"
 	"github.com/zededa/terraform-provider/models"
 	zschema "github.com/zededa/terraform-provider/schemas"
@@ -49,7 +49,7 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 		fmt.Println(err)
 	}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.EdgeNode.Create(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
@@ -150,7 +150,7 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	}
 
 	// makes a bulk update for all properties that were changed
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.EdgeNode.Update(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -221,7 +221,7 @@ func DeleteEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 		return diags
 	}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.EdgeNode.Delete(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
@@ -254,7 +254,7 @@ func activateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}
 		return diags
 	}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.EdgeNode.Activate(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -298,7 +298,7 @@ func deactivateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface
 		return diags
 	}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.EdgeNode.Deactivate(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -343,7 +343,7 @@ func applyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	}
 
 	// makes a bulk update for all properties that were changed
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.EdgeNode.UpdateBaseOS(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -381,7 +381,7 @@ func publishBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	}
 
 	// makes a bulk update for all properties that were changed
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.EdgeNode.PublishBaseOSParams(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -521,7 +521,7 @@ func readEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*
 		return nil, append(diags, diag.Errorf("missing client parameter: name")...)
 	}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.EdgeNode.GetByName(params, nil)
 	log.Printf("[TRACE] response: %v", resp)

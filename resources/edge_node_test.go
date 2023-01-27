@@ -10,8 +10,8 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	apiclient "github.com/zededa/terraform-provider/client"
-	"github.com/zededa/terraform-provider/client/edge_node_configuration"
+	api_client "github.com/zededa/terraform-provider/client"
+	config "github.com/zededa/terraform-provider/client/edge_node_configuration"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -106,23 +106,23 @@ func testEdgeNodeExists(resourceName string, device *models.EdgeNode) resource.T
 		}
 
 		// retrieve the client established in Provider configuration
-		client := testAccProvider.Meta().(*apiclient.Zedcloudapi)
+		client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
 		// retrieve the EdgeNode by referencing its state ID for API lookup
-		params := edge_node_configuration.NewEdgeNodeConfigurationGetEdgeNodeParams()
+		params := config.GetByIDParams()
 		params.ID = rs.Primary.ID
-		response, err := client.EdgeNode.EdgeNodeConfigurationGetEdgeNode(params, nil)
+		response, err := client.EdgeNode.GetByID(params, nil)
 		if err != nil {
 			return fmt.Errorf("could not fetch EdgeNode (%s): %w", rs.Primary.ID, err)
 		}
 
-		deviceConfig := response.GetPayload()
-		if deviceConfig == nil {
+		edgeNode := response.GetPayload()
+		if edgeNode == nil {
 			return errors.New("could not get response payload in EdgeNode existence test: deviceConfig is nil")
 		}
 
 		// store the resulting EdgeNode config in the *models.DeviceConfig variable
-		*device = *deviceConfig
+		*device = *edgeNode
 		return nil
 	}
 }
@@ -275,7 +275,7 @@ func testEdgeNodeAttributes(device *models.EdgeNode) resource.TestCheckFunc {
 // testEdgeNodeDestroy verifies the EdgeNode has been destroyed.
 func testEdgeNodeDestroy(s *terraform.State) error {
 	// retrieve the client established in Provider configuration
-	client := testAccProvider.Meta().(*apiclient.Zedcloudapi)
+	client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
 	// loop through the resources in state, verifying each EdgeNode is destroyed
 	for _, rs := range s.RootModule().Resources {
@@ -284,9 +284,9 @@ func testEdgeNodeDestroy(s *terraform.State) error {
 		}
 
 		// retrieve the EdgeNode by referencing it's state ID for API lookup
-		params := edge_node_configuration.NewEdgeNodeConfigurationGetEdgeNodeParams()
+		params := config.GetByIDParams()
 		params.ID = rs.Primary.ID
-		response, err := client.EdgeNode.EdgeNodeConfigurationGetEdgeNode(params, nil)
+		response, err := client.EdgeNode.GetByID(params, nil)
 		if err == nil {
 			if deviceConfig := response.GetPayload(); deviceConfig != nil && deviceConfig.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, EdgeNode (%s) still exists", deviceConfig.ID)
@@ -295,7 +295,7 @@ func testEdgeNodeDestroy(s *terraform.State) error {
 		}
 
 		// if the error is equivalent to 404 not found, the EdgeNode is destroyed
-		_, ok := err.(*edge_node_configuration.EdgeNodeConfigurationGetEdgeNodeNotFound)
+		_, ok := err.(*config.EdgeNodeConfigurationGetEdgeNodeNotFound)
 		if !ok {
 			return fmt.Errorf("destroy failed, expect status code 404 for EdgeNode (%s)", params.ID)
 		}

@@ -8,12 +8,12 @@ import (
 )
 
 var testAccProviders map[string]*schema.Provider
-var testAccProvider *schema.Provider
+var testProvider *schema.Provider
 
 func init() {
-	testAccProvider = Provider()
+	testProvider = Provider()
 	testAccProviders = map[string]*schema.Provider{
-		"zedcloud": testAccProvider,
+		"zedcloud": testProvider,
 	}
 }
 
