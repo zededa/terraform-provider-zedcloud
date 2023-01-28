@@ -74,7 +74,6 @@ func CreateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/edgeNode-config
-	d.SetId(responseData.ObjectID)
 	edgeNode, diags := readEdgeNode(ctx, d, m)
 	if diags.HasError() {
 		return diags
@@ -174,7 +173,6 @@ func UpdateEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/device-config
-	d.SetId(responseData.ObjectID)
 	edgeNode, diags := readEdgeNode(ctx, d, m)
 	if diags.HasError() {
 		return diags
@@ -509,23 +507,23 @@ func readEdgeNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*
 	var diags diag.Diagnostics
 	fmt.Println("------get---------------------------------------")
 
-	params := config.GetByIDParams()
+	params := config.GetByNameParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		params.ID = idVal.(string)
+	nameVal, nameIsSet := d.GetOk("name")
+	if nameIsSet {
+		params.Name = nameVal.(string)
 	} else {
-		return nil, append(diags, diag.Errorf("missing client parameter: id")...)
+		return nil, append(diags, diag.Errorf("missing client parameter: name")...)
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.EdgeNode.GetByID(params, nil)
+	resp, err := client.EdgeNode.GetByName(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
