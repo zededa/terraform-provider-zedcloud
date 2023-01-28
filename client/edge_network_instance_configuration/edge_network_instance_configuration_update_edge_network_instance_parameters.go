@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/zededa/terraform-provider/models"
 )
 
 // NewEdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams creates a new EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams object,
@@ -68,7 +69,7 @@ type EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams struct {
 	XRequestID *string
 
 	// Body.
-	Body EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBody
+	Body *models.NetInstConfig
 
 	/* ID.
 
@@ -141,13 +142,13 @@ func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) SetXRe
 }
 
 // WithBody adds the body to the edge network instance configuration update edge network instance params
-func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) WithBody(body EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBody) *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams {
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) WithBody(body *models.NetInstConfig) *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge network instance configuration update edge network instance params
-func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) SetBody(body EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBody) {
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) SetBody(body *models.NetInstConfig) {
 	o.Body = body
 }
 

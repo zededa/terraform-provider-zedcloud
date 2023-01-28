@@ -15,55 +15,16 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func TestCreateNetwork_RequiredAttributesOnly(t *testing.T) {
-	var got models.Network
-	var expected models.Network
-
-	// input config
-	inputPath := "network/create_required_only.tf"
-	input := mustGetTestInput(t, inputPath)
-
-	// expected output
-	expectedPath := "network/create_required_only_expected.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
-
-	// terraform acceptance test case
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
-		CheckDestroy: testNetworkDestroy,
-		Providers:    testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: input,
-				Check: resource.ComposeTestCheckFunc(
-					testNetworkExists("zedcloud_network.required_only", &got),
-					resource.TestMatchResourceAttr(
-						"zedcloud_network.required_only",
-						"project_id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
-					resource.TestMatchResourceAttr(
-						"zedcloud_network.required_only",
-						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
-					testNetworkAttributes(t, &got, &expected),
-				),
-			},
-		},
-	})
-}
-
-// func TestCreateNetwork_AllAttributes_WithProxy(t *testing.T) {
+// func TestCreateNetwork_RequiredAttributesOnly(t *testing.T) {
 // 	var got models.Network
 // 	var expected models.Network
 
 // 	// input config
-// 	inputPath := "network/create_complete_with_proxy.tf"
+// 	inputPath := "network/create_required_only.tf"
 // 	input := mustGetTestInput(t, inputPath)
 
 // 	// expected output
-// 	expectedPath := "network/create_complete_with_proxy.yaml"
+// 	expectedPath := "network/create_required_only_expected.yaml"
 // 	mustGetExpectedOutput(t, expectedPath, &expected)
 
 // 	// terraform acceptance test case
@@ -75,16 +36,14 @@ func TestCreateNetwork_RequiredAttributesOnly(t *testing.T) {
 // 			{
 // 				Config: input,
 // 				Check: resource.ComposeTestCheckFunc(
-// 					testNetworkExists("zedcloud_network.complete_with_proxy", &got),
-// 					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "name", "zedcloud_network.complete_with_proxy.name"),
-// 					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "title", "zedcloud_network.complete_with_proxy.title"),
+// 					testNetworkExists("zedcloud_network.required_only", &got),
 // 					resource.TestMatchResourceAttr(
-// 						"zedcloud_network.complete_with_proxy",
+// 						"zedcloud_network.required_only",
 // 						"project_id",
 // 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 // 					),
 // 					resource.TestMatchResourceAttr(
-// 						"zedcloud_network.complete_with_proxy",
+// 						"zedcloud_network.required_only",
 // 						"id",
 // 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 // 					),
@@ -94,6 +53,47 @@ func TestCreateNetwork_RequiredAttributesOnly(t *testing.T) {
 // 		},
 // 	})
 // }
+
+func TestCreateNetwork_AllAttributes_WithProxy(t *testing.T) {
+	var got models.Network
+	var expected models.Network
+
+	// input config
+	inputPath := "network/create_complete_with_proxy.tf"
+	input := mustGetTestInput(t, inputPath)
+
+	// expected output
+	expectedPath := "network/create_complete_with_proxy.yaml"
+	mustGetExpectedOutput(t, expectedPath, &expected)
+
+	// terraform acceptance test case
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { checkEnv(t) },
+		CheckDestroy: testNetworkDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: input,
+				Check: resource.ComposeTestCheckFunc(
+					testNetworkExists("zedcloud_network.complete_with_proxy", &got),
+					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "name", "zedcloud_network.complete_with_proxy.name"),
+					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "title", "zedcloud_network.complete_with_proxy.title"),
+					resource.TestMatchResourceAttr(
+						"zedcloud_network.complete_with_proxy",
+						"project_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_network.complete_with_proxy",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					testNetworkAttributes(t, &got, &expected),
+				),
+			},
+		},
+	})
+}
 
 // func TestCreateNetwork_AllAttributes_WithPac(t *testing.T) {
 // 	var got models.Network
@@ -178,6 +178,13 @@ func testNetworkAttributes(t *testing.T, got, expected *models.Network) resource
 		}
 		if expected.Proxy != nil && expected.Proxy.NetworkProxyCerts == nil {
 			ignoredFields = append(ignoredFields, "Proxy.NetworkProxyCerts")
+		}
+		// API, TF and YAML unmarshal might change order of list elements so we ignore them in tests
+		if expected.DNSList != nil {
+			ignoredFields = append(ignoredFields, "DNSList")
+		}
+		if expected.Proxy != nil && expected.Proxy.Proxies != nil {
+			ignoredFields = append(ignoredFields, "Proxy.Proxies")
 		}
 		opts := cmpopts.IgnoreFields(models.Network{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {

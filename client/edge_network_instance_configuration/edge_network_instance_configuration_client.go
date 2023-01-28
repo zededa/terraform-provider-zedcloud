@@ -28,13 +28,13 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstance(params *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceOK, error)
+	Create(params *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceOK, error)
 
-	EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstance(params *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceOK, error)
+	Delete(params *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceOK, error)
 
-	EdgeNetworkInstanceConfigurationGetEdgeNetworkInstance(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK, error)
+	Get(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK, error)
 
-	EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByName(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameOK, error)
+	GetByName(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameOK, error)
 
 	EdgeNetworkInstanceConfigurationQueryEdgeNetworkInstances(params *EdgeNetworkInstanceConfigurationQueryEdgeNetworkInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationQueryEdgeNetworkInstancesOK, error)
 
@@ -44,14 +44,14 @@ type ClientService interface {
 }
 
 /*
-EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstance creates edge network instance
+Create creates edge network instance
 
 Create an edge network instance record.
 */
-func (a *Client) EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstance(params *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceOK, error) {
+func (a *Client) Create(params *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams()
+		params = CreateNetworkInstanceParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkInstanceConfiguration_CreateEdgeNetworkInstance",
@@ -84,14 +84,14 @@ func (a *Client) EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstance(param
 }
 
 /*
-EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstance deletes edge network instance
+Delete deletes edge network instance
 
 Delete an edge network instance record.
 */
-func (a *Client) EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstance(params *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceOK, error) {
+func (a *Client) Delete(params *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams()
+		params = DeleteNetworkInstanceParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkInstanceConfiguration_DeleteEdgeNetworkInstance",
@@ -124,14 +124,14 @@ func (a *Client) EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstance(param
 }
 
 /*
-EdgeNetworkInstanceConfigurationGetEdgeNetworkInstance gets edge network instance
+Get gets edge network instance
 
 Get the configuration (without security details) of an edge network instance record.
 */
-func (a *Client) EdgeNetworkInstanceConfigurationGetEdgeNetworkInstance(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK, error) {
+func (a *Client) Get(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkInstanceConfiguration_GetEdgeNetworkInstance",
@@ -164,14 +164,14 @@ func (a *Client) EdgeNetworkInstanceConfigurationGetEdgeNetworkInstance(params *
 }
 
 /*
-EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByName gets edge network instance
+GetByName gets edge network instance
 
 Get the configuration (without security details) of an edge network instance record.
 */
-func (a *Client) EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByName(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameOK, error) {
+func (a *Client) GetByName(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams()
+		params = GetByNameParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNetworkInstanceConfiguration_GetEdgeNetworkInstanceByName",

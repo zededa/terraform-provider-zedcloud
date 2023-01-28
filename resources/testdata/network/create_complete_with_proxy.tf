@@ -29,7 +29,7 @@ resource "zedcloud_network" "complete_with_proxy" {
 
     # not supported
     dns_list {
-        addrs = [ "10.10.10.1", "10.2.2.2"]
+        addrs = [ "10.2.2.2", "10.10.10.1" ]
         hostname = "www.example.com"
     }
 

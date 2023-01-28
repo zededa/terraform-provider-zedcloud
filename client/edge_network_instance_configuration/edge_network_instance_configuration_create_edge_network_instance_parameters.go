@@ -18,13 +18,13 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// NewEdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams creates a new EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams object,
+// CreateNetworkInstanceParams creates a new EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams() *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams {
+func CreateNetworkInstanceParams() *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams {
 	return &EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams{
 		timeout: cr.DefaultTimeout,
 	}

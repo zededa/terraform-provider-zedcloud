@@ -148,7 +148,7 @@ func NetworkProxy() map[string]*schema.Schema {
 
 		"proxies": {
 			Description: "Net Proxy: protocol level proxies. Used when network_proxy is set to False.",
-			Type:        schema.TypeSet, //GoType: []*NetProxyServer
+			Type:        schema.TypeList, //GoType: []*NetProxyServer
 			Elem: &schema.Resource{
 				Schema: NetworkProxyServer(),
 			},

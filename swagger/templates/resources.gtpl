@@ -6,9 +6,8 @@ package resources
 
 import (
 	httptransport "github.com/go-openapi/runtime/client"
-	apiclient "github.com/zededa/terraform-provider/client"
+	api_client "github.com/zededa/terraform-provider/client"
 	zschema "github.com/zededa/terraform-provider/schemas"
-	"github.com/zededa/terraform-provider/resources/utils"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -70,7 +69,7 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 		{{- template "generateParams" . -}}
 	{{ end }}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
@@ -154,14 +153,6 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 		{{ end }}
 	{{ end }}
 
-	// loops through array of properties to see which one has changed, the ones that did not change are removed from the list
-	props := zschema.Get{{ pascalize $operationGroup }}PropertyFields()
-	for _, v := range props {
-		if d.HasChange(v) {
-		} else {
-			props = utils.Remove(props, v)
-		}
-	}
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*apiclient.Zedcloudapi)

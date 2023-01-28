@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewEdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams creates a new EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams object,
+// DeleteNetworkInstanceParams creates a new EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams() *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams {
+func DeleteNetworkInstanceParams() *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams {
 	return &EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams{
 		timeout: cr.DefaultTimeout,
 	}

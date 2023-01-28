@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewEdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams creates a new EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams object,
+// GetByNameParams creates a new EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams() *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams {
+func GetByNameParams() *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams {
 	return &EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams{
 		timeout: cr.DefaultTimeout,
 	}

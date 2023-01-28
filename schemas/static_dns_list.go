@@ -79,7 +79,8 @@ func StaticDNSList() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Optional:         true,
+			DiffSuppressFunc: diffSuppressStringListOrder,
 		},
 
 		"hostname": {
