@@ -34,11 +34,13 @@ func Provider() *schema.Provider {
 			"zedcloud_edgenode":         EdgeNodeDataSource(),
 			"zedcloud_network":          NetworkDataSource(),
 			"zedcloud_network_instance": NetworkInstanceDataSource(),
+			"zedcloud_image":            ImageDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":         EdgeNodeResource(),
 			"zedcloud_network":          NetworkResource(),
 			"zedcloud_network_instance": NetworkInstanceResource(),
+			"zedcloud_image":            ImageResource(),
 		},
 	}
 }

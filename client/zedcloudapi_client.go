@@ -13,9 +13,8 @@ import (
 	"github.com/zededa/terraform-provider/client/edge_network_configuration"
 	"github.com/zededa/terraform-provider/client/edge_network_instance_configuration"
 	"github.com/zededa/terraform-provider/client/edge_node_configuration"
-	"github.com/zededa/terraform-provider/client/edge_node_status"
 	"github.com/zededa/terraform-provider/client/hardware_model"
-	"github.com/zededa/terraform-provider/client/resource_group"
+	"github.com/zededa/terraform-provider/client/image_configuration"
 )
 
 // Default zedcloudapi HTTP client.
@@ -61,11 +60,10 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli := new(ZedcloudAPI)
 	cli.Transport = transport
 	cli.EdgeNode = edge_node_configuration.New(transport, formats)
-	cli.EdgeNodeStatus = edge_node_status.New(transport, formats)
 	cli.HardwareModel = hardware_model.New(transport, formats)
-	cli.ResourceGroup = resource_group.New(transport, formats)
 	cli.Network = edge_network_configuration.New(transport, formats)
 	cli.NetworkInstance = edge_network_instance_configuration.New(transport, formats)
+	cli.Image = image_configuration.New(transport, formats)
 	return cli
 }
 
@@ -112,15 +110,13 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 type ZedcloudAPI struct {
 	EdgeNode edge_node_configuration.ClientService
 
-	EdgeNodeStatus edge_node_status.ClientService
-
 	HardwareModel hardware_model.ClientService
-
-	ResourceGroup resource_group.ClientService
 
 	Network edge_network_configuration.ClientService
 
 	NetworkInstance edge_network_instance_configuration.ClientService
+
+	Image image_configuration.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -129,9 +125,7 @@ type ZedcloudAPI struct {
 func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.EdgeNode.SetTransport(transport)
-	c.EdgeNodeStatus.SetTransport(transport)
 	c.HardwareModel.SetTransport(transport)
-	c.ResourceGroup.SetTransport(transport)
 	c.Network.SetTransport(transport)
 	c.NetworkInstance.SetTransport(transport)
 }
