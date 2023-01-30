@@ -6,7 +6,7 @@ import (
 )
 
 func NetInstListModel(d *schema.ResourceData) *models.NetInstList {
-	var cfgList []*models.NetInstConfig // []*NetInstConfig
+	var cfgList []*models.NetworkInstance // []*NetInstConfig
 	cfgListInterface, cfgListIsSet := d.GetOk("cfg_list")
 	if cfgListIsSet {
 		var items []interface{}
@@ -74,7 +74,7 @@ func NetInstListModel(d *schema.ResourceData) *models.NetInstList {
 }
 
 func NetInstListModelFromMap(m map[string]interface{}) *models.NetInstList {
-	var cfgList []*models.NetInstConfig // []*NetInstConfig
+	var cfgList []*models.NetworkInstance // []*NetInstConfig
 	cfgListInterface, cfgListIsSet := m["cfg_list"]
 	if cfgListIsSet {
 		var items []interface{}

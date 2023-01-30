@@ -20,7 +20,7 @@ import (
 type NetInstList struct {
 
 	// cfg list
-	CfgList []*NetInstConfig `json:"cfgList"`
+	CfgList []*NetworkInstance `json:"cfgList"`
 
 	// list
 	List []*NetInstShortConfig `json:"list"`

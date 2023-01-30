@@ -33,12 +33,12 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":         EdgeNodeDataSource(),
 			"zedcloud_network":          NetworkDataSource(),
-			"zedcloud_network_instance": NetworkDataSource(),
+			"zedcloud_network_instance": NetworkInstanceDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":         EdgeNodeResource(),
 			"zedcloud_network":          NetworkResource(),
-			"zedcloud_network_instance": NetworkResource(),
+			"zedcloud_network_instance": NetworkInstanceResource(),
 		},
 	}
 }

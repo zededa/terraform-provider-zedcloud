@@ -57,7 +57,7 @@ func EdgeNodeModel(d *schema.ResourceData) *models.EdgeNode {
 		debugKnobMap := debugKnobInterface.([]interface{})[0].(map[string]interface{})
 		debugKnob = DebugKnobDetailModelFromMap(debugKnobMap)
 	}
-	var defaultNetInst *models.NetInstConfig // NetInstConfig
+	var defaultNetInst *models.NetworkInstance // NetInstConfig
 	defaultNetInstInterface, defaultNetInstIsSet := d.GetOk("default_net_inst")
 	if defaultNetInstIsSet {
 		defaultNetInstMap := defaultNetInstInterface.([]interface{})[0].(map[string]interface{})
@@ -255,7 +255,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.EdgeNode {
 		}
 	}
 	//
-	var defaultNetInst *models.NetInstConfig // NetInstConfig
+	var defaultNetInst *models.NetworkInstance // NetInstConfig
 	defaultNetInstInterface, defaultNetInstIsSet := m["default_net_inst"]
 	if defaultNetInstIsSet && defaultNetInstInterface != nil {
 		defaultNetInstMap := defaultNetInstInterface.([]interface{})
@@ -429,7 +429,7 @@ func SetEdgeNodeResourceData(d *schema.ResourceData, m *models.EdgeNode) {
 	d.Set("config_item", SetEDConfigItemSubResourceData(m.ConfigItem))
 	d.Set("cpu", m.CPU)
 	d.Set("debug_knob", SetDebugKnobDetailSubResourceData([]*models.DebugKnobDetail{m.DebugKnob}))
-	d.Set("default_net_inst", SetNetworkInstanceSubResourceData([]*models.NetInstConfig{m.DefaultNetInst}))
+	d.Set("default_net_inst", SetNetworkInstanceSubResourceData([]*models.NetworkInstance{m.DefaultNetInst}))
 	d.Set("deployment_tag", m.DeploymentTag)
 	d.Set("deprecated", m.Deprecated)
 	d.Set("description", m.Description)
@@ -475,7 +475,7 @@ func SetEdgeNodeSubResourceData(m []*models.EdgeNode) (d []*map[string]interface
 			properties["config_item"] = SetEDConfigItemSubResourceData(DeviceConfigModel.ConfigItem)
 			properties["cpu"] = DeviceConfigModel.CPU
 			properties["debug_knob"] = SetDebugKnobDetailSubResourceData([]*models.DebugKnobDetail{DeviceConfigModel.DebugKnob})
-			properties["default_net_inst"] = SetNetworkInstanceSubResourceData([]*models.NetInstConfig{DeviceConfigModel.DefaultNetInst})
+			properties["default_net_inst"] = SetNetworkInstanceSubResourceData([]*models.NetworkInstance{DeviceConfigModel.DefaultNetInst})
 			properties["deployment_tag"] = DeviceConfigModel.DeploymentTag
 			properties["deprecated"] = DeviceConfigModel.Deprecated
 			properties["description"] = DeviceConfigModel.Description

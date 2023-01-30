@@ -276,62 +276,62 @@ func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceForbidden) rea
 }
 
 // NewEdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound creates a EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound with default headers values
-func NewEdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound() *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound {
-	return &EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound{}
+func NewEdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound() *NetworkInstanceNotFound {
+	return &NetworkInstanceNotFound{}
 }
 
 /*
-EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound describes a response with status code 404, with default header values.
+NetworkInstanceNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound struct {
+type NetworkInstanceNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this edge network instance configuration delete edge network instance not found response has a 2xx status code
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) IsSuccess() bool {
+func (o *NetworkInstanceNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this edge network instance configuration delete edge network instance not found response has a 3xx status code
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) IsRedirect() bool {
+func (o *NetworkInstanceNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this edge network instance configuration delete edge network instance not found response has a 4xx status code
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) IsClientError() bool {
+func (o *NetworkInstanceNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this edge network instance configuration delete edge network instance not found response has a 5xx status code
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) IsServerError() bool {
+func (o *NetworkInstanceNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this edge network instance configuration delete edge network instance not found response a status code equal to that given
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) IsCode(code int) bool {
+func (o *NetworkInstanceNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the edge network instance configuration delete edge network instance not found response
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) Code() int {
+func (o *NetworkInstanceNotFound) Code() int {
 	return 404
 }
 
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) Error() string {
+func (o *NetworkInstanceNotFound) Error() string {
 	return fmt.Sprintf("[DELETE /v1/netinsts/id/{id}][%d] edgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) String() string {
+func (o *NetworkInstanceNotFound) String() string {
 	return fmt.Sprintf("[DELETE /v1/netinsts/id/{id}][%d] edgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) GetPayload() *models.ZsrvResponse {
+func (o *NetworkInstanceNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *NetworkInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

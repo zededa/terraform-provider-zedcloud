@@ -56,7 +56,7 @@ type EdgeNode struct {
 	DebugKnob *DebugKnobDetail `json:"debugKnob,omitempty"`
 
 	// default network instance details
-	DefaultNetInst *NetInstConfig `json:"defaultNetInst,omitempty"`
+	DefaultNetInst *NetworkInstance `json:"defaultNetInst,omitempty"`
 
 	// user defined tag for the device, which is used while deploying policies.
 	DeploymentTag string `json:"deploymentTag,omitempty"`

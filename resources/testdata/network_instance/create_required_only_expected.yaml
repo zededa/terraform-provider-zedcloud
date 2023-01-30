@@ -1,0 +1,3 @@
+name: "zedcloud_network_instance.required_only.name"
+title: "zedcloud_network_instance.required_only.title"
+kind: "NETWORK_INSTANCE_KIND_SWITCH"

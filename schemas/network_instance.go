@@ -5,10 +5,10 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetworkInstanceModel(d *schema.ResourceData) *models.NetInstConfig {
+func NetworkInstanceModel(d *schema.ResourceData) *models.NetworkInstance {
 	clusterID, _ := d.Get("cluster_id").(string)
 	description, _ := d.Get("description").(string)
-	deviceDefault, _ := d.Get("device_default").(string)
+	deviceDefault, _ := d.Get("device_default").(bool)
 	deviceID, _ := d.Get("device_id").(string)
 	dhcp, _ := d.Get("dhcp").(bool)
 	var dNSList []*models.StaticDNSList // []*StaticDNSList
@@ -64,7 +64,7 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetInstConfig {
 	}
 	port, _ := d.Get("port").(string)
 	portTags := map[string]string{}
-	portTagsInterface, portTagsIsSet := d.GetOk("portTags")
+	portTagsInterface, portTagsIsSet := d.GetOk("port_tags")
 	if portTagsIsSet {
 		portTagsMap := portTagsInterface.(map[string]interface{})
 		for k, v := range portTagsMap {
@@ -103,7 +103,7 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetInstConfig {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
 	}
-	return &models.NetInstConfig{
+	return &models.NetworkInstance{
 		ClusterID:       clusterID,
 		Description:     description,
 		DeviceDefault:   deviceDefault,
@@ -128,10 +128,10 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetInstConfig {
 	}
 }
 
-func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetInstConfig {
+func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetworkInstance {
 	clusterID := m["cluster_id"].(string)
 	description := m["description"].(string)
-	deviceDefault := m["device_default"].(string)
+	deviceDefault := m["device_default"].(bool)
 	deviceID := m["device_id"].(string)
 	dhcp := m["dhcp"].(bool)
 	var dNSList []*models.StaticDNSList // []*StaticDNSList
@@ -230,7 +230,7 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetInstConfig
 		typeModel := typeInterface.(string)
 		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
 	}
-	return &models.NetInstConfig{
+	return &models.NetworkInstance{
 		ClusterID:       clusterID,
 		Description:     description,
 		DeviceDefault:   deviceDefault,
@@ -255,7 +255,7 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetInstConfig
 	}
 }
 
-func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetInstConfig) {
+func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetworkInstance) {
 	d.Set("cluster_id", m.ClusterID)
 	d.Set("description", m.Description)
 	d.Set("device_default", m.DeviceDefault)
@@ -279,7 +279,7 @@ func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetInstCon
 	d.Set("type", m.Type)
 }
 
-func SetNetworkInstanceSubResourceData(m []*models.NetInstConfig) (d []*map[string]interface{}) {
+func SetNetworkInstanceSubResourceData(m []*models.NetworkInstance) (d []*map[string]interface{}) {
 	for _, NetInstConfigModel := range m {
 		if NetInstConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -314,7 +314,7 @@ func SetNetworkInstanceSubResourceData(m []*models.NetInstConfig) (d []*map[stri
 func NetworkInstance() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cluster_id": {
-			Description: `id of the Cluster in which the network instance is configured`,
+			Description: `ID of the Cluster in which the network instance is configured`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -326,13 +326,13 @@ func NetworkInstance() map[string]*schema.Schema {
 		},
 
 		"device_default": {
-			Description: `flag to indicate if this is the default network instance for the device`,
-			Type:        schema.TypeString,
+			Description: `Flag to indicate if this is the default network instance for the device`,
+			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
 		"device_id": {
-			Description: `id of the device on which network instance is created`,
+			Description: `ID of the device on which network instance is created`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},
@@ -349,29 +349,37 @@ func NetworkInstance() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: StaticDNSList(),
 			},
-			// ConfigMode: schema.SchemaConfigModeAttr,
+			// DiffSuppressFunc: diffSuppressMapListOrder("dns_list"),
 			Optional: true,
 		},
 
 		"id": {
-			Description: `System defined universally unique Id of the network instance`,
+			Description: `System defined universally unique ID of the network instance`,
 			Type:        schema.TypeString,
 			Computed:    true,
 		},
 
 		"ip": {
-			Description: `Dhcp Server Configuration`,
+			Description: `DHCP Server Configuration`,
 			Type:        schema.TypeList, //GoType: DhcpServerConfig
 			Elem: &schema.Resource{
 				Schema: DHCPServer(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"kind": {
-			Description: `Kind of Network Instance ( Local, Switch etc )`,
-			Type:        schema.TypeString,
-			Required:    true,
+			Description: `Kind of Network Instance:
+NETWORK_INSTANCE_KIND_UNSPECIFIED
+NETWORK_INSTANCE_KIND_TRANSPARENT
+NETWORK_INSTANCE_KIND_SWITCH
+NETWORK_INSTANCE_KIND_LOCAL
+NETWORK_INSTANCE_KIND_CLOUD
+NETWORK_INSTANCE_KIND_MESH
+NETWORK_INSTANCE_KIND_HONEYPOT`,
+			Type:     schema.TypeString,
+			Required: true,
 		},
 
 		"lisp": {
@@ -380,7 +388,7 @@ func NetworkInstance() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: Lisp(),
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"name": {
@@ -429,6 +437,7 @@ func NetworkInstance() map[string]*schema.Schema {
 			Description: `id of the project in which network instance is created`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"revision": {
@@ -437,7 +446,7 @@ func NetworkInstance() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"tags": {
@@ -456,9 +465,15 @@ func NetworkInstance() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: `Type of DHCP for this Network Instance`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description: `Type of DHCP for this Network Instance:
+NETWORK_INSTANCE_DHCP_TYPE_V4
+NETWORK_INSTANCE_DHCP_TYPE_V6
+NETWORK_INSTANCE_DHCP_TYPE_CRYPTOEID
+NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV4
+NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV6`,
+			Type:     schema.TypeString,
+			Optional: true,
+			Computed: true,
 		},
 	}
 }

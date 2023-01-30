@@ -70,7 +70,7 @@ type EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.NetInstConfig
+	Body *models.NetworkInstance
 
 	timeout    time.Duration
 	Context    context.Context
@@ -137,13 +137,13 @@ func (o *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams) SetXRe
 }
 
 // WithBody adds the body to the edge network instance configuration create edge network instance params
-func (o *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams) WithBody(body *models.NetInstConfig) *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams {
+func (o *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams) WithBody(body *models.NetworkInstance) *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge network instance configuration create edge network instance params
-func (o *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams) SetBody(body *models.NetInstConfig) {
+func (o *EdgeNetworkInstanceConfigurationCreateEdgeNetworkInstanceParams) SetBody(body *models.NetworkInstance) {
 	o.Body = body
 }
 

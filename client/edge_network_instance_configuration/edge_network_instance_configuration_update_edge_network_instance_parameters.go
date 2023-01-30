@@ -69,7 +69,7 @@ type EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.NetInstConfig
+	Body *models.NetworkInstance
 
 	/* ID.
 
@@ -142,13 +142,13 @@ func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) SetXRe
 }
 
 // WithBody adds the body to the edge network instance configuration update edge network instance params
-func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) WithBody(body *models.NetInstConfig) *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams {
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) WithBody(body *models.NetworkInstance) *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge network instance configuration update edge network instance params
-func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) SetBody(body *models.NetInstConfig) {
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams) SetBody(body *models.NetworkInstance) {
 	o.Body = body
 }
 

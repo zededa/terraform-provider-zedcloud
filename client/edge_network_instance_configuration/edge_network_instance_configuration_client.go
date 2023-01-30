@@ -32,7 +32,7 @@ type ClientService interface {
 
 	Delete(params *EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationDeleteEdgeNetworkInstanceOK, error)
 
-	Get(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK, error)
+	GetByID(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK, error)
 
 	GetByName(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceByNameOK, error)
 
@@ -124,11 +124,11 @@ func (a *Client) Delete(params *EdgeNetworkInstanceConfigurationDeleteEdgeNetwor
 }
 
 /*
-Get gets edge network instance
+GetByID gets edge network instance
 
 Get the configuration (without security details) of an edge network instance record.
 */
-func (a *Client) Get(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK, error) {
+func (a *Client) GetByID(params *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = GetByIDParams()

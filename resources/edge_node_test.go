@@ -116,7 +116,6 @@ func testEdgeNodeExists(resourceName string, edgeNodeModel *models.EdgeNode) res
 			return errors.New("could not get response payload in EdgeNode existence test: deviceConfig is nil")
 		}
 
-		// store the resulting EdgeNode config in the *models.DeviceConfig variable
 		*edgeNodeModel = *edgeNode
 		return nil
 	}

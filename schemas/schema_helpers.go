@@ -1,6 +1,7 @@
 package schemas
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -36,4 +37,28 @@ func diffSuppressStringListOrder(key, oldValue, newValue string, d *schema.Resou
 	slices.Sort(newList)
 
 	return slices.Equal(oldList, newList)
+}
+
+func diffSuppressMapListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	// fmt.Println("=========================================================")
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		fmt.Println("start =========================================================")
+		fmt.Println(mapKey)
+		fmt.Println(key)
+		oldData, newData := d.GetChange(mapKey)
+		if oldData == nil || newData == nil {
+			return false
+		}
+
+		oldMap := oldData.([]interface{})
+		newMap := newData.([]interface{})
+
+		fmt.Println("oldMap")
+		fmt.Println(oldMap)
+		fmt.Println("newMap")
+		fmt.Println(newMap)
+
+		fmt.Println("end =========================================================")
+		return true
+	}
 }

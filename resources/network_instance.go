@@ -3,8 +3,11 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
+	"os"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider/client"
@@ -18,12 +21,12 @@ func NetworkInstanceResource() *schema.Resource {
 		CreateContext: CreateNetworkInstance,
 		ReadContext:   ReadNetworkInstance,
 		UpdateContext: UpdateNetworkInstance,
-		// DeleteContext: EdgeNetworkInstanceConfiguration_DeleteEdgeNetworkInstance,
-		Schema: zschema.NetworkInstance(),
+		DeleteContext: DeleteNetworkInstance,
+		Schema:        zschema.NetworkInstance(),
 	}
 }
 
-func NetworkInstanceDataResource() *schema.Resource {
+func NetworkInstanceDataSource() *schema.Resource {
 	return &schema.Resource{
 		Schema: zschema.NetworkInstance(),
 	}
@@ -35,6 +38,10 @@ func CreateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 	model := zschema.NetworkInstanceModel(d)
 	params := config.CreateNetworkInstanceParams()
 	params.SetBody(model)
+
+	if err := os.WriteFile("/tmp/create-net-inst-req", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
+		fmt.Println(err)
+	}
 
 	client := m.(*api_client.ZedcloudAPI)
 
@@ -60,9 +67,13 @@ func CreateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 		}
 	}
 
+	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
+	// but doesn't return any error if it's not set.
+	d.SetId(responseData.ObjectID)
+
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNetworkInstance(ctx, d, m); err != nil {
+	if errs := ReadNetworkInstanceByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
@@ -90,7 +101,7 @@ func ReadNetworkInstance(ctx context.Context, d *schema.ResourceData, m interfac
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.NetworkInstance.Get(params, nil)
+	resp, err := client.NetworkInstance.GetByID(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -100,6 +111,9 @@ func ReadNetworkInstance(ctx context.Context, d *schema.ResourceData, m interfac
 	zschema.SetNetworkInstanceResourceData(d, networkInstance)
 	d.SetId(networkInstance.ID)
 
+	if err := os.WriteFile("/tmp/net-inst-resp", []byte("==========REQ=============\n"+spew.Sdump(networkInstance)), 0644); err != nil {
+		fmt.Println(err)
+	}
 	return diags
 }
 
@@ -133,6 +147,10 @@ func ReadNetworkInstanceByName(ctx context.Context, d *schema.ResourceData, m in
 	zschema.SetNetworkInstanceResourceData(d, networkInstance)
 	d.SetId(networkInstance.ID)
 
+	if err := os.WriteFile("/tmp/net-inst-resp", []byte("==========REQ=============\n"+spew.Sdump(networkInstance)), 0644); err != nil {
+		fmt.Println(err)
+	}
+
 	return diags
 }
 
@@ -142,6 +160,10 @@ func UpdateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 	model := zschema.NetworkInstanceModel(d)
 	params := config.NewEdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams()
 	params.SetBody(model)
+
+	if err := os.WriteFile("/tmp/update-net-inst-req", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
+		fmt.Println(err)
+	}
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -189,7 +211,7 @@ func UpdateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 	return diags
 }
 
-func DeleteEdgeNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func DeleteNetworkInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.DeleteNetworkInstanceParams()

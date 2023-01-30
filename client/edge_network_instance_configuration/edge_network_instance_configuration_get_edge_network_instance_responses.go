@@ -82,7 +82,7 @@ EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK describes a response wi
 A successful response.
 */
 type EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK struct {
-	Payload *models.NetInstConfig
+	Payload *models.NetworkInstance
 }
 
 // IsSuccess returns true when this edge network instance configuration get edge network instance o k response has a 2xx status code
@@ -123,13 +123,13 @@ func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK) String() stri
 	return fmt.Sprintf("[GET /v1/netinsts/id/{id}][%d] edgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK  %+v", 200, o.Payload)
 }
 
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK) GetPayload() *models.NetInstConfig {
+func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK) GetPayload() *models.NetworkInstance {
 	return o.Payload
 }
 
 func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.NetInstConfig)
+	o.Payload = new(models.NetworkInstance)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

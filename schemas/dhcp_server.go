@@ -108,7 +108,7 @@ func DHCPServer() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DhcpIPRange(),
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"dns": {
@@ -117,7 +117,7 @@ func DHCPServer() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"domain": {
@@ -148,6 +148,7 @@ func DHCPServer() map[string]*schema.Schema {
 			Description: `Subnet address`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 	}
 }
