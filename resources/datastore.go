@@ -65,6 +65,10 @@ func CreateDatastore(ctx context.Context, d *schema.ResourceData, m interface{})
 		}
 	}
 
+	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
+	// but doesn't return any error if it's not set.
+	d.SetId(responseData.ObjectID)
+
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
 	if errs := ReadDatastoreByName(ctx, d, m); err != nil {
