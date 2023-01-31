@@ -14,15 +14,16 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/zededa/terraform-provider/models"
 )
 
-// NewEdgeApplicationConfigurationUpdateEdgeApplicationBundleParams creates a new EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams object,
+// UpdateParams creates a new EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeApplicationConfigurationUpdateEdgeApplicationBundleParams() *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams {
+func UpdateParams() *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams {
 	return &EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams{
 		timeout: cr.DefaultTimeout,
 	}
@@ -68,7 +69,7 @@ type EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams struct {
 	XRequestID *string
 
 	// Body.
-	Body EdgeApplicationConfigurationUpdateEdgeApplicationBundleBody
+	Body *models.EdgeApplication
 
 	/* ID.
 
@@ -141,13 +142,13 @@ func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) SetXRequ
 }
 
 // WithBody adds the body to the edge application configuration update edge application bundle params
-func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) WithBody(body EdgeApplicationConfigurationUpdateEdgeApplicationBundleBody) *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams {
+func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) WithBody(body *models.EdgeApplication) *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge application configuration update edge application bundle params
-func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) SetBody(body EdgeApplicationConfigurationUpdateEdgeApplicationBundleBody) {
+func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) SetBody(body *models.EdgeApplication) {
 	o.Body = body
 }
 

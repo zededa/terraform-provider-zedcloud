@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewEdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams creates a new EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams object,
+// GetByNameParams creates a new EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams() *EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams {
+func GetByNameParams() *EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams {
 	return &EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams{
 		timeout: cr.DefaultTimeout,
 	}

@@ -657,7 +657,7 @@ func AppInstanceSchema() map[string]*schema.Schema {
 			Description: `app instance object revision details`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
-				Schema: ObjectRevisionSchema(),
+				Schema: ObjectRevision(),
 			},
 			Optional: true,
 		},

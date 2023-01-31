@@ -28,13 +28,13 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	EdgeApplicationConfigurationCreateEdgeApplicationBundle(params *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationCreateEdgeApplicationBundleOK, error)
+	Create(params *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationCreateEdgeApplicationBundleOK, error)
 
-	EdgeApplicationConfigurationDeleteEdgeApplicationBundle(params *EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationDeleteEdgeApplicationBundleOK, error)
+	Delete(params *EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationDeleteEdgeApplicationBundleOK, error)
 
 	EdgeApplicationConfigurationGetEdgeApplicationBundle(params *EdgeApplicationConfigurationGetEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleOK, error)
 
-	EdgeApplicationConfigurationGetEdgeApplicationBundleByName(params *EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleByNameOK, error)
+	GetByName(params *EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleByNameOK, error)
 
 	EdgeApplicationConfigurationGetGlobalEdgeApplicationBundle(params *EdgeApplicationConfigurationGetGlobalEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetGlobalEdgeApplicationBundleOK, error)
 
@@ -46,20 +46,20 @@ type ClientService interface {
 
 	EdgeApplicationConfigurationQueryGlobalEdgeApplicationBundles(params *EdgeApplicationConfigurationQueryGlobalEdgeApplicationBundlesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationQueryGlobalEdgeApplicationBundlesOK, error)
 
-	EdgeApplicationConfigurationUpdateEdgeApplicationBundle(params *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationUpdateEdgeApplicationBundleOK, error)
+	Update(params *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationUpdateEdgeApplicationBundleOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-EdgeApplicationConfigurationCreateEdgeApplicationBundle creates edge application bundle
+Create creates edge application bundle
 
 Create an edge application bundle record.
 */
-func (a *Client) EdgeApplicationConfigurationCreateEdgeApplicationBundle(params *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationCreateEdgeApplicationBundleOK, error) {
+func (a *Client) Create(params *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationCreateEdgeApplicationBundleOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationConfigurationCreateEdgeApplicationBundleParams()
+		params = CreateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationConfiguration_CreateEdgeApplicationBundle",
@@ -92,14 +92,14 @@ func (a *Client) EdgeApplicationConfigurationCreateEdgeApplicationBundle(params 
 }
 
 /*
-EdgeApplicationConfigurationDeleteEdgeApplicationBundle deletes edge application bundle
+Delete deletes edge application bundle
 
 Delete an edge application bundle record.
 */
-func (a *Client) EdgeApplicationConfigurationDeleteEdgeApplicationBundle(params *EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationDeleteEdgeApplicationBundleOK, error) {
+func (a *Client) Delete(params *EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationDeleteEdgeApplicationBundleOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationConfigurationDeleteEdgeApplicationBundleParams()
+		params = DeleteParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationConfiguration_DeleteEdgeApplicationBundle",
@@ -172,14 +172,14 @@ func (a *Client) EdgeApplicationConfigurationGetEdgeApplicationBundle(params *Ed
 }
 
 /*
-EdgeApplicationConfigurationGetEdgeApplicationBundleByName gets edge application bundle
+GetByName gets edge application bundle
 
 Get the configuration (without security details) of an edge application bundle record.
 */
-func (a *Client) EdgeApplicationConfigurationGetEdgeApplicationBundleByName(params *EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleByNameOK, error) {
+func (a *Client) GetByName(params *EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams()
+		params = GetByNameParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationConfiguration_GetEdgeApplicationBundleByName",
@@ -412,14 +412,14 @@ func (a *Client) EdgeApplicationConfigurationQueryGlobalEdgeApplicationBundles(p
 }
 
 /*
-EdgeApplicationConfigurationUpdateEdgeApplicationBundle updates edge application bundle
+Update updates edge application bundle
 
 Update an edge application bundle record. The usual pattern to update an edge application bundle record is to retrieve the record and update with the modified values in a new body to update the edge application bundle record.
 */
-func (a *Client) EdgeApplicationConfigurationUpdateEdgeApplicationBundle(params *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationUpdateEdgeApplicationBundleOK, error) {
+func (a *Client) Update(params *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationUpdateEdgeApplicationBundleOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationConfigurationUpdateEdgeApplicationBundleParams()
+		params = UpdateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationConfiguration_UpdateEdgeApplicationBundle",

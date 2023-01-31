@@ -18,13 +18,13 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// NewEdgeApplicationConfigurationCreateEdgeApplicationBundleParams creates a new EdgeApplicationConfigurationCreateEdgeApplicationBundleParams object,
+// CreateParams creates a new EdgeApplicationConfigurationCreateEdgeApplicationBundleParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeApplicationConfigurationCreateEdgeApplicationBundleParams() *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams {
+func CreateParams() *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams {
 	return &EdgeApplicationConfigurationCreateEdgeApplicationBundleParams{
 		timeout: cr.DefaultTimeout,
 	}

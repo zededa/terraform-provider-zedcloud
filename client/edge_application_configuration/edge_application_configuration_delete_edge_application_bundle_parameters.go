@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewEdgeApplicationConfigurationDeleteEdgeApplicationBundleParams creates a new EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams object,
+// DeleteParams creates a new EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeApplicationConfigurationDeleteEdgeApplicationBundleParams() *EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams {
+func DeleteParams() *EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams {
 	return &EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams{
 		timeout: cr.DefaultTimeout,
 	}
