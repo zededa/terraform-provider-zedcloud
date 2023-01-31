@@ -70,7 +70,7 @@ type EdgeApplicationConfigurationCreateEdgeApplicationBundleParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.App
+	Body *models.EdgeApplication
 
 	timeout    time.Duration
 	Context    context.Context
@@ -137,13 +137,13 @@ func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams) SetXRequ
 }
 
 // WithBody adds the body to the edge application configuration create edge application bundle params
-func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams) WithBody(body *models.App) *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams {
+func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams) WithBody(body *models.EdgeApplication) *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge application configuration create edge application bundle params
-func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams) SetBody(body *models.App) {
+func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleParams) SetBody(body *models.EdgeApplication) {
 	o.Body = body
 }
 

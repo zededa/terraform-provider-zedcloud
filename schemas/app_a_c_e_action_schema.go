@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AppACEAction resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppACEActionModel(d *schema.ResourceData) *models.AppACEAction {
 	drop, _ := d.Get("drop").(bool)
 	limit, _ := d.Get("limit").(bool)
@@ -18,9 +15,11 @@ func AppACEActionModel(d *schema.ResourceData) *models.AppACEAction {
 	limitunit, _ := d.Get("limitunit").(string)
 	var mapparams *models.AppMapParams // AppMapParams
 	mapparamsInterface, mapparamsIsSet := d.GetOk("mapparams")
-	if mapparamsIsSet {
-		mapparamsMap := mapparamsInterface.([]interface{})[0].(map[string]interface{})
-		mapparams = AppMapParamsModelFromMap(mapparamsMap)
+	if mapparamsIsSet && mapparamsInterface != nil {
+		mapparamsMap := mapparamsInterface.([]interface{})
+		if len(mapparamsMap) > 0 {
+			mapparams = AppMapParamsModelFromMap(mapparamsMap[0].(map[string]interface{}))
+		}
 	}
 	portmap, _ := d.Get("portmap").(bool)
 	return &models.AppACEAction{
@@ -37,14 +36,16 @@ func AppACEActionModel(d *schema.ResourceData) *models.AppACEAction {
 func AppACEActionModelFromMap(m map[string]interface{}) *models.AppACEAction {
 	drop := m["drop"].(bool)
 	limit := m["limit"].(bool)
-	limitburst := int64(m["limitburst"].(int)) // int64 true false false
-	limitrate := int64(m["limitrate"].(int))   // int64 true false false
+	limitburst := int64(m["limitburst"].(int)) // int64
+	limitrate := int64(m["limitrate"].(int))   // int64
 	limitunit := m["limitunit"].(string)
 	var mapparams *models.AppMapParams // AppMapParams
 	mapparamsInterface, mapparamsIsSet := m["mapparams"]
-	if mapparamsIsSet {
-		mapparamsMap := mapparamsInterface.([]interface{})[0].(map[string]interface{})
-		mapparams = AppMapParamsModelFromMap(mapparamsMap)
+	if mapparamsIsSet && mapparamsInterface != nil {
+		mapparamsMap := mapparamsInterface.([]interface{})
+		if len(mapparamsMap) > 0 {
+			mapparams = AppMapParamsModelFromMap(mapparamsMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	portmap := m["portmap"].(bool)

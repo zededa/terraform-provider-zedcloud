@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AppMapParams resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppMapParamsModel(d *schema.ResourceData) *models.AppMapParams {
 	portInt, _ := d.Get("port").(int)
 	port := int64(portInt)
@@ -17,7 +14,7 @@ func AppMapParamsModel(d *schema.ResourceData) *models.AppMapParams {
 }
 
 func AppMapParamsModelFromMap(m map[string]interface{}) *models.AppMapParams {
-	port := int64(m["port"].(int)) // int64 true false false
+	port := int64(m["port"].(int)) // int64
 	return &models.AppMapParams{
 		Port: &port,
 	}

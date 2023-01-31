@@ -5,35 +5,63 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AppInterface resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppInterfaceModel(d *schema.ResourceData) *models.AppInterface {
 	accessVlanIDInt, _ := d.Get("access_vlan_id").(int)
 	accessVlanID := int64(accessVlanIDInt)
-	acls, _ := d.Get("acls").([]*models.AppACE) // []*AppACE
+	var acls []*models.AppACE // []*AppACE
+	aclsInterface, aclsIsSet := d.GetOk("acls")
+	if aclsIsSet {
+		var items []interface{}
+		if listItems, isList := aclsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = aclsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppACEModelFromMap(v.(map[string]interface{}))
+			acls = append(acls, m)
+		}
+	}
 	defaultNetInstance, _ := d.Get("default_net_instance").(bool)
 	directattach, _ := d.Get("directattach").(bool)
 	var eidregister *models.EIDRegister // EIDRegister
 	eidregisterInterface, eidregisterIsSet := d.GetOk("eidregister")
-	if eidregisterIsSet {
-		eidregisterMap := eidregisterInterface.([]interface{})[0].(map[string]interface{})
-		eidregister = EIDRegisterModelFromMap(eidregisterMap)
+	if eidregisterIsSet && eidregisterInterface != nil {
+		eidregisterMap := eidregisterInterface.([]interface{})
+		if len(eidregisterMap) > 0 {
+			eidregister = EIDRegisterModelFromMap(eidregisterMap[0].(map[string]interface{}))
+		}
 	}
 	intfname, _ := d.Get("intfname").(string)
 	intforderInt, _ := d.Get("intforder").(int)
 	intforder := int64(intforderInt)
 	var io *models.PhyAdapter // PhyAdapter
 	ioInterface, ioIsSet := d.GetOk("io")
-	if ioIsSet {
-		ioMap := ioInterface.([]interface{})[0].(map[string]interface{})
-		io = PhyAdapterModelFromMap(ioMap)
+	if ioIsSet && ioInterface != nil {
+		ioMap := ioInterface.([]interface{})
+		if len(ioMap) > 0 {
+			io = PhyAdapterModelFromMap(ioMap[0].(map[string]interface{}))
+		}
 	}
 	ipaddr, _ := d.Get("ipaddr").(string)
 	macaddr, _ := d.Get("macaddr").(string)
 	netinstid, _ := d.Get("netinstid").(string)
 	netinstname, _ := d.Get("netinstname").(string)
-	netinsttag, _ := d.Get("netinsttag").(map[string]string) // map[string]string
+	netinsttag := map[string]string{}
+	netinsttagInterface, netinsttagIsSet := d.GetOk("netinsttag")
+	if netinsttagIsSet {
+		netinsttagMap := netinsttagInterface.(map[string]interface{})
+		for k, v := range netinsttagMap {
+			if v == nil {
+				continue
+			}
+			netinsttag[k] = v.(string)
+		}
+	}
+
 	netname, _ := d.Get("netname").(string)
 	privateip, _ := d.Get("privateip").(string)
 	return &models.AppInterface{
@@ -56,31 +84,62 @@ func AppInterfaceModel(d *schema.ResourceData) *models.AppInterface {
 }
 
 func AppInterfaceModelFromMap(m map[string]interface{}) *models.AppInterface {
-	accessVlanID := int64(m["access_vlan_id"].(int)) // int64 false false false
-	acls := m["acls"].([]*models.AppACE)             // []*AppACE
+	accessVlanID := int64(m["access_vlan_id"].(int)) // int64
+	var acls []*models.AppACE                        // []*AppACE
+	aclsInterface, aclsIsSet := m["acls"]
+	if aclsIsSet {
+		var items []interface{}
+		if listItems, isList := aclsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = aclsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppACEModelFromMap(v.(map[string]interface{}))
+			acls = append(acls, m)
+		}
+	}
 	defaultNetInstance := m["default_net_instance"].(bool)
 	directattach := m["directattach"].(bool)
 	var eidregister *models.EIDRegister // EIDRegister
 	eidregisterInterface, eidregisterIsSet := m["eidregister"]
-	if eidregisterIsSet {
-		eidregisterMap := eidregisterInterface.([]interface{})[0].(map[string]interface{})
-		eidregister = EIDRegisterModelFromMap(eidregisterMap)
+	if eidregisterIsSet && eidregisterInterface != nil {
+		eidregisterMap := eidregisterInterface.([]interface{})
+		if len(eidregisterMap) > 0 {
+			eidregister = EIDRegisterModelFromMap(eidregisterMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	intfname := m["intfname"].(string)
-	intforder := int64(m["intforder"].(int)) // int64 true false false
+	intforder := int64(m["intforder"].(int)) // int64
 	var io *models.PhyAdapter                // PhyAdapter
 	ioInterface, ioIsSet := m["io"]
-	if ioIsSet {
-		ioMap := ioInterface.([]interface{})[0].(map[string]interface{})
-		io = PhyAdapterModelFromMap(ioMap)
+	if ioIsSet && ioInterface != nil {
+		ioMap := ioInterface.([]interface{})
+		if len(ioMap) > 0 {
+			io = PhyAdapterModelFromMap(ioMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	ipaddr := m["ipaddr"].(string)
 	macaddr := m["macaddr"].(string)
 	netinstid := m["netinstid"].(string)
 	netinstname := m["netinstname"].(string)
-	netinsttag := m["netinsttag"].(map[string]string)
+	netinsttag := map[string]string{}
+	netinsttagInterface, netinsttagIsSet := m["netinsttag"]
+	if netinsttagIsSet {
+		netinsttagMap := netinsttagInterface.(map[string]interface{})
+		for k, v := range netinsttagMap {
+			if v == nil {
+				continue
+			}
+			netinsttag[k] = v.(string)
+		}
+	}
+
 	netname := m["netname"].(string)
 	privateip := m["privateip"].(string)
 	return &models.AppInterface{

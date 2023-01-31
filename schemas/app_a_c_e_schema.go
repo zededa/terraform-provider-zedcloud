@@ -5,14 +5,43 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AppACE resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppACEModel(d *schema.ResourceData) *models.AppACE {
-	actions, _ := d.Get("actions").([]*models.AppACEAction) // []*AppACEAction
+	var actions []*models.AppACEAction // []*AppACEAction
+	actionsInterface, actionsIsSet := d.GetOk("actions")
+	if actionsIsSet {
+		var items []interface{}
+		if listItems, isList := actionsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = actionsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppACEActionModelFromMap(v.(map[string]interface{}))
+			actions = append(actions, m)
+		}
+	}
 	idInt, _ := d.Get("id").(int)
 	id := int32(idInt)
-	matches, _ := d.Get("matches").([]*models.AppACEMatch) // []*AppACEMatch
+	var matches []*models.AppACEMatch // []*AppACEMatch
+	matchesInterface, matchesIsSet := d.GetOk("matches")
+	if matchesIsSet {
+		var items []interface{}
+		if listItems, isList := matchesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = matchesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppACEMatchModelFromMap(v.(map[string]interface{}))
+			matches = append(matches, m)
+		}
+	}
 	name, _ := d.Get("name").(string)
 	return &models.AppACE{
 		Actions: actions,
@@ -23,9 +52,41 @@ func AppACEModel(d *schema.ResourceData) *models.AppACE {
 }
 
 func AppACEModelFromMap(m map[string]interface{}) *models.AppACE {
-	actions := m["actions"].([]*models.AppACEAction) // []*AppACEAction
-	id := int32(m["id"].(int))                       // int32 true false false
-	matches := m["matches"].([]*models.AppACEMatch)  // []*AppACEMatch
+	var actions []*models.AppACEAction // []*AppACEAction
+	actionsInterface, actionsIsSet := m["actions"]
+	if actionsIsSet {
+		var items []interface{}
+		if listItems, isList := actionsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = actionsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppACEActionModelFromMap(v.(map[string]interface{}))
+			actions = append(actions, m)
+		}
+	}
+	id := int32(m["id"].(int))        // int32
+	var matches []*models.AppACEMatch // []*AppACEMatch
+	matchesInterface, matchesIsSet := m["matches"]
+	if matchesIsSet {
+		var items []interface{}
+		if listItems, isList := matchesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = matchesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppACEMatchModelFromMap(v.(map[string]interface{}))
+			matches = append(matches, m)
+		}
+	}
 	name := m["name"].(string)
 	return &models.AppACE{
 		Actions: actions,

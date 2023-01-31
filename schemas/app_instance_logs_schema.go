@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AppInstanceLogs resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppInstanceLogsModel(d *schema.ResourceData) *models.AppInstanceLogs {
 	access, _ := d.Get("access").(string)
 	return &models.AppInstanceLogs{

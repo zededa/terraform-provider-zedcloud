@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AppACEMatch resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppACEMatchModel(d *schema.ResourceData) *models.AppACEMatch {
 	typeVar, _ := d.Get("type").(string)
 	value, _ := d.Get("value").(string)

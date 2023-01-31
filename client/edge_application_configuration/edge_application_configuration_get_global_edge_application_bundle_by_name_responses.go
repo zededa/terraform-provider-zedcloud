@@ -82,7 +82,7 @@ EdgeApplicationConfigurationGetGlobalEdgeApplicationBundleByNameOK describes a r
 A successful response.
 */
 type EdgeApplicationConfigurationGetGlobalEdgeApplicationBundleByNameOK struct {
-	Payload *models.App
+	Payload *models.EdgeApplication
 }
 
 // IsSuccess returns true when this edge application configuration get global edge application bundle by name o k response has a 2xx status code
@@ -123,13 +123,13 @@ func (o *EdgeApplicationConfigurationGetGlobalEdgeApplicationBundleByNameOK) Str
 	return fmt.Sprintf("[GET /v1/apps/global/name/{name}][%d] edgeApplicationConfigurationGetGlobalEdgeApplicationBundleByNameOK  %+v", 200, o.Payload)
 }
 
-func (o *EdgeApplicationConfigurationGetGlobalEdgeApplicationBundleByNameOK) GetPayload() *models.App {
+func (o *EdgeApplicationConfigurationGetGlobalEdgeApplicationBundleByNameOK) GetPayload() *models.EdgeApplication {
 	return o.Payload
 }
 
 func (o *EdgeApplicationConfigurationGetGlobalEdgeApplicationBundleByNameOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.App)
+	o.Payload = new(models.EdgeApplication)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
