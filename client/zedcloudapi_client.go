@@ -11,6 +11,8 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	"github.com/zededa/terraform-provider/client/datastore_configuration"
+	"github.com/zededa/terraform-provider/client/edge_application_configuration"
+	"github.com/zededa/terraform-provider/client/edge_application_instance_configuration"
 	"github.com/zededa/terraform-provider/client/edge_network_configuration"
 	"github.com/zededa/terraform-provider/client/edge_network_instance_configuration"
 	"github.com/zededa/terraform-provider/client/edge_node_configuration"
@@ -68,6 +70,8 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.Image = image_configuration.New(transport, formats)
 	cli.Datastore = datastore_configuration.New(transport, formats)
 	cli.VolumeInstance = volume_instance_configuration.New(transport, formats)
+	cli.EdgeApplication = edge_application_configuration.New(transport, formats)
+	cli.EdgeApplicationInstance = edge_application_instance_configuration.New(transport, formats)
 	return cli
 }
 
@@ -126,6 +130,10 @@ type ZedcloudAPI struct {
 
 	VolumeInstance volume_instance_configuration.ClientService
 
+	EdgeApplication edge_application_configuration.ClientService
+
+	EdgeApplicationInstance edge_application_instance_configuration.ClientService
+
 	Transport runtime.ClientTransport
 }
 
@@ -138,5 +146,6 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.NetworkInstance.SetTransport(transport)
 	c.Image.SetTransport(transport)
 	c.Datastore.SetTransport(transport)
-	c.VolumeInstance.SetTransport(transport)
+	c.EdgeApplication.SetTransport(transport)
+	c.EdgeApplicationInstance.SetTransport(transport)
 }

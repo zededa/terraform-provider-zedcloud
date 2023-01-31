@@ -17,10 +17,6 @@ import (
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
 
-/*
-VolumeInstanceConfiguration volume instance configuration API
-*/
-
 func VolumeInstanceConfiguration() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateVolumeInstance,
