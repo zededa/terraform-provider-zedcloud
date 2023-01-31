@@ -7,27 +7,54 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Certificate resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CertificateModel(d *schema.ResourceData) *models.Certificate {
 	basicContraintsValid, _ := d.Get("basic_contraints_valid").(bool)
 	cert, _ := d.Get("cert").(string)
 	cryptoKey, _ := d.Get("crypto_key").(string)
 	var ecdsaEncryption *models.ECDSA // ECDSA
 	ecdsaEncryptionInterface, ecdsaEncryptionIsSet := d.GetOk("ecdsa_encryption")
-	if ecdsaEncryptionIsSet {
-		ecdsaEncryptionMap := ecdsaEncryptionInterface.([]interface{})[0].(map[string]interface{})
-		ecdsaEncryption = ECDSAModelFromMap(ecdsaEncryptionMap)
+	if ecdsaEncryptionIsSet && ecdsaEncryptionInterface != nil {
+		ecdsaEncryptionMap := ecdsaEncryptionInterface.([]interface{})
+		if len(ecdsaEncryptionMap) > 0 {
+			ecdsaEncryption = ECDSAModelFromMap(ecdsaEncryptionMap[0].(map[string]interface{}))
+		}
 	}
-	encryptedSecrets, _ := d.Get("encrypted_secrets").(map[string]string) // map[string]string
+	encryptedSecrets := map[string]string{}
+	encryptedSecretsInterface, encryptedSecretsIsSet := d.GetOk("encryptedSecrets")
+	if encryptedSecretsIsSet {
+		encryptedSecretsMap := encryptedSecretsInterface.(map[string]interface{})
+		for k, v := range encryptedSecretsMap {
+			if v == nil {
+				continue
+			}
+			encryptedSecrets[k] = v.(string)
+		}
+	}
+
 	exportable, _ := d.Get("exportable").(bool)
-	extendedKeyUsage, _ := d.Get("extended_key_usage").([]string)
+	var extendedKeyUsage []string
+	extendedKeyUsageInterface, extendedKeyUsageIsSet := d.GetOk("extendedKeyUsage")
+	if extendedKeyUsageIsSet {
+		var items []interface{}
+		if listItems, isList := extendedKeyUsageInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = extendedKeyUsageInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			extendedKeyUsage = append(extendedKeyUsage, v.(string))
+		}
+	}
 	var issuer *models.Subject // Subject
 	issuerInterface, issuerIsSet := d.GetOk("issuer")
-	if issuerIsSet {
-		issuerMap := issuerInterface.([]interface{})[0].(map[string]interface{})
-		issuer = SubjectModelFromMap(issuerMap)
+	if issuerIsSet && issuerInterface != nil {
+		issuerMap := issuerInterface.([]interface{})
+		if len(issuerMap) > 0 {
+			issuer = SubjectModelFromMap(issuerMap[0].(map[string]interface{}))
+		}
 	}
 	keyUsageInt, _ := d.Get("key_usage").(int)
 	keyUsage := int32(keyUsageInt)
@@ -38,23 +65,29 @@ func CertificateModel(d *schema.ResourceData) *models.Certificate {
 	reuseKey, _ := d.Get("reuse_key").(bool)
 	var rsaEcryption *models.RSA // RSA
 	rsaEcryptionInterface, rsaEcryptionIsSet := d.GetOk("rsa_ecryption")
-	if rsaEcryptionIsSet {
-		rsaEcryptionMap := rsaEcryptionInterface.([]interface{})[0].(map[string]interface{})
-		rsaEcryption = RSAModelFromMap(rsaEcryptionMap)
+	if rsaEcryptionIsSet && rsaEcryptionInterface != nil {
+		rsaEcryptionMap := rsaEcryptionInterface.([]interface{})
+		if len(rsaEcryptionMap) > 0 {
+			rsaEcryption = RSAModelFromMap(rsaEcryptionMap[0].(map[string]interface{}))
+		}
 	}
 	var sanValues *models.SANValues // SANValues
 	sanValuesInterface, sanValuesIsSet := d.GetOk("san_values")
-	if sanValuesIsSet {
-		sanValuesMap := sanValuesInterface.([]interface{})[0].(map[string]interface{})
-		sanValues = SANValuesModelFromMap(sanValuesMap)
+	if sanValuesIsSet && sanValuesInterface != nil {
+		sanValuesMap := sanValuesInterface.([]interface{})
+		if len(sanValuesMap) > 0 {
+			sanValues = SANValuesModelFromMap(sanValuesMap[0].(map[string]interface{}))
+		}
 	}
 	serialNumber, _ := d.Get("serial_number").(string)
 	signatureAlgorithm, _ := d.Get("signature_algorithm").(string)
 	var subject *models.Subject // Subject
 	subjectInterface, subjectIsSet := d.GetOk("subject")
-	if subjectIsSet {
-		subjectMap := subjectInterface.([]interface{})[0].(map[string]interface{})
-		subject = SubjectModelFromMap(subjectMap)
+	if subjectIsSet && subjectInterface != nil {
+		subjectMap := subjectInterface.([]interface{})
+		if len(subjectMap) > 0 {
+			subject = SubjectModelFromMap(subjectMap[0].(map[string]interface{}))
+		}
 	}
 	validFrom, _ := d.Get("valid_from").(strfmt.DateTime)
 	validTill, _ := d.Get("valid_till").(strfmt.DateTime)
@@ -89,22 +122,52 @@ func CertificateModelFromMap(m map[string]interface{}) *models.Certificate {
 	cryptoKey := m["crypto_key"].(string)
 	var ecdsaEncryption *models.ECDSA // ECDSA
 	ecdsaEncryptionInterface, ecdsaEncryptionIsSet := m["ecdsa_encryption"]
-	if ecdsaEncryptionIsSet {
-		ecdsaEncryptionMap := ecdsaEncryptionInterface.([]interface{})[0].(map[string]interface{})
-		ecdsaEncryption = ECDSAModelFromMap(ecdsaEncryptionMap)
+	if ecdsaEncryptionIsSet && ecdsaEncryptionInterface != nil {
+		ecdsaEncryptionMap := ecdsaEncryptionInterface.([]interface{})
+		if len(ecdsaEncryptionMap) > 0 {
+			ecdsaEncryption = ECDSAModelFromMap(ecdsaEncryptionMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	encryptedSecrets := m["encrypted_secrets"].(map[string]string)
+	encryptedSecrets := map[string]string{}
+	encryptedSecretsInterface, encryptedSecretsIsSet := m["encrypted_secrets"]
+	if encryptedSecretsIsSet {
+		encryptedSecretsMap := encryptedSecretsInterface.(map[string]interface{})
+		for k, v := range encryptedSecretsMap {
+			if v == nil {
+				continue
+			}
+			encryptedSecrets[k] = v.(string)
+		}
+	}
+
 	exportable := m["exportable"].(bool)
-	extendedKeyUsage := m["extended_key_usage"].([]string)
+	var extendedKeyUsage []string
+	extendedKeyUsageInterface, extendedKeyUsageIsSet := m["extendedKeyUsage"]
+	if extendedKeyUsageIsSet {
+		var items []interface{}
+		if listItems, isList := extendedKeyUsageInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = extendedKeyUsageInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			extendedKeyUsage = append(extendedKeyUsage, v.(string))
+		}
+	}
 	var issuer *models.Subject // Subject
 	issuerInterface, issuerIsSet := m["issuer"]
-	if issuerIsSet {
-		issuerMap := issuerInterface.([]interface{})[0].(map[string]interface{})
-		issuer = SubjectModelFromMap(issuerMap)
+	if issuerIsSet && issuerInterface != nil {
+		issuerMap := issuerInterface.([]interface{})
+		if len(issuerMap) > 0 {
+			issuer = SubjectModelFromMap(issuerMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	keyUsage := int32(m["key_usage"].(int)) // int32 false false false
+	keyUsage := int32(m["key_usage"].(int)) // int32
 	passPhrase := m["pass_phrase"].(string)
 	publicKey := m["public_key"].(string)
 	publicKeyAlgorithm := m["public_key_algorithm"].(string)
@@ -112,25 +175,31 @@ func CertificateModelFromMap(m map[string]interface{}) *models.Certificate {
 	reuseKey := m["reuse_key"].(bool)
 	var rsaEcryption *models.RSA // RSA
 	rsaEcryptionInterface, rsaEcryptionIsSet := m["rsa_ecryption"]
-	if rsaEcryptionIsSet {
-		rsaEcryptionMap := rsaEcryptionInterface.([]interface{})[0].(map[string]interface{})
-		rsaEcryption = RSAModelFromMap(rsaEcryptionMap)
+	if rsaEcryptionIsSet && rsaEcryptionInterface != nil {
+		rsaEcryptionMap := rsaEcryptionInterface.([]interface{})
+		if len(rsaEcryptionMap) > 0 {
+			rsaEcryption = RSAModelFromMap(rsaEcryptionMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var sanValues *models.SANValues // SANValues
 	sanValuesInterface, sanValuesIsSet := m["san_values"]
-	if sanValuesIsSet {
-		sanValuesMap := sanValuesInterface.([]interface{})[0].(map[string]interface{})
-		sanValues = SANValuesModelFromMap(sanValuesMap)
+	if sanValuesIsSet && sanValuesInterface != nil {
+		sanValuesMap := sanValuesInterface.([]interface{})
+		if len(sanValuesMap) > 0 {
+			sanValues = SANValuesModelFromMap(sanValuesMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	serialNumber := m["serial_number"].(string)
 	signatureAlgorithm := m["signature_algorithm"].(string)
 	var subject *models.Subject // Subject
 	subjectInterface, subjectIsSet := m["subject"]
-	if subjectIsSet {
-		subjectMap := subjectInterface.([]interface{})[0].(map[string]interface{})
-		subject = SubjectModelFromMap(subjectMap)
+	if subjectIsSet && subjectInterface != nil {
+		subjectMap := subjectInterface.([]interface{})
+		if len(subjectMap) > 0 {
+			subject = SubjectModelFromMap(subjectMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	validFrom := m["valid_from"].(strfmt.DateTime)

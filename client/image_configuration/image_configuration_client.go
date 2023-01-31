@@ -52,7 +52,7 @@ type ClientService interface {
 
 	Update(params *ImageConfigurationUpdateImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationUpdateImageOK, error)
 
-	ImageConfigurationUplinkImage(params *ImageConfigurationUplinkImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationUplinkImageOK, *ImageConfigurationUplinkImageAccepted, error)
+	Uplink(params *ImageConfigurationUplinkImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationUplinkImageOK, *ImageConfigurationUplinkImageAccepted, error)
 
 	ImageConfigurationUploadImageChunked(params *ImageConfigurationUploadImageChunkedParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationUploadImageChunkedOK, *ImageConfigurationUploadImageChunkedAccepted, error)
 
@@ -542,14 +542,14 @@ func (a *Client) Update(params *ImageConfigurationUpdateImageParams, authInfo ru
 }
 
 /*
-ImageConfigurationUplinkImage uplinks edge application image
+Uplink uplinks edge application image
 
 Uplinks the edge application image record to an existing binry file in the datastore.
 */
-func (a *Client) ImageConfigurationUplinkImage(params *ImageConfigurationUplinkImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationUplinkImageOK, *ImageConfigurationUplinkImageAccepted, error) {
+func (a *Client) Uplink(params *ImageConfigurationUplinkImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationUplinkImageOK, *ImageConfigurationUplinkImageAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewImageConfigurationUplinkImageParams()
+		params = UplinkParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "ImageConfiguration_UplinkImage",

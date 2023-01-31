@@ -23,23 +23,11 @@ ImageConfiguration image configuration API
 
 func ImageResource() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: Create,
+		CreateContext: CreateImage,
 		ReadContext:   ReadImage,
-		/*
-			DeleteContext: ImageConfiguration_DeleteImage,
-			DeleteContext: ImageConfiguration_DeleteLatestImage,
-			ReadContext: ImageConfiguration_GetImageByName,
-			ReadContext: ImageConfiguration_GetLatestImageVersion,
-			UpdateContext: ImageConfiguration_MarkEveImageLatest,
-			UpdateContext: ImageConfiguration_MarkEveImageLatest2,
-			ReadContext: ImageConfiguration_QueryImages,
-			ReadContext: ImageConfiguration_QueryLatestImageVersions,
-			UpdateContext: ImageConfiguration_UpdateImage,
-			UpdateContext: ImageConfiguration_UplinkImage,
-			UpdateContext: ImageConfiguration_UploadImageChunked,
-			UpdateContext: ImageConfiguration_UploadImageFile,
-		*/
-		Schema: zschema.Image(),
+		UpdateContext: UpdateImage,
+		DeleteContext: DeleteImage,
+		Schema:        zschema.Image(),
 	}
 }
 
@@ -50,7 +38,7 @@ func ImageDataSource() *schema.Resource {
 	}
 }
 
-func Create(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func CreateImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	model := zschema.ImageModel(d)
@@ -125,7 +113,7 @@ func ReadImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.
 	return diags
 }
 
-func Update(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func UpdateImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.UpdateParams()
@@ -178,7 +166,7 @@ func Update(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Dia
 	return diags
 }
 
-func Delete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func DeleteImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.DeleteParams()
@@ -207,6 +195,55 @@ func Delete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Dia
 	}
 
 	d.SetId("")
+	return diags
+}
+
+func uplink(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	params := config.UplinkParams()
+
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	params.SetBody(zschema.ImageModel(d))
+
+	nameVal, nameIsSet := d.GetOk("name")
+	if nameIsSet {
+		params.Name = nameVal.(string)
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: name")...)
+		return diags
+	}
+
+	// makes a bulk update for all properties that were changed
+	client := m.(*api_client.ZedcloudAPI)
+	resp, accepted, err := client.Image.Uplink(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
+
+	if accepted != nil {
+		// FIXME: what to do?
+	}
+
+	responseData := resp.GetPayload()
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, err := range responseData.Error {
+			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+		}
+		return diags
+	}
+
+	// the zedcloud API does not return the partially updated object but a custom response.
+	// thus, we need to fetch the object and populate the state.
+	// if errs := GetDevice(ctx, d, m); err != nil {
+	// 	return append(diags, errs...)
+	// }
+
 	return diags
 }
 
@@ -299,56 +336,6 @@ func Delete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Dia
 
 // 	return diags
 // }
-
-// func ImageConfiguration_UplinkImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
-// 	d.Partial(true)
-
-// 	params := config.NewImageConfigurationUplinkImageParams()
-
-// 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-// 	if xRequestIdIsSet {
-// 		params.XRequestID = xRequestIdVal.(*string)
-// 	}
-
-// 	params.SetBody(zschema.ImageConfigurationModel(d))
-// 	// ImageConfigurationUplinkImageBody
-
-// 	nameVal, nameIsSet := d.GetOk("name")
-// 	if nameIsSet {
-// 		params.Name = nameVal.(string)
-// 	} else {
-// 		diags = append(diags, diag.Errorf("missing client parameter: name")...)
-// 		return diags
-// 	}
-
-// 	// makes a bulk update for all properties that were changed
-// 	client := m.(*apiclient.Zedcloudapi)
-// 	resp, err := client.ImageConfiguration.ImageConfigurationUplinkImage(params, nil)
-// 	log.Printf("[TRACE] response: %v", resp)
-// 	if err != nil {
-// 		return append(diags, diag.Errorf("unexpected: %s", err)...)
-// 	}
-
-// 	responseData := resp.GetPayload()
-// 	if responseData != nil && len(responseData.Error) > 0 {
-// 		for _, err := range responseData.Error {
-// 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
-// 		}
-// 		return diags
-// 	}
-
-// 	// the zedcloud API does not return the partially updated object but a custom response.
-// 	// thus, we need to fetch the object and populate the state.
-// 	if errs := GetDevice(ctx, d, m); err != nil {
-// 		return append(diags, errs...)
-// 	}
-
-// 	d.Partial(false)
-
-// 	return diags
-// }
-
 // func ImageConfiguration_UploadImageChunked(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 // 	var diags diag.Diagnostics
 // 	d.Partial(true)

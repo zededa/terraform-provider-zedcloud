@@ -10,6 +10,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
+	"github.com/zededa/terraform-provider/client/datastore_configuration"
 	"github.com/zededa/terraform-provider/client/edge_network_configuration"
 	"github.com/zededa/terraform-provider/client/edge_network_instance_configuration"
 	"github.com/zededa/terraform-provider/client/edge_node_configuration"
@@ -64,6 +65,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.Network = edge_network_configuration.New(transport, formats)
 	cli.NetworkInstance = edge_network_instance_configuration.New(transport, formats)
 	cli.Image = image_configuration.New(transport, formats)
+	cli.Datastore = datastore_configuration.New(transport, formats)
 	return cli
 }
 
@@ -117,6 +119,8 @@ type ZedcloudAPI struct {
 	NetworkInstance edge_network_instance_configuration.ClientService
 
 	Image image_configuration.ClientService
+
+	Datastore datastore_configuration.ClientService
 
 	Transport runtime.ClientTransport
 }

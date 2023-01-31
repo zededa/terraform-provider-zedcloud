@@ -14,15 +14,16 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/zededa/terraform-provider/models"
 )
 
-// NewImageConfigurationUplinkImageParams creates a new ImageConfigurationUplinkImageParams object,
+// UplinkParams creates a new ImageConfigurationUplinkImageParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewImageConfigurationUplinkImageParams() *ImageConfigurationUplinkImageParams {
+func UplinkParams() *ImageConfigurationUplinkImageParams {
 	return &ImageConfigurationUplinkImageParams{
 		timeout: cr.DefaultTimeout,
 	}
@@ -68,7 +69,7 @@ type ImageConfigurationUplinkImageParams struct {
 	XRequestID *string
 
 	// Body.
-	Body ImageConfigurationUplinkImageBody
+	Body *models.Image
 
 	/* Name.
 
@@ -141,13 +142,13 @@ func (o *ImageConfigurationUplinkImageParams) SetXRequestID(xRequestID *string) 
 }
 
 // WithBody adds the body to the image configuration uplink image params
-func (o *ImageConfigurationUplinkImageParams) WithBody(body ImageConfigurationUplinkImageBody) *ImageConfigurationUplinkImageParams {
+func (o *ImageConfigurationUplinkImageParams) WithBody(body *models.Image) *ImageConfigurationUplinkImageParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the image configuration uplink image params
-func (o *ImageConfigurationUplinkImageParams) SetBody(body ImageConfigurationUplinkImageBody) {
+func (o *ImageConfigurationUplinkImageParams) SetBody(body *models.Image) {
 	o.Body = body
 }
 
