@@ -17,7 +17,7 @@ import (
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
 
-func VolumeInstanceConfiguration() *schema.Resource {
+func VolumeInstanceResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateVolumeInstance,
 		ReadContext:   ReadVolumeInstanceByName,
@@ -27,7 +27,7 @@ func VolumeInstanceConfiguration() *schema.Resource {
 	}
 }
 
-func DataResourceVolumeInstanceConfiguration() *schema.Resource {
+func VolumeInstanceDataSource() *schema.Resource {
 	return &schema.Resource{
 		Schema: zschema.VolumeInstance(),
 	}

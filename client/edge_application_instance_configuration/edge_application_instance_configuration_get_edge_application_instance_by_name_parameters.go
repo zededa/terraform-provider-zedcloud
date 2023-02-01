@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams creates a new EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams object,
+// GetByNameParams creates a new EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams() *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams {
+func GetByNameParams() *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams {
 	return &EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams{
 		timeout: cr.DefaultTimeout,
 	}

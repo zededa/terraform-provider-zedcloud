@@ -19,7 +19,7 @@ func AppInstancesModel(d *schema.ResourceData) *models.AppInstances {
 			if v == nil {
 				continue
 			}
-			m := AppInstanceModelFromMap(v.(map[string]interface{}))
+			m := ApplicationInstanceModelFromMap(v.(map[string]interface{}))
 			list = append(list, m)
 		}
 	}
@@ -60,7 +60,7 @@ func AppInstancesModelFromMap(m map[string]interface{}) *models.AppInstances {
 			if v == nil {
 				continue
 			}
-			m := AppInstanceModelFromMap(v.(map[string]interface{}))
+			m := ApplicationInstanceModelFromMap(v.(map[string]interface{}))
 			list = append(list, m)
 		}
 	}
@@ -91,7 +91,7 @@ func AppInstancesModelFromMap(m map[string]interface{}) *models.AppInstances {
 
 // Update the underlying AppInstances resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetAppInstancesResourceData(d *schema.ResourceData, m *models.AppInstances) {
-	d.Set("list", SetAppInstanceSubResourceData(m.List))
+	d.Set("list", SetApplicationInstanceSubResourceData(m.List))
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
 	d.Set("summary_by_state", SetSummarySubResourceData([]*models.Summary{m.SummaryByState}))
 }
@@ -101,7 +101,7 @@ func SetAppInstancesSubResourceData(m []*models.AppInstances) (d []*map[string]i
 	for _, AppInstancesModel := range m {
 		if AppInstancesModel != nil {
 			properties := make(map[string]interface{})
-			properties["list"] = SetAppInstanceSubResourceData(AppInstancesModel.List)
+			properties["list"] = SetApplicationInstanceSubResourceData(AppInstancesModel.List)
 			properties["next"] = SetCursorSubResourceData([]*models.Cursor{AppInstancesModel.Next})
 			properties["summary_by_state"] = SetSummarySubResourceData([]*models.Summary{AppInstancesModel.SummaryByState})
 			d = append(d, &properties)
@@ -117,7 +117,7 @@ func AppInstancesSchema() map[string]*schema.Schema {
 			Description: `app insatance list response`,
 			Type:        schema.TypeList, //GoType: []*AppInstance
 			Elem: &schema.Resource{
-				Schema: AppInstanceSchema(),
+				Schema: ApplicationInstance(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

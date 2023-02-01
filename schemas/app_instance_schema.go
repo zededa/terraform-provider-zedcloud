@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func AppInstanceModel(d *schema.ResourceData) *models.AppInstance {
+func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 	activate, _ := d.Get("activate").(string)
 	appID, _ := d.Get("app_id").(string)
 	appPolicyID, _ := d.Get("app_policy_id").(string)
@@ -195,7 +195,7 @@ func AppInstanceModel(d *schema.ResourceData) *models.AppInstance {
 	}
 }
 
-func AppInstanceModelFromMap(m map[string]interface{}) *models.AppInstance {
+func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstance {
 	activate := m["activate"].(string)
 	appID := m["app_id"].(string)
 	appPolicyID := m["app_policy_id"].(string)
@@ -392,8 +392,7 @@ func AppInstanceModelFromMap(m map[string]interface{}) *models.AppInstance {
 	}
 }
 
-// Update the underlying AppInstance resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetAppInstanceResourceData(d *schema.ResourceData, m *models.AppInstance) {
+func SetApplicationInstanceResourceData(d *schema.ResourceData, m *models.AppInstance) {
 	d.Set("activate", m.Activate)
 	d.Set("app_id", m.AppID)
 	d.Set("app_policy_id", m.AppPolicyID)
@@ -428,8 +427,7 @@ func SetAppInstanceResourceData(d *schema.ResourceData, m *models.AppInstance) {
 	d.Set("vminfo", SetVMSubResourceData([]*models.VM{m.Vminfo}))
 }
 
-// Iterate through and update the AppInstance resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetAppInstanceSubResourceData(m []*models.AppInstance) (d []*map[string]interface{}) {
+func SetApplicationInstanceSubResourceData(m []*models.AppInstance) (d []*map[string]interface{}) {
 	for _, AppInstanceModel := range m {
 		if AppInstanceModel != nil {
 			properties := make(map[string]interface{})
@@ -471,8 +469,7 @@ func SetAppInstanceSubResourceData(m []*models.AppInstance) (d []*map[string]int
 	return
 }
 
-// Schema mapping representing the AppInstance resource defined in the Terraform configuration
-func AppInstanceSchema() map[string]*schema.Schema {
+func ApplicationInstance() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"activate": {
 			Description: `app instance activation flag`,
@@ -707,7 +704,7 @@ func AppInstanceSchema() map[string]*schema.Schema {
 }
 
 // Retrieve property field names for updating the AppInstance resource
-func GetAppInstancePropertyFields() (t []string) {
+func GetApplicationInstancePropertyFields() (t []string) {
 	return []string{
 		"activate",
 		"app_id",

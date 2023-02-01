@@ -71,7 +71,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.Datastore = datastore_configuration.New(transport, formats)
 	cli.VolumeInstance = volume_instance_configuration.New(transport, formats)
 	cli.EdgeApplication = edge_application_configuration.New(transport, formats)
-	cli.EdgeApplicationInstance = edge_application_instance_configuration.New(transport, formats)
+	cli.ApplicationInstance = edge_application_instance_configuration.New(transport, formats)
 	return cli
 }
 
@@ -132,7 +132,7 @@ type ZedcloudAPI struct {
 
 	EdgeApplication edge_application_configuration.ClientService
 
-	EdgeApplicationInstance edge_application_instance_configuration.ClientService
+	ApplicationInstance edge_application_instance_configuration.ClientService
 
 	Transport runtime.ClientTransport
 }
@@ -147,5 +147,5 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Image.SetTransport(transport)
 	c.Datastore.SetTransport(transport)
 	c.EdgeApplication.SetTransport(transport)
-	c.EdgeApplicationInstance.SetTransport(transport)
+	c.ApplicationInstance.SetTransport(transport)
 }

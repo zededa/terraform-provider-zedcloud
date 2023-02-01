@@ -5,232 +5,200 @@ package resources
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"context"
+	"errors"
+	"log"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	api_client "github.com/zededa/terraform-provider/client"
+	config "github.com/zededa/terraform-provider/client/edge_application_instance_configuration"
+	"github.com/zededa/terraform-provider/models"
+	zschema "github.com/zededa/terraform-provider/schemas"
 )
 
-func EdgeApplicationInstanceConfiguration() *schema.Resource {
+func ApplicationInstanceResource() *schema.Resource {
 	return &schema.Resource{
-		/*
-			UpdateContext: EdgeApplicationInstanceConfiguration_ActivateEdgeApplicationInstance,
-			UpdateContext: EdgeApplicationInstanceConfiguration_ConnectToEdgeApplicationInstance,
-			CreateContext: EdgeApplicationInstanceConfiguration_CreateEdgeApplicationInstance,
-			UpdateContext: EdgeApplicationInstanceConfiguration_DeActivateEdgeApplicationInstance,
-			DeleteContext: EdgeApplicationInstanceConfiguration_DeleteEdgeApplicationInstance,
-			ReadContext: EdgeApplicationInstanceConfiguration_GetEdgeApplicationInstance,
-			ReadContext: EdgeApplicationInstanceConfiguration_GetEdgeApplicationInstanceByName,
-			ReadContext: EdgeApplicationInstanceConfiguration_QueryEdgeApplicationInstances,
-			UpdateContext: EdgeApplicationInstanceConfiguration_RefreshEdgeApplicationInstance,
-			UpdateContext: EdgeApplicationInstanceConfiguration_RefreshPurgeEdgeApplicationInstance,
-			UpdateContext: EdgeApplicationInstanceConfiguration_RestartEdgeApplicationInstance,
-			UpdateContext: EdgeApplicationInstanceConfiguration_UpdateEdgeApplicationInstance,
-		*/
-		// Schema: zschema.EdgeApplicationInstance(),
+		CreateContext: CreateApplicationInstance,
+		ReadContext:   GetApplicationInstanceByName,
+		UpdateContext: UpdateApplicationInstance,
+		DeleteContext: DeleteApplicationInstance,
+		Schema:        zschema.ApplicationInstance(),
 	}
 }
 
-func DataResourceEdgeApplicationInstanceConfiguration() *schema.Resource {
+func ApplicationInstanceDataSource() *schema.Resource {
 	return &schema.Resource{
-		// ReadContext: ReadEdgeApplicationInstanceByName,
-		// Schema: zschema.EdgeApplicationInstance(),
+		ReadContext: GetApplicationInstanceByName,
+		Schema:      zschema.ApplicationInstance(),
 	}
 }
 
-// func ReadEdgeApplicationInstanceByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
+func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 
-// 	params := edge_application_instance_configuration.NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams()
+	model := zschema.ApplicationInstanceModel(d)
+	params := config.CreateParams()
+	params.SetBody(model)
 
-// 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-// 	if xRequestIdIsSet {
-// 		params.XRequestID = xRequestIdVal.(*string)
-// 	}
+	client := m.(*api_client.ZedcloudAPI)
 
-// 	nameVal, nameIsSet := d.GetOk("name")
-// 	if nameIsSet {
-// 		params.Name = nameVal.(string)
-// 	} else {
-// 		diags = append(diags, diag.Errorf("missing client parameter: name")...)
-// 		return diags
-// 	}
+	resp, err := client.ApplicationInstance.Create(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return diags
+	}
 
-// 	client := m.(*api_client.ZedcloudAPI)
+	responseData := resp.GetPayload()
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
+			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+		}
+		if diags.HasError() {
+			return diags
+		}
+	}
 
-// 	resp, err := client.EdgeApplicationInstance.EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByName(params, nil)
-// 	log.Printf("[TRACE] response: %v", resp)
-// 	if err != nil {
-// 		return append(diags, diag.Errorf("unexpected: %s", err)...)
-// 	}
+	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
+	// but doesn't return any error if it's not set.
+	d.SetId(responseData.ObjectID)
 
-// 	respModel := resp.GetPayload()
-// 	zschema.SetEdgeApplicationInstanceResourceData(d, respModel)
+	// the zedcloud API does not return the partially updated object but a custom response.
+	// thus, we need to fetch the object and populate the state.
+	if errs := GetApplicationInstanceByName(ctx, d, m); err != nil {
+		return append(diags, errs...)
+	}
 
-// 	return diags
-// }
+	return diags
+}
 
-// func EdgeApplicationInstanceConfiguration_GetEdgeApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
+func GetApplicationInstanceByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 
-// 	params := edge_application_instance_configuration.NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceParams()
+	params := config.GetByNameParams()
 
-// 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-// 	if xRequestIdIsSet {
-// 		params.XRequestID = xRequestIdVal.(*string)
-// 	}
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
 
-// 	idVal, idIsSet := d.GetOk("id")
-// 	if idIsSet {
-// 		id, _ := idVal.(string)
-// 		params.ID = id
-// 	} else {
-// 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-// 		return diags
-// 	}
+	nameVal, nameIsSet := d.GetOk("name")
+	if nameIsSet {
+		params.Name = nameVal.(string)
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: name")...)
+		return diags
+	}
 
-// 	client := m.(*api_client.ZedcloudAPI)
+	client := m.(*api_client.ZedcloudAPI)
 
-// 	resp, err := client.EdgeApplicationInstance.EdgeApplicationInstanceConfigurationGetEdgeApplicationInstance(params, nil)
-// 	log.Printf("[TRACE] response: %v", resp)
-// 	if err != nil {
-// 		return append(diags, diag.Errorf("unexpected: %s", err)...)
-// 	}
+	resp, err := client.ApplicationInstance.GetByName(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
 
-// 	respModel := resp.GetPayload()
-// 	zschema.SetApplicationInstanceResourceData(d, respModel)
+	appInstance := resp.GetPayload()
+	zschema.SetApplicationInstanceResourceData(d, appInstance)
+	d.SetId(appInstance.ID)
 
-// 	return diags
-// }
+	return diags
+}
 
-// func EdgeApplicationInstanceConfiguration_QueryEdgeApplicationInstances(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
+func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 
-// 	params := edge_application_instance_configuration.NewEdgeApplicationInstanceConfigurationQueryEdgeApplicationInstancesParams()
+	params := config.UpdateParams()
 
-// 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-// 	if xRequestIdIsSet {
-// 		params.XRequestID = xRequestIdVal.(*string)
-// 	}
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
 
-// 	fieldsVal, fieldsIsSet := d.GetOk("fields")
-// 	if fieldsIsSet {
-// 		params.Fields = fieldsVal.([]string)
-// 	}
+	params.SetBody(zschema.ApplicationInstanceModel(d))
 
-// 	filterAppNameVal, filterAppNameIsSet := d.GetOk("filter_app_name")
-// 	if filterAppNameIsSet {
-// 		params.FilterAppName = filterAppNameVal.(*string)
-// 	}
+	idVal, idIsSet := d.GetOk("id")
+	if idIsSet {
+		id, _ := idVal.(string)
+		params.ID = id
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		return diags
+	}
 
-// 	filterAppTypeVal, filterAppTypeIsSet := d.GetOk("filter_app_type")
-// 	if filterAppTypeIsSet {
-// 		params.FilterAppType = filterAppTypeVal.(*string)
-// 	}
+	client := m.(*api_client.ZedcloudAPI)
 
-// 	filterDeploymentTypeVal, filterDeploymentTypeIsSet := d.GetOk("filter_deployment_type")
-// 	if filterDeploymentTypeIsSet {
-// 		params.FilterDeploymentType = filterDeploymentTypeVal.(*string)
-// 	}
+	resp, err := client.ApplicationInstance.Update(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
 
-// 	filterDeviceNameVal, filterDeviceNameIsSet := d.GetOk("filter_device_name")
-// 	if filterDeviceNameIsSet {
-// 		params.FilterDeviceName = filterDeviceNameVal.(*string)
-// 	}
+	responseData := resp.GetPayload()
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
+			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+		}
+		if diags.HasError() {
+			return diags
+		}
+	}
 
-// 	filterDeviceNamePatternVal, filterDeviceNamePatternIsSet := d.GetOk("filter_device_name_pattern")
-// 	if filterDeviceNamePatternIsSet {
-// 		params.FilterDeviceNamePattern = filterDeviceNamePatternVal.(*string)
-// 	}
+	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
+	// but doesn't return any error if it's not set.
+	d.SetId(responseData.ObjectID)
 
-// 	filterNamePatternVal, filterNamePatternIsSet := d.GetOk("filter_name_pattern")
-// 	if filterNamePatternIsSet {
-// 		params.FilterNamePattern = filterNamePatternVal.(*string)
-// 	}
+	// the zedcloud API does not return the partially updated object but a custom response.
+	// thus, we need to fetch the object and populate the state.
+	if errs := GetApplicationInstanceByName(ctx, d, m); err != nil {
+		return append(diags, errs...)
+	}
 
-// 	filterProjectNameVal, filterProjectNameIsSet := d.GetOk("filter_project_name")
-// 	if filterProjectNameIsSet {
-// 		params.FilterProjectName = filterProjectNameVal.(*string)
-// 	}
+	return diags
+}
 
-// 	filterProjectNamePatternVal, filterProjectNamePatternIsSet := d.GetOk("filter_project_name_pattern")
-// 	if filterProjectNamePatternIsSet {
-// 		params.FilterProjectNamePattern = filterProjectNamePatternVal.(*string)
-// 	}
+func DeleteApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 
-// 	nextOrderByVal, nextOrderByIsSet := d.GetOk("next_order_by")
-// 	if nextOrderByIsSet {
-// 		params.NextOrderBy = nextOrderByVal.([]string)
-// 	}
+	params := config.DeleteParams()
 
-// 	nextPageNumVal, nextPageNumIsSet := d.GetOk("next_page_num")
-// 	if nextPageNumIsSet {
-// 		params.NextPageNum = nextPageNumVal.(*int64)
-// 	}
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
 
-// 	nextPageSizeVal, nextPageSizeIsSet := d.GetOk("next_page_size")
-// 	if nextPageSizeIsSet {
-// 		params.NextPageSize = nextPageSizeVal.(*int64)
-// 	}
+	idVal, idIsSet := d.GetOk("id")
+	if idIsSet {
+		id, _ := idVal.(string)
+		params.ID = id
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		return diags
+	}
 
-// 	nextPageTokenVal, nextPageTokenIsSet := d.GetOk("next_page_token")
-// 	if nextPageTokenIsSet {
-// 		params.NextPageToken = nextPageTokenVal.(*string)
-// 	}
+	client := m.(*api_client.ZedcloudAPI)
 
-// 	nextTotalPagesVal, nextTotalPagesIsSet := d.GetOk("next_total_pages")
-// 	if nextTotalPagesIsSet {
-// 		params.NextTotalPages = nextTotalPagesVal.(*int64)
-// 	}
+	resp, err := client.ApplicationInstance.Delete(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return diags
+	}
 
-// 	summaryVal, summaryIsSet := d.GetOk("summary")
-// 	if summaryIsSet {
-// 		params.Summary = summaryVal.(*bool)
-// 	}
-
-// 	client := m.(*api_client.ZedcloudAPI)
-
-// 	resp, err := client.EdgeApplicationInstanceConfiguration.EdgeApplicationInstanceConfigurationQueryEdgeApplicationInstances(params, nil)
-// 	log.Printf("[TRACE] response: %v", resp)
-// 	if err != nil {
-// 		return append(diags, diag.Errorf("unexpected: %s", err)...)
-// 	}
-
-// 	respModel := resp.GetPayload()
-// 	zschema.SetEdgeApplicationInstanceConfigurationResourceData(d, respModel)
-
-// 	return diags
-// }
-
-// func EdgeApplicationInstanceConfiguration_CreateEdgeApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
-
-// 	model := zschema.EdgeApplicationInstanceConfigurationModel(d)
-// 	params := edge_application_instance_configuration.NewEdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceParams()
-// 	params.SetBody(model)
-
-// 	client := m.(*apiclient.Zedcloudapi)
-
-// 	resp, err := client.EdgeApplicationInstanceConfiguration.EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstance(params, nil)
-// 	log.Printf("[TRACE] response: %v", resp)
-// 	if err != nil {
-// 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
-// 		return diags
-// 	}
-
-// 	responseData := resp.GetPayload()
-// 	if responseData != nil && len(responseData.Error) > 0 {
-// 		for _, err := range responseData.Error {
-// 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
-// 		}
-// 		return diags
-// 	}
-
-// 	// the zedcloud API does not return the partially updated object but a custom response.
-// 	// thus, we need to fetch the object and populate the state.
-// 	if errs := GetDevice(ctx, d, m); err != nil {
-// 		return append(diags, errs...)
-// 	}
-
-// 	return diags
-// }
+	d.SetId("")
+	return diags
+}
 
 // func EdgeApplicationInstanceConfiguration_ActivateEdgeApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 // 	var diags diag.Diagnostics
@@ -511,87 +479,5 @@ func DataResourceEdgeApplicationInstanceConfiguration() *schema.Resource {
 
 // 	d.Partial(false)
 
-// 	return diags
-// }
-
-// func EdgeApplicationInstanceConfiguration_UpdateEdgeApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
-// 	d.Partial(true)
-
-// 	params := edge_application_instance_configuration.NewEdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams()
-
-// 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-// 	if xRequestIdIsSet {
-// 		params.XRequestID = xRequestIdVal.(*string)
-// 	}
-
-// 	params.SetBody(zschema.EdgeApplicationInstanceConfigurationModel(d))
-// 	// EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceBody
-
-// 	idVal, idIsSet := d.GetOk("id")
-// 	if idIsSet {
-// 		id, _ := idVal.(string)
-// 		params.ID = id
-// 	} else {
-// 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-// 		return diags
-// 	}
-
-// 	// makes a bulk update for all properties that were changed
-// 	client := m.(*apiclient.Zedcloudapi)
-// 	resp, err := client.EdgeApplicationInstanceConfiguration.EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstance(params, nil)
-// 	log.Printf("[TRACE] response: %v", resp)
-// 	if err != nil {
-// 		return append(diags, diag.Errorf("unexpected: %s", err)...)
-// 	}
-
-// 	responseData := resp.GetPayload()
-// 	if responseData != nil && len(responseData.Error) > 0 {
-// 		for _, err := range responseData.Error {
-// 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
-// 		}
-// 		return diags
-// 	}
-
-// 	// the zedcloud API does not return the partially updated object but a custom response.
-// 	// thus, we need to fetch the object and populate the state.
-// 	if errs := GetDevice(ctx, d, m); err != nil {
-// 		return append(diags, errs...)
-// 	}
-
-// 	d.Partial(false)
-
-// 	return diags
-// }
-
-// func EdgeApplicationInstanceConfiguration_DeleteEdgeApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
-
-// 	params := edge_application_instance_configuration.NewEdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceParams()
-
-// 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-// 	if xRequestIdIsSet {
-// 		params.XRequestID = xRequestIdVal.(*string)
-// 	}
-
-// 	idVal, idIsSet := d.GetOk("id")
-// 	if idIsSet {
-// 		id, _ := idVal.(string)
-// 		params.ID = id
-// 	} else {
-// 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-// 		return diags
-// 	}
-
-// 	client := m.(*apiclient.Zedcloudapi)
-
-// 	resp, err := client.EdgeApplicationInstanceConfiguration.EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstance(params, nil)
-// 	log.Printf("[TRACE] response: %v", resp)
-// 	if err != nil {
-// 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
-// 		return diags
-// 	}
-
-// 	d.SetId("")
 // 	return diags
 // }

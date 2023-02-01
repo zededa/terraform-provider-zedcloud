@@ -32,15 +32,15 @@ type ClientService interface {
 
 	EdgeApplicationInstanceConfigurationConnectToEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationConnectToEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationConnectToEdgeApplicationInstanceOK, error)
 
-	EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceOK, error)
+	Create(params *EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceOK, error)
 
 	EdgeApplicationInstanceConfigurationDeActivateEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationDeActivateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationDeActivateEdgeApplicationInstanceOK, error)
 
-	EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceOK, error)
+	Delete(params *EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceOK, error)
 
 	EdgeApplicationInstanceConfigurationGetEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceOK, error)
 
-	EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByName(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameOK, error)
+	GetByName(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameOK, error)
 
 	EdgeApplicationInstanceConfigurationQueryEdgeApplicationInstances(params *EdgeApplicationInstanceConfigurationQueryEdgeApplicationInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationQueryEdgeApplicationInstancesOK, error)
 
@@ -50,7 +50,7 @@ type ClientService interface {
 
 	EdgeApplicationInstanceConfigurationRestartEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationRestartEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationRestartEdgeApplicationInstanceOK, error)
 
-	EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceOK, error)
+	Update(params *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -136,14 +136,14 @@ func (a *Client) EdgeApplicationInstanceConfigurationConnectToEdgeApplicationIns
 }
 
 /*
-EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstance creates edge application instance
+Create creates edge application instance
 
 Create an edge application instance record.
 */
-func (a *Client) EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceOK, error) {
+func (a *Client) Create(params *EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceParams()
+		params = CreateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationInstanceConfiguration_CreateEdgeApplicationInstance",
@@ -216,14 +216,14 @@ func (a *Client) EdgeApplicationInstanceConfigurationDeActivateEdgeApplicationIn
 }
 
 /*
-EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstance deletes edge application instance
+Delete deletes edge application instance
 
 Delete an edge application instance record.
 */
-func (a *Client) EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceOK, error) {
+func (a *Client) Delete(params *EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceParams()
+		params = DeleteParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationInstanceConfiguration_DeleteEdgeApplicationInstance",
@@ -296,14 +296,14 @@ func (a *Client) EdgeApplicationInstanceConfigurationGetEdgeApplicationInstance(
 }
 
 /*
-EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByName gets edge application instance
+GetByName gets edge application instance
 
 Get the configuration (without security details) of an edge application instance record.
 */
-func (a *Client) EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByName(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameOK, error) {
+func (a *Client) GetByName(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams()
+		params = GetByNameParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationInstanceConfiguration_GetEdgeApplicationInstanceByName",
@@ -496,14 +496,14 @@ func (a *Client) EdgeApplicationInstanceConfigurationRestartEdgeApplicationInsta
 }
 
 /*
-EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstance updates edge application instance
+Update updates edge application instance
 
 Update an edge application instance. The usual pattern to update an edge application bundle record is to retrieve the record and update with the modified values in a new body to update the edge application bundle record.
 */
-func (a *Client) EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceOK, error) {
+func (a *Client) Update(params *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams()
+		params = UpdateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationInstanceConfiguration_UpdateEdgeApplicationInstance",

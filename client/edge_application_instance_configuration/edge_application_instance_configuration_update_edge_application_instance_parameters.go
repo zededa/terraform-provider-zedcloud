@@ -14,15 +14,16 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/zededa/terraform-provider/models"
 )
 
-// NewEdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams creates a new EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams object,
+// UpdateParams creates a new EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams() *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams {
+func UpdateParams() *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams {
 	return &EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams{
 		timeout: cr.DefaultTimeout,
 	}
@@ -68,7 +69,7 @@ type EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams str
 	XRequestID *string
 
 	// Body.
-	Body EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceBody
+	Body *models.AppInstance
 
 	/* ID.
 
@@ -141,13 +142,13 @@ func (o *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams
 }
 
 // WithBody adds the body to the edge application instance configuration update edge application instance params
-func (o *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams) WithBody(body EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceBody) *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams {
+func (o *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams) WithBody(body *models.AppInstance) *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge application instance configuration update edge application instance params
-func (o *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams) SetBody(body EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceBody) {
+func (o *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams) SetBody(body *models.AppInstance) {
 	o.Body = body
 }
 
