@@ -69,7 +69,7 @@ type EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.EdgeApplication
+	Body *models.Application
 
 	/* ID.
 
@@ -142,13 +142,13 @@ func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) SetXRequ
 }
 
 // WithBody adds the body to the edge application configuration update edge application bundle params
-func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) WithBody(body *models.EdgeApplication) *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams {
+func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) WithBody(body *models.Application) *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge application configuration update edge application bundle params
-func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) SetBody(body *models.EdgeApplication) {
+func (o *EdgeApplicationConfigurationUpdateEdgeApplicationBundleParams) SetBody(body *models.Application) {
 	o.Body = body
 }
 

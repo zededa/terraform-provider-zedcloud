@@ -82,7 +82,7 @@ EdgeApplicationConfigurationGetEdgeApplicationBundleOK describes a response with
 A successful response.
 */
 type EdgeApplicationConfigurationGetEdgeApplicationBundleOK struct {
-	Payload *models.EdgeApplication
+	Payload *models.Application
 }
 
 // IsSuccess returns true when this edge application configuration get edge application bundle o k response has a 2xx status code
@@ -123,13 +123,13 @@ func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleOK) String() string
 	return fmt.Sprintf("[GET /v1/apps/id/{id}][%d] edgeApplicationConfigurationGetEdgeApplicationBundleOK  %+v", 200, o.Payload)
 }
 
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleOK) GetPayload() *models.EdgeApplication {
+func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleOK) GetPayload() *models.Application {
 	return o.Payload
 }
 
 func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.EdgeApplication)
+	o.Payload = new(models.Application)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

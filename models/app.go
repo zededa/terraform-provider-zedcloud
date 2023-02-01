@@ -14,13 +14,13 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// EdgeApplication Edge application detailed configuration
+// Application Edge application detailed configuration
 //
 // Edge application gets installed/uninstalled to/from edge node(s) and perform specific edge computing tasks. Lifecycle of Edge application (upgrade/restart) on Edge node can be managed and monitored by ZEDEDA Cloud controller through this detailed configuration.
 // Example: {"name":"sample-app","originType":"ORIGIN_LOCAL","title":"Sample Edge Applications"}
 //
-// swagger:model EdgeApplication
-type EdgeApplication struct {
+// swagger:model Application
+type Application struct {
 
 	// user defined cpus for bundle
 	Cpus int64 `json:"cpus,omitempty"`
@@ -85,7 +85,7 @@ type EdgeApplication struct {
 }
 
 // Validate validates this app
-func (m *EdgeApplication) Validate(formats strfmt.Registry) error {
+func (m *Application) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateDescription(formats); err != nil {
@@ -126,7 +126,7 @@ func (m *EdgeApplication) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeApplication) validateDescription(formats strfmt.Registry) error {
+func (m *Application) validateDescription(formats strfmt.Registry) error {
 	if swag.IsZero(m.Description) { // not required
 		return nil
 	}
@@ -138,7 +138,7 @@ func (m *EdgeApplication) validateDescription(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeApplication) validateID(formats strfmt.Registry) error {
+func (m *Application) validateID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ID) { // not required
 		return nil
 	}
@@ -150,7 +150,7 @@ func (m *EdgeApplication) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeApplication) validateManifestJSON(formats strfmt.Registry) error {
+func (m *Application) validateManifestJSON(formats strfmt.Registry) error {
 	if swag.IsZero(m.ManifestJSON) { // not required
 		return nil
 	}
@@ -169,7 +169,7 @@ func (m *EdgeApplication) validateManifestJSON(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeApplication) validateName(formats strfmt.Registry) error {
+func (m *Application) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -190,7 +190,7 @@ func (m *EdgeApplication) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeApplication) validateOriginType(formats strfmt.Registry) error {
+func (m *Application) validateOriginType(formats strfmt.Registry) error {
 
 	if err := validate.Required("originType", "body", m.OriginType); err != nil {
 		return err
@@ -214,7 +214,7 @@ func (m *EdgeApplication) validateOriginType(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeApplication) validateParentDetail(formats strfmt.Registry) error {
+func (m *Application) validateParentDetail(formats strfmt.Registry) error {
 	if swag.IsZero(m.ParentDetail) { // not required
 		return nil
 	}
@@ -233,7 +233,7 @@ func (m *EdgeApplication) validateParentDetail(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeApplication) validateRevision(formats strfmt.Registry) error {
+func (m *Application) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
 	}
@@ -252,7 +252,7 @@ func (m *EdgeApplication) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeApplication) validateTitle(formats strfmt.Registry) error {
+func (m *Application) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -274,7 +274,7 @@ func (m *EdgeApplication) validateTitle(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this app based on the context it is used
-func (m *EdgeApplication) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *Application) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateDrives(ctx, formats); err != nil {
@@ -307,7 +307,7 @@ func (m *EdgeApplication) ContextValidate(ctx context.Context, formats strfmt.Re
 	return nil
 }
 
-func (m *EdgeApplication) contextValidateDrives(ctx context.Context, formats strfmt.Registry) error {
+func (m *Application) contextValidateDrives(ctx context.Context, formats strfmt.Registry) error {
 
 	if err := validate.ReadOnly(ctx, "drives", "body", int64(m.Drives)); err != nil {
 		return err
@@ -316,7 +316,7 @@ func (m *EdgeApplication) contextValidateDrives(ctx context.Context, formats str
 	return nil
 }
 
-func (m *EdgeApplication) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
+func (m *Application) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
 
 	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
 		return err
@@ -325,7 +325,7 @@ func (m *EdgeApplication) contextValidateID(ctx context.Context, formats strfmt.
 	return nil
 }
 
-func (m *EdgeApplication) contextValidateManifestJSON(ctx context.Context, formats strfmt.Registry) error {
+func (m *Application) contextValidateManifestJSON(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ManifestJSON != nil {
 		if err := m.ManifestJSON.ContextValidate(ctx, formats); err != nil {
@@ -341,7 +341,7 @@ func (m *EdgeApplication) contextValidateManifestJSON(ctx context.Context, forma
 	return nil
 }
 
-func (m *EdgeApplication) contextValidateOriginType(ctx context.Context, formats strfmt.Registry) error {
+func (m *Application) contextValidateOriginType(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.OriginType != nil {
 		if err := m.OriginType.ContextValidate(ctx, formats); err != nil {
@@ -357,7 +357,7 @@ func (m *EdgeApplication) contextValidateOriginType(ctx context.Context, formats
 	return nil
 }
 
-func (m *EdgeApplication) contextValidateParentDetail(ctx context.Context, formats strfmt.Registry) error {
+func (m *Application) contextValidateParentDetail(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ParentDetail != nil {
 		if err := m.ParentDetail.ContextValidate(ctx, formats); err != nil {
@@ -373,7 +373,7 @@ func (m *EdgeApplication) contextValidateParentDetail(ctx context.Context, forma
 	return nil
 }
 
-func (m *EdgeApplication) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+func (m *Application) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
 		if err := m.Revision.ContextValidate(ctx, formats); err != nil {
@@ -390,7 +390,7 @@ func (m *EdgeApplication) contextValidateRevision(ctx context.Context, formats s
 }
 
 // MarshalBinary interface implementation
-func (m *EdgeApplication) MarshalBinary() ([]byte, error) {
+func (m *Application) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -398,8 +398,8 @@ func (m *EdgeApplication) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *EdgeApplication) UnmarshalBinary(b []byte) error {
-	var res EdgeApplication
+func (m *Application) UnmarshalBinary(b []byte) error {
+	var res Application
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

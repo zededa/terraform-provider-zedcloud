@@ -17,33 +17,33 @@ import (
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
 
-func EdgeApplicationResource() *schema.Resource {
+func ApplicationResource() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: CreateEdgeApplication,
-		ReadContext:   ReadEdgeApplicationByName,
-		UpdateContext: UpdateEdgeApplication,
-		DeleteContext: DeleteEdgeApplication,
-		Schema:        zschema.EdgeApplication(),
+		CreateContext: CreateApplication,
+		ReadContext:   ReadApplicationByName,
+		UpdateContext: UpdateApplication,
+		DeleteContext: DeleteApplication,
+		Schema:        zschema.Application(),
 	}
 }
 
-func EdgeApplicationDataSource() *schema.Resource {
+func ApplicationDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: ReadEdgeApplicationByName,
-		Schema:      zschema.EdgeApplication(),
+		ReadContext: ReadApplicationByName,
+		Schema:      zschema.Application(),
 	}
 }
 
-func CreateEdgeApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	model := zschema.EdgeApplicationModel(d)
+	model := zschema.ApplicationModel(d)
 	params := config.CreateParams()
 	params.SetBody(model)
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.EdgeApplication.Create(params, nil)
+	resp, err := client.Application.Create(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -71,14 +71,14 @@ func CreateEdgeApplication(ctx context.Context, d *schema.ResourceData, m interf
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadEdgeApplicationByName(ctx, d, m); err != nil {
+	if errs := ReadApplicationByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
 	return diags
 }
 
-func ReadEdgeApplicationByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func ReadApplicationByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.GetByNameParams()
@@ -98,20 +98,20 @@ func ReadEdgeApplicationByName(ctx context.Context, d *schema.ResourceData, m in
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.EdgeApplication.GetByName(params, nil)
+	resp, err := client.Application.GetByName(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
 
 	app := resp.GetPayload()
-	zschema.SetEdgeApplicationResourceData(d, app)
+	zschema.SetApplicationResourceData(d, app)
 	d.SetId(app.ID)
 
 	return diags
 }
 
-func UpdateEdgeApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.UpdateParams()
@@ -121,7 +121,7 @@ func UpdateEdgeApplication(ctx context.Context, d *schema.ResourceData, m interf
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.EdgeApplicationModel(d))
+	params.SetBody(zschema.ApplicationModel(d))
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {
@@ -134,7 +134,7 @@ func UpdateEdgeApplication(ctx context.Context, d *schema.ResourceData, m interf
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
-	resp, err := client.EdgeApplication.Update(params, nil)
+	resp, err := client.Application.Update(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -161,14 +161,14 @@ func UpdateEdgeApplication(ctx context.Context, d *schema.ResourceData, m interf
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadEdgeApplicationByName(ctx, d, m); err != nil {
+	if errs := ReadApplicationByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
 	return diags
 }
 
-func DeleteEdgeApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func DeleteApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.DeleteParams()
@@ -189,7 +189,7 @@ func DeleteEdgeApplication(ctx context.Context, d *schema.ResourceData, m interf
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.EdgeApplication.Delete(params, nil)
+	resp, err := client.Application.Delete(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)

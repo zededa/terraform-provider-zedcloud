@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func EdgeApplicationModel(d *schema.ResourceData) *models.EdgeApplication {
+func ApplicationModel(d *schema.ResourceData) *models.Application {
 	cpusInt, _ := d.Get("cpus").(int)
 	cpus := int64(cpusInt)
 	description, _ := d.Get("description").(string)
@@ -66,7 +66,7 @@ func EdgeApplicationModel(d *schema.ResourceData) *models.EdgeApplication {
 	storage := int64(storageInt)
 	title, _ := d.Get("title").(string)
 	userDefinedVersion, _ := d.Get("user_defined_version").(string)
-	return &models.EdgeApplication{
+	return &models.Application{
 		Cpus:               cpus,
 		Description:        description,
 		ID:                 id,
@@ -85,7 +85,7 @@ func EdgeApplicationModel(d *schema.ResourceData) *models.EdgeApplication {
 	}
 }
 
-func EdgeApplicationModelFromMap(m map[string]interface{}) *models.EdgeApplication {
+func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 	cpus := int64(m["cpus"].(int)) // int64
 	description := m["description"].(string)
 	id := m["id"].(string)
@@ -145,7 +145,7 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.EdgeApplicati
 	storage := int64(m["storage"].(int)) // int64
 	title := m["title"].(string)
 	userDefinedVersion := m["user_defined_version"].(string)
-	return &models.EdgeApplication{
+	return &models.Application{
 		Cpus:               cpus,
 		Description:        description,
 		ID:                 id,
@@ -164,7 +164,7 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.EdgeApplicati
 	}
 }
 
-func SetEdgeApplicationResourceData(d *schema.ResourceData, m *models.EdgeApplication) {
+func SetApplicationResourceData(d *schema.ResourceData, m *models.Application) {
 	d.Set("cpus", m.Cpus)
 	d.Set("description", m.Description)
 	d.Set("drives", m.Drives)
@@ -183,7 +183,7 @@ func SetEdgeApplicationResourceData(d *schema.ResourceData, m *models.EdgeApplic
 	d.Set("user_defined_version", m.UserDefinedVersion)
 }
 
-func SetEdgeApplicationSubResourceData(m []*models.EdgeApplication) (d []*map[string]interface{}) {
+func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]interface{}) {
 	for _, AppModel := range m {
 		if AppModel != nil {
 			properties := make(map[string]interface{})
@@ -210,7 +210,7 @@ func SetEdgeApplicationSubResourceData(m []*models.EdgeApplication) (d []*map[st
 }
 
 // Schema mapping representing the App resource defined in the Terraform configuration
-func EdgeApplication() map[string]*schema.Schema {
+func Application() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cpus": {
 			Description: `user defined cpus for bundle`,
@@ -323,7 +323,7 @@ func EdgeApplication() map[string]*schema.Schema {
 }
 
 // Retrieve property field names for updating the App resource
-func GetEdgeApplicationPropertyFields() (t []string) {
+func GetApplicationPropertyFields() (t []string) {
 	return []string{
 		"cpus",
 		"description",
