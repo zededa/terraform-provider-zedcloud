@@ -8,7 +8,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func EdgeNodeModel(d *schema.ResourceData) *models.EdgeNode {
+func NodeModel(d *schema.ResourceData) *models.Node {
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := d.GetOk("admin_state")
 	if adminStateIsSet {
@@ -154,7 +154,7 @@ func EdgeNodeModel(d *schema.ResourceData) *models.EdgeNode {
 		utypeModel := utypeInterface.(string)
 		utype = models.NewModelArchType(models.ModelArchType(utypeModel))
 	}
-	return &models.EdgeNode{
+	return &models.Node{
 		AdminState:             adminState,
 		AssetID:                assetID,
 		BaseImage:              baseImage,
@@ -199,7 +199,7 @@ func EdgeNodeModel(d *schema.ResourceData) *models.EdgeNode {
 	}
 }
 
-func EdgeNodeModelFromMap(m map[string]interface{}) *models.EdgeNode {
+func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 	var adminState *models.AdminState // AdminState
 	adminStateInterface, adminStateIsSet := m["admin_state"]
 	if adminStateIsSet {
@@ -373,7 +373,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.EdgeNode {
 		utypeModel := utypeInterface.(string)
 		utype = models.NewModelArchType(models.ModelArchType(utypeModel))
 	}
-	return &models.EdgeNode{
+	return &models.Node{
 		AdminState:             adminState,
 		AssetID:                assetID,
 		BaseImage:              baseImage,
@@ -418,7 +418,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.EdgeNode {
 	}
 }
 
-func SetEdgeNodeResourceData(d *schema.ResourceData, m *models.EdgeNode) {
+func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("admin_state", m.AdminState)
 	d.Set("asset_id", m.AssetID)
 	d.Set("base_image", SetBaseOSImageSubResourceData(m.BaseImage))
@@ -461,7 +461,7 @@ func SetEdgeNodeResourceData(d *schema.ResourceData, m *models.EdgeNode) {
 	d.Set("utype", m.Utype)
 }
 
-func SetEdgeNodeSubResourceData(m []*models.EdgeNode) (d []*map[string]interface{}) {
+func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) {
 	for _, DeviceConfigModel := range m {
 		if DeviceConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -512,7 +512,7 @@ func SetEdgeNodeSubResourceData(m []*models.EdgeNode) (d []*map[string]interface
 }
 
 // Schema mapping representing the DeviceConfig resource defined in the Terraform configuration
-func EdgeNode() map[string]*schema.Schema {
+func Node() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"admin_state": {
 			Description: `administrative state of device`,

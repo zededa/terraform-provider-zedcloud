@@ -15,12 +15,12 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// EdgeNode Device Configuration payload detail
+// Node Device Configuration payload detail
 //
 // # Device Configuration request paylod holds the device properties
 //
-// swagger:model EdgeNode
-type EdgeNode struct {
+// swagger:model Node
+type Node struct {
 
 	// administrative state of device
 	AdminState *AdminState `json:"adminState,omitempty"`
@@ -157,7 +157,7 @@ type EdgeNode struct {
 }
 
 // Validate validates this device config
-func (m *EdgeNode) Validate(formats strfmt.Registry) error {
+func (m *Node) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAdminState(formats); err != nil {
@@ -238,7 +238,7 @@ func (m *EdgeNode) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateAdminState(formats strfmt.Registry) error {
+func (m *Node) validateAdminState(formats strfmt.Registry) error {
 	if swag.IsZero(m.AdminState) { // not required
 		return nil
 	}
@@ -257,7 +257,7 @@ func (m *EdgeNode) validateAdminState(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateBaseImage(formats strfmt.Registry) error {
+func (m *Node) validateBaseImage(formats strfmt.Registry) error {
 	if swag.IsZero(m.BaseImage) { // not required
 		return nil
 	}
@@ -283,7 +283,7 @@ func (m *EdgeNode) validateBaseImage(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateClusterID(formats strfmt.Registry) error {
+func (m *Node) validateClusterID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ClusterID) { // not required
 		return nil
 	}
@@ -303,7 +303,7 @@ func (m *EdgeNode) validateClusterID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateConfigItem(formats strfmt.Registry) error {
+func (m *Node) validateConfigItem(formats strfmt.Registry) error {
 	if swag.IsZero(m.ConfigItem) { // not required
 		return nil
 	}
@@ -329,7 +329,7 @@ func (m *EdgeNode) validateConfigItem(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateDebugKnob(formats strfmt.Registry) error {
+func (m *Node) validateDebugKnob(formats strfmt.Registry) error {
 	if swag.IsZero(m.DebugKnob) { // not required
 		return nil
 	}
@@ -348,7 +348,7 @@ func (m *EdgeNode) validateDebugKnob(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateDefaultNetInst(formats strfmt.Registry) error {
+func (m *Node) validateDefaultNetInst(formats strfmt.Registry) error {
 	if swag.IsZero(m.DefaultNetInst) { // not required
 		return nil
 	}
@@ -367,7 +367,7 @@ func (m *EdgeNode) validateDefaultNetInst(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateDevLocation(formats strfmt.Registry) error {
+func (m *Node) validateDevLocation(formats strfmt.Registry) error {
 	if swag.IsZero(m.DevLocation) { // not required
 		return nil
 	}
@@ -386,7 +386,7 @@ func (m *EdgeNode) validateDevLocation(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateDlisp(formats strfmt.Registry) error {
+func (m *Node) validateDlisp(formats strfmt.Registry) error {
 	if swag.IsZero(m.Dlisp) { // not required
 		return nil
 	}
@@ -405,7 +405,7 @@ func (m *EdgeNode) validateDlisp(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateEdgeviewconfig(formats strfmt.Registry) error {
+func (m *Node) validateEdgeviewconfig(formats strfmt.Registry) error {
 	if swag.IsZero(m.Edgeviewconfig) { // not required
 		return nil
 	}
@@ -424,7 +424,7 @@ func (m *EdgeNode) validateEdgeviewconfig(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateID(formats strfmt.Registry) error {
+func (m *Node) validateID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ID) { // not required
 		return nil
 	}
@@ -436,7 +436,7 @@ func (m *EdgeNode) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateInterfaces(formats strfmt.Registry) error {
+func (m *Node) validateInterfaces(formats strfmt.Registry) error {
 	if swag.IsZero(m.Interfaces) { // not required
 		return nil
 	}
@@ -462,7 +462,7 @@ func (m *EdgeNode) validateInterfaces(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateModelID(formats strfmt.Registry) error {
+func (m *Node) validateModelID(formats strfmt.Registry) error {
 
 	if err := validate.Required("modelId", "body", m.ModelID); err != nil {
 		return err
@@ -471,7 +471,7 @@ func (m *EdgeNode) validateModelID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateName(formats strfmt.Registry) error {
+func (m *Node) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -480,7 +480,7 @@ func (m *EdgeNode) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateOnboarding(formats strfmt.Registry) error {
+func (m *Node) validateOnboarding(formats strfmt.Registry) error {
 	if swag.IsZero(m.Onboarding) { // not required
 		return nil
 	}
@@ -499,7 +499,7 @@ func (m *EdgeNode) validateOnboarding(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateProjectID(formats strfmt.Registry) error {
+func (m *Node) validateProjectID(formats strfmt.Registry) error {
 
 	if err := validate.Required("projectId", "body", m.ProjectID); err != nil {
 		return err
@@ -508,7 +508,7 @@ func (m *EdgeNode) validateProjectID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateRevision(formats strfmt.Registry) error {
+func (m *Node) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
 	}
@@ -527,7 +527,7 @@ func (m *EdgeNode) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateTitle(formats strfmt.Registry) error {
+func (m *Node) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -536,7 +536,7 @@ func (m *EdgeNode) validateTitle(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *EdgeNode) validateUtype(formats strfmt.Registry) error {
+func (m *Node) validateUtype(formats strfmt.Registry) error {
 	if swag.IsZero(m.Utype) { // not required
 		return nil
 	}
@@ -556,7 +556,7 @@ func (m *EdgeNode) validateUtype(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this device config based on the context it is used
-func (m *EdgeNode) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateAdminState(ctx, formats); err != nil {
@@ -617,7 +617,7 @@ func (m *EdgeNode) ContextValidate(ctx context.Context, formats strfmt.Registry)
 	return nil
 }
 
-func (m *EdgeNode) contextValidateAdminState(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateAdminState(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.AdminState != nil {
 		if err := m.AdminState.ContextValidate(ctx, formats); err != nil {
@@ -633,7 +633,7 @@ func (m *EdgeNode) contextValidateAdminState(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *EdgeNode) contextValidateBaseImage(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateBaseImage(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.BaseImage); i++ {
 
@@ -653,7 +653,7 @@ func (m *EdgeNode) contextValidateBaseImage(ctx context.Context, formats strfmt.
 	return nil
 }
 
-func (m *EdgeNode) contextValidateConfigItem(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateConfigItem(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.ConfigItem); i++ {
 
@@ -673,7 +673,7 @@ func (m *EdgeNode) contextValidateConfigItem(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *EdgeNode) contextValidateDebugKnob(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateDebugKnob(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DebugKnob != nil {
 		if err := m.DebugKnob.ContextValidate(ctx, formats); err != nil {
@@ -689,7 +689,7 @@ func (m *EdgeNode) contextValidateDebugKnob(ctx context.Context, formats strfmt.
 	return nil
 }
 
-func (m *EdgeNode) contextValidateDefaultNetInst(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateDefaultNetInst(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DefaultNetInst != nil {
 		if err := m.DefaultNetInst.ContextValidate(ctx, formats); err != nil {
@@ -705,7 +705,7 @@ func (m *EdgeNode) contextValidateDefaultNetInst(ctx context.Context, formats st
 	return nil
 }
 
-func (m *EdgeNode) contextValidateDevLocation(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateDevLocation(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DevLocation != nil {
 		if err := m.DevLocation.ContextValidate(ctx, formats); err != nil {
@@ -721,7 +721,7 @@ func (m *EdgeNode) contextValidateDevLocation(ctx context.Context, formats strfm
 	return nil
 }
 
-func (m *EdgeNode) contextValidateDlisp(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateDlisp(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Dlisp != nil {
 		if err := m.Dlisp.ContextValidate(ctx, formats); err != nil {
@@ -737,7 +737,7 @@ func (m *EdgeNode) contextValidateDlisp(ctx context.Context, formats strfmt.Regi
 	return nil
 }
 
-func (m *EdgeNode) contextValidateEdgeviewconfig(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateEdgeviewconfig(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Edgeviewconfig != nil {
 		if err := m.Edgeviewconfig.ContextValidate(ctx, formats); err != nil {
@@ -753,7 +753,7 @@ func (m *EdgeNode) contextValidateEdgeviewconfig(ctx context.Context, formats st
 	return nil
 }
 
-func (m *EdgeNode) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
 
 	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
 		return err
@@ -762,7 +762,7 @@ func (m *EdgeNode) contextValidateID(ctx context.Context, formats strfmt.Registr
 	return nil
 }
 
-func (m *EdgeNode) contextValidateInterfaces(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateInterfaces(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Interfaces); i++ {
 
@@ -782,7 +782,7 @@ func (m *EdgeNode) contextValidateInterfaces(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *EdgeNode) contextValidateOnboarding(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateOnboarding(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Onboarding != nil {
 		if err := m.Onboarding.ContextValidate(ctx, formats); err != nil {
@@ -798,7 +798,7 @@ func (m *EdgeNode) contextValidateOnboarding(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *EdgeNode) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
 		if err := m.Revision.ContextValidate(ctx, formats); err != nil {
@@ -814,7 +814,7 @@ func (m *EdgeNode) contextValidateRevision(ctx context.Context, formats strfmt.R
 	return nil
 }
 
-func (m *EdgeNode) contextValidateUtype(ctx context.Context, formats strfmt.Registry) error {
+func (m *Node) contextValidateUtype(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Utype != nil {
 		if err := m.Utype.ContextValidate(ctx, formats); err != nil {
@@ -831,7 +831,7 @@ func (m *EdgeNode) contextValidateUtype(ctx context.Context, formats strfmt.Regi
 }
 
 // MarshalBinary interface implementation
-func (m *EdgeNode) MarshalBinary() ([]byte, error) {
+func (m *Node) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -839,8 +839,8 @@ func (m *EdgeNode) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *EdgeNode) UnmarshalBinary(b []byte) error {
-	var res EdgeNode
+func (m *Node) UnmarshalBinary(b []byte) error {
+	var res Node
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

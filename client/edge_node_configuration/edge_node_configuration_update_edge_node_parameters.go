@@ -18,13 +18,13 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// UpdateEdgeNodeParams creates a new EdgeNodeConfigurationUpdateEdgeNodeParams object,
+// UpdateParams creates a new EdgeNodeConfigurationUpdateEdgeNodeParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func UpdateEdgeNodeParams() *EdgeNodeConfigurationUpdateEdgeNodeParams {
+func UpdateParams() *EdgeNodeConfigurationUpdateEdgeNodeParams {
 	return &EdgeNodeConfigurationUpdateEdgeNodeParams{
 		timeout: cr.DefaultTimeout,
 	}
@@ -70,7 +70,7 @@ type EdgeNodeConfigurationUpdateEdgeNodeParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.EdgeNode
+	Body *models.Node
 
 	/* ID.
 
@@ -143,13 +143,13 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) SetXRequestID(xRequestID *st
 }
 
 // WithBody adds the body to the edge node configuration update edge node params
-func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) WithBody(body *models.EdgeNode) *EdgeNodeConfigurationUpdateEdgeNodeParams {
+func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) WithBody(body *models.Node) *EdgeNodeConfigurationUpdateEdgeNodeParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the edge node configuration update edge node params
-func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) SetBody(body *models.EdgeNode) {
+func (o *EdgeNodeConfigurationUpdateEdgeNodeParams) SetBody(body *models.Node) {
 	o.Body = body
 }
 

@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// DeactivateEdgeNodeParams creates a new EdgeNodeConfigurationDeActivateEdgeNodeParams object,
+// DeactivationParams creates a new EdgeNodeConfigurationDeActivateEdgeNodeParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func DeactivateEdgeNodeParams() *EdgeNodeConfigurationDeActivateEdgeNodeParams {
+func DeactivationParams() *EdgeNodeConfigurationDeActivateEdgeNodeParams {
 	return &EdgeNodeConfigurationDeActivateEdgeNodeParams{
 		timeout: cr.DefaultTimeout,
 	}

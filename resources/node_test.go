@@ -17,7 +17,7 @@ import (
 )
 
 func TestCreateEdgeNode_RequiredAttributesOnly(t *testing.T) {
-	var got models.EdgeNode
+	var got models.Node
 
 	// input config
 	inputPath := "edge_node/create_required_only.tf"
@@ -48,8 +48,8 @@ func TestCreateEdgeNode_RequiredAttributesOnly(t *testing.T) {
 }
 
 func TestCreateEdgeNode_AllAttributes(t *testing.T) {
-	var got models.EdgeNode
-	var expected models.EdgeNode
+	var got models.Node
+	var expected models.Node
 
 	// input config
 	inputPath := "edge_node/create_complete.tf"
@@ -88,7 +88,7 @@ func TestCreateEdgeNode_AllAttributes(t *testing.T) {
 }
 
 // testEdgeNodeExists retrieves the EdgeNode and stores it in the provided *models.DeviceConfig.
-func testEdgeNodeExists(resourceName string, edgeNodeModel *models.EdgeNode) resource.TestCheckFunc {
+func testEdgeNodeExists(resourceName string, edgeNodeModel *models.Node) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
 		rs, ok := s.RootModule().Resources[resourceName]
@@ -106,7 +106,7 @@ func testEdgeNodeExists(resourceName string, edgeNodeModel *models.EdgeNode) res
 		// retrieve the EdgeNode by referencing its state ID for API lookup
 		params := config.GetByIDParams()
 		params.ID = rs.Primary.ID
-		response, err := client.EdgeNode.GetByID(params, nil)
+		response, err := client.Node.GetByID(params, nil)
 		if err != nil {
 			return fmt.Errorf("could not fetch EdgeNode (%s): %w", rs.Primary.ID, err)
 		}
@@ -122,13 +122,13 @@ func testEdgeNodeExists(resourceName string, edgeNodeModel *models.EdgeNode) res
 }
 
 // testEdgeNodeAttributes verifies attributes are set correctly by Terraform
-func testEdgeNodeAttributes(t *testing.T, got, expected *models.EdgeNode) resource.TestCheckFunc {
+func testEdgeNodeAttributes(t *testing.T, got, expected *models.Node) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if keyGot, keyExpect := strings.Split(got.Obkey, ":")[0], strings.Split(expected.Obkey, ":")[0]; keyGot != keyExpect {
 			return fmt.Errorf("expect Obkey %s but got %+v", keyExpect, keyGot)
 		}
 		opts := cmpopts.IgnoreFields(
-			models.EdgeNode{},
+			models.Node{},
 			"ID",
 			"ProjectID",
 			"Revision",
@@ -159,7 +159,7 @@ func testEdgeNodeDestroy(s *terraform.State) error {
 		// retrieve the EdgeNode by referencing it's state ID for API lookup
 		params := config.GetByIDParams()
 		params.ID = rs.Primary.ID
-		response, err := client.EdgeNode.GetByID(params, nil)
+		response, err := client.Node.GetByID(params, nil)
 		if err == nil {
 			if deviceConfig := response.GetPayload(); deviceConfig != nil && deviceConfig.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, EdgeNode (%s) still exists", deviceConfig.ID)

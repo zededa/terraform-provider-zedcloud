@@ -87,7 +87,7 @@ Activate an edge node. If already in active state no action is taken.
 func (a *Client) Activate(params *EdgeNodeConfigurationActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationActivateEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = ActivateEdgeNodeParams()
+		params = ActivationParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_ActivateEdgeNode",
@@ -167,7 +167,7 @@ Create an edge node record.
 func (a *Client) Create(params *EdgeNodeConfigurationCreateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationCreateEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = CreateEdgeNodeParams()
+		params = CreateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_CreateEdgeNode",
@@ -207,7 +207,7 @@ Deactivate an edge node. If already in inactive state no action is taken.
 func (a *Client) Deactivate(params *EdgeNodeConfigurationDeActivateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationDeActivateEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = DeactivateEdgeNodeParams()
+		params = DeactivationParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_DeActivateEdgeNode",
@@ -887,7 +887,7 @@ Update an edge node record. The usual pattern to update an edge node record is t
 func (a *Client) Update(params *EdgeNodeConfigurationUpdateEdgeNodeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = UpdateEdgeNodeParams()
+		params = UpdateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_UpdateEdgeNode",

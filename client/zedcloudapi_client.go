@@ -63,7 +63,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 
 	cli := new(ZedcloudAPI)
 	cli.Transport = transport
-	cli.EdgeNode = edge_node_configuration.New(transport, formats)
+	cli.Node = edge_node_configuration.New(transport, formats)
 	cli.HardwareModel = hardware_model.New(transport, formats)
 	cli.Network = edge_network_configuration.New(transport, formats)
 	cli.NetworkInstance = edge_network_instance_configuration.New(transport, formats)
@@ -116,7 +116,7 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // ZedcloudAPI is a client for zedcloudapi
 type ZedcloudAPI struct {
-	EdgeNode edge_node_configuration.ClientService
+	Node edge_node_configuration.ClientService
 
 	HardwareModel hardware_model.ClientService
 
@@ -140,7 +140,7 @@ type ZedcloudAPI struct {
 // SetTransport changes the transport on the client and all its subresources
 func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
-	c.EdgeNode.SetTransport(transport)
+	c.Node.SetTransport(transport)
 	c.HardwareModel.SetTransport(transport)
 	c.Network.SetTransport(transport)
 	c.NetworkInstance.SetTransport(transport)
