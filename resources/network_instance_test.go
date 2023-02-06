@@ -15,7 +15,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func TestCreateNetworkInstance_RequiredAttributesOnly(t *testing.T) {
+func TestNetworkInstance_Create_RequiredAttributesOnly(t *testing.T) {
 	var got models.NetworkInstance
 	var expected models.NetworkInstance
 

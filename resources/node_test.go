@@ -16,7 +16,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func TestCreateEdgeNode_RequiredAttributesOnly(t *testing.T) {
+func TestEdgeNode_Create_RequiredAttributesOnly(t *testing.T) {
 	var got models.Node
 
 	// input config
@@ -47,7 +47,7 @@ func TestCreateEdgeNode_RequiredAttributesOnly(t *testing.T) {
 	})
 }
 
-func TestCreateEdgeNode_AllAttributes(t *testing.T) {
+func TestEdgeNode_Create_AllAttributes(t *testing.T) {
 	var got models.Node
 	var expected models.Node
 

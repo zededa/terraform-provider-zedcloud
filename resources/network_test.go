@@ -15,7 +15,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func TestCreateNetwork_RequiredAttributesOnly(t *testing.T) {
+func TestNetwork_Create_RequiredAttributesOnly(t *testing.T) {
 	var got models.Network
 	var expected models.Network
 
@@ -54,7 +54,7 @@ func TestCreateNetwork_RequiredAttributesOnly(t *testing.T) {
 	})
 }
 
-func TestCreateNetwork_AllAttributes_WithProxy(t *testing.T) {
+func TestNetwork_Create_AllAttributes_WithProxy(t *testing.T) {
 	var got models.Network
 	var expected models.Network
 
@@ -95,7 +95,7 @@ func TestCreateNetwork_AllAttributes_WithProxy(t *testing.T) {
 	})
 }
 
-func TestCreateNetwork_AllAttributes_WithPac(t *testing.T) {
+func TestNetwork_Create_AllAttributes_WithPac(t *testing.T) {
 	var got models.Network
 	var expected models.Network
 

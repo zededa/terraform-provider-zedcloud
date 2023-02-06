@@ -692,13 +692,13 @@ func Node() map[string]*schema.Schema {
 		"model_id": {
 			Description: `device model`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"name": {
 			Description: `user specified device name`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"onboarding_key": {
@@ -736,7 +736,7 @@ func Node() map[string]*schema.Schema {
 		"project_id": {
 			Description: `project name`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"reset_counter": {
@@ -802,7 +802,7 @@ func Node() map[string]*schema.Schema {
 		"title": {
 			Description: `user specified title`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"token": {
