@@ -8,9 +8,10 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-// diffSuppressStringListOrder suppresses diffs in schema.List element order.
-// If the lists elements differ, it still reports a diff.
-// Note, this is slow since it is called for every element of the schema.List.
+// diffSuppressStringListOrder suppresses diffs in schema.List element order. If the lists elements differ, it still
+// reports a diff.
+// FIXME: Note, this is slow since it is called for every element of the schema.List. Thus, it's an expensive workaround
+// that should be removed if possible.
 func diffSuppressStringListOrder(key, oldValue, newValue string, d *schema.ResourceData) bool {
 	// For a list, the key is path to the element, rather than the list.
 	// E.g. "node_groups.2.ips.0"
@@ -40,8 +41,9 @@ func diffSuppressStringListOrder(key, oldValue, newValue string, d *schema.Resou
 }
 
 // Sort and compare DNSList.
-// The API does not guarantee the order of the list items and terraform reports a diff if the order in state and config
-// differs. This is an expensive workaround that runs on each elements of the  and should be removed if possible.
+// FIXME: The API does not guarantee the order of the list items and terraform reports a diff if the order in state and
+// config differs. Note, this is slow since it is called for every element of the schema.List. Thus, it's an expensive
+// workaround that should be removed if possible.
 func diffSuppressDNSListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
 		oldData, newData := d.GetChange(mapKey)
