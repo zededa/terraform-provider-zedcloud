@@ -108,6 +108,7 @@ func DHCPServer() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DhcpIPRange(),
 			},
+			Optional: true,
 			Computed: true,
 		},
 
@@ -117,7 +118,8 @@ func DHCPServer() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Computed: true,
+			DiffSuppressFunc: diffSuppressDNSListOrder("dns"),
+			Optional:         true,
 		},
 
 		"domain": {
@@ -129,7 +131,7 @@ func DHCPServer() map[string]*schema.Schema {
 		"gateway": {
 			Description: `IP Address of Network Gateway`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"mask": {

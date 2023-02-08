@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -13,6 +14,7 @@ import (
 	api_client "github.com/zededa/terraform-provider/client"
 	config "github.com/zededa/terraform-provider/client/edge_network_instance_configuration"
 	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider/schemas"
 )
 
 func TestNetworkInstance_Create_RequiredAttributesOnly(t *testing.T) {
@@ -30,7 +32,7 @@ func TestNetworkInstance_Create_RequiredAttributesOnly(t *testing.T) {
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { checkEnv(t) },
-		CheckDestroy: testNetworkDestroy,
+		CheckDestroy: testNetworkInstanceDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
@@ -44,6 +46,45 @@ func TestNetworkInstance_Create_RequiredAttributesOnly(t *testing.T) {
 					),
 					resource.TestMatchResourceAttr(
 						"zedcloud_network_instance.required_only",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					testNetworkInstanceAttributes(t, &got, &expected),
+				),
+			},
+		},
+	})
+}
+
+func TestNetworkInstance_Create_Complete(t *testing.T) {
+	var got models.NetworkInstance
+	var expected models.NetworkInstance
+
+	// input config
+	inputPath := "network_instance/create_complete.tf"
+	input := mustGetTestInput(t, inputPath)
+
+	// expected output
+	expectedPath := "network_instance/create_complete_expected.yaml"
+	mustGetExpectedOutput(t, expectedPath, &expected)
+
+	// terraform acceptance test case
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { checkEnv(t) },
+		CheckDestroy: testNetworkInstanceDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: input,
+				Check: resource.ComposeTestCheckFunc(
+					testNetworkInstanceExists("zedcloud_network_instance.complete", &got),
+					resource.TestMatchResourceAttr(
+						"zedcloud_network_instance.complete",
+						"project_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_network_instance.complete",
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
@@ -88,24 +129,20 @@ func testNetworkInstanceExists(resourceName string, networkModel *models.Network
 	}
 }
 
-// testNetworkAttributes verifies attributes are set correctly by Terraform
-func testNetworkAttributes(t *testing.T, got, expected *models.Network) resource.TestCheckFunc {
+// testNetworkInstanceAttributes verifies attributes are set correctly by Terraform
+func testNetworkInstanceAttributes(t *testing.T, got, expected *models.NetworkInstance) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		ignoredFields := []string{
 			"ID",
 			"Revision",
+			"IP",
+			"DNSList",
 		}
-		if expected.Proxy != nil && expected.Proxy.NetworkProxyCerts == nil {
-			ignoredFields = append(ignoredFields, "Proxy.NetworkProxyCerts")
+		// API and YAML unmarshal might change order of list elements so we ignore them in tests
+		if !schemas.CompareDNSLists(got.DNSList, expected.DNSList) {
+			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), cmp.Diff(got.DNSList, expected.DNSList))
 		}
-		// API, TF and YAML unmarshal might change order of list elements so we ignore them in tests
-		if expected.DNSList != nil {
-			ignoredFields = append(ignoredFields, "DNSList")
-		}
-		if expected.Proxy != nil && expected.Proxy.Proxies != nil {
-			ignoredFields = append(ignoredFields, "Proxy.Proxies")
-		}
-		opts := cmpopts.IgnoreFields(models.Network{}, ignoredFields...)
+		opts := cmpopts.IgnoreFields(models.NetworkInstance{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
@@ -113,8 +150,8 @@ func testNetworkAttributes(t *testing.T, got, expected *models.Network) resource
 	}
 }
 
-// testNetworkDestroy verifies the Network has been destroyed.
-func testNetworkDestroy(s *terraform.State) error {
+// testNetworkInstanceDestroy verifies the Network has been destroyed.
+func testNetworkInstanceDestroy(s *terraform.State) error {
 	// retrieve the client established in Provider configuration
 	client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
@@ -123,6 +160,8 @@ func testNetworkDestroy(s *terraform.State) error {
 		if rs.Type != "zedcloud_network_instance" {
 			continue
 		}
+
+		spew.Dump(rs)
 
 		// retrieve the Network by referencing it's state ID for API lookup
 		params := config.GetByIDParams()
@@ -136,7 +175,7 @@ func testNetworkDestroy(s *terraform.State) error {
 		}
 
 		// if the error is equivalent to 404 not found, the Network is destroyed
-		_, ok := err.(*config.NetworkInstanceNotFound)
+		_, ok := err.(*config.GetEdgeNetworkInstanceNotFound)
 		if !ok {
 			return fmt.Errorf("destroy failed, expect status code 404 for Network Instance (%s)", params.ID)
 		}

@@ -3,6 +3,7 @@ package schemas
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
+	"golang.org/x/exp/slices"
 )
 
 func ToStaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
@@ -96,4 +97,61 @@ func StaticDNSListPropertyFields() (t []string) {
 		"addrs",
 		"hostname",
 	}
+}
+
+func CompareDNSLists(a, b []*models.StaticDNSList) bool {
+	// is each element of the new list in the old list?
+	for _, newList := range b {
+		if newList == nil {
+			continue
+		}
+
+		found := false
+		for _, oldList := range a {
+			if oldList == nil {
+				continue
+			}
+
+			if oldList.Hostname != newList.Hostname {
+				continue
+			}
+			slices.Sort(oldList.Addrs)
+			slices.Sort(newList.Addrs)
+			if !Equal(oldList.Addrs, newList.Addrs) {
+				continue
+			}
+			found = true
+		}
+		if !found {
+			return false
+		}
+	}
+
+	// is each element of the old list also in the new list?
+	for _, oldList := range a {
+		if oldList == nil {
+			continue
+		}
+
+		found := false
+		for _, newList := range b {
+			if newList == nil {
+				continue
+			}
+			if oldList.Hostname != newList.Hostname {
+				continue
+			}
+			slices.Sort(oldList.Addrs)
+			slices.Sort(newList.Addrs)
+			if !Equal(oldList.Addrs, newList.Addrs) {
+				continue
+			}
+			found = true
+		}
+		if !found {
+			return false
+		}
+	}
+
+	return true
 }

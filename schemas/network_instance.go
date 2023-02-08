@@ -349,8 +349,9 @@ func NetworkInstance() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: StaticDNSList(),
 			},
-			// DiffSuppressFunc: diffSuppressMapListOrder("dns_list"),
-			Optional: true,
+			DiffSuppressFunc: diffSuppressDNSListOrder("dns_list"),
+			Optional:         true,
+			Computed:         true,
 		},
 
 		"id": {

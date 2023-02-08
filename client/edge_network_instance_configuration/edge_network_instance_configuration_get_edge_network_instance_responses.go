@@ -276,62 +276,62 @@ func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceForbidden) readRe
 }
 
 // NewEdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound creates a EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound with default headers values
-func NewEdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound() *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound {
-	return &EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound{}
+func NewEdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound() *GetEdgeNetworkInstanceNotFound {
+	return &GetEdgeNetworkInstanceNotFound{}
 }
 
 /*
-EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound describes a response with status code 404, with default header values.
+GetEdgeNetworkInstanceNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound struct {
+type GetEdgeNetworkInstanceNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this edge network instance configuration get edge network instance not found response has a 2xx status code
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) IsSuccess() bool {
+func (o *GetEdgeNetworkInstanceNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this edge network instance configuration get edge network instance not found response has a 3xx status code
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) IsRedirect() bool {
+func (o *GetEdgeNetworkInstanceNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this edge network instance configuration get edge network instance not found response has a 4xx status code
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) IsClientError() bool {
+func (o *GetEdgeNetworkInstanceNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this edge network instance configuration get edge network instance not found response has a 5xx status code
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) IsServerError() bool {
+func (o *GetEdgeNetworkInstanceNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this edge network instance configuration get edge network instance not found response a status code equal to that given
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) IsCode(code int) bool {
+func (o *GetEdgeNetworkInstanceNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the edge network instance configuration get edge network instance not found response
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) Code() int {
+func (o *GetEdgeNetworkInstanceNotFound) Code() int {
 	return 404
 }
 
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) Error() string {
+func (o *GetEdgeNetworkInstanceNotFound) Error() string {
 	return fmt.Sprintf("[GET /v1/netinsts/id/{id}][%d] edgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) String() string {
+func (o *GetEdgeNetworkInstanceNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/netinsts/id/{id}][%d] edgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) GetPayload() *models.ZsrvResponse {
+func (o *GetEdgeNetworkInstanceNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *EdgeNetworkInstanceConfigurationGetEdgeNetworkInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *GetEdgeNetworkInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

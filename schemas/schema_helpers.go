@@ -1,10 +1,10 @@
 package schemas
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/zededa/terraform-provider/models"
 	"golang.org/x/exp/slices"
 )
 
@@ -39,26 +39,52 @@ func diffSuppressStringListOrder(key, oldValue, newValue string, d *schema.Resou
 	return slices.Equal(oldList, newList)
 }
 
-func diffSuppressMapListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
-	// fmt.Println("=========================================================")
+// Sort and compare DNSList.
+// The API does not guarantee the order of the list items and terraform reports a diff if the order in state and config
+// differs. This is an expensive workaround that runs on each elements of the  and should be removed if possible.
+func diffSuppressDNSListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
-		fmt.Println("start =========================================================")
-		fmt.Println(mapKey)
-		fmt.Println(key)
 		oldData, newData := d.GetChange(mapKey)
-		if oldData == nil || newData == nil {
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		if oldData == nil {
+			return false
+		}
+		if newData == nil {
 			return false
 		}
 
-		oldMap := oldData.([]interface{})
-		newMap := newData.([]interface{})
+		o := oldData.([]interface{})
+		n := newData.([]interface{})
+		if len(o) != len(n) {
+			return false
+		}
 
-		fmt.Println("oldMap")
-		fmt.Println(oldMap)
-		fmt.Println("newMap")
-		fmt.Println(newMap)
+		oldMapList := make([]*models.StaticDNSList, len(o))
+		for i, m := range o {
+			oldMapList[i] = StaticDNSListModelFromMap(m.(map[string]interface{}))
+		}
+		newMapList := make([]*models.StaticDNSList, len(o))
+		for i, m := range o {
+			newMapList[i] = StaticDNSListModelFromMap(m.(map[string]interface{}))
+		}
 
-		fmt.Println("end =========================================================")
-		return true
+		return CompareDNSLists(oldMapList, newMapList)
 	}
+}
+
+// Equal tells whether a and b contain the same elements.
+// A nil argument is equivalent to an empty slice.
+func Equal(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i, v := range a {
+		if v != b[i] {
+			return false
+		}
+	}
+	return true
 }

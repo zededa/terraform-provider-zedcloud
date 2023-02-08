@@ -169,23 +169,23 @@ func testNetworkExists(resourceName string, networkModel *models.Network) resour
 	}
 }
 
-// testNetworkInstanceAttributes verifies attributes are set correctly by Terraform
-func testNetworkInstanceAttributes(t *testing.T, got, expected *models.NetworkInstance) resource.TestCheckFunc {
+// testNetworkAttributes verifies attributes are set correctly by Terraform
+func testNetworkAttributes(t *testing.T, got, expected *models.Network) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		ignoredFields := []string{
 			"ID",
 			"Revision",
 		}
-		// // if expected.Proxy != nil && expected.Proxy.NetworkProxyCerts == nil {
-		// // 	ignoredFields = append(ignoredFields, "Proxy.NetworkProxyCerts")
-		// }
-		// // API, TF and YAML unmarshal might change order of list elements so we ignore them in tests
-		// if expected.DNSList != nil {
-		// 	ignoredFields = append(ignoredFields, "DNSList")
-		// }
-		// if expected.Proxy != nil && expected.Proxy.Proxies != nil {
-		// 	ignoredFields = append(ignoredFields, "Proxy.Proxies")
-		// }
+		if expected.Proxy != nil && expected.Proxy.NetworkProxyCerts == nil {
+			ignoredFields = append(ignoredFields, "Proxy.NetworkProxyCerts")
+		}
+		// API, TF and YAML unmarshal might change order of list elements so we ignore them in tests
+		if expected.DNSList != nil {
+			ignoredFields = append(ignoredFields, "DNSList")
+		}
+		if expected.Proxy != nil && expected.Proxy.Proxies != nil {
+			ignoredFields = append(ignoredFields, "Proxy.Proxies")
+		}
 		opts := cmpopts.IgnoreFields(models.Network{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
@@ -195,7 +195,7 @@ func testNetworkInstanceAttributes(t *testing.T, got, expected *models.NetworkIn
 }
 
 // testNetworkInstanceDestroy verifies the Network has been destroyed.
-func testNetworkInstanceDestroy(s *terraform.State) error {
+func testNetworkDestroy(s *terraform.State) error {
 	// retrieve the client established in Provider configuration
 	client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
