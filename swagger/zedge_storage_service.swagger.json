@@ -2597,6 +2597,12 @@
                             "$ref": "#/definitions/ZsrvResponse"
                         }
                     },
+                    "201": {
+                        "description": "Datastore created.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
                     "400": {
                         "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
                         "schema": {

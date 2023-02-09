@@ -18,13 +18,13 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// NewDatastoreConfigurationCreateDatastoreParams creates a new DatastoreConfigurationCreateDatastoreParams object,
+// CreateParams creates a new DatastoreConfigurationCreateDatastoreParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewDatastoreConfigurationCreateDatastoreParams() *DatastoreConfigurationCreateDatastoreParams {
+func CreateParams() *DatastoreConfigurationCreateDatastoreParams {
 	return &DatastoreConfigurationCreateDatastoreParams{
 		timeout: cr.DefaultTimeout,
 	}

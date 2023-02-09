@@ -16,7 +16,7 @@ func DatastoreModel(d *schema.ResourceData) *models.Datastore {
 		}
 	}
 	description, _ := d.Get("description").(string)
-	dsFQDN, _ := d.Get("ds_f_q_d_n").(string)
+	dsFQDN, _ := d.Get("ds_fqdn").(string)
 	dsPath, _ := d.Get("ds_path").(string)
 	var dsStatus *models.DatastoreStatus // DatastoreStatus
 	dsStatusInterface, dsStatusIsSet := d.GetOk("ds_status")
@@ -91,7 +91,7 @@ func DatastoreModelFromMap(m map[string]interface{}) *models.Datastore {
 	}
 	//
 	description := m["description"].(string)
-	dsFQDN := m["ds_f_q_d_n"].(string)
+	dsFQDN := m["ds_fqdn"].(string)
 	dsPath := m["ds_path"].(string)
 	var dsStatus *models.DatastoreStatus // DatastoreStatus
 	dsStatusInterface, dsStatusIsSet := m["ds_status"]
@@ -161,7 +161,7 @@ func SetDatastoreResourceData(d *schema.ResourceData, m *models.Datastore) {
 	d.Set("crypto_key", m.CryptoKey)
 	d.Set("description", m.Description)
 	d.Set("ds_err", m.DsErr)
-	d.Set("ds_f_q_d_n", m.DsFQDN)
+	d.Set("ds_fqdn", m.DsFQDN)
 	d.Set("ds_path", m.DsPath)
 	d.Set("ds_status", m.DsStatus)
 	d.Set("ds_type", m.DsType)
@@ -188,7 +188,7 @@ func SetDatastoreInfoSubResourceData(m []*models.Datastore) (d []*map[string]int
 			properties["crypto_key"] = DatastoreInfoModel.CryptoKey
 			properties["description"] = DatastoreInfoModel.Description
 			properties["ds_err"] = DatastoreInfoModel.DsErr
-			properties["ds_f_q_d_n"] = DatastoreInfoModel.DsFQDN
+			properties["ds_fqdn"] = DatastoreInfoModel.DsFQDN
 			properties["ds_path"] = DatastoreInfoModel.DsPath
 			properties["ds_status"] = DatastoreInfoModel.DsStatus
 			properties["ds_type"] = DatastoreInfoModel.DsType
@@ -216,6 +216,7 @@ func Datastore() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Sensitive:   true,
 		},
 
 		"certificate_chain": {
@@ -224,7 +225,9 @@ func Datastore() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: CertificateChainSchema(),
 			},
-			Optional: true,
+			Optional:  true,
+			Computed:  true,
+			Sensitive: true,
 		},
 
 		"crypto_key": {
@@ -245,7 +248,7 @@ func Datastore() map[string]*schema.Schema {
 			Computed:    true,
 		},
 
-		"ds_f_q_d_n": {
+		"ds_fqdn": {
 			Description: `Datastore Fully Qualified Domain Name`,
 			Type:        schema.TypeString,
 			Required:    true,
@@ -275,7 +278,8 @@ func Datastore() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Computed: true,
+			Computed:  true,
+			Sensitive: true,
 		},
 
 		"enterprise_id": {
@@ -338,7 +342,9 @@ func Datastore() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DatastoreSecrets(),
 			},
-			Optional: true,
+			Optional:  true,
+			Sensitive: true,
+			Computed:  true,
 		},
 
 		"title": {
@@ -355,7 +361,7 @@ func GetDatastoreInfoPropertyFields() (t []string) {
 		"api_key",
 		"certificate_chain",
 		"description",
-		"ds_f_q_d_n",
+		"ds_fqdn",
 		"ds_path",
 		"ds_status",
 		"ds_type",

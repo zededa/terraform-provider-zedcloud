@@ -1,0 +1,11 @@
+ds_fqdn: "test.datastore.tld"
+ds_path: "/path/to/datastore"
+ds_type: ""
+name: "test"
+title: "title"
+api_key: "1234abcd"
+description: "description"
+enterprise_id: "1234"
+need_clear_text: false
+region: "eu"
+

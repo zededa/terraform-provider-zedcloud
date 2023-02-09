@@ -28,11 +28,11 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	DatastoreConfigurationCreateDatastore(params *DatastoreConfigurationCreateDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationCreateDatastoreOK, error)
+	Create(params *DatastoreConfigurationCreateDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationCreateDatastoreOK, error)
 
 	Delete(params *DatastoreConfigurationDeleteDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationDeleteDatastoreOK, error)
 
-	DatastoreConfigurationGetDatastore(params *DatastoreConfigurationGetDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationGetDatastoreOK, error)
+	GetByID(params *DatastoreConfigurationGetDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationGetDatastoreOK, error)
 
 	GetByName(params *DatastoreConfigurationGetDatastoreByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationGetDatastoreByNameOK, error)
 
@@ -46,14 +46,14 @@ type ClientService interface {
 }
 
 /*
-DatastoreConfigurationCreateDatastore creates datastore
+Create creates datastore
 
 Create a Datastore record.
 */
-func (a *Client) DatastoreConfigurationCreateDatastore(params *DatastoreConfigurationCreateDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationCreateDatastoreOK, error) {
+func (a *Client) Create(params *DatastoreConfigurationCreateDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationCreateDatastoreOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDatastoreConfigurationCreateDatastoreParams()
+		params = CreateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "DatastoreConfiguration_CreateDatastore",
@@ -82,6 +82,9 @@ func (a *Client) DatastoreConfigurationCreateDatastore(params *DatastoreConfigur
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*DatastoreConfigurationCreateDatastoreDefault)
+	if unexpectedSuccess.IsSuccess() {
+		return nil, nil
+	}
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
@@ -126,14 +129,14 @@ func (a *Client) Delete(params *DatastoreConfigurationDeleteDatastoreParams, aut
 }
 
 /*
-DatastoreConfigurationGetDatastore gets datastore
+GetByID gets datastore
 
 Get the configuration (without security details) of a datastore record.
 */
-func (a *Client) DatastoreConfigurationGetDatastore(params *DatastoreConfigurationGetDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationGetDatastoreOK, error) {
+func (a *Client) GetByID(params *DatastoreConfigurationGetDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationGetDatastoreOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewDatastoreConfigurationGetDatastoreParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "DatastoreConfiguration_GetDatastore",

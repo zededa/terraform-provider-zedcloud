@@ -282,62 +282,62 @@ func (o *DatastoreConfigurationDeleteDatastoreForbidden) readResponse(response r
 }
 
 // NewDatastoreConfigurationDeleteDatastoreNotFound creates a DatastoreConfigurationDeleteDatastoreNotFound with default headers values
-func NewDatastoreConfigurationDeleteDatastoreNotFound() *DatastoreConfigurationDeleteDatastoreNotFound {
-	return &DatastoreConfigurationDeleteDatastoreNotFound{}
+func NewDatastoreConfigurationDeleteDatastoreNotFound() *NotFound {
+	return &NotFound{}
 }
 
 /*
-DatastoreConfigurationDeleteDatastoreNotFound describes a response with status code 404, with default header values.
+NotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type DatastoreConfigurationDeleteDatastoreNotFound struct {
+type NotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this datastore configuration delete datastore not found response has a 2xx status code
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) IsSuccess() bool {
+func (o *NotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this datastore configuration delete datastore not found response has a 3xx status code
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) IsRedirect() bool {
+func (o *NotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this datastore configuration delete datastore not found response has a 4xx status code
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) IsClientError() bool {
+func (o *NotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this datastore configuration delete datastore not found response has a 5xx status code
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) IsServerError() bool {
+func (o *NotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this datastore configuration delete datastore not found response a status code equal to that given
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) IsCode(code int) bool {
+func (o *NotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the datastore configuration delete datastore not found response
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) Code() int {
+func (o *NotFound) Code() int {
 	return 404
 }
 
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) Error() string {
+func (o *NotFound) Error() string {
 	return fmt.Sprintf("[DELETE /v1/datastores/id/{id}][%d] datastoreConfigurationDeleteDatastoreNotFound  %+v", 404, o.Payload)
 }
 
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) String() string {
+func (o *NotFound) String() string {
 	return fmt.Sprintf("[DELETE /v1/datastores/id/{id}][%d] datastoreConfigurationDeleteDatastoreNotFound  %+v", 404, o.Payload)
 }
 
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) GetPayload() *models.ZsrvResponse {
+func (o *NotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *DatastoreConfigurationDeleteDatastoreNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *NotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

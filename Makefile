@@ -48,7 +48,7 @@ gen:
 	docker run --rm --user $(shell id -u):$(shell id -g) \
 		-e GOPATH=$(HOME)/go:/go \
 		-v $(HOME):$(HOME) -w $(shell pwd) quay.io/goswagger/swagger \
-		generate client -f swagger/zedge_node_service.swagger.json \
+		generate client -f swagger/zedge_storage_service.swagger.json \
 		-A zedcloudapi \
 		-C swagger/config.yml
 

@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewDatastoreConfigurationGetDatastoreParams creates a new DatastoreConfigurationGetDatastoreParams object,
+// GetByIDParams creates a new DatastoreConfigurationGetDatastoreParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewDatastoreConfigurationGetDatastoreParams() *DatastoreConfigurationGetDatastoreParams {
+func GetByIDParams() *DatastoreConfigurationGetDatastoreParams {
 	return &DatastoreConfigurationGetDatastoreParams{
 		timeout: cr.DefaultTimeout,
 	}
