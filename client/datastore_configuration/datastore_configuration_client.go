@@ -28,7 +28,7 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	Create(params *DatastoreConfigurationCreateDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationCreateDatastoreOK, error)
+	Create(params *DatastoreConfigurationCreateDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationCreateDatastoreOK, *DatastoreConfigurationCreateDatastoreCreated, error)
 
 	Delete(params *DatastoreConfigurationDeleteDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationDeleteDatastoreOK, error)
 
@@ -50,7 +50,7 @@ Create creates datastore
 
 Create a Datastore record.
 */
-func (a *Client) Create(params *DatastoreConfigurationCreateDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationCreateDatastoreOK, error) {
+func (a *Client) Create(params *DatastoreConfigurationCreateDatastoreParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DatastoreConfigurationCreateDatastoreOK, *DatastoreConfigurationCreateDatastoreCreated, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = CreateParams()
@@ -74,18 +74,17 @@ func (a *Client) Create(params *DatastoreConfigurationCreateDatastoreParams, aut
 
 	result, err := a.transport.Submit(op)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	success, ok := result.(*DatastoreConfigurationCreateDatastoreOK)
-	if ok {
-		return success, nil
+	switch value := result.(type) {
+	case *DatastoreConfigurationCreateDatastoreOK:
+		return value, nil, nil
+	case *DatastoreConfigurationCreateDatastoreCreated:
+		return nil, value, nil
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*DatastoreConfigurationCreateDatastoreDefault)
-	if unexpectedSuccess.IsSuccess() {
-		return nil, nil
-	}
-	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+	return nil, nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*

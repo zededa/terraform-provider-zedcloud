@@ -122,8 +122,8 @@ const (
 	// ZsrvErrorCodeDBError captures enum value "DBError"
 	ZsrvErrorCodeDBError ZsrvErrorCode = "DBError"
 
-	// ZsrvErrorCodeZMsgAccepted captures enum value "zMsgAccepted"
-	ZsrvErrorCodeZMsgAccepted ZsrvErrorCode = "zMsgAccepted"
+	// ErrorCodeAccepted captures enum value "zMsgAccepted"
+	ErrorCodeAccepted ZsrvErrorCode = "zMsgAccepted"
 
 	// ZsrvErrorCodeZMsgCreated captures enum value "zMsgCreated"
 	ZsrvErrorCodeZMsgCreated ZsrvErrorCode = "zMsgCreated"

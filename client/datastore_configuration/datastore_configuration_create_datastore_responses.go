@@ -29,6 +29,12 @@ func (o *DatastoreConfigurationCreateDatastoreReader) ReadResponse(response runt
 			return nil, err
 		}
 		return result, nil
+	case 201:
+		result := NewDatastoreConfigurationCreateDatastoreCreated()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return result, nil
 	case 400:
 		result := NewDatastoreConfigurationCreateDatastoreBadRequest()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -134,6 +140,74 @@ func (o *DatastoreConfigurationCreateDatastoreOK) GetPayload() *models.ZsrvRespo
 }
 
 func (o *DatastoreConfigurationCreateDatastoreOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewDatastoreConfigurationCreateDatastoreCreated creates a DatastoreConfigurationCreateDatastoreCreated with default headers values
+func NewDatastoreConfigurationCreateDatastoreCreated() *DatastoreConfigurationCreateDatastoreCreated {
+	return &DatastoreConfigurationCreateDatastoreCreated{}
+}
+
+/*
+DatastoreConfigurationCreateDatastoreCreated describes a response with status code 201, with default header values.
+
+Datastore created.
+*/
+type DatastoreConfigurationCreateDatastoreCreated struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this datastore configuration create datastore created response has a 2xx status code
+func (o *DatastoreConfigurationCreateDatastoreCreated) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this datastore configuration create datastore created response has a 3xx status code
+func (o *DatastoreConfigurationCreateDatastoreCreated) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this datastore configuration create datastore created response has a 4xx status code
+func (o *DatastoreConfigurationCreateDatastoreCreated) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this datastore configuration create datastore created response has a 5xx status code
+func (o *DatastoreConfigurationCreateDatastoreCreated) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this datastore configuration create datastore created response a status code equal to that given
+func (o *DatastoreConfigurationCreateDatastoreCreated) IsCode(code int) bool {
+	return code == 201
+}
+
+// Code gets the status code for the datastore configuration create datastore created response
+func (o *DatastoreConfigurationCreateDatastoreCreated) Code() int {
+	return 201
+}
+
+func (o *DatastoreConfigurationCreateDatastoreCreated) Error() string {
+	return fmt.Sprintf("[POST /v1/datastores][%d] datastoreConfigurationCreateDatastoreCreated  %+v", 201, o.Payload)
+}
+
+func (o *DatastoreConfigurationCreateDatastoreCreated) String() string {
+	return fmt.Sprintf("[POST /v1/datastores][%d] datastoreConfigurationCreateDatastoreCreated  %+v", 201, o.Payload)
+}
+
+func (o *DatastoreConfigurationCreateDatastoreCreated) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *DatastoreConfigurationCreateDatastoreCreated) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

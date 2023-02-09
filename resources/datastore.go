@@ -9,7 +9,6 @@ import (
 	"errors"
 	"log"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider/client"
@@ -44,35 +43,40 @@ func CreateDatastore(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Datastore.Create(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	success, created, err := client.Datastore.Create(params, nil)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
 		return diags
 	}
 
-	if resp != nil {
-		responseData := resp.GetPayload()
-		if responseData != nil && len(responseData.Error) > 0 {
-			for _, err := range responseData.Error {
-				spew.Dump("2 =============================================")
-				spew.Dump(err)
-				// FIXME: zedcloud api returns a response that contains and error even in case of success.
-				// remove this code once it is fixed on API side.
-				if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
-					continue
-				}
-				diags = append(diags, diag.FromErr(errors.New(err.Details))...)
-			}
-			if diags.HasError() {
-				return diags
-			}
-		}
-
-		// note, we need to set the ID in any case, even GetByName endpoint seems to require items
-		// but doesn't return any error if it's not set.
-		d.SetId(responseData.ObjectID)
+	var responseData *models.ZsrvResponse
+	if success != nil {
+		log.Printf("[TRACE] response: %v", success)
+		responseData = success.GetPayload()
+	} else {
+		log.Printf("[TRACE] response: %v", created)
+		responseData = created.GetPayload()
 	}
+
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil &&
+				(*err.ErrorCode == models.ErrorCodeSuccess ||
+					*err.ErrorCode == models.ErrorCodeAccepted) {
+				continue
+			}
+			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+		}
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
+	// but doesn't return any error if it's not set.
+	d.SetId(responseData.ObjectID)
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
