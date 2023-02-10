@@ -5,12 +5,41 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ACL resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ACLModel(d *schema.ResourceData) *models.ACL {
-	actions, _ := d.Get("actions").([]*models.ACLAction) // []*ACLAction
-	matches, _ := d.Get("matches").([]*models.Match)     // []*Match
+	var actions []*models.ACLAction // []*ACLAction
+	actionsInterface, actionsIsSet := d.GetOk("actions")
+	if actionsIsSet {
+		var items []interface{}
+		if listItems, isList := actionsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = actionsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ACLActionModelFromMap(v.(map[string]interface{}))
+			actions = append(actions, m)
+		}
+	}
+	var matches []*models.Match // []*Match
+	matchesInterface, matchesIsSet := d.GetOk("matches")
+	if matchesIsSet {
+		var items []interface{}
+		if listItems, isList := matchesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = matchesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := MatchModelFromMap(v.(map[string]interface{}))
+			matches = append(matches, m)
+		}
+	}
 	name, _ := d.Get("name").(string)
 	return &models.ACL{
 		Actions: actions,
@@ -20,8 +49,40 @@ func ACLModel(d *schema.ResourceData) *models.ACL {
 }
 
 func ACLModelFromMap(m map[string]interface{}) *models.ACL {
-	actions := m["actions"].([]*models.ACLAction) // []*ACLAction
-	matches := m["matches"].([]*models.Match)     // []*Match
+	var actions []*models.ACLAction // []*ACLAction
+	actionsInterface, actionsIsSet := m["actions"]
+	if actionsIsSet {
+		var items []interface{}
+		if listItems, isList := actionsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = actionsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ACLActionModelFromMap(v.(map[string]interface{}))
+			actions = append(actions, m)
+		}
+	}
+	var matches []*models.Match // []*Match
+	matchesInterface, matchesIsSet := m["matches"]
+	if matchesIsSet {
+		var items []interface{}
+		if listItems, isList := matchesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = matchesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := MatchModelFromMap(v.(map[string]interface{}))
+			matches = append(matches, m)
+		}
+	}
 	name := m["name"].(string)
 	return &models.ACL{
 		Actions: actions,

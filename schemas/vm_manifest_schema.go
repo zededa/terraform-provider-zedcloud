@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate VMManifest resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	acKind, _ := d.Get("ac_kind").(string)
 	acVersion, _ := d.Get("ac_version").(string)
@@ -19,15 +16,19 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	}
 	var configuration *models.UserDataTemplate // UserDataTemplate
 	configurationInterface, configurationIsSet := d.GetOk("configuration")
-	if configurationIsSet {
-		configurationMap := configurationInterface.([]interface{})[0].(map[string]interface{})
-		configuration = UserDataTemplateModelFromMap(configurationMap)
+	if configurationIsSet && configurationInterface != nil {
+		configurationMap := configurationInterface.([]interface{})
+		if len(configurationMap) > 0 {
+			configuration = UserTemplateModelFromMap(configurationMap[0].(map[string]interface{}))
+		}
 	}
 	var containerDetail *models.ContainerDetail // ContainerDetail
 	containerDetailInterface, containerDetailIsSet := d.GetOk("container_detail")
-	if containerDetailIsSet {
-		containerDetailMap := containerDetailInterface.([]interface{})[0].(map[string]interface{})
-		containerDetail = ContainerDetailModelFromMap(containerDetailMap)
+	if containerDetailIsSet && containerDetailInterface != nil {
+		containerDetailMap := containerDetailInterface.([]interface{})
+		if len(containerDetailMap) > 0 {
+			containerDetail = ContainerDetailModelFromMap(containerDetailMap[0].(map[string]interface{}))
+		}
 	}
 	cPUPinningEnabled, _ := d.Get("cpu_pinning_enabled").(bool)
 	var deploymentType *models.DeploymentType // DeploymentType
@@ -38,30 +39,100 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	}
 	var desc *models.Details // Details
 	descInterface, descIsSet := d.GetOk("desc")
-	if descIsSet {
-		descMap := descInterface.([]interface{})[0].(map[string]interface{})
-		desc = DetailsModelFromMap(descMap)
+	if descIsSet && descInterface != nil {
+		descMap := descInterface.([]interface{})
+		if len(descMap) > 0 {
+			desc = DetailsModelFromMap(descMap[0].(map[string]interface{}))
+		}
 	}
 	description, _ := d.Get("description").(string)
 	displayName, _ := d.Get("display_name").(string)
 	enablevnc, _ := d.Get("enablevnc").(bool)
-	images, _ := d.Get("images").([]*models.VMManifestImage)   // []*VMManifestImage
-	interfaces, _ := d.Get("interfaces").([]*models.Interface) // []*Interface
-	var module *models.ModuleDetail                            // ModuleDetail
+	var images []*models.VMManifestImage // []*VMManifestImage
+	imagesInterface, imagesIsSet := d.GetOk("images")
+	if imagesIsSet {
+		var items []interface{}
+		if listItems, isList := imagesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = imagesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VMManifestImageModelFromMap(v.(map[string]interface{}))
+			images = append(images, m)
+		}
+	}
+	var interfaces []*models.Interface // []*Interface
+	interfacesInterface, interfacesIsSet := d.GetOk("interfaces")
+	if interfacesIsSet {
+		var items []interface{}
+		if listItems, isList := interfacesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = interfacesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := InterfaceModelFromMap(v.(map[string]interface{}))
+			interfaces = append(interfaces, m)
+		}
+	}
+	var module *models.ModuleDetail // ModuleDetail
 	moduleInterface, moduleIsSet := d.GetOk("module")
-	if moduleIsSet {
-		moduleMap := moduleInterface.([]interface{})[0].(map[string]interface{})
-		module = ModuleDetailModelFromMap(moduleMap)
+	if moduleIsSet && moduleInterface != nil {
+		moduleMap := moduleInterface.([]interface{})
+		if len(moduleMap) > 0 {
+			module = ModuleDetailModelFromMap(moduleMap[0].(map[string]interface{}))
+		}
 	}
 	name, _ := d.Get("name").(string)
 	var owner *models.Author // Author
 	ownerInterface, ownerIsSet := d.GetOk("owner")
-	if ownerIsSet {
-		ownerMap := ownerInterface.([]interface{})[0].(map[string]interface{})
-		owner = AuthorModelFromMap(ownerMap)
+	if ownerIsSet && ownerInterface != nil {
+		ownerMap := ownerInterface.([]interface{})
+		if len(ownerMap) > 0 {
+			owner = AuthorModelFromMap(ownerMap[0].(map[string]interface{}))
+		}
 	}
-	permissions, _ := d.Get("permissions").([]models.Permission) // []Permission
-	resources, _ := d.Get("resources").([]*models.Resource)      // []*Resource
+	var permissions []models.Permission // []Permission
+	permissionsInterface, permissionsIsSet := d.GetOk("permissions")
+	if permissionsIsSet {
+		var items []interface{}
+		if listItems, isList := permissionsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = permissionsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := PermissionModelFromMap(v.(map[string]interface{}))
+			permissions = append(permissions, *m)
+		}
+	}
+	var resources []*models.Resource // []*Resource
+	resourcesInterface, resourcesIsSet := d.GetOk("resources")
+	if resourcesIsSet {
+		var items []interface{}
+		if listItems, isList := resourcesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = resourcesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ResourceModelFromMap(v.(map[string]interface{}))
+			resources = append(resources, m)
+		}
+	}
 	vmmode, _ := d.Get("vmmode").(string)
 	return &models.VMManifest{
 		AcKind:            &acKind,    // string true false false
@@ -89,52 +160,136 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 	acKind := m["ac_kind"].(string)
 	acVersion := m["ac_version"].(string)
-	appType := m["app_type"].(*models.AppType) // AppType
+	var appType *models.AppType // AppType
+	appTypeInterface, appTypeIsSet := m["app_type"]
+	if appTypeIsSet {
+		appTypeModel := appTypeInterface.(string)
+		appType = models.NewAppType(models.AppType(appTypeModel))
+	}
 	var configuration *models.UserDataTemplate // UserDataTemplate
 	configurationInterface, configurationIsSet := m["configuration"]
-	if configurationIsSet {
-		configurationMap := configurationInterface.([]interface{})[0].(map[string]interface{})
-		configuration = UserDataTemplateModelFromMap(configurationMap)
+	if configurationIsSet && configurationInterface != nil {
+		configurationMap := configurationInterface.([]interface{})
+		if len(configurationMap) > 0 {
+			configuration = UserTemplateModelFromMap(configurationMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var containerDetail *models.ContainerDetail // ContainerDetail
 	containerDetailInterface, containerDetailIsSet := m["container_detail"]
-	if containerDetailIsSet {
-		containerDetailMap := containerDetailInterface.([]interface{})[0].(map[string]interface{})
-		containerDetail = ContainerDetailModelFromMap(containerDetailMap)
+	if containerDetailIsSet && containerDetailInterface != nil {
+		containerDetailMap := containerDetailInterface.([]interface{})
+		if len(containerDetailMap) > 0 {
+			containerDetail = ContainerDetailModelFromMap(containerDetailMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	cPUPinningEnabled := m["cpu_pinning_enabled"].(bool)
-	deploymentType := m["deployment_type"].(*models.DeploymentType) // DeploymentType
-	var desc *models.Details                                        // Details
+	var deploymentType *models.DeploymentType // DeploymentType
+	deploymentTypeInterface, deploymentTypeIsSet := m["deployment_type"]
+	if deploymentTypeIsSet {
+		deploymentTypeModel := deploymentTypeInterface.(string)
+		deploymentType = models.NewDeploymentType(models.DeploymentType(deploymentTypeModel))
+	}
+	var desc *models.Details // Details
 	descInterface, descIsSet := m["desc"]
-	if descIsSet {
-		descMap := descInterface.([]interface{})[0].(map[string]interface{})
-		desc = DetailsModelFromMap(descMap)
+	if descIsSet && descInterface != nil {
+		descMap := descInterface.([]interface{})
+		if len(descMap) > 0 {
+			desc = DetailsModelFromMap(descMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	description := m["description"].(string)
 	displayName := m["display_name"].(string)
 	enablevnc := m["enablevnc"].(bool)
-	images := m["images"].([]*models.VMManifestImage)   // []*VMManifestImage
-	interfaces := m["interfaces"].([]*models.Interface) // []*Interface
-	var module *models.ModuleDetail                     // ModuleDetail
+	var images []*models.VMManifestImage // []*VMManifestImage
+	imagesInterface, imagesIsSet := m["images"]
+	if imagesIsSet {
+		var items []interface{}
+		if listItems, isList := imagesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = imagesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VMManifestImageModelFromMap(v.(map[string]interface{}))
+			images = append(images, m)
+		}
+	}
+	var interfaces []*models.Interface // []*Interface
+	interfacesInterface, interfacesIsSet := m["interfaces"]
+	if interfacesIsSet {
+		var items []interface{}
+		if listItems, isList := interfacesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = interfacesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := InterfaceModelFromMap(v.(map[string]interface{}))
+			interfaces = append(interfaces, m)
+		}
+	}
+	var module *models.ModuleDetail // ModuleDetail
 	moduleInterface, moduleIsSet := m["module"]
-	if moduleIsSet {
-		moduleMap := moduleInterface.([]interface{})[0].(map[string]interface{})
-		module = ModuleDetailModelFromMap(moduleMap)
+	if moduleIsSet && moduleInterface != nil {
+		moduleMap := moduleInterface.([]interface{})
+		if len(moduleMap) > 0 {
+			module = ModuleDetailModelFromMap(moduleMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	name := m["name"].(string)
 	var owner *models.Author // Author
 	ownerInterface, ownerIsSet := m["owner"]
-	if ownerIsSet {
-		ownerMap := ownerInterface.([]interface{})[0].(map[string]interface{})
-		owner = AuthorModelFromMap(ownerMap)
+	if ownerIsSet && ownerInterface != nil {
+		ownerMap := ownerInterface.([]interface{})
+		if len(ownerMap) > 0 {
+			owner = AuthorModelFromMap(ownerMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	permissions := m["permissions"].([]models.Permission) // []Permission
-	resources := m["resources"].([]*models.Resource)      // []*Resource
+	var permissions []models.Permission // []Permission
+	permissionsInterface, permissionsIsSet := m["permissions"]
+	if permissionsIsSet {
+		var items []interface{}
+		if listItems, isList := permissionsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = permissionsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := PermissionModelFromMap(v.(map[string]interface{}))
+			permissions = append(permissions, *m)
+		}
+	}
+	var resources []*models.Resource // []*Resource
+	resourcesInterface, resourcesIsSet := m["resources"]
+	if resourcesIsSet {
+		var items []interface{}
+		if listItems, isList := resourcesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = resourcesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ResourceModelFromMap(v.(map[string]interface{}))
+			resources = append(resources, m)
+		}
+	}
 	vmmode := m["vmmode"].(string)
 	return &models.VMManifest{
 		AcKind:            &acKind,
@@ -159,12 +314,11 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 	}
 }
 
-// Update the underlying VMManifest resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetVMManifestResourceData(d *schema.ResourceData, m *models.VMManifest) {
 	d.Set("ac_kind", m.AcKind)
 	d.Set("ac_version", m.AcVersion)
 	d.Set("app_type", m.AppType)
-	d.Set("configuration", SetUserDataTemplateSubResourceData([]*models.UserDataTemplate{m.Configuration}))
+	d.Set("configuration", SetUserTemplateSubResourceData([]*models.UserDataTemplate{m.Configuration}))
 	d.Set("container_detail", SetContainerDetailSubResourceData([]*models.ContainerDetail{m.ContainerDetail}))
 	d.Set("cpu_pinning_enabled", m.CPUPinningEnabled)
 	d.Set("deployment_type", m.DeploymentType)
@@ -182,7 +336,6 @@ func SetVMManifestResourceData(d *schema.ResourceData, m *models.VMManifest) {
 	d.Set("vmmode", m.Vmmode)
 }
 
-// Iterate through and update the VMManifest resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]interface{}) {
 	for _, VMManifestModel := range m {
 		if VMManifestModel != nil {
@@ -190,7 +343,7 @@ func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]inter
 			properties["ac_kind"] = VMManifestModel.AcKind
 			properties["ac_version"] = VMManifestModel.AcVersion
 			properties["app_type"] = VMManifestModel.AppType
-			properties["configuration"] = SetUserDataTemplateSubResourceData([]*models.UserDataTemplate{VMManifestModel.Configuration})
+			properties["configuration"] = SetUserTemplateSubResourceData([]*models.UserDataTemplate{VMManifestModel.Configuration})
 			properties["container_detail"] = SetContainerDetailSubResourceData([]*models.ContainerDetail{VMManifestModel.ContainerDetail})
 			properties["cpu_pinning_enabled"] = VMManifestModel.CPUPinningEnabled
 			properties["deployment_type"] = VMManifestModel.DeploymentType
@@ -239,7 +392,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `Template for Custom Configuration. Used for Cloud-Init`,
 			Type:        schema.TypeList, //GoType: UserDataTemplate
 			Elem: &schema.Resource{
-				Schema: UserDataTemplateSchema(),
+				Schema: UserTemplate(),
 			},
 			Optional: true,
 		},

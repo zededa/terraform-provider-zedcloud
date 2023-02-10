@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate VariableGroupVariable resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VariableGroupVariableModel(d *schema.ResourceData) *models.VariableGroupVariable {
 	defaultVar, _ := d.Get("default").(string)
 	var encode *models.VariableFileEncoding // VariableFileEncoding
@@ -25,7 +22,23 @@ func VariableGroupVariableModel(d *schema.ResourceData) *models.VariableGroupVar
 	label, _ := d.Get("label").(string)
 	maxLength, _ := d.Get("max_length").(string)
 	name, _ := d.Get("name").(string)
-	options, _ := d.Get("options").([]*models.VariableOptionVal) // []*VariableOptionVal
+	var options []*models.VariableOptionVal // []*VariableOptionVal
+	optionsInterface, optionsIsSet := d.GetOk("options")
+	if optionsIsSet {
+		var items []interface{}
+		if listItems, isList := optionsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = optionsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VariableOptionValModelFromMap(v.(map[string]interface{}))
+			options = append(options, m)
+		}
+	}
 	processInput, _ := d.Get("process_input").(string)
 	required, _ := d.Get("required").(bool)
 	typeVar, _ := d.Get("type").(string)
@@ -47,12 +60,38 @@ func VariableGroupVariableModel(d *schema.ResourceData) *models.VariableGroupVar
 
 func VariableGroupVariableModelFromMap(m map[string]interface{}) *models.VariableGroupVariable {
 	defaultVar := m["default"].(string)
-	encode := m["encode"].(*models.VariableFileEncoding)   // VariableFileEncoding
-	format := m["format"].(*models.VariableVariableFormat) // VariableVariableFormat
+	var encode *models.VariableFileEncoding // VariableFileEncoding
+	encodeInterface, encodeIsSet := m["encode"]
+	if encodeIsSet {
+		encodeModel := encodeInterface.(string)
+		encode = models.NewVariableFileEncoding(models.VariableFileEncoding(encodeModel))
+	}
+	var format *models.VariableVariableFormat // VariableVariableFormat
+	formatInterface, formatIsSet := m["format"]
+	if formatIsSet {
+		formatModel := formatInterface.(string)
+		format = models.NewVariableVariableFormat(models.VariableVariableFormat(formatModel))
+	}
 	label := m["label"].(string)
 	maxLength := m["max_length"].(string)
 	name := m["name"].(string)
-	options := m["options"].([]*models.VariableOptionVal) // []*VariableOptionVal
+	var options []*models.VariableOptionVal // []*VariableOptionVal
+	optionsInterface, optionsIsSet := m["options"]
+	if optionsIsSet {
+		var items []interface{}
+		if listItems, isList := optionsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = optionsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VariableOptionValModelFromMap(v.(map[string]interface{}))
+			options = append(options, m)
+		}
+	}
 	processInput := m["process_input"].(string)
 	required := m["required"].(bool)
 	typeVar := m["type"].(string)
@@ -72,7 +111,6 @@ func VariableGroupVariableModelFromMap(m map[string]interface{}) *models.Variabl
 	}
 }
 
-// Update the underlying VariableGroupVariable resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetVariableGroupVariableResourceData(d *schema.ResourceData, m *models.VariableGroupVariable) {
 	d.Set("default", m.Default)
 	d.Set("encode", m.Encode)
@@ -87,7 +125,6 @@ func SetVariableGroupVariableResourceData(d *schema.ResourceData, m *models.Vari
 	d.Set("value", m.Value)
 }
 
-// Iterate through and update the VariableGroupVariable resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVariableGroupVariableSubResourceData(m []*models.VariableGroupVariable) (d []*map[string]interface{}) {
 	for _, VariableGroupVariableModel := range m {
 		if VariableGroupVariableModel != nil {
@@ -110,7 +147,7 @@ func SetVariableGroupVariableSubResourceData(m []*models.VariableGroupVariable) 
 }
 
 // Schema mapping representing the VariableGroupVariable resource defined in the Terraform configuration
-func VariableGroupVariableSchema() map[string]*schema.Schema {
+func VariableGroupVariable() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"default": {
 			Description: `Default value of the variable. (Optional. Default: <Default value based on type>)`,

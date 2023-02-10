@@ -276,62 +276,62 @@ func (o *DatastoreConfigurationGetDatastoreForbidden) readResponse(response runt
 }
 
 // NewDatastoreConfigurationGetDatastoreNotFound creates a DatastoreConfigurationGetDatastoreNotFound with default headers values
-func NewDatastoreConfigurationGetDatastoreNotFound() *DatastoreConfigurationGetDatastoreNotFound {
-	return &DatastoreConfigurationGetDatastoreNotFound{}
+func NewDatastoreConfigurationGetDatastoreNotFound() *GetByIDNotFound {
+	return &GetByIDNotFound{}
 }
 
 /*
-DatastoreConfigurationGetDatastoreNotFound describes a response with status code 404, with default header values.
+GetByIDNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type DatastoreConfigurationGetDatastoreNotFound struct {
+type GetByIDNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this datastore configuration get datastore not found response has a 2xx status code
-func (o *DatastoreConfigurationGetDatastoreNotFound) IsSuccess() bool {
+func (o *GetByIDNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this datastore configuration get datastore not found response has a 3xx status code
-func (o *DatastoreConfigurationGetDatastoreNotFound) IsRedirect() bool {
+func (o *GetByIDNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this datastore configuration get datastore not found response has a 4xx status code
-func (o *DatastoreConfigurationGetDatastoreNotFound) IsClientError() bool {
+func (o *GetByIDNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this datastore configuration get datastore not found response has a 5xx status code
-func (o *DatastoreConfigurationGetDatastoreNotFound) IsServerError() bool {
+func (o *GetByIDNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this datastore configuration get datastore not found response a status code equal to that given
-func (o *DatastoreConfigurationGetDatastoreNotFound) IsCode(code int) bool {
+func (o *GetByIDNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the datastore configuration get datastore not found response
-func (o *DatastoreConfigurationGetDatastoreNotFound) Code() int {
+func (o *GetByIDNotFound) Code() int {
 	return 404
 }
 
-func (o *DatastoreConfigurationGetDatastoreNotFound) Error() string {
+func (o *GetByIDNotFound) Error() string {
 	return fmt.Sprintf("[GET /v1/datastores/id/{id}][%d] datastoreConfigurationGetDatastoreNotFound  %+v", 404, o.Payload)
 }
 
-func (o *DatastoreConfigurationGetDatastoreNotFound) String() string {
+func (o *GetByIDNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/datastores/id/{id}][%d] datastoreConfigurationGetDatastoreNotFound  %+v", 404, o.Payload)
 }
 
-func (o *DatastoreConfigurationGetDatastoreNotFound) GetPayload() *models.ZsrvResponse {
+func (o *GetByIDNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *DatastoreConfigurationGetDatastoreNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *GetByIDNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

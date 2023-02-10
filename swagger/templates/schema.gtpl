@@ -104,7 +104,23 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 		}
 	}
 				{{- else if hasPrefix .GoType "[]" }}
-	{{ varname .Name }}, _ := d.Get("{{ snakize .Name }}").([]models.{{ pascalize .GoType }}) // {{ .GoType }}
+	var {{ varname .Name }} []models.{{ pascalize .GoType }} // {{ .GoType }}
+	{{ .Name }}Interface, {{ .Name }}IsSet := d.GetOk("{{ snakize .Name }}")
+	if {{ .Name }}IsSet {
+		var items []interface{}
+		if listItems, isList := {{ .Name }}Interface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = {{ .Name }}Interface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := {{ pascalize .GoType }}ModelFromMap(v.(map[string]interface{}))
+			{{ varname .Name }} = append({{ varname .Name }}, *m)
+		}
+	}
 				{{- else if .IsAliased }}
 	var {{ varname .Name }} *models.{{ pascalize .GoType }} // {{ .GoType }}
 	{{ .Name }}Interface, {{ .Name }}IsSet := d.GetOk("{{ snakize .Name }}")
@@ -228,7 +244,23 @@ func {{ $operationGroup }}ModelFromMap(m map[string]interface{}) *models.{{ $ope
 		}
 	}
 				{{- else if hasPrefix .GoType "[]" }}
-	{{ varname .Name }} := m["{{ snakize .Name }}"].([]models.{{ pascalize .GoType }}) // {{ .GoType }}
+	var {{ varname .Name }} []models.{{ pascalize .GoType }} // {{ .GoType }}
+	{{ .Name }}Interface, {{ .Name }}IsSet := m["{{ snakize .Name }}"]
+	if {{ .Name }}IsSet {
+		var items []interface{}
+		if listItems, isList := {{ .Name }}Interface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = {{ .Name }}Interface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := {{ pascalize .GoType }}ModelFromMap(v.(map[string]interface{}))
+			{{ varname .Name }} = append({{ varname .Name }}, *m)
+		}
+	}
 				{{- else if .IsAliased }}
 	var {{ varname .Name }} *models.{{ pascalize .GoType }} // {{ .GoType }}
 	{{ .Name }}Interface, {{ .Name }}IsSet := m["{{ snakize .Name }}"]

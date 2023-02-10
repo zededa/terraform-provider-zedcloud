@@ -523,7 +523,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `Application initialization script template in cloud-config format and user specified values`,
 			Type:        schema.TypeList, //GoType: CustomConfig
 			Elem: &schema.Resource{
-				Schema: CustomConfigSchema(),
+				Schema: CustomConfig(),
 			},
 			Optional: true,
 		},

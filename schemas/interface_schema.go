@@ -5,11 +5,24 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Interface resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func InterfaceModel(d *schema.ResourceData) *models.Interface {
-	acls, _ := d.Get("acls").([]*models.ACL) // []*ACL
+	var acls []*models.ACL // []*ACL
+	aclsInterface, aclsIsSet := d.GetOk("acls")
+	if aclsIsSet {
+		var items []interface{}
+		if listItems, isList := aclsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = aclsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ACLModelFromMap(v.(map[string]interface{}))
+			acls = append(acls, m)
+		}
+	}
 	directattach, _ := d.Get("directattach").(bool)
 	name, _ := d.Get("name").(string)
 	optional, _ := d.Get("optional").(bool)
@@ -26,7 +39,23 @@ func InterfaceModel(d *schema.ResourceData) *models.Interface {
 }
 
 func InterfaceModelFromMap(m map[string]interface{}) *models.Interface {
-	acls := m["acls"].([]*models.ACL) // []*ACL
+	var acls []*models.ACL // []*ACL
+	aclsInterface, aclsIsSet := m["acls"]
+	if aclsIsSet {
+		var items []interface{}
+		if listItems, isList := aclsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = aclsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ACLModelFromMap(v.(map[string]interface{}))
+			acls = append(acls, m)
+		}
+	}
 	directattach := m["directattach"].(bool)
 	name := m["name"].(string)
 	optional := m["optional"].(bool)

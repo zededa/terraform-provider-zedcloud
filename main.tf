@@ -11,24 +11,221 @@ terraform {
   }
 }
 
-# data "zedcloud_edgenode" "data-test_tf_provider" {
-# 		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
-# 		name = "test_tf_provider-create_edgenode"
-# 		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
-# 		title = "test_tf_provider-create_edgenode-title"
-# }
+resource "zedcloud_application" "test_tf_provider" {
+    name = "ubuntu-all-ip"
+    title = "ubuntu-all-ip"
+    description = "ubuntu-all-ip"
+    # manifest_file = "./TFTest-ubuntu-xenial-16.04.json"
+    user_defined_version = "1.1"
+    origin_type = "ORIGIN_LOCAL"
+    manifest_json {
+    		# optional
+        name = "xenial-amd64-docker-20180725"
+    		ac_kind = "VMManifest"
+    		ac_version = "1.2.0"
+    		app_type = "APP_TYPE_VM"
+    		configuration {
+    		  custom_config {
+	          	add = false
+	          	allow_storage_resize = false
+	          	field_delimiter = ","
+	          	name = "custom_config_name"
+	          	override = false
+	          	template = "dGVzdA=="
+	          	variable_groups {
+	              	condition {
+	                  	# optional
+	                  	name = "condition"
+	                  	operator = "CONDITION_OPERATOR_EQUALTO"
+	                  	value = "val"
+                  }
+	              	name = "var_group"
+	              	required = false
+	              	# variables {
+	                  	# # required
+	                  	# format = ""
+	                  	# label = ""
+	                  	# name = ""
+	                  	# required = false
+	                  	# # optional
+	                  	# default = ""
+	                  	# encode = ""
+	                  	# max_length = ""
+	                  	# options {
+	                      	# # optional
+	                      	# label = ""
+	                      	# value = ""
+                      # }
+	                  	# process_input = ""
+	                  	# type = ""
+	                  	# value = ""
+                  # }
+              }
+          }
+        }
+    		# container_detail = {
+      		# container_create_option = ""
+        # }
+    		cpu_pinning_enabled = false
+    		deployment_type = "DEPLOYMENT_TYPE_K3S"
+    		desc {
+    	  	category = "Infrastructure"
+    	  	os = "Zenix"
+    	  	app_category = "APP_CATEGORY_OTHERS"
+    	  	# agreement_list {"" = ""}
+    	  	# license_list {"" = ""}
+    	  	# logo {"" = ""}
+    	  	# screenshot_list {"" = ""}
+    	  	support = "support"
+        }
+    		description = "description"
+    		display_name = "display_name"
+    		enablevnc = false
+    		images {
+	        	# optional
+	        	cleartext = false
+	        	drvtype = "HDD"
+	        	ignorepurge = false
+	        	imageformat = "ISO"
+            imagename = "test-xenial-amd64"
+	        	imageid = ""
+	        	maxsize = "1200000"
+	        	mountpath = ""
+	        	params {
+	            	# optional
+                name = "bootparam"
+                value = "+k/sre"
+            }
+	        	preserve = true
+	        	readonly = false
+	        	target = "Disk"
+	        	volumelabel = "vol_1"
+        }
+        interfaces {
+            name = "indirect"
+            directattach = false
+            privateip = false
+            acls {
+                matches {
+                    type = "protocol"
+                    value = "tcp"
+                }
+                matches {
+                    type = "lport"
+                    value = "8022"
+                }
+                actions {
+                    portmap = true
+                    portmapto {
+                        app_port = 22
+                    }
+                }
+            }
+            acls {
+                matches {
+                    type = "host"
+                    value = ""
+                }
+            }
+        }
+    		# module = {
+    	  	# environment {"" = ""}
+    	  	# module_type = ""
+    	  	# routes {"" = ""}
+    	  	# twin_detail = ""
+        # }
+    		owner {
+      		company = "Zededa Inc."
+      		email = "test@zededa.com"
+      		group = "testgroup"
+      		user = "testuser"
+          website = "http://www.zededa.com"
+        }
+    		resources {
+	        	name = "cpus"
+	        	value = "2"
+        }
+    		resources {
+	        	name = "memory"
+	        	value = "1024000"
+        }
+    		vmmode = "HV_HVM"
+    }
+}
+
+data "zedcloud_edgenode" "test_tf_provider" {
+		name = "test_tf_provider-create_edgenode"
+    depends_on = [
+        zedcloud_edgenode.test_tf_provider
+    ]
+}
+
+resource "zedcloud_volume_instance"  "test_tf_provider1" {
+    device_id = data.zedcloud_edgenode.test_tf_provider.id
+    name = "test_volume_instance"
+    title = "test_title"
+    description = "test_description"
+    type = "VOLUME_INSTANCE_TYPE_BLOCKSTORAGE"
+    multiattach = true
+    cleartext = true
+    accessmode = "VOLUME_INSTANCE_ACCESS_MODE_READWRITE"
+    size_bytes = "1024"
+    implicit = false
+    label = "label"
+    tags = {
+        "tag-key-1" = "tag-value-1"
+        "tag-key-2" = "tag-value-2"
+    }
+    depends_on = [
+        data.zedcloud_edgenode.test_tf_provider
+    ]
+}
+
+resource "zedcloud_network_instance" "test_tf_provider" {
+	  # required
+    device_id = data.zedcloud_edgenode.test_tf_provider.id
+    name = "test_tf_provider"
+    title = "title"
+    kind = "NETWORK_INSTANCE_KIND_LOCAL"
+    port = "eth1"
+
+	  # optional
+    description = "zedcloud_network_instance-complete-description"
+    type = "NETWORK_INSTANCE_DHCP_TYPE_V4"
+    device_default = false
+	  dhcp = false
+    dns_list {
+        addrs = [
+            "10.1.2.2",
+            "10.1.2.1"
+        ]
+        hostname = "wwww.ns2.example.com"
+    }
+    dns_list {
+        addrs = [
+            "10.1.1.1",
+            "10.1.1.2"
+        ]
+        hostname = "wwww.ns1.example.com"
+    }
+    opaque {
+        oconfig = "Test OConfig"
+        type = "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+    }
+    tags = {
+        "ni-tag1" = "ni-tag-value-1"
+        "ni-tag2" = "ni-tag-value-2"
+    }
+}
 
 # data "zedcloud_datastore" "docker-registry" {
 #    name = "Zededa-Dockerhub"
 # }
 
 resource "zedcloud_edgenode" "test_tf_provider" {
-		# computed
-    # id = data-test_tf_provider.id
-
-    obkey = "5d0767ee-0547-4569-b530-387e526f8cb9"
+    onboarding_key = "5d0767ee-0547-4569-b530-387e526f8cb9"
 		serialno = "2293dbe8-29ce-420c-8264-962857efc46b"
-    identity = "identity"
+    # identity = "identity"
 
 		# required
 		name = "test_tf_provider-create_edgenode"
@@ -38,8 +235,8 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 
     admin_state = "ADMIN_STATE_ACTIVE"
     asset_id = "asset_id"
-    client_ip = "1.1.1.1"
-    location = "berlin"
+    # client_ip = "1.1.1.1"
+    # location = "berlin"
     # cluster_id = "1" conflict
     # base_image {}
     config_item {
@@ -53,7 +250,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     }
     # cpu = 2
     deployment_tag = "depl_tag"
-    deprecated = false
+    # deprecated = false
     description = "description"
 		dev_location {
     		city = "berlin"
@@ -67,202 +264,11 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     		underlay_ip = ""
     }
 		generate_soft_serial = false
-		interfaces {}
-    memory = 32
-    prepare_power_off_counter = 0
-    prepare_power_off_time = "undocumented format"
-		site_pictures = []
-    storage = 64
 		tags = {
         "tag-key-1" = "tag-value-1"
     }
-    thread = 1
     token = "token"
-
-		# default_net_inst = {
-	    	# # required
-	    	# device_id = ""
-	    	# kind = ""
-	    	# name = ""
-	    	# port = ""
-	    	# title = ""
-
-	    	# # optional
-	    	# cluster_id = ""
-	    	# description = ""
-	    	# device_default = ""
-	    	# dhcp = false
-	    	# dns_list = []
-	    	# ip = {
-	        	# # optional
-	        	# dhcp_range = {
-             		# # optional
-            		# end = ""
-            		# start = ""
-            # }
-	        	# dns = []
-	        	# domain = ""
-	        	# gateway = ""
-	        	# mask = ""
-	        	# ntp = ""
-	        	# subnet = ""
-		# 		}
-	    	# lisp = {
-        		# # optional
-        		# allocate = false
-        		# allocationprefix = ""
-        		# allocationprefixlen = 0
-        		# exportprivate = false
-        		# lispiid = 0
-        		# sp = []
-        # }
-	    	# network_policy_id = ""
-	    	# oconfig = ""
-	    	# opaque = {
-        		# # computed
-            # # id =
-
-        		# # required
-        		# device_id = ""
-        		# kind = ""
-        		# name = ""
-        		# port = ""
-        		# title = ""
-
-        		# # optional
-        		# cluster_id = ""
-        		# description = ""
-        		# device_default = ""
-        		# dhcp = false
-        		# dns_list = []
-        		# ip = {
-            		# # optional
-            		# dhcp_range = {
-                		# # optional
-                		# end = ""
-                		# start = ""
-                # }
-            		# dns = []
-            		# domain = ""
-            		# gateway = ""
-            		# mask = ""
-            		# ntp = ""
-            		# subnet = ""
-            # }
-        		# lisp = # LispConfig
-        		# network_policy_id = ""
-        		# oconfig = ""
-        		# opaque =
-        		# port_tags {}
-        		# project_id = ""
-	         	# revision = {
-             		# # required
-             		# created_at =
-             		# created_by = ""
-             		# curr = ""
-             		# updated_at =
-             		# updated_by = ""
-             		# # optional
-             		# prev = ""
-            # }
-        		# tags {}
-        		# type = ""
-        # }
-	    	# port_tags {}
-	    	# project_id = ""
-	    	# revision = {
-        		# # required
-        		# created_at =
-        		# created_by = ""
-        		# curr = ""
-        		# updated_at =
-        		# updated_by = ""
-        		# # optional
-        		# prev = ""
-        # }
-	    	# tags {}
-	    	# type = ""
-    # }
-		# dlisp = {
-    		# e_id = "e id"
-    		# e_id_hash_len = 1
-    		# client_addr = ""
-    		# eid_allocation_prefix = "prefix"
-    		# eid_allocation_prefix_len = 0
-    		# lisp_instance = 0
-    		# lisp_map_servers = []
-    		# mode = ""
-    		# zed_servers = []
-    # }
-		# edgeviewconfig = {
-    		# # optional
-    		# app_policy = {
-        		# # optional
-        		# allow_app = false
-        # }
-    		# dev_policy = {
-        		# # optional
-        		# allow_dev = false
-        # }
-    		# ext_policy = {
-        		# # optional
-        		# allow_ext = false
-        # }
-    		# generation_id = 0
-    		# jwt_info = {
-        		# # optional
-        		# allow_sec = 0
-        		# disp_url = ""
-        		# encrypt = false
-        		# expire_sec = ""
-        		# num_inst = 0
-        # }
-    		# token = ""
-    # }
 }
-
-# resource "zedcloud_edgenode" "test_tf_provider" {
-#     admin_state = "ADMIN_STATE_ACTIVE"
-#     client_ip = ""
-#     cluster_id = ""
-#     config_item = [
-#         {
-# 	          bool_value = false
-# 	          float_value = 0.0
-# 	        	key = ""
-# 	        	string_value = ""
-# 	        	uint32_value = 0
-# 	        	uint64_value = 0
-# 	        	value_type = ""
-#         }
-#     ]
-#     cpu = 0
-#     debug_knob_detail = {
-#         debug_knob = false
-#         expired = false
-#         expiry = 1000000
-#     }
-
-# 		default_net_inst = {
-# 		cluster_id = ""
-# 		description = ""
-# 		device_default = ""
-# 		device_id = ""
-# 		dhcp = false
-# 		dns_list = {
-# 		  addrs = ""
-# 		  hostname = ""
-# 		}
-# 		ip = {
-# 	  	dhcp_range = [
-# 		    end = ""
-# 		    start = ""
-# 		  ]
-# 		dns = ""
-# 		domain = ""
-# 		gateway = ""
-# 		mask = ""
-# }
 
 # data "zedcloud_edgeapp" "ds_vmware_velocloud_sd_wan_medium" {
 #    name = "vmware-velocloud-sd-wan-medium"

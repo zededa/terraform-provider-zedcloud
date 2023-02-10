@@ -5,19 +5,34 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate CustomConfigVariableGroup resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CustomConfigVariableGroupModel(d *schema.ResourceData) *models.CustomConfigVariableGroup {
 	var condition *models.VariableGroupCondition // VariableGroupCondition
 	conditionInterface, conditionIsSet := d.GetOk("condition")
-	if conditionIsSet {
-		conditionMap := conditionInterface.([]interface{})[0].(map[string]interface{})
-		condition = VariableGroupConditionModelFromMap(conditionMap)
+	if conditionIsSet && conditionInterface != nil {
+		conditionMap := conditionInterface.([]interface{})
+		if len(conditionMap) > 0 {
+			condition = VariableGroupConditionModelFromMap(conditionMap[0].(map[string]interface{}))
+		}
 	}
 	name, _ := d.Get("name").(string)
 	required, _ := d.Get("required").(bool)
-	variables, _ := d.Get("variables").([]*models.VariableGroupVariable) // []*VariableGroupVariable
+	var variables []*models.VariableGroupVariable // []*VariableGroupVariable
+	variablesInterface, variablesIsSet := d.GetOk("variables")
+	if variablesIsSet {
+		var items []interface{}
+		if listItems, isList := variablesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = variablesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VariableGroupVariableModelFromMap(v.(map[string]interface{}))
+			variables = append(variables, m)
+		}
+	}
 	return &models.CustomConfigVariableGroup{
 		Condition: condition,
 		Name:      name,
@@ -29,14 +44,32 @@ func CustomConfigVariableGroupModel(d *schema.ResourceData) *models.CustomConfig
 func CustomConfigVariableGroupModelFromMap(m map[string]interface{}) *models.CustomConfigVariableGroup {
 	var condition *models.VariableGroupCondition // VariableGroupCondition
 	conditionInterface, conditionIsSet := m["condition"]
-	if conditionIsSet {
-		conditionMap := conditionInterface.([]interface{})[0].(map[string]interface{})
-		condition = VariableGroupConditionModelFromMap(conditionMap)
+	if conditionIsSet && conditionInterface != nil {
+		conditionMap := conditionInterface.([]interface{})
+		if len(conditionMap) > 0 {
+			condition = VariableGroupConditionModelFromMap(conditionMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	name := m["name"].(string)
 	required := m["required"].(bool)
-	variables := m["variables"].([]*models.VariableGroupVariable) // []*VariableGroupVariable
+	var variables []*models.VariableGroupVariable // []*VariableGroupVariable
+	variablesInterface, variablesIsSet := m["variables"]
+	if variablesIsSet {
+		var items []interface{}
+		if listItems, isList := variablesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = variablesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VariableGroupVariableModelFromMap(v.(map[string]interface{}))
+			variables = append(variables, m)
+		}
+	}
 	return &models.CustomConfigVariableGroup{
 		Condition: condition,
 		Name:      name,
@@ -45,7 +78,6 @@ func CustomConfigVariableGroupModelFromMap(m map[string]interface{}) *models.Cus
 	}
 }
 
-// Update the underlying CustomConfigVariableGroup resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetCustomConfigVariableGroupResourceData(d *schema.ResourceData, m *models.CustomConfigVariableGroup) {
 	d.Set("condition", SetVariableGroupConditionSubResourceData([]*models.VariableGroupCondition{m.Condition}))
 	d.Set("name", m.Name)
@@ -53,7 +85,6 @@ func SetCustomConfigVariableGroupResourceData(d *schema.ResourceData, m *models.
 	d.Set("variables", SetVariableGroupVariableSubResourceData(m.Variables))
 }
 
-// Iterate through and update the CustomConfigVariableGroup resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCustomConfigVariableGroupSubResourceData(m []*models.CustomConfigVariableGroup) (d []*map[string]interface{}) {
 	for _, CustomConfigVariableGroupModel := range m {
 		if CustomConfigVariableGroupModel != nil {
@@ -69,7 +100,7 @@ func SetCustomConfigVariableGroupSubResourceData(m []*models.CustomConfigVariabl
 }
 
 // Schema mapping representing the CustomConfigVariableGroup resource defined in the Terraform configuration
-func CustomConfigVariableGroupSchema() map[string]*schema.Schema {
+func VariableGroup() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"condition": {
 			Description: `Condition to apply the variable group. (Optional. Default: None)`,
@@ -96,7 +127,7 @@ func CustomConfigVariableGroupSchema() map[string]*schema.Schema {
 			Description: `List of variables(Required)`,
 			Type:        schema.TypeList, //GoType: []*VariableGroupVariable
 			Elem: &schema.Resource{
-				Schema: VariableGroupVariableSchema(),
+				Schema: VariableGroupVariable(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

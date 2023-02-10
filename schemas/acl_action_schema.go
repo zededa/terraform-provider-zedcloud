@@ -5,17 +5,16 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ACLAction resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ACLActionModel(d *schema.ResourceData) *models.ACLAction {
 	drop, _ := d.Get("drop").(bool)
 	limit, _ := d.Get("limit").(bool)
 	var limitValue *models.LimitParams // LimitParams
 	limitValueInterface, limitValueIsSet := d.GetOk("limit_value")
-	if limitValueIsSet {
-		limitValueMap := limitValueInterface.([]interface{})[0].(map[string]interface{})
-		limitValue = LimitParamsModelFromMap(limitValueMap)
+	if limitValueIsSet && limitValueInterface != nil {
+		limitValueMap := limitValueInterface.([]interface{})
+		if len(limitValueMap) > 0 {
+			limitValue = LimitParamsModelFromMap(limitValueMap[0].(map[string]interface{}))
+		}
 	}
 	limitburstInt, _ := d.Get("limitburst").(int)
 	limitburst := int64(limitburstInt)
@@ -25,9 +24,11 @@ func ACLActionModel(d *schema.ResourceData) *models.ACLAction {
 	portmap, _ := d.Get("portmap").(bool)
 	var portmapto *models.MapParams // MapParams
 	portmaptoInterface, portmaptoIsSet := d.GetOk("portmapto")
-	if portmaptoIsSet {
-		portmaptoMap := portmaptoInterface.([]interface{})[0].(map[string]interface{})
-		portmapto = MapParamsModelFromMap(portmaptoMap)
+	if portmaptoIsSet && portmaptoInterface != nil {
+		portmaptoMap := portmaptoInterface.([]interface{})
+		if len(portmaptoMap) > 0 {
+			portmapto = MapParamsModelFromMap(portmaptoMap[0].(map[string]interface{}))
+		}
 	}
 	return &models.ACLAction{
 		Drop:       drop,
@@ -46,20 +47,24 @@ func ACLActionModelFromMap(m map[string]interface{}) *models.ACLAction {
 	limit := m["limit"].(bool)
 	var limitValue *models.LimitParams // LimitParams
 	limitValueInterface, limitValueIsSet := m["limit_value"]
-	if limitValueIsSet {
-		limitValueMap := limitValueInterface.([]interface{})[0].(map[string]interface{})
-		limitValue = LimitParamsModelFromMap(limitValueMap)
+	if limitValueIsSet && limitValueInterface != nil {
+		limitValueMap := limitValueInterface.([]interface{})
+		if len(limitValueMap) > 0 {
+			limitValue = LimitParamsModelFromMap(limitValueMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	limitburst := int64(m["limitburst"].(int)) // int64 false false false
-	limitrate := int64(m["limitrate"].(int))   // int64 false false false
+	limitburst := int64(m["limitburst"].(int)) // int64
+	limitrate := int64(m["limitrate"].(int))   // int64
 	limitunit := m["limitunit"].(string)
 	portmap := m["portmap"].(bool)
 	var portmapto *models.MapParams // MapParams
 	portmaptoInterface, portmaptoIsSet := m["portmapto"]
-	if portmaptoIsSet {
-		portmaptoMap := portmaptoInterface.([]interface{})[0].(map[string]interface{})
-		portmapto = MapParamsModelFromMap(portmaptoMap)
+	if portmaptoIsSet && portmaptoInterface != nil {
+		portmaptoMap := portmaptoInterface.([]interface{})
+		if len(portmaptoMap) > 0 {
+			portmapto = MapParamsModelFromMap(portmaptoMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	return &models.ACLAction{

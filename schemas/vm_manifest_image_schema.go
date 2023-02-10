@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate VMManifestImage resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func VMManifestImageModel(d *schema.ResourceData) *models.VMManifestImage {
 	cleartext, _ := d.Get("cleartext").(bool)
 	drvtype, _ := d.Get("drvtype").(string)
@@ -22,7 +19,23 @@ func VMManifestImageModel(d *schema.ResourceData) *models.VMManifestImage {
 	imagename, _ := d.Get("imagename").(string)
 	maxsize, _ := d.Get("maxsize").(string)
 	mountpath, _ := d.Get("mountpath").(string)
-	params, _ := d.Get("params").([]*models.Param) // []*Param
+	var params []*models.Param // []*Param
+	paramsInterface, paramsIsSet := d.GetOk("params")
+	if paramsIsSet {
+		var items []interface{}
+		if listItems, isList := paramsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = paramsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ParamModelFromMap(v.(map[string]interface{}))
+			params = append(params, m)
+		}
+	}
 	preserve, _ := d.Get("preserve").(bool)
 	readonly, _ := d.Get("readonly").(bool)
 	target, _ := d.Get("target").(string)
@@ -48,12 +61,33 @@ func VMManifestImageModelFromMap(m map[string]interface{}) *models.VMManifestIma
 	cleartext := m["cleartext"].(bool)
 	drvtype := m["drvtype"].(string)
 	ignorepurge := m["ignorepurge"].(bool)
-	imageformat := m["imageformat"].(*models.ConfigFormat) // ConfigFormat
+	var imageformat *models.ConfigFormat // ConfigFormat
+	imageformatInterface, imageformatIsSet := m["imageformat"]
+	if imageformatIsSet {
+		imageformatModel := imageformatInterface.(string)
+		imageformat = models.NewConfigFormat(models.ConfigFormat(imageformatModel))
+	}
 	imageid := m["imageid"].(string)
 	imagename := m["imagename"].(string)
 	maxsize := m["maxsize"].(string)
 	mountpath := m["mountpath"].(string)
-	params := m["params"].([]*models.Param) // []*Param
+	var params []*models.Param // []*Param
+	paramsInterface, paramsIsSet := m["params"]
+	if paramsIsSet {
+		var items []interface{}
+		if listItems, isList := paramsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = paramsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ParamModelFromMap(v.(map[string]interface{}))
+			params = append(params, m)
+		}
+	}
 	preserve := m["preserve"].(bool)
 	readonly := m["readonly"].(bool)
 	target := m["target"].(string)
@@ -122,7 +156,8 @@ func VMManifestImageSchema() map[string]*schema.Schema {
 		"cleartext": {
 			Description: `UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field`,
 			Type:        schema.TypeBool,
-			Optional:    true,
+
+			Optional: true,
 		},
 
 		"drvtype": {

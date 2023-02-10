@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate CustomConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CustomConfigModel(d *schema.ResourceData) *models.CustomConfig {
 	add, _ := d.Get("add").(bool)
 	allowStorageResize, _ := d.Get("allow_storage_resize").(bool)
@@ -15,7 +12,23 @@ func CustomConfigModel(d *schema.ResourceData) *models.CustomConfig {
 	name, _ := d.Get("name").(string)
 	override, _ := d.Get("override").(bool)
 	template, _ := d.Get("template").(string)
-	variableGroups, _ := d.Get("variable_groups").([]*models.CustomConfigVariableGroup) // []*CustomConfigVariableGroup
+	var variableGroups []*models.CustomConfigVariableGroup // []*CustomConfigVariableGroup
+	variableGroupsInterface, variableGroupsIsSet := d.GetOk("variable_groups")
+	if variableGroupsIsSet {
+		var items []interface{}
+		if listItems, isList := variableGroupsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = variableGroupsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := CustomConfigVariableGroupModelFromMap(v.(map[string]interface{}))
+			variableGroups = append(variableGroups, m)
+		}
+	}
 	return &models.CustomConfig{
 		Add:                add,
 		AllowStorageResize: allowStorageResize,
@@ -34,7 +47,23 @@ func CustomConfigModelFromMap(m map[string]interface{}) *models.CustomConfig {
 	name := m["name"].(string)
 	override := m["override"].(bool)
 	template := m["template"].(string)
-	variableGroups := m["variable_groups"].([]*models.CustomConfigVariableGroup) // []*CustomConfigVariableGroup
+	var variableGroups []*models.CustomConfigVariableGroup // []*CustomConfigVariableGroup
+	variableGroupsInterface, variableGroupsIsSet := m["variable_groups"]
+	if variableGroupsIsSet {
+		var items []interface{}
+		if listItems, isList := variableGroupsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = variableGroupsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := CustomConfigVariableGroupModelFromMap(v.(map[string]interface{}))
+			variableGroups = append(variableGroups, m)
+		}
+	}
 	return &models.CustomConfig{
 		Add:                add,
 		AllowStorageResize: allowStorageResize,
@@ -46,7 +75,6 @@ func CustomConfigModelFromMap(m map[string]interface{}) *models.CustomConfig {
 	}
 }
 
-// Update the underlying CustomConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetCustomConfigResourceData(d *schema.ResourceData, m *models.CustomConfig) {
 	d.Set("add", m.Add)
 	d.Set("allow_storage_resize", m.AllowStorageResize)
@@ -57,7 +85,6 @@ func SetCustomConfigResourceData(d *schema.ResourceData, m *models.CustomConfig)
 	d.Set("variable_groups", SetCustomConfigVariableGroupSubResourceData(m.VariableGroups))
 }
 
-// Iterate through and update the CustomConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCustomConfigSubResourceData(m []*models.CustomConfig) (d []*map[string]interface{}) {
 	for _, CustomConfigModel := range m {
 		if CustomConfigModel != nil {
@@ -76,7 +103,7 @@ func SetCustomConfigSubResourceData(m []*models.CustomConfig) (d []*map[string]i
 }
 
 // Schema mapping representing the CustomConfig resource defined in the Terraform configuration
-func CustomConfigSchema() map[string]*schema.Schema {
+func CustomConfig() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"add": {
 			Description: `Add the Custom Config to App Instance (Optional. Default: False)`,
@@ -118,7 +145,7 @@ func CustomConfigSchema() map[string]*schema.Schema {
 			Description: `List of Variable groups. (Required)`,
 			Type:        schema.TypeList, //GoType: []*CustomConfigVariableGroup
 			Elem: &schema.Resource{
-				Schema: CustomConfigVariableGroupSchema(),
+				Schema: VariableGroup(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

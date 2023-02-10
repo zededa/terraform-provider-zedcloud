@@ -5,22 +5,63 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Details resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DetailsModel(d *schema.ResourceData) *models.Details {
-	agreementList, _ := d.Get("agreement_list").(map[string]string) // map[string]string
-	var appCategory *models.AppCategory                             // AppCategory
+	agreementList := map[string]string{}
+	agreementListInterface, agreementListIsSet := d.GetOk("agreementList")
+	if agreementListIsSet {
+		agreementListMap := agreementListInterface.(map[string]interface{})
+		for k, v := range agreementListMap {
+			if v == nil {
+				continue
+			}
+			agreementList[k] = v.(string)
+		}
+	}
+
+	var appCategory *models.AppCategory // AppCategory
 	appCategoryInterface, appCategoryIsSet := d.GetOk("app_category")
 	if appCategoryIsSet {
 		appCategoryModel := appCategoryInterface.(string)
 		appCategory = models.NewAppCategory(models.AppCategory(appCategoryModel))
 	}
 	category, _ := d.Get("category").(string)
-	licenseList, _ := d.Get("license_list").(map[string]string) // map[string]string
-	logo, _ := d.Get("logo").(map[string]string)                // map[string]string
+	licenseList := map[string]string{}
+	licenseListInterface, licenseListIsSet := d.GetOk("licenseList")
+	if licenseListIsSet {
+		licenseListMap := licenseListInterface.(map[string]interface{})
+		for k, v := range licenseListMap {
+			if v == nil {
+				continue
+			}
+			licenseList[k] = v.(string)
+		}
+	}
+
+	logo := map[string]string{}
+	logoInterface, logoIsSet := d.GetOk("logo")
+	if logoIsSet {
+		logoMap := logoInterface.(map[string]interface{})
+		for k, v := range logoMap {
+			if v == nil {
+				continue
+			}
+			logo[k] = v.(string)
+		}
+	}
+
 	os, _ := d.Get("os").(string)
-	screenshotList, _ := d.Get("screenshot_list").(map[string]string) // map[string]string
+	screenshotList := map[string]string{}
+	screenshotListInterface, screenshotListIsSet := d.GetOk("screenshotList")
+	if screenshotListIsSet {
+		screenshotListMap := screenshotListInterface.(map[string]interface{})
+		for k, v := range screenshotListMap {
+			if v == nil {
+				continue
+			}
+			screenshotList[k] = v.(string)
+		}
+	}
+
 	support, _ := d.Get("support").(string)
 	return &models.Details{
 		AgreementList:  agreementList,
@@ -35,13 +76,62 @@ func DetailsModel(d *schema.ResourceData) *models.Details {
 }
 
 func DetailsModelFromMap(m map[string]interface{}) *models.Details {
-	agreementList := m["agreement_list"].(map[string]string)
-	appCategory := m["app_category"].(*models.AppCategory) // AppCategory
+	agreementList := map[string]string{}
+	agreementListInterface, agreementListIsSet := m["agreement_list"]
+	if agreementListIsSet {
+		agreementListMap := agreementListInterface.(map[string]interface{})
+		for k, v := range agreementListMap {
+			if v == nil {
+				continue
+			}
+			agreementList[k] = v.(string)
+		}
+	}
+
+	var appCategory *models.AppCategory // AppCategory
+	appCategoryInterface, appCategoryIsSet := m["app_category"]
+	if appCategoryIsSet {
+		appCategoryModel := appCategoryInterface.(string)
+		appCategory = models.NewAppCategory(models.AppCategory(appCategoryModel))
+	}
 	category := m["category"].(string)
-	licenseList := m["license_list"].(map[string]string)
-	logo := m["logo"].(map[string]string)
+	licenseList := map[string]string{}
+	licenseListInterface, licenseListIsSet := m["license_list"]
+	if licenseListIsSet {
+		licenseListMap := licenseListInterface.(map[string]interface{})
+		for k, v := range licenseListMap {
+			if v == nil {
+				continue
+			}
+			licenseList[k] = v.(string)
+		}
+	}
+
+	logo := map[string]string{}
+	logoInterface, logoIsSet := m["logo"]
+	if logoIsSet {
+		logoMap := logoInterface.(map[string]interface{})
+		for k, v := range logoMap {
+			if v == nil {
+				continue
+			}
+			logo[k] = v.(string)
+		}
+	}
+
 	os := m["os"].(string)
-	screenshotList := m["screenshot_list"].(map[string]string)
+	screenshotList := map[string]string{}
+	screenshotListInterface, screenshotListIsSet := m["screenshot_list"]
+	if screenshotListIsSet {
+		screenshotListMap := screenshotListInterface.(map[string]interface{})
+		for k, v := range screenshotListMap {
+			if v == nil {
+				continue
+			}
+			screenshotList[k] = v.(string)
+		}
+	}
+
 	support := m["support"].(string)
 	return &models.Details{
 		AgreementList:  agreementList,
