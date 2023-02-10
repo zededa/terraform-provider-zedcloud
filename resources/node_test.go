@@ -20,7 +20,7 @@ func TestEdgeNode_Create_RequiredAttributesOnly(t *testing.T) {
 	var got models.Node
 
 	// input config
-	inputPath := "edge_node/create_required_only.tf"
+	inputPath := "node/create_required_only.tf"
 	input := mustGetTestInput(t, inputPath)
 
 	// terraform acceptance test case
@@ -52,11 +52,11 @@ func TestEdgeNode_Create_AllAttributes(t *testing.T) {
 	var expected models.Node
 
 	// input config
-	inputPath := "edge_node/create_complete.tf"
+	inputPath := "node/create_complete.tf"
 	input := mustGetTestInput(t, inputPath)
 
 	// expected output
-	expectedPath := "edge_node/create_complete.yaml"
+	expectedPath := "node/create_complete.yaml"
 	mustGetExpectedOutput(t, expectedPath, &expected)
 
 	// terraform acceptance test case
