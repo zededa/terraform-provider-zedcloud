@@ -125,7 +125,7 @@ func testDatastoreDestroy(s *terraform.State) error {
 		}
 
 		// if the error is equivalent to 404 not found, the Datastore is destroyed
-		_, ok := err.(*config.NotFound)
+		_, ok := err.(*config.GetByIDNotFound)
 		if !ok {
 			return fmt.Errorf("destroy failed, expect status code 404 for Datastore (%s)", params.ID)
 		}

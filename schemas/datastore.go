@@ -1,6 +1,8 @@
 package schemas
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
@@ -252,6 +254,12 @@ func Datastore() map[string]*schema.Schema {
 			Description: `Datastore Fully Qualified Domain Name`,
 			Type:        schema.TypeString,
 			Required:    true,
+			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+				if oldValue == fmt.Sprintf("https://%s", newValue) {
+					return true
+				}
+				return false
+			},
 		},
 
 		"ds_path": {
