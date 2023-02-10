@@ -15,7 +15,7 @@ func VolumeInstPolicyModel(d *schema.ResourceData) *models.VolumeInstPolicy {
 		metaDataMap := metaDataInterface.([]interface{})[0].(map[string]interface{})
 		metaData = PolicyCommonModelFromMap(metaDataMap)
 	}
-	var volInstConfig *models.VolumeInstConfig // VolumeInstConfig
+	var volInstConfig *models.VolumeInstance // VolumeInstConfig
 	volInstConfigInterface, volInstConfigIsSet := d.GetOk("vol_inst_config")
 	if volInstConfigIsSet {
 		volInstConfigMap := volInstConfigInterface.([]interface{})[0].(map[string]interface{})
@@ -35,7 +35,7 @@ func VolumeInstPolicyModelFromMap(m map[string]interface{}) *models.VolumeInstPo
 		metaData = PolicyCommonModelFromMap(metaDataMap)
 	}
 	//
-	var volInstConfig *models.VolumeInstConfig // VolumeInstConfig
+	var volInstConfig *models.VolumeInstance // VolumeInstConfig
 	volInstConfigInterface, volInstConfigIsSet := m["vol_inst_config"]
 	if volInstConfigIsSet {
 		volInstConfigMap := volInstConfigInterface.([]interface{})[0].(map[string]interface{})
@@ -51,7 +51,7 @@ func VolumeInstPolicyModelFromMap(m map[string]interface{}) *models.VolumeInstPo
 // Update the underlying VolumeInstPolicy resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetVolumeInstPolicyResourceData(d *schema.ResourceData, m *models.VolumeInstPolicy) {
 	d.Set("meta_data", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.MetaData}))
-	d.Set("vol_inst_config", SetVolumeInstanceSubResourceData([]*models.VolumeInstConfig{m.VolInstConfig}))
+	d.Set("vol_inst_config", SetVolumeInstanceSubResourceData([]*models.VolumeInstance{m.VolInstConfig}))
 }
 
 // Iterate through and update the VolumeInstPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -60,7 +60,7 @@ func SetVolumeInstPolicySubResourceData(m []*models.VolumeInstPolicy) (d []*map[
 		if VolumeInstPolicyModel != nil {
 			properties := make(map[string]interface{})
 			properties["meta_data"] = SetPolicyCommonSubResourceData([]*models.PolicyCommon{VolumeInstPolicyModel.MetaData})
-			properties["vol_inst_config"] = SetVolumeInstanceSubResourceData([]*models.VolumeInstConfig{VolumeInstPolicyModel.VolInstConfig})
+			properties["vol_inst_config"] = SetVolumeInstanceSubResourceData([]*models.VolumeInstance{VolumeInstPolicyModel.VolInstConfig})
 			d = append(d, &properties)
 		}
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 func VolInstListModel(d *schema.ResourceData) *models.VolInstList {
-	var cfgList []*models.VolumeInstConfig // []*VolInstConfig
+	var cfgList []*models.VolumeInstance // []*VolInstConfig
 	cfgListInterface, cfgListIsSet := d.GetOk("cfg_list")
 	if cfgListIsSet {
 		var items []interface{}
@@ -65,7 +65,7 @@ func VolInstListModel(d *schema.ResourceData) *models.VolInstList {
 }
 
 func VolInstListModelFromMap(m map[string]interface{}) *models.VolInstList {
-	var cfgList []*models.VolumeInstConfig // []*VolInstConfig
+	var cfgList []*models.VolumeInstance // []*VolInstConfig
 	cfgListInterface, cfgListIsSet := m["cfg_list"]
 	if cfgListIsSet {
 		var items []interface{}

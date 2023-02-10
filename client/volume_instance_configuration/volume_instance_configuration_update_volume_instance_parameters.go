@@ -69,7 +69,7 @@ type VolumeInstanceConfigurationUpdateVolumeInstanceParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.VolumeInstConfig
+	Body *models.VolumeInstance
 
 	/* ID.
 
@@ -142,13 +142,13 @@ func (o *VolumeInstanceConfigurationUpdateVolumeInstanceParams) SetXRequestID(xR
 }
 
 // WithBody adds the body to the volume instance configuration update volume instance params
-func (o *VolumeInstanceConfigurationUpdateVolumeInstanceParams) WithBody(body *models.VolumeInstConfig) *VolumeInstanceConfigurationUpdateVolumeInstanceParams {
+func (o *VolumeInstanceConfigurationUpdateVolumeInstanceParams) WithBody(body *models.VolumeInstance) *VolumeInstanceConfigurationUpdateVolumeInstanceParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the volume instance configuration update volume instance params
-func (o *VolumeInstanceConfigurationUpdateVolumeInstanceParams) SetBody(body *models.VolumeInstConfig) {
+func (o *VolumeInstanceConfigurationUpdateVolumeInstanceParams) SetBody(body *models.VolumeInstance) {
 	o.Body = body
 }
 

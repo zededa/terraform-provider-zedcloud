@@ -82,7 +82,7 @@ VolumeInstanceConfigurationGetVolumeInstanceOK describes a response with status 
 A successful response.
 */
 type VolumeInstanceConfigurationGetVolumeInstanceOK struct {
-	Payload *models.VolumeInstConfig
+	Payload *models.VolumeInstance
 }
 
 // IsSuccess returns true when this volume instance configuration get volume instance o k response has a 2xx status code
@@ -123,13 +123,13 @@ func (o *VolumeInstanceConfigurationGetVolumeInstanceOK) String() string {
 	return fmt.Sprintf("[GET /v1/volumes/instances/id/{id}][%d] volumeInstanceConfigurationGetVolumeInstanceOK  %+v", 200, o.Payload)
 }
 
-func (o *VolumeInstanceConfigurationGetVolumeInstanceOK) GetPayload() *models.VolumeInstConfig {
+func (o *VolumeInstanceConfigurationGetVolumeInstanceOK) GetPayload() *models.VolumeInstance {
 	return o.Payload
 }
 
 func (o *VolumeInstanceConfigurationGetVolumeInstanceOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.VolumeInstConfig)
+	o.Payload = new(models.VolumeInstance)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -276,62 +276,62 @@ func (o *VolumeInstanceConfigurationGetVolumeInstanceForbidden) readResponse(res
 }
 
 // NewVolumeInstanceConfigurationGetVolumeInstanceNotFound creates a VolumeInstanceConfigurationGetVolumeInstanceNotFound with default headers values
-func NewVolumeInstanceConfigurationGetVolumeInstanceNotFound() *VolumeInstanceConfigurationGetVolumeInstanceNotFound {
-	return &VolumeInstanceConfigurationGetVolumeInstanceNotFound{}
+func NewVolumeInstanceConfigurationGetVolumeInstanceNotFound() *GetByIDNotFound {
+	return &GetByIDNotFound{}
 }
 
 /*
-VolumeInstanceConfigurationGetVolumeInstanceNotFound describes a response with status code 404, with default header values.
+GetByIDNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type VolumeInstanceConfigurationGetVolumeInstanceNotFound struct {
+type GetByIDNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this volume instance configuration get volume instance not found response has a 2xx status code
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) IsSuccess() bool {
+func (o *GetByIDNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this volume instance configuration get volume instance not found response has a 3xx status code
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) IsRedirect() bool {
+func (o *GetByIDNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this volume instance configuration get volume instance not found response has a 4xx status code
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) IsClientError() bool {
+func (o *GetByIDNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this volume instance configuration get volume instance not found response has a 5xx status code
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) IsServerError() bool {
+func (o *GetByIDNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this volume instance configuration get volume instance not found response a status code equal to that given
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) IsCode(code int) bool {
+func (o *GetByIDNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the volume instance configuration get volume instance not found response
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) Code() int {
+func (o *GetByIDNotFound) Code() int {
 	return 404
 }
 
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) Error() string {
+func (o *GetByIDNotFound) Error() string {
 	return fmt.Sprintf("[GET /v1/volumes/instances/id/{id}][%d] volumeInstanceConfigurationGetVolumeInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) String() string {
+func (o *GetByIDNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/volumes/instances/id/{id}][%d] volumeInstanceConfigurationGetVolumeInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) GetPayload() *models.ZsrvResponse {
+func (o *GetByIDNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *VolumeInstanceConfigurationGetVolumeInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *GetByIDNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

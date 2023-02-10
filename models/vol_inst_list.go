@@ -20,7 +20,7 @@ import (
 type VolInstList struct {
 
 	// cfg list
-	CfgList []*VolumeInstConfig `json:"cfgList"`
+	CfgList []*VolumeInstance `json:"cfgList"`
 
 	// list
 	List []*VolInstShortConfig `json:"list"`

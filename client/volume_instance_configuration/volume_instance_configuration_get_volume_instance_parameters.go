@@ -16,13 +16,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewVolumeInstanceConfigurationGetVolumeInstanceParams creates a new VolumeInstanceConfigurationGetVolumeInstanceParams object,
+// GetByIDParams creates a new VolumeInstanceConfigurationGetVolumeInstanceParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewVolumeInstanceConfigurationGetVolumeInstanceParams() *VolumeInstanceConfigurationGetVolumeInstanceParams {
+func GetByIDParams() *VolumeInstanceConfigurationGetVolumeInstanceParams {
 	return &VolumeInstanceConfigurationGetVolumeInstanceParams{
 		timeout: cr.DefaultTimeout,
 	}

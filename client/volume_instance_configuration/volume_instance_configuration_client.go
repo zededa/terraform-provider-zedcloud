@@ -32,7 +32,7 @@ type ClientService interface {
 
 	Delete(params *VolumeInstanceConfigurationDeleteVolumeInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*VolumeInstanceConfigurationDeleteVolumeInstanceOK, error)
 
-	VolumeInstanceConfigurationGetVolumeInstance(params *VolumeInstanceConfigurationGetVolumeInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*VolumeInstanceConfigurationGetVolumeInstanceOK, error)
+	GetByID(params *VolumeInstanceConfigurationGetVolumeInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*VolumeInstanceConfigurationGetVolumeInstanceOK, error)
 
 	GetByName(params *VolumeInstanceConfigurationGetVolumeInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*VolumeInstanceConfigurationGetVolumeInstanceByNameOK, error)
 
@@ -124,14 +124,14 @@ func (a *Client) Delete(params *VolumeInstanceConfigurationDeleteVolumeInstanceP
 }
 
 /*
-VolumeInstanceConfigurationGetVolumeInstance gets edge volume instance
+GetByID gets edge volume instance
 
 Get the configuration (without security details) of an edge volume instance record.
 */
-func (a *Client) VolumeInstanceConfigurationGetVolumeInstance(params *VolumeInstanceConfigurationGetVolumeInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*VolumeInstanceConfigurationGetVolumeInstanceOK, error) {
+func (a *Client) GetByID(params *VolumeInstanceConfigurationGetVolumeInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*VolumeInstanceConfigurationGetVolumeInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewVolumeInstanceConfigurationGetVolumeInstanceParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "VolumeInstanceConfiguration_GetVolumeInstance",

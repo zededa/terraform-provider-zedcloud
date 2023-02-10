@@ -82,7 +82,7 @@ VolumeInstanceConfigurationGetVolumeInstanceByNameOK describes a response with s
 A successful response.
 */
 type VolumeInstanceConfigurationGetVolumeInstanceByNameOK struct {
-	Payload *models.VolumeInstConfig
+	Payload *models.VolumeInstance
 }
 
 // IsSuccess returns true when this volume instance configuration get volume instance by name o k response has a 2xx status code
@@ -123,13 +123,13 @@ func (o *VolumeInstanceConfigurationGetVolumeInstanceByNameOK) String() string {
 	return fmt.Sprintf("[GET /v1/volumes/instances/name/{name}][%d] volumeInstanceConfigurationGetVolumeInstanceByNameOK  %+v", 200, o.Payload)
 }
 
-func (o *VolumeInstanceConfigurationGetVolumeInstanceByNameOK) GetPayload() *models.VolumeInstConfig {
+func (o *VolumeInstanceConfigurationGetVolumeInstanceByNameOK) GetPayload() *models.VolumeInstance {
 	return o.Payload
 }
 
 func (o *VolumeInstanceConfigurationGetVolumeInstanceByNameOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.VolumeInstConfig)
+	o.Payload = new(models.VolumeInstance)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

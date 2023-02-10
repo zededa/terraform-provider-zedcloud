@@ -70,7 +70,7 @@ type VolumeInstanceConfigurationCreateVolumeInstanceParams struct {
 	XRequestID *string
 
 	// Body.
-	Body *models.VolumeInstConfig
+	Body *models.VolumeInstance
 
 	timeout    time.Duration
 	Context    context.Context
@@ -137,13 +137,13 @@ func (o *VolumeInstanceConfigurationCreateVolumeInstanceParams) SetXRequestID(xR
 }
 
 // WithBody adds the body to the volume instance configuration create volume instance params
-func (o *VolumeInstanceConfigurationCreateVolumeInstanceParams) WithBody(body *models.VolumeInstConfig) *VolumeInstanceConfigurationCreateVolumeInstanceParams {
+func (o *VolumeInstanceConfigurationCreateVolumeInstanceParams) WithBody(body *models.VolumeInstance) *VolumeInstanceConfigurationCreateVolumeInstanceParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the volume instance configuration create volume instance params
-func (o *VolumeInstanceConfigurationCreateVolumeInstanceParams) SetBody(body *models.VolumeInstConfig) {
+func (o *VolumeInstanceConfigurationCreateVolumeInstanceParams) SetBody(body *models.VolumeInstance) {
 	o.Body = body
 }
 

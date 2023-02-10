@@ -197,3 +197,36 @@ func DeleteVolumeInstance(ctx context.Context, d *schema.ResourceData, m interfa
 	d.SetId("")
 	return diags
 }
+
+func GetVolumeInstanceByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	params := config.GetByIDParams()
+
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	idVal, idIsSet := d.GetOk("id")
+	if idIsSet {
+		params.ID = idVal.(string)
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		return diags
+	}
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.VolumeInstance.GetByID(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
+
+	volume := resp.GetPayload()
+	zschema.SetVolumeInstanceResourceData(d, volume)
+	d.SetId(volume.ID)
+
+	return diags
+}

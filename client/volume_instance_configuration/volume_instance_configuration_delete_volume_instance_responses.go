@@ -276,62 +276,62 @@ func (o *VolumeInstanceConfigurationDeleteVolumeInstanceForbidden) readResponse(
 }
 
 // NewVolumeInstanceConfigurationDeleteVolumeInstanceNotFound creates a VolumeInstanceConfigurationDeleteVolumeInstanceNotFound with default headers values
-func NewVolumeInstanceConfigurationDeleteVolumeInstanceNotFound() *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound {
-	return &VolumeInstanceConfigurationDeleteVolumeInstanceNotFound{}
+func NewVolumeInstanceConfigurationDeleteVolumeInstanceNotFound() *NotFound {
+	return &NotFound{}
 }
 
 /*
-VolumeInstanceConfigurationDeleteVolumeInstanceNotFound describes a response with status code 404, with default header values.
+NotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type VolumeInstanceConfigurationDeleteVolumeInstanceNotFound struct {
+type NotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this volume instance configuration delete volume instance not found response has a 2xx status code
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) IsSuccess() bool {
+func (o *NotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this volume instance configuration delete volume instance not found response has a 3xx status code
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) IsRedirect() bool {
+func (o *NotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this volume instance configuration delete volume instance not found response has a 4xx status code
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) IsClientError() bool {
+func (o *NotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this volume instance configuration delete volume instance not found response has a 5xx status code
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) IsServerError() bool {
+func (o *NotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this volume instance configuration delete volume instance not found response a status code equal to that given
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) IsCode(code int) bool {
+func (o *NotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the volume instance configuration delete volume instance not found response
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) Code() int {
+func (o *NotFound) Code() int {
 	return 404
 }
 
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) Error() string {
+func (o *NotFound) Error() string {
 	return fmt.Sprintf("[DELETE /v1/volumes/instances/id/{id}][%d] volumeInstanceConfigurationDeleteVolumeInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) String() string {
+func (o *NotFound) String() string {
 	return fmt.Sprintf("[DELETE /v1/volumes/instances/id/{id}][%d] volumeInstanceConfigurationDeleteVolumeInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) GetPayload() *models.ZsrvResponse {
+func (o *NotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *VolumeInstanceConfigurationDeleteVolumeInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *NotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

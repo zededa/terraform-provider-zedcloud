@@ -73,13 +73,13 @@ func testDatastoreExists(resourceName string, datastoreModel *models.Datastore) 
 			return fmt.Errorf("could not fetch Datastore (%s): %w", rs.Primary.ID, err)
 		}
 
-		datatore := response.GetPayload()
-		if datatore == nil {
-			return errors.New("could not get response payload in Datastore existence test: datatore is nil")
+		datastore := response.GetPayload()
+		if datastore == nil {
+			return errors.New("could not get response payload in Datastore existence test: datastore is nil")
 		}
 
 		// store the resulting Datastore config in the *models.DeviceConfig variable
-		*datastoreModel = *datatore
+		*datastoreModel = *datastore
 		return nil
 	}
 }
@@ -118,8 +118,8 @@ func testDatastoreDestroy(s *terraform.State) error {
 		params.ID = rs.Primary.ID
 		response, err := client.Datastore.GetByID(params, nil)
 		if err == nil {
-			if datatore := response.GetPayload(); datatore != nil && datatore.ID == rs.Primary.ID {
-				return fmt.Errorf("destroy failed, Datastore (%s) still exists", datatore.ID)
+			if datastore := response.GetPayload(); datastore != nil && datastore.ID == rs.Primary.ID {
+				return fmt.Errorf("destroy failed, Datastore (%s) still exists", datastore.ID)
 			}
 			return nil
 		}

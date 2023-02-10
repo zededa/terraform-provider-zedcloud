@@ -14,10 +14,10 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// VolumeInstConfig vol inst config
+// VolumeInstance vol inst config
 //
-// swagger:model VolumeInstConfig
-type VolumeInstConfig struct {
+// swagger:model VolumeInstance
+type VolumeInstance struct {
 
 	// Access mode
 	Accessmode *VolumeInstanceAccessMode `json:"accessmode,omitempty"`
@@ -44,7 +44,7 @@ type VolumeInstConfig struct {
 	Image string `json:"image,omitempty"`
 
 	// flag to create implicit volumes
-	Implicit string `json:"implicit,omitempty"`
+	Implicit bool `json:"implicit,omitempty"`
 
 	// label
 	Label string `json:"label,omitempty"`
@@ -69,7 +69,7 @@ type VolumeInstConfig struct {
 	Revision *ObjectRevision `json:"revision,omitempty"`
 
 	// size of volume
-	SizeBytes uint64 `json:"sizeBytes,omitempty"`
+	SizeBytes string `json:"sizeBytes,omitempty"`
 
 	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
@@ -85,7 +85,7 @@ type VolumeInstConfig struct {
 }
 
 // Validate validates this vol inst config
-func (m *VolumeInstConfig) Validate(formats strfmt.Registry) error {
+func (m *VolumeInstance) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAccessmode(formats); err != nil {
@@ -126,7 +126,7 @@ func (m *VolumeInstConfig) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VolumeInstConfig) validateAccessmode(formats strfmt.Registry) error {
+func (m *VolumeInstance) validateAccessmode(formats strfmt.Registry) error {
 	if swag.IsZero(m.Accessmode) { // not required
 		return nil
 	}
@@ -145,7 +145,7 @@ func (m *VolumeInstConfig) validateAccessmode(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VolumeInstConfig) validateDescription(formats strfmt.Registry) error {
+func (m *VolumeInstance) validateDescription(formats strfmt.Registry) error {
 	if swag.IsZero(m.Description) { // not required
 		return nil
 	}
@@ -157,7 +157,7 @@ func (m *VolumeInstConfig) validateDescription(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VolumeInstConfig) validateID(formats strfmt.Registry) error {
+func (m *VolumeInstance) validateID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ID) { // not required
 		return nil
 	}
@@ -169,7 +169,7 @@ func (m *VolumeInstConfig) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VolumeInstConfig) validateName(formats strfmt.Registry) error {
+func (m *VolumeInstance) validateName(formats strfmt.Registry) error {
 	if swag.IsZero(m.Name) { // not required
 		return nil
 	}
@@ -189,7 +189,7 @@ func (m *VolumeInstConfig) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VolumeInstConfig) validatePurge(formats strfmt.Registry) error {
+func (m *VolumeInstance) validatePurge(formats strfmt.Registry) error {
 	if swag.IsZero(m.Purge) { // not required
 		return nil
 	}
@@ -208,7 +208,7 @@ func (m *VolumeInstConfig) validatePurge(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VolumeInstConfig) validateRevision(formats strfmt.Registry) error {
+func (m *VolumeInstance) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
 	}
@@ -227,7 +227,7 @@ func (m *VolumeInstConfig) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VolumeInstConfig) validateTitle(formats strfmt.Registry) error {
+func (m *VolumeInstance) validateTitle(formats strfmt.Registry) error {
 	if swag.IsZero(m.Title) { // not required
 		return nil
 	}
@@ -247,7 +247,7 @@ func (m *VolumeInstConfig) validateTitle(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *VolumeInstConfig) validateType(formats strfmt.Registry) error {
+func (m *VolumeInstance) validateType(formats strfmt.Registry) error {
 	if swag.IsZero(m.Type) { // not required
 		return nil
 	}
@@ -267,7 +267,7 @@ func (m *VolumeInstConfig) validateType(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this vol inst config based on the context it is used
-func (m *VolumeInstConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *VolumeInstance) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateAccessmode(ctx, formats); err != nil {
@@ -296,7 +296,7 @@ func (m *VolumeInstConfig) ContextValidate(ctx context.Context, formats strfmt.R
 	return nil
 }
 
-func (m *VolumeInstConfig) contextValidateAccessmode(ctx context.Context, formats strfmt.Registry) error {
+func (m *VolumeInstance) contextValidateAccessmode(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Accessmode != nil {
 		if err := m.Accessmode.ContextValidate(ctx, formats); err != nil {
@@ -312,7 +312,7 @@ func (m *VolumeInstConfig) contextValidateAccessmode(ctx context.Context, format
 	return nil
 }
 
-func (m *VolumeInstConfig) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
+func (m *VolumeInstance) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
 
 	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
 		return err
@@ -321,7 +321,7 @@ func (m *VolumeInstConfig) contextValidateID(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *VolumeInstConfig) contextValidatePurge(ctx context.Context, formats strfmt.Registry) error {
+func (m *VolumeInstance) contextValidatePurge(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Purge != nil {
 		if err := m.Purge.ContextValidate(ctx, formats); err != nil {
@@ -337,7 +337,7 @@ func (m *VolumeInstConfig) contextValidatePurge(ctx context.Context, formats str
 	return nil
 }
 
-func (m *VolumeInstConfig) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+func (m *VolumeInstance) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
 		if err := m.Revision.ContextValidate(ctx, formats); err != nil {
@@ -353,7 +353,7 @@ func (m *VolumeInstConfig) contextValidateRevision(ctx context.Context, formats 
 	return nil
 }
 
-func (m *VolumeInstConfig) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+func (m *VolumeInstance) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Type != nil {
 		if err := m.Type.ContextValidate(ctx, formats); err != nil {
@@ -370,7 +370,7 @@ func (m *VolumeInstConfig) contextValidateType(ctx context.Context, formats strf
 }
 
 // MarshalBinary interface implementation
-func (m *VolumeInstConfig) MarshalBinary() ([]byte, error) {
+func (m *VolumeInstance) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -378,8 +378,8 @@ func (m *VolumeInstConfig) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *VolumeInstConfig) UnmarshalBinary(b []byte) error {
-	var res VolumeInstConfig
+func (m *VolumeInstance) UnmarshalBinary(b []byte) error {
+	var res VolumeInstance
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

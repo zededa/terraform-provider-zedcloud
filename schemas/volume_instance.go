@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstConfig {
+func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstance {
 	var accessmode *models.VolumeInstanceAccessMode // VolumeInstanceAccessMode
 	accessmodeInterface, accessmodeIsSet := d.GetOk("accessmode")
 	if accessmodeIsSet {
@@ -18,20 +18,20 @@ func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstConfig {
 	deviceID, _ := d.Get("device_id").(string)
 	id, _ := d.Get("id").(string)
 	image, _ := d.Get("image").(string)
-	implicit, _ := d.Get("implicit").(string)
+	implicit, _ := d.Get("implicit").(bool)
 	label, _ := d.Get("label").(string)
 	multiattach, _ := d.Get("multiattach").(bool)
 	name, _ := d.Get("name").(string)
 	projectID, _ := d.Get("project_id").(string)
-	var purge *models.ZedCloudOpsCmd // ZedCloudOpsCmd
-	purgeInterface, purgeIsSet := d.GetOk("purge")
-	if purgeIsSet && purgeInterface != nil {
-		purgeMap := purgeInterface.([]interface{})
-		if len(purgeMap) > 0 {
-			purge = ZedCloudOpsCmdModelFromMap(purgeMap[0].(map[string]interface{}))
-		}
-	}
-	sizeBytes, _ := d.Get("size_bytes").(uint64)
+	// var purge *models.ZedCloudOpsCmd // ZedCloudOpsCmd
+	// purgeInterface, purgeIsSet := d.GetOk("purge")
+	// if purgeIsSet && purgeInterface != nil {
+	// 	purgeMap := purgeInterface.([]interface{})
+	// 	if len(purgeMap) > 0 {
+	// 		purge = ZedCloudOpsCmdModelFromMap(purgeMap[0].(map[string]interface{}))
+	// 	}
+	// }
+	sizeBytes, _ := d.Get("size_bytes").(string)
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := d.GetOk("tags")
 	if tagsIsSet {
@@ -51,7 +51,7 @@ func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstConfig {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewVolumeInstanceType(models.VolumeInstanceType(typeModel))
 	}
-	return &models.VolumeInstConfig{
+	return &models.VolumeInstance{
 		Accessmode:    accessmode,
 		Cleartext:     cleartext,
 		ContentTreeID: contentTreeID,
@@ -64,15 +64,15 @@ func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstConfig {
 		Multiattach:   multiattach,
 		Name:          name,
 		ProjectID:     projectID,
-		Purge:         purge,
-		SizeBytes:     sizeBytes,
-		Tags:          tags,
-		Title:         title,
-		Type:          typeVar,
+		// Purge:         purge,
+		SizeBytes: sizeBytes,
+		Tags:      tags,
+		Title:     title,
+		Type:      typeVar,
 	}
 }
 
-func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstConfig {
+func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstance {
 	var accessmode *models.VolumeInstanceAccessMode // VolumeInstanceAccessMode
 	accessmodeInterface, accessmodeIsSet := m["accessmode"]
 	if accessmodeIsSet {
@@ -85,21 +85,21 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstConf
 	deviceID := m["device_id"].(string)
 	id := m["id"].(string)
 	image := m["image"].(string)
-	implicit := m["implicit"].(string)
+	implicit := m["implicit"].(bool)
 	label := m["label"].(string)
 	multiattach := m["multiattach"].(bool)
 	name := m["name"].(string)
 	projectID := m["project_id"].(string)
-	var purge *models.ZedCloudOpsCmd // ZedCloudOpsCmd
-	purgeInterface, purgeIsSet := m["purge"]
-	if purgeIsSet && purgeInterface != nil {
-		purgeMap := purgeInterface.([]interface{})
-		if len(purgeMap) > 0 {
-			purge = ZedCloudOpsCmdModelFromMap(purgeMap[0].(map[string]interface{}))
-		}
-	}
+	// var purge *models.ZedCloudOpsCmd // ZedCloudOpsCmd
+	// purgeInterface, purgeIsSet := m["purge"]
+	// if purgeIsSet && purgeInterface != nil {
+	// 	purgeMap := purgeInterface.([]interface{})
+	// 	if len(purgeMap) > 0 {
+	// 		purge = ZedCloudOpsCmdModelFromMap(purgeMap[0].(map[string]interface{}))
+	// 	}
+	// }
 	//
-	sizeBytes := m["size_bytes"].(uint64)
+	sizeBytes := m["size_bytes"].(string)
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := m["tags"]
 	if tagsIsSet {
@@ -119,7 +119,7 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstConf
 		typeModel := typeInterface.(string)
 		typeVar = models.NewVolumeInstanceType(models.VolumeInstanceType(typeModel))
 	}
-	return &models.VolumeInstConfig{
+	return &models.VolumeInstance{
 		Accessmode:    accessmode,
 		Cleartext:     cleartext,
 		ContentTreeID: contentTreeID,
@@ -132,15 +132,15 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstConf
 		Multiattach:   multiattach,
 		Name:          name,
 		ProjectID:     projectID,
-		Purge:         purge,
-		SizeBytes:     sizeBytes,
-		Tags:          tags,
-		Title:         title,
-		Type:          typeVar,
+		// Purge:         purge,
+		SizeBytes: sizeBytes,
+		Tags:      tags,
+		Title:     title,
+		Type:      typeVar,
 	}
 }
 
-func SetVolumeInstanceResourceData(d *schema.ResourceData, m *models.VolumeInstConfig) {
+func SetVolumeInstanceResourceData(d *schema.ResourceData, m *models.VolumeInstance) {
 	d.Set("accessmode", m.Accessmode)
 	d.Set("cleartext", m.Cleartext)
 	d.Set("content_tree_id", m.ContentTreeID)
@@ -153,7 +153,7 @@ func SetVolumeInstanceResourceData(d *schema.ResourceData, m *models.VolumeInstC
 	d.Set("multiattach", m.Multiattach)
 	d.Set("name", m.Name)
 	d.Set("project_id", m.ProjectID)
-	d.Set("purge", SetZedCloudOpsCmdSubResourceData([]*models.ZedCloudOpsCmd{m.Purge}))
+	// d.Set("purge", SetZedCloudOpsCmdSubResourceData([]*models.ZedCloudOpsCmd{m.Purge}))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("size_bytes", m.SizeBytes)
 	d.Set("tags", m.Tags)
@@ -161,7 +161,7 @@ func SetVolumeInstanceResourceData(d *schema.ResourceData, m *models.VolumeInstC
 	d.Set("type", m.Type)
 }
 
-func SetVolumeInstanceSubResourceData(m []*models.VolumeInstConfig) (d []*map[string]interface{}) {
+func SetVolumeInstanceSubResourceData(m []*models.VolumeInstance) (d []*map[string]interface{}) {
 	for _, VolInstConfigModel := range m {
 		if VolInstConfigModel != nil {
 			properties := make(map[string]interface{})
@@ -177,7 +177,7 @@ func SetVolumeInstanceSubResourceData(m []*models.VolumeInstConfig) (d []*map[st
 			properties["multiattach"] = VolInstConfigModel.Multiattach
 			properties["name"] = VolInstConfigModel.Name
 			properties["project_id"] = VolInstConfigModel.ProjectID
-			properties["purge"] = SetZedCloudOpsCmdSubResourceData([]*models.ZedCloudOpsCmd{VolInstConfigModel.Purge})
+			// properties["purge"] = SetZedCloudOpsCmdSubResourceData([]*models.ZedCloudOpsCmd{VolInstConfigModel.Purge})
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{VolInstConfigModel.Revision})
 			properties["size_bytes"] = VolInstConfigModel.SizeBytes
 			properties["tags"] = VolInstConfigModel.Tags
@@ -207,6 +207,7 @@ func VolumeInstance() map[string]*schema.Schema {
 			Description: `content tree ID`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"description": {
@@ -231,11 +232,12 @@ func VolumeInstance() map[string]*schema.Schema {
 			Description: `name of the image`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"implicit": {
 			Description: `flag to create implicit volumes`,
-			Type:        schema.TypeString,
+			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
@@ -261,16 +263,17 @@ func VolumeInstance() map[string]*schema.Schema {
 			Description: `id of the project in which the volume instance is created`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
-		"purge": {
-			Description: `Purge Counter information`,
-			Type:        schema.TypeList, //GoType: ZedCloudOpsCmd
-			Elem: &schema.Resource{
-				Schema: ZedCloudOpsCmdSchema(),
-			},
-			Optional: true,
-		},
+		// "purge": {
+		// 	Description: `Purge Counter information`,
+		// 	Type:        schema.TypeList, //GoType: ZedCloudOpsCmd
+		// 	Elem: &schema.Resource{
+		// 		Schema: ZedCloudOpsCmdSchema(),
+		// 	},
+		// 	Optional: true,
+		// },
 
 		"revision": {
 			Description: `system defined Revision info of the object`,
@@ -283,7 +286,7 @@ func VolumeInstance() map[string]*schema.Schema {
 
 		"size_bytes": {
 			Description: `size of volume`,
-			Type:        schema.TypeInt,
+			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
