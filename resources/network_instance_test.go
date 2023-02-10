@@ -88,6 +88,11 @@ func TestNetworkInstance_Create_Complete(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_network_instance.complete",
+						"device_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
 					testNetworkInstanceAttributes(t, &got, &expected),
 				),
 			},
@@ -137,6 +142,8 @@ func testNetworkInstanceAttributes(t *testing.T, got, expected *models.NetworkIn
 			"Revision",
 			"IP",
 			"DNSList",
+			"DeviceID",
+			"ProjectID",
 		}
 		// API and YAML unmarshal might change order of list elements so we ignore them in tests
 		if !schemas.CompareDNSLists(got.DNSList, expected.DNSList) {

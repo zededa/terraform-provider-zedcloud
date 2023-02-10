@@ -1,3 +1,8 @@
-name: "zedcloud_network_instance.required_only.name"
-title: "zedcloud_network_instance.required_only.title"
+name: "name"
+title: "title"
 kind: "NETWORK_INSTANCE_KIND_SWITCH"
+port: "eth1"
+type: "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED"
+tags: {}
+porttags: {}
+

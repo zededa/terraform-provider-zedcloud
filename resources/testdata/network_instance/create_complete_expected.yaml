@@ -1,7 +1,6 @@
 clusterid: ""
 description: zedcloud_network_instance-complete-description
 devicedefault: false
-deviceid: 0446c6cb-64e6-4ee5-ad49-06cb638674d8
 dhcp: false
 dnslist:
     - addrs:
