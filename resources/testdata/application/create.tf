@@ -1,17 +1,19 @@
-resource "zedcloud_edgeapp" "ubuntu-all-ip" {
+resource "zedcloud_application" "test_tf_provider" {
     name = "ubuntu-all-ip"
     title = "ubuntu-all-ip"
     description = "ubuntu-all-ip"
-    manifest_file = "./TFTest-ubuntu-xenial-16.04.json"
     user_defined_version = "1.1"
-    manifest_json = {
+    origin_type = "ORIGIN_LOCAL"
+    manifest_json {
+        # computed
+    		# ac_kind = "VMManifest"
+
     		# optional
         name = "xenial-amd64-docker-20180725"
-    		ac_kind = "VMManifest"
     		ac_version = "1.2.0"
-    		app_type = "vm"
-    		configuration = {
-    		  custom_config = {
+    		app_type = "APP_TYPE_VM"
+    		configuration {
+    		  custom_config {
 	          	add = false
 	          	allow_storage_resize = false
 	          	field_delimiter = ","
@@ -21,31 +23,31 @@ resource "zedcloud_edgeapp" "ubuntu-all-ip" {
 	          	variable_groups {
 	              	condition {
 	                  	# optional
-	                  	name = "name"
-	                  	operator = "operator"
+	                  	name = "condition"
+	                  	operator = "CONDITION_OPERATOR_EQUALTO"
 	                  	value = "val"
                   }
 	              	name = "var_group"
 	              	required = false
-	              	variables {
-	                  	# required
-	                  	format = ""
-	                  	label = ""
-	                  	name = ""
-	                  	required = false
-	                  	# optional
-	                  	default = ""
-	                  	encode = ""
-	                  	max_length = ""
-	                  	options {
-	                      	# optional
-	                      	label = ""
-	                      	value = ""
-                      }
-	                  	process_input = ""
-	                  	type = ""
-	                  	value = ""
-                  }
+	              	# variables {
+	                  	# # required
+	                  	# format = ""
+	                  	# label = ""
+	                  	# name = ""
+	                  	# required = false
+	                  	# # optional
+	                  	# default = ""
+	                  	# encode = ""
+	                  	# max_length = ""
+	                  	# options {
+	                      	# # optional
+	                      	# label = ""
+	                      	# value = ""
+                      # }
+	                  	# process_input = ""
+	                  	# type = ""
+	                  	# value = ""
+                  # }
               }
           }
         }
@@ -53,8 +55,8 @@ resource "zedcloud_edgeapp" "ubuntu-all-ip" {
       		# container_create_option = ""
         # }
     		cpu_pinning_enabled = false
-    		deployment_type = "k3s"
-    		desc = {
+    		deployment_type = "DEPLOYMENT_TYPE_K3S"
+    		desc {
     	  	category = "Infrastructure"
     	  	os = "Zenix"
     	  	app_category = "APP_CATEGORY_OTHERS"
@@ -72,7 +74,7 @@ resource "zedcloud_edgeapp" "ubuntu-all-ip" {
 	        	cleartext = false
 	        	drvtype = "HDD"
 	        	ignorepurge = false
-	        	imageformat = ""
+	        	imageformat = "ISO"
             imagename = "test-xenial-amd64"
 	        	imageid = ""
 	        	maxsize = "1200000"
@@ -102,7 +104,7 @@ resource "zedcloud_edgeapp" "ubuntu-all-ip" {
                 }
                 actions {
                     portmap = true
-                    portmapto = {
+                    portmapto {
                         app_port = 22
                     }
                 }
@@ -120,7 +122,7 @@ resource "zedcloud_edgeapp" "ubuntu-all-ip" {
     	  	# routes {"" = ""}
     	  	# twin_detail = ""
         # }
-    		owner = {
+    		owner {
       		company = "Zededa Inc."
       		email = "test@zededa.com"
       		group = "testgroup"

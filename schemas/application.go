@@ -1,6 +1,8 @@
 package schemas
 
 import (
+	"log"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
@@ -212,10 +214,16 @@ func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]int
 // Schema mapping representing the App resource defined in the Terraform configuration
 func Application() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"manifest_file": {
+			Description: `path to manifest.json`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"cpus": {
 			Description: `user defined cpus for bundle`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"description": {
@@ -249,12 +257,20 @@ func Application() map[string]*schema.Schema {
 				Schema: VMManifestSchema(),
 			},
 			Optional: true,
+			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+				log.Println("[WARN] diffs for manifest files are suppressed!")
+				if _, ok := d.GetOk("manifest_file"); ok {
+					return true
+				}
+				return false
+			},
 		},
 
 		"memory": {
 			Description: `user defined memory for bundle`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"name": {
@@ -267,6 +283,7 @@ func Application() map[string]*schema.Schema {
 			Description: `user defined network options`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"origin_type": {
@@ -282,6 +299,7 @@ func Application() map[string]*schema.Schema {
 				Schema: ObjectParentDetailSchema(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"project_access_list": {
@@ -299,7 +317,7 @@ func Application() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"storage": {

@@ -32,7 +32,7 @@ type ClientService interface {
 
 	Delete(params *EdgeApplicationConfigurationDeleteEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationDeleteEdgeApplicationBundleOK, error)
 
-	EdgeApplicationConfigurationGetEdgeApplicationBundle(params *EdgeApplicationConfigurationGetEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleOK, error)
+	GetByID(params *EdgeApplicationConfigurationGetEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleOK, error)
 
 	GetByName(params *EdgeApplicationConfigurationGetEdgeApplicationBundleByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleByNameOK, error)
 
@@ -132,14 +132,14 @@ func (a *Client) Delete(params *EdgeApplicationConfigurationDeleteEdgeApplicatio
 }
 
 /*
-EdgeApplicationConfigurationGetEdgeApplicationBundle gets edge application bundle
+GetByID gets edge application bundle
 
 Get the configuration (without security details) of an edge application bundle record.
 */
-func (a *Client) EdgeApplicationConfigurationGetEdgeApplicationBundle(params *EdgeApplicationConfigurationGetEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleOK, error) {
+func (a *Client) GetByID(params *EdgeApplicationConfigurationGetEdgeApplicationBundleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationConfigurationGetEdgeApplicationBundleOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationConfigurationGetEdgeApplicationBundleParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationConfiguration_GetEdgeApplicationBundle",

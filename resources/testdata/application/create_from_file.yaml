@@ -1,31 +1,16 @@
 cpus: 2
 description: ubuntu-all-ip
 drives: 1
-id: 5ff2ba22-827c-427f-92b9-93673569eeab
+id: 179a7fda-eadd-4047-95a2-cd936fffa4e6
 isimported: false
 manifestjson:
     ackind: VMManifest
-    acversion: 1.2.0
+    acversion: 1.1.1
     apptype: APP_TYPE_VM
-    configuration:
-        customconfig:
-            add: false
-            allowstorageresize: false
-            fielddelimiter: ','
-            name: custom_config_name
-            override: false
-            template: dGVzdA==
-            variablegroups:
-                - condition:
-                    name: condition
-                    operator: CONDITION_OPERATOR_EQUALTO
-                    value: val
-                  name: var_group
-                  required: false
-                  variables: []
+    configuration: null
     containerdetail: null
     cpupinningenabled: false
-    deploymenttype: DEPLOYMENT_TYPE_K3S
+    deploymenttype: DEPLOYMENT_TYPE_UNSPECIFIED
     desc:
         agreementlist: {}
         appcategory: APP_CATEGORY_OTHERS
@@ -34,17 +19,17 @@ manifestjson:
         logo: {}
         os: Zenix
         screenshotlist: {}
-        support: support
-    description: description
-    displayname: display_name
-    enablevnc: false
+        support: ""
+    description: ""
+    displayname: ""
+    enablevnc: true
     images:
         - cleartext: false
           drvtype: HDD
           ignorepurge: false
-          imageformat: ISO
+          imageformat: FmtUnknown
           imageid: ""
-          imagename: test-xenial-amd64
+          imagename: Ztest-xenial-amd64
           maxsize: "1200000"
           mountpath: ""
           params:
@@ -53,7 +38,7 @@ manifestjson:
           preserve: true
           readonly: false
           target: Disk
-          volumelabel: vol_1
+          volumelabel: ""
     interfaces:
         - acls:
             - actions:
@@ -86,17 +71,17 @@ manifestjson:
     name: xenial-amd64-docker-20180725
     owner:
         company: Zededa Inc.
-        email: test@zededa.com
+        email: ""
         group: testgroup
         user: testuser
-        website: http://www.zededa.com
+        website: ""
     permissions: []
     resources:
         - name: cpus
           value: "2"
         - name: memory
           value: "1024000"
-    vmmode: HV_HVM
+    vmmode: ""
 memory: 1024000
 name: ubuntu-all-ip
 networks: 1
@@ -108,11 +93,11 @@ parentdetail:
     versionofparentobject: 0
 projectaccesslist: []
 revision:
-    createdat: "2023-02-12T14:45:49.847Z"
+    createdat: "2023-02-12T14:45:19.575Z"
     createdby: us.root@zededa.com
     curr: "1"
     prev: ""
-    updatedat: "2023-02-12T14:45:49.847Z"
+    updatedat: "2023-02-12T14:45:19.575Z"
     updatedby: us.root@zededa.com
 storage: 0
 title: ubuntu-all-ip

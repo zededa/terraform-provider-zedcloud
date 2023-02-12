@@ -276,62 +276,62 @@ func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleForbidden) readResp
 }
 
 // NewEdgeApplicationConfigurationGetEdgeApplicationBundleNotFound creates a EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound with default headers values
-func NewEdgeApplicationConfigurationGetEdgeApplicationBundleNotFound() *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound {
-	return &EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound{}
+func NewEdgeApplicationConfigurationGetEdgeApplicationBundleNotFound() *GetApplicationNotFound {
+	return &GetApplicationNotFound{}
 }
 
 /*
-EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound describes a response with status code 404, with default header values.
+GetApplicationNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound struct {
+type GetApplicationNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this edge application configuration get edge application bundle not found response has a 2xx status code
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) IsSuccess() bool {
+func (o *GetApplicationNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this edge application configuration get edge application bundle not found response has a 3xx status code
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) IsRedirect() bool {
+func (o *GetApplicationNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this edge application configuration get edge application bundle not found response has a 4xx status code
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) IsClientError() bool {
+func (o *GetApplicationNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this edge application configuration get edge application bundle not found response has a 5xx status code
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) IsServerError() bool {
+func (o *GetApplicationNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this edge application configuration get edge application bundle not found response a status code equal to that given
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) IsCode(code int) bool {
+func (o *GetApplicationNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the edge application configuration get edge application bundle not found response
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) Code() int {
+func (o *GetApplicationNotFound) Code() int {
 	return 404
 }
 
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) Error() string {
+func (o *GetApplicationNotFound) Error() string {
 	return fmt.Sprintf("[GET /v1/apps/id/{id}][%d] edgeApplicationConfigurationGetEdgeApplicationBundleNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) String() string {
+func (o *GetApplicationNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/apps/id/{id}][%d] edgeApplicationConfigurationGetEdgeApplicationBundleNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) GetPayload() *models.ZsrvResponse {
+func (o *GetApplicationNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *EdgeApplicationConfigurationGetEdgeApplicationBundleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *GetApplicationNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

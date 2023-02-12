@@ -282,62 +282,62 @@ func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleForbidden) readR
 }
 
 // NewEdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound creates a EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound with default headers values
-func NewEdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound() *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound {
-	return &EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound{}
+func NewEdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound() *ApplicationNotFound {
+	return &ApplicationNotFound{}
 }
 
 /*
-EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound describes a response with status code 404, with default header values.
+ApplicationNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound struct {
+type ApplicationNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this edge application configuration delete edge application bundle not found response has a 2xx status code
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) IsSuccess() bool {
+func (o *ApplicationNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this edge application configuration delete edge application bundle not found response has a 3xx status code
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) IsRedirect() bool {
+func (o *ApplicationNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this edge application configuration delete edge application bundle not found response has a 4xx status code
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) IsClientError() bool {
+func (o *ApplicationNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this edge application configuration delete edge application bundle not found response has a 5xx status code
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) IsServerError() bool {
+func (o *ApplicationNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this edge application configuration delete edge application bundle not found response a status code equal to that given
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) IsCode(code int) bool {
+func (o *ApplicationNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the edge application configuration delete edge application bundle not found response
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) Code() int {
+func (o *ApplicationNotFound) Code() int {
 	return 404
 }
 
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) Error() string {
+func (o *ApplicationNotFound) Error() string {
 	return fmt.Sprintf("[DELETE /v1/apps/id/{id}][%d] edgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) String() string {
+func (o *ApplicationNotFound) String() string {
 	return fmt.Sprintf("[DELETE /v1/apps/id/{id}][%d] edgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) GetPayload() *models.ZsrvResponse {
+func (o *ApplicationNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *EdgeApplicationConfigurationDeleteEdgeApplicationBundleNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *ApplicationNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

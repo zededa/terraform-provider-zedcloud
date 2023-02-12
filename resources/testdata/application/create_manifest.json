@@ -1,0 +1,78 @@
+{
+   	"appType": "APP_TYPE_VM",
+    "acVersion": "1.1.1",
+    "name": "xenial-amd64-docker-20180725",
+    "owner": {
+        "user": "testuser",
+        "group": "testgroup",
+        "company": "Zededa Inc."
+    },
+    "images": [
+        {
+            "imagename": "Ztest-xenial-amd64",
+            "maxsize": "1200000",
+            "params": [
+                {
+                    "name": "bootparam",
+                    "value": "+k/sre"
+                }
+            ],
+            "readonly": false,
+            "preserve": true,
+            "target": "Disk",
+            "drvtype": "HDD"
+        }
+    ],
+    "interfaces": [
+        {
+            "name": "indirect",
+            "directattach": false,
+            "privateip": false,
+            "acls": [
+                {
+                    "matches": [
+                        {
+                            "type": "protocol",
+                            "value": "tcp"
+                        },
+                        {
+                            "type": "lport",
+                            "value": "8022"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "portmap": true,
+                            "portmapto": {
+                                "appPort": 22
+                            }
+                        }
+                    ]
+                },
+                {
+                    "matches": [
+                        {
+                            "type": "host",
+                            "value": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "enablevnc": true,
+    "resources": [
+        {
+            "name": "cpus",
+            "value": "2"
+        },
+        {
+            "name": "memory",
+            "value": "1024000"
+        }
+    ],
+    "desc": {
+        "category": "Infrastructure",
+        "os": "Zenix"
+    }
+}
