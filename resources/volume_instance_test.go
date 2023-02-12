@@ -54,7 +54,6 @@ func TestVolumeInstance_Create(t *testing.T) {
 	})
 }
 
-// testVolumeInstanceExists retrieves the VolumeInstance and stores it in the provided *models.DeviceConfig.
 func testVolumeInstanceExists(resourceName string, volume_instanceModel *models.VolumeInstance) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
@@ -83,7 +82,6 @@ func testVolumeInstanceExists(resourceName string, volume_instanceModel *models.
 			return errors.New("could not get response payload in VolumeInstance existence test: volumeInst is nil")
 		}
 
-		// store the resulting VolumeInstance config in the *models.DeviceConfig variable
 		*volume_instanceModel = *volumeInst
 		return nil
 	}

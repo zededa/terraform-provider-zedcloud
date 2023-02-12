@@ -134,7 +134,6 @@ func TestNetwork_Create_AllAttributes_WithPac(t *testing.T) {
 	})
 }
 
-// testNetworkExists retrieves the Network and stores it in the provided *models.DeviceConfig.
 func testNetworkExists(resourceName string, networkModel *models.Network) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
@@ -163,7 +162,6 @@ func testNetworkExists(resourceName string, networkModel *models.Network) resour
 			return errors.New("could not get response payload in Network existence test: network is nil")
 		}
 
-		// store the resulting Network config in the *models.DeviceConfig variable
 		*networkModel = *network
 		return nil
 	}

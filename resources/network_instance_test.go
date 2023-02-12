@@ -100,7 +100,6 @@ func TestNetworkInstance_Create_Complete(t *testing.T) {
 	})
 }
 
-// testNetworkInstanceExists retrieves the Network and stores it in the provided *models.DeviceConfig.
 func testNetworkInstanceExists(resourceName string, networkModel *models.NetworkInstance) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state

@@ -49,7 +49,6 @@ func TestDatastore_Create(t *testing.T) {
 	})
 }
 
-// testDatastoreExists retrieves the Datastore and stores it in the provided *models.DeviceConfig.
 func testDatastoreExists(resourceName string, datastoreModel *models.Datastore) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
@@ -78,7 +77,6 @@ func testDatastoreExists(resourceName string, datastoreModel *models.Datastore) 
 			return errors.New("could not get response payload in Datastore existence test: datastore is nil")
 		}
 
-		// store the resulting Datastore config in the *models.DeviceConfig variable
 		*datastoreModel = *datastore
 		return nil
 	}

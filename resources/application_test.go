@@ -83,7 +83,6 @@ func TestApplication_Create_FromFile(t *testing.T) {
 	})
 }
 
-// testApplicationExists retrieves the Application and stores it in the provided *models.DeviceConfig.
 func testApplicationExists(resourceName string, applicationModel *models.Application) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
@@ -112,7 +111,6 @@ func testApplicationExists(resourceName string, applicationModel *models.Applica
 			return errors.New("could not get response payload in Application existence test: application is nil")
 		}
 
-		// store the resulting Application config in the *models.DeviceConfig variable
 		*applicationModel = *application
 		return nil
 	}
