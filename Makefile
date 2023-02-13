@@ -6,6 +6,9 @@ SWAGGER_FILE_LIST += zedge_storage_service.swagger.json zedge_job_service.swagge
 SWAGGER_FILE_LIST += zedge_diag_service.swagger.json zedge_app_service.swagger.json
 SWAGGER_FILE_LIST += zedge_network_service.swagger.json
 
+NAME = terraform-provider-zedcloud
+VERSION = $(shell git describe --always --abbrev=0 --tags)
+
 all: swagger
 
 clean: swagger-clean
@@ -52,10 +55,10 @@ gen:
 		-A zedcloudapi \
 		-C swagger/config.yml
 
-.PHONY: gen
+.PHONY: build
 build:
-	go build -o terraform-provider-zedcloud_v0.0.0
-	chmod a+x terraform-provider-zedcloud_v0.0.0
+	go build -o $(NAME)_$(VERSION)
+	chmod a+x  $(NAME)_$(VERSION)
 
 # acceptance tests
 .PHONY: test
