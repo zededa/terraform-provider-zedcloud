@@ -276,62 +276,62 @@ func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceForbidden
 }
 
 // NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound creates a EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound with default headers values
-func NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound() *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound {
-	return &EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound{}
+func NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound() *GetApplicationInstanceNotFound {
+	return &GetApplicationInstanceNotFound{}
 }
 
 /*
-EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound describes a response with status code 404, with default header values.
+GetApplicationInstanceNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound struct {
+type GetApplicationInstanceNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this edge application instance configuration get edge application instance not found response has a 2xx status code
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) IsSuccess() bool {
+func (o *GetApplicationInstanceNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this edge application instance configuration get edge application instance not found response has a 3xx status code
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) IsRedirect() bool {
+func (o *GetApplicationInstanceNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this edge application instance configuration get edge application instance not found response has a 4xx status code
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) IsClientError() bool {
+func (o *GetApplicationInstanceNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this edge application instance configuration get edge application instance not found response has a 5xx status code
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) IsServerError() bool {
+func (o *GetApplicationInstanceNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this edge application instance configuration get edge application instance not found response a status code equal to that given
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) IsCode(code int) bool {
+func (o *GetApplicationInstanceNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the edge application instance configuration get edge application instance not found response
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) Code() int {
+func (o *GetApplicationInstanceNotFound) Code() int {
 	return 404
 }
 
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) Error() string {
+func (o *GetApplicationInstanceNotFound) Error() string {
 	return fmt.Sprintf("[GET /v1/apps/instances/id/{id}][%d] edgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) String() string {
+func (o *GetApplicationInstanceNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/apps/instances/id/{id}][%d] edgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound  %+v", 404, o.Payload)
 }
 
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) GetPayload() *models.ZsrvResponse {
+func (o *GetApplicationInstanceNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *GetApplicationInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

@@ -334,7 +334,7 @@ func NetworkInstance() map[string]*schema.Schema {
 		"device_id": {
 			Description: `ID of the device on which network instance is created`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"dhcp": {
@@ -380,7 +380,7 @@ NETWORK_INSTANCE_KIND_CLOUD
 NETWORK_INSTANCE_KIND_MESH
 NETWORK_INSTANCE_KIND_HONEYPOT`,
 			Type:     schema.TypeString,
-			Required: true,
+			Optional: true,
 		},
 
 		"lisp": {
@@ -422,7 +422,7 @@ NETWORK_INSTANCE_KIND_HONEYPOT`,
 		"port": {
 			Description: `name of port mapping in the model`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"port_tags": {
@@ -462,7 +462,7 @@ NETWORK_INSTANCE_KIND_HONEYPOT`,
 		"title": {
 			Description: `User defined title of the network instance. Title can be changed at any time`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"type": {

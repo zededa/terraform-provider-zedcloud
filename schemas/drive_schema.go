@@ -11,7 +11,7 @@ func DriveModel(d *schema.ResourceData) *models.Drive {
 	ignorepurge, _ := d.Get("ignorepurge").(bool)
 	imagename, _ := d.Get("imagename").(string)
 	imvolname, _ := d.Get("imvolname").(string)
-	maxsize, _ := d.Get("maxsize").(uint64)
+	maxsize, _ := d.Get("maxsize").(int)
 	mountpath, _ := d.Get("mountpath").(string)
 	mvolname, _ := d.Get("mvolname").(string)
 	preserve, _ := d.Get("preserve").(bool)
@@ -20,16 +20,16 @@ func DriveModel(d *schema.ResourceData) *models.Drive {
 	volumelabel, _ := d.Get("volumelabel").(string)
 	return &models.Drive{
 		Cleartext:   cleartext,
-		Drvtype:     &drvtype, // string true false false
+		Drvtype:     &drvtype,
 		Ignorepurge: ignorepurge,
-		Imagename:   &imagename, // string true false false
+		Imagename:   &imagename,
 		Imvolname:   imvolname,
-		Maxsize:     &maxsize, // uint64 true false false
+		Maxsize:     &maxsize,
 		Mountpath:   mountpath,
 		Mvolname:    mvolname,
-		Preserve:    &preserve, // bool true false false
-		Readonly:    &readonly, // bool true false false
-		Target:      &target,   // string true false false
+		Preserve:    &preserve,
+		Readonly:    &readonly,
+		Target:      &target,
 		Volumelabel: volumelabel,
 	}
 }
@@ -40,7 +40,7 @@ func DriveModelFromMap(m map[string]interface{}) *models.Drive {
 	ignorepurge := m["ignorepurge"].(bool)
 	imagename := m["imagename"].(string)
 	imvolname := m["imvolname"].(string)
-	maxsize := m["maxsize"].(uint64)
+	maxsize := m["maxsize"].(int)
 	mountpath := m["mountpath"].(string)
 	mvolname := m["mvolname"].(string)
 	preserve := m["preserve"].(bool)
@@ -63,7 +63,6 @@ func DriveModelFromMap(m map[string]interface{}) *models.Drive {
 	}
 }
 
-// Update the underlying Drive resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetDriveResourceData(d *schema.ResourceData, m *models.Drive) {
 	d.Set("cleartext", m.Cleartext)
 	d.Set("drvtype", m.Drvtype)

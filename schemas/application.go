@@ -14,7 +14,7 @@ func ApplicationModel(d *schema.ResourceData) *models.Application {
 	id, _ := d.Get("id").(string)
 	isImported, _ := d.Get("is_imported").(bool)
 	var manifestJSON *models.VMManifest // VMManifest
-	manifestJSONInterface, manifestJSONIsSet := d.GetOk("manifest_json")
+	manifestJSONInterface, manifestJSONIsSet := d.GetOk("manifest")
 	if manifestJSONIsSet && manifestJSONInterface != nil {
 		manifestJSONMap := manifestJSONInterface.([]interface{})
 		if len(manifestJSONMap) > 0 {
@@ -93,7 +93,7 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 	id := m["id"].(string)
 	isImported := m["is_imported"].(bool)
 	var manifestJSON *models.VMManifest // VMManifest
-	manifestJSONInterface, manifestJSONIsSet := m["manifest_json"]
+	manifestJSONInterface, manifestJSONIsSet := m["manifest"]
 	if manifestJSONIsSet && manifestJSONInterface != nil {
 		manifestJSONMap := manifestJSONInterface.([]interface{})
 		if len(manifestJSONMap) > 0 {
@@ -172,7 +172,7 @@ func SetApplicationResourceData(d *schema.ResourceData, m *models.Application) {
 	d.Set("drives", m.Drives)
 	d.Set("id", m.ID)
 	d.Set("is_imported", m.IsImported)
-	d.Set("manifest_json", SetVMManifestSubResourceData([]*models.VMManifest{m.ManifestJSON}))
+	d.Set("manifest", SetVMManifestSubResourceData([]*models.VMManifest{m.ManifestJSON}))
 	d.Set("memory", m.Memory)
 	d.Set("name", m.Name)
 	d.Set("networks", m.Networks)
@@ -194,7 +194,7 @@ func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]int
 			properties["drives"] = AppModel.Drives
 			properties["id"] = AppModel.ID
 			properties["is_imported"] = AppModel.IsImported
-			properties["manifest_json"] = SetVMManifestSubResourceData([]*models.VMManifest{AppModel.ManifestJSON})
+			properties["manifest"] = SetVMManifestSubResourceData([]*models.VMManifest{AppModel.ManifestJSON})
 			properties["memory"] = AppModel.Memory
 			properties["name"] = AppModel.Name
 			properties["networks"] = AppModel.Networks
@@ -214,11 +214,6 @@ func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]int
 // Schema mapping representing the App resource defined in the Terraform configuration
 func Application() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"manifest_file": {
-			Description: `path to manifest.json`,
-			Type:        schema.TypeString,
-			Optional:    true,
-		},
 		"cpus": {
 			Description: `user defined cpus for bundle`,
 			Type:        schema.TypeInt,
@@ -250,9 +245,16 @@ func Application() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
-		"manifest_json": {
+		"manifest_file": {
+			Description: `path to manifest.json`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"manifest": {
 			Description: `user defined manifest in JSON format`,
 			Type:        schema.TypeList, //GoType: VMManifest
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: VMManifestSchema(),
 			},
@@ -264,6 +266,7 @@ func Application() map[string]*schema.Schema {
 				}
 				return false
 			},
+			ConflictsWith: []string{"manifest_file"},
 		},
 
 		"memory": {
@@ -289,7 +292,7 @@ func Application() map[string]*schema.Schema {
 		"origin_type": {
 			Description: `origin of object`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"parent_detail": {
@@ -329,7 +332,7 @@ func Application() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the edge application. Title can be changed at any time`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"user_defined_version": {
@@ -347,7 +350,7 @@ func GetApplicationPropertyFields() (t []string) {
 		"description",
 		"id",
 		"is_imported",
-		"manifest_json",
+		"manifest",
 		"memory",
 		"name",
 		"networks",

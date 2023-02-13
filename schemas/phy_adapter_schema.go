@@ -10,8 +10,18 @@ import (
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PhyAdapterModel(d *schema.ResourceData) *models.PhyAdapter {
 	name, _ := d.Get("name").(string)
-	tags, _ := d.Get("tags").(map[string]string) // map[string]string
-	var typeVar *models.IoType                   // IoType
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := d.GetOk("tags")
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+	var typeVar *models.IoType // IoType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
 		typeModel := typeInterface.(string)
@@ -26,8 +36,23 @@ func PhyAdapterModel(d *schema.ResourceData) *models.PhyAdapter {
 
 func PhyAdapterModelFromMap(m map[string]interface{}) *models.PhyAdapter {
 	name := m["name"].(string)
-	tags := m["tags"].(map[string]string)
-	typeVar := m["type"].(*models.IoType) // IoType
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := m["tags"]
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+	var typeVar *models.IoType // IoType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewIoType(models.IoType(typeModel))
+	}
 	return &models.PhyAdapter{
 		Name: name,
 		Tags: tags,

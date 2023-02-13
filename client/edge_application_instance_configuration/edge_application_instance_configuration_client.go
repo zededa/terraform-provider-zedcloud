@@ -38,7 +38,7 @@ type ClientService interface {
 
 	Delete(params *EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationDeleteEdgeApplicationInstanceOK, error)
 
-	EdgeApplicationInstanceConfigurationGetEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceOK, error)
+	GetByID(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceOK, error)
 
 	GetByName(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceByNameOK, error)
 
@@ -256,14 +256,14 @@ func (a *Client) Delete(params *EdgeApplicationInstanceConfigurationDeleteEdgeAp
 }
 
 /*
-EdgeApplicationInstanceConfigurationGetEdgeApplicationInstance gets edge application instance
+GetByID gets edge application instance
 
 Get the configuration (without security details) of an edge application instance record.
 */
-func (a *Client) EdgeApplicationInstanceConfigurationGetEdgeApplicationInstance(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceOK, error) {
+func (a *Client) GetByID(params *EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeApplicationInstanceConfigurationGetEdgeApplicationInstanceParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeApplicationInstanceConfiguration_GetEdgeApplicationInstance",

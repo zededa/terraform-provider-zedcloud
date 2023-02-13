@@ -23,8 +23,7 @@ func AppACEModel(d *schema.ResourceData) *models.AppACE {
 			actions = append(actions, m)
 		}
 	}
-	idInt, _ := d.Get("id").(int)
-	id := int32(idInt)
+	id := int32(d.Get("id").(int))
 	var matches []*models.AppACEMatch // []*AppACEMatch
 	matchesInterface, matchesIsSet := d.GetOk("matches")
 	if matchesIsSet {
@@ -69,7 +68,7 @@ func AppACEModelFromMap(m map[string]interface{}) *models.AppACE {
 			actions = append(actions, m)
 		}
 	}
-	id := int32(m["id"].(int))        // int32
+	id := int32(m["id"].(int))
 	var matches []*models.AppACEMatch // []*AppACEMatch
 	matchesInterface, matchesIsSet := m["matches"]
 	if matchesIsSet {
@@ -134,7 +133,7 @@ func AppACESchema() map[string]*schema.Schema {
 
 		"id": {
 			Description: `app ACE id`,
-			Type:        schema.TypeString,
+			Type:        schema.TypeInt,
 			Computed:    true,
 		},
 

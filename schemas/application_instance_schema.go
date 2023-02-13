@@ -1,12 +1,14 @@
 package schemas
 
 import (
+	"log"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
 
 func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
-	activate, _ := d.Get("activate").(string)
+	activate, _ := d.Get("activate").(bool)
 	appID, _ := d.Get("app_id").(string)
 	appPolicyID, _ := d.Get("app_policy_id").(string)
 	var appType *models.AppType // AppType
@@ -14,6 +16,9 @@ func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 	if appTypeIsSet {
 		appTypeModel := appTypeInterface.(string)
 		appType = models.NewAppType(models.AppType(appTypeModel))
+		if err := appType.Validate(nil); err != nil {
+			log.Fatalf("invalid value for field app_type (%v): %v", *appType, err)
+		}
 	}
 	bundleversion, _ := d.Get("bundleversion").(string)
 	clusterID, _ := d.Get("cluster_id").(string)
@@ -135,7 +140,7 @@ func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 		}
 	}
 	startDelayInSecondsInt, _ := d.Get("start_delay_in_seconds").(int)
-	startDelayInSeconds := int64(startDelayInSecondsInt)
+	startDelayInSeconds := int32(startDelayInSecondsInt)
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := d.GetOk("tags")
 	if tagsIsSet {
@@ -196,7 +201,7 @@ func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 }
 
 func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstance {
-	activate := m["activate"].(string)
+	activate := m["activate"].(bool)
 	appID := m["app_id"].(string)
 	appPolicyID := m["app_policy_id"].(string)
 	var appType *models.AppType // AppType
@@ -204,6 +209,9 @@ func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstan
 	if appTypeIsSet {
 		appTypeModel := appTypeInterface.(string)
 		appType = models.NewAppType(models.AppType(appTypeModel))
+		if err := appType.Validate(nil); err != nil {
+			log.Fatalf("invalid value for field app_type (%v): %v", *appType, err)
+		}
 	}
 	bundleversion := m["bundleversion"].(string)
 	clusterID := m["cluster_id"].(string)
@@ -331,7 +339,7 @@ func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstan
 		}
 	}
 	//
-	startDelayInSeconds := int64(m["start_delay_in_seconds"].(int)) // int64
+	startDelayInSeconds := int32(m["start_delay_in_seconds"].(int)) // int64
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := m["tags"]
 	if tagsIsSet {
@@ -473,7 +481,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"activate": {
 			Description: `app instance activation flag`,
-			Type:        schema.TypeString,
+			Type:        schema.TypeBool,
 			Required:    true,
 		},
 
@@ -493,6 +501,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `type of bundle`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     "APP_TYPE_UNSPECIFIED",
 		},
 
 		"bundleversion": {
@@ -517,6 +526,8 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `Crypto Key for decrypting user secret information`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
+			Sensitive:   true,
 		},
 
 		"custom_config": {
@@ -553,7 +564,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: DriveSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Required: true,
+			Optional: true,
 		},
 
 		"encrypted_secrets": {
@@ -562,7 +573,9 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Optional:  true,
+			Computed:  true,
+			Sensitive: true,
 		},
 
 		"id": {
@@ -578,7 +591,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: AppInterfaceSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Required: true,
+			Optional: true,
 		},
 
 		"is_secret_updated": {
@@ -614,7 +627,8 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"project_id": {
 			Description: `project name which the given app instance belong to`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
+			Computed:    true,
 		},
 
 		"purge": {
@@ -657,6 +671,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: ObjectRevision(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"start_delay_in_seconds": {
@@ -677,7 +692,8 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the app instance. Title can be changed at any time`,
 			Type:        schema.TypeString,
-			Required:    true,
+			// Required:    true,
+			Optional: true,
 		},
 
 		"user_data": {

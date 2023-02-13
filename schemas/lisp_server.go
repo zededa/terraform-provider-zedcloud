@@ -47,6 +47,7 @@ func LispServer() map[string]*schema.Schema {
 			Description: `lisp credential`,
 			Type:        schema.TypeString,
 			Required:    true,
+			Sensitive:   true,
 		},
 
 		"name_or_ip": {

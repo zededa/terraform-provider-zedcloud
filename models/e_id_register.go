@@ -25,17 +25,17 @@ type EIDRegister struct {
 	// app certificate
 	// Required: true
 	// Format: byte
-	AppCert *strfmt.Base64 `json:"AppCert"`
+	AppCert *string `json:"AppCert"`
 
 	// App private key
 	// Required: true
 	// Format: byte
-	AppPrivateKey *strfmt.Base64 `json:"AppPrivateKey"`
+	AppPrivateKey *string `json:"AppPrivateKey"`
 
 	// App public key
 	// Required: true
 	// Format: byte
-	AppPublicKey *strfmt.Base64 `json:"AppPublicKey"`
+	AppPublicKey *string `json:"AppPublicKey"`
 
 	// Display name
 	// Required: true
