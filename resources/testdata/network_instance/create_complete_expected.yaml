@@ -1,0 +1,41 @@
+clusterid: ""
+description: zedcloud_network_instance-complete-description
+devicedefault: false
+dhcp: false
+dnslist:
+    - addrs:
+        - 10.1.1.1
+        - 10.1.1.2
+      hostname: wwww.ns1.example.com
+    - addrs:
+        - 10.1.2.1
+        - 10.1.2.2
+      hostname: wwww.ns2.example.com
+# ip:
+#     dhcprange:
+#         end: 10.2.255.254
+#         start: 10.2.0.128
+#     dns:
+#         - 10.2.0.1
+#     domain: ""
+#     gateway: 10.2.0.1
+#     mask: 255.255.255.0
+#     ntp: 10.1.0.2
+#     subnet: 10.2.0.0/16
+kind: NETWORK_INSTANCE_KIND_LOCAL
+lisp: null
+name: complete
+networkpolicyid: ""
+oconfig: ""
+opaque:
+    lisp: null
+    oconfig: Test OConfig
+    type: OPAQUE_CONFIG_TYPE_UNSPECIFIED
+port: eth1
+porttags: {}
+projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
+tags:
+    ni-tag1: ni-tag-value-1
+    ni-tag2: ni-tag-value-2
+title: complete
+type: NETWORK_INSTANCE_DHCP_TYPE_V4
