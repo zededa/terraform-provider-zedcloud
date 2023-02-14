@@ -12,10 +12,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetCellularConfig net cellular config
+// Cellular net cellular config
 //
-// swagger:model NetCellularConfig
-type NetCellularConfig struct {
+// swagger:model Cellular
+type Cellular struct {
 
 	// a p n
 	APN string `json:"APN,omitempty"`
@@ -25,17 +25,17 @@ type NetCellularConfig struct {
 }
 
 // Validate validates this net cellular config
-func (m *NetCellularConfig) Validate(formats strfmt.Registry) error {
+func (m *Cellular) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
 // ContextValidate validates this net cellular config based on context it is used
-func (m *NetCellularConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *Cellular) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }
 
 // MarshalBinary interface implementation
-func (m *NetCellularConfig) MarshalBinary() ([]byte, error) {
+func (m *Cellular) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -43,8 +43,8 @@ func (m *NetCellularConfig) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *NetCellularConfig) UnmarshalBinary(b []byte) error {
-	var res NetCellularConfig
+func (m *Cellular) UnmarshalBinary(b []byte) error {
+	var res Cellular
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

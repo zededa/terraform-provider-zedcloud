@@ -13,23 +13,23 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetWirelessConfig net wireless config
+// Wireless config
 //
-// swagger:model NetWirelessConfig
-type NetWirelessConfig struct {
+// swagger:model Wireless
+type Wireless struct {
 
 	// cellular cfg
-	CellularCfg *NetCellularConfig `json:"cellularCfg,omitempty"`
+	CellularCfg *Cellular `json:"cellularCfg,omitempty"`
 
 	// type
-	Type *NetworkWirelessType `json:"type,omitempty"`
+	Type *Type `json:"type,omitempty"`
 
 	// wifi cfg
-	WifiCfg *NetWifiConfig `json:"wifiCfg,omitempty"`
+	WifiCfg *Wifi `json:"wifiCfg,omitempty"`
 }
 
 // Validate validates this net wireless config
-func (m *NetWirelessConfig) Validate(formats strfmt.Registry) error {
+func (m *Wireless) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCellularCfg(formats); err != nil {
@@ -50,7 +50,7 @@ func (m *NetWirelessConfig) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetWirelessConfig) validateCellularCfg(formats strfmt.Registry) error {
+func (m *Wireless) validateCellularCfg(formats strfmt.Registry) error {
 	if swag.IsZero(m.CellularCfg) { // not required
 		return nil
 	}
@@ -69,7 +69,7 @@ func (m *NetWirelessConfig) validateCellularCfg(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetWirelessConfig) validateType(formats strfmt.Registry) error {
+func (m *Wireless) validateType(formats strfmt.Registry) error {
 	if swag.IsZero(m.Type) { // not required
 		return nil
 	}
@@ -88,7 +88,7 @@ func (m *NetWirelessConfig) validateType(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetWirelessConfig) validateWifiCfg(formats strfmt.Registry) error {
+func (m *Wireless) validateWifiCfg(formats strfmt.Registry) error {
 	if swag.IsZero(m.WifiCfg) { // not required
 		return nil
 	}
@@ -108,7 +108,7 @@ func (m *NetWirelessConfig) validateWifiCfg(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this net wireless config based on the context it is used
-func (m *NetWirelessConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *Wireless) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateCellularCfg(ctx, formats); err != nil {
@@ -129,7 +129,7 @@ func (m *NetWirelessConfig) ContextValidate(ctx context.Context, formats strfmt.
 	return nil
 }
 
-func (m *NetWirelessConfig) contextValidateCellularCfg(ctx context.Context, formats strfmt.Registry) error {
+func (m *Wireless) contextValidateCellularCfg(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.CellularCfg != nil {
 		if err := m.CellularCfg.ContextValidate(ctx, formats); err != nil {
@@ -145,7 +145,7 @@ func (m *NetWirelessConfig) contextValidateCellularCfg(ctx context.Context, form
 	return nil
 }
 
-func (m *NetWirelessConfig) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+func (m *Wireless) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Type != nil {
 		if err := m.Type.ContextValidate(ctx, formats); err != nil {
@@ -161,7 +161,7 @@ func (m *NetWirelessConfig) contextValidateType(ctx context.Context, formats str
 	return nil
 }
 
-func (m *NetWirelessConfig) contextValidateWifiCfg(ctx context.Context, formats strfmt.Registry) error {
+func (m *Wireless) contextValidateWifiCfg(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.WifiCfg != nil {
 		if err := m.WifiCfg.ContextValidate(ctx, formats); err != nil {
@@ -178,7 +178,7 @@ func (m *NetWirelessConfig) contextValidateWifiCfg(ctx context.Context, formats 
 }
 
 // MarshalBinary interface implementation
-func (m *NetWirelessConfig) MarshalBinary() ([]byte, error) {
+func (m *Wireless) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -186,8 +186,8 @@ func (m *NetWirelessConfig) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *NetWirelessConfig) UnmarshalBinary(b []byte) error {
-	var res NetWirelessConfig
+func (m *Wireless) UnmarshalBinary(b []byte) error {
+	var res Wireless
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

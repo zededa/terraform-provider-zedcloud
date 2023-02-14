@@ -60,7 +60,7 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 		}
 	}
 	title, _ := d.Get("title").(string)
-	var wireless *models.NetWirelessConfig // NetWirelessConfig
+	var wireless *models.Wireless // NetWirelessConfig
 	wirelessInterface, wirelessIsSet := d.GetOk("wireless")
 	if wirelessIsSet && wirelessInterface != nil {
 		wirelessMap := wirelessInterface.([]interface{})
@@ -75,11 +75,11 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 		ID:                id,
 		IP:                ip,
 		Kind:              kind,
-		Name:              &name,      // string true false false
-		ProjectID:         &projectID, // string true false false
+		Name:              &name,
+		ProjectID:         &projectID,
 		Proxy:             proxy,
 		Revision:          revision,
-		Title:             &title, // string true false false
+		Title:             &title,
 		Wireless:          wireless,
 	}
 }
@@ -141,7 +141,7 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 	}
 	//
 	title := m["title"].(string)
-	var wireless *models.NetWirelessConfig // NetWirelessConfig
+	var wireless *models.Wireless // NetWirelessConfig
 	wirelessInterface, wirelessIsSet := m["wireless"]
 	if wirelessIsSet && wirelessInterface != nil {
 		wirelessMap := wirelessInterface.([]interface{})
@@ -178,7 +178,7 @@ func SetNetworkResourceData(d *schema.ResourceData, m *models.Network) {
 	d.Set("proxy", SetNetProxyConfigSubResourceData([]*models.Proxy{m.Proxy}))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("title", m.Title)
-	d.Set("wireless", SetNetWirelessConfigSubResourceData([]*models.NetWirelessConfig{m.Wireless}))
+	d.Set("wireless", SetNetWirelessConfigSubResourceData([]*models.Wireless{m.Wireless}))
 }
 
 func SetNetworkSubResourceData(m []*models.Network) (d []*map[string]interface{}) {
@@ -196,7 +196,7 @@ func SetNetworkSubResourceData(m []*models.Network) (d []*map[string]interface{}
 			properties["proxy"] = SetNetProxyConfigSubResourceData([]*models.Proxy{NetConfigModel.Proxy})
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{NetConfigModel.Revision})
 			properties["title"] = NetConfigModel.Title
-			properties["wireless"] = SetNetWirelessConfigSubResourceData([]*models.NetWirelessConfig{NetConfigModel.Wireless})
+			properties["wireless"] = SetNetWirelessConfigSubResourceData([]*models.Wireless{NetConfigModel.Wireless})
 			d = append(d, &properties)
 		}
 	}

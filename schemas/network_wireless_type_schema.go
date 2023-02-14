@@ -5,22 +5,22 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetworkWirelessTypeModel(d *schema.ResourceData) *models.NetworkWirelessType {
-	networkWirelessType, _ := d.Get("network_wireless_type").(models.NetworkWirelessType)
+func NetworkWirelessTypeModel(d *schema.ResourceData) *models.Type {
+	networkWirelessType, _ := d.Get("network_wireless_type").(models.Type)
 	return &networkWirelessType
 }
 
-func NetworkWirelessTypeModelFromMap(m map[string]interface{}) *models.NetworkWirelessType {
-	networkWirelessType := m["network_wireless_type"].(models.NetworkWirelessType)
+func NetworkWirelessTypeModelFromMap(m map[string]interface{}) *models.Type {
+	networkWirelessType := m["network_wireless_type"].(models.Type)
 	return &networkWirelessType
 }
 
 // Update the underlying NetworkWirelessType resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetNetworkWirelessTypeResourceData(d *schema.ResourceData, m *models.NetworkWirelessType) {
+func SetNetworkWirelessTypeResourceData(d *schema.ResourceData, m *models.Type) {
 }
 
 // Iterate through and update the NetworkWirelessType resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetNetworkWirelessTypeSubResourceData(m []*models.NetworkWirelessType) (d []*map[string]interface{}) {
+func SetNetworkWirelessTypeSubResourceData(m []*models.Type) (d []*map[string]interface{}) {
 	for _, NetworkWirelessTypeModel := range m {
 		if NetworkWirelessTypeModel != nil {
 			properties := make(map[string]interface{})

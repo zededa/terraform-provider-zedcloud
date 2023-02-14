@@ -71,7 +71,7 @@ type Network struct {
 	Title *string `json:"title"`
 
 	// Wifi configuration
-	Wireless *NetWirelessConfig `json:"wireless,omitempty"`
+	Wireless *Wireless `json:"wireless,omitempty"`
 }
 
 // Validate validates this net config

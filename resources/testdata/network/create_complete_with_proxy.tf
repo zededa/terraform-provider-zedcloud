@@ -61,13 +61,8 @@ resource "zedcloud_network" "complete_with_proxy" {
         cellular {
             apn = "1234"
             # not supported by API
-            # location_tracking = true
+            location_tracking = true
         }
-        type = "NETWORK_WIRELESS_TYPE_WIFI"
-        wifi {
-            key_scheme = "NETWORK_WIFIKEY_SCHEME_WPAPSK"
-            priority = 5
-            wifi_ssid = "test-SSID"
-        }
+        type = "NETWORK_WIRELESS_TYPE_CELLULAR"
     }
 }

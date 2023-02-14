@@ -19,7 +19,7 @@ import (
 type NetworkFilter struct {
 
 	// dist
-	Dist *NetworkWirelessType `json:"dist,omitempty"`
+	Dist *Type `json:"dist,omitempty"`
 
 	// kind
 	Kind *NetworkKind `json:"kind,omitempty"`

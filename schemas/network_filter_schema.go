@@ -6,11 +6,11 @@ import (
 )
 
 func NetworkFilterModel(d *schema.ResourceData) *models.NetworkFilter {
-	var dist *models.NetworkWirelessType // NetworkWirelessType
+	var dist *models.Type // NetworkWirelessType
 	distInterface, distIsSet := d.GetOk("dist")
 	if distIsSet {
 		distModel := distInterface.(string)
-		dist = models.NewNetworkWirelessType(models.NetworkWirelessType(distModel))
+		dist = models.NewNetworkWirelessType(models.Type(distModel))
 	}
 	var kind *models.NetworkKind // NetworkKind
 	kindInterface, kindIsSet := d.GetOk("kind")
@@ -31,11 +31,11 @@ func NetworkFilterModel(d *schema.ResourceData) *models.NetworkFilter {
 }
 
 func NetworkFilterModelFromMap(m map[string]interface{}) *models.NetworkFilter {
-	var dist *models.NetworkWirelessType // NetworkWirelessType
+	var dist *models.Type // NetworkWirelessType
 	distInterface, distIsSet := m["dist"]
 	if distIsSet {
 		distModel := distInterface.(string)
-		dist = models.NewNetworkWirelessType(models.NetworkWirelessType(distModel))
+		dist = models.NewNetworkWirelessType(models.Type(distModel))
 	}
 	var kind *models.NetworkKind // NetworkKind
 	kindInterface, kindIsSet := m["kind"]

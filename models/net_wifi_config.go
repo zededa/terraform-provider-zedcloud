@@ -13,10 +13,10 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetWifiConfig net wifi config
+// Wifi net wifi config
 //
-// swagger:model NetWifiConfig
-type NetWifiConfig struct {
+// swagger:model Wifi
+type Wifi struct {
 
 	// crypto
 	Crypto *NetWifiConfigNetcryptoblock `json:"crypto,omitempty"`
@@ -44,7 +44,7 @@ type NetWifiConfig struct {
 }
 
 // Validate validates this net wifi config
-func (m *NetWifiConfig) Validate(formats strfmt.Registry) error {
+func (m *Wifi) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCrypto(formats); err != nil {
@@ -65,7 +65,7 @@ func (m *NetWifiConfig) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetWifiConfig) validateCrypto(formats strfmt.Registry) error {
+func (m *Wifi) validateCrypto(formats strfmt.Registry) error {
 	if swag.IsZero(m.Crypto) { // not required
 		return nil
 	}
@@ -84,7 +84,7 @@ func (m *NetWifiConfig) validateCrypto(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetWifiConfig) validateKeyScheme(formats strfmt.Registry) error {
+func (m *Wifi) validateKeyScheme(formats strfmt.Registry) error {
 	if swag.IsZero(m.KeyScheme) { // not required
 		return nil
 	}
@@ -103,7 +103,7 @@ func (m *NetWifiConfig) validateKeyScheme(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetWifiConfig) validateSecret(formats strfmt.Registry) error {
+func (m *Wifi) validateSecret(formats strfmt.Registry) error {
 	if swag.IsZero(m.Secret) { // not required
 		return nil
 	}
@@ -123,7 +123,7 @@ func (m *NetWifiConfig) validateSecret(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this net wifi config based on the context it is used
-func (m *NetWifiConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *Wifi) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateCrypto(ctx, formats); err != nil {
@@ -144,7 +144,7 @@ func (m *NetWifiConfig) ContextValidate(ctx context.Context, formats strfmt.Regi
 	return nil
 }
 
-func (m *NetWifiConfig) contextValidateCrypto(ctx context.Context, formats strfmt.Registry) error {
+func (m *Wifi) contextValidateCrypto(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Crypto != nil {
 		if err := m.Crypto.ContextValidate(ctx, formats); err != nil {
@@ -160,7 +160,7 @@ func (m *NetWifiConfig) contextValidateCrypto(ctx context.Context, formats strfm
 	return nil
 }
 
-func (m *NetWifiConfig) contextValidateKeyScheme(ctx context.Context, formats strfmt.Registry) error {
+func (m *Wifi) contextValidateKeyScheme(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.KeyScheme != nil {
 		if err := m.KeyScheme.ContextValidate(ctx, formats); err != nil {
@@ -176,7 +176,7 @@ func (m *NetWifiConfig) contextValidateKeyScheme(ctx context.Context, formats st
 	return nil
 }
 
-func (m *NetWifiConfig) contextValidateSecret(ctx context.Context, formats strfmt.Registry) error {
+func (m *Wifi) contextValidateSecret(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Secret != nil {
 		if err := m.Secret.ContextValidate(ctx, formats); err != nil {
@@ -193,7 +193,7 @@ func (m *NetWifiConfig) contextValidateSecret(ctx context.Context, formats strfm
 }
 
 // MarshalBinary interface implementation
-func (m *NetWifiConfig) MarshalBinary() ([]byte, error) {
+func (m *Wifi) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -201,8 +201,8 @@ func (m *NetWifiConfig) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *NetWifiConfig) UnmarshalBinary(b []byte) error {
-	var res NetWifiConfig
+func (m *Wifi) UnmarshalBinary(b []byte) error {
+	var res Wifi
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}
