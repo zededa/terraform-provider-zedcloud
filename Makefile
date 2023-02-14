@@ -57,6 +57,7 @@ gen:
 
 .PHONY: build
 build:
+	rm terraform-provider-zedcloud_v*
 	go build -o $(NAME)_$(VERSION)
 	chmod a+x  $(NAME)_$(VERSION)
 
