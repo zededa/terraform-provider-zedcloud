@@ -3,11 +3,8 @@ package resources
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
-	"os"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider/client"
@@ -39,15 +36,9 @@ func NodeDataSource() *schema.Resource {
 func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	fmt.Println("------CREATE---------------------------------------")
-
 	model := zschema.NodeModel(d)
 	params := config.CreateParams()
 	params.SetBody(model)
-
-	if err := os.WriteFile("/tmp/req", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
-		fmt.Println(err)
-	}
 
 	client := m.(*api_client.ZedcloudAPI)
 
@@ -98,39 +89,22 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		return append(diags, errs...)
 	}
 
-	fmt.Println("------END CREATE---------------------------------------")
 	return diags
 }
 
 func ReadNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	fmt.Println("------GET---------------------------------------")
 	edgeNode, diags := readNode(ctx, d, m)
 	if diags.HasError() {
 		return diags
 	}
 	zschema.SetNodeResourceData(d, edgeNode)
 	d.SetId(edgeNode.ID)
-	fmt.Println("------END GET---------------------------------------")
 
 	return diags
 }
 
 func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-
-	fmt.Println("------POST---------------------------------------")
-	// we need to fetch the edge-node/device-config and add/change the fields according to config
-	// deviceConfig, diags := getEdgeNode(ctx, d, m)
-	// if diags.HasError() {
-	// 	return diags
-	// }
-
-	// fmt.Println("d.admin_state: ")
-	// fmt.Println(d.Get("admin_state"))
-	// fmt.Println("deviceConfig: ")
-	// spew.Dump(deviceConfig)
-	// // publish the api response to local state and the d instance
-	// zschema.SetDeviceConfigResourceData(d, deviceConfig)
 
 	params := config.UpdateParams()
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
@@ -144,10 +118,6 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		return diag.Errorf("missing client parameter: id")
 	}
 	params.SetBody(zschema.NodeModel(d))
-
-	if err := os.WriteFile("/tmp/req-update", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
-		fmt.Println(err)
-	}
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
@@ -197,12 +167,10 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		return append(diags, errs...)
 	}
 
-	fmt.Println("------END POST---------------------------------------")
 	return diags
 }
 
 func DeleteNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	fmt.Println("------DELETE---------------------------------------")
 	var diags diag.Diagnostics
 
 	params := config.DeleteParams()
@@ -231,7 +199,6 @@ func DeleteNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	}
 
 	d.SetId("")
-	fmt.Println("------DONE DELETE---------------------------------------")
 	return diags
 }
 
@@ -410,8 +377,6 @@ func setBaseImage(
 	localImages, remoteImages []*models.BaseOSImage,
 ) diag.Diagnostics {
 
-	fmt.Println("++++++++++++++++++++++++set image+++++++++++++++++++++++++++++++++++")
-
 	if len(localImages) == 0 {
 		return nil
 	}
@@ -446,9 +411,6 @@ func setBaseImage(
 		return nil
 	}
 
-	fmt.Println("++++++++++++++++++++++++ image data +++++++++++++++++++++++++++++++++++")
-	spew.Dump(remoteImages[0])
-
 	if diags := publishBaseOS(ctx, d, m); len(diags) != 0 {
 		return diags
 	}
@@ -456,7 +418,6 @@ func setBaseImage(
 		return diags
 	}
 
-	fmt.Println("++++++++++++++++++++++++ done set image +++++++++++++++++++++++++++++++++++")
 	return nil
 }
 
@@ -479,12 +440,6 @@ func setAdminState(
 		}
 	}
 
-	// states differ
-	// fmt.Println("====================================")
-	// fmt.Println(*localAdminState)
-	// fmt.Println(*remoteAdminState)
-	// fmt.Println("====================================")
-
 	if *localAdminState == models.ADMINSTATE_ACTIVE {
 		// do not activate if already registered
 		if *remoteAdminState == models.ADMINSTATE_REGISTERED {
@@ -505,7 +460,6 @@ func setAdminState(
 
 func readNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Node, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	fmt.Println("------get---------------------------------------")
 
 	params := config.GetByNameParams()
 
@@ -530,10 +484,6 @@ func readNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*mode
 	}
 
 	edgeNode := resp.GetPayload()
-	if err := os.WriteFile("/tmp/get_resp", []byte("==========RESP=============\n"+spew.Sdump(edgeNode)), 0644); err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println("------END get---------------------------------------")
 
 	return edgeNode, diags
 }

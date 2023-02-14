@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetworkProxyServerModel(d *schema.ResourceData) *models.Server {
+func ProxyServerModel(d *schema.ResourceData) *models.Server {
 	portInt, _ := d.Get("port").(int)
 	port := int64(portInt)
 	var proto *models.Proto // NetworkProxyProto
@@ -22,7 +22,7 @@ func NetworkProxyServerModel(d *schema.ResourceData) *models.Server {
 	}
 }
 
-func NetworkProxyServerModelFromMap(m map[string]interface{}) *models.Server {
+func ProxyServerModelFromMap(m map[string]interface{}) *models.Server {
 	port := int64(m["port"].(int)) // int64
 	var proto *models.Proto        // NetworkProxyProto
 	protoInterface, protoIsSet := m["proto"]
@@ -38,13 +38,13 @@ func NetworkProxyServerModelFromMap(m map[string]interface{}) *models.Server {
 	}
 }
 
-func SetworkNetProxyServerResourceData(d *schema.ResourceData, m *models.Server) {
+func SetProxyServerResourceData(d *schema.ResourceData, m *models.Server) {
 	d.Set("port", m.Port)
 	d.Set("proto", m.Proto)
 	d.Set("server", m.Server)
 }
 
-func SetNetworkProxyServerSubResourceData(m []*models.Server) (d []*map[string]interface{}) {
+func SetProxyServerSubResourceData(m []*models.Server) (d []*map[string]interface{}) {
 	for _, NetProxyServerModel := range m {
 		if NetProxyServerModel != nil {
 			properties := make(map[string]interface{})
@@ -57,8 +57,7 @@ func SetNetworkProxyServerSubResourceData(m []*models.Server) (d []*map[string]i
 	return
 }
 
-// Schema mapping representing the NetProxyServer resource defined in the Terraform configuration
-func NetworkProxyServer() map[string]*schema.Schema {
+func ProxyServer() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"port": {
 			Description: `Net Proxy Port`,
@@ -67,14 +66,9 @@ func NetworkProxyServer() map[string]*schema.Schema {
 		},
 
 		"proto": {
-			Description: `Net Proxy protocol:
-NETWORK_PROXY_PROTO_HTTP
-NETWORK_PROXY_PROTO_HTTPS
-NETWORK_PROXY_PROTO_SOCKS
-NETWORK_PROXY_PROTO_FTP
-NETWORK_PROXY_PROTO_OTHER`,
-			Type:     schema.TypeString,
-			Optional: true,
+			Description: `Net Proxy proto`,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"server": {
@@ -86,10 +80,72 @@ NETWORK_PROXY_PROTO_OTHER`,
 }
 
 // Retrieve property field names for updating the NetProxyServer resource
-func NetworkProxyServerPropertyFields() (t []string) {
+func GetNetProxyServerPropertyFields() (t []string) {
 	return []string{
 		"port",
 		"proto",
 		"server",
 	}
+}
+
+func CompareProxyServer(a, b []*models.Server) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	// is each element of the new list in the old list?
+	for _, newList := range b {
+		if newList == nil {
+			continue
+		}
+
+		found := false
+		for _, oldList := range a {
+			if oldList == nil {
+				continue
+			}
+			if oldList.Port != newList.Port {
+				continue
+			}
+			if *oldList.Proto != *newList.Proto {
+				continue
+			}
+			if oldList.Server != newList.Server {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+
+	// is each element of the old list also in the new list?
+	for _, oldList := range a {
+		if oldList == nil {
+			continue
+		}
+
+		found := false
+		for _, newList := range b {
+			if newList == nil {
+				continue
+			}
+			if oldList.Port != newList.Port {
+				continue
+			}
+			if *oldList.Proto != *newList.Proto {
+				continue
+			}
+			if oldList.Server != newList.Server {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }

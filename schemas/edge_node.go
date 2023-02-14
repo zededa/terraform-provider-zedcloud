@@ -178,13 +178,13 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 		Interfaces:             interfaces,
 		Location:               location,
 		Memory:                 memory,
-		ModelID:                &modelID, // string true false false
-		Name:                   &name,    // string true false false
+		ModelID:                &modelID,
+		Name:                   &name,
 		Obkey:                  obkey,
 		Onboarding:             onboarding,
 		PreparePowerOffCounter: preparePowerOffCounter,
 		PreparePowerOffTime:    preparePowerOffTime,
-		ProjectID:              &projectID, // string true false false
+		ProjectID:              &projectID,
 		ResetCounter:           resetCounter,
 		ResetTime:              resetTime,
 		Revision:               revision,
@@ -193,7 +193,7 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 		Storage:                storage,
 		Tags:                   tags,
 		Thread:                 thread,
-		Title:                  &title, // string true false false
+		Title:                  &title,
 		Token:                  token,
 		Utype:                  utype,
 	}
@@ -254,7 +254,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			debugKnob = DebugKnobDetailModelFromMap(debugKnobMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	var defaultNetInst *models.NetworkInstance // NetInstConfig
 	defaultNetInstInterface, defaultNetInstIsSet := m["default_net_inst"]
 	if defaultNetInstIsSet && defaultNetInstInterface != nil {
@@ -263,7 +262,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			defaultNetInst = NetworkInstanceModelFromMap(defaultNetInstMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	deploymentTag := m["deployment_tag"].(string)
 	deprecated := m["deprecated"].(string)
 	description := m["description"].(string)
@@ -275,7 +273,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			devLocation = GeoLocationModelFromMap(devLocationMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	var dlisp *models.DeviceLisp // DeviceLisp
 	dlispInterface, dlispIsSet := m["dlisp"]
 	if dlispIsSet && dlispInterface != nil {
@@ -284,7 +281,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			dlisp = DeviceLispModelFromMap(dlispMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
 	edgeviewconfigInterface, edgeviewconfigIsSet := m["edgeviewconfig"]
 	if edgeviewconfigIsSet && edgeviewconfigInterface != nil {
@@ -293,7 +289,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			edgeviewconfig = EdgeViewModelFromMap(edgeviewconfigMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	generateSoftSerial := m["generate_soft_serial"].(bool)
 	id := m["id"].(string)
 	identity := m["identity"].(strfmt.Base64)
@@ -327,7 +322,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			onboarding = DeviceCertsModelFromMap(onboardingMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64
 	preparePowerOffTime := m["prepare_power_off_time"].(string)
 	projectID := m["project_id"].(string)
@@ -341,7 +335,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	serialno := m["serialno"].(string)
 	var sitePictures []string
 	sitePicturesInterface, sitePicturesIsSet := m["sitePictures"]

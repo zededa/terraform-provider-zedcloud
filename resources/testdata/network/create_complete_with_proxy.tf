@@ -41,6 +41,11 @@ resource "zedcloud_network" "complete_with_proxy" {
 
       # proxy host per protocol (HTTP, HTTPS, FTP, SOCKS)
       proxies {
+        port = 5557
+        proto = "NETWORK_PROXY_PROTO_SOCKS"
+        server = "example.com"
+      }
+      proxies {
         port = 5555
         proto = "NETWORK_PROXY_PROTO_HTTP"
         server = "example.com"

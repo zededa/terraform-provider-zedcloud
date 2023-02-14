@@ -42,7 +42,7 @@ type NetProxyStatus struct {
 	// protocol level proxies
 	//
 	// protocol level proxies
-	Proxies []*NetProxyServer `json:"proxies"`
+	Proxies []*Server `json:"proxies"`
 
 	// WPAD Proxy URL
 	WpadProxyURL string `json:"wpadProxyURL,omitempty"`

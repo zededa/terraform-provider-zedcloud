@@ -5,22 +5,22 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetworkProxyProtoModel(d *schema.ResourceData) *models.NetworkProxyProto {
-	networkProxyProto, _ := d.Get("network_proxy_proto").(models.NetworkProxyProto)
+func NetworkProxyProtoModel(d *schema.ResourceData) *models.Proto {
+	networkProxyProto, _ := d.Get("network_proxy_proto").(models.Proto)
 	return &networkProxyProto
 }
 
-func NetworkProxyProtoModelFromMap(m map[string]interface{}) *models.NetworkProxyProto {
-	networkProxyProto := m["network_proxy_proto"].(models.NetworkProxyProto)
+func NetworkProxyProtoModelFromMap(m map[string]interface{}) *models.Proto {
+	networkProxyProto := m["network_proxy_proto"].(models.Proto)
 	return &networkProxyProto
 }
 
 // Update the underlying NetworkProxyProto resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
-func SetNetworkProxyProtoResourceData(d *schema.ResourceData, m *models.NetworkProxyProto) {
+func SetNetworkProxyProtoResourceData(d *schema.ResourceData, m *models.Proto) {
 }
 
 // Iterate through and update the NetworkProxyProto resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetNetworkProxyProtoSubResourceData(m []*models.NetworkProxyProto) (d []*map[string]interface{}) {
+func SetNetworkProxyProtoSubResourceData(m []*models.Proto) (d []*map[string]interface{}) {
 	for _, NetworkProxyProtoModel := range m {
 		if NetworkProxyProtoModel != nil {
 			properties := make(map[string]interface{})

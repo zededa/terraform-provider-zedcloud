@@ -13,6 +13,7 @@ import (
 	api_client "github.com/zededa/terraform-provider/client"
 	config "github.com/zededa/terraform-provider/client/edge_network_configuration"
 	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider/schemas"
 )
 
 func TestNetwork_Create_RequiredAttributesOnly(t *testing.T) {
@@ -177,9 +178,13 @@ func testNetworkAttributes(t *testing.T, got, expected *models.Network) resource
 		if expected.Proxy != nil && expected.Proxy.NetworkProxyCerts == nil {
 			ignoredFields = append(ignoredFields, "Proxy.NetworkProxyCerts")
 		}
-		// API, TF and YAML unmarshal might change order of list elements so we ignore them in tests
-		if expected.DNSList != nil {
-			ignoredFields = append(ignoredFields, "DNSList")
+		// API and YAML unmarshal might change order of list elements so we ignore them in tests
+		if !schemas.CompareDNSLists(got.DNSList, expected.DNSList) {
+			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), cmp.Diff(got.DNSList, expected.DNSList))
+		}
+		// API and YAML unmarshal might change order of list elements so we ignore them in tests
+		if !schemas.CompareProxyLists([]*models.Proxy{got.Proxy}, []*models.Proxy{expected.Proxy}) {
+			return fmt.Errorf("%s: unexpected diff in proxy: \n%s", t.Name(), cmp.Diff(got.Proxy, expected.Proxy))
 		}
 		if expected.Proxy != nil && expected.Proxy.Proxies != nil {
 			ignoredFields = append(ignoredFields, "Proxy.Proxies")

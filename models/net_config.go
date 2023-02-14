@@ -58,7 +58,7 @@ type Network struct {
 	ProjectID *string `json:"projectId"`
 
 	// enterprise proxy
-	Proxy *NetProxyConfig `json:"proxy,omitempty"`
+	Proxy *Proxy `json:"proxy,omitempty"`
 
 	// system defined info
 	Revision *ObjectRevision `json:"revision,omitempty"`

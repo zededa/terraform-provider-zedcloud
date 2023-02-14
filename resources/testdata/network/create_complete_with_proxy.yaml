@@ -33,6 +33,9 @@ proxy:
         - port: 5555
           proto: NETWORK_PROXY_PROTO_HTTP
           server: example.com
+        - port: 5557
+          proto: NETWORK_PROXY_PROTO_SOCKS
+          server: example.com
         - port: 5556
           proto: NETWORK_PROXY_PROTO_HTTPS
           server: example.com

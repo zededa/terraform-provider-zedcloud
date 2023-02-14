@@ -193,46 +193,46 @@ resource "zedcloud_edgenode" "complete" {
         		# lispiid = 0
         		# sp {}
         # }
-	    	# # oconfig = ""
-        # # opaque {
-        # #     oconfig = "test config"
-        # #     type = "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
-        # # }
-	    	# # opaque {
-        		# # # required
-        		# # device_id = ""
-        		# # kind = ""
-        		# # name = ""
-        		# # port = ""
-        		# # title = ""
+	    	# oconfig = ""
+        # opaque {
+        #     oconfig = "test config"
+        #     type = "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+        # }
+	    	# opaque {
+        		# # required
+        		# device_id = ""
+        		# kind = ""
+        		# name = ""
+        		# port = ""
+        		# title = ""
 
-        		# # # optional
-        		# # cluster_id = ""
-        		# # description = ""
-        		# # device_default = ""
-        		# # dhcp = false
-        		# # dns_list {}
-        		# # ip {
-            		# # # optional
-            		# # dhcp_range {
-                		# # # optional
-                		# # end = ""
-                		# # start = ""
-                # # }
-            		# # dns {}
-            		# # domain = ""
-            		# # gateway = ""
-            		# # mask = ""
-            		# # ntp = ""
-            		# # subnet = ""
-            # # }
-        		# # # lisp = # LispConfig
-        		# # network_policy_id = ""
-        		# # oconfig = ""
-        		# # # opaque =
-        		# # port_tags {}
-        		# # project_id = ""
-        		# # tags {}
-        		# # type = ""
-        # # }
+        		# # optional
+        		# cluster_id = ""
+        		# description = ""
+        		# device_default = ""
+        		# dhcp = false
+        		# dns_list {}
+        		# ip {
+            		# # optional
+            		# dhcp_range {
+                		# # optional
+                		# end = ""
+                		# start = ""
+                # }
+            		# dns {}
+            		# domain = ""
+            		# gateway = ""
+            		# mask = ""
+            		# ntp = ""
+            		# subnet = ""
+            # }
+        		# # lisp = # LispConfig
+        		# network_policy_id = ""
+        		# oconfig = ""
+        		# # opaque =
+        		# port_tags {}
+        		# project_id = ""
+        		# tags {}
+        		# type = ""
+        # }
     # }
