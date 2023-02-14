@@ -58,7 +58,7 @@ type Network struct {
 	ProjectID *string `json:"projectId"`
 
 	// enterprise proxy
-	Proxy *NetProxyConfig `json:"proxy,omitempty"`
+	Proxy *Proxy `json:"proxy,omitempty"`
 
 	// system defined info
 	Revision *ObjectRevision `json:"revision,omitempty"`
@@ -71,7 +71,7 @@ type Network struct {
 	Title *string `json:"title"`
 
 	// Wifi configuration
-	Wireless *NetWirelessConfig `json:"wireless,omitempty"`
+	Wireless *Wireless `json:"wireless,omitempty"`
 }
 
 // Validate validates this net config

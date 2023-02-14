@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetworkWifiModel(d *schema.ResourceData) *models.NetWifiConfig {
+func NetworkWifiModel(d *schema.ResourceData) *models.Wifi {
 	// var crypto *models.NetWifiConfigNetcryptoblock // NetWifiConfigNetcryptoblock
 	// cryptoInterface, cryptoIsSet := d.GetOk("crypto")
 	// if cryptoIsSet && cryptoInterface != nil {
@@ -45,7 +45,7 @@ func NetworkWifiModel(d *schema.ResourceData) *models.NetWifiConfig {
 	// 	}
 	// }
 	wifiSSID, _ := d.Get("wifi_ssid").(string)
-	return &models.NetWifiConfig{
+	return &models.Wifi{
 		// Crypto:           crypto,
 		// CryptoKey:        cryptoKey,
 		// EncryptedSecrets: encryptedSecrets,
@@ -57,7 +57,7 @@ func NetworkWifiModel(d *schema.ResourceData) *models.NetWifiConfig {
 	}
 }
 
-func NetworkWifiModelFromMap(m map[string]interface{}) *models.NetWifiConfig {
+func NetworkWifiModelFromMap(m map[string]interface{}) *models.Wifi {
 	// var crypto *models.NetWifiConfigNetcryptoblock // NetWifiConfigNetcryptoblock
 	// cryptoInterface, cryptoIsSet := m["crypto"]
 	// if cryptoIsSet && cryptoInterface != nil {
@@ -97,7 +97,7 @@ func NetworkWifiModelFromMap(m map[string]interface{}) *models.NetWifiConfig {
 	// }
 	//
 	wifiSSID := m["wifi_ssid"].(string)
-	return &models.NetWifiConfig{
+	return &models.Wifi{
 		// Crypto:           crypto,
 		// CryptoKey:        cryptoKey,
 		// EncryptedSecrets: encryptedSecrets,
@@ -109,7 +109,7 @@ func NetworkWifiModelFromMap(m map[string]interface{}) *models.NetWifiConfig {
 	}
 }
 
-func SetNetworkWifiResourceData(d *schema.ResourceData, m *models.NetWifiConfig) {
+func SetNetworkWifiResourceData(d *schema.ResourceData, m *models.Wifi) {
 	// d.Set("crypto", SetNetWifiConfigNetcryptoblockSubResourceData([]*models.NetWifiConfigNetcryptoblock{m.Crypto}))
 	// d.Set("crypto_key", m.CryptoKey)
 	// d.Set("encrypted_secrets", m.EncryptedSecrets)
@@ -120,7 +120,7 @@ func SetNetworkWifiResourceData(d *schema.ResourceData, m *models.NetWifiConfig)
 	d.Set("wifi_ssid", m.WifiSSID)
 }
 
-func SetNetworkWifiSubResourceData(m []*models.NetWifiConfig) (d []*map[string]interface{}) {
+func SetNetworkWifiSubResourceData(m []*models.Wifi) (d []*map[string]interface{}) {
 	for _, NetWifiConfigModel := range m {
 		if NetWifiConfigModel != nil {
 			properties := make(map[string]interface{})

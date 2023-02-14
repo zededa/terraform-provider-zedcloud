@@ -3,6 +3,7 @@ package schemas
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
+	"golang.org/x/exp/slices"
 )
 
 func NetworkModel(d *schema.ResourceData) *models.Network {
@@ -42,7 +43,7 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 	}
 	name, _ := d.Get("name").(string)
 	projectID, _ := d.Get("project_id").(string)
-	var proxy *models.NetProxyConfig // NetProxyConfig
+	var proxy *models.Proxy // NetProxyConfig
 	proxyInterface, proxyIsSet := d.GetOk("proxy")
 	if proxyIsSet && proxyInterface != nil {
 		proxyMap := proxyInterface.([]interface{})
@@ -59,7 +60,7 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 		}
 	}
 	title, _ := d.Get("title").(string)
-	var wireless *models.NetWirelessConfig // NetWirelessConfig
+	var wireless *models.Wireless // NetWirelessConfig
 	wirelessInterface, wirelessIsSet := d.GetOk("wireless")
 	if wirelessIsSet && wirelessInterface != nil {
 		wirelessMap := wirelessInterface.([]interface{})
@@ -74,11 +75,11 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 		ID:                id,
 		IP:                ip,
 		Kind:              kind,
-		Name:              &name,      // string true false false
-		ProjectID:         &projectID, // string true false false
+		Name:              &name,
+		ProjectID:         &projectID,
 		Proxy:             proxy,
 		Revision:          revision,
-		Title:             &title, // string true false false
+		Title:             &title,
 		Wireless:          wireless,
 	}
 }
@@ -121,7 +122,7 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 	}
 	name := m["name"].(string)
 	projectID := m["project_id"].(string)
-	var proxy *models.NetProxyConfig // NetProxyConfig
+	var proxy *models.Proxy // NetProxyConfig
 	proxyInterface, proxyIsSet := m["proxy"]
 	if proxyIsSet && proxyInterface != nil {
 		proxyMap := proxyInterface.([]interface{})
@@ -140,7 +141,7 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 	}
 	//
 	title := m["title"].(string)
-	var wireless *models.NetWirelessConfig // NetWirelessConfig
+	var wireless *models.Wireless // NetWirelessConfig
 	wirelessInterface, wirelessIsSet := m["wireless"]
 	if wirelessIsSet && wirelessInterface != nil {
 		wirelessMap := wirelessInterface.([]interface{})
@@ -174,10 +175,10 @@ func SetNetworkResourceData(d *schema.ResourceData, m *models.Network) {
 	d.Set("kind", m.Kind)
 	d.Set("name", m.Name)
 	d.Set("project_id", m.ProjectID)
-	d.Set("proxy", SetNetProxyConfigSubResourceData([]*models.NetProxyConfig{m.Proxy}))
+	d.Set("proxy", SetNetProxyConfigSubResourceData([]*models.Proxy{m.Proxy}))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("title", m.Title)
-	d.Set("wireless", SetNetWirelessConfigSubResourceData([]*models.NetWirelessConfig{m.Wireless}))
+	d.Set("wireless", SetNetWirelessConfigSubResourceData([]*models.Wireless{m.Wireless}))
 }
 
 func SetNetworkSubResourceData(m []*models.Network) (d []*map[string]interface{}) {
@@ -192,10 +193,10 @@ func SetNetworkSubResourceData(m []*models.Network) (d []*map[string]interface{}
 			properties["kind"] = NetConfigModel.Kind
 			properties["name"] = NetConfigModel.Name
 			properties["project_id"] = NetConfigModel.ProjectID
-			properties["proxy"] = SetNetProxyConfigSubResourceData([]*models.NetProxyConfig{NetConfigModel.Proxy})
+			properties["proxy"] = SetNetProxyConfigSubResourceData([]*models.Proxy{NetConfigModel.Proxy})
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{NetConfigModel.Revision})
 			properties["title"] = NetConfigModel.Title
-			properties["wireless"] = SetNetWirelessConfigSubResourceData([]*models.NetWirelessConfig{NetConfigModel.Wireless})
+			properties["wireless"] = SetNetWirelessConfigSubResourceData([]*models.Wireless{NetConfigModel.Wireless})
 			d = append(d, &properties)
 		}
 	}
@@ -276,8 +277,9 @@ NETWORK_KIND_V6`,
 				Schema: NetworkProxy(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional: true,
-			Computed: true,
+			Optional:         true,
+			Computed:         true,
+			DiffSuppressFunc: diffSuppressProxyListOrder("proxy"),
 		},
 
 		"revision": {
@@ -324,4 +326,88 @@ func NetworkPropertyFields() (t []string) {
 		"title",
 		"wireless",
 	}
+}
+
+func CompareProxyLists(a, b []*models.Proxy) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	// is each element of the new list in the old list?
+	for _, newList := range b {
+		if newList == nil {
+			continue
+		}
+
+		found := false
+		for _, oldList := range a {
+			if oldList == nil {
+				continue
+			}
+			if oldList.Exceptions != newList.Exceptions {
+				continue
+			}
+			if oldList.NetworkProxy != newList.NetworkProxy {
+				continue
+			}
+			if oldList.NetworkProxyURL != newList.NetworkProxyURL {
+				continue
+			}
+			if oldList.Pacfile != newList.Pacfile {
+				continue
+			}
+			slices.Sort(oldList.NetworkProxyCerts)
+			slices.Sort(newList.NetworkProxyCerts)
+			if !Equal(oldList.NetworkProxyCerts, newList.NetworkProxyCerts) {
+				continue
+			}
+			if !CompareProxyServer(oldList.Proxies, newList.Proxies) {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+
+	// is each element of the old list also in the new list?
+	for _, oldList := range a {
+		if oldList == nil {
+			continue
+		}
+
+		found := false
+		for _, newList := range b {
+			if newList == nil {
+				continue
+			}
+			if oldList.Exceptions != newList.Exceptions {
+				continue
+			}
+			if oldList.NetworkProxy != newList.NetworkProxy {
+				continue
+			}
+			if oldList.NetworkProxyURL != newList.NetworkProxyURL {
+				continue
+			}
+			if oldList.Pacfile != newList.Pacfile {
+				continue
+			}
+			slices.Sort(oldList.NetworkProxyCerts)
+			slices.Sort(newList.NetworkProxyCerts)
+			if !Equal(oldList.NetworkProxyCerts, newList.NetworkProxyCerts) {
+				continue
+			}
+			if !CompareProxyServer(oldList.Proxies, newList.Proxies) {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }

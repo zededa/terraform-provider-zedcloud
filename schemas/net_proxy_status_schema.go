@@ -13,7 +13,7 @@ func NetProxyStatusModel(d *schema.ResourceData) *models.NetProxyStatus {
 	networkProxy, _ := d.Get("network_proxy").(bool)
 	networkProxyURL, _ := d.Get("network_proxy_url").(string)
 	pacfile, _ := d.Get("pacfile").(string)
-	proxies, _ := d.Get("proxies").([]*models.NetProxyServer) // []*NetProxyServer
+	proxies, _ := d.Get("proxies").([]*models.Server) // []*NetProxyServer
 	wpadProxyURL, _ := d.Get("wpad_proxy_url").(string)
 	return &models.NetProxyStatus{
 		Exceptions:      exceptions,
@@ -30,7 +30,7 @@ func NetProxyStatusModelFromMap(m map[string]interface{}) *models.NetProxyStatus
 	networkProxy := m["network_proxy"].(bool)
 	networkProxyURL := m["network_proxy_url"].(string)
 	pacfile := m["pacfile"].(string)
-	proxies := m["proxies"].([]*models.NetProxyServer) // []*NetProxyServer
+	proxies := m["proxies"].([]*models.Server) // []*NetProxyServer
 	wpadProxyURL := m["wpad_proxy_url"].(string)
 	return &models.NetProxyStatus{
 		Exceptions:      exceptions,

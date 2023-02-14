@@ -5,46 +5,46 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetworkProxyServerModel(d *schema.ResourceData) *models.NetProxyServer {
+func NetworkProxyServerModel(d *schema.ResourceData) *models.Server {
 	portInt, _ := d.Get("port").(int)
 	port := int64(portInt)
-	var proto *models.NetworkProxyProto // NetworkProxyProto
+	var proto *models.Proto // NetworkProxyProto
 	protoInterface, protoIsSet := d.GetOk("proto")
 	if protoIsSet {
 		protoModel := protoInterface.(string)
-		proto = models.NewNetworkProxyProto(models.NetworkProxyProto(protoModel))
+		proto = models.NewNetworkProxyProto(models.Proto(protoModel))
 	}
 	server, _ := d.Get("server").(string)
-	return &models.NetProxyServer{
+	return &models.Server{
 		Port:   port,
 		Proto:  proto,
 		Server: server,
 	}
 }
 
-func NetworkProxyServerModelFromMap(m map[string]interface{}) *models.NetProxyServer {
-	port := int64(m["port"].(int))      // int64
-	var proto *models.NetworkProxyProto // NetworkProxyProto
+func NetworkProxyServerModelFromMap(m map[string]interface{}) *models.Server {
+	port := int64(m["port"].(int)) // int64
+	var proto *models.Proto        // NetworkProxyProto
 	protoInterface, protoIsSet := m["proto"]
 	if protoIsSet {
 		protoModel := protoInterface.(string)
-		proto = models.NewNetworkProxyProto(models.NetworkProxyProto(protoModel))
+		proto = models.NewNetworkProxyProto(models.Proto(protoModel))
 	}
 	server := m["server"].(string)
-	return &models.NetProxyServer{
+	return &models.Server{
 		Port:   port,
 		Proto:  proto,
 		Server: server,
 	}
 }
 
-func SetworkNetProxyServerResourceData(d *schema.ResourceData, m *models.NetProxyServer) {
+func SetworkNetProxyServerResourceData(d *schema.ResourceData, m *models.Server) {
 	d.Set("port", m.Port)
 	d.Set("proto", m.Proto)
 	d.Set("server", m.Server)
 }
 
-func SetNetworkProxyServerSubResourceData(m []*models.NetProxyServer) (d []*map[string]interface{}) {
+func SetNetworkProxyServerSubResourceData(m []*models.Server) (d []*map[string]interface{}) {
 	for _, NetProxyServerModel := range m {
 		if NetProxyServerModel != nil {
 			properties := make(map[string]interface{})

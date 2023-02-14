@@ -5,7 +5,7 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetworkProxyModel(d *schema.ResourceData) *models.NetProxyConfig {
+func NetworkProxyModel(d *schema.ResourceData) *models.Proxy {
 	exceptions, _ := d.Get("exceptions").(string)
 	networkProxy, _ := d.Get("network_proxy").(bool)
 	var networkProxyCerts []string
@@ -18,7 +18,7 @@ func NetworkProxyModel(d *schema.ResourceData) *models.NetProxyConfig {
 	}
 	networkProxyURL, _ := d.Get("network_proxy_url").(string)
 	pacfile, _ := d.Get("pacfile").(string)
-	var proxies []*models.NetProxyServer // []*NetProxyServer
+	var proxies []*models.Server // []*NetProxyServer
 	proxiesInterface, proxiesIsSet := d.GetOk("proxies")
 	if proxiesIsSet {
 		var items []interface{}
@@ -35,7 +35,7 @@ func NetworkProxyModel(d *schema.ResourceData) *models.NetProxyConfig {
 			proxies = append(proxies, m)
 		}
 	}
-	return &models.NetProxyConfig{
+	return &models.Proxy{
 		Exceptions:        exceptions,
 		NetworkProxy:      networkProxy,
 		NetworkProxyCerts: networkProxyCerts,
@@ -45,7 +45,7 @@ func NetworkProxyModel(d *schema.ResourceData) *models.NetProxyConfig {
 	}
 }
 
-func NetworkProxyModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
+func NetworkProxyModelFromMap(m map[string]interface{}) *models.Proxy {
 	exceptions := m["exceptions"].(string)
 	networkProxy := m["network_proxy"].(bool)
 	var networkProxyCerts []string
@@ -58,7 +58,7 @@ func NetworkProxyModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
 	}
 	networkProxyURL := m["network_proxy_url"].(string)
 	pacfile := m["pacfile"].(string)
-	var proxies []*models.NetProxyServer // []*NetProxyServer
+	var proxies []*models.Server // []*NetProxyServer
 	proxiesInterface, proxiesIsSet := m["proxies"]
 	if proxiesIsSet {
 		var items []interface{}
@@ -75,7 +75,7 @@ func NetworkProxyModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
 			proxies = append(proxies, m)
 		}
 	}
-	return &models.NetProxyConfig{
+	return &models.Proxy{
 		Exceptions:        exceptions,
 		NetworkProxy:      networkProxy,
 		NetworkProxyCerts: networkProxyCerts,
@@ -85,7 +85,7 @@ func NetworkProxyModelFromMap(m map[string]interface{}) *models.NetProxyConfig {
 	}
 }
 
-func SetNetworkProxyResourceData(d *schema.ResourceData, m *models.NetProxyConfig) {
+func SetNetworkProxyResourceData(d *schema.ResourceData, m *models.Proxy) {
 	d.Set("exceptions", m.Exceptions)
 	d.Set("network_proxy", m.NetworkProxy)
 	d.Set("network_proxy_certs", m.NetworkProxyCerts)
@@ -94,7 +94,7 @@ func SetNetworkProxyResourceData(d *schema.ResourceData, m *models.NetProxyConfi
 	d.Set("proxies", SetNetworkProxyServerSubResourceData(m.Proxies))
 }
 
-func SetNetProxyConfigSubResourceData(m []*models.NetProxyConfig) (d []*map[string]interface{}) {
+func SetNetProxyConfigSubResourceData(m []*models.Proxy) (d []*map[string]interface{}) {
 	for _, NetProxyConfigModel := range m {
 		if NetProxyConfigModel != nil {
 			properties := make(map[string]interface{})

@@ -33,6 +33,9 @@ proxy:
         - port: 5555
           proto: NETWORK_PROXY_PROTO_HTTP
           server: example.com
+        - port: 5557
+          proto: NETWORK_PROXY_PROTO_SOCKS
+          server: example.com
         - port: 5556
           proto: NETWORK_PROXY_PROTO_HTTPS
           server: example.com
@@ -41,14 +44,5 @@ title: zedcloud_network.complete_with_proxy.title
 wireless:
     cellularcfg:
         apn: "1234"
-        locationtracking: false
-    type: NETWORK_WIRELESS_TYPE_WIFI
-    wificfg:
-        crypto: null
-        cryptokey: ""
-        encryptedsecrets: {}
-        identity: ""
-        keyscheme: NETWORK_WIFIKEY_SCHEME_WPAPSK
-        priority: 5
-        secret: null
-        wifissid: test-SSID
+        locationtracking: true
+    type: NETWORK_WIRELESS_TYPE_CELLULAR

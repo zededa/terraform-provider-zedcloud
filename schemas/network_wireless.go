@@ -5,8 +5,8 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func NetworkWirelessModel(d *schema.ResourceData) *models.NetWirelessConfig {
-	var cellularCfg *models.NetCellularConfig // NetCellularConfig
+func NetworkWirelessModel(d *schema.ResourceData) *models.Wireless {
+	var cellularCfg *models.Cellular // NetCellularConfig
 	cellularCfgInterface, cellularCfgIsSet := d.GetOk("cellular")
 	if cellularCfgIsSet && cellularCfgInterface != nil {
 		cellularCfgMap := cellularCfgInterface.([]interface{})
@@ -14,13 +14,13 @@ func NetworkWirelessModel(d *schema.ResourceData) *models.NetWirelessConfig {
 			cellularCfg = NetworkCellularModelFromMap(cellularCfgMap[0].(map[string]interface{}))
 		}
 	}
-	var typeVar *models.NetworkWirelessType // NetworkWirelessType
+	var typeVar *models.Type // NetworkWirelessType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
 		typeModel := typeInterface.(string)
-		typeVar = models.NewNetworkWirelessType(models.NetworkWirelessType(typeModel))
+		typeVar = models.NewNetworkWirelessType(models.Type(typeModel))
 	}
-	var wifiCfg *models.NetWifiConfig // NetWifiConfig
+	var wifiCfg *models.Wifi // NetWifiConfig
 	wifiCfgInterface, wifiCfgIsSet := d.GetOk("wifi")
 	if wifiCfgIsSet && wifiCfgInterface != nil {
 		wifiCfgMap := wifiCfgInterface.([]interface{})
@@ -28,15 +28,15 @@ func NetworkWirelessModel(d *schema.ResourceData) *models.NetWirelessConfig {
 			wifiCfg = NetworkWifiModelFromMap(wifiCfgMap[0].(map[string]interface{}))
 		}
 	}
-	return &models.NetWirelessConfig{
+	return &models.Wireless{
 		CellularCfg: cellularCfg,
 		Type:        typeVar,
 		WifiCfg:     wifiCfg,
 	}
 }
 
-func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessConfig {
-	var cellularCfg *models.NetCellularConfig // NetCellularConfig
+func NetworkWirelessModelFromMap(m map[string]interface{}) *models.Wireless {
+	var cellularCfg *models.Cellular // NetCellularConfig
 	cellularCfgInterface, cellularCfgIsSet := m["cellular"]
 	if cellularCfgIsSet && cellularCfgInterface != nil {
 		cellularCfgMap := cellularCfgInterface.([]interface{})
@@ -44,14 +44,13 @@ func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessCo
 			cellularCfg = NetworkCellularModelFromMap(cellularCfgMap[0].(map[string]interface{}))
 		}
 	}
-	//
-	var typeVar *models.NetworkWirelessType // NetworkWirelessType
+	var typeVar *models.Type // NetworkWirelessType
 	typeInterface, typeIsSet := m["type"]
 	if typeIsSet {
 		typeModel := typeInterface.(string)
-		typeVar = models.NewNetworkWirelessType(models.NetworkWirelessType(typeModel))
+		typeVar = models.NewNetworkWirelessType(models.Type(typeModel))
 	}
-	var wifiCfg *models.NetWifiConfig // NetWifiConfig
+	var wifiCfg *models.Wifi // NetWifiConfig
 	wifiCfgInterface, wifiCfgIsSet := m["wifi"]
 	if wifiCfgIsSet && wifiCfgInterface != nil {
 		wifiCfgMap := wifiCfgInterface.([]interface{})
@@ -60,27 +59,26 @@ func NetworkWirelessModelFromMap(m map[string]interface{}) *models.NetWirelessCo
 		}
 	}
 	//
-	return &models.NetWirelessConfig{
+	return &models.Wireless{
 		CellularCfg: cellularCfg,
 		Type:        typeVar,
 		WifiCfg:     wifiCfg,
 	}
 }
 
-func SetNetworkWirelessResourceData(d *schema.ResourceData, m *models.NetWirelessConfig) {
-	d.Set("cellular", SetNetworkCellularSubResourceData([]*models.NetCellularConfig{m.CellularCfg}))
+func SetNetworkWirelessResourceData(d *schema.ResourceData, m *models.Wireless) {
+	d.Set("cellular", SetNetworkCellularSubResourceData([]*models.Cellular{m.CellularCfg}))
 	d.Set("type", m.Type)
-	d.Set("wifi", SetNetworkWifiSubResourceData([]*models.NetWifiConfig{m.WifiCfg}))
+	d.Set("wifi", SetNetworkWifiSubResourceData([]*models.Wifi{m.WifiCfg}))
 }
 
-// Iterate through and update the NetWirelessConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
-func SetNetWirelessConfigSubResourceData(m []*models.NetWirelessConfig) (d []*map[string]interface{}) {
+func SetNetWirelessConfigSubResourceData(m []*models.Wireless) (d []*map[string]interface{}) {
 	for _, NetWirelessConfigModel := range m {
 		if NetWirelessConfigModel != nil {
 			properties := make(map[string]interface{})
-			properties["cellular"] = SetNetworkCellularSubResourceData([]*models.NetCellularConfig{NetWirelessConfigModel.CellularCfg})
+			properties["cellular"] = SetNetworkCellularSubResourceData([]*models.Cellular{NetWirelessConfigModel.CellularCfg})
 			properties["type"] = NetWirelessConfigModel.Type
-			properties["wifi"] = SetNetworkWifiSubResourceData([]*models.NetWifiConfig{NetWirelessConfigModel.WifiCfg})
+			properties["wifi"] = SetNetworkWifiSubResourceData([]*models.Wifi{NetWirelessConfigModel.WifiCfg})
 			d = append(d, &properties)
 		}
 	}
