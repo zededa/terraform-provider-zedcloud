@@ -46,18 +46,20 @@ func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 			diags = append(diags, diag.FromErr(err)...)
 			return diags
 		}
-		model.ManifestJSON = manifest
+		model.Manifest = manifest
 		log.Println("[WARN] note, diffs for manifest files are suppressed and cannot be considered by the terraform plan command!")
 	}
 
 	// the ac_kind depends on the app_type set in the manifest.
 	// this should be read-only and be computed in the backend but is not, so we have to compute it in the client.
-	acKind, err := getAcKind(model.ManifestJSON.AppType)
-	if err != nil {
-		diags = append(diags, diag.FromErr(err)...)
-		return diags
+	if model.Manifest != nil {
+		acKind, err := getAcKind(model.Manifest.AppType)
+		if err != nil {
+			diags = append(diags, diag.FromErr(err)...)
+			return diags
+		}
+		model.Manifest.AcKind = acKind
 	}
-	model.ManifestJSON.AcKind = acKind
 
 	params := config.CreateParams()
 	params.SetBody(model)
@@ -144,18 +146,18 @@ func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 			diags = append(diags, diag.FromErr(err)...)
 			return diags
 		}
-		model.ManifestJSON = manifest
+		model.Manifest = manifest
 		log.Println("[WARN] note, diffs for manifest files are suppressed and cannot be considered by the terraform plan command!")
 	}
 
 	// the ac_kind depends on the app_type set in the manifest.
 	// this should be read-only and be computed in the backend but is not, so we have to compute it in the client.
-	acKind, err := getAcKind(model.ManifestJSON.AppType)
+	acKind, err := getAcKind(model.Manifest.AppType)
 	if err != nil {
 		diags = append(diags, diag.FromErr(err)...)
 		return diags
 	}
-	model.ManifestJSON.AcKind = acKind
+	model.Manifest.AcKind = acKind
 
 	params := config.UpdateParams()
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")

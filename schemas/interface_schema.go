@@ -154,3 +154,85 @@ func GetInterfacePropertyFields() (t []string) {
 		"type",
 	}
 }
+
+func CompareInterfaceLists(a, b []*models.Interface) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	// is each element of the new list in the old list?
+	for _, newList := range b {
+		if newList == nil {
+			continue
+		}
+
+		found := false
+		for _, oldList := range a {
+			if oldList == nil {
+				continue
+			}
+			if oldList.Directattach != newList.Directattach {
+				continue
+			}
+			if oldList.Name != newList.Name {
+				continue
+			}
+			if oldList.Optional != newList.Optional {
+				continue
+			}
+			if oldList.Privateip != newList.Privateip {
+				continue
+			}
+			if oldList.Type != newList.Type {
+				continue
+			}
+
+			if !CompareACLList(oldList.Acls, newList.Acls) {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+
+	// is each element of the old list also in the new list?
+	for _, oldList := range a {
+		if oldList == nil {
+			continue
+		}
+
+		found := false
+		for _, newList := range b {
+			if newList == nil {
+				continue
+			}
+			if oldList.Directattach != newList.Directattach {
+				continue
+			}
+			if oldList.Name != newList.Name {
+				continue
+			}
+			if oldList.Optional != newList.Optional {
+				continue
+			}
+			if oldList.Privateip != newList.Privateip {
+				continue
+			}
+			if oldList.Type != newList.Type {
+				continue
+			}
+
+			if !CompareACLList(oldList.Acls, newList.Acls) {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
+}

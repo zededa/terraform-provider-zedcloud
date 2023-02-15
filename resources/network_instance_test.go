@@ -144,7 +144,7 @@ func testNetworkInstanceAttributes(t *testing.T, got, expected *models.NetworkIn
 			"DeviceID",
 			"ProjectID",
 		}
-		// API and YAML unmarshal might change order of list elements so we ignore them in tests
+		// API and YAML unmarshal might change order of list elements so we need to use a compare function
 		if !schemas.CompareDNSLists(got.DNSList, expected.DNSList) {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), cmp.Diff(got.DNSList, expected.DNSList))
 		}

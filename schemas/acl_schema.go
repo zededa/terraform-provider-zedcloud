@@ -91,14 +91,12 @@ func ACLModelFromMap(m map[string]interface{}) *models.ACL {
 	}
 }
 
-// Update the underlying ACL resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetACLResourceData(d *schema.ResourceData, m *models.ACL) {
 	d.Set("actions", SetACLActionSubResourceData(m.Actions))
 	d.Set("matches", SetMatchSubResourceData(m.Matches))
 	d.Set("name", m.Name)
 }
 
-// Iterate through and update the ACL resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetACLSubResourceData(m []*models.ACL) (d []*map[string]interface{}) {
 	for _, ACLModel := range m {
 		if ACLModel != nil {
@@ -112,14 +110,13 @@ func SetACLSubResourceData(m []*models.ACL) (d []*map[string]interface{}) {
 	return
 }
 
-// Schema mapping representing the ACL resource defined in the Terraform configuration
 func ACLSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"actions": {
 			Description: `Chain of actions to be taken on matching network traffic`,
 			Type:        schema.TypeList, //GoType: []*ACLAction
 			Elem: &schema.Resource{
-				Schema: ACLActionSchema(),
+				Schema: ACLAction(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -150,4 +147,66 @@ func GetACLPropertyFields() (t []string) {
 		"matches",
 		"name",
 	}
+}
+
+func CompareACLList(a, b []*models.ACL) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	// is each element of the new list in the old list?
+	for _, newList := range b {
+		if newList == nil {
+			continue
+		}
+
+		found := false
+		for _, oldList := range a {
+			if oldList == nil {
+				continue
+			}
+			if oldList.Name != newList.Name {
+				continue
+			}
+			if !CompareMatchList(oldList.Matches, newList.Matches) {
+				continue
+			}
+			if !CompareACLActionList(oldList.Actions, newList.Actions) {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+
+	// is each element of the old list also in the new list?
+	for _, oldList := range a {
+		if oldList == nil {
+			continue
+		}
+
+		found := false
+		for _, newList := range b {
+			if newList == nil {
+				continue
+			}
+			if oldList.Name != newList.Name {
+				continue
+			}
+			if !CompareMatchList(oldList.Matches, newList.Matches) {
+				continue
+			}
+			if !CompareACLActionList(oldList.Actions, newList.Actions) {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }

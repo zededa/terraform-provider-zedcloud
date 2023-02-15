@@ -3,7 +3,7 @@ description: ubuntu-all-ip
 drives: 1
 id: 5ff2ba22-827c-427f-92b9-93673569eeab
 isimported: false
-manifestjson:
+manifest:
     ackind: VMManifest
     acversion: 1.2.0
     apptype: APP_TYPE_VM

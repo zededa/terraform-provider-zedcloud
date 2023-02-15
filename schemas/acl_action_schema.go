@@ -110,8 +110,7 @@ func SetACLActionSubResourceData(m []*models.ACLAction) (d []*map[string]interfa
 	return
 }
 
-// Schema mapping representing the ACLAction resource defined in the Terraform configuration
-func ACLActionSchema() map[string]*schema.Schema {
+func ACLAction() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"drop": {
 			Description: `Drop the packet`,
@@ -181,4 +180,108 @@ func GetACLActionPropertyFields() (t []string) {
 		"portmap",
 		"portmapto",
 	}
+}
+
+func CompareACLActionList(a, b []*models.ACLAction) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	// is each element of the new list in the old list?
+	for _, newList := range b {
+		if newList == nil {
+			continue
+		}
+
+		found := false
+		for _, oldList := range a {
+			if oldList == nil {
+				continue
+			}
+			if oldList.Drop != newList.Drop {
+				continue
+			}
+			if oldList.Limit != newList.Limit {
+				continue
+			}
+			if oldList.LimitValue.Limitburst != newList.LimitValue.Limitburst {
+				continue
+			}
+			if oldList.LimitValue.Limitrate != newList.LimitValue.Limitrate {
+				continue
+			}
+			if oldList.LimitValue.Limitunit != newList.LimitValue.Limitunit {
+				continue
+			}
+			if oldList.Limitburst != newList.Limitburst {
+				continue
+			}
+			if oldList.Limitrate != newList.Limitrate {
+				continue
+			}
+			if oldList.Limitunit != newList.Limitunit {
+				continue
+			}
+			if oldList.Portmap != newList.Portmap {
+				continue
+			}
+			if oldList.Portmapto.AppPort != newList.Portmapto.AppPort {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+
+	// is each element of the old list also in the new list?
+	for _, oldList := range a {
+		if oldList == nil {
+			continue
+		}
+
+		found := false
+		for _, newList := range b {
+			if newList == nil {
+				continue
+			}
+			if oldList.Drop != newList.Drop {
+				continue
+			}
+			if oldList.Limit != newList.Limit {
+				continue
+			}
+			if oldList.LimitValue.Limitburst != newList.LimitValue.Limitburst {
+				continue
+			}
+			if oldList.LimitValue.Limitrate != newList.LimitValue.Limitrate {
+				continue
+			}
+			if oldList.LimitValue.Limitunit != newList.LimitValue.Limitunit {
+				continue
+			}
+			if oldList.Limitburst != newList.Limitburst {
+				continue
+			}
+			if oldList.Limitrate != newList.Limitrate {
+				continue
+			}
+			if oldList.Limitunit != newList.Limitunit {
+				continue
+			}
+			if oldList.Portmap != newList.Portmap {
+				continue
+			}
+			if oldList.Portmapto.AppPort != newList.Portmapto.AppPort {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }

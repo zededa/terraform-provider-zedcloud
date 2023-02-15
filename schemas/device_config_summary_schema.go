@@ -26,7 +26,7 @@ func DeviceConfigSummaryModel(d *schema.ResourceData) *models.DeviceConfigSummar
 	deploymentTag, _ := d.Get("deployment_tag").(string)
 	description, _ := d.Get("description").(string)
 	id, _ := d.Get("id").(string)
-	interfaces, _ := d.Get("interfaces").([]*models.SysInterface) // []*SysInterface
+	interfaces, _ := d.Get("interfaces").([]*models.SystemInterface) // []*SysInterface
 	modelID, _ := d.Get("model_id").(string)
 	name, _ := d.Get("name").(string)
 	projectID, _ := d.Get("project_id").(string)
@@ -72,7 +72,7 @@ func DeviceConfigSummaryModelFromMap(m map[string]interface{}) *models.DeviceCon
 	deploymentTag := m["deployment_tag"].(string)
 	description := m["description"].(string)
 	id := m["id"].(string)
-	interfaces := m["interfaces"].([]*models.SysInterface) // []*SysInterface
+	interfaces := m["interfaces"].([]*models.SystemInterface) // []*SysInterface
 	modelID := m["model_id"].(string)
 	name := m["name"].(string)
 	projectID := m["project_id"].(string)

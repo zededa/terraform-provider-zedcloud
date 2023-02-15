@@ -42,7 +42,7 @@ type Application struct {
 	IsImported bool `json:"isImported,omitempty"`
 
 	// user defined manifest in JSON format
-	ManifestJSON *VMManifest `json:"manifestJSON,omitempty"`
+	Manifest *VMManifest `json:"manifestJSON,omitempty"`
 
 	// user defined memory for bundle
 	Memory int64 `json:"memory,omitempty"`
@@ -151,12 +151,12 @@ func (m *Application) validateID(formats strfmt.Registry) error {
 }
 
 func (m *Application) validateManifestJSON(formats strfmt.Registry) error {
-	if swag.IsZero(m.ManifestJSON) { // not required
+	if swag.IsZero(m.Manifest) { // not required
 		return nil
 	}
 
-	if m.ManifestJSON != nil {
-		if err := m.ManifestJSON.Validate(formats); err != nil {
+	if m.Manifest != nil {
+		if err := m.Manifest.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("manifestJSON")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
@@ -327,8 +327,8 @@ func (m *Application) contextValidateID(ctx context.Context, formats strfmt.Regi
 
 func (m *Application) contextValidateManifestJSON(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.ManifestJSON != nil {
-		if err := m.ManifestJSON.ContextValidate(ctx, formats); err != nil {
+	if m.Manifest != nil {
+		if err := m.Manifest.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("manifestJSON")
 			} else if ce, ok := err.(*errors.CompositeError); ok {

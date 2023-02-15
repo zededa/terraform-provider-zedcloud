@@ -19,7 +19,7 @@ import (
 func NodeResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateNode,
-		ReadContext:   ReadNode,
+		ReadContext:   ReadNodeByName,
 		UpdateContext: UpdateNode,
 		DeleteContext: DeleteNode,
 		Schema:        zschema.Node(),
@@ -28,7 +28,7 @@ func NodeResource() *schema.Resource {
 
 func NodeDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: ReadNode,
+		ReadContext: ReadNodeByName,
 		Schema:      zschema.Node(),
 	}
 }
@@ -85,14 +85,14 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNode(ctx, d, m); err != nil {
+	if errs := ReadNodeByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
 	return diags
 }
 
-func ReadNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func ReadNodeByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	edgeNode, diags := readNode(ctx, d, m)
 	if diags.HasError() {
 		return diags
@@ -163,7 +163,7 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNode(ctx, d, m); err != nil {
+	if errs := ReadNodeByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 

@@ -87,7 +87,7 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 	generateSoftSerial, _ := d.Get("generate_soft_serial").(bool)
 	id, _ := d.Get("id").(string)
 	identity, _ := d.Get("identity").(strfmt.Base64)
-	var interfaces []*models.SysInterface // []*SysInterface
+	var interfaces []*models.SystemInterface // []*SysInterface
 	interfacesInterface, interfacesIsSet := d.GetOk("interfaces")
 	if interfacesIsSet {
 		var items []interface{}
@@ -292,7 +292,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 	generateSoftSerial := m["generate_soft_serial"].(bool)
 	id := m["id"].(string)
 	identity := m["identity"].(strfmt.Base64)
-	var interfaces []*models.SysInterface // []*SysInterface
+	var interfaces []*models.SystemInterface // []*SysInterface
 	interfacesInterface, interfacesIsSet := m["interfaces"]
 	if interfacesIsSet {
 		var items []interface{}
@@ -662,12 +662,13 @@ func Node() map[string]*schema.Schema {
 
 		"interfaces": {
 			Description: `System Interface set`,
-			Type:        schema.TypeSet, //GoType: []*SysInterface
+			Type:        schema.TypeList, //GoType: []*SysInterface
 			Elem: &schema.Resource{
 				Schema: SystemInterface(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional: true,
+			Optional:         true,
+			DiffSuppressFunc: diffSuppressSystemInterfaceListOrder("interfaces"),
 		},
 
 		"location": {

@@ -36,13 +36,6 @@ generatesoftserial: false
 id: ""
 identity: ""
 interfaces:
-    - cost: 0
-      intfusage: ADAPTER_USAGE_UNSPECIFIED
-      intfname: eth0
-      ipaddr: ""
-      macaddr: ""
-      netname: ""
-      tags: {}
     - cost: 255
       intfusage: ADAPTER_USAGE_MANAGEMENT
       intfname: defaultIPv4
@@ -52,6 +45,13 @@ interfaces:
       tags:
         system_interface_1_key: system_interface_1_value
         system_interface_2_key: system_interface_2_value
+    - cost: 0
+      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfname: eth0
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
 location: ""
 memory: 0
 modelid: 2f716b55-2639-486c-9a2f-55a2e94146a6

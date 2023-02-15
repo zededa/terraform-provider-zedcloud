@@ -1,11 +1,13 @@
 package schemas
 
 import (
+	"reflect"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
 
-func SystemInterfaceModel(d *schema.ResourceData) *models.SysInterface {
+func SystemInterfaceModel(d *schema.ResourceData) *models.SystemInterface {
 	costInt, _ := d.Get("cost").(int)
 	cost := int64(costInt)
 	var intfUsage *models.AdapterUsage // AdapterUsage
@@ -30,7 +32,7 @@ func SystemInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 		}
 	}
 
-	return &models.SysInterface{
+	return &models.SystemInterface{
 		Cost:      cost,
 		IntfUsage: intfUsage,
 		Intfname:  intfname,
@@ -41,7 +43,7 @@ func SystemInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	}
 }
 
-func SystemInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
+func SystemInterfaceModelFromMap(m map[string]interface{}) *models.SystemInterface {
 	cost := int64(m["cost"].(int))        // int64 false false false
 	intfUsage := m["intf_usage"].(string) // AdapterUsage
 	intfname := m["intfname"].(string)
@@ -59,7 +61,7 @@ func SystemInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface 
 			tags[k] = v.(string)
 		}
 	}
-	return &models.SysInterface{
+	return &models.SystemInterface{
 		Cost:      cost,
 		IntfUsage: models.NewAdapterUsage(models.AdapterUsage(intfUsage)),
 		Intfname:  intfname,
@@ -70,7 +72,7 @@ func SystemInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface 
 	}
 }
 
-func SetSysInterfaceResourceData(d *schema.ResourceData, m *models.SysInterface) {
+func SetSysInterfaceResourceData(d *schema.ResourceData, m *models.SystemInterface) {
 	d.Set("cost", m.Cost)
 	d.Set("intf_usage", m.IntfUsage)
 	d.Set("intfname", m.Intfname)
@@ -80,7 +82,7 @@ func SetSysInterfaceResourceData(d *schema.ResourceData, m *models.SysInterface)
 	d.Set("tags", m.Tags)
 }
 
-func SetSysInterfaceSubResourceData(m []*models.SysInterface) (d []*map[string]interface{}) {
+func SetSysInterfaceSubResourceData(m []*models.SystemInterface) (d []*map[string]interface{}) {
 	for _, SysInterfaceModel := range m {
 		if SysInterfaceModel != nil {
 			properties := make(map[string]interface{})
@@ -158,4 +160,90 @@ func GetSysInterfacePropertyFields() (t []string) {
 		"netname",
 		"tags",
 	}
+}
+
+func CompareSystemInterfaceList(a, b []*models.SystemInterface) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	// is each element of the new list in the old list?
+	for _, newList := range b {
+		if newList == nil {
+			continue
+		}
+
+		found := false
+		for _, oldList := range a {
+			if oldList == nil {
+				continue
+			}
+			if oldList.Cost != newList.Cost {
+				continue
+			}
+			if *oldList.IntfUsage != *newList.IntfUsage {
+				continue
+			}
+			if oldList.Intfname != newList.Intfname {
+				continue
+			}
+			if oldList.Ipaddr != newList.Ipaddr {
+				continue
+			}
+			if oldList.Macaddr != newList.Macaddr {
+				continue
+			}
+			if oldList.Netname != newList.Netname {
+				continue
+			}
+			if !reflect.DeepEqual(oldList.Tags, newList.Tags) {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+
+	// is each element of the old list also in the new list?
+	for _, oldList := range a {
+		if oldList == nil {
+			continue
+		}
+
+		found := false
+		for _, newList := range b {
+			if newList == nil {
+				continue
+			}
+			if oldList.Cost != newList.Cost {
+				continue
+			}
+			if *oldList.IntfUsage != *newList.IntfUsage {
+				continue
+			}
+			if oldList.Intfname != newList.Intfname {
+				continue
+			}
+			if oldList.Ipaddr != newList.Ipaddr {
+				continue
+			}
+			if oldList.Macaddr != newList.Macaddr {
+				continue
+			}
+			if oldList.Netname != newList.Netname {
+				continue
+			}
+			if !reflect.DeepEqual(oldList.Tags, newList.Tags) {
+				continue
+			}
+			found = true
+			break
+		}
+		if !found {
+			return false
+		}
+	}
+	return true
 }

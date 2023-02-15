@@ -73,7 +73,7 @@ func ApplicationModel(d *schema.ResourceData) *models.Application {
 		Description:        description,
 		ID:                 id,
 		IsImported:         isImported,
-		ManifestJSON:       manifestJSON,
+		Manifest:           manifestJSON,
 		Memory:             memory,
 		Name:               &name, // string true false false
 		Networks:           networks,
@@ -152,7 +152,7 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 		Description:        description,
 		ID:                 id,
 		IsImported:         isImported,
-		ManifestJSON:       manifestJSON,
+		Manifest:           manifestJSON,
 		Memory:             memory,
 		Name:               &name,
 		Networks:           networks,
@@ -172,7 +172,7 @@ func SetApplicationResourceData(d *schema.ResourceData, m *models.Application) {
 	d.Set("drives", m.Drives)
 	d.Set("id", m.ID)
 	d.Set("is_imported", m.IsImported)
-	d.Set("manifest", SetVMManifestSubResourceData([]*models.VMManifest{m.ManifestJSON}))
+	d.Set("manifest", SetVMManifestSubResourceData([]*models.VMManifest{m.Manifest}))
 	d.Set("memory", m.Memory)
 	d.Set("name", m.Name)
 	d.Set("networks", m.Networks)
@@ -194,7 +194,7 @@ func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]int
 			properties["drives"] = AppModel.Drives
 			properties["id"] = AppModel.ID
 			properties["is_imported"] = AppModel.IsImported
-			properties["manifest"] = SetVMManifestSubResourceData([]*models.VMManifest{AppModel.ManifestJSON})
+			properties["manifest"] = SetVMManifestSubResourceData([]*models.VMManifest{AppModel.Manifest})
 			properties["memory"] = AppModel.Memory
 			properties["name"] = AppModel.Name
 			properties["networks"] = AppModel.Networks
@@ -260,8 +260,8 @@ func Application() map[string]*schema.Schema {
 			},
 			Optional: true,
 			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
-				log.Println("[WARN] diffs for manifest files are suppressed!")
 				if _, ok := d.GetOk("manifest_file"); ok {
+					log.Println("[WARN] diffs for manifest files are suppressed!")
 					return true
 				}
 				return false
