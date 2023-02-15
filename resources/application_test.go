@@ -123,9 +123,6 @@ func testApplicationAttributes(t *testing.T, got, expected *models.Application) 
 			"ID",
 			"Revision",
 		}
-		// if expected.Proxy != nil && expected.Proxy.Proxies != nil {
-		// 	ignoredFields = append(ignoredFields, "Proxy.Proxies")
-		// }
 		opts := cmpopts.IgnoreFields(models.Application{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)

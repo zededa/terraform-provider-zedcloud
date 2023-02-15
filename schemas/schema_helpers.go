@@ -110,6 +110,72 @@ func diffSuppressProxyListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 	}
 }
 
+func diffSuppressSystemInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		if oldData == nil {
+			return false
+		}
+		if newData == nil {
+			return false
+		}
+
+		o := oldData.([]interface{})
+		n := newData.([]interface{})
+		if len(o) != len(n) {
+			return false
+		}
+
+		oldMapList := make([]*models.SystemInterface, len(o))
+		for i, m := range o {
+			oldMapList[i] = SystemInterfaceModelFromMap(m.(map[string]interface{}))
+		}
+		newMapList := make([]*models.SystemInterface, len(o))
+		for i, m := range o {
+			newMapList[i] = SystemInterfaceModelFromMap(m.(map[string]interface{}))
+		}
+
+		return CompareSystemInterfaceList(oldMapList, newMapList)
+	}
+}
+
+func diffSuppressInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		if oldData == nil {
+			return false
+		}
+		if newData == nil {
+			return false
+		}
+
+		o := oldData.([]interface{})
+		n := newData.([]interface{})
+		if len(o) != len(n) {
+			return false
+		}
+
+		oldMapList := make([]*models.Interface, len(o))
+		for i, m := range o {
+			oldMapList[i] = InterfaceModelFromMap(m.(map[string]interface{}))
+		}
+		newMapList := make([]*models.Interface, len(o))
+		for i, m := range o {
+			newMapList[i] = InterfaceModelFromMap(m.(map[string]interface{}))
+		}
+
+		return CompareInterfaceLists(oldMapList, newMapList)
+	}
+}
+
 // Equal tells whether a and b contain the same elements.
 // A nil argument is equivalent to an empty slice.
 func Equal(a, b []string) bool {

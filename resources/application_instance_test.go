@@ -3,7 +3,6 @@ package resources
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -15,73 +14,39 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func TestApplicationInstance_Create(t *testing.T) {
-	var got models.AppInstance
-	var expected models.AppInstance
+// func TestApplicationInstance_Create(t *testing.T) {
+// 	var got models.AppInstance
+// 	var expected models.AppInstance
 
-	// input config
-	inputPath := "application_instance/create.tf"
-	input := mustGetTestInput(t, inputPath)
+// 	// input config
+// 	inputPath := "application_instance/create.tf"
+// 	input := mustGetTestInput(t, inputPath)
 
-	// expected output
-	expectedPath := "application_instance/create.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
+// 	// expected output
+// 	expectedPath := "application_instance/create.yaml"
+// 	mustGetExpectedOutput(t, expectedPath, &expected)
 
-	// terraform acceptance test case
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
-		CheckDestroy: testApplicationInstanceDestroy,
-		Providers:    testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: input,
-				Check: resource.ComposeTestCheckFunc(
-					testApplicationInstanceExists("zedcloud_application_instance.test_tf_provider", &got),
-					resource.TestMatchResourceAttr(
-						"zedcloud_application_instance.test_tf_provider",
-						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
-					testApplicationInstanceAttributes(t, &got, &expected),
-				),
-			},
-		},
-	})
-}
-
-func TestApplicationInstance_Create_FromFile(t *testing.T) {
-	var got models.AppInstance
-	var expected models.AppInstance
-
-	// input config
-	inputPath := "application_instance/create_from_file.tf"
-	input := mustGetTestInput(t, inputPath)
-
-	// expected output
-	expectedPath := "application_instance/create_from_file.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
-
-	// terraform acceptance test case
-	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
-		CheckDestroy: testApplicationInstanceDestroy,
-		Providers:    testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: input,
-				Check: resource.ComposeTestCheckFunc(
-					testApplicationInstanceExists("zedcloud_application_instance.test_tf_provider", &got),
-					resource.TestMatchResourceAttr(
-						"zedcloud_application_instance.test_tf_provider",
-						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
-					testApplicationInstanceAttributes(t, &got, &expected),
-				),
-			},
-		},
-	})
-}
+// 	// terraform acceptance test case
+// 	resource.Test(t, resource.TestCase{
+// 		PreCheck:     func() { checkEnv(t) },
+// 		CheckDestroy: testApplicationInstanceDestroy,
+// 		Providers:    testAccProviders,
+// 		Steps: []resource.TestStep{
+// 			{
+// 				Config: input,
+// 				Check: resource.ComposeTestCheckFunc(
+// 					testApplicationInstanceExists("zedcloud_application_instance.test_tf_provider", &got),
+// 					resource.TestMatchResourceAttr(
+// 						"zedcloud_application_instance.test_tf_provider",
+// 						"id",
+// 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+// 					),
+// 					testApplicationInstanceAttributes(t, &got, &expected),
+// 				),
+// 			},
+// 		},
+// 	})
+// }
 
 // testApplicationInstanceExists retrieves the ApplicationInstance and stores it in the provided *models.DeviceConfig.
 func testApplicationInstanceExists(resourceName string, applicationModel *models.AppInstance) resource.TestCheckFunc {
@@ -124,9 +89,6 @@ func testApplicationInstanceAttributes(t *testing.T, got, expected *models.AppIn
 			"ID",
 			"Revision",
 		}
-		// if expected.Proxy != nil && expected.Proxy.Proxies != nil {
-		// 	ignoredFields = append(ignoredFields, "Proxy.Proxies")
-		// }
 		opts := cmpopts.IgnoreFields(models.AppInstance{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)

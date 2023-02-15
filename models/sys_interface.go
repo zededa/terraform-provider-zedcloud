@@ -14,12 +14,12 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// SysInterface sysInterface payload detail
+// SystemInterface sysInterface payload detail
 //
 // system interfaces that needs to be used by dom0
 //
 // swagger:model sysInterface
-type SysInterface struct {
+type SystemInterface struct {
 
 	// cost of using this interface. Default is 0.
 	// Maximum: 255
@@ -45,7 +45,7 @@ type SysInterface struct {
 }
 
 // Validate validates this sys interface
-func (m *SysInterface) Validate(formats strfmt.Registry) error {
+func (m *SystemInterface) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCost(formats); err != nil {
@@ -62,7 +62,7 @@ func (m *SysInterface) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SysInterface) validateCost(formats strfmt.Registry) error {
+func (m *SystemInterface) validateCost(formats strfmt.Registry) error {
 	if swag.IsZero(m.Cost) { // not required
 		return nil
 	}
@@ -74,7 +74,7 @@ func (m *SysInterface) validateCost(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SysInterface) validateIntfUsage(formats strfmt.Registry) error {
+func (m *SystemInterface) validateIntfUsage(formats strfmt.Registry) error {
 	if swag.IsZero(m.IntfUsage) { // not required
 		return nil
 	}
@@ -94,7 +94,7 @@ func (m *SysInterface) validateIntfUsage(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this sys interface based on the context it is used
-func (m *SysInterface) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *SystemInterface) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateIntfUsage(ctx, formats); err != nil {
@@ -107,7 +107,7 @@ func (m *SysInterface) ContextValidate(ctx context.Context, formats strfmt.Regis
 	return nil
 }
 
-func (m *SysInterface) contextValidateIntfUsage(ctx context.Context, formats strfmt.Registry) error {
+func (m *SystemInterface) contextValidateIntfUsage(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IntfUsage != nil {
 		if err := m.IntfUsage.ContextValidate(ctx, formats); err != nil {
@@ -124,7 +124,7 @@ func (m *SysInterface) contextValidateIntfUsage(ctx context.Context, formats str
 }
 
 // MarshalBinary interface implementation
-func (m *SysInterface) MarshalBinary() ([]byte, error) {
+func (m *SystemInterface) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -132,8 +132,8 @@ func (m *SysInterface) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *SysInterface) UnmarshalBinary(b []byte) error {
-	var res SysInterface
+func (m *SystemInterface) UnmarshalBinary(b []byte) error {
+	var res SystemInterface
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

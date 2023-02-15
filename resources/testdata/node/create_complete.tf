@@ -25,10 +25,6 @@ resource "zedcloud_edgenode" "complete" {
     #    	version = "1.0"
     # }
 
-    interfaces {
-        intfname = "eth0"
-        intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
-    }
 		interfaces {
     		cost = 255
     		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
@@ -39,6 +35,10 @@ resource "zedcloud_edgenode" "complete" {
           "system_interface_1_key" = "system_interface_1_value"
           "system_interface_2_key" = "system_interface_2_value"
         }
+    }
+    interfaces {
+        intfname = "eth0"
+        intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
     }
 
     config_item {

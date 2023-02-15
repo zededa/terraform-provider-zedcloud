@@ -14,9 +14,10 @@ import (
 	api_client "github.com/zededa/terraform-provider/client"
 	config "github.com/zededa/terraform-provider/client/edge_node_configuration"
 	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider/schemas"
 )
 
-func TestEdgeNode_Create_RequiredAttributesOnly(t *testing.T) {
+func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
 	var got models.Node
 
 	// input config
@@ -26,13 +27,13 @@ func TestEdgeNode_Create_RequiredAttributesOnly(t *testing.T) {
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { checkEnv(t) },
-		CheckDestroy: testEdgeNodeDestroy,
+		CheckDestroy: testNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: input,
 				Check: resource.ComposeTestCheckFunc(
-					testEdgeNodeExists("zedcloud_edgenode.required_only", &got),
+					testNodeExists("zedcloud_edgenode.required_only", &got),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "required_only"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "title", "required_only-title"),
@@ -47,7 +48,7 @@ func TestEdgeNode_Create_RequiredAttributesOnly(t *testing.T) {
 	})
 }
 
-func TestEdgeNode_Create_AllAttributes(t *testing.T) {
+func TestNode_Create_AllAttributes(t *testing.T) {
 	var got models.Node
 	var expected models.Node
 
@@ -62,13 +63,13 @@ func TestEdgeNode_Create_AllAttributes(t *testing.T) {
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { checkEnv(t) },
-		CheckDestroy: testEdgeNodeDestroy,
+		CheckDestroy: testNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: input,
 				Check: resource.ComposeTestCheckFunc(
-					testEdgeNodeExists("zedcloud_edgenode.complete", &got),
+					testNodeExists("zedcloud_edgenode.complete", &got),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "name", "complete"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "title", "complete-title"),
@@ -77,7 +78,7 @@ func TestEdgeNode_Create_AllAttributes(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					testEdgeNodeAttributes(t, &got, &expected),
+					testNodeAttributes(t, &got, &expected),
 				),
 			},
 		},
@@ -87,33 +88,33 @@ func TestEdgeNode_Create_AllAttributes(t *testing.T) {
 	// create and update fields with custom logic and separate api requests
 }
 
-// testEdgeNodeExists retrieves the EdgeNode and stores it in the provided *models.DeviceConfig.
-func testEdgeNodeExists(resourceName string, edgeNodeModel *models.Node) resource.TestCheckFunc {
+// testNodeExists retrieves the Node and stores it in the provided *models.DeviceConfig.
+func testNodeExists(resourceName string, edgeNodeModel *models.Node) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
 		rs, ok := s.RootModule().Resources[resourceName]
 		if !ok {
-			return fmt.Errorf("EdgeNode not found: %s", resourceName)
+			return fmt.Errorf("Node not found: %s", resourceName)
 		}
 
 		if rs.Primary.ID == "" {
-			return fmt.Errorf("EdgeNode ID is not set")
+			return fmt.Errorf("Node ID is not set")
 		}
 
 		// retrieve the client established in Provider configuration
 		client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
-		// retrieve the EdgeNode by referencing its state ID for API lookup
+		// retrieve the Node by referencing its state ID for API lookup
 		params := config.GetByIDParams()
 		params.ID = rs.Primary.ID
 		response, err := client.Node.GetByID(params, nil)
 		if err != nil {
-			return fmt.Errorf("could not fetch EdgeNode (%s): %w", rs.Primary.ID, err)
+			return fmt.Errorf("could not fetch Node (%s): %w", rs.Primary.ID, err)
 		}
 
 		edgeNode := response.GetPayload()
 		if edgeNode == nil {
-			return errors.New("could not get response payload in EdgeNode existence test: deviceConfig is nil")
+			return errors.New("could not get response payload in Node existence test: deviceConfig is nil")
 		}
 
 		*edgeNodeModel = *edgeNode
@@ -121,8 +122,8 @@ func testEdgeNodeExists(resourceName string, edgeNodeModel *models.Node) resourc
 	}
 }
 
-// testEdgeNodeAttributes verifies attributes are set correctly by Terraform
-func testEdgeNodeAttributes(t *testing.T, got, expected *models.Node) resource.TestCheckFunc {
+// testNodeAttributes verifies attributes are set correctly by Terraform
+func testNodeAttributes(t *testing.T, got, expected *models.Node) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		if keyGot, keyExpect := strings.Split(got.Obkey, ":")[0], strings.Split(expected.Obkey, ":")[0]; keyGot != keyExpect {
 			return fmt.Errorf("expect Obkey %s but got %+v", keyExpect, keyGot)
@@ -137,7 +138,12 @@ func testEdgeNodeAttributes(t *testing.T, got, expected *models.Node) resource.T
 			"Onboarding",
 			"Utype",
 			"Obkey",
+			"Interfaces",
 		)
+		// API and YAML unmarshal might change order of list elements so we need to ignore order when comparing
+		if !schemas.CompareSystemInterfaceList(got.Interfaces, expected.Interfaces) {
+			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), cmp.Diff(got.Interfaces, expected.Interfaces))
+		}
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
@@ -145,32 +151,32 @@ func testEdgeNodeAttributes(t *testing.T, got, expected *models.Node) resource.T
 	}
 }
 
-// testEdgeNodeDestroy verifies the EdgeNode has been destroyed.
-func testEdgeNodeDestroy(s *terraform.State) error {
+// testNodeDestroy verifies the Node has been destroyed.
+func testNodeDestroy(s *terraform.State) error {
 	// retrieve the client established in Provider configuration
 	client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
-	// loop through the resources in state, verifying each EdgeNode is destroyed
+	// loop through the resources in state, verifying each Node is destroyed
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "zedcloud_edgenode" {
 			continue
 		}
 
-		// retrieve the EdgeNode by referencing it's state ID for API lookup
+		// retrieve the Node by referencing it's state ID for API lookup
 		params := config.GetByIDParams()
 		params.ID = rs.Primary.ID
 		response, err := client.Node.GetByID(params, nil)
 		if err == nil {
 			if deviceConfig := response.GetPayload(); deviceConfig != nil && deviceConfig.ID == rs.Primary.ID {
-				return fmt.Errorf("destroy failed, EdgeNode (%s) still exists", deviceConfig.ID)
+				return fmt.Errorf("destroy failed, Node (%s) still exists", deviceConfig.ID)
 			}
 			return nil
 		}
 
-		// if the error is equivalent to 404 not found, the EdgeNode is destroyed
+		// if the error is equivalent to 404 not found, the Node is destroyed
 		_, ok := err.(*config.EdgeNodeNotFound)
 		if !ok {
-			return fmt.Errorf("destroy failed, expect status code 404 for EdgeNode (%s)", params.ID)
+			return fmt.Errorf("destroy failed, expect status code 404 for Node (%s)", params.ID)
 		}
 	}
 	return nil
