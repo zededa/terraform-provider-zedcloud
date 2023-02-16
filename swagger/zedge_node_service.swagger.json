@@ -1332,7 +1332,215 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DeviceConfig"
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "user specified device name"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "user specified title"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "user specified description"
+                                },
+                                "revision": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "Object revision details"
+                                },
+                                "tags": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                                    "maxLength": 32,
+                                    "pattern": "^[^<%&?/\\>]+$"
+                                },
+                                "utype": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/ModelArchType",
+                                    "description": "device model arch type"
+                                },
+                                "projectId": {
+                                    "type": "string",
+                                    "description": "project name"
+                                },
+                                "serialno": {
+                                    "type": "string",
+                                    "description": "Device serial number"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "description": "Device location: deprecated"
+                                },
+                                "cpu": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "CPU (configured values)"
+                                },
+                                "thread": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Threads"
+                                },
+                                "memory": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device memory in MBs"
+                                },
+                                "storage": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device storage in GBs"
+                                },
+                                "onboarding": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceCerts",
+                                    "description": "Device level certificates used while onboarding"
+                                },
+                                "identity": {
+                                    "type": "string",
+                                    "format": "byte",
+                                    "description": "Device identity"
+                                },
+                                "obkey": {
+                                    "type": "string",
+                                    "description": "Object key"
+                                },
+                                "token": {
+                                    "type": "string",
+                                    "description": "Single use token"
+                                },
+                                "clientIp": {
+                                    "type": "string",
+                                    "description": "Client IP"
+                                },
+                                "dlisp": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceLisp",
+                                    "description": "device Lisp"
+                                },
+                                "clusterID": {
+                                    "type": "string",
+                                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "adminState": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/AdminState",
+                                    "description": "administrative state of device"
+                                },
+                                "resetCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "devicereset counter"
+                                },
+                                "resetTime": {
+                                    "type": "string",
+                                    "description": "device reset time"
+                                },
+                                "baseImage": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BaseOSImage"
+                                    },
+                                    "description": "base images"
+                                },
+                                "modelId": {
+                                    "type": "string",
+                                    "description": "device model"
+                                },
+                                "configItem": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EDConfigItem"
+                                    },
+                                    "description": "ED configurations"
+                                },
+                                "deprecated": {
+                                    "type": "string",
+                                    "description": "deprecated field"
+                                },
+                                "interfaces": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/sysInterface"
+                                    },
+                                    "description": "System Interface list"
+                                },
+                                "devLocation": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/GeoLocation",
+                                    "description": "User specified geo location"
+                                },
+                                "sitePictures": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Site captured pictures"
+                                },
+                                "assetId": {
+                                    "type": "string",
+                                    "description": "Device asset ID"
+                                },
+                                "baseOsRetryCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "device baseos retry counter"
+                                },
+                                "baseOsRetryTime": {
+                                    "type": "string",
+                                    "description": "device baseos retry time"
+                                },
+                                "debugKnob": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DebugKnobDetail",
+                                    "description": "debug knob details for the device"
+                                },
+                                "defaultNetInst": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/NetInstConfig",
+                                    "description": "default network instance details"
+                                },
+                                "preparePowerOffCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "prepare poweroff counter"
+                                },
+                                "preparePowerOffTime": {
+                                    "type": "string",
+                                    "description": "prepare poweroff time"
+                                },
+                                "edgeviewconfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeviewCfg",
+                                    "description": "edgeview configuration for device"
+                                },
+                                "generateSoftSerial": {
+                                    "type": "boolean",
+                                    "description": "indicates whether a soft serial should be generated; it will work ONLY when device is created"
+                                },
+                                "deploymentTag": {
+                                    "type": "string",
+                                    "description": "user defined tag for the device, which is used while deploying policies."
+                                }
+                            },
+                            "description": "Device Configuration request paylod holds the device properties",
+                            "title": "Device Configuration payload detail",
+                            "required": [
+                                "name",
+                                "title",
+                                "projectId",
+                                "modelId"
+                            ]
                         }
                     },
                     {
@@ -4734,6 +4942,276 @@
                 }
             }
         },
+        "/v1/pcrtemplate/id/{id}": {
+            "put": {
+                "summary": "Update pcr template",
+                "description": "Update a pcr template record. The usual pattern to update a pcr template record is to retrieve the record and update with the modified values in a new body to update the pcr template record.",
+                "operationId": "HardwareModel_UpdatePCRTemplate",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the PCR template. If not set in POST / PUT API calls, this will be treated as a new entry and a unique System Generated ID assigned.",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "eveVersion": {
+                                    "type": "string",
+                                    "description": "EVE version related to the PCR template"
+                                },
+                                "firmwareVersion": {
+                                    "type": "string",
+                                    "description": "Firmware version related to the PCR template. If user doesn't set it, it will be set to '*'"
+                                },
+                                "PCRValues": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/PCRValue"
+                                    },
+                                    "description": "List of PCR values for the PCR template"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "Name of the PCR template. The name is Unique among PCR templates for that System Model. If it is not specified, a system-generated name will be assigned.",
+                                    "maxLength": 256
+                                }
+                            },
+                            "description": "PCR template data for the specified eve version and firmware version",
+                            "title": "PCR template",
+                            "required": [
+                                "eveVersion",
+                                "PCRValues"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "HardwareModel"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
+        "/v1/pcrtemplates/id/{id}": {
+            "get": {
+                "summary": "Query pcr template",
+                "description": "Query pcr template by id. ",
+                "operationId": "HardwareModel_GetPCRTemplateById",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PCRTemplatesInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the pcr template",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "modelId",
+                        "description": "Device model identifier",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "HardwareModel"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            },
+            "delete": {
+                "summary": "Delete pcr template",
+                "description": "Delete an pcr template record.",
+                "operationId": "HardwareModel_DeleteEdgeNode",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the pcr template",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "modelId",
+                        "description": "Device model identifier",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "HardwareModel"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
         "/v1/projects": {
             "get": {
                 "summary": "Query resource groups",
@@ -7203,6 +7681,401 @@
                                 "originType"
                             ]
                         }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "HardwareModel"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
+        "/v1/sysmodels/id/{id}/pcrtemplates": {
+            "get": {
+                "summary": "Query pcr templates",
+                "description": "Query pcr template records. ",
+                "operationId": "HardwareModel_GetPCRTemplates",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PCRTemplatesInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the model.",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "description": "user defined model name",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "title",
+                        "description": "User defined title of the model. Title can be changed at any time.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "brandId",
+                        "description": "System defined universally unique Id of the brand.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "description",
+                        "description": "Detailed description of the model.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "state",
+                        "description": "SysModel State which denotes the status of the model\n\n - SYS_MODEL_STATE_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - SYS_MODEL_STATE_ARCHIVE: Archived  sysModel State\n - SYS_MODEL_STATE_ACTIVE: Active sysModel state",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "SYS_MODEL_STATE_UNSPECIFIED",
+                            "SYS_MODEL_STATE_ARCHIVE",
+                            "SYS_MODEL_STATE_ACTIVE"
+                        ],
+                        "default": "SYS_MODEL_STATE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "revision.prev",
+                        "description": "Previous",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.curr",
+                        "description": "Current Database version of the record",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.createdBy",
+                        "description": "User data: Created By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "revision.updatedBy",
+                        "description": "User data: Updated By",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "type",
+                        "description": "Defines the Architecture type of the model",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "UNSPECIFIED",
+                            "UNDEFINED",
+                            "AMD64",
+                            "ARM64"
+                        ],
+                        "default": "UNSPECIFIED"
+                    },
+                    {
+                        "name": "productStatus",
+                        "description": "Product status",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "productURL",
+                        "description": "Product URL",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "parentDetail.idOfParentObject",
+                        "description": "system defined unique id of parent object",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "parentDetail.versionOfParentObject",
+                        "description": "version of object present in parent",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parentDetail.updateAvailable",
+                        "description": "Update required flag",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "parentDetail.referenceExists",
+                        "description": "Relation with child and parent object exists or not",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "originType",
+                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "ORIGIN_UNSPECIFIED",
+                            "ORIGIN_IMPORTED",
+                            "ORIGIN_LOCAL",
+                            "ORIGIN_GLOBAL"
+                        ],
+                        "default": "ORIGIN_UNSPECIFIED"
+                    },
+                    {
+                        "name": "isImported",
+                        "description": "Flag to represent whether sysModel is imported",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "HardwareModel"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
+        "/v1/sysmodels/id/{modelId}/pcrtemplates": {
+            "post": {
+                "summary": "Create pcr templates",
+                "description": "Create a list of pcr templates.",
+                "operationId": "HardwareModel_CreatePCRTemplates",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "modelId",
+                        "description": "device model identifier",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "templates": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/PCRTemplate"
+                                    },
+                                    "description": "List of templates"
+                                }
+                            },
+                            "description": "Request that contains a model id and pcr templates, which can be associated with the model. ",
+                            "title": "PCR templates request "
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "HardwareModel"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
+        "/v1/sysmodels/id/{modelId}/pcrtemplates/name/{name}": {
+            "get": {
+                "summary": "Query pcr template",
+                "description": "Query pcr template by name. ",
+                "operationId": "HardwareModel_GetPCRTemplateByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/PCRTemplatesInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "modelId",
+                        "description": "Device model identifier",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "description": "User defined name of the pcr template, unique across a model ",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
                     },
                     {
                         "name": "X-Request-Id",
@@ -11490,7 +12363,7 @@
                     "description": "Current Database version of the record"
                 },
                 "createdAt": {
-                    "type": "string",
+                    "type": "object",
                     "format": "date-time",
                     "description": "The time, in milliseconds since the epoch, when the record was created."
                 },
@@ -11499,7 +12372,7 @@
                     "description": "User data: Created By"
                 },
                 "updatedAt": {
-                    "type": "string",
+                    "type": "object",
                     "format": "date-time",
                     "description": "The time, in milliseconds since the epoch, when the record was last updated."
                 },
@@ -11668,6 +12541,24 @@
                 "eveVersion",
                 "PCRValues"
             ]
+        },
+        "PCRTemplatesInfo": {
+            "type": "object",
+            "properties": {
+                "templates": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PCRTemplate"
+                    },
+                    "description": "List of templates"
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Responded page details of filtered records"
+                }
+            },
+            "description": "List of PCR templates associated with some System Model. ",
+            "title": "PCR template list info"
         },
         "PCRType": {
             "type": "string",

@@ -29,7 +29,8 @@ func VolumeInstanceResource() *schema.Resource {
 
 func VolumeInstanceDataSource() *schema.Resource {
 	return &schema.Resource{
-		Schema: zschema.VolumeInstance(),
+		ReadContext: ReadVolumeInstanceByName,
+		Schema:      zschema.VolumeInstance(),
 	}
 }
 

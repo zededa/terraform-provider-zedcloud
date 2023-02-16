@@ -661,7 +661,7 @@ func Node() map[string]*schema.Schema {
 		},
 
 		"interfaces": {
-			Description: `System Interface set`,
+			Description: `System Interface list`,
 			Type:        schema.TypeList, //GoType: []*SysInterface
 			Elem: &schema.Resource{
 				Schema: SystemInterface(),

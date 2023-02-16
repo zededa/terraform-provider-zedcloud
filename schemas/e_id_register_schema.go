@@ -128,21 +128,19 @@ func EIDRegisterSchema() map[string]*schema.Schema {
 		"app_cert": {
 			Description: `app certificate`,
 			Type:        schema.TypeString,
-			Required:    true,
-			Sensitive:   true,
+			Computed:    true,
 		},
 
 		"app_private_key": {
 			Description: `App private key`,
 			Type:        schema.TypeString,
-			Required:    true,
-			Sensitive:   true,
+			Computed:    true,
 		},
 
 		"app_public_key": {
 			Description: `App public key`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Computed:    true,
 		},
 
 		"display_name": {

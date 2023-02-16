@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -166,8 +165,6 @@ func testNetworkInstanceDestroy(s *terraform.State) error {
 		if rs.Type != "zedcloud_network_instance" {
 			continue
 		}
-
-		spew.Dump(rs)
 
 		// retrieve the Network by referencing it's state ID for API lookup
 		params := config.GetByIDParams()

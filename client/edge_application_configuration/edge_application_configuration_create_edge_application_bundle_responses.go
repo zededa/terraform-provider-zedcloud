@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
@@ -394,11 +395,11 @@ func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleConflict) Code()
 }
 
 func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleConflict) Error() string {
-	return fmt.Sprintf("[POST /v1/apps][%d] edgeApplicationConfigurationCreateEdgeApplicationBundleConflict  %+v", 409, o.Payload)
+	return fmt.Sprintf("[POST /v1/apps][%d] CreateEdgeApplicationConflict  %+v", 409, spew.Sdump(o.Payload))
 }
 
 func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleConflict) String() string {
-	return fmt.Sprintf("[POST /v1/apps][%d] edgeApplicationConfigurationCreateEdgeApplicationBundleConflict  %+v", 409, o.Payload)
+	return fmt.Sprintf("[POST /v1/apps][%d] CreateEdgeApplicationConflict  %+v", 409, spew.Sdump(o.Payload))
 }
 
 func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleConflict) GetPayload() *models.ZsrvResponse {

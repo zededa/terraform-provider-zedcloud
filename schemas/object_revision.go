@@ -16,12 +16,12 @@ func ObjectRevisionModel(d *schema.ResourceData) *models.ObjectRevision {
 	updatedAt, _ := d.Get("updated_at").(strfmt.DateTime)
 	updatedBy, _ := d.Get("updated_by").(string)
 	return &models.ObjectRevision{
-		CreatedAt: &createdAt, // strfmt.DateTime true false false
-		CreatedBy: &createdBy, // string true false false
-		Curr:      &curr,      // string true false false
+		CreatedAt: &createdAt,
+		CreatedBy: &createdBy,
+		Curr:      &curr,
 		Prev:      prev,
-		UpdatedAt: &updatedAt, // strfmt.DateTime true false false
-		UpdatedBy: &updatedBy, // string true false false
+		UpdatedAt: &updatedAt,
+		UpdatedBy: &updatedBy,
 	}
 }
 
@@ -52,7 +52,6 @@ func ObjectRevisionModelFromMap(m map[string]interface{}) *models.ObjectRevision
 	}
 }
 
-// Update the underlying ObjectRevision resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetObjectRevisionResourceData(d *schema.ResourceData, m *models.ObjectRevision) {
 	d.Set("created_at", m.CreatedAt)
 	d.Set("created_by", m.CreatedBy)

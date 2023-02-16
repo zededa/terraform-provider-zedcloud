@@ -109,6 +109,7 @@ func GetApplicationInstanceByName(ctx context.Context, d *schema.ResourceData, m
 	d.SetId(appInstance.ID)
 
 	return diags
+
 }
 
 func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

@@ -203,14 +203,16 @@ func CompareACLActionList(a, b []*models.ACLAction) bool {
 			if oldList.Limit != newList.Limit {
 				continue
 			}
-			if oldList.LimitValue.Limitburst != newList.LimitValue.Limitburst {
-				continue
-			}
-			if oldList.LimitValue.Limitrate != newList.LimitValue.Limitrate {
-				continue
-			}
-			if oldList.LimitValue.Limitunit != newList.LimitValue.Limitunit {
-				continue
+			if oldList.LimitValue != nil && newList.LimitValue != nil {
+				if oldList.LimitValue.Limitburst != newList.LimitValue.Limitburst {
+					continue
+				}
+				if oldList.LimitValue.Limitrate != newList.LimitValue.Limitrate {
+					continue
+				}
+				if oldList.LimitValue.Limitunit != newList.LimitValue.Limitunit {
+					continue
+				}
 			}
 			if oldList.Limitburst != newList.Limitburst {
 				continue
@@ -224,8 +226,10 @@ func CompareACLActionList(a, b []*models.ACLAction) bool {
 			if oldList.Portmap != newList.Portmap {
 				continue
 			}
-			if oldList.Portmapto.AppPort != newList.Portmapto.AppPort {
-				continue
+			if oldList.Portmapto != nil && newList.Portmapto != nil {
+				if oldList.Portmapto.AppPort != newList.Portmapto.AppPort {
+					continue
+				}
 			}
 			found = true
 			break
@@ -252,14 +256,16 @@ func CompareACLActionList(a, b []*models.ACLAction) bool {
 			if oldList.Limit != newList.Limit {
 				continue
 			}
-			if oldList.LimitValue.Limitburst != newList.LimitValue.Limitburst {
-				continue
-			}
-			if oldList.LimitValue.Limitrate != newList.LimitValue.Limitrate {
-				continue
-			}
-			if oldList.LimitValue.Limitunit != newList.LimitValue.Limitunit {
-				continue
+			if oldList.LimitValue != nil && newList.LimitValue != nil {
+				if oldList.LimitValue.Limitburst != newList.LimitValue.Limitburst {
+					continue
+				}
+				if oldList.LimitValue.Limitrate != newList.LimitValue.Limitrate {
+					continue
+				}
+				if oldList.LimitValue.Limitunit != newList.LimitValue.Limitunit {
+					continue
+				}
 			}
 			if oldList.Limitburst != newList.Limitburst {
 				continue
@@ -273,8 +279,10 @@ func CompareACLActionList(a, b []*models.ACLAction) bool {
 			if oldList.Portmap != newList.Portmap {
 				continue
 			}
-			if oldList.Portmapto.AppPort != newList.Portmapto.AppPort {
-				continue
+			if oldList.Portmapto != nil && newList.Portmapto != nil {
+				if oldList.Portmapto.AppPort != newList.Portmapto.AppPort {
+					continue
+				}
 			}
 			found = true
 			break

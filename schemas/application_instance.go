@@ -507,7 +507,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"bundleversion": {
 			Description: `version of bundle app is referring to`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"cluster_id": {
@@ -542,7 +542,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"deployment_type": {
 			Description: `type of deployment for the app, eg: azure, k3s, standalone`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"description": {
@@ -591,7 +591,8 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: AppInterfaceSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional: true,
+			Optional:         true,
+			DiffSuppressFunc: diffSuppressInterfaceListOrder("interfaces"),
 		},
 
 		"is_secret_updated": {
@@ -638,6 +639,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: ZedCloudOpsCmdSchema(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"refresh": {
@@ -647,6 +649,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: ZedCloudOpsCmdSchema(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"remote_console": {
@@ -662,6 +665,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: ZedCloudOpsCmdSchema(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"revision": {
@@ -705,7 +709,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"user_defined_version": {
 			Description: `Instance version tells which edge app does this instance is running`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"vminfo": {

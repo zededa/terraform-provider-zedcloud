@@ -91,7 +91,6 @@ func SetManifestInfoResourceData(d *schema.ResourceData, m *models.ManifestInfo)
 	d.Set("transition_action", m.TransitionAction)
 }
 
-// Iterate through and update the ManifestInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetManifestInfoSubResourceData(m []*models.ManifestInfo) (d []*map[string]interface{}) {
 	for _, ManifestInfoModel := range m {
 		if ManifestInfoModel != nil {
@@ -107,13 +106,12 @@ func SetManifestInfoSubResourceData(m []*models.ManifestInfo) (d []*map[string]i
 	return
 }
 
-// Schema mapping representing the ManifestInfo resource defined in the Terraform configuration
 func ManifestInfoSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"bundle_version": {
 			Description: `Current version of edge application being used`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"details": {
@@ -128,7 +126,7 @@ func ManifestInfoSchema() map[string]*schema.Schema {
 		"next_bundle_version": {
 			Description: `Next version of edge application available`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"params": {
@@ -137,7 +135,7 @@ func ManifestInfoSchema() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"transition_action": {
@@ -148,7 +146,6 @@ func ManifestInfoSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the ManifestInfo resource
 func GetManifestInfoPropertyFields() (t []string) {
 	return []string{
 		"bundle_version",
