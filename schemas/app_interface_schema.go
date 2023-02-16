@@ -282,7 +282,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 		"netinstid": {
 			Description: `Network Instance id to be matched for interface assignment.`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"netinstname": {

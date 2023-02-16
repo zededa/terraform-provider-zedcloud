@@ -77,7 +77,7 @@ func VMSchema() map[string]*schema.Schema {
 		"cpu_pinning_enabled": {
 			Description: `Enable CpuPinning`,
 			Type:        schema.TypeBool,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"cpus": {
@@ -89,13 +89,14 @@ func VMSchema() map[string]*schema.Schema {
 		"memory": {
 			Description: `Memory`,
 			Type:        schema.TypeInt,
-			Required:    true,
+			Computed:    true,
 		},
 
 		"mode": {
 			Description: `Hardware Virtualization`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
+			Computed:    true,
 		},
 
 		"vnc": {

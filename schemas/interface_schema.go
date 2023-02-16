@@ -57,10 +57,10 @@ func InterfaceModelFromMap(m map[string]interface{}) *models.Interface {
 		}
 	}
 	directattach := m["directattach"].(bool)
-	name := m["name"].(string)
-	optional := m["optional"].(bool)
-	privateip := m["privateip"].(bool)
-	typeVar := m["type"].(string)
+	name, _ := m["name"].(string)
+	optional, _ := m["optional"].(bool)
+	privateip, _ := m["privateip"].(bool)
+	typeVar, _ := m["type"].(string)
 	return &models.Interface{
 		Acls:         acls,
 		Directattach: directattach,

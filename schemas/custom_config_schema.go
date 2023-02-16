@@ -1,6 +1,7 @@
 package schemas
 
 import (
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
@@ -29,7 +30,7 @@ func CustomConfigModel(d *schema.ResourceData) *models.CustomConfig {
 			variableGroups = append(variableGroups, m)
 		}
 	}
-	return &models.CustomConfig{
+	c := &models.CustomConfig{
 		Add:                add,
 		AllowStorageResize: allowStorageResize,
 		FieldDelimiter:     fieldDelimiter,
@@ -38,6 +39,8 @@ func CustomConfigModel(d *schema.ResourceData) *models.CustomConfig {
 		Template:           template,
 		VariableGroups:     variableGroups,
 	}
+	spew.Dump(c)
+	return c
 }
 
 func CustomConfigModelFromMap(m map[string]interface{}) *models.CustomConfig {
