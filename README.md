@@ -29,7 +29,7 @@ Schema documentation generated from the schema files contained in this repo can 
 
 ### Product
 
-Product documentation including explanation of workflows and data schemas can be found under https://help.zededa.com/hc/en-us
+Product documentation including explanations of workflows and data schemas can be found under https://help.zededa.com/hc/en-us
 
 ## Installation and configuration
 
