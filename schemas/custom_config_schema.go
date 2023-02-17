@@ -1,7 +1,6 @@
 package schemas
 
 import (
-	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
 )
@@ -39,7 +38,6 @@ func CustomConfigModel(d *schema.ResourceData) *models.CustomConfig {
 		Template:           template,
 		VariableGroups:     variableGroups,
 	}
-	spew.Dump(c)
 	return c
 }
 
