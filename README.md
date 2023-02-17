@@ -79,17 +79,13 @@ State of issues pointed out by customers:
 - [x] admin_state
 	- Status: fixed in v1 and v2
 	- Deployed in version: v1.0.7
-	- Reported by VW
 - [x] Zedcloud API - network instance deletion errors
 	- Status: fixed in v2
 	- Deployed in version: v2.0.0
-	- Reported by VW
 - [ ] Support for automatic retries with exponential back-off
 	- Status: in development for v2
 	- Deployed in version: planned for milestone M2
-	- Reported by VW
 - [ ] Indicate failure in app image deletion + creation
 	- Status: to do
 	- Deployed in version: planned for milestone M3
-	- Reported by VW
 
