@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider/client"
@@ -117,7 +118,9 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	} else {
 		return diag.Errorf("missing client parameter: id")
 	}
-	params.SetBody(zschema.NodeModel(d))
+	b := zschema.NodeModel(d)
+	params.SetBody(b)
+	spew.Dump(b)
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)

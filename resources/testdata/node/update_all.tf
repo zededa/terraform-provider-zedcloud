@@ -10,20 +10,20 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b"
     admin_state = "ADMIN_STATE_INACTIVE"
     asset_id = "asset_id"
-    deployment_tag = "depl_tag"
-    description = "description"
+    deployment_tag = "depl_tag_update"
+    description = "description_update"
 		generate_soft_serial = false
-    token = "token"
+    token = "token_update"
 
 		site_pictures = []
 
-    # base_image {
-    #    	activate = true
-    #    	image_name = ""
-    #    	imvol_id = ""
-    #    	uuid = ""
-    #    	version = "1.0"
-    # }
+    base_image {
+       	activate = true
+       	image_name = "test_mirageOS"
+       	# imvol_id = ""
+       	# uuid = "e46405ab-9155-4a98-96e0-19336703fd01"
+       	version = "test_mirageOS"
+    }
 
 		interfaces {
     		cost = 255
@@ -42,10 +42,10 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     }
 
     config_item {
-	      bool_value = true
+	      bool_value = false
 	      float_value = 1.0
 	    	key = "key"
-	    	string_value = "string"
+	    	string_value = "string_update"
 	    	uint32_value = 32
 	    	uint64_value = 64
 	    	value_type = "value type"
@@ -66,6 +66,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		tags = {
         "tag-key-1" = "tag-value-1"
         "tag-key-2" = "tag-value-2"
+        "tag-key-2_update" = "tag-value-2_update"
     }
 
     # not supported by api

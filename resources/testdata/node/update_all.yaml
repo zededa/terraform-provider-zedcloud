@@ -6,19 +6,19 @@ baseosretrytime: ""
 clientip: ""
 clusterid: ""
 configitem:
-    - boolvalue: true
+    - boolvalue: false
       floatvalue: 1
       key: key
-      stringvalue: string
+      stringvalue: string_update
       uint32value: 32
       uint64value: "64"
       valuetype: value type
 cpu: 0
 debugknob: null
 defaultnetinst: null
-deploymenttag: depl_tag
+deploymenttag: depl_tag_update
 deprecated: ""
-description: description
+description: description_update
 devlocation:
     city: berlin
     country: germany
@@ -70,7 +70,8 @@ storage: 0
 tags:
     tag-key-1: tag-value-1
     tag-key-2: tag-value-2
+    tag-key-2_update: tag-value-2_update
 thread: 0
 title: test_tf_provider-title
-token: token
+token: token_update
 utype: null

@@ -49,7 +49,7 @@ func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
 }
 
 func TestNode_Create_AllAttributes(t *testing.T) {
-	var got, expectCreated, expectUpdated models.Node
+	var gotCreated, gotUpdated, expectCreated, expectUpdated models.Node
 
 	// input configs
 	createPath := "node/create_all.tf"
@@ -72,7 +72,7 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 			{
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
-					testNodeExists("zedcloud_edgenode.test_tf_provider", &got),
+					testNodeExists("zedcloud_edgenode.test_tf_provider", &gotCreated),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
@@ -81,13 +81,13 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					testNodeAttributes(t, &got, &expectCreated),
+					testNodeAttributes(t, &gotCreated, &expectCreated),
 				),
 			},
 			{
 				Config: inputUpdate,
 				Check: resource.ComposeTestCheckFunc(
-					testNodeExists("zedcloud_edgenode.test_tf_provider", &got),
+					testNodeExists("zedcloud_edgenode.test_tf_provider", &gotUpdated),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
@@ -96,7 +96,7 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					testNodeAttributes(t, &got, &expectUpdated),
+					testNodeAttributes(t, &gotUpdated, &expectUpdated),
 				),
 			},
 		},
