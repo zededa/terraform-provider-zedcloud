@@ -17,13 +17,13 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 
 		site_pictures = []
 
-    base_image {
-       	activate = true
-       	image_name = "test_mirageOS"
-       	# imvol_id = ""
-       	# uuid = "e46405ab-9155-4a98-96e0-19336703fd01"
-       	version = "test_mirageOS"
-    }
+    # base_image {
+    #    	activate = true
+    #    	image_name = "test_mirageOS"
+    #    	# imvol_id = ""
+    #    	# uuid = "e46405ab-9155-4a98-96e0-19336703fd01"
+    #    	version = "test_mirageOS"
+    # }
 
 		interfaces {
     		cost = 255
