@@ -1,0 +1,77 @@
+adminstate: ADMIN_STATE_INACTIVE
+assetid: asset_id
+baseimage: []
+baseosretrycounter: 0
+baseosretrytime: ""
+clientip: ""
+clusterid: ""
+configitem:
+    - boolvalue: false
+      floatvalue: 1
+      key: key
+      stringvalue: string_update
+      uint32value: 32
+      uint64value: "64"
+      valuetype: value type
+cpu: 0
+debugknob: null
+defaultnetinst: null
+deploymenttag: depl_tag_update
+deprecated: ""
+description: description_update
+devlocation:
+    city: berlin
+    country: germany
+    freeloc: freeloc
+    hostname: hostname
+    latlong: ""
+    loc: 52.520008, 13.404954
+    org: zededa
+    postal: "10115"
+    region: europe/west
+    underlayip: ""
+dlisp: null
+edgeviewconfig: null
+generatesoftserial: false
+id: ""
+identity: ""
+interfaces:
+    - cost: 255
+      intfusage: ADAPTER_USAGE_MANAGEMENT
+      intfname: defaultIPv4
+      ipaddr: 127.0.0.1
+      macaddr: "00:00:00:00:00:00"
+      netname: ""
+      tags:
+        system_interface_1_key: system_interface_1_value
+        system_interface_2_key: system_interface_2_value
+    - cost: 0
+      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfname: eth0
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
+location: ""
+memory: 0
+modelid: 2f716b55-2639-486c-9a2f-55a2e94146a6
+name: test_tf_provider
+obkey: 5d0767ee-0547-4569-b530-387e526f8cb9
+onboarding: null
+preparepoweroffcounter: 0
+preparepowerofftime: ""
+projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
+resetcounter: 0
+resettime: ""
+revision: null
+serialno: d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b
+sitepictures: []
+storage: 0
+tags:
+    tag-key-1: tag-value-1
+    tag-key-2: tag-value-2
+    tag-key-2_update: tag-value-2_update
+thread: 0
+title: test_tf_provider-title
+token: token_update
+utype: null

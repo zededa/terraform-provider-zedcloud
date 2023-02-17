@@ -82,7 +82,7 @@ func BaseOSImage() map[string]*schema.Schema {
 		"uuid": {
 			Description: `system generated unique id for an image`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"version": {

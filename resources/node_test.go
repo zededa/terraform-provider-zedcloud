@@ -49,16 +49,19 @@ func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
 }
 
 func TestNode_Create_AllAttributes(t *testing.T) {
-	var got models.Node
-	var expected models.Node
+	var gotCreated, gotUpdated, expectCreated, expectUpdated models.Node
 
-	// input config
-	inputPath := "node/create_complete.tf"
-	input := mustGetTestInput(t, inputPath)
+	// input configs
+	createPath := "node/create_all.tf"
+	inputCreate := mustGetTestInput(t, createPath)
+	updatePath := "node/update_all.tf"
+	inputUpdate := mustGetTestInput(t, updatePath)
 
 	// expected output
-	expectedPath := "node/create_complete.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
+	createPath = "node/create_all.yaml"
+	mustGetExpectedOutput(t, createPath, &expectCreated)
+	updatePath = "node/update_all.yaml"
+	mustGetExpectedOutput(t, updatePath, &expectUpdated)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
@@ -67,25 +70,37 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: input,
+				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
-					testNodeExists("zedcloud_edgenode.complete", &got),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "name", "complete"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "title", "complete-title"),
+					testNodeExists("zedcloud_edgenode.test_tf_provider", &gotCreated),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
 					resource.TestMatchResourceAttr(
-						"zedcloud_edgenode.complete",
+						"zedcloud_edgenode.test_tf_provider",
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					testNodeAttributes(t, &got, &expected),
+					testNodeAttributes(t, &gotCreated, &expectCreated),
+				),
+			},
+			{
+				Config: inputUpdate,
+				Check: resource.ComposeTestCheckFunc(
+					testNodeExists("zedcloud_edgenode.test_tf_provider", &gotUpdated),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
+					resource.TestMatchResourceAttr(
+						"zedcloud_edgenode.test_tf_provider",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					testNodeAttributes(t, &gotUpdated, &expectUpdated),
 				),
 			},
 		},
 	})
-
-	// update all fields
-	// create and update fields with custom logic and separate api requests
 }
 
 // testNodeExists retrieves the Node and stores it in the provided *models.DeviceConfig.
