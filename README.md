@@ -33,7 +33,7 @@ Product documentation including explanation of workflows and data schemas can be
 
 ---
 
-### Installation and configuration
+## Installation and configuration
 
 Information on how to install and configure a Terraform provider can be found under https://developer.hashicorp.com/terraform/language/providers. If you need help setting up the __terraform-provider-zedcloud__ please reach out to the Zededa support.
 The latest version of the provider can be found in the official Terraform provider registry under https://registry.terraform.io/providers/zededa/zedcloud/latest.
@@ -49,16 +49,8 @@ The latest version of the provider can be found in the official Terraform provid
 
 The following environment variables need to be set to use the provider.
 ```
-export TF_VAR_zedcloud_url="zedcontrol.local.zededa.net"
+export TF_VAR_zedcloud_url="zedcontrol.zededa.net"
 export TF_VAR_zedcloud_token=<YOUR-API-TOKEN>
 export TF_LOG=ERROR
 export TF_LOG_PATH=./terraform.log
 ```
-
-
-
-
-
-
-
-
