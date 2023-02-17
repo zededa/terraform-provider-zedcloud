@@ -31,8 +31,6 @@ Schema documentations generated from the schema files contained in this repo can
 
 Product documentation including explanation of workflows and data schemas can be found under https://help.zededa.com/hc/en-us
 
----
-
 ## Installation and configuration
 
 Information on how to install and configure a Terraform provider can be found under https://developer.hashicorp.com/terraform/language/providers. If you need help setting up the __terraform-provider-zedcloud__ please reach out to the Zededa support.
