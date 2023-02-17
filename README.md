@@ -33,7 +33,7 @@ Product documentation including explanations of workflows and data schemas can b
 
 ## Installation and configuration
 
-Information on how to install and configure a Terraform provider can be found under https://developer.hashicorp.com/terraform/language/providers. If you need help setting up the __terraform-provider-zedcloud__ please reach out to the Zededa support.
+Information on how to install and configure a Terraform provider can be found under https://developer.hashicorp.com/terraform/language/providers. If you need help setting up the __terraform-provider-zedcloud__ please reach out to Zededa support.
 The latest version of the provider can be found in the official Terraform provider registry under https://registry.terraform.io/providers/zededa/zedcloud/latest.
 
 ## Breaking changes in v2
