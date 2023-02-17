@@ -18,7 +18,7 @@ Supported resources are:
 
 Documentation of all API endpoints and data schemas can be found under https://zedcontrol.zededa.net/api/v1/docs/.
 
-Schema documentations generated from the schema files contained in this repo can be found under:
+Schema documentation generated from the schema files contained in this repo can be found under:
 1. [Provider](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/provider)
 1. [Resources](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/resources)
 1. [Data Sources](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/data-sources)
