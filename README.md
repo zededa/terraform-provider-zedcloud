@@ -39,7 +39,7 @@ The latest version of the provider can be found in the official Terraform provid
 ## Breaking changes in v2
 
 - Authentication uses the API-token only. Basic-Auth via username and password has been removed. You can find the API-token for your user under https://zedcontrol.zededa.net/profile/user
-- The resource and data schemas have changed. The schemas now map to the ones in API documentation. For reference on supported fields see the testdata directory which contains Terraform configuration files for all supported resources. If you have trouble porting your configuration, please reach out to the Zededa support.
+- The resource and data schemas have changed. The schemas now map to the ones in API documentation. For reference on supported fields see the testdata directory which contains Terraform configuration files for all supported resources. If you have trouble porting your configuration, please reach out to Zededa support.
 - `aminstate_config` has been removed. `admin_state` can now be configured directly. Diffs will be suppressed if the `EdgeNode` is in `ADMINSTATE_REGISTERED` state and your configuration is set to `ADMINSTATE_ACTIVE`.
 - CSRF checks have been removed.
 
