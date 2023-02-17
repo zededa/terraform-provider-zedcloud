@@ -52,15 +52,15 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 	var got, expectCreated, expectUpdated models.Node
 
 	// input configs
-	createPath := "node/create_complete.tf"
+	createPath := "node/create_all.tf"
 	inputCreate := mustGetTestInput(t, createPath)
-	updatePath := "node/update_complete.tf"
+	updatePath := "node/update_all.tf"
 	inputUpdate := mustGetTestInput(t, updatePath)
 
 	// expected output
-	createPath = "node/create_complete.yaml"
+	createPath = "node/create_all.yaml"
 	mustGetExpectedOutput(t, createPath, &expectCreated)
-	updatePath = "node/update_complete.yaml"
+	updatePath = "node/update_all.yaml"
 	mustGetExpectedOutput(t, updatePath, &expectUpdated)
 
 	// terraform acceptance test case
@@ -72,12 +72,12 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 			{
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
-					testNodeExists("zedcloud_edgenode.complete", &got),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "name", "complete"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "title", "complete-title"),
+					testNodeExists("zedcloud_edgenode.test_tf_provider", &got),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
 					resource.TestMatchResourceAttr(
-						"zedcloud_edgenode.complete",
+						"zedcloud_edgenode.test_tf_provider",
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
@@ -87,12 +87,12 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 			{
 				Config: inputUpdate,
 				Check: resource.ComposeTestCheckFunc(
-					testNodeExists("zedcloud_edgenode.complete", &got),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "name", "complete"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.complete", "title", "complete-title"),
+					testNodeExists("zedcloud_edgenode.test_tf_provider", &got),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
 					resource.TestMatchResourceAttr(
-						"zedcloud_edgenode.complete",
+						"zedcloud_edgenode.test_tf_provider",
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),

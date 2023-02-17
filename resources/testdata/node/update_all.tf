@@ -1,9 +1,9 @@
-resource "zedcloud_edgenode" "complete" {
+resource "zedcloud_edgenode" "test_tf_provider" {
 		# required
-		name = "complete"
+		name = "test_tf_provider"
 		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
 		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
-		title = "complete-title"
+		title = "test_tf_provider-title"
 
     # optional
     onboarding_key = "5d0767ee-0547-4569-b530-387e526f8cb9"
@@ -137,7 +137,7 @@ resource "zedcloud_edgenode" "complete" {
         # kind = "NETWORK_INSTANCE_KIND_LOCAL"
 	    	# name = "default_net_inst-name"
         # port = "eth1"
-	    	# title = "default_net_inst-complete-config"
+	    	# title = "default_net_inst-test_tf_provider-config"
 
 	    	# # optional
         # project_id = "default-project"
