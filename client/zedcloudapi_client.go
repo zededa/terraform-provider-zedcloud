@@ -9,6 +9,7 @@ import (
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/hashicorp/go-retryablehttp"
 
 	"github.com/zededa/terraform-provider/client/datastore_configuration"
 	"github.com/zededa/terraform-provider/client/edge_application_configuration"
@@ -50,7 +51,9 @@ func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Zed
 	}
 
 	// create transport and client
-	transport := httptransport.New(cfg.Host, cfg.BasePath, cfg.Schemes)
+	retryClient := retryablehttp.NewClient()
+	retryClient.RetryMax = 10
+	transport := httptransport.NewWithClient(cfg.Host, cfg.BasePath, cfg.Schemes, retryClient.StandardClient())
 	return New(transport, formats)
 }
 

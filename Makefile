@@ -68,5 +68,10 @@ test:
 
 .PHONY: test-run
 test-run:
-	TF_ACC=1 go test -v ./... -run $(test)
+	go vet ./...
+	TF_ACC=1 go test -v -race ./... -run $(test)
 
+.PHONY: udpatedeps
+updatedeps:
+	go get -f -t -u ./...
+	go get -f -u ./...
