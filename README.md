@@ -4,8 +4,8 @@ The __terraform-provider-zedcloud__ provides access to Zededa's public API for t
 
 Supported resources are:
 - [x] Edge-Node (also called Device-Config)
-- [x] Application
-- [x] Application-Instance
+- [x] Edge-App
+- [x] Edge-App-Instance
 - [x] Network
 - [x] Network-Instance
 - [x] Datastore
@@ -19,7 +19,7 @@ Supported resources are:
 Documentation of all API endpoints and data schemas can be found under https://zedcontrol.zededa.net/api/v1/docs/.
 
 Schema documentation generated from the schema files contained in this repo can be found under:
-1. [Provider](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/provider)
+1. [Provider](https://github.com/zededa/terraform-provider-zedcloud/blob/main/docs/index.md)
 1. [Resources](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/resources)
 1. [Data Sources](https://github.com/zededa/terraform-provider-zedcloud/tree/main/docs/data-sources)
 
@@ -40,7 +40,7 @@ The latest version of the provider can be found in the official Terraform provid
 
 - Authentication uses the API-token only. Basic-Auth via username and password has been removed. You can find the API-token for your user under https://zedcontrol.zededa.net/profile/user
 - The resource and data schemas have changed. The schemas now map to the ones in API documentation. For reference on supported fields see the testdata directory which contains Terraform configuration files for all supported resources. If you have trouble porting your configuration, please reach out to Zededa support.
-- `aminstate_config` has been removed. `admin_state` can now be configured directly. Diffs will be suppressed if the `EdgeNode` is in `ADMINSTATE_REGISTERED` state and your configuration is set to `ADMINSTATE_ACTIVE`.
+- `adminstate_config` has been removed. `admin_state` can now be configured directly. Diffs will be suppressed if the `EdgeNode` is in `ADMINSTATE_REGISTERED` state and your configuration is set to `ADMINSTATE_ACTIVE`.
 - CSRF checks have been removed.
 
 ## Environment configuration
