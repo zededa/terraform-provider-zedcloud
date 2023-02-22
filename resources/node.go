@@ -19,16 +19,19 @@ import (
 func NodeResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateNode,
-		ReadContext:   ReadNodeByName,
+		ReadContext:   ReadNode,
 		UpdateContext: UpdateNode,
 		DeleteContext: DeleteNode,
 		Schema:        zschema.Node(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 
 func NodeDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: ReadNodeByName,
+		ReadContext: ReadNode,
 		Schema:      zschema.Node(),
 	}
 }
@@ -65,7 +68,7 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/edgeNode-config
-	edgeNode, diags := readNode(ctx, d, m)
+	edgeNode, diags := readNodeByName(ctx, d, m)
 	if diags.HasError() {
 		return diags
 	}
@@ -85,18 +88,29 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNodeByName(ctx, d, m); err != nil {
+	if errs := ReadNode(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
 	return diags
 }
 
-func ReadNodeByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	edgeNode, diags := readNode(ctx, d, m)
+func ReadNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var edgeNode *models.Node
+	var diags diag.Diagnostics
+
+	if _, isSet := d.GetOk("name"); isSet {
+		edgeNode, diags = readNodeByName(ctx, d, m)
+	}
+
+	if _, isSet := d.GetOk("id"); isSet {
+		edgeNode, diags = readNodeByID(ctx, d, m)
+	}
+
 	if diags.HasError() {
 		return diags
 	}
+
 	zschema.SetNodeResourceData(d, edgeNode)
 	d.SetId(edgeNode.ID)
 
@@ -143,7 +157,7 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	}
 
 	// due to api design, we need to fetch the newly created edge-node/device-config
-	edgeNode, diags := readNode(ctx, d, m)
+	edgeNode, diags := readNodeByName(ctx, d, m)
 	if diags.HasError() {
 		return diags
 	}
@@ -163,7 +177,7 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNodeByName(ctx, d, m); err != nil {
+	if errs := ReadNode(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
@@ -458,7 +472,37 @@ func setAdminState(
 	return nil
 }
 
-func readNode(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Node, diag.Diagnostics) {
+func readNodeByID(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Node, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	params := config.GetByIDParams()
+
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	id, isSet := d.GetOk("id")
+	if isSet {
+		params.ID = id.(string)
+	} else {
+		return nil, append(diags, diag.Errorf("missing client parameter: id")...)
+	}
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.Node.GetByID(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
+
+	edgeNode := resp.GetPayload()
+
+	return edgeNode, diags
+}
+
+func readNodeByName(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Node, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	params := config.GetByNameParams()
