@@ -34,7 +34,7 @@ type ClientService interface {
 
 	ImageConfigurationDeleteLatestImage(params *ImageConfigurationDeleteLatestImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationDeleteLatestImageOK, error)
 
-	ImageConfigurationGetImage(params *ImageConfigurationGetImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationGetImageOK, error)
+	GetByID(params *ImageConfigurationGetImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationGetImageOK, error)
 
 	GetByName(params *ImageConfigurationGetImageByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationGetImageByNameOK, error)
 
@@ -182,14 +182,14 @@ func (a *Client) ImageConfigurationDeleteLatestImage(params *ImageConfigurationD
 }
 
 /*
-ImageConfigurationGetImage gets edge application image
+GetByID gets edge application image
 
 Get the configuration (without security details) of an edge application image record.
 */
-func (a *Client) ImageConfigurationGetImage(params *ImageConfigurationGetImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationGetImageOK, error) {
+func (a *Client) GetByID(params *ImageConfigurationGetImageParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImageConfigurationGetImageOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = GetParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "ImageConfiguration_GetImage",
