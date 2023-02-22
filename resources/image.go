@@ -65,7 +65,7 @@ func CreateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 		}
 	}
 
-	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
+	// note, we need to set the ID in any case, even GetByName endpoint seems to require the ID
 	// but doesn't return any error if it's not set.
 	d.SetId(responseData.ObjectID)
 

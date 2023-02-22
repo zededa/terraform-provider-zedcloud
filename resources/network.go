@@ -3,11 +3,8 @@ package resources
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
-	"os"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider/client"
@@ -40,9 +37,6 @@ func CreateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	params := config.CreateParams()
 	params.SetBody(model)
 
-	if err := os.WriteFile("/tmp/req-net-create", []byte("==========REQ=============\n"+spew.Sdump(params)), 0644); err != nil {
-		fmt.Println(err)
-	}
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Network.Create(params, nil)
@@ -67,7 +61,7 @@ func CreateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 		}
 	}
 
-	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
+	// note, we need to set the ID in any case, even GetByName endpoint seems to require the ID
 	// but doesn't return any error if it's not set.
 	d.SetId(responseData.ObjectID)
 
@@ -110,9 +104,6 @@ func ReadNetworkByName(ctx context.Context, d *schema.ResourceData, m interface{
 	zschema.SetNetworkResourceData(d, network)
 	d.SetId(network.ID)
 
-	if err := os.WriteFile("/tmp/resp-net-create", []byte("==========REQ=============\n"+spew.Sdump(network)), 0644); err != nil {
-		fmt.Println(err)
-	}
 	return diags
 }
 
