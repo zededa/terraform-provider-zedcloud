@@ -20,16 +20,19 @@ import (
 func ApplicationResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateApplication,
-		ReadContext:   ReadApplicationByName,
+		ReadContext:   ReadApplication,
 		UpdateContext: UpdateApplication,
 		DeleteContext: DeleteApplication,
 		Schema:        zschema.Application(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 
 func ApplicationDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: ReadApplicationByName,
+		ReadContext: ReadApplication,
 		Schema:      zschema.Application(),
 	}
 }
@@ -94,14 +97,55 @@ func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadApplicationByName(ctx, d, m); err != nil {
+	if errs := ReadApplication(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
 	return diags
 }
 
-func ReadApplicationByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func ReadApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	if _, isSet := d.GetOk("name"); isSet {
+		return readApplicationByName(ctx, d, m)
+	}
+
+	return readApplicationByID(ctx, d, m)
+}
+
+func readApplicationByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	params := config.GetByIDParams()
+
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	id, isSet := d.GetOk("id")
+	if isSet {
+		params.ID = id.(string)
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		return diags
+	}
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.Application.GetByID(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
+
+	app := resp.GetPayload()
+	zschema.SetApplicationResourceData(d, app)
+	d.SetId(app.ID)
+
+	return diags
+}
+
+func readApplicationByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.GetByNameParams()
@@ -204,7 +248,7 @@ func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadApplicationByName(ctx, d, m); err != nil {
+	if errs := ReadApplication(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
