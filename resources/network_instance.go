@@ -16,16 +16,19 @@ import (
 func NetworkInstanceResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateNetworkInstance,
-		ReadContext:   ReadNetworkInstanceByName,
+		ReadContext:   ReadNetworkInstance,
 		UpdateContext: UpdateNetworkInstance,
 		DeleteContext: DeleteNetworkInstance,
 		Schema:        zschema.NetworkInstance(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 
 func NetworkInstanceDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: ReadNetworkInstanceByName,
+		ReadContext: ReadNetworkInstance,
 		Schema:      zschema.NetworkInstance(),
 	}
 }
@@ -61,13 +64,13 @@ func CreateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 		}
 	}
 
-	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
+	// note, we need to set the ID in any case, even GetByName endpoint seems to require the ID
 	// but doesn't return any error if it's not set.
 	d.SetId(responseData.ObjectID)
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNetworkInstanceByName(ctx, d, m); err != nil {
+	if errs := ReadNetworkInstance(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
@@ -75,6 +78,14 @@ func CreateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 }
 
 func ReadNetworkInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	_, isSet := d.GetOk("name")
+	if isSet {
+		return readNetworkInstanceByName(ctx, d, m)
+	}
+	return readNetworkInstanceByID(ctx, d, m)
+}
+
+func readNetworkInstanceByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.GetByIDParams()
@@ -84,10 +95,9 @@ func ReadNetworkInstance(ctx context.Context, d *schema.ResourceData, m interfac
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
+	id, isSet := d.GetOk("id")
+	if isSet {
+		params.ID = id.(string)
 	} else {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
 		return diags
@@ -108,7 +118,7 @@ func ReadNetworkInstance(ctx context.Context, d *schema.ResourceData, m interfac
 	return diags
 }
 
-func ReadNetworkInstanceByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func readNetworkInstanceByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.GetByNameParams()
