@@ -13,10 +13,6 @@ import (
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
 
-/*
-ImageConfiguration image configuration API
-*/
-
 func ImageResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateImage,
@@ -24,6 +20,9 @@ func ImageResource() *schema.Resource {
 		UpdateContext: UpdateImage,
 		DeleteContext: DeleteImage,
 		Schema:        zschema.Image(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 
@@ -71,7 +70,7 @@ func CreateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadImage(ctx, d, m); err != nil {
+	if errs := readImageByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
@@ -79,6 +78,48 @@ func CreateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 }
 
 func ReadImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	if _, isSet := d.GetOk("name"); isSet {
+		return readImageByName(ctx, d, m)
+	}
+	return readImageByID(ctx, d, m)
+}
+
+func readImageByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	params := config.GetByIDParams()
+
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	id, isSet := d.GetOk("id")
+	if isSet {
+		id, _ := id.(string)
+		params.ID = id
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		return diags
+	}
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.Image.GetByID(params, nil)
+
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
+
+	image := resp.GetPayload()
+	zschema.SetImageResourceData(d, image)
+	d.SetId(image.ID)
+
+	return diags
+}
+
+func readImageByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.GetByNameParams()
@@ -159,7 +200,7 @@ func UpdateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadImage(ctx, d, m); err != nil {
+	if errs := readImageByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
