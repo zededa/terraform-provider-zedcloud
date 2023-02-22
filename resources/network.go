@@ -17,15 +17,18 @@ func NetworkResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateNetwork,
 		DeleteContext: DeleteNetwork,
-		ReadContext:   ReadNetworkByName,
+		ReadContext:   ReadNetwork,
 		UpdateContext: UpdateNetwork,
 		Schema:        zschema.Network(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 
 func NetworkDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: ReadNetworkByName,
+		ReadContext: ReadNetwork,
 		Schema:      zschema.Network(),
 	}
 }
@@ -67,14 +70,54 @@ func CreateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNetworkByName(ctx, d, m); err != nil {
+	if errs := readNetworkByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
 	return diags
 }
 
-func ReadNetworkByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func ReadNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	if _, isSet := d.GetOk("name"); isSet {
+		return readNetworkByName(ctx, d, m)
+	}
+	return readNetworkByID(ctx, d, m)
+}
+
+func readNetworkByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	params := config.GetByIDParams()
+
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	id, isSet := d.GetOk("id")
+	if isSet {
+		params.ID = id.(string)
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		return diags
+	}
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.Network.GetByID(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
+
+	network := resp.GetPayload()
+	zschema.SetNetworkResourceData(d, network)
+	d.SetId(network.ID)
+
+	return diags
+}
+
+func readNetworkByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.GetByNameParams()
@@ -152,7 +195,7 @@ func UpdateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNetworkByName(ctx, d, m); err != nil {
+	if errs := readNetworkByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
