@@ -3,6 +3,7 @@ package resources
 import (
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 	"testing"
 
@@ -29,7 +30,7 @@ func TestDatastore_Create(t *testing.T) {
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { checkDatastoreEnv(t) },
 		CheckDestroy: testDatastoreDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
@@ -47,6 +48,21 @@ func TestDatastore_Create(t *testing.T) {
 			},
 		},
 	})
+}
+
+func checkDatastoreEnv(t *testing.T) {
+	if v := os.Getenv("TF_CLI_CONFIG_FILE"); v == "" {
+		t.Fatal("TF_CLI_CONFIG_FILE must be set for acceptance tests, it should contain the dev_overrides config that points to local instance of the provider")
+	}
+	if v := os.Getenv("TF_VAR_zedcloud_token"); v == "" {
+		t.Fatal("TF_VAR_zedcloud_token must be set for acceptance tests to access the zedcloud API")
+	}
+	// if v := os.Getenv("TF_VAR_api_key"); v == "" {
+	// 	t.Fatal("TF_VAR_api_key must be set for acceptance tests to access the zedcloud API")
+	// }
+	// if v := os.Getenv("TF_VAR_api_password"); v == "" {
+	// 	t.Fatal("TF_VAR_api_password must be set for acceptance tests to access the zedcloud API")
+	// }
 }
 
 func testDatastoreExists(resourceName string, datastoreModel *models.Datastore) resource.TestCheckFunc {
@@ -88,6 +104,7 @@ func testDatastoreAttributes(t *testing.T, got, expected *models.Datastore) reso
 		ignoredFields := []string{
 			"ID",
 			"Revision",
+			"EncryptedSecrets",
 		}
 		// if expected.Proxy != nil && expected.Proxy.Proxies != nil {
 		// 	ignoredFields = append(ignoredFields, "Proxy.Proxies")

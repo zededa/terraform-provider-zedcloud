@@ -1,14 +1,29 @@
-dsfqdn: "https://my-datastore.my-company.com"
+dsfqdn: "my-datastore.my-company.com"
 dspath: "download/AMD64"
-dstype: "DATASTORE_TYPE_HTTPS"
+dstype: "DATASTORE_TYPE_AZUREBLOB"
 dsstatus: "DATASTORE_STATUS_ACTIVE"
 name: "test"
 title: "title"
 # api_key: "1234abcd"
 description: "description"
-enterprise_id: "1234"
 need_clear_text: false
 region: "eu"
 encryptedsecrets: {}
+enterprise_id: "123"
 origintype: "ORIGIN_LOCAL"
 projectaccesslist: []
+
+# dsfqdn: "https://my-datastore.my-company.com"
+# dspath: "download/AMD64"
+# dstype: "DATASTORE_TYPE_HTTPS"
+# dsstatus: "DATASTORE_STATUS_ACTIVE"
+# name: "test"
+# title: "title"
+# # api_key: "1234abcd"
+# description: "description"
+# enterprise_id: "1234"
+# need_clear_text: false
+# region: "eu"
+# encryptedsecrets: {}
+# origintype: "ORIGIN_LOCAL"
+# projectaccesslist: []
