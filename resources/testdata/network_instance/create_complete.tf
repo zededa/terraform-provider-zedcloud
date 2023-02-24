@@ -45,6 +45,7 @@ resource "zedcloud_network_instance" "complete" {
     }
     ip {
         domain = "htttp://example.com"
+
         gateway = "10.0.20.1"
         subnet = "10.0.20.0/24"
 
@@ -52,9 +53,9 @@ resource "zedcloud_network_instance" "complete" {
             end = "10.0.20.100"
             start = "10.0.20.50"
         }
-        dns = [
-            "10.0.20.1"
-        ]
+        # dns = [
+        #     "10.0.20.1"
+        # ]
         mask = "255.255.255.0"
         ntp = "10.1.0.2"
     }
