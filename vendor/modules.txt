@@ -305,7 +305,7 @@ golang.org/x/net/trace
 # golang.org/x/sys v0.1.0
 ## explicit; go 1.17
 golang.org/x/sys/unix
-# golang.org/x/text v0.3.7
+# golang.org/x/text v0.3.8
 ## explicit; go 1.17
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
