@@ -7,6 +7,10 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
+// Note, when providing secrets as variable instead of hard-coding them, the fields api_key, ds_err and enterprise_id
+// reports a diff in a subsequent plan command. This seems to be a bug in TF SDKv2 transition of nil values or similar.
+// So these fields are removed (commented) from the schema.
+
 func DatastoreModel(d *schema.ResourceData) *models.Datastore {
 	aPIKey, _ := d.Get("api_key").(string)
 	var certificateChain *models.CertificateChain // CertificateChain
@@ -32,7 +36,7 @@ func DatastoreModel(d *schema.ResourceData) *models.Datastore {
 		dsTypeModel := dsTypeInterface.(string)
 		dsType = models.NewDatastoreType(models.DatastoreType(dsTypeModel))
 	}
-	enterpriseID, _ := d.Get("enterprise_id").(string)
+	// enterpriseID, _ := d.Get("enterprise_id").(string)
 	id, _ := d.Get("id").(string)
 	name, _ := d.Get("name").(string)
 	needClearText, _ := d.Get("need_clear_text").(bool)
@@ -62,22 +66,29 @@ func DatastoreModel(d *schema.ResourceData) *models.Datastore {
 		}
 	}
 	title, _ := d.Get("title").(string)
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet {
+		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
+		revision = ObjectRevisionModelFromMap(revisionMap)
+	}
 	return &models.Datastore{
-		APIKey:            aPIKey,
-		CertificateChain:  certificateChain,
-		Description:       description,
-		DsFQDN:            &dsFQDN, // string true false false
-		DsPath:            &dsPath, // string true false false
-		DsStatus:          dsStatus,
-		DsType:            dsType,
-		EnterpriseID:      enterpriseID,
+		APIKey:           aPIKey,
+		CertificateChain: certificateChain,
+		Description:      description,
+		DsFQDN:           &dsFQDN,
+		DsPath:           &dsPath,
+		DsStatus:         dsStatus,
+		DsType:           dsType,
+		// EnterpriseID:      enterpriseID,
 		ID:                id,
-		Name:              &name, // string true false false
+		Name:              &name,
 		NeedClearText:     needClearText,
 		ProjectAccessList: projectAccessList,
 		Region:            region,
 		Secret:            secret,
-		Title:             &title, // string true false false
+		Title:             &title,
+		Revision:          revision,
 	}
 }
 
@@ -107,7 +118,7 @@ func DatastoreModelFromMap(m map[string]interface{}) *models.Datastore {
 		dsTypeModel := dsTypeInterface.(string)
 		dsType = models.NewDatastoreType(models.DatastoreType(dsTypeModel))
 	}
-	enterpriseID := m["enterprise_id"].(string)
+	// enterpriseID := m["enterprise_id"].(string)
 	id := m["id"].(string)
 	name := m["name"].(string)
 	needClearText := m["need_clear_text"].(bool)
@@ -138,15 +149,23 @@ func DatastoreModelFromMap(m map[string]interface{}) *models.Datastore {
 	}
 	//
 	title := m["title"].(string)
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := m["revision"]
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.Datastore{
-		APIKey:            aPIKey,
-		CertificateChain:  certificateChain,
-		Description:       description,
-		DsFQDN:            &dsFQDN,
-		DsPath:            &dsPath,
-		DsStatus:          dsStatus,
-		DsType:            dsType,
-		EnterpriseID:      enterpriseID,
+		APIKey:           aPIKey,
+		CertificateChain: certificateChain,
+		Description:      description,
+		DsFQDN:           &dsFQDN,
+		DsPath:           &dsPath,
+		DsStatus:         dsStatus,
+		DsType:           dsType,
+		// EnterpriseID:      enterpriseID,
 		ID:                id,
 		Name:              &name,
 		NeedClearText:     needClearText,
@@ -154,6 +173,7 @@ func DatastoreModelFromMap(m map[string]interface{}) *models.Datastore {
 		Region:            region,
 		Secret:            secret,
 		Title:             &title,
+		Revision:          revision,
 	}
 }
 
@@ -162,13 +182,13 @@ func SetDatastoreResourceData(d *schema.ResourceData, m *models.Datastore) {
 	d.Set("certificate_chain", SetCertificateChainSubResourceData([]*models.CertificateChain{m.CertificateChain}))
 	d.Set("crypto_key", m.CryptoKey)
 	d.Set("description", m.Description)
-	d.Set("ds_err", m.DsErr)
+	// d.Set("ds_err", m.DsErr)
 	d.Set("ds_fqdn", m.DsFQDN)
 	d.Set("ds_path", m.DsPath)
 	d.Set("ds_status", m.DsStatus)
 	d.Set("ds_type", m.DsType)
 	d.Set("encrypted_secrets", m.EncryptedSecrets)
-	d.Set("enterprise_id", m.EnterpriseID)
+	// d.Set("enterprise_id", m.EnterpriseID)
 	d.Set("id", m.ID)
 	d.Set("name", m.Name)
 	d.Set("need_clear_text", m.NeedClearText)
@@ -180,7 +200,6 @@ func SetDatastoreResourceData(d *schema.ResourceData, m *models.Datastore) {
 	d.Set("title", m.Title)
 }
 
-// Iterate through and update the DatastoreInfo resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDatastoreInfoSubResourceData(m []*models.Datastore) (d []*map[string]interface{}) {
 	for _, DatastoreInfoModel := range m {
 		if DatastoreInfoModel != nil {
@@ -189,13 +208,13 @@ func SetDatastoreInfoSubResourceData(m []*models.Datastore) (d []*map[string]int
 			properties["certificate_chain"] = SetCertificateChainSubResourceData([]*models.CertificateChain{DatastoreInfoModel.CertificateChain})
 			properties["crypto_key"] = DatastoreInfoModel.CryptoKey
 			properties["description"] = DatastoreInfoModel.Description
-			properties["ds_err"] = DatastoreInfoModel.DsErr
+			// properties["ds_err"] = DatastoreInfoModel.DsErr
 			properties["ds_fqdn"] = DatastoreInfoModel.DsFQDN
 			properties["ds_path"] = DatastoreInfoModel.DsPath
 			properties["ds_status"] = DatastoreInfoModel.DsStatus
 			properties["ds_type"] = DatastoreInfoModel.DsType
 			properties["encrypted_secrets"] = DatastoreInfoModel.EncryptedSecrets
-			properties["enterprise_id"] = DatastoreInfoModel.EnterpriseID
+			// properties["enterprise_id"] = DatastoreInfoModel.EnterpriseID
 			properties["id"] = DatastoreInfoModel.ID
 			properties["name"] = DatastoreInfoModel.Name
 			properties["need_clear_text"] = DatastoreInfoModel.NeedClearText
@@ -211,7 +230,6 @@ func SetDatastoreInfoSubResourceData(m []*models.Datastore) (d []*map[string]int
 	return
 }
 
-// Schema mapping representing the DatastoreInfo resource defined in the Terraform configuration
 func Datastore() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"api_key": {
@@ -244,11 +262,11 @@ func Datastore() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
-		"ds_err": {
-			Description: `Datastore validation detailed error/status message`,
-			Type:        schema.TypeString,
-			Computed:    true,
-		},
+		// "ds_err": {
+		// 	Description: `Datastore validation detailed error/status message`,
+		// 	Type:        schema.TypeString,
+		// 	Computed:    true,
+		// },
 
 		"ds_fqdn": {
 			Description: `Datastore Fully Qualified Domain Name`,
@@ -272,6 +290,7 @@ func Datastore() map[string]*schema.Schema {
 			Description: `Datastore status`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"ds_type": {
@@ -290,11 +309,11 @@ func Datastore() map[string]*schema.Schema {
 			Sensitive: true,
 		},
 
-		"enterprise_id": {
-			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
-		},
+		// "enterprise_id": {
+		// 	Description: ``,
+		// 	Type:        schema.TypeString,
+		// 	Optional:    true,
+		// },
 
 		"id": {
 			Description: `System defined universally unique Id of the datastore.`,
@@ -312,6 +331,9 @@ func Datastore() map[string]*schema.Schema {
 			Description: `knob for sending creds in clear text`,
 			Type:        schema.TypeBool,
 			Optional:    true,
+			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+				return true
+			},
 		},
 
 		"origin_type": {
@@ -336,11 +358,12 @@ func Datastore() map[string]*schema.Schema {
 		},
 
 		"revision": {
-			Description: `system defined info`,
+			Description: `Object revision details`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
 			},
+			Optional: true,
 			Computed: true,
 		},
 
@@ -352,7 +375,6 @@ func Datastore() map[string]*schema.Schema {
 			},
 			Optional:  true,
 			Sensitive: true,
-			Computed:  true,
 		},
 
 		"title": {
