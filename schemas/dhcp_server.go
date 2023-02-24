@@ -56,11 +56,11 @@ func DHCPServerModelFromMap(m map[string]interface{}) *models.DhcpServerConfig {
 			dnsSlice = append(dnsSlice, i.(string))
 		}
 	}
-	domain := m["domain"].(string)
-	gateway := m["gateway"].(string)
-	mask := m["mask"].(string)
-	ntp := m["ntp"].(string)
-	subnet := m["subnet"].(string)
+	domain, _ := m["domain"].(string)
+	gateway, _ := m["gateway"].(string)
+	mask, _ := m["mask"].(string)
+	ntp, _ := m["ntp"].(string)
+	subnet, _ := m["subnet"].(string)
 	return &models.DhcpServerConfig{
 		DhcpRange: dhcpRange,
 		DNS:       dns,
@@ -109,7 +109,6 @@ func DHCPServer() map[string]*schema.Schema {
 				Schema: DhcpIPRange(),
 			},
 			Optional: true,
-			Computed: true,
 		},
 
 		"dns": {
@@ -131,7 +130,7 @@ func DHCPServer() map[string]*schema.Schema {
 		"gateway": {
 			Description: `IP Address of Network Gateway`,
 			Type:        schema.TypeString,
-			Computed:    true,
+			Optional:    true,
 		},
 
 		"mask": {

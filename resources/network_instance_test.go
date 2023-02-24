@@ -138,7 +138,6 @@ func testNetworkInstanceAttributes(t *testing.T, got, expected *models.NetworkIn
 		ignoredFields := []string{
 			"ID",
 			"Revision",
-			"IP",
 			"DNSList",
 			"DeviceID",
 			"ProjectID",
