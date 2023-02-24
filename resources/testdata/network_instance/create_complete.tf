@@ -43,22 +43,21 @@ resource "zedcloud_network_instance" "complete" {
         ]
         hostname = "wwww.ns1.example.com"
     }
-    # computed or changed by api?
-    # ip {
-    #     # not supported by API
-    #     # domain = "htttp://example.com"
-    #     # gateway = "10.1.0.1"
+    ip {
+        domain = "htttp://example.com"
+        gateway = "10.0.20.1"
+        subnet = "10.0.20.0/24"
 
-    #     dhcp_range {
-    #         end = "10.2.255.254"
-    #         start = "10.2.0.128"
-    #     }
-    #     dns = [
-    #         "10.2.0.1"
-    #     ]
-    #     mask = "255.255.255.0"
-    #     ntp = "10.1.0.2"
-    # }
+        dhcp_range {
+            end = "10.0.20.100"
+            start = "10.0.20.50"
+        }
+        dns = [
+            "10.0.20.1"
+        ]
+        mask = "255.255.255.0"
+        ntp = "10.1.0.2"
+    }
     opaque {
         oconfig = "Test OConfig"
         type = "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
