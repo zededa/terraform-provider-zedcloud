@@ -78,7 +78,7 @@ func CreateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	zschema.SetImageResourceData(d, image)
 	d.SetId(image.ID)
 
-	// uplink the image so set status to IMAGE_STATUS_READY
+	// uplink the image to set status to IMAGE_STATUS_READY
 	if diags := uplinkImage(ctx, d, m, image); diags.HasError() {
 		return diags
 	}

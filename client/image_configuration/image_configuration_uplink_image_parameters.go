@@ -71,9 +71,9 @@ type ImageConfigurationUplinkImageParams struct {
 	// Body.
 	Body *models.Image
 
-	/* Name.
+	/* ID.
 
-	   User defined id of the image, unique across the enterprise. Once image is created, name can’t be changed.
+	   User defined id of the image, unique across the enterprise. Once image is created, ID can’t be changed.
 	*/
 	ID string
 
@@ -152,13 +152,13 @@ func (o *ImageConfigurationUplinkImageParams) SetBody(body *models.Image) {
 	o.Body = body
 }
 
-// WithID adds the name to the image configuration uplink image params
+// WithID adds the id to the image configuration uplink image params
 func (o *ImageConfigurationUplinkImageParams) WithID(id string) *ImageConfigurationUplinkImageParams {
 	o.SetID(id)
 	return o
 }
 
-// SetID adds the name to the image configuration uplink image params
+// SetID adds the id to the image configuration uplink image params
 func (o *ImageConfigurationUplinkImageParams) SetID(id string) {
 	o.ID = id
 }
@@ -182,7 +182,7 @@ func (o *ImageConfigurationUplinkImageParams) WriteToRequest(r runtime.ClientReq
 		return err
 	}
 
-	// path param name
+	// path param id
 	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
 	}
