@@ -6,7 +6,6 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -86,7 +85,6 @@ func testImageExists(resourceName string, imageModel *models.Image) resource.Tes
 // testImageAttributes verifies attributes are set correctly by Terraform
 func testImageAttributes(t *testing.T, got, expected *models.Image) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		spew.Dump(expected)
 		ignoredFields := []string{
 			"ID",
 			"Revision",
