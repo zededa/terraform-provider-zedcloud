@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
@@ -478,11 +479,11 @@ func (o *ImageConfigurationUplinkImageNotFound) Code() int {
 }
 
 func (o *ImageConfigurationUplinkImageNotFound) Error() string {
-	return fmt.Sprintf("[PUT /v1/apps/images/name/{name}/uplink][%d] imageConfigurationUplinkImageNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[PUT /v1/apps/images/name/{name}/uplink][%d] Image Uplink: Not Found  %+v", 404, spew.Sdump(o.Payload))
 }
 
 func (o *ImageConfigurationUplinkImageNotFound) String() string {
-	return fmt.Sprintf("[PUT /v1/apps/images/name/{name}/uplink][%d] imageConfigurationUplinkImageNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("[PUT /v1/apps/images/name/{name}/uplink][%d] Image Uplink: Not Found  %+v", 404, spew.Sdump(o.Payload))
 }
 
 func (o *ImageConfigurationUplinkImageNotFound) GetPayload() *models.ZsrvResponse {

@@ -73,9 +73,9 @@ type ImageConfigurationUplinkImageParams struct {
 
 	/* Name.
 
-	   User defined name of the image, unique across the enterprise. Once image is created, name can’t be changed.
+	   User defined id of the image, unique across the enterprise. Once image is created, name can’t be changed.
 	*/
-	Name string
+	ID string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -152,15 +152,15 @@ func (o *ImageConfigurationUplinkImageParams) SetBody(body *models.Image) {
 	o.Body = body
 }
 
-// WithName adds the name to the image configuration uplink image params
-func (o *ImageConfigurationUplinkImageParams) WithName(name string) *ImageConfigurationUplinkImageParams {
-	o.SetName(name)
+// WithID adds the name to the image configuration uplink image params
+func (o *ImageConfigurationUplinkImageParams) WithID(id string) *ImageConfigurationUplinkImageParams {
+	o.SetID(id)
 	return o
 }
 
-// SetName adds the name to the image configuration uplink image params
-func (o *ImageConfigurationUplinkImageParams) SetName(name string) {
-	o.Name = name
+// SetID adds the name to the image configuration uplink image params
+func (o *ImageConfigurationUplinkImageParams) SetID(id string) {
+	o.ID = id
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -183,7 +183,7 @@ func (o *ImageConfigurationUplinkImageParams) WriteToRequest(r runtime.ClientReq
 	}
 
 	// path param name
-	if err := r.SetPathParam("name", o.Name); err != nil {
+	if err := r.SetPathParam("id", o.ID); err != nil {
 		return err
 	}
 

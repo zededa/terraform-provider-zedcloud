@@ -276,62 +276,62 @@ func (o *ImageConfigurationGetImageForbidden) readResponse(response runtime.Clie
 }
 
 // NewImageConfigurationGetImageNotFound creates a ImageConfigurationGetImageNotFound with default headers values
-func NewImageConfigurationGetImageNotFound() *ImageConfigurationGetImageNotFound {
-	return &ImageConfigurationGetImageNotFound{}
+func NewImageConfigurationGetImageNotFound() *GetImageNotFound {
+	return &GetImageNotFound{}
 }
 
 /*
-ImageConfigurationGetImageNotFound describes a response with status code 404, with default header values.
+GetImageNotFound describes a response with status code 404, with default header values.
 
 Not Found. The API gateway did not process the request because the requested resource could not be found.
 */
-type ImageConfigurationGetImageNotFound struct {
+type GetImageNotFound struct {
 	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this image configuration get image not found response has a 2xx status code
-func (o *ImageConfigurationGetImageNotFound) IsSuccess() bool {
+func (o *GetImageNotFound) IsSuccess() bool {
 	return false
 }
 
 // IsRedirect returns true when this image configuration get image not found response has a 3xx status code
-func (o *ImageConfigurationGetImageNotFound) IsRedirect() bool {
+func (o *GetImageNotFound) IsRedirect() bool {
 	return false
 }
 
 // IsClientError returns true when this image configuration get image not found response has a 4xx status code
-func (o *ImageConfigurationGetImageNotFound) IsClientError() bool {
+func (o *GetImageNotFound) IsClientError() bool {
 	return true
 }
 
 // IsServerError returns true when this image configuration get image not found response has a 5xx status code
-func (o *ImageConfigurationGetImageNotFound) IsServerError() bool {
+func (o *GetImageNotFound) IsServerError() bool {
 	return false
 }
 
 // IsCode returns true when this image configuration get image not found response a status code equal to that given
-func (o *ImageConfigurationGetImageNotFound) IsCode(code int) bool {
+func (o *GetImageNotFound) IsCode(code int) bool {
 	return code == 404
 }
 
 // Code gets the status code for the image configuration get image not found response
-func (o *ImageConfigurationGetImageNotFound) Code() int {
+func (o *GetImageNotFound) Code() int {
 	return 404
 }
 
-func (o *ImageConfigurationGetImageNotFound) Error() string {
+func (o *GetImageNotFound) Error() string {
 	return fmt.Sprintf("[GET /v1/apps/images/id/{id}][%d] imageConfigurationGetImageNotFound  %+v", 404, o.Payload)
 }
 
-func (o *ImageConfigurationGetImageNotFound) String() string {
+func (o *GetImageNotFound) String() string {
 	return fmt.Sprintf("[GET /v1/apps/images/id/{id}][%d] imageConfigurationGetImageNotFound  %+v", 404, o.Payload)
 }
 
-func (o *ImageConfigurationGetImageNotFound) GetPayload() *models.ZsrvResponse {
+func (o *GetImageNotFound) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
-func (o *ImageConfigurationGetImageNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+func (o *GetImageNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 
