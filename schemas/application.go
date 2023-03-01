@@ -293,6 +293,7 @@ func Application() map[string]*schema.Schema {
 			Description: `origin of object`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"parent_detail": {
@@ -339,6 +340,7 @@ func Application() map[string]*schema.Schema {
 			Description: `User defined version for the given edge-app`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 	}
 }
