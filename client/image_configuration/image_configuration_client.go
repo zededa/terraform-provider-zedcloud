@@ -554,7 +554,7 @@ func (a *Client) Uplink(params *ImageConfigurationUplinkImageParams, authInfo ru
 	op := &runtime.ClientOperation{
 		ID:                 "ImageConfiguration_UplinkImage",
 		Method:             "PUT",
-		PathPattern:        "/v1/apps/images/name/{name}/uplink",
+		PathPattern:        "/v1/apps/images/id/{id}/uplink",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},

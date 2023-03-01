@@ -77,19 +77,19 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	d.SetId(edgeNode.ID)
 
 	// to set base-image the api requires separate requests
-	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, edgeNode.BaseImage); len(diags) > 0 {
+	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, edgeNode.BaseImage); diags.HasError() {
 		return diags
 	}
 
 	// to set admin-state the api requires separate requests
-	if diags := setAdminState(ctx, d, m, params.Body.AdminState, edgeNode.AdminState); len(diags) > 0 {
+	if diags := setAdminState(ctx, d, m, params.Body.AdminState, edgeNode.AdminState); diags.HasError() {
 		return diags
 	}
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNode(ctx, d, m); err != nil {
-		return append(diags, errs...)
+	if diags := ReadNode(ctx, d, m); diags.HasError() {
+		return diags
 	}
 
 	return diags
@@ -101,9 +101,7 @@ func ReadNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.D
 
 	if _, isSet := d.GetOk("name"); isSet {
 		edgeNode, diags = readNodeByName(ctx, d, m)
-	}
-
-	if _, isSet := d.GetOk("id"); isSet {
+	} else if _, isSet := d.GetOk("id"); isSet {
 		edgeNode, diags = readNodeByID(ctx, d, m)
 	}
 

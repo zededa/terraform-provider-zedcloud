@@ -68,23 +68,51 @@ func CreateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	// but doesn't return any error if it's not set.
 	d.SetId(responseData.ObjectID)
 
+	// due to api design, we need to fetch the newly created image
+	image, diags := readImageByID(ctx, d, m)
+	if diags.HasError() {
+		return diags
+	}
+
+	// publish the api response to local state and the d instance
+	zschema.SetImageResourceData(d, image)
+	d.SetId(image.ID)
+
+	// uplink the image to set status to IMAGE_STATUS_READY
+	if diags := uplinkImage(ctx, d, m, image); diags.HasError() {
+		return diags
+	}
+
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := readImageByName(ctx, d, m); err != nil {
-		return append(diags, errs...)
+	if diags := ReadImage(ctx, d, m); diags.HasError() {
+		return diags
 	}
 
 	return diags
 }
 
 func ReadImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var image *models.Image
+
 	if _, isSet := d.GetOk("name"); isSet {
-		return readImageByName(ctx, d, m)
+		image, diags = readImageByName(ctx, d, m)
+	} else {
+		image, diags = readImageByID(ctx, d, m)
 	}
-	return readImageByID(ctx, d, m)
+
+	if diags.HasError() {
+		return diags
+	}
+
+	zschema.SetImageResourceData(d, image)
+	d.SetId(image.ID)
+
+	return diags
 }
 
-func readImageByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func readImageByID(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Image, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	params := config.GetByIDParams()
@@ -100,7 +128,7 @@ func readImageByID(ctx context.Context, d *schema.ResourceData, m interface{}) d
 		params.ID = id
 	} else {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-		return diags
+		return nil, diags
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
@@ -109,17 +137,14 @@ func readImageByID(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return nil, diags
 	}
 
-	image := resp.GetPayload()
-	zschema.SetImageResourceData(d, image)
-	d.SetId(image.ID)
-
-	return diags
+	return resp.GetPayload(), diags
 }
 
-func readImageByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func readImageByName(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Image, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	params := config.GetByNameParams()
@@ -135,7 +160,7 @@ func readImageByName(ctx context.Context, d *schema.ResourceData, m interface{})
 		params.Name = name
 	} else {
 		diags = append(diags, diag.Errorf("missing client parameter: name")...)
-		return diags
+		return nil, diags
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
@@ -144,14 +169,11 @@ func readImageByName(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return nil, diags
 	}
 
-	image := resp.GetPayload()
-	zschema.SetImageResourceData(d, image)
-	d.SetId(image.ID)
-
-	return diags
+	return resp.GetPayload(), diags
 }
 
 func UpdateImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -200,7 +222,7 @@ func UpdateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := readImageByName(ctx, d, m); err != nil {
+	if errs := ReadImage(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
@@ -239,7 +261,7 @@ func DeleteImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	return diags
 }
 
-func uplink(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func uplinkImage(ctx context.Context, d *schema.ResourceData, m interface{}, image *models.Image) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.UplinkParams()
@@ -249,41 +271,38 @@ func uplink(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Dia
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.ImageModel(d))
+	params.SetBody(image)
+	params.ID = image.ID
 
-	nameVal, nameIsSet := d.GetOk("name")
-	if nameIsSet {
-		params.Name = nameVal.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: name")...)
-		return diags
-	}
-
-	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
+
 	resp, accepted, err := client.Image.Uplink(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
 
-	if accepted != nil {
-		// FIXME: what to do?
+	var responseData *models.ZsrvResponse
+	if resp != nil {
+		responseData = resp.GetPayload()
+	} else if accepted != nil {
+		log.Println("[WARN] uplink image accepted: The API gateway accepted the request for uplinking but the uplinking process has not been completed. Please check ImageStatus and ImageError fields to track the status of uplinking process and any error messages.")
+		responseData = accepted.GetPayload()
 	}
 
-	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && (*err.ErrorCode == models.ErrorCodeSuccess || *err.ErrorCode == models.ErrorCodeAccepted) {
+				continue
+			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		return diags
+		if diags.HasError() {
+			return diags
+		}
 	}
-
-	// the zedcloud API does not return the partially updated object but a custom response.
-	// thus, we need to fetch the object and populate the state.
-	// if errs := GetDevice(ctx, d, m); err != nil {
-	// 	return append(diags, errs...)
-	// }
 
 	return diags
 }
