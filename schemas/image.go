@@ -182,7 +182,7 @@ func Image() map[string]*schema.Schema {
 		"datastore_id": {
 			Description: `Datastore Id where image binary is located.`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"description": {
@@ -200,7 +200,7 @@ func Image() map[string]*schema.Schema {
 		"image_arch": {
 			Description: `Image Architecture.`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"image_error": {
@@ -212,7 +212,7 @@ func Image() map[string]*schema.Schema {
 		"image_format": {
 			Description: `Image binary format.`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"image_local": {
@@ -248,7 +248,7 @@ func Image() map[string]*schema.Schema {
 		"image_type": {
 			Description: `Image type`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"image_version": {
@@ -290,7 +290,7 @@ func Image() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the image. Title can be changed at any time.`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }

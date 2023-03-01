@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
@@ -315,11 +316,11 @@ func (o *ImageConfigurationGetImageByNameNotFound) Code() int {
 }
 
 func (o *ImageConfigurationGetImageByNameNotFound) Error() string {
-	return fmt.Sprintf("[GET /v1/apps/images/name/{name}][%d] imageConfigurationGetImageByNameNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("GET /v1/apps/images/name/{name} => Not Found: %d\n%+v", 404, spew.Sdump(o.Payload.Error))
 }
 
 func (o *ImageConfigurationGetImageByNameNotFound) String() string {
-	return fmt.Sprintf("[GET /v1/apps/images/name/{name}][%d] imageConfigurationGetImageByNameNotFound  %+v", 404, o.Payload)
+	return fmt.Sprintf("GET /v1/apps/images/name/{name} => Not Found: %d\n%+v", 404, spew.Sdump(o.Payload.Error))
 }
 
 func (o *ImageConfigurationGetImageByNameNotFound) GetPayload() *models.ZsrvResponse {
