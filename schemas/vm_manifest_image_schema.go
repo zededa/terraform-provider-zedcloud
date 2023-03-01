@@ -182,6 +182,7 @@ func VMManifestImageSchema() map[string]*schema.Schema {
 			Description: `UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"imagename": {
