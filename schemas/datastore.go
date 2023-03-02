@@ -271,7 +271,7 @@ func Datastore() map[string]*schema.Schema {
 		"ds_fqdn": {
 			Description: `Datastore Fully Qualified Domain Name`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
 				if oldValue == fmt.Sprintf("https://%s", newValue) {
 					return true
@@ -283,7 +283,7 @@ func Datastore() map[string]*schema.Schema {
 		"ds_path": {
 			Description: `Datastore relative path w.r.t. Datastore root`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"ds_status": {
@@ -296,7 +296,7 @@ func Datastore() map[string]*schema.Schema {
 		"ds_type": {
 			Description: `Datastore type`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"encrypted_secrets": {
@@ -380,7 +380,7 @@ func Datastore() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the datastore. Title can be changed at any time.`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }
