@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -61,6 +62,9 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		return nil, diag.FromErr(errors.New("zedcloud API key must be set"))
 	}
 
+	if strings.HasPrefix(zedCloudURL, "https://") {
+		zedCloudURL = strings.TrimPrefix(zedCloudURL, "https://")
+	}
 	transport := httptransport.New(zedCloudURL, "/api", []string{"https"})
 	transport.SetDebug(false)
 	transport.DefaultAuthentication = BearerToken(token)
