@@ -28,13 +28,13 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	Create(params *ProjectsCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsCreateOK, error)
 
-	ProjectsDelete(params *ProjectsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsDeleteOK, error)
+	Delete(params *ProjectsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsDeleteOK, error)
 
-	ProjectsGetByID(params *ProjectsGetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsGetByIDOK, error)
+	GetByID(params *ProjectsGetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsGetByIDOK, error)
 
-	ProjectsGetByName(params *ProjectsGetByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsGetByNameOK, error)
+	GetByName(params *ProjectsGetByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsGetByNameOK, error)
 
-	ProjectsUpdate(params *ProjectsUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsUpdateOK, error)
+	Update(params *ProjectsUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsUpdateOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -47,7 +47,7 @@ Create a project.
 func (a *Client) Create(params *ProjectsCreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsCreateOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewProjectsCreateParams()
+		params = CreateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "Projects_Create",
@@ -80,11 +80,11 @@ func (a *Client) Create(params *ProjectsCreateParams, authInfo runtime.ClientAut
 }
 
 /*
-ProjectsDelete deletes project
+Delete deletes project
 
 Delete the project with the provided ID.
 */
-func (a *Client) ProjectsDelete(params *ProjectsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsDeleteOK, error) {
+func (a *Client) Delete(params *ProjectsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsDeleteOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewProjectsDeleteParams()
@@ -120,14 +120,14 @@ func (a *Client) ProjectsDelete(params *ProjectsDeleteParams, authInfo runtime.C
 }
 
 /*
-ProjectsGetByID gets project by ID
+GetByID gets project by ID
 
 Fetch a project via HTTP/GET request with project-ID as a parameter.
 */
-func (a *Client) ProjectsGetByID(params *ProjectsGetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsGetByIDOK, error) {
+func (a *Client) GetByID(params *ProjectsGetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsGetByIDOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewProjectsGetByIDParams()
+		params = GetByIDParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "Projects_GetByID",
@@ -160,14 +160,14 @@ func (a *Client) ProjectsGetByID(params *ProjectsGetByIDParams, authInfo runtime
 }
 
 /*
-ProjectsGetByName gets project by name
+GetByName gets project by name
 
 Fetch a project via HTTP/GET request with project-name as a parameter.
 */
-func (a *Client) ProjectsGetByName(params *ProjectsGetByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsGetByNameOK, error) {
+func (a *Client) GetByName(params *ProjectsGetByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsGetByNameOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewProjectsGetByNameParams()
+		params = GetByNameParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "Projects_GetByName",
@@ -200,11 +200,11 @@ func (a *Client) ProjectsGetByName(params *ProjectsGetByNameParams, authInfo run
 }
 
 /*
-ProjectsUpdate updates a project
+Update updates a project
 
 Note, partial updates are not supported! The body must contain the complete project data including the fields that have not been changed. Therefore, it might be necessary to fetch the project, apply the changes to the retrieved data before eventually submitting the update request.
 */
-func (a *Client) ProjectsUpdate(params *ProjectsUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsUpdateOK, error) {
+func (a *Client) Update(params *ProjectsUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsUpdateOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewProjectsUpdateParams()

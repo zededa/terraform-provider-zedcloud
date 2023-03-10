@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider/client"
-	project "github.com/zededa/terraform-provider/client/project"
+	project "github.com/zededa/terraform-provider/client/projects"
 	"github.com/zededa/terraform-provider/models"
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
@@ -77,7 +77,7 @@ func GetProject(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	var diags diag.Diagnostics
 
 	if _, isSet := d.GetOk("name"); isSet {
-		project, diags = readProjectName(ctx, d, m)
+		project, diags = readProjectByName(ctx, d, m)
 	} else if _, isSet := d.GetOk("id"); isSet {
 		project, diags = readProjectByID(ctx, d, m)
 	}
@@ -95,7 +95,7 @@ func GetProject(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 func readProjectByID(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Tag, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	params := project.NewProjectGetByIDParams()
+	params := project.GetByIDParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -111,16 +111,43 @@ func readProjectByID(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Project.ProjectGetByID(params, nil)
+	resp, err := client.Project.GetByID(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
 		return nil, diags
 	}
 
-	edgeNode := resp.GetPayload()
+	return resp.GetPayload(), diags
+}
 
-	return edgeNode, diags
+func readProjectByName(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Tag, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	params := project.GetByNameParams()
+
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	name, isSet := d.GetOk("name")
+	if isSet {
+		params.Name = name.(string)
+	} else {
+		return nil, append(diags, diag.Errorf("missing client parameter: name")...)
+	}
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.Project.GetByName(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return nil, diags
+	}
+
+	return resp.GetPayload(), diags
 }
 
 // func Project_GetByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

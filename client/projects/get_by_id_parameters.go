@@ -14,13 +14,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewProjectsGetByIDParams creates a new ProjectsGetByIDParams object,
+// GetByIDParams creates a new ProjectsGetByIDParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewProjectsGetByIDParams() *ProjectsGetByIDParams {
+func GetByIDParams() *ProjectsGetByIDParams {
 	return &ProjectsGetByIDParams{
 		timeout: cr.DefaultTimeout,
 	}

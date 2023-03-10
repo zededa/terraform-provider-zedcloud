@@ -137,7 +137,7 @@ type ZedcloudAPI struct {
 
 	ApplicationInstance edge_application_instance_configuration.ClientService
 
-	Project project.ClientService
+	Project projects.ClientService
 
 	Transport runtime.ClientTransport
 }

@@ -16,13 +16,13 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// NewProjectsCreateParams creates a new ProjectsCreateParams object,
+// CreateParams creates a new ProjectsCreateParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewProjectsCreateParams() *ProjectsCreateParams {
+func CreateParams() *ProjectsCreateParams {
 	return &ProjectsCreateParams{
 		timeout: cr.DefaultTimeout,
 	}
