@@ -6,7 +6,7 @@
         "termsOfService": "https://www.zededa.com/terms",
         "version": "1.0",
         "contact": {
-            "name": "ZEDEDA API Support",
+            "name": "API Support",
             "url": "https://www.zededa.com/support",
             "email": "support@zededa.com"
         },
@@ -17,7 +17,7 @@
     },
     "tags": [
         {
-            "name": "Project"
+            "name": "Projects"
         }
     ],
     "basePath": "/api",
@@ -35,7 +35,7 @@
             "post": {
                 "summary": "Create project",
                 "description": "Create a project.",
-                "operationId": "Project_Create",
+                "operationId": "Projects_Create",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -104,7 +104,7 @@
                     }
                 ],
                 "tags": [
-                    "Project"
+                    "Projects"
                 ],
                 "externalDocs": {
                     "description": "Product Documentation",
@@ -116,7 +116,7 @@
             "delete": {
                 "summary": "Delete project",
                 "description": "Delete the project with the provided ID.",
-                "operationId": "Project_Delete",
+                "operationId": "Projects_Delete",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -178,7 +178,7 @@
                     }
                 ],
                 "tags": [
-                    "Project"
+                    "Projects"
                 ],
                 "externalDocs": {
                     "description": "Product Documentation",
@@ -188,12 +188,12 @@
             "post": {
                 "summary": "Get project by ID",
                 "description": "Fetch a project via HTTP/GET request with project-ID as a parameter.",
-                "operationId": "Project_GetByID",
+                "operationId": "Projects_GetByID",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
                         "schema": {
-                            "$ref": "#/definitions/ZsrvResponse"
+                            "$ref": "#/definitions/Tag"
                         }
                     },
                     "401": {
@@ -250,7 +250,7 @@
                     }
                 ],
                 "tags": [
-                    "Project"
+                    "Projects"
                 ],
                 "externalDocs": {
                     "description": "Product Documentation",
@@ -260,7 +260,7 @@
             "put": {
                 "summary": "Update a project",
                 "description": "Note, partial updates are not supported! The body must contain the complete project data including the fields that have not been changed. Therefore, it might be necessary to fetch the project, apply the changes to the retrieved data before eventually submitting the update request.",
-                "operationId": "Project_Update",
+                "operationId": "Projects_Update",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -446,7 +446,7 @@
                     }
                 ],
                 "tags": [
-                    "Project"
+                    "Projects"
                 ],
                 "externalDocs": {
                     "description": "Product Documentation",
@@ -458,12 +458,12 @@
             "post": {
                 "summary": "Get project by name",
                 "description": "Fetch a project via HTTP/GET request with project-name as a parameter.",
-                "operationId": "Project_GetByName",
+                "operationId": "Projects_GetByName",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
                         "schema": {
-                            "$ref": "#/definitions/ZsrvResponse"
+                            "$ref": "#/definitions/Tag"
                         }
                     },
                     "401": {
@@ -520,7 +520,7 @@
                     }
                 ],
                 "tags": [
-                    "Project"
+                    "Projects"
                 ],
                 "externalDocs": {
                     "description": "Product Documentation",
