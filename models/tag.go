@@ -53,6 +53,9 @@ type Tag struct {
 	// Pattern: [a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}
 	ID string `json:"id,omitempty"`
 
+	// Local operator console policy on devices of this project
+	LocalOperatorConsolePolicy *PolicyConfig `json:"localOperatorConsolePolicy,omitempty"`
+
 	// Resource group wide policy for Azure module configuration to be applied to all edge applications
 	// Read Only: true
 	ModulePolicy []*PolicyConfig `json:"modulePolicy"`
@@ -116,6 +119,10 @@ func (m *Tag) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLocalOperatorConsolePolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -263,6 +270,25 @@ func (m *Tag) validateID(formats strfmt.Registry) error {
 
 	if err := validate.Pattern("id", "body", m.ID, `[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}`); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *Tag) validateLocalOperatorConsolePolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.LocalOperatorConsolePolicy) { // not required
+		return nil
+	}
+
+	if m.LocalOperatorConsolePolicy != nil {
+		if err := m.LocalOperatorConsolePolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("localOperatorConsolePolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("localOperatorConsolePolicy")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -430,6 +456,10 @@ func (m *Tag) ContextValidate(ctx context.Context, formats strfmt.Registry) erro
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateLocalOperatorConsolePolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateModulePolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -545,6 +575,22 @@ func (m *Tag) contextValidateID(ctx context.Context, formats strfmt.Registry) er
 
 	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *Tag) contextValidateLocalOperatorConsolePolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.LocalOperatorConsolePolicy != nil {
+		if err := m.LocalOperatorConsolePolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("localOperatorConsolePolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("localOperatorConsolePolicy")
+			}
+			return err
+		}
 	}
 
 	return nil

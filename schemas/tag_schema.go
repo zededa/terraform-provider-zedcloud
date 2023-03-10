@@ -5,36 +5,49 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Tag resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagModel(d *schema.ResourceData) *models.Tag {
 	var attestationPolicy *models.PolicyConfig // PolicyConfig
 	attestationPolicyInterface, attestationPolicyIsSet := d.GetOk("attestation_policy")
-	if attestationPolicyIsSet {
-		attestationPolicyMap := attestationPolicyInterface.([]interface{})[0].(map[string]interface{})
-		attestationPolicy = PolicyConfigModelFromMap(attestationPolicyMap)
+	if attestationPolicyIsSet && attestationPolicyInterface != nil {
+		attestationPolicyMap := attestationPolicyInterface.([]interface{})
+		if len(attestationPolicyMap) > 0 {
+			attestationPolicy = PolicyConfigModelFromMap(attestationPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	var deployment *models.Deployment // Deployment
 	deploymentInterface, deploymentIsSet := d.GetOk("deployment")
-	if deploymentIsSet {
-		deploymentMap := deploymentInterface.([]interface{})[0].(map[string]interface{})
-		deployment = DeploymentModelFromMap(deploymentMap)
+	if deploymentIsSet && deploymentInterface != nil {
+		deploymentMap := deploymentInterface.([]interface{})
+		if len(deploymentMap) > 0 {
+			deployment = DeploymentModelFromMap(deploymentMap[0].(map[string]interface{}))
+		}
 	}
 	description, _ := d.Get("description").(string)
 	var edgeviewPolicy *models.PolicyConfig // PolicyConfig
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
-	if edgeviewPolicyIsSet {
-		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})[0].(map[string]interface{})
-		edgeviewPolicy = PolicyConfigModelFromMap(edgeviewPolicyMap)
+	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
+		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
+		if len(edgeviewPolicyMap) > 0 {
+			edgeviewPolicy = PolicyConfigModelFromMap(edgeviewPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	id, _ := d.Get("id").(string)
+	var localOperatorConsolePolicy *models.PolicyConfig // PolicyConfig
+	localOperatorConsolePolicyInterface, localOperatorConsolePolicyIsSet := d.GetOk("local_operator_console_policy")
+	if localOperatorConsolePolicyIsSet && localOperatorConsolePolicyInterface != nil {
+		localOperatorConsolePolicyMap := localOperatorConsolePolicyInterface.([]interface{})
+		if len(localOperatorConsolePolicyMap) > 0 {
+			localOperatorConsolePolicy = PolicyConfigModelFromMap(localOperatorConsolePolicyMap[0].(map[string]interface{}))
+		}
+	}
 	name, _ := d.Get("name").(string)
 	var networkPolicy *models.PolicyConfig // PolicyConfig
 	networkPolicyInterface, networkPolicyIsSet := d.GetOk("network_policy")
-	if networkPolicyIsSet {
-		networkPolicyMap := networkPolicyInterface.([]interface{})[0].(map[string]interface{})
-		networkPolicy = PolicyConfigModelFromMap(networkPolicyMap)
+	if networkPolicyIsSet && networkPolicyInterface != nil {
+		networkPolicyMap := networkPolicyInterface.([]interface{})
+		if len(networkPolicyMap) > 0 {
+			networkPolicy = PolicyConfigModelFromMap(networkPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	title, _ := d.Get("title").(string)
 	var typeVar *models.TagType // TagType
@@ -44,66 +57,89 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		typeVar = models.NewTagType(models.TagType(typeModel))
 	}
 	return &models.Tag{
-		AttestationPolicy: attestationPolicy,
-		Deployment:        deployment,
-		Description:       description,
-		EdgeviewPolicy:    edgeviewPolicy,
-		ID:                id,
-		Name:              &name, // string true false false
-		NetworkPolicy:     networkPolicy,
-		Title:             &title, // string true false false
-		Type:              typeVar,
+		AttestationPolicy:          attestationPolicy,
+		Deployment:                 deployment,
+		Description:                description,
+		EdgeviewPolicy:             edgeviewPolicy,
+		ID:                         id,
+		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
+		Name:                       &name, // string true false false
+		NetworkPolicy:              networkPolicy,
+		Title:                      &title, // string true false false
+		Type:                       typeVar,
 	}
 }
 
 func TagModelFromMap(m map[string]interface{}) *models.Tag {
 	var attestationPolicy *models.PolicyConfig // PolicyConfig
 	attestationPolicyInterface, attestationPolicyIsSet := m["attestation_policy"]
-	if attestationPolicyIsSet {
-		attestationPolicyMap := attestationPolicyInterface.([]interface{})[0].(map[string]interface{})
-		attestationPolicy = PolicyConfigModelFromMap(attestationPolicyMap)
+	if attestationPolicyIsSet && attestationPolicyInterface != nil {
+		attestationPolicyMap := attestationPolicyInterface.([]interface{})
+		if len(attestationPolicyMap) > 0 {
+			attestationPolicy = PolicyConfigModelFromMap(attestationPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var deployment *models.Deployment // Deployment
 	deploymentInterface, deploymentIsSet := m["deployment"]
-	if deploymentIsSet {
-		deploymentMap := deploymentInterface.([]interface{})[0].(map[string]interface{})
-		deployment = DeploymentModelFromMap(deploymentMap)
+	if deploymentIsSet && deploymentInterface != nil {
+		deploymentMap := deploymentInterface.([]interface{})
+		if len(deploymentMap) > 0 {
+			deployment = DeploymentModelFromMap(deploymentMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	description := m["description"].(string)
 	var edgeviewPolicy *models.PolicyConfig // PolicyConfig
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := m["edgeview_policy"]
-	if edgeviewPolicyIsSet {
-		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})[0].(map[string]interface{})
-		edgeviewPolicy = PolicyConfigModelFromMap(edgeviewPolicyMap)
+	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
+		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
+		if len(edgeviewPolicyMap) > 0 {
+			edgeviewPolicy = PolicyConfigModelFromMap(edgeviewPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	id := m["id"].(string)
+	var localOperatorConsolePolicy *models.PolicyConfig // PolicyConfig
+	localOperatorConsolePolicyInterface, localOperatorConsolePolicyIsSet := m["local_operator_console_policy"]
+	if localOperatorConsolePolicyIsSet && localOperatorConsolePolicyInterface != nil {
+		localOperatorConsolePolicyMap := localOperatorConsolePolicyInterface.([]interface{})
+		if len(localOperatorConsolePolicyMap) > 0 {
+			localOperatorConsolePolicy = PolicyConfigModelFromMap(localOperatorConsolePolicyMap[0].(map[string]interface{}))
+		}
+	}
+	//
 	name := m["name"].(string)
 	var networkPolicy *models.PolicyConfig // PolicyConfig
 	networkPolicyInterface, networkPolicyIsSet := m["network_policy"]
-	if networkPolicyIsSet {
-		networkPolicyMap := networkPolicyInterface.([]interface{})[0].(map[string]interface{})
-		networkPolicy = PolicyConfigModelFromMap(networkPolicyMap)
+	if networkPolicyIsSet && networkPolicyInterface != nil {
+		networkPolicyMap := networkPolicyInterface.([]interface{})
+		if len(networkPolicyMap) > 0 {
+			networkPolicy = PolicyConfigModelFromMap(networkPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	title := m["title"].(string)
-	typeVar := m["type"].(*models.TagType) // TagType
+	var typeVar *models.TagType // TagType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewTagType(models.TagType(typeModel))
+	}
 	return &models.Tag{
-		AttestationPolicy: attestationPolicy,
-		Deployment:        deployment,
-		Description:       description,
-		EdgeviewPolicy:    edgeviewPolicy,
-		ID:                id,
-		Name:              &name,
-		NetworkPolicy:     networkPolicy,
-		Title:             &title,
-		Type:              typeVar,
+		AttestationPolicy:          attestationPolicy,
+		Deployment:                 deployment,
+		Description:                description,
+		EdgeviewPolicy:             edgeviewPolicy,
+		ID:                         id,
+		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
+		Name:                       &name,
+		NetworkPolicy:              networkPolicy,
+		Title:                      &title,
+		Type:                       typeVar,
 	}
 }
 
-// Update the underlying Tag resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("app_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.AppPolicy}))
 	d.Set("attestation_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.AttestationPolicy}))
@@ -113,6 +149,7 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("description", m.Description)
 	d.Set("edgeview_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.EdgeviewPolicy}))
 	d.Set("id", m.ID)
+	d.Set("local_operator_console_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.LocalOperatorConsolePolicy}))
 	d.Set("module_policy", SetPolicyConfigSubResourceData(m.ModulePolicy))
 	d.Set("name", m.Name)
 	d.Set("network_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.NetworkPolicy}))
@@ -122,7 +159,6 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("type", m.Type)
 }
 
-// Iterate through and update the Tag resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 	for _, TagModel := range m {
 		if TagModel != nil {
@@ -135,6 +171,7 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 			properties["description"] = TagModel.Description
 			properties["edgeview_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.EdgeviewPolicy})
 			properties["id"] = TagModel.ID
+			properties["local_operator_console_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.LocalOperatorConsolePolicy})
 			properties["module_policy"] = SetPolicyConfigSubResourceData(TagModel.ModulePolicy)
 			properties["name"] = TagModel.Name
 			properties["network_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.NetworkPolicy})
@@ -148,8 +185,7 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 	return
 }
 
-// Schema mapping representing the Tag resource defined in the Terraform configuration
-func TagSchema() map[string]*schema.Schema {
+func Tag() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: `Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group`,
@@ -217,6 +253,15 @@ func TagSchema() map[string]*schema.Schema {
 			Computed:    true,
 		},
 
+		"local_operator_console_policy": {
+			Description: `Local operator console policy on devices of this project`,
+			Type:        schema.TypeList, //GoType: PolicyConfig
+			Elem: &schema.Resource{
+				Schema: PolicyConfigSchema(),
+			},
+			Optional: true,
+		},
+
 		"module_policy": {
 			Description: `Resource group wide policy for Azure module configuration to be applied to all edge applications`,
 			Type:        schema.TypeList, //GoType: []*PolicyConfig
@@ -271,7 +316,6 @@ func TagSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the Tag resource
 func GetTagPropertyFields() (t []string) {
 	return []string{
 		"attestation_policy",
@@ -279,6 +323,7 @@ func GetTagPropertyFields() (t []string) {
 		"description",
 		"edgeview_policy",
 		"id",
+		"local_operator_console_policy",
 		"name",
 		"network_policy",
 		"title",

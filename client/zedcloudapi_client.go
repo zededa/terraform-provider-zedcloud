@@ -17,6 +17,7 @@ import (
 	"github.com/zededa/terraform-provider/client/edge_node_configuration"
 	"github.com/zededa/terraform-provider/client/hardware_model"
 	"github.com/zededa/terraform-provider/client/image_configuration"
+	"github.com/zededa/terraform-provider/client/project"
 	"github.com/zededa/terraform-provider/client/volume_instance_configuration"
 )
 
@@ -73,6 +74,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.VolumeInstance = volume_instance_configuration.New(transport, formats)
 	cli.Application = edge_application_configuration.New(transport, formats)
 	cli.ApplicationInstance = edge_application_instance_configuration.New(transport, formats)
+	cli.Project = project.New(transport, formats)
 	return cli
 }
 
@@ -135,6 +137,8 @@ type ZedcloudAPI struct {
 
 	ApplicationInstance edge_application_instance_configuration.ClientService
 
+	Project project.ClientService
+
 	Transport runtime.ClientTransport
 }
 
@@ -149,4 +153,5 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Datastore.SetTransport(transport)
 	c.Application.SetTransport(transport)
 	c.ApplicationInstance.SetTransport(transport)
+	c.Project.SetTransport(transport)
 }
