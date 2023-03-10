@@ -412,6 +412,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 				Schema: DetailsSchema(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"description": {
