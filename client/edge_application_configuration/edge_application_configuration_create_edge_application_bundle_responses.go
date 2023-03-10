@@ -191,11 +191,11 @@ func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleBadRequest) Code
 }
 
 func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleBadRequest) Error() string {
-	return fmt.Sprintf("[POST /v1/apps][%d] edgeApplicationConfigurationCreateEdgeApplicationBundleBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[POST /v1/apps][%d] Edge-App: Bad Request  %+v", 400, spew.Sdump(o.Payload.Error))
 }
 
 func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleBadRequest) String() string {
-	return fmt.Sprintf("[POST /v1/apps][%d] edgeApplicationConfigurationCreateEdgeApplicationBundleBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[POST /v1/apps][%d] Edge-App: Bad Request  %+v", 400, spew.Sdump(o.Payload.Error))
 }
 
 func (o *EdgeApplicationConfigurationCreateEdgeApplicationBundleBadRequest) GetPayload() *models.ZsrvResponse {
