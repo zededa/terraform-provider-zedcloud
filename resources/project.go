@@ -203,34 +203,34 @@ func UpdateProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	return diags
 }
 
-// func Project_Delete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-// 	var diags diag.Diagnostics
+func DeleteProject(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
 
-// 	params := project.NewProjectDeleteParams()
+	params := project.DeleteParams()
 
-// 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-// 	if xRequestIdIsSet {
-// 		params.XRequestID = xRequestIdVal.(*string)
-// 	}
+	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
+	if xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
 
-// 	idVal, idIsSet := d.GetOk("id")
-// 	if idIsSet {
-// 		id, _ := idVal.(string)
-// 		params.ID = id
-// 	} else {
-// 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-// 		return diags
-// 	}
+	idVal, idIsSet := d.GetOk("id")
+	if idIsSet {
+		id, _ := idVal.(string)
+		params.ID = id
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		return diags
+	}
 
-// 	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
-// 	resp, err := client.Project.ProjectDelete(params, nil)
-// 	log.Printf("[TRACE] response: %v", resp)
-// 	if err != nil {
-// 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
-// 		return diags
-// 	}
+	resp, err := client.Project.Delete(params, nil)
+	log.Printf("[TRACE] response: %v", resp)
+	if err != nil {
+		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return diags
+	}
 
-// 	d.SetId("")
-// 	return diags
-// }
+	d.SetId("")
+	return diags
+}

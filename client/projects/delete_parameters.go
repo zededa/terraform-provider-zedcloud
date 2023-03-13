@@ -14,13 +14,13 @@ import (
 	"github.com/go-openapi/strfmt"
 )
 
-// NewProjectsDeleteParams creates a new ProjectsDeleteParams object,
+// DeleteParams creates a new ProjectsDeleteParams object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewProjectsDeleteParams() *ProjectsDeleteParams {
+func DeleteParams() *ProjectsDeleteParams {
 	return &ProjectsDeleteParams{
 		timeout: cr.DefaultTimeout,
 	}

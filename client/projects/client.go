@@ -87,7 +87,7 @@ Delete the project with the provided ID.
 func (a *Client) Delete(params *ProjectsDeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsDeleteOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewProjectsDeleteParams()
+		params = DeleteParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "Projects_Delete",
