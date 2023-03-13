@@ -17,12 +17,9 @@ func ProjectResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateProject,
 		ReadContext:   GetProject,
-		/*
-			DeleteContext: Project_Delete,
-			CreateContext: Project_GetByID,
-			UpdateContext: Project_Update,
-		*/
-		Schema: zschema.Tag(),
+		UpdateContext: UpdateProject,
+		DeleteContext: DeleteProject,
+		Schema:        zschema.Tag(),
 	}
 }
 
