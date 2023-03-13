@@ -207,7 +207,7 @@ Note, partial updates are not supported! The body must contain the complete proj
 func (a *Client) Update(params *ProjectsUpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ProjectsUpdateOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewProjectsUpdateParams()
+		params = UpdateParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "Projects_Update",
