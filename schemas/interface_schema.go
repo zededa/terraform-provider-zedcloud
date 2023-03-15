@@ -99,13 +99,13 @@ func SetInterfaceSubResourceData(m []*models.Interface) (d []*map[string]interfa
 }
 
 // Schema mapping representing the Interface resource defined in the Terraform configuration
-func InterfaceSchema() map[string]*schema.Schema {
+func Interface() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"acls": {
 			Description: `Traffic access control rules for this interface. Applicable only when "direct attach" flag is false.`,
 			Type:        schema.TypeList, //GoType: []*ACL
 			Elem: &schema.Resource{
-				Schema: ACLSchema(),
+				Schema: ACL(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

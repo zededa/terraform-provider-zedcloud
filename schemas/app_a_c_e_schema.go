@@ -23,7 +23,8 @@ func AppACEModel(d *schema.ResourceData) *models.AppACE {
 			actions = append(actions, m)
 		}
 	}
-	id := int32(d.Get("id").(int))
+	idInt, _ := d.Get("id").(int)
+	id := int32(idInt)
 	var matches []*models.AppACEMatch // []*AppACEMatch
 	matchesInterface, matchesIsSet := d.GetOk("matches")
 	if matchesIsSet {
@@ -44,9 +45,9 @@ func AppACEModel(d *schema.ResourceData) *models.AppACE {
 	name, _ := d.Get("name").(string)
 	return &models.AppACE{
 		Actions: actions,
-		ID:      &id, // int32 true false false
+		ID:      &id, // int32
 		Matches: matches,
-		Name:    &name, // string true false false
+		Name:    &name, // string
 	}
 }
 
@@ -68,7 +69,7 @@ func AppACEModelFromMap(m map[string]interface{}) *models.AppACE {
 			actions = append(actions, m)
 		}
 	}
-	id := int32(m["id"].(int))
+	id := int32(m["id"].(int))        // int32
 	var matches []*models.AppACEMatch // []*AppACEMatch
 	matchesInterface, matchesIsSet := m["matches"]
 	if matchesIsSet {
@@ -95,7 +96,6 @@ func AppACEModelFromMap(m map[string]interface{}) *models.AppACE {
 	}
 }
 
-// Update the underlying AppACE resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetAppACEResourceData(d *schema.ResourceData, m *models.AppACE) {
 	d.Set("actions", SetAppACEActionSubResourceData(m.Actions))
 	d.Set("id", m.ID)
@@ -103,7 +103,6 @@ func SetAppACEResourceData(d *schema.ResourceData, m *models.AppACE) {
 	d.Set("name", m.Name)
 }
 
-// Iterate through and update the AppACE resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppACESubResourceData(m []*models.AppACE) (d []*map[string]interface{}) {
 	for _, AppACEModel := range m {
 		if AppACEModel != nil {
@@ -118,8 +117,7 @@ func SetAppACESubResourceData(m []*models.AppACE) (d []*map[string]interface{}) 
 	return
 }
 
-// Schema mapping representing the AppACE resource defined in the Terraform configuration
-func AppACESchema() map[string]*schema.Schema {
+func AppACE() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"actions": {
 			Description: `app ACE actions`,
@@ -133,7 +131,7 @@ func AppACESchema() map[string]*schema.Schema {
 
 		"id": {
 			Description: `app ACE id`,
-			Type:        schema.TypeInt,
+			Type:        schema.TypeString,
 			Computed:    true,
 		},
 
@@ -155,7 +153,6 @@ func AppACESchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the AppACE resource
 func GetAppACEPropertyFields() (t []string) {
 	return []string{
 		"actions",

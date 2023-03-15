@@ -5,16 +5,15 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ClusterPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ClusterPolicyModel(d *schema.ResourceData) *models.ClusterPolicy {
 	appPolicyID, _ := d.Get("app_policy_id").(string)
 	var clusterConfig *models.ClusterConfig // ClusterConfig
 	clusterConfigInterface, clusterConfigIsSet := d.GetOk("cluster_config")
-	if clusterConfigIsSet {
-		clusterConfigMap := clusterConfigInterface.([]interface{})[0].(map[string]interface{})
-		clusterConfig = ClusterConfigModelFromMap(clusterConfigMap)
+	if clusterConfigIsSet && clusterConfigInterface != nil {
+		clusterConfigMap := clusterConfigInterface.([]interface{})
+		if len(clusterConfigMap) > 0 {
+			clusterConfig = ClusterConfigModelFromMap(clusterConfigMap[0].(map[string]interface{}))
+		}
 	}
 	networkPolicyID, _ := d.Get("network_policy_id").(string)
 	var typeVar *models.ClusterType // ClusterType
@@ -24,9 +23,9 @@ func ClusterPolicyModel(d *schema.ResourceData) *models.ClusterPolicy {
 		typeVar = models.NewClusterType(models.ClusterType(typeModel))
 	}
 	return &models.ClusterPolicy{
-		AppPolicyID:     &appPolicyID, // string true false false
+		AppPolicyID:     &appPolicyID,
 		ClusterConfig:   clusterConfig,
-		NetworkPolicyID: &networkPolicyID, // string true false false
+		NetworkPolicyID: &networkPolicyID,
 		Type:            typeVar,
 	}
 }
@@ -35,13 +34,20 @@ func ClusterPolicyModelFromMap(m map[string]interface{}) *models.ClusterPolicy {
 	appPolicyID := m["app_policy_id"].(string)
 	var clusterConfig *models.ClusterConfig // ClusterConfig
 	clusterConfigInterface, clusterConfigIsSet := m["cluster_config"]
-	if clusterConfigIsSet {
-		clusterConfigMap := clusterConfigInterface.([]interface{})[0].(map[string]interface{})
-		clusterConfig = ClusterConfigModelFromMap(clusterConfigMap)
+	if clusterConfigIsSet && clusterConfigInterface != nil {
+		clusterConfigMap := clusterConfigInterface.([]interface{})
+		if len(clusterConfigMap) > 0 {
+			clusterConfig = ClusterConfigModelFromMap(clusterConfigMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	networkPolicyID := m["network_policy_id"].(string)
-	typeVar := m["type"].(*models.ClusterType) // ClusterType
+	var typeVar *models.ClusterType // ClusterType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewClusterType(models.ClusterType(typeModel))
+	}
 	return &models.ClusterPolicy{
 		AppPolicyID:     &appPolicyID,
 		ClusterConfig:   clusterConfig,
@@ -50,7 +56,6 @@ func ClusterPolicyModelFromMap(m map[string]interface{}) *models.ClusterPolicy {
 	}
 }
 
-// Update the underlying ClusterPolicy resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetClusterPolicyResourceData(d *schema.ResourceData, m *models.ClusterPolicy) {
 	d.Set("app_policy_id", m.AppPolicyID)
 	d.Set("cluster_config", SetClusterConfigSubResourceData([]*models.ClusterConfig{m.ClusterConfig}))
@@ -58,7 +63,6 @@ func SetClusterPolicyResourceData(d *schema.ResourceData, m *models.ClusterPolic
 	d.Set("type", m.Type)
 }
 
-// Iterate through and update the ClusterPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetClusterPolicySubResourceData(m []*models.ClusterPolicy) (d []*map[string]interface{}) {
 	for _, ClusterPolicyModel := range m {
 		if ClusterPolicyModel != nil {
@@ -73,8 +77,7 @@ func SetClusterPolicySubResourceData(m []*models.ClusterPolicy) (d []*map[string
 	return
 }
 
-// Schema mapping representing the ClusterPolicy resource defined in the Terraform configuration
-func ClusterPolicySchema() map[string]*schema.Schema {
+func ClusterPolicy() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy_id": {
 			Description: `UUID of the app policy linked to this cluster policy`,
@@ -86,7 +89,7 @@ func ClusterPolicySchema() map[string]*schema.Schema {
 			Description: `Cluster Policy Parameters`,
 			Type:        schema.TypeList, //GoType: ClusterConfig
 			Elem: &schema.Resource{
-				Schema: ClusterConfigSchema(),
+				Schema: ClusterConfig(),
 			},
 			Optional: true,
 		},
@@ -105,7 +108,6 @@ func ClusterPolicySchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the ClusterPolicy resource
 func GetClusterPolicyPropertyFields() (t []string) {
 	return []string{
 		"app_policy_id",

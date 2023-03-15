@@ -5,27 +5,44 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AppInstConfig resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 	bundleID, _ := d.Get("bundle_id").(string)
 	bundleVersionInt, _ := d.Get("bundle_version").(int)
 	bundleVersion := int64(bundleVersionInt)
 	cpusInt, _ := d.Get("cpus").(int)
 	cpus := int64(cpusInt)
-	interfaces, _ := d.Get("interfaces").([]*models.AppInterface) // []*AppInterface
-	var logs *models.AppInstanceLogs                              // AppInstanceLogs
+	var interfaces []*models.AppInterface // []*AppInterface
+	interfacesInterface, interfacesIsSet := d.GetOk("interfaces")
+	if interfacesIsSet {
+		var items []interface{}
+		if listItems, isList := interfacesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = interfacesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppInterfaceModelFromMap(v.(map[string]interface{}))
+			interfaces = append(interfaces, m)
+		}
+	}
+	var logs *models.AppInstanceLogs // AppInstanceLogs
 	logsInterface, logsIsSet := d.GetOk("logs")
-	if logsIsSet {
-		logsMap := logsInterface.([]interface{})[0].(map[string]interface{})
-		logs = AppInstanceLogsModelFromMap(logsMap)
+	if logsIsSet && logsInterface != nil {
+		logsMap := logsInterface.([]interface{})
+		if len(logsMap) > 0 {
+			logs = AppInstanceLogsModelFromMap(logsMap[0].(map[string]interface{}))
+		}
 	}
 	var manifestJSON *models.VMManifest // VMManifest
 	manifestJSONInterface, manifestJSONIsSet := d.GetOk("manifest_json")
-	if manifestJSONIsSet {
-		manifestJSONMap := manifestJSONInterface.([]interface{})[0].(map[string]interface{})
-		manifestJSON = VMManifestModelFromMap(manifestJSONMap)
+	if manifestJSONIsSet && manifestJSONInterface != nil {
+		manifestJSONMap := manifestJSONInterface.([]interface{})
+		if len(manifestJSONMap) > 0 {
+			manifestJSON = VMManifestModelFromMap(manifestJSONMap[0].(map[string]interface{}))
+		}
 	}
 	memoryInt, _ := d.Get("memory").(int)
 	memory := int64(memoryInt)
@@ -48,21 +65,36 @@ func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 	}
 	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")
-	if parentDetailIsSet {
-		parentDetailMap := parentDetailInterface.([]interface{})[0].(map[string]interface{})
-		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
+	if parentDetailIsSet && parentDetailInterface != nil {
+		parentDetailMap := parentDetailInterface.([]interface{})
+		if len(parentDetailMap) > 0 {
+			parentDetail = ObjectParentDetailModelFromMap(parentDetailMap[0].(map[string]interface{}))
+		}
 	}
 	remoteConsole, _ := d.Get("remote_console").(bool)
 	startDelayInSecondsInt, _ := d.Get("start_delay_in_seconds").(int)
 	startDelayInSeconds := int64(startDelayInSecondsInt)
 	storageInt, _ := d.Get("storage").(int)
 	storage := int64(storageInt)
-	tags, _ := d.Get("tags").(map[string]string) // map[string]string
-	var vminfo *models.VM                        // VM
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := d.GetOk("tags")
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
+	var vminfo *models.VM // VM
 	vminfoInterface, vminfoIsSet := d.GetOk("vminfo")
-	if vminfoIsSet {
-		vminfoMap := vminfoInterface.([]interface{})[0].(map[string]interface{})
-		vminfo = VMModelFromMap(vminfoMap)
+	if vminfoIsSet && vminfoInterface != nil {
+		vminfoMap := vminfoInterface.([]interface{})
+		if len(vminfoMap) > 0 {
+			vminfo = VMModelFromMap(vminfoMap[0].(map[string]interface{}))
+		}
 	}
 	return &models.AppInstConfig{
 		BundleID:                  bundleID,
@@ -89,46 +121,91 @@ func AppInstConfigModel(d *schema.ResourceData) *models.AppInstConfig {
 
 func AppInstConfigModelFromMap(m map[string]interface{}) *models.AppInstConfig {
 	bundleID := m["bundle_id"].(string)
-	bundleVersion := int64(m["bundle_version"].(int))      // int64 false false false
-	cpus := int64(m["cpus"].(int))                         // int64 false false false
-	interfaces := m["interfaces"].([]*models.AppInterface) // []*AppInterface
-	var logs *models.AppInstanceLogs                       // AppInstanceLogs
+	bundleVersion := int64(m["bundle_version"].(int)) // int64
+	cpus := int64(m["cpus"].(int))                    // int64
+	var interfaces []*models.AppInterface             // []*AppInterface
+	interfacesInterface, interfacesIsSet := m["interfaces"]
+	if interfacesIsSet {
+		var items []interface{}
+		if listItems, isList := interfacesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = interfacesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppInterfaceModelFromMap(v.(map[string]interface{}))
+			interfaces = append(interfaces, m)
+		}
+	}
+	var logs *models.AppInstanceLogs // AppInstanceLogs
 	logsInterface, logsIsSet := m["logs"]
-	if logsIsSet {
-		logsMap := logsInterface.([]interface{})[0].(map[string]interface{})
-		logs = AppInstanceLogsModelFromMap(logsMap)
+	if logsIsSet && logsInterface != nil {
+		logsMap := logsInterface.([]interface{})
+		if len(logsMap) > 0 {
+			logs = AppInstanceLogsModelFromMap(logsMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var manifestJSON *models.VMManifest // VMManifest
 	manifestJSONInterface, manifestJSONIsSet := m["manifest_json"]
-	if manifestJSONIsSet {
-		manifestJSONMap := manifestJSONInterface.([]interface{})[0].(map[string]interface{})
-		manifestJSON = VMManifestModelFromMap(manifestJSONMap)
+	if manifestJSONIsSet && manifestJSONInterface != nil {
+		manifestJSONMap := manifestJSONInterface.([]interface{})
+		if len(manifestJSONMap) > 0 {
+			manifestJSON = VMManifestModelFromMap(manifestJSONMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	memory := int64(m["memory"].(int)) // int64 false false false
+	memory := int64(m["memory"].(int)) // int64
 	nameAppPart := m["name_app_part"].(string)
 	nameProjectPart := m["name_project_part"].(string)
-	namingScheme := m["naming_scheme"].(*models.AppNamingSchemeV2) // AppNamingSchemeV2
-	networks := int64(m["networks"].(int))                         // int64 false false false
+	var namingScheme *models.AppNamingSchemeV2 // AppNamingSchemeV2
+	namingSchemeInterface, namingSchemeIsSet := m["naming_scheme"]
+	if namingSchemeIsSet {
+		namingSchemeModel := namingSchemeInterface.(string)
+		namingScheme = models.NewAppNamingSchemeV2(models.AppNamingSchemeV2(namingSchemeModel))
+	}
+	networks := int64(m["networks"].(int)) // int64
 	newBundleVersionAvailable := m["new_bundle_version_available"].(bool)
-	originType := m["origin_type"].(*models.Origin) // Origin
-	var parentDetail *models.ObjectParentDetail     // ObjectParentDetail
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := m["origin_type"]
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
+	}
+	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := m["parent_detail"]
-	if parentDetailIsSet {
-		parentDetailMap := parentDetailInterface.([]interface{})[0].(map[string]interface{})
-		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
+	if parentDetailIsSet && parentDetailInterface != nil {
+		parentDetailMap := parentDetailInterface.([]interface{})
+		if len(parentDetailMap) > 0 {
+			parentDetail = ObjectParentDetailModelFromMap(parentDetailMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	remoteConsole := m["remote_console"].(bool)
-	startDelayInSeconds := int64(m["start_delay_in_seconds"].(int)) // int64 false false false
-	storage := int64(m["storage"].(int))                            // int64 false false false
-	tags := m["tags"].(map[string]string)
+	startDelayInSeconds := int64(m["start_delay_in_seconds"].(int)) // int64
+	storage := int64(m["storage"].(int))                            // int64
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := m["tags"]
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	var vminfo *models.VM // VM
 	vminfoInterface, vminfoIsSet := m["vminfo"]
-	if vminfoIsSet {
-		vminfoMap := vminfoInterface.([]interface{})[0].(map[string]interface{})
-		vminfo = VMModelFromMap(vminfoMap)
+	if vminfoIsSet && vminfoInterface != nil {
+		vminfoMap := vminfoInterface.([]interface{})
+		if len(vminfoMap) > 0 {
+			vminfo = VMModelFromMap(vminfoMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	return &models.AppInstConfig{
@@ -154,7 +231,6 @@ func AppInstConfigModelFromMap(m map[string]interface{}) *models.AppInstConfig {
 	}
 }
 
-// Update the underlying AppInstConfig resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetAppInstConfigResourceData(d *schema.ResourceData, m *models.AppInstConfig) {
 	d.Set("bundle_id", m.BundleID)
 	d.Set("bundle_version", m.BundleVersion)
@@ -178,7 +254,6 @@ func SetAppInstConfigResourceData(d *schema.ResourceData, m *models.AppInstConfi
 	d.Set("vminfo", SetVMSubResourceData([]*models.VM{m.Vminfo}))
 }
 
-// Iterate through and update the AppInstConfig resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppInstConfigSubResourceData(m []*models.AppInstConfig) (d []*map[string]interface{}) {
 	for _, AppInstConfigModel := range m {
 		if AppInstConfigModel != nil {
@@ -209,8 +284,7 @@ func SetAppInstConfigSubResourceData(m []*models.AppInstConfig) (d []*map[string
 	return
 }
 
-// Schema mapping representing the AppInstConfig resource defined in the Terraform configuration
-func AppInstConfigSchema() map[string]*schema.Schema {
+func AppInstConfig() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"bundle_id": {
 			Description: `User defined name of the edge app, unique across the enterprise. Once app name is created, name can’t be changed`,
@@ -240,7 +314,7 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 			Description: `application interfaces`,
 			Type:        schema.TypeList, //GoType: []*AppInterface
 			Elem: &schema.Resource{
-				Schema: AppInterfaceSchema(),
+				Schema: AppInterface(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -250,7 +324,7 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 			Description: `App Instance logs`,
 			Type:        schema.TypeList, //GoType: AppInstanceLogs
 			Elem: &schema.Resource{
-				Schema: AppInstanceLogsSchema(),
+				Schema: AppInstanceLogs(),
 			},
 			Optional: true,
 		},
@@ -259,7 +333,7 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 			Description: `user defined manifest in JSON format`,
 			Type:        schema.TypeList, //GoType: VMManifest
 			Elem: &schema.Resource{
-				Schema: VMManifestSchema(),
+				Schema: VMManifest(),
 			},
 			Optional: true,
 		},
@@ -310,7 +384,7 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 			Description: `origin and parent related details`,
 			Type:        schema.TypeList, //GoType: ObjectParentDetail
 			Elem: &schema.Resource{
-				Schema: ObjectParentDetailSchema(),
+				Schema: ObjectParentDetail(),
 			},
 			Optional: true,
 		},
@@ -353,7 +427,6 @@ func AppInstConfigSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the AppInstConfig resource
 func GetAppInstConfigPropertyFields() (t []string) {
 	return []string{
 		"bundle_id",

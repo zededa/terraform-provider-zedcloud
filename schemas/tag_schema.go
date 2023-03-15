@@ -6,7 +6,7 @@ import (
 )
 
 func TagModel(d *schema.ResourceData) *models.Tag {
-	var attestationPolicy *models.PolicyConfig // PolicyConfig
+	var attestationPolicy *models.Policy // PolicyConfig
 	attestationPolicyInterface, attestationPolicyIsSet := d.GetOk("attestation_policy")
 	if attestationPolicyIsSet && attestationPolicyInterface != nil {
 		attestationPolicyMap := attestationPolicyInterface.([]interface{})
@@ -23,7 +23,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		}
 	}
 	description, _ := d.Get("description").(string)
-	var edgeviewPolicy *models.PolicyConfig // PolicyConfig
+	var edgeviewPolicy *models.Policy // PolicyConfig
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
 	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
 		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
@@ -32,7 +32,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		}
 	}
 	id, _ := d.Get("id").(string)
-	var localOperatorConsolePolicy *models.PolicyConfig // PolicyConfig
+	var localOperatorConsolePolicy *models.Policy // PolicyConfig
 	localOperatorConsolePolicyInterface, localOperatorConsolePolicyIsSet := d.GetOk("local_operator_console_policy")
 	if localOperatorConsolePolicyIsSet && localOperatorConsolePolicyInterface != nil {
 		localOperatorConsolePolicyMap := localOperatorConsolePolicyInterface.([]interface{})
@@ -41,7 +41,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		}
 	}
 	name, _ := d.Get("name").(string)
-	var networkPolicy *models.PolicyConfig // PolicyConfig
+	var networkPolicy *models.Policy // PolicyConfig
 	networkPolicyInterface, networkPolicyIsSet := d.GetOk("network_policy")
 	if networkPolicyIsSet && networkPolicyInterface != nil {
 		networkPolicyMap := networkPolicyInterface.([]interface{})
@@ -71,7 +71,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 }
 
 func TagModelFromMap(m map[string]interface{}) *models.Tag {
-	var attestationPolicy *models.PolicyConfig // PolicyConfig
+	var attestationPolicy *models.Policy // PolicyConfig
 	attestationPolicyInterface, attestationPolicyIsSet := m["attestation_policy"]
 	if attestationPolicyIsSet && attestationPolicyInterface != nil {
 		attestationPolicyMap := attestationPolicyInterface.([]interface{})
@@ -90,7 +90,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 	}
 	//
 	description := m["description"].(string)
-	var edgeviewPolicy *models.PolicyConfig // PolicyConfig
+	var edgeviewPolicy *models.Policy // PolicyConfig
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := m["edgeview_policy"]
 	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
 		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
@@ -100,7 +100,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 	}
 	//
 	id := m["id"].(string)
-	var localOperatorConsolePolicy *models.PolicyConfig // PolicyConfig
+	var localOperatorConsolePolicy *models.Policy // PolicyConfig
 	localOperatorConsolePolicyInterface, localOperatorConsolePolicyIsSet := m["local_operator_console_policy"]
 	if localOperatorConsolePolicyIsSet && localOperatorConsolePolicyInterface != nil {
 		localOperatorConsolePolicyMap := localOperatorConsolePolicyInterface.([]interface{})
@@ -110,7 +110,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 	}
 	//
 	name := m["name"].(string)
-	var networkPolicy *models.PolicyConfig // PolicyConfig
+	var networkPolicy *models.Policy // PolicyConfig
 	networkPolicyInterface, networkPolicyIsSet := m["network_policy"]
 	if networkPolicyIsSet && networkPolicyInterface != nil {
 		networkPolicyMap := networkPolicyInterface.([]interface{})
@@ -141,18 +141,18 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 }
 
 func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
-	d.Set("app_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.AppPolicy}))
-	d.Set("attestation_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.AttestationPolicy}))
+	d.Set("app_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.AppPolicy}))
+	d.Set("attestation_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.AttestationPolicy}))
 	d.Set("attr", m.Attr)
-	d.Set("cloud_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.CloudPolicy}))
+	d.Set("cloud_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.CloudPolicy}))
 	d.Set("deployment", SetDeploymentSubResourceData([]*models.Deployment{m.Deployment}))
 	d.Set("description", m.Description)
-	d.Set("edgeview_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.EdgeviewPolicy}))
+	d.Set("edgeview_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.EdgeviewPolicy}))
 	d.Set("id", m.ID)
-	d.Set("local_operator_console_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.LocalOperatorConsolePolicy}))
+	d.Set("local_operator_console_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.LocalOperatorConsolePolicy}))
 	d.Set("module_policy", SetPolicyConfigSubResourceData(m.ModulePolicy))
 	d.Set("name", m.Name)
-	d.Set("network_policy", SetPolicyConfigSubResourceData([]*models.PolicyConfig{m.NetworkPolicy}))
+	d.Set("network_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.NetworkPolicy}))
 	d.Set("numdevices", m.Numdevices)
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("title", m.Title)
@@ -163,18 +163,18 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 	for _, TagModel := range m {
 		if TagModel != nil {
 			properties := make(map[string]interface{})
-			properties["app_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.AppPolicy})
-			properties["attestation_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.AttestationPolicy})
+			properties["app_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.AppPolicy})
+			properties["attestation_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.AttestationPolicy})
 			properties["attr"] = TagModel.Attr
-			properties["cloud_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.CloudPolicy})
+			properties["cloud_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.CloudPolicy})
 			properties["deployment"] = SetDeploymentSubResourceData([]*models.Deployment{TagModel.Deployment})
 			properties["description"] = TagModel.Description
-			properties["edgeview_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.EdgeviewPolicy})
+			properties["edgeview_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.EdgeviewPolicy})
 			properties["id"] = TagModel.ID
-			properties["local_operator_console_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.LocalOperatorConsolePolicy})
+			properties["local_operator_console_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.LocalOperatorConsolePolicy})
 			properties["module_policy"] = SetPolicyConfigSubResourceData(TagModel.ModulePolicy)
 			properties["name"] = TagModel.Name
-			properties["network_policy"] = SetPolicyConfigSubResourceData([]*models.PolicyConfig{TagModel.NetworkPolicy})
+			properties["network_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.NetworkPolicy})
 			properties["numdevices"] = TagModel.Numdevices
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{TagModel.Revision})
 			properties["title"] = TagModel.Title
@@ -191,7 +191,7 @@ func Tag() map[string]*schema.Schema {
 			Description: `Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group`,
 			Type:        schema.TypeList, //GoType: PolicyConfig
 			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
+				Schema: Policy(),
 			},
 			Computed: true,
 		},
@@ -200,7 +200,7 @@ func Tag() map[string]*schema.Schema {
 			Description: `Attestation policy to enforce on all devices of this project`,
 			Type:        schema.TypeList, //GoType: PolicyConfig
 			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
+				Schema: Policy(),
 			},
 			Optional: true,
 		},
@@ -218,7 +218,7 @@ func Tag() map[string]*schema.Schema {
 			Description: `Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications`,
 			Type:        schema.TypeList, //GoType: PolicyConfig
 			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
+				Schema: Policy(),
 			},
 			Computed: true,
 		},
@@ -242,7 +242,7 @@ func Tag() map[string]*schema.Schema {
 			Description: `Edgeview policy on devices of this project`,
 			Type:        schema.TypeList, //GoType: PolicyConfig
 			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
+				Schema: Policy(),
 			},
 			Optional: true,
 		},
@@ -257,7 +257,7 @@ func Tag() map[string]*schema.Schema {
 			Description: `Local operator console policy on devices of this project`,
 			Type:        schema.TypeList, //GoType: PolicyConfig
 			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
+				Schema: Policy(),
 			},
 			Optional: true,
 		},
@@ -266,7 +266,7 @@ func Tag() map[string]*schema.Schema {
 			Description: `Resource group wide policy for Azure module configuration to be applied to all edge applications`,
 			Type:        schema.TypeList, //GoType: []*PolicyConfig
 			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
+				Schema: Policy(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Computed: true,
@@ -282,7 +282,7 @@ func Tag() map[string]*schema.Schema {
 			Description: `Network policy to enforce on all devices of this project`,
 			Type:        schema.TypeList, //GoType: PolicyConfig
 			Elem: &schema.Resource{
-				Schema: PolicyConfigSchema(),
+				Schema: Policy(),
 			},
 			Optional: true,
 		},
@@ -305,13 +305,13 @@ func Tag() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the resource group. Title can be changed at any time.`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"type": {
 			Description: `Resource group type`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }

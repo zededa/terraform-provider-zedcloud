@@ -238,7 +238,7 @@ func SysModelSchema() map[string]*schema.Schema {
 			Description: `origin and parent related details`,
 			Type:        schema.TypeList, //GoType: ObjectParentDetail
 			Elem: &schema.Resource{
-				Schema: ObjectParentDetailSchema(),
+				Schema: ObjectParentDetail(),
 			},
 			Optional: true,
 		},

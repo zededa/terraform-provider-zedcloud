@@ -109,7 +109,6 @@ func VMManifestImageModelFromMap(m map[string]interface{}) *models.VMManifestIma
 	}
 }
 
-// Update the underlying VMManifestImage resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetVMManifestImageResourceData(d *schema.ResourceData, m *models.VMManifestImage) {
 	d.Set("cleartext", m.Cleartext)
 	d.Set("drvtype", m.Drvtype)
@@ -126,7 +125,6 @@ func SetVMManifestImageResourceData(d *schema.ResourceData, m *models.VMManifest
 	d.Set("volumelabel", m.Volumelabel)
 }
 
-// Iterate through and update the VMManifestImage resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetVMManifestImageSubResourceData(m []*models.VMManifestImage) (d []*map[string]interface{}) {
 	for _, VMManifestImageModel := range m {
 		if VMManifestImageModel != nil {
@@ -150,14 +148,12 @@ func SetVMManifestImageSubResourceData(m []*models.VMManifestImage) (d []*map[st
 	return
 }
 
-// Schema mapping representing the VMManifestImage resource defined in the Terraform configuration
-func VMManifestImageSchema() map[string]*schema.Schema {
+func VMManifestImage() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cleartext": {
 			Description: `UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field`,
 			Type:        schema.TypeBool,
-
-			Optional: true,
+			Optional:    true,
 		},
 
 		"drvtype": {
@@ -182,7 +178,6 @@ func VMManifestImageSchema() map[string]*schema.Schema {
 			Description: `UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Computed:    true,
 		},
 
 		"imagename": {
@@ -207,7 +202,7 @@ func VMManifestImageSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: []*Param
 			Elem: &schema.Resource{
-				Schema: ParamSchema(),
+				Schema: Param(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -239,7 +234,6 @@ func VMManifestImageSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the VMManifestImage resource
 func GetVMManifestImagePropertyFields() (t []string) {
 	return []string{
 		"cleartext",

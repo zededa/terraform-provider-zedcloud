@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Author resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AuthorModel(d *schema.ResourceData) *models.Author {
 	company, _ := d.Get("company").(string)
 	email, _ := d.Get("email").(string)
@@ -38,7 +35,6 @@ func AuthorModelFromMap(m map[string]interface{}) *models.Author {
 	}
 }
 
-// Update the underlying Author resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetAuthorResourceData(d *schema.ResourceData, m *models.Author) {
 	d.Set("company", m.Company)
 	d.Set("email", m.Email)
@@ -47,7 +43,6 @@ func SetAuthorResourceData(d *schema.ResourceData, m *models.Author) {
 	d.Set("website", m.Website)
 }
 
-// Iterate through and update the Author resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAuthorSubResourceData(m []*models.Author) (d []*map[string]interface{}) {
 	for _, AuthorModel := range m {
 		if AuthorModel != nil {
@@ -63,8 +58,7 @@ func SetAuthorSubResourceData(m []*models.Author) (d []*map[string]interface{}) 
 	return
 }
 
-// Schema mapping representing the Author resource defined in the Terraform configuration
-func AuthorSchema() map[string]*schema.Schema {
+func Author() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"company": {
 			Description: `UI map: AppEditPage:IdentityPane:Category_Field, AppDetailsPage:IdentityPane:Category_Field`,
@@ -98,7 +92,6 @@ func AuthorSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the Author resource
 func GetAuthorPropertyFields() (t []string) {
 	return []string{
 		"company",

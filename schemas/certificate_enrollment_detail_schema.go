@@ -5,40 +5,101 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate CertificateEnrollmentDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func CertificateEnrollmentDetailModel(d *schema.ResourceData) *models.CertificateEnrollmentDetail {
-	certificateEnrollmentDetail, _ := d.Get("certificate_enrollment_detail").(models.CertificateEnrollmentDetail)
-	return &certificateEnrollmentDetail
+	var groupCertificateEnrollment *models.GroupCertificateEnrollment // GroupCertificateEnrollment
+	groupCertificateEnrollmentInterface, groupCertificateEnrollmentIsSet := d.GetOk("group_certificate_enrollment")
+	if groupCertificateEnrollmentIsSet && groupCertificateEnrollmentInterface != nil {
+		groupCertificateEnrollmentMap := groupCertificateEnrollmentInterface.([]interface{})
+		if len(groupCertificateEnrollmentMap) > 0 {
+			groupCertificateEnrollment = GroupCertificateEnrollmentModelFromMap(groupCertificateEnrollmentMap[0].(map[string]interface{}))
+		}
+	}
+	individualCertificateEnrollment, _ := d.Get("individual_certificate_enrollment").(models.IndividualCertificateEnrollment) // IndividualCertificateEnrollment
+	var typeVar *models.EnrollmentType                                                                                        // EnrollmentType
+	typeInterface, typeIsSet := d.GetOk("type")
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewEnrollmentType(models.EnrollmentType(typeModel))
+	}
+	return &models.CertificateEnrollmentDetail{
+		GroupCertificateEnrollment:      groupCertificateEnrollment,
+		IndividualCertificateEnrollment: individualCertificateEnrollment,
+		Type:                            typeVar,
+	}
 }
 
 func CertificateEnrollmentDetailModelFromMap(m map[string]interface{}) *models.CertificateEnrollmentDetail {
-	certificateEnrollmentDetail := m["certificate_enrollment_detail"].(models.CertificateEnrollmentDetail)
-	return &certificateEnrollmentDetail
+	var groupCertificateEnrollment *models.GroupCertificateEnrollment // GroupCertificateEnrollment
+	groupCertificateEnrollmentInterface, groupCertificateEnrollmentIsSet := m["group_certificate_enrollment"]
+	if groupCertificateEnrollmentIsSet && groupCertificateEnrollmentInterface != nil {
+		groupCertificateEnrollmentMap := groupCertificateEnrollmentInterface.([]interface{})
+		if len(groupCertificateEnrollmentMap) > 0 {
+			groupCertificateEnrollment = GroupCertificateEnrollmentModelFromMap(groupCertificateEnrollmentMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	individualCertificateEnrollment := m["individual_certificate_enrollment"].(models.IndividualCertificateEnrollment) // IndividualCertificateEnrollment
+	var typeVar *models.EnrollmentType                                                                                 // EnrollmentType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewEnrollmentType(models.EnrollmentType(typeModel))
+	}
+	return &models.CertificateEnrollmentDetail{
+		GroupCertificateEnrollment:      groupCertificateEnrollment,
+		IndividualCertificateEnrollment: individualCertificateEnrollment,
+		Type:                            typeVar,
+	}
 }
 
-// Update the underlying CertificateEnrollmentDetail resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetCertificateEnrollmentDetailResourceData(d *schema.ResourceData, m *models.CertificateEnrollmentDetail) {
+	d.Set("group_certificate_enrollment", SetGroupCertificateEnrollmentSubResourceData([]*models.GroupCertificateEnrollment{m.GroupCertificateEnrollment}))
+	d.Set("individual_certificate_enrollment", m.IndividualCertificateEnrollment)
+	d.Set("type", m.Type)
 }
 
-// Iterate through and update the CertificateEnrollmentDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCertificateEnrollmentDetailSubResourceData(m []*models.CertificateEnrollmentDetail) (d []*map[string]interface{}) {
 	for _, CertificateEnrollmentDetailModel := range m {
 		if CertificateEnrollmentDetailModel != nil {
 			properties := make(map[string]interface{})
+			properties["group_certificate_enrollment"] = SetGroupCertificateEnrollmentSubResourceData([]*models.GroupCertificateEnrollment{CertificateEnrollmentDetailModel.GroupCertificateEnrollment})
+			properties["individual_certificate_enrollment"] = CertificateEnrollmentDetailModel.IndividualCertificateEnrollment
+			properties["type"] = CertificateEnrollmentDetailModel.Type
 			d = append(d, &properties)
 		}
 	}
 	return
 }
 
-// Schema mapping representing the CertificateEnrollmentDetail resource defined in the Terraform configuration
-func CertificateEnrollmentDetailSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{}
+func CertificateEnrollmentDetail() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"group_certificate_enrollment": {
+			Description: ``,
+			Type:        schema.TypeList, //GoType: GroupCertificateEnrollment
+			Elem: &schema.Resource{
+				Schema: GroupCertificateEnrollmentSchema(),
+			},
+			Optional: true,
+		},
+
+		"individual_certificate_enrollment": {
+			Description: ``,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"type": {
+			Description: ``,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
 }
 
-// Retrieve property field names for updating the CertificateEnrollmentDetail resource
 func GetCertificateEnrollmentDetailPropertyFields() (t []string) {
-	return []string{}
+	return []string{
+		"group_certificate_enrollment",
+		"individual_certificate_enrollment",
+		"type",
+	}
 }

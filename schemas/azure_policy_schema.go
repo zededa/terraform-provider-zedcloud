@@ -5,27 +5,39 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AzurePolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AzurePolicyModel(d *schema.ResourceData) *models.AzurePolicy {
 	appID, _ := d.Get("app_id").(string)
 	appPassword, _ := d.Get("app_password").(string)
 	var azureResourceAndServices *models.AzureResourceAndServices // AzureResourceAndServices
 	azureResourceAndServicesInterface, azureResourceAndServicesIsSet := d.GetOk("azure_resource_and_services")
-	if azureResourceAndServicesIsSet {
-		azureResourceAndServicesMap := azureResourceAndServicesInterface.([]interface{})[0].(map[string]interface{})
-		azureResourceAndServices = AzureResourceAndServicesModelFromMap(azureResourceAndServicesMap)
+	if azureResourceAndServicesIsSet && azureResourceAndServicesInterface != nil {
+		azureResourceAndServicesMap := azureResourceAndServicesInterface.([]interface{})
+		if len(azureResourceAndServicesMap) > 0 {
+			azureResourceAndServices = AzureResourceAndServicesModelFromMap(azureResourceAndServicesMap[0].(map[string]interface{}))
+		}
 	}
 	var certificate *models.Certificate // Certificate
 	certificateInterface, certificateIsSet := d.GetOk("certificate")
-	if certificateIsSet {
-		certificateMap := certificateInterface.([]interface{})[0].(map[string]interface{})
-		certificate = CertificateModelFromMap(certificateMap)
+	if certificateIsSet && certificateInterface != nil {
+		certificateMap := certificateInterface.([]interface{})
+		if len(certificateMap) > 0 {
+			certificate = CertificateModelFromMap(certificateMap[0].(map[string]interface{}))
+		}
 	}
 	cryptoKey, _ := d.Get("crypto_key").(string)
 	customDeploymentManaged, _ := d.Get("custom_deployment_managed").(bool)
-	encryptedSecrets, _ := d.Get("encrypted_secrets").(map[string]string) // map[string]string
+	encryptedSecrets := map[string]string{}
+	encryptedSecretsInterface, encryptedSecretsIsSet := d.GetOk("encryptedSecrets")
+	if encryptedSecretsIsSet {
+		encryptedSecretsMap := encryptedSecretsInterface.(map[string]interface{})
+		for k, v := range encryptedSecretsMap {
+			if v == nil {
+				continue
+			}
+			encryptedSecrets[k] = v.(string)
+		}
+	}
+
 	tenantID, _ := d.Get("tenant_id").(string)
 	return &models.AzurePolicy{
 		AppID:                    &appID,       // string true false false
@@ -44,21 +56,36 @@ func AzurePolicyModelFromMap(m map[string]interface{}) *models.AzurePolicy {
 	appPassword := m["app_password"].(string)
 	var azureResourceAndServices *models.AzureResourceAndServices // AzureResourceAndServices
 	azureResourceAndServicesInterface, azureResourceAndServicesIsSet := m["azure_resource_and_services"]
-	if azureResourceAndServicesIsSet {
-		azureResourceAndServicesMap := azureResourceAndServicesInterface.([]interface{})[0].(map[string]interface{})
-		azureResourceAndServices = AzureResourceAndServicesModelFromMap(azureResourceAndServicesMap)
+	if azureResourceAndServicesIsSet && azureResourceAndServicesInterface != nil {
+		azureResourceAndServicesMap := azureResourceAndServicesInterface.([]interface{})
+		if len(azureResourceAndServicesMap) > 0 {
+			azureResourceAndServices = AzureResourceAndServicesModelFromMap(azureResourceAndServicesMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var certificate *models.Certificate // Certificate
 	certificateInterface, certificateIsSet := m["certificate"]
-	if certificateIsSet {
-		certificateMap := certificateInterface.([]interface{})[0].(map[string]interface{})
-		certificate = CertificateModelFromMap(certificateMap)
+	if certificateIsSet && certificateInterface != nil {
+		certificateMap := certificateInterface.([]interface{})
+		if len(certificateMap) > 0 {
+			certificate = CertificateModelFromMap(certificateMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	cryptoKey := m["crypto_key"].(string)
 	customDeploymentManaged := m["custom_deployment_managed"].(bool)
-	encryptedSecrets := m["encrypted_secrets"].(map[string]string)
+	encryptedSecrets := map[string]string{}
+	encryptedSecretsInterface, encryptedSecretsIsSet := m["encrypted_secrets"]
+	if encryptedSecretsIsSet {
+		encryptedSecretsMap := encryptedSecretsInterface.(map[string]interface{})
+		for k, v := range encryptedSecretsMap {
+			if v == nil {
+				continue
+			}
+			encryptedSecrets[k] = v.(string)
+		}
+	}
+
 	tenantID := m["tenant_id"].(string)
 	return &models.AzurePolicy{
 		AppID:                    &appID,
@@ -72,7 +99,6 @@ func AzurePolicyModelFromMap(m map[string]interface{}) *models.AzurePolicy {
 	}
 }
 
-// Update the underlying AzurePolicy resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetAzurePolicyResourceData(d *schema.ResourceData, m *models.AzurePolicy) {
 	d.Set("app_id", m.AppID)
 	d.Set("app_password", m.AppPassword)
@@ -84,7 +110,6 @@ func SetAzurePolicyResourceData(d *schema.ResourceData, m *models.AzurePolicy) {
 	d.Set("tenant_id", m.TenantID)
 }
 
-// Iterate through and update the AzurePolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAzurePolicySubResourceData(m []*models.AzurePolicy) (d []*map[string]interface{}) {
 	for _, AzurePolicyModel := range m {
 		if AzurePolicyModel != nil {
@@ -103,8 +128,7 @@ func SetAzurePolicySubResourceData(m []*models.AzurePolicy) (d []*map[string]int
 	return
 }
 
-// Schema mapping representing the AzurePolicy resource defined in the Terraform configuration
-func AzurePolicySchema() map[string]*schema.Schema {
+func AzurePolicy() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_id": {
 			Description: `app id for rbac`,
@@ -122,7 +146,7 @@ func AzurePolicySchema() map[string]*schema.Schema {
 			Description: `azure resource and service the policy will be interested in`,
 			Type:        schema.TypeList, //GoType: AzureResourceAndServices
 			Elem: &schema.Resource{
-				Schema: AzureResourceAndServicesSchema(),
+				Schema: AzureResourceAndServices(),
 			},
 			Optional: true,
 		},
@@ -131,7 +155,7 @@ func AzurePolicySchema() map[string]*schema.Schema {
 			Description: `Certificate object holds the details of certificate like encryption type, validity, subject etc`,
 			Type:        schema.TypeList, //GoType: Certificate
 			Elem: &schema.Resource{
-				Schema: CertificateSchema(),
+				Schema: Certificate(),
 			},
 			Optional: true,
 		},
@@ -165,7 +189,6 @@ func AzurePolicySchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the AzurePolicy resource
 func GetAzurePolicyPropertyFields() (t []string) {
 	return []string{
 		"app_id",

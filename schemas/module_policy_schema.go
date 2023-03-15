@@ -5,28 +5,94 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ModulePolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ModulePolicyModel(d *schema.ResourceData) *models.ModulePolicy {
 	etag, _ := d.Get("etag").(string)
-	apps, _ := d.Get("apps").([]*models.AppConfig) // []*AppConfig
+	var apps []*models.AppConfig // []*AppConfig
+	appsInterface, appsIsSet := d.GetOk("apps")
+	if appsIsSet {
+		var items []interface{}
+		if listItems, isList := appsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = appsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppConfigModelFromMap(v.(map[string]interface{}))
+			apps = append(apps, m)
+		}
+	}
+	var azureEdgeAgent *models.AppConfig // AppConfig
+	azureEdgeAgentInterface, azureEdgeAgentIsSet := d.GetOk("azure_edge_agent")
+	if azureEdgeAgentIsSet && azureEdgeAgentInterface != nil {
+		azureEdgeAgentMap := azureEdgeAgentInterface.([]interface{})
+		if len(azureEdgeAgentMap) > 0 {
+			azureEdgeAgent = AppConfigModelFromMap(azureEdgeAgentMap[0].(map[string]interface{}))
+		}
+	}
+	var azureEdgeHub *models.AppConfig // AppConfig
+	azureEdgeHubInterface, azureEdgeHubIsSet := d.GetOk("azure_edge_hub")
+	if azureEdgeHubIsSet && azureEdgeHubInterface != nil {
+		azureEdgeHubMap := azureEdgeHubInterface.([]interface{})
+		if len(azureEdgeHubMap) > 0 {
+			azureEdgeHub = AppConfigModelFromMap(azureEdgeHubMap[0].(map[string]interface{}))
+		}
+	}
 	id, _ := d.Get("id").(string)
-	labels, _ := d.Get("labels").(map[string]string) // map[string]string
-	var metrics *models.MetricsDetail                // MetricsDetail
+	labels := map[string]string{}
+	labelsInterface, labelsIsSet := d.GetOk("labels")
+	if labelsIsSet {
+		labelsMap := labelsInterface.(map[string]interface{})
+		for k, v := range labelsMap {
+			if v == nil {
+				continue
+			}
+			labels[k] = v.(string)
+		}
+	}
+
+	var metrics *models.MetricsDetail // MetricsDetail
 	metricsInterface, metricsIsSet := d.GetOk("metrics")
-	if metricsIsSet {
-		metricsMap := metricsInterface.([]interface{})[0].(map[string]interface{})
-		metrics = MetricsDetailModelFromMap(metricsMap)
+	if metricsIsSet && metricsInterface != nil {
+		metricsMap := metricsInterface.([]interface{})
+		if len(metricsMap) > 0 {
+			metrics = MetricsDetailModelFromMap(metricsMap[0].(map[string]interface{}))
+		}
 	}
 	priorityInt, _ := d.Get("priority").(int)
 	priority := int64(priorityInt)
-	routes, _ := d.Get("routes").(map[string]string) // map[string]string
+	routes := map[string]string{}
+	routesInterface, routesIsSet := d.GetOk("routes")
+	if routesIsSet {
+		routesMap := routesInterface.(map[string]interface{})
+		for k, v := range routesMap {
+			if v == nil {
+				continue
+			}
+			routes[k] = v.(string)
+		}
+	}
+
 	targetCondition, _ := d.Get("target_condition").(string)
-	targetConditionNew, _ := d.Get("target_condition_new").(map[string]string) // map[string]string
+	targetConditionNew := map[string]string{}
+	targetConditionNewInterface, targetConditionNewIsSet := d.GetOk("targetConditionNew")
+	if targetConditionNewIsSet {
+		targetConditionNewMap := targetConditionNewInterface.(map[string]interface{})
+		for k, v := range targetConditionNewMap {
+			if v == nil {
+				continue
+			}
+			targetConditionNew[k] = v.(string)
+		}
+	}
+
 	return &models.ModulePolicy{
 		Etag:               etag,
 		Apps:               apps,
+		AzureEdgeAgent:     azureEdgeAgent,
+		AzureEdgeHub:       azureEdgeHub,
 		ID:                 id,
 		Labels:             labels,
 		Metrics:            metrics,
@@ -39,23 +105,94 @@ func ModulePolicyModel(d *schema.ResourceData) *models.ModulePolicy {
 
 func ModulePolicyModelFromMap(m map[string]interface{}) *models.ModulePolicy {
 	etag := m["etag"].(string)
-	apps := m["apps"].([]*models.AppConfig) // []*AppConfig
-	id := m["id"].(string)
-	labels := m["labels"].(map[string]string)
-	var metrics *models.MetricsDetail // MetricsDetail
-	metricsInterface, metricsIsSet := m["metrics"]
-	if metricsIsSet {
-		metricsMap := metricsInterface.([]interface{})[0].(map[string]interface{})
-		metrics = MetricsDetailModelFromMap(metricsMap)
+	var apps []*models.AppConfig // []*AppConfig
+	appsInterface, appsIsSet := m["apps"]
+	if appsIsSet {
+		var items []interface{}
+		if listItems, isList := appsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = appsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppConfigModelFromMap(v.(map[string]interface{}))
+			apps = append(apps, m)
+		}
+	}
+	var azureEdgeAgent *models.AppConfig // AppConfig
+	azureEdgeAgentInterface, azureEdgeAgentIsSet := m["azure_edge_agent"]
+	if azureEdgeAgentIsSet && azureEdgeAgentInterface != nil {
+		azureEdgeAgentMap := azureEdgeAgentInterface.([]interface{})
+		if len(azureEdgeAgentMap) > 0 {
+			azureEdgeAgent = AppConfigModelFromMap(azureEdgeAgentMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	priority := int64(m["priority"].(int)) // int64 true false false
-	routes := m["routes"].(map[string]string)
+	var azureEdgeHub *models.AppConfig // AppConfig
+	azureEdgeHubInterface, azureEdgeHubIsSet := m["azure_edge_hub"]
+	if azureEdgeHubIsSet && azureEdgeHubInterface != nil {
+		azureEdgeHubMap := azureEdgeHubInterface.([]interface{})
+		if len(azureEdgeHubMap) > 0 {
+			azureEdgeHub = AppConfigModelFromMap(azureEdgeHubMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	id := m["id"].(string)
+	labels := map[string]string{}
+	labelsInterface, labelsIsSet := m["labels"]
+	if labelsIsSet {
+		labelsMap := labelsInterface.(map[string]interface{})
+		for k, v := range labelsMap {
+			if v == nil {
+				continue
+			}
+			labels[k] = v.(string)
+		}
+	}
+
+	var metrics *models.MetricsDetail // MetricsDetail
+	metricsInterface, metricsIsSet := m["metrics"]
+	if metricsIsSet && metricsInterface != nil {
+		metricsMap := metricsInterface.([]interface{})
+		if len(metricsMap) > 0 {
+			metrics = MetricsDetailModelFromMap(metricsMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	priority := int64(m["priority"].(int)) // int64
+	routes := map[string]string{}
+	routesInterface, routesIsSet := m["routes"]
+	if routesIsSet {
+		routesMap := routesInterface.(map[string]interface{})
+		for k, v := range routesMap {
+			if v == nil {
+				continue
+			}
+			routes[k] = v.(string)
+		}
+	}
+
 	targetCondition := m["target_condition"].(string)
-	targetConditionNew := m["target_condition_new"].(map[string]string)
+	targetConditionNew := map[string]string{}
+	targetConditionNewInterface, targetConditionNewIsSet := m["target_condition_new"]
+	if targetConditionNewIsSet {
+		targetConditionNewMap := targetConditionNewInterface.(map[string]interface{})
+		for k, v := range targetConditionNewMap {
+			if v == nil {
+				continue
+			}
+			targetConditionNew[k] = v.(string)
+		}
+	}
+
 	return &models.ModulePolicy{
 		Etag:               etag,
 		Apps:               apps,
+		AzureEdgeAgent:     azureEdgeAgent,
+		AzureEdgeHub:       azureEdgeHub,
 		ID:                 id,
 		Labels:             labels,
 		Metrics:            metrics,
@@ -66,10 +203,11 @@ func ModulePolicyModelFromMap(m map[string]interface{}) *models.ModulePolicy {
 	}
 }
 
-// Update the underlying ModulePolicy resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetModulePolicyResourceData(d *schema.ResourceData, m *models.ModulePolicy) {
 	d.Set("etag", m.Etag)
 	d.Set("apps", SetAppConfigSubResourceData(m.Apps))
+	d.Set("azure_edge_agent", SetAppConfigSubResourceData([]*models.AppConfig{m.AzureEdgeAgent}))
+	d.Set("azure_edge_hub", SetAppConfigSubResourceData([]*models.AppConfig{m.AzureEdgeHub}))
 	d.Set("id", m.ID)
 	d.Set("labels", m.Labels)
 	d.Set("metrics", SetMetricsDetailSubResourceData([]*models.MetricsDetail{m.Metrics}))
@@ -79,13 +217,14 @@ func SetModulePolicyResourceData(d *schema.ResourceData, m *models.ModulePolicy)
 	d.Set("target_condition_new", m.TargetConditionNew)
 }
 
-// Iterate through and update the ModulePolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetModulePolicySubResourceData(m []*models.ModulePolicy) (d []*map[string]interface{}) {
 	for _, ModulePolicyModel := range m {
 		if ModulePolicyModel != nil {
 			properties := make(map[string]interface{})
 			properties["etag"] = ModulePolicyModel.Etag
 			properties["apps"] = SetAppConfigSubResourceData(ModulePolicyModel.Apps)
+			properties["azure_edge_agent"] = SetAppConfigSubResourceData([]*models.AppConfig{ModulePolicyModel.AzureEdgeAgent})
+			properties["azure_edge_hub"] = SetAppConfigSubResourceData([]*models.AppConfig{ModulePolicyModel.AzureEdgeHub})
 			properties["id"] = ModulePolicyModel.ID
 			properties["labels"] = ModulePolicyModel.Labels
 			properties["metrics"] = SetMetricsDetailSubResourceData([]*models.MetricsDetail{ModulePolicyModel.Metrics})
@@ -99,8 +238,7 @@ func SetModulePolicySubResourceData(m []*models.ModulePolicy) (d []*map[string]i
 	return
 }
 
-// Schema mapping representing the ModulePolicy resource defined in the Terraform configuration
-func ModulePolicySchema() map[string]*schema.Schema {
+func ModulePolicy() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"etag": {
 			Description: `etag for deployment`,
@@ -112,10 +250,28 @@ func ModulePolicySchema() map[string]*schema.Schema {
 			Description: `list of app details that will be provisioned on all the devices of the project to which this policy is attached`,
 			Type:        schema.TypeList, //GoType: []*AppConfig
 			Elem: &schema.Resource{
-				Schema: AppConfigSchema(),
+				Schema: AppConfig(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Required: true,
+		},
+
+		"azure_edge_agent": {
+			Description: `app that describes the azure edge agent to be deployed on the Azure runtime`,
+			Type:        schema.TypeList, //GoType: AppConfig
+			Elem: &schema.Resource{
+				Schema: AppConfig(),
+			},
+			Optional: true,
+		},
+
+		"azure_edge_hub": {
+			Description: `app that describes the azure edge hub to be deployed on the Azure runtime`,
+			Type:        schema.TypeList, //GoType: AppConfig
+			Elem: &schema.Resource{
+				Schema: AppConfig(),
+			},
+			Optional: true,
 		},
 
 		"id": {
@@ -137,7 +293,7 @@ func ModulePolicySchema() map[string]*schema.Schema {
 			Description: `custom metrics for deployment`,
 			Type:        schema.TypeList, //GoType: MetricsDetail
 			Elem: &schema.Resource{
-				Schema: MetricsDetailSchema(),
+				Schema: MetricsDetail(),
 			},
 			Optional: true,
 		},
@@ -174,11 +330,12 @@ func ModulePolicySchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the ModulePolicy resource
 func GetModulePolicyPropertyFields() (t []string) {
 	return []string{
 		"etag",
 		"apps",
+		"azure_edge_agent",
+		"azure_edge_hub",
 		"id",
 		"labels",
 		"metrics",

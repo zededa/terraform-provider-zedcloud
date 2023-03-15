@@ -588,7 +588,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `application interfaces`,
 			Type:        schema.TypeList, //GoType: []*AppInterface
 			Elem: &schema.Resource{
-				Schema: AppInterfaceSchema(),
+				Schema: AppInterface(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional:         true,
@@ -605,7 +605,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `App Instance logs`,
 			Type:        schema.TypeList, //GoType: AppInstanceLogs
 			Elem: &schema.Resource{
-				Schema: AppInstanceLogsSchema(),
+				Schema: AppInstanceLogs(),
 			},
 			Optional: true,
 		},

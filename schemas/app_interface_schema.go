@@ -63,23 +63,23 @@ func AppInterfaceModel(d *schema.ResourceData) *models.AppInterface {
 	}
 
 	netname, _ := d.Get("netname").(string)
-	privateip, _ := d.Get("privateip").(bool)
+	privateip, _ := d.Get("privateip").(string)
 	return &models.AppInterface{
 		AccessVlanID:       accessVlanID,
 		Acls:               acls,
 		DefaultNetInstance: defaultNetInstance,
-		Directattach:       &directattach, // bool true false false
+		Directattach:       &directattach, // bool
 		Eidregister:        eidregister,
-		Intfname:           &intfname,  // string true false false
-		Intforder:          &intforder, // int64 true false false
+		Intfname:           &intfname,  // string
+		Intforder:          &intforder, // int64
 		Io:                 io,
-		Ipaddr:             &ipaddr,  // string true false false
-		Macaddr:            &macaddr, // string true false false
+		Ipaddr:             &ipaddr,  // string
+		Macaddr:            &macaddr, // string
 		Netinstid:          netinstid,
-		Netinstname:        &netinstname, // string true false false
+		Netinstname:        &netinstname, // string
 		Netinsttag:         netinsttag,
 		Netname:            netname,
-		Privateip:          &privateip, // string true false false
+		Privateip:          &privateip, // string
 	}
 }
 
@@ -141,7 +141,7 @@ func AppInterfaceModelFromMap(m map[string]interface{}) *models.AppInterface {
 	}
 
 	netname := m["netname"].(string)
-	privateip := m["privateip"].(bool)
+	privateip := m["privateip"].(string)
 	return &models.AppInterface{
 		AccessVlanID:       accessVlanID,
 		Acls:               acls,
@@ -161,7 +161,6 @@ func AppInterfaceModelFromMap(m map[string]interface{}) *models.AppInterface {
 	}
 }
 
-// Update the underlying AppInterface resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetAppInterfaceResourceData(d *schema.ResourceData, m *models.AppInterface) {
 	d.Set("access_vlan_id", m.AccessVlanID)
 	d.Set("acls", SetAppACESubResourceData(m.Acls))
@@ -180,7 +179,6 @@ func SetAppInterfaceResourceData(d *schema.ResourceData, m *models.AppInterface)
 	d.Set("privateip", m.Privateip)
 }
 
-// Iterate through and update the AppInterface resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAppInterfaceSubResourceData(m []*models.AppInterface) (d []*map[string]interface{}) {
 	for _, AppInterfaceModel := range m {
 		if AppInterfaceModel != nil {
@@ -206,8 +204,7 @@ func SetAppInterfaceSubResourceData(m []*models.AppInterface) (d []*map[string]i
 	return
 }
 
-// Schema mapping representing the AppInterface resource defined in the Terraform configuration
-func AppInterfaceSchema() map[string]*schema.Schema {
+func AppInterface() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"access_vlan_id": {
 			Description: `access port VLAN ID, vlan id of zero will be treated as trunk port and vlan id 1 is implicitly used by linux bridges`,
@@ -219,7 +216,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 			Description: `app Acls`,
 			Type:        schema.TypeList, //GoType: []*AppACE
 			Elem: &schema.Resource{
-				Schema: AppACESchema(),
+				Schema: AppACE(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Required: true,
@@ -241,7 +238,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 			Description: `EID register details`,
 			Type:        schema.TypeList, //GoType: EIDRegister
 			Elem: &schema.Resource{
-				Schema: EIDRegisterSchema(),
+				Schema: EIDRegister(),
 			},
 			Required: true,
 		},
@@ -262,7 +259,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 			Description: `Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true`,
 			Type:        schema.TypeList, //GoType: PhyAdapter
 			Elem: &schema.Resource{
-				Schema: PhyAdapterSchema(),
+				Schema: PhyAdapter(),
 			},
 			Required: true,
 		},
@@ -282,7 +279,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 		"netinstid": {
 			Description: `Network Instance id to be matched for interface assignment.`,
 			Type:        schema.TypeString,
-			Computed:    true,
+			Optional:    true,
 		},
 
 		"netinstname": {
@@ -308,13 +305,12 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 
 		"privateip": {
 			Description: `Private IP flag`,
-			Type:        schema.TypeBool,
+			Type:        schema.TypeString,
 			Required:    true,
 		},
 	}
 }
 
-// Retrieve property field names for updating the AppInterface resource
 func GetAppInterfacePropertyFields() (t []string) {
 	return []string{
 		"access_vlan_id",

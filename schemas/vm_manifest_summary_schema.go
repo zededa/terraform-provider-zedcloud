@@ -167,7 +167,7 @@ func VMManifestSummarySchema() map[string]*schema.Schema {
 			Description: `Details of the Edge App`,
 			Type:        schema.TypeList, //GoType: Details
 			Elem: &schema.Resource{
-				Schema: DetailsSchema(),
+				Schema: Details(),
 			},
 			Optional: true,
 		},

@@ -25,10 +25,10 @@ type Tag struct {
 
 	// Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group
 	// Read Only: true
-	AppPolicy *PolicyConfig `json:"appPolicy,omitempty"`
+	AppPolicy *Policy `json:"appPolicy,omitempty"`
 
 	// Attestation policy to enforce on all devices of this project
-	AttestationPolicy *PolicyConfig `json:"attestationPolicy,omitempty"`
+	AttestationPolicy *Policy `json:"attestationPolicy,omitempty"`
 
 	// Resource group wide configuration for edge nodes
 	// Read Only: true
@@ -36,7 +36,7 @@ type Tag struct {
 
 	// Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications
 	// Read Only: true
-	CloudPolicy *PolicyConfig `json:"cloudPolicy,omitempty"`
+	CloudPolicy *Policy `json:"cloudPolicy,omitempty"`
 
 	// Deployment template containing different types of policies
 	Deployment *Deployment `json:"deployment,omitempty"`
@@ -46,7 +46,7 @@ type Tag struct {
 	Description string `json:"description,omitempty"`
 
 	// Edgeview policy on devices of this project
-	EdgeviewPolicy *PolicyConfig `json:"edgeviewPolicy,omitempty"`
+	EdgeviewPolicy *Policy `json:"edgeviewPolicy,omitempty"`
 
 	// System defined universally unique Id of the resource group.
 	// Read Only: true
@@ -54,11 +54,11 @@ type Tag struct {
 	ID string `json:"id,omitempty"`
 
 	// Local operator console policy on devices of this project
-	LocalOperatorConsolePolicy *PolicyConfig `json:"localOperatorConsolePolicy,omitempty"`
+	LocalOperatorConsolePolicy *Policy `json:"localOperatorConsolePolicy,omitempty"`
 
 	// Resource group wide policy for Azure module configuration to be applied to all edge applications
 	// Read Only: true
-	ModulePolicy []*PolicyConfig `json:"modulePolicy"`
+	ModulePolicy []*Policy `json:"modulePolicy"`
 
 	// User defined name of the resource group, unique across the enterprise. Once resource group is created, name can’t be changed.
 	// Required: true
@@ -68,7 +68,7 @@ type Tag struct {
 	Name *string `json:"name"`
 
 	// Network policy to enforce on all devices of this project
-	NetworkPolicy *PolicyConfig `json:"networkPolicy,omitempty"`
+	NetworkPolicy *Policy `json:"networkPolicy,omitempty"`
 
 	// Number of edge nodes in this resource group
 	// Read Only: true
@@ -598,7 +598,7 @@ func (m *Tag) contextValidateLocalOperatorConsolePolicy(ctx context.Context, for
 
 func (m *Tag) contextValidateModulePolicy(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "modulePolicy", "body", []*PolicyConfig(m.ModulePolicy)); err != nil {
+	if err := validate.ReadOnly(ctx, "modulePolicy", "body", []*Policy(m.ModulePolicy)); err != nil {
 		return err
 	}
 

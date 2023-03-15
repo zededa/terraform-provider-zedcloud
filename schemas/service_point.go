@@ -56,7 +56,6 @@ func SetServicePointSubResourceData(m []*models.ServicePoint) (d []*map[string]i
 	return
 }
 
-// Schema mapping representing the ServicePoint resource defined in the Terraform configuration
 func ServicePoint() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"credential": {
@@ -79,7 +78,6 @@ func ServicePoint() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the ServicePoint resource
 func GetServicePointPropertyFields() (t []string) {
 	return []string{
 		"credential",

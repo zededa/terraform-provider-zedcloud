@@ -6,6 +6,7 @@ import (
 )
 
 func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
+	acKind, _ := d.Get("ac_kind").(string)
 	acVersion, _ := d.Get("ac_version").(string)
 	var appType *models.AppType // AppType
 	appTypeInterface, appTypeIsSet := d.GetOk("app_type")
@@ -134,7 +135,8 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	}
 	vmmode, _ := d.Get("vmmode").(string)
 	return &models.VMManifest{
-		AcVersion:         &acVersion, // string true false false
+		AcKind:            &acKind,    // string
+		AcVersion:         &acVersion, // string
 		AppType:           appType,
 		Configuration:     configuration,
 		ContainerDetail:   containerDetail,
@@ -151,11 +153,12 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 		Owner:             owner,
 		Permissions:       permissions,
 		Resources:         resources,
-		Vmmode:            &vmmode, // string true false false
+		Vmmode:            &vmmode, // string
 	}
 }
 
 func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
+	acKind := m["ac_kind"].(string)
 	acVersion := m["ac_version"].(string)
 	var appType *models.AppType // AppType
 	appTypeInterface, appTypeIsSet := m["app_type"]
@@ -289,6 +292,7 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 	}
 	vmmode := m["vmmode"].(string)
 	return &models.VMManifest{
+		AcKind:            &acKind,
 		AcVersion:         &acVersion,
 		AppType:           appType,
 		Configuration:     configuration,
@@ -311,6 +315,7 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 }
 
 func SetVMManifestResourceData(d *schema.ResourceData, m *models.VMManifest) {
+	d.Set("ac_kind", m.AcKind)
 	d.Set("ac_version", m.AcVersion)
 	d.Set("app_type", m.AppType)
 	d.Set("configuration", SetUserTemplateSubResourceData([]*models.UserDataTemplate{m.Configuration}))
@@ -335,6 +340,7 @@ func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]inter
 	for _, VMManifestModel := range m {
 		if VMManifestModel != nil {
 			properties := make(map[string]interface{})
+			properties["ac_kind"] = VMManifestModel.AcKind
 			properties["ac_version"] = VMManifestModel.AcVersion
 			properties["app_type"] = VMManifestModel.AppType
 			properties["configuration"] = SetUserTemplateSubResourceData([]*models.UserDataTemplate{VMManifestModel.Configuration})
@@ -359,9 +365,15 @@ func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]inter
 	return
 }
 
-// Schema mapping representing the VMManifest resource defined in the Terraform configuration
-func VMManifestSchema() map[string]*schema.Schema {
+func VMManifest() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"ac_kind": {
+			Description: `UI map: N/A - not exposed to users`,
+			Type:        schema.TypeString,
+			Default:     "VMManifest",
+			Optional:    true,
+		},
+
 		"ac_version": {
 			Description: `UI map: N/A - not exposed to users`,
 			Type:        schema.TypeString,
@@ -388,7 +400,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `Create options direct the creation of the Docker container`,
 			Type:        schema.TypeList, //GoType: ContainerDetail
 			Elem: &schema.Resource{
-				Schema: ContainerDetailSchema(),
+				Schema: ContainerDetail(),
 			},
 			Optional: true,
 		},
@@ -409,7 +421,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `Description of the application`,
 			Type:        schema.TypeList, //GoType: Details
 			Elem: &schema.Resource{
-				Schema: DetailsSchema(),
+				Schema: Details(),
 			},
 			Optional: true,
 		},
@@ -436,7 +448,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane`,
 			Type:        schema.TypeList, //GoType: []*VMManifestImage
 			Elem: &schema.Resource{
-				Schema: VMManifestImageSchema(),
+				Schema: VMManifestImage(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -446,7 +458,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane`,
 			Type:        schema.TypeList, //GoType: []*Interface
 			Elem: &schema.Resource{
-				Schema: InterfaceSchema(),
+				Schema: Interface(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -456,7 +468,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `Azure module specific details like module twin, environment variable, routes`,
 			Type:        schema.TypeList, //GoType: ModuleDetail
 			Elem: &schema.Resource{
-				Schema: ModuleDetailSchema(),
+				Schema: ModuleDetail(),
 			},
 			Optional: true,
 		},
@@ -471,7 +483,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `Owner of the application`,
 			Type:        schema.TypeList, //GoType: Author
 			Elem: &schema.Resource{
-				Schema: AuthorSchema(),
+				Schema: Author(),
 			},
 			Optional: true,
 		},
@@ -480,7 +492,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: []Permission
 			Elem: &schema.Resource{
-				Schema: PermissionSchema(),
+				Schema: Permission(),
 			},
 			Optional: true,
 		},
@@ -489,7 +501,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane`,
 			Type:        schema.TypeList, //GoType: []*Resource
 			Elem: &schema.Resource{
-				Schema: ResourceSchema(),
+				Schema: Resource(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -504,9 +516,9 @@ func VMManifestSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the VMManifest resource
 func GetVMManifestPropertyFields() (t []string) {
 	return []string{
+		"ac_kind",
 		"ac_version",
 		"app_type",
 		"configuration",

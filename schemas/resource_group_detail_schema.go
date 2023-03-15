@@ -52,7 +52,7 @@ func SetResourceGroupDetailSubResourceData(m []*models.ResourceGroupDetail) (d [
 }
 
 // Schema mapping representing the ResourceGroupDetail resource defined in the Terraform configuration
-func ResourceGroupDetailSchema() map[string]*schema.Schema {
+func ResourceGroupDetail() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
 			Description: `resource group name`,

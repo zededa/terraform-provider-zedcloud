@@ -151,7 +151,7 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 		{{- range .Properties }}
 			{{- if or (not .ReadOnly) (eq .Name "id") }}
 				{{- if and .IsNullable (and (not .IsComplexObject) (not .IsAliased)) }}
-		{{ pascalize .Name }}: &{{ varname .Name }}, // {{ .GoType }} {{ .IsNullable }} {{ .IsSuperAlias }} {{ .IsAliased }}
+		{{ pascalize .Name }}: &{{ varname .Name }}, // {{ .GoType }}
 				{{- else if and (and (not .IsMap) .IsNullable (not .IsSuperAlias) (not .IsAliased)) (not .IsComplexObject) }}
 		{{ pascalize .Name }}: &{{ varname .Name }},
 				{{- else }}

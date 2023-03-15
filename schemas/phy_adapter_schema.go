@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate PhyAdapter resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PhyAdapterModel(d *schema.ResourceData) *models.PhyAdapter {
 	name, _ := d.Get("name").(string)
 	tags := map[string]string{}
@@ -21,6 +18,7 @@ func PhyAdapterModel(d *schema.ResourceData) *models.PhyAdapter {
 			tags[k] = v.(string)
 		}
 	}
+
 	var typeVar *models.IoType // IoType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
@@ -47,6 +45,7 @@ func PhyAdapterModelFromMap(m map[string]interface{}) *models.PhyAdapter {
 			tags[k] = v.(string)
 		}
 	}
+
 	var typeVar *models.IoType // IoType
 	typeInterface, typeIsSet := m["type"]
 	if typeIsSet {
@@ -60,14 +59,12 @@ func PhyAdapterModelFromMap(m map[string]interface{}) *models.PhyAdapter {
 	}
 }
 
-// Update the underlying PhyAdapter resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetPhyAdapterResourceData(d *schema.ResourceData, m *models.PhyAdapter) {
 	d.Set("name", m.Name)
 	d.Set("tags", m.Tags)
 	d.Set("type", m.Type)
 }
 
-// Iterate through and update the PhyAdapter resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPhyAdapterSubResourceData(m []*models.PhyAdapter) (d []*map[string]interface{}) {
 	for _, PhyAdapterModel := range m {
 		if PhyAdapterModel != nil {
@@ -81,8 +78,7 @@ func SetPhyAdapterSubResourceData(m []*models.PhyAdapter) (d []*map[string]inter
 	return
 }
 
-// Schema mapping representing the PhyAdapter resource defined in the Terraform configuration
-func PhyAdapterSchema() map[string]*schema.Schema {
+func PhyAdapter() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
 			Description: `Physical Adapter name`,
@@ -107,7 +103,6 @@ func PhyAdapterSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the PhyAdapter resource
 func GetPhyAdapterPropertyFields() (t []string) {
 	return []string{
 		"name",

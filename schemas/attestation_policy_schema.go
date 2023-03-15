@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AttestationPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AttestationPolicyModel(d *schema.ResourceData) *models.AttestationPolicy {
 	id, _ := d.Get("id").(string)
 	var typeVar *models.AttestPolicyType // AttestPolicyType
@@ -24,20 +21,23 @@ func AttestationPolicyModel(d *schema.ResourceData) *models.AttestationPolicy {
 
 func AttestationPolicyModelFromMap(m map[string]interface{}) *models.AttestationPolicy {
 	id := m["id"].(string)
-	typeVar := m["type"].(*models.AttestPolicyType) // AttestPolicyType
+	var typeVar *models.AttestPolicyType // AttestPolicyType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewAttestPolicyType(models.AttestPolicyType(typeModel))
+	}
 	return &models.AttestationPolicy{
 		ID:   id,
 		Type: typeVar,
 	}
 }
 
-// Update the underlying AttestationPolicy resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetAttestationPolicyResourceData(d *schema.ResourceData, m *models.AttestationPolicy) {
 	d.Set("id", m.ID)
 	d.Set("type", m.Type)
 }
 
-// Iterate through and update the AttestationPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAttestationPolicySubResourceData(m []*models.AttestationPolicy) (d []*map[string]interface{}) {
 	for _, AttestationPolicyModel := range m {
 		if AttestationPolicyModel != nil {
@@ -50,8 +50,7 @@ func SetAttestationPolicySubResourceData(m []*models.AttestationPolicy) (d []*ma
 	return
 }
 
-// Schema mapping representing the AttestationPolicy resource defined in the Terraform configuration
-func AttestationPolicySchema() map[string]*schema.Schema {
+func AttestationPolicy() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"id": {
 			Description: `unique policy id`,
@@ -67,7 +66,6 @@ func AttestationPolicySchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the AttestationPolicy resource
 func GetAttestationPolicyPropertyFields() (t []string) {
 	return []string{
 		"id",

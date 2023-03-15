@@ -5,20 +5,41 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate PolicyCommon resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PolicyCommonModel(d *schema.ResourceData) *models.PolicyCommon {
 	id, _ := d.Get("id").(string)
 	name, _ := d.Get("name").(string)
-	policyTargetCondition, _ := d.Get("policy_target_condition").(map[string]string) // map[string]string
-	var revision *models.ObjectRevision                                              // ObjectRevision
-	revisionInterface, revisionIsSet := d.GetOk("revision")
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	policyTargetCondition := map[string]string{}
+	policyTargetConditionInterface, policyTargetConditionIsSet := d.GetOk("policyTargetCondition")
+	if policyTargetConditionIsSet {
+		policyTargetConditionMap := policyTargetConditionInterface.(map[string]interface{})
+		for k, v := range policyTargetConditionMap {
+			if v == nil {
+				continue
+			}
+			policyTargetCondition[k] = v.(string)
+		}
 	}
-	tags, _ := d.Get("tags").(map[string]string) // map[string]string
+
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := d.GetOk("tags")
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	title, _ := d.Get("title").(string)
 	return &models.PolicyCommon{
 		ID:                    id,
@@ -33,15 +54,39 @@ func PolicyCommonModel(d *schema.ResourceData) *models.PolicyCommon {
 func PolicyCommonModelFromMap(m map[string]interface{}) *models.PolicyCommon {
 	id := m["id"].(string)
 	name := m["name"].(string)
-	policyTargetCondition := m["policy_target_condition"].(map[string]string)
+	policyTargetCondition := map[string]string{}
+	policyTargetConditionInterface, policyTargetConditionIsSet := m["policy_target_condition"]
+	if policyTargetConditionIsSet {
+		policyTargetConditionMap := policyTargetConditionInterface.(map[string]interface{})
+		for k, v := range policyTargetConditionMap {
+			if v == nil {
+				continue
+			}
+			policyTargetCondition[k] = v.(string)
+		}
+	}
+
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := m["revision"]
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	tags := m["tags"].(map[string]string)
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := m["tags"]
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	title := m["title"].(string)
 	return &models.PolicyCommon{
 		ID:                    id,
@@ -53,7 +98,6 @@ func PolicyCommonModelFromMap(m map[string]interface{}) *models.PolicyCommon {
 	}
 }
 
-// Update the underlying PolicyCommon resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetPolicyCommonResourceData(d *schema.ResourceData, m *models.PolicyCommon) {
 	d.Set("id", m.ID)
 	d.Set("name", m.Name)
@@ -63,7 +107,6 @@ func SetPolicyCommonResourceData(d *schema.ResourceData, m *models.PolicyCommon)
 	d.Set("title", m.Title)
 }
 
-// Iterate through and update the PolicyCommon resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetPolicyCommonSubResourceData(m []*models.PolicyCommon) (d []*map[string]interface{}) {
 	for _, PolicyCommonModel := range m {
 		if PolicyCommonModel != nil {
@@ -80,8 +123,7 @@ func SetPolicyCommonSubResourceData(m []*models.PolicyCommon) (d []*map[string]i
 	return
 }
 
-// Schema mapping representing the PolicyCommon resource defined in the Terraform configuration
-func PolicyCommonSchema() map[string]*schema.Schema {
+func PolicyCommon() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"id": {
 			Description: `system generated unique id for an policy`,
@@ -130,7 +172,6 @@ func PolicyCommonSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the PolicyCommon resource
 func GetPolicyCommonPropertyFields() (t []string) {
 	return []string{
 		"id",
