@@ -41,7 +41,7 @@ func DatastoreModel(d *schema.ResourceData) *models.Datastore {
 	name, _ := d.Get("name").(string)
 	needClearText, _ := d.Get("need_clear_text").(bool)
 	var projectAccessList []string
-	projectAccessListInterface, projectAccessListIsSet := d.GetOk("projectAccessList")
+	projectAccessListInterface, projectAccessListIsSet := d.GetOk("project_access_list")
 	if projectAccessListIsSet {
 		var items []interface{}
 		if listItems, isList := projectAccessListInterface.([]interface{}); isList {
@@ -123,7 +123,7 @@ func DatastoreModelFromMap(m map[string]interface{}) *models.Datastore {
 	name := m["name"].(string)
 	needClearText := m["need_clear_text"].(bool)
 	var projectAccessList []string
-	projectAccessListInterface, projectAccessListIsSet := m["projectAccessList"]
+	projectAccessListInterface, projectAccessListIsSet := m["project_access_list"]
 	if projectAccessListIsSet {
 		var items []interface{}
 		if listItems, isList := projectAccessListInterface.([]interface{}); isList {
