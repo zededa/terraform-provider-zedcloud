@@ -5,18 +5,37 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ModuleDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ModuleDetailModel(d *schema.ResourceData) *models.ModuleDetail {
-	environment, _ := d.Get("environment").(map[string]string) // map[string]string
-	var moduleType *models.ModuleType                          // ModuleType
+	environment := map[string]string{}
+	environmentInterface, environmentIsSet := d.GetOk("environment")
+	if environmentIsSet {
+		environmentMap := environmentInterface.(map[string]interface{})
+		for k, v := range environmentMap {
+			if v == nil {
+				continue
+			}
+			environment[k] = v.(string)
+		}
+	}
+
+	var moduleType *models.ModuleType // ModuleType
 	moduleTypeInterface, moduleTypeIsSet := d.GetOk("module_type")
 	if moduleTypeIsSet {
 		moduleTypeModel := moduleTypeInterface.(string)
 		moduleType = models.NewModuleType(models.ModuleType(moduleTypeModel))
 	}
-	routes, _ := d.Get("routes").(map[string]string) // map[string]string
+	routes := map[string]string{}
+	routesInterface, routesIsSet := d.GetOk("routes")
+	if routesIsSet {
+		routesMap := routesInterface.(map[string]interface{})
+		for k, v := range routesMap {
+			if v == nil {
+				continue
+			}
+			routes[k] = v.(string)
+		}
+	}
+
 	twinDetail, _ := d.Get("twin_detail").(string)
 	return &models.ModuleDetail{
 		Environment: environment,
@@ -27,9 +46,36 @@ func ModuleDetailModel(d *schema.ResourceData) *models.ModuleDetail {
 }
 
 func ModuleDetailModelFromMap(m map[string]interface{}) *models.ModuleDetail {
-	environment := m["environment"].(map[string]string)
-	moduleType := m["module_type"].(*models.ModuleType) // ModuleType
-	routes := m["routes"].(map[string]string)
+	environment := map[string]string{}
+	environmentInterface, environmentIsSet := m["environment"]
+	if environmentIsSet {
+		environmentMap := environmentInterface.(map[string]interface{})
+		for k, v := range environmentMap {
+			if v == nil {
+				continue
+			}
+			environment[k] = v.(string)
+		}
+	}
+
+	var moduleType *models.ModuleType // ModuleType
+	moduleTypeInterface, moduleTypeIsSet := m["module_type"]
+	if moduleTypeIsSet {
+		moduleTypeModel := moduleTypeInterface.(string)
+		moduleType = models.NewModuleType(models.ModuleType(moduleTypeModel))
+	}
+	routes := map[string]string{}
+	routesInterface, routesIsSet := m["routes"]
+	if routesIsSet {
+		routesMap := routesInterface.(map[string]interface{})
+		for k, v := range routesMap {
+			if v == nil {
+				continue
+			}
+			routes[k] = v.(string)
+		}
+	}
+
 	twinDetail := m["twin_detail"].(string)
 	return &models.ModuleDetail{
 		Environment: environment,
@@ -63,7 +109,7 @@ func SetModuleDetailSubResourceData(m []*models.ModuleDetail) (d []*map[string]i
 }
 
 // Schema mapping representing the ModuleDetail resource defined in the Terraform configuration
-func ModuleDetailSchema() map[string]*schema.Schema {
+func ModuleDetail() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"environment": {
 			Description: `Extra information to module to make configuration easier`,
