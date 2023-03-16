@@ -33,7 +33,7 @@ func ImageModel(d *schema.ResourceData) *models.Image {
 	imageVersion, _ := d.Get("image_version").(string)
 	name, _ := d.Get("name").(string)
 	var projectAccessList []string
-	projectAccessListInterface, projectAccessListIsSet := d.GetOk("projectAccessList")
+	projectAccessListInterface, projectAccessListIsSet := d.GetOk("project_access_list")
 	if projectAccessListIsSet {
 		var items []interface{}
 		if listItems, isList := projectAccessListInterface.([]interface{}); isList {
@@ -94,7 +94,7 @@ func ImageModelFromMap(m map[string]interface{}) *models.Image {
 	imageVersion := m["image_version"].(string)
 	name := m["name"].(string)
 	var projectAccessList []string
-	projectAccessListInterface, projectAccessListIsSet := m["projectAccessList"]
+	projectAccessListInterface, projectAccessListIsSet := m["project_access_list"]
 	if projectAccessListIsSet {
 		var items []interface{}
 		if listItems, isList := projectAccessListInterface.([]interface{}); isList {
