@@ -170,9 +170,9 @@ func NetworkWifi() map[string]*schema.Schema {
 
 		"identity": {
 			Description: `WPA2 enterprise user identity/username. Use value from Vault.	This field will not be published by terraform import`,
-			Type:        schema.TypeString,
-			Optional:    true,
-			Sensitive:   true,
+			Type:      schema.TypeString,
+			Optional:  true,
+			Sensitive: true,
 		},
 
 		"key_scheme": {
