@@ -7,6 +7,6 @@ resource "zedcloud_image" "test_image" {
     image_size_bytes = 0
     image_type =  "IMAGE_TYPE_APPLICATION"
     title = "test"
-    project_access_list = []
+    project_access_list = ["4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"]
 }
 

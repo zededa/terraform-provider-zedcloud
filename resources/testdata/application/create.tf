@@ -4,6 +4,7 @@ resource "zedcloud_application" "test_tf_provider" {
     description = "ubuntu-all-ip"
     user_defined_version = "1.1"
     origin_type = "ORIGIN_LOCAL"
+    project_access_list = ["4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"]
     manifest {
         # computed
     		# ac_kind = "VMManifest"
