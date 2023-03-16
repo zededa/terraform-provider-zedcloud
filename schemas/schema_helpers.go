@@ -176,6 +176,39 @@ func diffSuppressInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc
 	}
 }
 
+func diffSuppressResourceListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		if oldData == nil {
+			return false
+		}
+		if newData == nil {
+			return false
+		}
+
+		o := oldData.([]interface{})
+		n := newData.([]interface{})
+		if len(o) != len(n) {
+			return false
+		}
+
+		oldMapList := make([]*models.Resource, len(o))
+		for i, m := range o {
+			oldMapList[i] = ResourceModelFromMap(m.(map[string]interface{}))
+		}
+		newMapList := make([]*models.Resource, len(o))
+		for i, m := range o {
+			newMapList[i] = ResourceModelFromMap(m.(map[string]interface{}))
+		}
+
+		return CompareResourceLists(oldMapList, newMapList)
+	}
+}
+
 // Equal tells whether a and b contain the same elements.
 // A nil argument is equivalent to an empty slice.
 func Equal(a, b []string) bool {
