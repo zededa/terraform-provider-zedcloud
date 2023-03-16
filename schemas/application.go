@@ -41,7 +41,7 @@ func ApplicationModel(d *schema.ResourceData) *models.Application {
 		}
 	}
 	var projectAccessList []string
-	projectAccessListInterface, projectAccessListIsSet := d.GetOk("projectAccessList")
+	projectAccessListInterface, projectAccessListIsSet := d.GetOk("project_access_list")
 	if projectAccessListIsSet {
 		var items []interface{}
 		if listItems, isList := projectAccessListInterface.([]interface{}); isList {
@@ -120,7 +120,7 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 	}
 	//
 	var projectAccessList []string
-	projectAccessListInterface, projectAccessListIsSet := m["projectAccessList"]
+	projectAccessListInterface, projectAccessListIsSet := m["project_access_list"]
 	if projectAccessListIsSet {
 		var items []interface{}
 		if listItems, isList := projectAccessListInterface.([]interface{}); isList {
