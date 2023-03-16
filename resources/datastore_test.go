@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider/client"
-	config "github.com/zededa/terraform-provider/client/datastore_configuration"
+	config "github.com/zededa/terraform-provider/client/datastore"
 	"github.com/zededa/terraform-provider/models"
 )
 

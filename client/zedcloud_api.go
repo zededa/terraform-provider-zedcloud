@@ -9,15 +9,15 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/go-retryablehttp"
 
-	"github.com/zededa/terraform-provider/client/datastore_configuration"
-	"github.com/zededa/terraform-provider/client/edge_application_configuration"
-	"github.com/zededa/terraform-provider/client/edge_application_instance_configuration"
-	"github.com/zededa/terraform-provider/client/edge_network_configuration"
-	"github.com/zededa/terraform-provider/client/edge_network_instance_configuration"
-	"github.com/zededa/terraform-provider/client/edge_node_configuration"
+	"github.com/zededa/terraform-provider/client/application"
+	"github.com/zededa/terraform-provider/client/application_instance"
+	"github.com/zededa/terraform-provider/client/datastore"
 	"github.com/zededa/terraform-provider/client/hardware_model"
-	"github.com/zededa/terraform-provider/client/image_configuration"
-	"github.com/zededa/terraform-provider/client/volume_instance_configuration"
+	"github.com/zededa/terraform-provider/client/image"
+	"github.com/zededa/terraform-provider/client/network"
+	"github.com/zededa/terraform-provider/client/network_instance"
+	"github.com/zededa/terraform-provider/client/node"
+	"github.com/zededa/terraform-provider/client/volume_instance"
 )
 
 // Default zedcloudapi HTTP client.
@@ -64,15 +64,15 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 
 	cli := new(ZedcloudAPI)
 	cli.Transport = transport
-	cli.Node = edge_node_configuration.New(transport, formats)
+	cli.Node = node.New(transport, formats)
 	cli.HardwareModel = hardware_model.New(transport, formats)
-	cli.Network = edge_network_configuration.New(transport, formats)
-	cli.NetworkInstance = edge_network_instance_configuration.New(transport, formats)
-	cli.Image = image_configuration.New(transport, formats)
-	cli.Datastore = datastore_configuration.New(transport, formats)
-	cli.VolumeInstance = volume_instance_configuration.New(transport, formats)
-	cli.Application = edge_application_configuration.New(transport, formats)
-	cli.ApplicationInstance = edge_application_instance_configuration.New(transport, formats)
+	cli.Network = network.New(transport, formats)
+	cli.NetworkInstance = network_instance.New(transport, formats)
+	cli.Image = image.New(transport, formats)
+	cli.Datastore = datastore.New(transport, formats)
+	cli.VolumeInstance = volume_instance.New(transport, formats)
+	cli.Application = application.New(transport, formats)
+	cli.ApplicationInstance = application_instance.New(transport, formats)
 	return cli
 }
 
@@ -117,23 +117,23 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 
 // ZedcloudAPI is a client for zedcloudapi
 type ZedcloudAPI struct {
-	Node edge_node_configuration.ClientService
+	Node node.ClientService
 
 	HardwareModel hardware_model.ClientService
 
-	Network edge_network_configuration.ClientService
+	Network network.ClientService
 
-	NetworkInstance edge_network_instance_configuration.ClientService
+	NetworkInstance network_instance.ClientService
 
-	Image image_configuration.ClientService
+	Image image.ClientService
 
-	Datastore datastore_configuration.ClientService
+	Datastore datastore.ClientService
 
-	VolumeInstance volume_instance_configuration.ClientService
+	VolumeInstance volume_instance.ClientService
 
-	Application edge_application_configuration.ClientService
+	Application application.ClientService
 
-	ApplicationInstance edge_application_instance_configuration.ClientService
+	ApplicationInstance application_instance.ClientService
 
 	Transport runtime.ClientTransport
 }
