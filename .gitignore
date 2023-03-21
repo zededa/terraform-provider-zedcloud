@@ -10,5 +10,4 @@ main.tf.bkp
 terraform-provider-zedcloud_v*
 gen/
 terraform.log
-main.tf
-dev.tfrc
+resources/terraform.log
