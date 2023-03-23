@@ -131,7 +131,7 @@ func (a *Client) GetByID(params *ProjectsGetByIDParams, authInfo runtime.ClientA
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "Projects_GetByID",
-		Method:             "POST",
+		Method:             "GET",
 		PathPattern:        "/v1/projects/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
@@ -171,7 +171,7 @@ func (a *Client) GetByName(params *ProjectsGetByNameParams, authInfo runtime.Cli
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "Projects_GetByName",
-		Method:             "POST",
+		Method:             "GET",
 		PathPattern:        "/v1/projects/name/{name}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},

@@ -185,7 +185,7 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 	return
 }
 
-func Tag() map[string]*schema.Schema {
+func Project() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: `Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group`,
@@ -193,7 +193,7 @@ func Tag() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
-			Computed: true,
+			Optional: true,
 		},
 
 		"attestation_policy": {
@@ -203,6 +203,7 @@ func Tag() map[string]*schema.Schema {
 				Schema: Policy(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"attr": {

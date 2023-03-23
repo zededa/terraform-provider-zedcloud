@@ -91,7 +91,7 @@ func Tags() map[string]*schema.Schema {
 			Description: `List of filtered resource group records`,
 			Type:        schema.TypeList, //GoType: []*Tag
 			Elem: &schema.Resource{
-				Schema: Tag(),
+				Schema: Project(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

@@ -185,7 +185,7 @@
                     "url": "https://help.zededa.com/hc/en-us/articles/4440351458971-Projects"
                 }
             },
-            "post": {
+            "get": {
                 "summary": "Get project by ID",
                 "description": "Fetch a project via HTTP/GET request with project-ID as a parameter.",
                 "operationId": "Projects_GetByID",
@@ -345,7 +345,7 @@
             }
         },
         "/v1/projects/name/{name}": {
-            "post": {
+            "get": {
                 "summary": "Get project by name",
                 "description": "Fetch a project via HTTP/GET request with project-name as a parameter.",
                 "operationId": "Projects_GetByName",

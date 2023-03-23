@@ -19,14 +19,14 @@ func ProjectResource() *schema.Resource {
 		ReadContext:   GetProject,
 		UpdateContext: UpdateProject,
 		DeleteContext: DeleteProject,
-		Schema:        zschema.Tag(),
+		Schema:        zschema.Project(),
 	}
 }
 
 func ProjectDataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: GetProject,
-		Schema:      zschema.Tag(),
+		Schema:      zschema.Project(),
 	}
 }
 
@@ -60,6 +60,9 @@ func CreateProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 			return diags
 		}
 	}
+
+	// note, we need to set the ID before fetching the newly created project.
+	d.SetId(responseData.ObjectID)
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.

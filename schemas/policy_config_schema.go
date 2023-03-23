@@ -292,6 +292,7 @@ func Policy() map[string]*schema.Schema {
 				Schema: AttestationPolicy(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"attr": {

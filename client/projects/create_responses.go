@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
@@ -178,11 +179,11 @@ func (o *ProjectsCreateBadRequest) IsCode(code int) bool {
 }
 
 func (o *ProjectsCreateBadRequest) Error() string {
-	return fmt.Sprintf("[POST /v1/projects][%d] projectsCreateBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[POST /v1/projects] create project: 400 bad request\n%s", spew.Sdump(o.Payload.Error))
 }
 
 func (o *ProjectsCreateBadRequest) String() string {
-	return fmt.Sprintf("[POST /v1/projects][%d] projectsCreateBadRequest  %+v", 400, o.Payload)
+	return fmt.Sprintf("[POST /v1/projects] create project: 400 bad request\n%s", spew.Sdump(o.Payload.Error))
 }
 
 func (o *ProjectsCreateBadRequest) GetPayload() *models.ZsrvResponse {
@@ -367,11 +368,11 @@ func (o *ProjectsCreateConflict) IsCode(code int) bool {
 }
 
 func (o *ProjectsCreateConflict) Error() string {
-	return fmt.Sprintf("[POST /v1/projects][%d] projectsCreateConflict  %+v", 409, o.Payload)
+	return fmt.Sprintf("[POST /v1/projects] create project: 409 conflict\n%s", spew.Sdump(o.Payload.Error))
 }
 
 func (o *ProjectsCreateConflict) String() string {
-	return fmt.Sprintf("[POST /v1/projects][%d] projectsCreateConflict  %+v", 409, o.Payload)
+	return fmt.Sprintf("[POST /v1/projects] create project: 409 conflict\n%s", spew.Sdump(o.Payload.Error))
 }
 
 func (o *ProjectsCreateConflict) GetPayload() *models.ZsrvResponse {
