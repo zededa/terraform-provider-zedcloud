@@ -364,7 +364,7 @@ func Policy() map[string]*schema.Schema {
 		"name": {
 			Description: `User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"network_policy": {

@@ -82,7 +82,7 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 	edgeviewconfigInterface, edgeviewconfigIsSet := d.GetOk("edgeviewconfig")
 	if edgeviewconfigIsSet {
 		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})[0].(map[string]interface{})
-		edgeviewconfig = EdgeViewModelFromMap(edgeviewconfigMap)
+		edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap)
 	}
 	generateSoftSerial, _ := d.Get("generate_soft_serial").(bool)
 	id, _ := d.Get("id").(string)
@@ -286,7 +286,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 	if edgeviewconfigIsSet && edgeviewconfigInterface != nil {
 		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})
 		if len(edgeviewconfigMap) > 0 {
-			edgeviewconfig = EdgeViewModelFromMap(edgeviewconfigMap[0].(map[string]interface{}))
+			edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap[0].(map[string]interface{}))
 		}
 	}
 	generateSoftSerial := m["generate_soft_serial"].(bool)
@@ -428,7 +428,7 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("description", m.Description)
 	d.Set("dev_location", SetGeoLocationSubResourceData([]*models.GeoLocation{m.DevLocation}))
 	d.Set("dlisp", SetDeviceLispSubResourceData([]*models.DeviceLisp{m.Dlisp}))
-	d.Set("edgeviewconfig", SetEdgeViewSubResourceData([]*models.EdgeviewCfg{m.Edgeviewconfig}))
+	d.Set("edgeviewconfig", SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{m.Edgeviewconfig}))
 	d.Set("generate_soft_serial", m.GenerateSoftSerial)
 	d.Set("id", m.ID)
 	d.Set("identity", m.Identity.String())
@@ -474,7 +474,7 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["description"] = DeviceConfigModel.Description
 			properties["dev_location"] = SetGeoLocationSubResourceData([]*models.GeoLocation{DeviceConfigModel.DevLocation})
 			properties["dlisp"] = SetDeviceLispSubResourceData([]*models.DeviceLisp{DeviceConfigModel.Dlisp})
-			properties["edgeviewconfig"] = SetEdgeViewSubResourceData([]*models.EdgeviewCfg{DeviceConfigModel.Edgeviewconfig})
+			properties["edgeviewconfig"] = SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{DeviceConfigModel.Edgeviewconfig})
 			properties["generate_soft_serial"] = DeviceConfigModel.GenerateSoftSerial
 			properties["id"] = DeviceConfigModel.ID
 			properties["identity"] = DeviceConfigModel.Identity.String()
@@ -636,7 +636,7 @@ func Node() map[string]*schema.Schema {
 			Description: `edgeview configuration for device`,
 			Type:        schema.TypeList, //GoType: EdgeviewCfg
 			Elem: &schema.Resource{
-				Schema: Edgeview(),
+				Schema: EdgeView(),
 			},
 			Optional: true,
 		},

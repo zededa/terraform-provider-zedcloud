@@ -15,18 +15,73 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func TestProject_Create_RequiredOnly(t *testing.T) {
+// func TestProject_Create_RequiredOnly(t *testing.T) {
+// 	var gotCreated, expectCreated models.Tag
+// 	// var gotUpdated, expectUpdated models.Tag
+
+// 	// input configs
+// 	createPath := "project/create_required_only.tf"
+// 	inputCreate := mustGetTestInput(t, createPath)
+// 	// updatePath := "project/update.tf"
+// 	// inputUpdate := mustGetTestInput(t, updatePath)
+
+// 	// expected output
+// 	createPath = "project/create_required_only.yaml"
+// 	mustGetExpectedOutput(t, createPath, &expectCreated)
+// 	// updatePath = "project/update.yaml"
+// 	// mustGetExpectedOutput(t, updatePath, &expectUpdated)
+
+// 	// terraform acceptance test case
+// 	resource.Test(t, resource.TestCase{
+// 		PreCheck:     func() { checkEnv(t) },
+// 		CheckDestroy: testProjectDestroy,
+// 		Providers:    testAccProviders,
+// 		Steps: []resource.TestStep{
+// 			{
+// 				Config: inputCreate,
+// 				Check: resource.ComposeTestCheckFunc(
+// 					testProjectExists("zedcloud_project.test_tf_provider", &gotCreated),
+// 					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "name", "test_tf_provider"),
+// 					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "title", "title"),
+// 					resource.TestMatchResourceAttr(
+// 						"zedcloud_project.test_tf_provider",
+// 						"id",
+// 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+// 					),
+// 					testProjectAttributes(t, &gotCreated, &expectCreated),
+// 				),
+// 			},
+// 			// {
+// 			// 	Config: inputUpdate,
+// 			// 	Check: resource.ComposeTestCheckFunc(
+// 			// 		testProjectExists("zedcloud_project.test_tf_provider", &gotUpdated),
+// 			// 		resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "name", "test_tf_provider"),
+// 			// 		resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
+// 			// 		resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "title", "test_tf_provider-title"),
+// 			// 		resource.TestMatchResourceAttr(
+// 			// 			"zedcloud_project.test_tf_provider",
+// 			// 			"id",
+// 			// 			regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+// 			// 		),
+// 			// 		testProjectAttributes(t, &gotUpdated, &expectUpdated),
+// 			// 	),
+// 			// },
+// 		},
+// 	})
+// }
+
+func TestProject_Create(t *testing.T) {
 	var gotCreated, expectCreated models.Tag
 	// var gotUpdated, expectUpdated models.Tag
 
 	// input configs
-	createPath := "project/create_required_only.tf"
+	createPath := "project/create.tf"
 	inputCreate := mustGetTestInput(t, createPath)
 	// updatePath := "project/update.tf"
 	// inputUpdate := mustGetTestInput(t, updatePath)
 
 	// expected output
-	createPath = "project/create_required_only.yaml"
+	createPath = "project/create.yaml"
 	mustGetExpectedOutput(t, createPath, &expectCreated)
 	// updatePath = "project/update.yaml"
 	// mustGetExpectedOutput(t, updatePath, &expectUpdated)
@@ -107,11 +162,16 @@ func testProjectExists(resourceName string, projectModel *models.Tag) resource.T
 // testProjectAttributes verifies attributes are set correctly by Terraform
 func testProjectAttributes(t *testing.T, got, expected *models.Tag) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
+		IgnoreFields := []string{
+			"ID",
+			"Revision",
+		}
+		if expected.AttestationPolicy == nil {
+			IgnoreFields = append(IgnoreFields, "AttestationPolicy")
+		}
 		opts := cmpopts.IgnoreFields(
 			models.Tag{},
-			"ID",
-			"AttestationPolicy",
-			"Revision",
+			IgnoreFields...,
 		)
 		// API and YAML unmarshal might change order of list elements so we need to ignore order when comparing
 		// if !schemas.CompareSystemInterfaceList(got.Interfaces, expected.Interfaces) {

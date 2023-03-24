@@ -13,7 +13,7 @@ func EdgeviewPolicyModel(d *schema.ResourceData) *models.EdgeviewPolicy {
 	if edgeviewcfgIsSet && edgeviewcfgInterface != nil {
 		edgeviewcfgMap := edgeviewcfgInterface.([]interface{})
 		if len(edgeviewcfgMap) > 0 {
-			edgeviewcfg = EdgeViewModelFromMap(edgeviewcfgMap[0].(map[string]interface{}))
+			edgeviewcfg = EdgeviewCfgModelFromMap(edgeviewcfgMap[0].(map[string]interface{}))
 		}
 	}
 	maxExpireSecInt, _ := d.Get("max_expire_sec").(int)
@@ -37,7 +37,7 @@ func EdgeviewPolicyModelFromMap(m map[string]interface{}) *models.EdgeviewPolicy
 	if edgeviewcfgIsSet && edgeviewcfgInterface != nil {
 		edgeviewcfgMap := edgeviewcfgInterface.([]interface{})
 		if len(edgeviewcfgMap) > 0 {
-			edgeviewcfg = EdgeViewModelFromMap(edgeviewcfgMap[0].(map[string]interface{}))
+			edgeviewcfg = EdgeviewCfgModelFromMap(edgeviewcfgMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -55,7 +55,7 @@ func EdgeviewPolicyModelFromMap(m map[string]interface{}) *models.EdgeviewPolicy
 func SetEdgeviewPolicyResourceData(d *schema.ResourceData, m *models.EdgeviewPolicy) {
 	d.Set("access_allow_change", m.AccessAllowChange)
 	d.Set("edgeview_allow", m.EdgeviewAllow)
-	d.Set("edgeviewcfg", SetEdgeViewSubResourceData([]*models.EdgeviewCfg{m.Edgeviewcfg}))
+	d.Set("edgeviewcfg", SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{m.Edgeviewcfg}))
 	d.Set("max_expire_sec", m.MaxExpireSec)
 	d.Set("max_inst", m.MaxInst)
 }
@@ -66,7 +66,7 @@ func SetEdgeviewPolicySubResourceData(m []*models.EdgeviewPolicy) (d []*map[stri
 			properties := make(map[string]interface{})
 			properties["access_allow_change"] = EdgeviewPolicyModel.AccessAllowChange
 			properties["edgeview_allow"] = EdgeviewPolicyModel.EdgeviewAllow
-			properties["edgeviewcfg"] = SetEdgeViewSubResourceData([]*models.EdgeviewCfg{EdgeviewPolicyModel.Edgeviewcfg})
+			properties["edgeviewcfg"] = SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{EdgeviewPolicyModel.Edgeviewcfg})
 			properties["max_expire_sec"] = EdgeviewPolicyModel.MaxExpireSec
 			properties["max_inst"] = EdgeviewPolicyModel.MaxInst
 			d = append(d, &properties)
@@ -86,14 +86,15 @@ func EdgeviewPolicy() map[string]*schema.Schema {
 		"edgeview_allow": {
 			Description: `Allow device to enable Edgeview in this project`,
 			Type:        schema.TypeBool,
-			Required:    true,
+			// Required:    true,
+			Optional: true,
 		},
 
 		"edgeviewcfg": {
 			Description: `Edgeview configuration and policies`,
 			Type:        schema.TypeList, //GoType: EdgeviewCfg
 			Elem: &schema.Resource{
-				Schema: Edgeview(),
+				Schema: EdgeView(),
 			},
 			Optional: true,
 		},

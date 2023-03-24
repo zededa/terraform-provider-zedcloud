@@ -1,0 +1,10 @@
+name: test_tf_provider
+type: TAG_TYPE_PROJECT
+title: title
+attr: {}
+modulepolicy: []
+attestationpolicy:
+  name: test_tf_provider
+  title: title
+  type: POLICY_TYPE_UNSPECIFIED
+

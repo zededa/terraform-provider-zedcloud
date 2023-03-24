@@ -1,0 +1,25 @@
+{
+  "edgeviewPolicy": {
+    "edgeviewPolicy": {
+      "accessAllowChange": true,
+      "edgeviewcfg": {
+        "appPolicy": {"allowApp": true},
+        "devPolicy": {"allowDev": true},
+        "jwtInfo": {
+          "allowSec": 18000,
+          "dispUrl": "zedcloud.local.zededa.net/api/v1/edge-view",
+          "encrypt": false,
+          "numInst": 1
+        }
+      },
+      "maxExpireSec": 2592000,
+      "maxInst": 3
+    },
+    "type": "POLICY_TYPE_EDGEVIEW"
+  },
+  "modulePolicy": null,
+  "name": "test",
+  "networkPolicy": null,
+  "title": "test",
+  "type": "TAG_TYPE_PROJECT"
+}
