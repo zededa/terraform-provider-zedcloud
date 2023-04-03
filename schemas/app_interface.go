@@ -222,7 +222,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 				Schema: AppACESchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Required: true,
+			Optional: true,
 		},
 
 		"default_net_instance": {
@@ -234,7 +234,8 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 		"directattach": {
 			Description: `direct attach flag`,
 			Type:        schema.TypeBool,
-			Required:    true,
+			Default:     false,
+			Optional:    true,
 		},
 
 		"eidregister": {
@@ -243,7 +244,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: EIDRegisterSchema(),
 			},
-			Required: true,
+			Optional: true,
 		},
 
 		"intfname": {
@@ -255,7 +256,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 		"intforder": {
 			Description: `intforder`,
 			Type:        schema.TypeInt,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"io": {
@@ -264,19 +265,19 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: PhyAdapterSchema(),
 			},
-			Required: true,
+			Optional: true,
 		},
 
 		"ipaddr": {
 			Description: `IP address`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"macaddr": {
 			Description: `MAC address`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"netinstid": {
@@ -309,7 +310,7 @@ func AppInterfaceSchema() map[string]*schema.Schema {
 		"privateip": {
 			Description: `Private IP flag`,
 			Type:        schema.TypeBool,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }
