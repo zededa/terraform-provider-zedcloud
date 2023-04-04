@@ -110,11 +110,21 @@ func testApplicationInstanceAttributes(t *testing.T, got, expected *models.AppIn
 		}
 
 		ignoredFields = []string{
+			"Imvolname",
+			"Mvolname",
+		}
+		opts = cmpopts.IgnoreFields(models.Drive{}, ignoredFields...)
+		if diff := cmp.Diff(*got.Drives[0], *expected.Drives[0], opts); len(diff) != 0 {
+			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
+		}
+
+		ignoredFields = []string{
 			"ID",
 			"Revision",
 			"DeviceID",
 			"AppID",
 			"Interfaces",
+			"Drives",
 		}
 		opts = cmpopts.IgnoreFields(models.AppInstance{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
