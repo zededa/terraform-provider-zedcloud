@@ -189,11 +189,11 @@ func (o *EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceBadReq
 }
 
 func (o *EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceBadRequest) Error() string {
-	return fmt.Sprintf("[POST /v1/apps/instances][%d] edgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceBadRequest  %+v", 400, spew.Sdump(o.Payload))
+	return fmt.Sprintf("POST /v1/apps/instances[%d] Application Instance: Bad Request  %+v", 400, spew.Sdump(o.Payload))
 }
 
 func (o *EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceBadRequest) String() string {
-	return fmt.Sprintf("[POST /v1/apps/instances][%d] edgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceBadRequest  %+v", 400, spew.Sdump(o.Payload))
+	return fmt.Sprintf("POST /v1/apps/instances[%d] Application Instance: Bad Request  %+v", 400, spew.Sdump(o.Payload))
 }
 
 func (o *EdgeApplicationInstanceConfigurationCreateEdgeApplicationInstanceBadRequest) GetPayload() *models.ZsrvResponse {

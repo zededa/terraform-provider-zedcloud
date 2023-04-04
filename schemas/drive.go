@@ -11,7 +11,7 @@ func DriveModel(d *schema.ResourceData) *models.Drive {
 	ignorepurge, _ := d.Get("ignorepurge").(bool)
 	imagename, _ := d.Get("imagename").(string)
 	imvolname, _ := d.Get("imvolname").(string)
-	maxsize, _ := d.Get("maxsize").(int)
+	maxsize, _ := d.Get("maxsize").(string)
 	mountpath, _ := d.Get("mountpath").(string)
 	mvolname, _ := d.Get("mvolname").(string)
 	preserve, _ := d.Get("preserve").(bool)
@@ -40,7 +40,7 @@ func DriveModelFromMap(m map[string]interface{}) *models.Drive {
 	ignorepurge := m["ignorepurge"].(bool)
 	imagename := m["imagename"].(string)
 	imvolname := m["imvolname"].(string)
-	maxsize := m["maxsize"].(int)
+	maxsize := m["maxsize"].(string)
 	mountpath := m["mountpath"].(string)
 	mvolname := m["mvolname"].(string)
 	preserve := m["preserve"].(bool)
@@ -132,11 +132,12 @@ func DriveSchema() map[string]*schema.Schema {
 			Description: `immutable Volume for this drive. Only one of imvolname and mvolname must be specified.`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"maxsize": {
 			Description: `Drive maximum size`,
-			Type:        schema.TypeInt,
+			Type:        schema.TypeString,
 			Required:    true,
 		},
 
@@ -150,6 +151,7 @@ func DriveSchema() map[string]*schema.Schema {
 			Description: `mutable Volume for this drive. Only one of imvolname and mvolname must be specified.`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"preserve": {
