@@ -40,9 +40,8 @@ build:
 test:
 	TF_ACC=1 go test -v ./...
 
-$(case)
 .PHONY: test-run
-test-single:
+test-run:
 	go vet ./...
 	TF_ACC=1 go test -v ./... -run $(case)
 
