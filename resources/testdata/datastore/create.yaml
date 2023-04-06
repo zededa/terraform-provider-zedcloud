@@ -11,7 +11,8 @@ region: "eu"
 encryptedsecrets: {}
 enterprise_id: "123"
 origintype: "ORIGIN_LOCAL"
-projectaccesslist: []
+projectaccesslist:
+  - 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 
 # dsfqdn: "https://my-datastore.my-company.com"
 # dspath: "download/AMD64"

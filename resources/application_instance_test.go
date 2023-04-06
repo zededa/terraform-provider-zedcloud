@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider/client"
-	config "github.com/zededa/terraform-provider/client/edge_application_instance_configuration"
+	config "github.com/zededa/terraform-provider/client/application_instance"
 	"github.com/zededa/terraform-provider/models"
 )
 
@@ -110,11 +110,21 @@ func testApplicationInstanceAttributes(t *testing.T, got, expected *models.AppIn
 		}
 
 		ignoredFields = []string{
+			"Imvolname",
+			"Mvolname",
+		}
+		opts = cmpopts.IgnoreFields(models.Drive{}, ignoredFields...)
+		if diff := cmp.Diff(*got.Drives[0], *expected.Drives[0], opts); len(diff) != 0 {
+			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
+		}
+
+		ignoredFields = []string{
 			"ID",
 			"Revision",
 			"DeviceID",
 			"AppID",
 			"Interfaces",
+			"Drives",
 		}
 		opts = cmpopts.IgnoreFields(models.AppInstance{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {

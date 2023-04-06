@@ -3,6 +3,8 @@ description: ubuntu-all-ip
 drives: 1
 id: 5ff2ba22-827c-427f-92b9-93673569eeab
 isimported: false
+projectaccesslist:
+  - 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 manifest:
     ackind: VMManifest
     acversion: 1.2.0
@@ -106,7 +108,6 @@ parentdetail:
     referenceexists: false
     updateavailable: false
     versionofparentobject: 0
-projectaccesslist: []
 revision:
     createdat: "2023-02-12T14:45:49.847Z"
     createdby: us.root@zededa.com

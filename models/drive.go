@@ -40,7 +40,7 @@ type Drive struct {
 
 	// Drive maximum size
 	// Required: true
-	Maxsize *int `json:"maxsize"`
+	Maxsize *string `json:"maxsize"`
 
 	// Mount Path for the drive in the App Instance
 	Mountpath string `json:"mountpath,omitempty"`

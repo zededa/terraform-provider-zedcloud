@@ -17,9 +17,15 @@ customconfig:
 deploymenttype: DEPLOYMENT_TYPE_K3S
 description: tf test
 deviceid: 7495a52f-a531-431d-9ba6-9e5ec021089f
-drives: []
 encryptedsecrets: {}
 id: f238a504-29f3-41d7-b393-cf8cc05ed9b5
+drives:
+    - drvtype: "UNSPECIFIED"
+      imagename: "ubuntu-tiny"
+      maxsize: "0"
+      preserve: false
+      readonly: false
+      target: "Disk"
 interfaces:
     - accessvlanid: 0
       acls:

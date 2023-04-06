@@ -258,6 +258,24 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
     app_id = zedcloud_application.test_tf_provider.id
     device_id = zedcloud_edgenode.test_tf_provider.id
 
+    drives {
+	    	# required
+	    	drvtype = "UNSPECIFIED"
+	    	imagename = "ubuntu-tiny"
+	    	maxsize = "0"
+	    	preserve = false
+	    	readonly = false
+	    	target = "Disk"
+
+	    	# optional
+	    	# cleartext = false
+	    	# ignorepurge = false
+	    	# imvolname = "volname"
+	    	# mountpath = "/tmp"
+	    	# mvolname = "mvolname"
+	    	# volumelabel = "vollabel"
+    }
+
     interfaces {
 	    	# required
         acls {

@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider/client"
-	config "github.com/zededa/terraform-provider/client/edge_network_configuration"
+	config "github.com/zededa/terraform-provider/client/network"
 	"github.com/zededa/terraform-provider/models"
 	"github.com/zededa/terraform-provider/schemas"
 )

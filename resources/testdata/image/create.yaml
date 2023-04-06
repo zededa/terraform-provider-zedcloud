@@ -8,4 +8,5 @@ imagetype:  "IMAGE_TYPE_APPLICATION"
 title: "test"
 origintype: "ORIGIN_LOCAL"
 imagestatus: "IMAGE_STATUS_READY"
-projectaccesslist: []
+projectaccesslist:
+  - 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
