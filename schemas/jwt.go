@@ -85,6 +85,7 @@ func JWT() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"num_inst": {

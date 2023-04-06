@@ -365,6 +365,7 @@ func Policy() map[string]*schema.Schema {
 			Description: `User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"network_policy": {
@@ -394,7 +395,7 @@ func Policy() map[string]*schema.Schema {
 		"status_message": {
 			Description: `Detailed status message of the policy`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"title": {
