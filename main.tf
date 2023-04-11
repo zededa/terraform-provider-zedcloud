@@ -34,7 +34,6 @@ resource "zedcloud_project" "test_tf_provider" {
         # status =
 
 		    # required
-		    name = "test_tf_provider"
 		    title = "title"
 		    type = "POLICY_TYPE_ATTESTATION"
 

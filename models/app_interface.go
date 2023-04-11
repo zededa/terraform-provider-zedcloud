@@ -87,7 +87,7 @@ type AppInterface struct {
 
 	// Private IP flag
 	// Required: true
-	Privateip *string `json:"privateip"`
+	Privateip *bool `json:"privateip"`
 }
 
 // Validate validates this app interface

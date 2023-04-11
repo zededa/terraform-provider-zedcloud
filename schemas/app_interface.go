@@ -63,23 +63,23 @@ func AppInterfaceModel(d *schema.ResourceData) *models.AppInterface {
 	}
 
 	netname, _ := d.Get("netname").(string)
-	privateip, _ := d.Get("privateip").(string)
+	privateip, _ := d.Get("privateip").(bool)
 	return &models.AppInterface{
 		AccessVlanID:       accessVlanID,
 		Acls:               acls,
 		DefaultNetInstance: defaultNetInstance,
-		Directattach:       &directattach, // bool
+		Directattach:       &directattach,
 		Eidregister:        eidregister,
-		Intfname:           &intfname,  // string
-		Intforder:          &intforder, // int64
+		Intfname:           &intfname,
+		Intforder:          &intforder,
 		Io:                 io,
-		Ipaddr:             &ipaddr,  // string
-		Macaddr:            &macaddr, // string
+		Ipaddr:             &ipaddr,
+		Macaddr:            &macaddr,
 		Netinstid:          netinstid,
-		Netinstname:        &netinstname, // string
+		Netinstname:        &netinstname,
 		Netinsttag:         netinsttag,
 		Netname:            netname,
-		Privateip:          &privateip, // string
+		Privateip:          &privateip,
 	}
 }
 
@@ -141,7 +141,7 @@ func AppInterfaceModelFromMap(m map[string]interface{}) *models.AppInterface {
 	}
 
 	netname := m["netname"].(string)
-	privateip := m["privateip"].(string)
+	privateip := m["privateip"].(bool)
 	return &models.AppInterface{
 		AccessVlanID:       accessVlanID,
 		Acls:               acls,
@@ -306,7 +306,7 @@ func AppInterface() map[string]*schema.Schema {
 
 		"privateip": {
 			Description: `Private IP flag`,
-			Type:        schema.TypeString,
+			Type:        schema.TypeBool,
 			Required:    true,
 		},
 	}
