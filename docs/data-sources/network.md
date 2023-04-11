@@ -78,7 +78,7 @@ Optional:
 
 Optional:
 
-- `addrs` (List of String) Set of IP addresses for the specified hostname
+- `addrs` (List of String) Addresses
 - `hostname` (String) Host name
 
 

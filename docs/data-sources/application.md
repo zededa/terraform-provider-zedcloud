@@ -46,6 +46,7 @@ description: |-
 
 Optional:
 
+- `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--manifest--configuration))
