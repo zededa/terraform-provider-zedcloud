@@ -447,7 +447,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane`,
 			Type:        schema.TypeList, //GoType: []*Interface
 			Elem: &schema.Resource{
-				Schema: InterfaceSchema(),
+				Schema: Interface(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -457,7 +457,7 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `Azure module specific details like module twin, environment variable, routes`,
 			Type:        schema.TypeList, //GoType: ModuleDetail
 			Elem: &schema.Resource{
-				Schema: ModuleDetailSchema(),
+				Schema: ModuleDetail(),
 			},
 			Optional: true,
 		},
@@ -490,10 +490,11 @@ func VMManifestSchema() map[string]*schema.Schema {
 			Description: `UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane`,
 			Type:        schema.TypeList, //GoType: []*Resource
 			Elem: &schema.Resource{
-				Schema: ResourceSchema(),
+				Schema: Resource(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional: true,
+			Optional:         true,
+			DiffSuppressFunc: diffSuppressResourceListOrder("resources"),
 		},
 
 		"vmmode": {

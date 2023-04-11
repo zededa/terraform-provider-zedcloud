@@ -100,7 +100,6 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 			manifestJSON = VMManifestModelFromMap(manifestJSONMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	memory := int64(m["memory"].(int)) // int64
 	name := m["name"].(string)
 	networks := int64(m["networks"].(int)) // int64
@@ -217,7 +216,6 @@ func Application() map[string]*schema.Schema {
 		"cpus": {
 			Description: `user defined cpus for bundle`,
 			Type:        schema.TypeInt,
-			Optional:    true,
 			Computed:    true,
 		},
 
@@ -268,11 +266,9 @@ func Application() map[string]*schema.Schema {
 			},
 			ConflictsWith: []string{"manifest_file"},
 		},
-
 		"memory": {
 			Description: `user defined memory for bundle`,
 			Type:        schema.TypeInt,
-			Optional:    true,
 			Computed:    true,
 		},
 
