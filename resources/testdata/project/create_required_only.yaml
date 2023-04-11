@@ -1,0 +1,5 @@
+name: test_tf_provider
+type: TAG_TYPE_PROJECT
+title: title
+attr: {}
+modulepolicy: []

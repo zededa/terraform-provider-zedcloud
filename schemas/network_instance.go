@@ -310,7 +310,6 @@ func SetNetworkInstanceSubResourceData(m []*models.NetworkInstance) (d []*map[st
 	return
 }
 
-// Schema mapping representing the NetworkInstance resource defined in the Terraform configuration
 func NetworkInstance() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"cluster_id": {

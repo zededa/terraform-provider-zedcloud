@@ -5,36 +5,103 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Deployment resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func DeploymentModel(d *schema.ResourceData) *models.Deployment {
-	appInstPolicies, _ := d.Get("app_inst_policies").([]*models.AppInstPolicy) // []*AppInstPolicy
-	var clusterPolicy *models.ClusterInstPolicy                                // ClusterInstPolicy
+	var appInstPolicies []*models.AppInstPolicy // []*AppInstPolicy
+	appInstPoliciesInterface, appInstPoliciesIsSet := d.GetOk("app_inst_policies")
+	if appInstPoliciesIsSet {
+		var items []interface{}
+		if listItems, isList := appInstPoliciesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = appInstPoliciesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppInstPolicyModelFromMap(v.(map[string]interface{}))
+			appInstPolicies = append(appInstPolicies, m)
+		}
+	}
+	var clusterPolicy *models.ClusterInstPolicy // ClusterInstPolicy
 	clusterPolicyInterface, clusterPolicyIsSet := d.GetOk("cluster_policy")
-	if clusterPolicyIsSet {
-		clusterPolicyMap := clusterPolicyInterface.([]interface{})[0].(map[string]interface{})
-		clusterPolicy = ClusterInstPolicyModelFromMap(clusterPolicyMap)
+	if clusterPolicyIsSet && clusterPolicyInterface != nil {
+		clusterPolicyMap := clusterPolicyInterface.([]interface{})
+		if len(clusterPolicyMap) > 0 {
+			clusterPolicy = ClusterInstPolicyModelFromMap(clusterPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	deploymentTag, _ := d.Get("deployment_tag").(string)
-	devicePolicies, _ := d.Get("device_policies").([]*models.DevicePolicy) // []*DevicePolicy
+	var devicePolicies []*models.DevicePolicy // []*DevicePolicy
+	devicePoliciesInterface, devicePoliciesIsSet := d.GetOk("device_policies")
+	if devicePoliciesIsSet {
+		var items []interface{}
+		if listItems, isList := devicePoliciesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = devicePoliciesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := DevicePolicyModelFromMap(v.(map[string]interface{}))
+			devicePolicies = append(devicePolicies, m)
+		}
+	}
 	id, _ := d.Get("id").(string)
 	var integrationPolicy *models.IntegrationPolicy // IntegrationPolicy
 	integrationPolicyInterface, integrationPolicyIsSet := d.GetOk("integration_policy")
-	if integrationPolicyIsSet {
-		integrationPolicyMap := integrationPolicyInterface.([]interface{})[0].(map[string]interface{})
-		integrationPolicy = IntegrationPolicyModelFromMap(integrationPolicyMap)
+	if integrationPolicyIsSet && integrationPolicyInterface != nil {
+		integrationPolicyMap := integrationPolicyInterface.([]interface{})
+		if len(integrationPolicyMap) > 0 {
+			integrationPolicy = IntegrationPolicyModelFromMap(integrationPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	name, _ := d.Get("name").(string)
-	networkInstPolicies, _ := d.Get("network_inst_policies").([]*models.NetworkInstPolicy) // []*NetworkInstPolicy
-	var revision *models.ObjectRevision                                                    // ObjectRevision
+	var networkInstPolicies []*models.NetworkInstPolicy // []*NetworkInstPolicy
+	networkInstPoliciesInterface, networkInstPoliciesIsSet := d.GetOk("network_inst_policies")
+	if networkInstPoliciesIsSet {
+		var items []interface{}
+		if listItems, isList := networkInstPoliciesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = networkInstPoliciesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := NetworkInstPolicyModelFromMap(v.(map[string]interface{}))
+			networkInstPolicies = append(networkInstPolicies, m)
+		}
+	}
+	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	title, _ := d.Get("title").(string)
-	volumeInstPolicies, _ := d.Get("volume_inst_policies").([]*models.VolumeInstPolicy) // []*VolumeInstPolicy
+	var volumeInstPolicies []*models.VolumeInstPolicy // []*VolumeInstPolicy
+	volumeInstPoliciesInterface, volumeInstPoliciesIsSet := d.GetOk("volume_inst_policies")
+	if volumeInstPoliciesIsSet {
+		var items []interface{}
+		if listItems, isList := volumeInstPoliciesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = volumeInstPoliciesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VolumeInstPolicyModelFromMap(v.(map[string]interface{}))
+			volumeInstPolicies = append(volumeInstPolicies, m)
+		}
+	}
 	return &models.Deployment{
 		AppInstPolicies:     appInstPolicies,
 		ClusterPolicy:       clusterPolicy,
@@ -51,35 +118,105 @@ func DeploymentModel(d *schema.ResourceData) *models.Deployment {
 }
 
 func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
-	appInstPolicies := m["app_inst_policies"].([]*models.AppInstPolicy) // []*AppInstPolicy
-	var clusterPolicy *models.ClusterInstPolicy                         // ClusterInstPolicy
+	var appInstPolicies []*models.AppInstPolicy // []*AppInstPolicy
+	appInstPoliciesInterface, appInstPoliciesIsSet := m["app_inst_policies"]
+	if appInstPoliciesIsSet {
+		var items []interface{}
+		if listItems, isList := appInstPoliciesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = appInstPoliciesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := AppInstPolicyModelFromMap(v.(map[string]interface{}))
+			appInstPolicies = append(appInstPolicies, m)
+		}
+	}
+	var clusterPolicy *models.ClusterInstPolicy // ClusterInstPolicy
 	clusterPolicyInterface, clusterPolicyIsSet := m["cluster_policy"]
-	if clusterPolicyIsSet {
-		clusterPolicyMap := clusterPolicyInterface.([]interface{})[0].(map[string]interface{})
-		clusterPolicy = ClusterInstPolicyModelFromMap(clusterPolicyMap)
+	if clusterPolicyIsSet && clusterPolicyInterface != nil {
+		clusterPolicyMap := clusterPolicyInterface.([]interface{})
+		if len(clusterPolicyMap) > 0 {
+			clusterPolicy = ClusterInstPolicyModelFromMap(clusterPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	deploymentTag := m["deployment_tag"].(string)
-	devicePolicies := m["device_policies"].([]*models.DevicePolicy) // []*DevicePolicy
+	var devicePolicies []*models.DevicePolicy // []*DevicePolicy
+	devicePoliciesInterface, devicePoliciesIsSet := m["device_policies"]
+	if devicePoliciesIsSet {
+		var items []interface{}
+		if listItems, isList := devicePoliciesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = devicePoliciesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := DevicePolicyModelFromMap(v.(map[string]interface{}))
+			devicePolicies = append(devicePolicies, m)
+		}
+	}
 	id := m["id"].(string)
 	var integrationPolicy *models.IntegrationPolicy // IntegrationPolicy
 	integrationPolicyInterface, integrationPolicyIsSet := m["integration_policy"]
-	if integrationPolicyIsSet {
-		integrationPolicyMap := integrationPolicyInterface.([]interface{})[0].(map[string]interface{})
-		integrationPolicy = IntegrationPolicyModelFromMap(integrationPolicyMap)
+	if integrationPolicyIsSet && integrationPolicyInterface != nil {
+		integrationPolicyMap := integrationPolicyInterface.([]interface{})
+		if len(integrationPolicyMap) > 0 {
+			integrationPolicy = IntegrationPolicyModelFromMap(integrationPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	name := m["name"].(string)
-	networkInstPolicies := m["network_inst_policies"].([]*models.NetworkInstPolicy) // []*NetworkInstPolicy
-	var revision *models.ObjectRevision                                             // ObjectRevision
+	var networkInstPolicies []*models.NetworkInstPolicy // []*NetworkInstPolicy
+	networkInstPoliciesInterface, networkInstPoliciesIsSet := m["network_inst_policies"]
+	if networkInstPoliciesIsSet {
+		var items []interface{}
+		if listItems, isList := networkInstPoliciesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = networkInstPoliciesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := NetworkInstPolicyModelFromMap(v.(map[string]interface{}))
+			networkInstPolicies = append(networkInstPolicies, m)
+		}
+	}
+	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := m["revision"]
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	title := m["title"].(string)
-	volumeInstPolicies := m["volume_inst_policies"].([]*models.VolumeInstPolicy) // []*VolumeInstPolicy
+	var volumeInstPolicies []*models.VolumeInstPolicy // []*VolumeInstPolicy
+	volumeInstPoliciesInterface, volumeInstPoliciesIsSet := m["volume_inst_policies"]
+	if volumeInstPoliciesIsSet {
+		var items []interface{}
+		if listItems, isList := volumeInstPoliciesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = volumeInstPoliciesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VolumeInstPolicyModelFromMap(v.(map[string]interface{}))
+			volumeInstPolicies = append(volumeInstPolicies, m)
+		}
+	}
 	return &models.Deployment{
 		AppInstPolicies:     appInstPolicies,
 		ClusterPolicy:       clusterPolicy,
@@ -95,7 +232,6 @@ func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
 	}
 }
 
-// Update the underlying Deployment resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetDeploymentResourceData(d *schema.ResourceData, m *models.Deployment) {
 	d.Set("app_inst_policies", SetAppInstPolicySubResourceData(m.AppInstPolicies))
 	d.Set("cluster_policy", SetClusterInstPolicySubResourceData([]*models.ClusterInstPolicy{m.ClusterPolicy}))
@@ -110,7 +246,6 @@ func SetDeploymentResourceData(d *schema.ResourceData, m *models.Deployment) {
 	d.Set("volume_inst_policies", SetVolumeInstPolicySubResourceData(m.VolumeInstPolicies))
 }
 
-// Iterate through and update the Deployment resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDeploymentSubResourceData(m []*models.Deployment) (d []*map[string]interface{}) {
 	for _, DeploymentModel := range m {
 		if DeploymentModel != nil {
@@ -132,14 +267,13 @@ func SetDeploymentSubResourceData(m []*models.Deployment) (d []*map[string]inter
 	return
 }
 
-// Schema mapping representing the Deployment resource defined in the Terraform configuration
 func DeploymentSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_inst_policies": {
 			Description: `list of app instance policies`,
 			Type:        schema.TypeList, //GoType: []*AppInstPolicy
 			Elem: &schema.Resource{
-				Schema: AppInstPolicySchema(),
+				Schema: AppInstPolicy(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -149,7 +283,7 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Description: `cluster policy details`,
 			Type:        schema.TypeList, //GoType: ClusterInstPolicy
 			Elem: &schema.Resource{
-				Schema: ClusterInstPolicySchema(),
+				Schema: ClusterInstPolicy(),
 			},
 			Optional: true,
 		},
@@ -164,7 +298,7 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Description: `list of device policies`,
 			Type:        schema.TypeList, //GoType: []*DevicePolicy
 			Elem: &schema.Resource{
-				Schema: DevicePolicySchema(),
+				Schema: DevicePolicy(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -180,7 +314,7 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Description: `integration policy details`,
 			Type:        schema.TypeList, //GoType: IntegrationPolicy
 			Elem: &schema.Resource{
-				Schema: IntegrationPolicySchema(),
+				Schema: IntegrationPolicy(),
 			},
 			Optional: true,
 		},
@@ -228,7 +362,6 @@ func DeploymentSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the Deployment resource
 func GetDeploymentPropertyFields() (t []string) {
 	return []string{
 		"app_inst_policies",

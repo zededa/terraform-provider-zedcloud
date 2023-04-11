@@ -229,7 +229,6 @@ func CertificateModelFromMap(m map[string]interface{}) *models.Certificate {
 	}
 }
 
-// Update the underlying Certificate resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetCertificateResourceData(d *schema.ResourceData, m *models.Certificate) {
 	d.Set("basic_contraints_valid", m.BasicContraintsValid)
 	d.Set("cert", m.Cert)
@@ -254,7 +253,6 @@ func SetCertificateResourceData(d *schema.ResourceData, m *models.Certificate) {
 	d.Set("valid_till", m.ValidTill)
 }
 
-// Iterate through and update the Certificate resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetCertificateSubResourceData(m []*models.Certificate) (d []*map[string]interface{}) {
 	for _, CertificateModel := range m {
 		if CertificateModel != nil {
@@ -286,8 +284,7 @@ func SetCertificateSubResourceData(m []*models.Certificate) (d []*map[string]int
 	return
 }
 
-// Schema mapping representing the Certificate resource defined in the Terraform configuration
-func CertificateSchema() map[string]*schema.Schema {
+func Certificate() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"basic_contraints_valid": {
 			Description: `This fields tells the basic constraints like isCA are correct.`,
@@ -311,7 +308,7 @@ func CertificateSchema() map[string]*schema.Schema {
 			Description: `ECDSA encryption algorithm of the certificate`,
 			Type:        schema.TypeList, //GoType: ECDSA
 			Elem: &schema.Resource{
-				Schema: ECDSASchema(),
+				Schema: ECDSA(),
 			},
 			Optional: true,
 		},
@@ -344,7 +341,7 @@ func CertificateSchema() map[string]*schema.Schema {
 			Description: `Parameters for the issuer of the X509 component of a certificate.`,
 			Type:        schema.TypeList, //GoType: Subject
 			Elem: &schema.Resource{
-				Schema: SubjectSchema(),
+				Schema: Subject(),
 			},
 			Optional: true,
 		},
@@ -389,7 +386,7 @@ func CertificateSchema() map[string]*schema.Schema {
 			Description: `RSA encryption algorithm of the certificate`,
 			Type:        schema.TypeList, //GoType: RSA
 			Elem: &schema.Resource{
-				Schema: RSASchema(),
+				Schema: RSA(),
 			},
 			Optional: true,
 		},
@@ -398,7 +395,7 @@ func CertificateSchema() map[string]*schema.Schema {
 			Description: `This holds the alternative name values like URIs, domain names IPs etc.`,
 			Type:        schema.TypeList, //GoType: SANValues
 			Elem: &schema.Resource{
-				Schema: SANValuesSchema(),
+				Schema: SANValues(),
 			},
 			Optional: true,
 		},
@@ -419,7 +416,7 @@ func CertificateSchema() map[string]*schema.Schema {
 			Description: `Parameters for the subject of the X509 component of a certificate.`,
 			Type:        schema.TypeList, //GoType: Subject
 			Elem: &schema.Resource{
-				Schema: SubjectSchema(),
+				Schema: Subject(),
 			},
 			Optional: true,
 		},
@@ -440,7 +437,6 @@ func CertificateSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the Certificate resource
 func GetCertificatePropertyFields() (t []string) {
 	return []string{
 		"basic_contraints_valid",

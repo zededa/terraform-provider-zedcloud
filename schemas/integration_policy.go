@@ -5,17 +5,16 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate IntegrationPolicy resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IntegrationPolicyModel(d *schema.ResourceData) *models.IntegrationPolicy {
 	id, _ := d.Get("id").(string)
 	name, _ := d.Get("name").(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	title, _ := d.Get("title").(string)
 	return &models.IntegrationPolicy{
@@ -31,9 +30,11 @@ func IntegrationPolicyModelFromMap(m map[string]interface{}) *models.Integration
 	name := m["name"].(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := m["revision"]
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	title := m["title"].(string)
@@ -45,7 +46,6 @@ func IntegrationPolicyModelFromMap(m map[string]interface{}) *models.Integration
 	}
 }
 
-// Update the underlying IntegrationPolicy resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetIntegrationPolicyResourceData(d *schema.ResourceData, m *models.IntegrationPolicy) {
 	d.Set("id", m.ID)
 	d.Set("name", m.Name)
@@ -53,7 +53,6 @@ func SetIntegrationPolicyResourceData(d *schema.ResourceData, m *models.Integrat
 	d.Set("title", m.Title)
 }
 
-// Iterate through and update the IntegrationPolicy resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIntegrationPolicySubResourceData(m []*models.IntegrationPolicy) (d []*map[string]interface{}) {
 	for _, IntegrationPolicyModel := range m {
 		if IntegrationPolicyModel != nil {
@@ -68,8 +67,7 @@ func SetIntegrationPolicySubResourceData(m []*models.IntegrationPolicy) (d []*ma
 	return
 }
 
-// Schema mapping representing the IntegrationPolicy resource defined in the Terraform configuration
-func IntegrationPolicySchema() map[string]*schema.Schema {
+func IntegrationPolicy() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"id": {
 			Description: ``,
@@ -100,7 +98,6 @@ func IntegrationPolicySchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the IntegrationPolicy resource
 func GetIntegrationPolicyPropertyFields() (t []string) {
 	return []string{
 		"id",

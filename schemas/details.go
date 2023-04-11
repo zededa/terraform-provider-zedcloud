@@ -66,7 +66,7 @@ func DetailsModel(d *schema.ResourceData) *models.Details {
 	return &models.Details{
 		AgreementList:  agreementList,
 		AppCategory:    appCategory,
-		Category:       &category, // string true false false
+		Category:       &category, // string
 		LicenseList:    licenseList,
 		Logo:           logo,
 		Os:             os,
@@ -145,7 +145,6 @@ func DetailsModelFromMap(m map[string]interface{}) *models.Details {
 	}
 }
 
-// Update the underlying Details resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetDetailsResourceData(d *schema.ResourceData, m *models.Details) {
 	d.Set("agreement_list", m.AgreementList)
 	d.Set("app_category", m.AppCategory)
@@ -157,7 +156,6 @@ func SetDetailsResourceData(d *schema.ResourceData, m *models.Details) {
 	d.Set("support", m.Support)
 }
 
-// Iterate through and update the Details resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetDetailsSubResourceData(m []*models.Details) (d []*map[string]interface{}) {
 	for _, DetailsModel := range m {
 		if DetailsModel != nil {
@@ -176,8 +174,7 @@ func SetDetailsSubResourceData(m []*models.Details) (d []*map[string]interface{}
 	return
 }
 
-// Schema mapping representing the Details resource defined in the Terraform configuration
-func DetailsSchema() map[string]*schema.Schema {
+func Details() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"agreement_list": {
 			Description: `UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field`,
@@ -242,7 +239,6 @@ func DetailsSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the Details resource
 func GetDetailsPropertyFields() (t []string) {
 	return []string{
 		"agreement_list",

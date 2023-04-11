@@ -256,7 +256,7 @@ func Application() map[string]*schema.Schema {
 			Type:        schema.TypeList, //GoType: VMManifest
 			MaxItems:    1,
 			Elem: &schema.Resource{
-				Schema: VMManifestSchema(),
+				Schema: VMManifest(),
 			},
 			Optional: true,
 			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
@@ -300,7 +300,7 @@ func Application() map[string]*schema.Schema {
 			Description: `origin and parent related details`,
 			Type:        schema.TypeList, //GoType: ObjectParentDetail
 			Elem: &schema.Resource{
-				Schema: ObjectParentDetailSchema(),
+				Schema: ObjectParentDetail(),
 			},
 			Optional: true,
 			Computed: true,

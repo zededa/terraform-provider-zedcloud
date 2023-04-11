@@ -75,7 +75,7 @@ func CertificateChainSchema() map[string]*schema.Schema {
 			Description: `List of Certificate object holds the details of certificate like cert block, encryption type, validity, subject etc`,
 			Type:        schema.TypeList, //GoType: []*Certificate
 			Elem: &schema.Resource{
-				Schema: CertificateSchema(),
+				Schema: Certificate(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

@@ -5,32 +5,40 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-func EdgeViewModel(d *schema.ResourceData) *models.EdgeviewCfg {
+func EdgeviewCfgModel(d *schema.ResourceData) *models.EdgeviewCfg {
 	var appPolicy *models.AppAccessPolicy // AppAccessPolicy
 	appPolicyInterface, appPolicyIsSet := d.GetOk("app_policy")
-	if appPolicyIsSet {
-		appPolicyMap := appPolicyInterface.([]interface{})[0].(map[string]interface{})
-		appPolicy = AppAccessPolicyModelFromMap(appPolicyMap)
+	if appPolicyIsSet && appPolicyInterface != nil {
+		appPolicyMap := appPolicyInterface.([]interface{})
+		if len(appPolicyMap) > 0 {
+			appPolicy = AppAccessPolicyModelFromMap(appPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	var devPolicy *models.DevAccessPolicy // DevAccessPolicy
 	devPolicyInterface, devPolicyIsSet := d.GetOk("dev_policy")
-	if devPolicyIsSet {
-		devPolicyMap := devPolicyInterface.([]interface{})[0].(map[string]interface{})
-		devPolicy = DevAccessPolicyModelFromMap(devPolicyMap)
+	if devPolicyIsSet && devPolicyInterface != nil {
+		devPolicyMap := devPolicyInterface.([]interface{})
+		if len(devPolicyMap) > 0 {
+			devPolicy = DevAccessPolicyModelFromMap(devPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	var extPolicy *models.ExtAccessPolicy // ExtAccessPolicy
 	extPolicyInterface, extPolicyIsSet := d.GetOk("ext_policy")
-	if extPolicyIsSet {
-		extPolicyMap := extPolicyInterface.([]interface{})[0].(map[string]interface{})
-		extPolicy = ExtAccessPolicyModelFromMap(extPolicyMap)
+	if extPolicyIsSet && extPolicyInterface != nil {
+		extPolicyMap := extPolicyInterface.([]interface{})
+		if len(extPolicyMap) > 0 {
+			extPolicy = ExtAccessPolicyModelFromMap(extPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	generationIDInt, _ := d.Get("generation_id").(int)
 	generationID := int64(generationIDInt)
 	var jwtInfo *models.JWTInfo // JWTInfo
 	jwtInfoInterface, jwtInfoIsSet := d.GetOk("jwt_info")
-	if jwtInfoIsSet {
-		jwtInfoMap := jwtInfoInterface.([]interface{})[0].(map[string]interface{})
-		jwtInfo = JWTInfoModelFromMap(jwtInfoMap)
+	if jwtInfoIsSet && jwtInfoInterface != nil {
+		jwtInfoMap := jwtInfoInterface.([]interface{})
+		if len(jwtInfoMap) > 0 {
+			jwtInfo = JWTInfoModelFromMap(jwtInfoMap[0].(map[string]interface{}))
+		}
 	}
 	token, _ := d.Get("token").(string)
 	return &models.EdgeviewCfg{
@@ -43,34 +51,42 @@ func EdgeViewModel(d *schema.ResourceData) *models.EdgeviewCfg {
 	}
 }
 
-func EdgeViewModelFromMap(m map[string]interface{}) *models.EdgeviewCfg {
+func EdgeviewCfgModelFromMap(m map[string]interface{}) *models.EdgeviewCfg {
 	var appPolicy *models.AppAccessPolicy // AppAccessPolicy
 	appPolicyInterface, appPolicyIsSet := m["app_policy"]
-	if appPolicyIsSet {
-		appPolicyMap := appPolicyInterface.([]interface{})[0].(map[string]interface{})
-		appPolicy = AppAccessPolicyModelFromMap(appPolicyMap)
+	if appPolicyIsSet && appPolicyInterface != nil {
+		appPolicyMap := appPolicyInterface.([]interface{})
+		if len(appPolicyMap) > 0 {
+			appPolicy = AppAccessPolicyModelFromMap(appPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var devPolicy *models.DevAccessPolicy // DevAccessPolicy
 	devPolicyInterface, devPolicyIsSet := m["dev_policy"]
-	if devPolicyIsSet {
-		devPolicyMap := devPolicyInterface.([]interface{})[0].(map[string]interface{})
-		devPolicy = DevAccessPolicyModelFromMap(devPolicyMap)
+	if devPolicyIsSet && devPolicyInterface != nil {
+		devPolicyMap := devPolicyInterface.([]interface{})
+		if len(devPolicyMap) > 0 {
+			devPolicy = DevAccessPolicyModelFromMap(devPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	var extPolicy *models.ExtAccessPolicy // ExtAccessPolicy
 	extPolicyInterface, extPolicyIsSet := m["ext_policy"]
-	if extPolicyIsSet {
-		extPolicyMap := extPolicyInterface.([]interface{})[0].(map[string]interface{})
-		extPolicy = ExtAccessPolicyModelFromMap(extPolicyMap)
+	if extPolicyIsSet && extPolicyInterface != nil {
+		extPolicyMap := extPolicyInterface.([]interface{})
+		if len(extPolicyMap) > 0 {
+			extPolicy = ExtAccessPolicyModelFromMap(extPolicyMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	generationID := int64(m["generation_id"].(int)) // int64 false false false
+	generationID := int64(m["generation_id"].(int)) // int64
 	var jwtInfo *models.JWTInfo                     // JWTInfo
 	jwtInfoInterface, jwtInfoIsSet := m["jwt_info"]
-	if jwtInfoIsSet {
-		jwtInfoMap := jwtInfoInterface.([]interface{})[0].(map[string]interface{})
-		jwtInfo = JWTInfoModelFromMap(jwtInfoMap)
+	if jwtInfoIsSet && jwtInfoInterface != nil {
+		jwtInfoMap := jwtInfoInterface.([]interface{})
+		if len(jwtInfoMap) > 0 {
+			jwtInfo = JWTInfoModelFromMap(jwtInfoMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	token := m["token"].(string)
@@ -84,7 +100,7 @@ func EdgeViewModelFromMap(m map[string]interface{}) *models.EdgeviewCfg {
 	}
 }
 
-func SetEdgeViewResourceData(d *schema.ResourceData, m *models.EdgeviewCfg) {
+func SetEdgeviewCfgResourceData(d *schema.ResourceData, m *models.EdgeviewCfg) {
 	d.Set("app_policy", SetAppAccessPolicySubResourceData([]*models.AppAccessPolicy{m.AppPolicy}))
 	d.Set("dev_policy", SetDevAccessPolicySubResourceData([]*models.DevAccessPolicy{m.DevPolicy}))
 	d.Set("ext_policy", SetExtAccessPolicySubResourceData([]*models.ExtAccessPolicy{m.ExtPolicy}))
@@ -93,7 +109,7 @@ func SetEdgeViewResourceData(d *schema.ResourceData, m *models.EdgeviewCfg) {
 	d.Set("token", m.Token)
 }
 
-func SetEdgeViewSubResourceData(m []*models.EdgeviewCfg) (d []*map[string]interface{}) {
+func SetEdgeviewCfgSubResourceData(m []*models.EdgeviewCfg) (d []*map[string]interface{}) {
 	for _, EdgeviewCfgModel := range m {
 		if EdgeviewCfgModel != nil {
 			properties := make(map[string]interface{})
@@ -109,7 +125,7 @@ func SetEdgeViewSubResourceData(m []*models.EdgeviewCfg) (d []*map[string]interf
 	return
 }
 
-func Edgeview() map[string]*schema.Schema {
+func EdgeView() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: ``,
@@ -161,8 +177,7 @@ func Edgeview() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the EdgeviewCfg resource
-func GetEdgeViewPropertyFields() (t []string) {
+func GetEdgeviewCfgPropertyFields() (t []string) {
 	return []string{
 		"app_policy",
 		"dev_policy",

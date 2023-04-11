@@ -5,15 +5,14 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate AzureResourceAndServiceDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func AzureResourceAndServiceDetailModel(d *schema.ResourceData) *models.AzureResourceAndServiceDetail {
 	var sKU *models.SKUDetail // SKUDetail
 	SKUInterface, SKUIsSet := d.GetOk("s_k_u")
-	if SKUIsSet {
-		SKUMap := SKUInterface.([]interface{})[0].(map[string]interface{})
-		sKU = SKUDetailModelFromMap(SKUMap)
+	if SKUIsSet && SKUInterface != nil {
+		SKUMap := SKUInterface.([]interface{})
+		if len(SKUMap) > 0 {
+			sKU = SKUDetailModelFromMap(SKUMap[0].(map[string]interface{}))
+		}
 	}
 	createByDefault, _ := d.Get("create_by_default").(bool)
 	name, _ := d.Get("name").(string)
@@ -33,9 +32,11 @@ func AzureResourceAndServiceDetailModel(d *schema.ResourceData) *models.AzureRes
 func AzureResourceAndServiceDetailModelFromMap(m map[string]interface{}) *models.AzureResourceAndServiceDetail {
 	var sKU *models.SKUDetail // SKUDetail
 	SKUInterface, SKUIsSet := m["s_k_u"]
-	if SKUIsSet {
-		SKUMap := SKUInterface.([]interface{})[0].(map[string]interface{})
-		sKU = SKUDetailModelFromMap(SKUMap)
+	if SKUIsSet && SKUInterface != nil {
+		SKUMap := SKUInterface.([]interface{})
+		if len(SKUMap) > 0 {
+			sKU = SKUDetailModelFromMap(SKUMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	createByDefault := m["create_by_default"].(bool)
@@ -53,7 +54,6 @@ func AzureResourceAndServiceDetailModelFromMap(m map[string]interface{}) *models
 	}
 }
 
-// Update the underlying AzureResourceAndServiceDetail resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetAzureResourceAndServiceDetailResourceData(d *schema.ResourceData, m *models.AzureResourceAndServiceDetail) {
 	d.Set("s_k_u", SetSKUDetailSubResourceData([]*models.SKUDetail{m.SKU}))
 	d.Set("create_by_default", m.CreateByDefault)
@@ -63,7 +63,6 @@ func SetAzureResourceAndServiceDetailResourceData(d *schema.ResourceData, m *mod
 	d.Set("subscription_id", m.SubscriptionID)
 }
 
-// Iterate through and update the AzureResourceAndServiceDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetAzureResourceAndServiceDetailSubResourceData(m []*models.AzureResourceAndServiceDetail) (d []*map[string]interface{}) {
 	for _, AzureResourceAndServiceDetailModel := range m {
 		if AzureResourceAndServiceDetailModel != nil {
@@ -80,8 +79,7 @@ func SetAzureResourceAndServiceDetailSubResourceData(m []*models.AzureResourceAn
 	return
 }
 
-// Schema mapping representing the AzureResourceAndServiceDetail resource defined in the Terraform configuration
-func AzureResourceAndServiceDetailSchema() map[string]*schema.Schema {
+func AzureResourceAndServiceDetail() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"s_k_u": {
 			Description: ``,
@@ -124,7 +122,6 @@ func AzureResourceAndServiceDetailSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the AzureResourceAndServiceDetail resource
 func GetAzureResourceAndServiceDetailPropertyFields() (t []string) {
 	return []string{
 		"s_k_u",

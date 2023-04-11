@@ -1,0 +1,34 @@
+name: test_tf_provider
+type: TAG_TYPE_PROJECT
+title: title
+attr: {}
+modulepolicy: []
+attestationpolicy:
+  title: title
+  type: POLICY_TYPE_ATTESTATION
+  attestationpolicy:
+    type: ATTEST_POLICY_TYPE_ACCEPT
+  attr: {}
+  status: POLICY_STATUS_READY
+  statusmessage: "Policy configured successfully"
+edgeviewpolicy:
+  attr: {}
+  edgeviewpolicy:
+    accessallowchange: true
+    edgeviewallow: false
+    edgeviewcfg:
+      devpolicy:
+        allowdev: true
+      extpolicy: {}
+      jwtinfo:
+        allowsec:  18000
+        dispurl:   "zedcloud.local.zededa.net/api/v1/edge-view"
+        expiresec: "0"
+        numinst:   1
+    maxexpiresec: 2592000
+    maxinst: 3
+  name: test_tf_provider.edgeviewPolicy
+  status: POLICY_STATUS_READY
+  statusmessage: "Policy configured successfully"
+  type: POLICY_TYPE_EDGEVIEW
+  title: ""

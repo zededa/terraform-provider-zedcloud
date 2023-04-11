@@ -14,12 +14,12 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// PolicyConfig Policy detailed configuration for a resource group (project)
+// Policy Policy detailed configuration for a resource group (project)
 //
 // Policy configuration defines set of policies to be applied on a resource grup (project). Policy can be one of the types specified in PolicyType. Multiple policies can be applied to a single resource group (project).
 //
-// swagger:model PolicyConfig
-type PolicyConfig struct {
+// swagger:model Policy
+type Policy struct {
 
 	// app policy, which is used in auto app instance deployment
 	AppPolicy *AppPolicy `json:"appPolicy,omitempty"`
@@ -47,6 +47,9 @@ type PolicyConfig struct {
 	// Read Only: true
 	// Pattern: [a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}
 	ID string `json:"id,omitempty"`
+
+	// local operator console policy to enforce on all devices in this project
+	LocalOperatorConsolePolicy *LocalOperatorConsolePolicy `json:"localOperatorConsolePolicy,omitempty"`
 
 	// module policy, which is used in auto module deployment
 	ModulePolicy *ModulePolicy `json:"modulePolicy,omitempty"`
@@ -86,7 +89,7 @@ type PolicyConfig struct {
 }
 
 // Validate validates this policy config
-func (m *PolicyConfig) Validate(formats strfmt.Registry) error {
+func (m *Policy) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAppPolicy(formats); err != nil {
@@ -114,6 +117,10 @@ func (m *PolicyConfig) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateID(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateLocalOperatorConsolePolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -155,7 +162,7 @@ func (m *PolicyConfig) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateAppPolicy(formats strfmt.Registry) error {
+func (m *Policy) validateAppPolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.AppPolicy) { // not required
 		return nil
 	}
@@ -174,7 +181,7 @@ func (m *PolicyConfig) validateAppPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateAttestationPolicy(formats strfmt.Registry) error {
+func (m *Policy) validateAttestationPolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.AttestationPolicy) { // not required
 		return nil
 	}
@@ -193,7 +200,7 @@ func (m *PolicyConfig) validateAttestationPolicy(formats strfmt.Registry) error 
 	return nil
 }
 
-func (m *PolicyConfig) validateAzurePolicy(formats strfmt.Registry) error {
+func (m *Policy) validateAzurePolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.AzurePolicy) { // not required
 		return nil
 	}
@@ -212,7 +219,7 @@ func (m *PolicyConfig) validateAzurePolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateClusterPolicy(formats strfmt.Registry) error {
+func (m *Policy) validateClusterPolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.ClusterPolicy) { // not required
 		return nil
 	}
@@ -231,7 +238,7 @@ func (m *PolicyConfig) validateClusterPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateDescription(formats strfmt.Registry) error {
+func (m *Policy) validateDescription(formats strfmt.Registry) error {
 	if swag.IsZero(m.Description) { // not required
 		return nil
 	}
@@ -243,7 +250,7 @@ func (m *PolicyConfig) validateDescription(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateEdgeviewPolicy(formats strfmt.Registry) error {
+func (m *Policy) validateEdgeviewPolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.EdgeviewPolicy) { // not required
 		return nil
 	}
@@ -262,7 +269,7 @@ func (m *PolicyConfig) validateEdgeviewPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateID(formats strfmt.Registry) error {
+func (m *Policy) validateID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ID) { // not required
 		return nil
 	}
@@ -274,7 +281,26 @@ func (m *PolicyConfig) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateModulePolicy(formats strfmt.Registry) error {
+func (m *Policy) validateLocalOperatorConsolePolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.LocalOperatorConsolePolicy) { // not required
+		return nil
+	}
+
+	if m.LocalOperatorConsolePolicy != nil {
+		if err := m.LocalOperatorConsolePolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("localOperatorConsolePolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("localOperatorConsolePolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Policy) validateModulePolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.ModulePolicy) { // not required
 		return nil
 	}
@@ -293,7 +319,7 @@ func (m *PolicyConfig) validateModulePolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateName(formats strfmt.Registry) error {
+func (m *Policy) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -314,7 +340,7 @@ func (m *PolicyConfig) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateNetworkPolicy(formats strfmt.Registry) error {
+func (m *Policy) validateNetworkPolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.NetworkPolicy) { // not required
 		return nil
 	}
@@ -333,7 +359,7 @@ func (m *PolicyConfig) validateNetworkPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateRevision(formats strfmt.Registry) error {
+func (m *Policy) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
 	}
@@ -352,7 +378,7 @@ func (m *PolicyConfig) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateStatus(formats strfmt.Registry) error {
+func (m *Policy) validateStatus(formats strfmt.Registry) error {
 	if swag.IsZero(m.Status) { // not required
 		return nil
 	}
@@ -371,7 +397,7 @@ func (m *PolicyConfig) validateStatus(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateStatusMessage(formats strfmt.Registry) error {
+func (m *Policy) validateStatusMessage(formats strfmt.Registry) error {
 	if swag.IsZero(m.StatusMessage) { // not required
 		return nil
 	}
@@ -383,7 +409,7 @@ func (m *PolicyConfig) validateStatusMessage(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateTitle(formats strfmt.Registry) error {
+func (m *Policy) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -404,7 +430,7 @@ func (m *PolicyConfig) validateTitle(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *PolicyConfig) validateType(formats strfmt.Registry) error {
+func (m *Policy) validateType(formats strfmt.Registry) error {
 
 	if err := validate.Required("type", "body", m.Type); err != nil {
 		return err
@@ -429,7 +455,7 @@ func (m *PolicyConfig) validateType(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this policy config based on the context it is used
-func (m *PolicyConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateAppPolicy(ctx, formats); err != nil {
@@ -453,6 +479,10 @@ func (m *PolicyConfig) ContextValidate(ctx context.Context, formats strfmt.Regis
 	}
 
 	if err := m.contextValidateID(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateLocalOperatorConsolePolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -482,7 +512,7 @@ func (m *PolicyConfig) ContextValidate(ctx context.Context, formats strfmt.Regis
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateAppPolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateAppPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.AppPolicy != nil {
 		if err := m.AppPolicy.ContextValidate(ctx, formats); err != nil {
@@ -498,7 +528,7 @@ func (m *PolicyConfig) contextValidateAppPolicy(ctx context.Context, formats str
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateAttestationPolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateAttestationPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.AttestationPolicy != nil {
 		if err := m.AttestationPolicy.ContextValidate(ctx, formats); err != nil {
@@ -514,7 +544,7 @@ func (m *PolicyConfig) contextValidateAttestationPolicy(ctx context.Context, for
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateAzurePolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateAzurePolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.AzurePolicy != nil {
 		if err := m.AzurePolicy.ContextValidate(ctx, formats); err != nil {
@@ -530,7 +560,7 @@ func (m *PolicyConfig) contextValidateAzurePolicy(ctx context.Context, formats s
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateClusterPolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateClusterPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ClusterPolicy != nil {
 		if err := m.ClusterPolicy.ContextValidate(ctx, formats); err != nil {
@@ -546,7 +576,7 @@ func (m *PolicyConfig) contextValidateClusterPolicy(ctx context.Context, formats
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateEdgeviewPolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateEdgeviewPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.EdgeviewPolicy != nil {
 		if err := m.EdgeviewPolicy.ContextValidate(ctx, formats); err != nil {
@@ -562,7 +592,7 @@ func (m *PolicyConfig) contextValidateEdgeviewPolicy(ctx context.Context, format
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
 
 	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
 		return err
@@ -571,7 +601,23 @@ func (m *PolicyConfig) contextValidateID(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateModulePolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateLocalOperatorConsolePolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.LocalOperatorConsolePolicy != nil {
+		if err := m.LocalOperatorConsolePolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("localOperatorConsolePolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("localOperatorConsolePolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Policy) contextValidateModulePolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ModulePolicy != nil {
 		if err := m.ModulePolicy.ContextValidate(ctx, formats); err != nil {
@@ -587,7 +633,7 @@ func (m *PolicyConfig) contextValidateModulePolicy(ctx context.Context, formats 
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateNetworkPolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateNetworkPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.NetworkPolicy != nil {
 		if err := m.NetworkPolicy.ContextValidate(ctx, formats); err != nil {
@@ -603,7 +649,7 @@ func (m *PolicyConfig) contextValidateNetworkPolicy(ctx context.Context, formats
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
 		if err := m.Revision.ContextValidate(ctx, formats); err != nil {
@@ -619,7 +665,7 @@ func (m *PolicyConfig) contextValidateRevision(ctx context.Context, formats strf
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateStatus(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Status != nil {
 		if err := m.Status.ContextValidate(ctx, formats); err != nil {
@@ -635,7 +681,7 @@ func (m *PolicyConfig) contextValidateStatus(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *PolicyConfig) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+func (m *Policy) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Type != nil {
 		if err := m.Type.ContextValidate(ctx, formats); err != nil {
@@ -652,7 +698,7 @@ func (m *PolicyConfig) contextValidateType(ctx context.Context, formats strfmt.R
 }
 
 // MarshalBinary interface implementation
-func (m *PolicyConfig) MarshalBinary() ([]byte, error) {
+func (m *Policy) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -660,8 +706,8 @@ func (m *PolicyConfig) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *PolicyConfig) UnmarshalBinary(b []byte) error {
-	var res PolicyConfig
+func (m *Policy) UnmarshalBinary(b []byte) error {
+	var res Policy
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

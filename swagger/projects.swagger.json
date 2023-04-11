@@ -1,0 +1,3991 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Project",
+        "description": "Documentation of API endpoints managing Project resources.",
+        "termsOfService": "https://www.zededa.com/terms",
+        "version": "1.0",
+        "contact": {
+            "name": "API Support",
+            "url": "https://www.zededa.com/support",
+            "email": "support@zededa.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "tags": [
+        {
+            "name": "Projects"
+        }
+    ],
+    "basePath": "/api",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/v1/projects": {
+            "post": {
+                "summary": "Create project",
+                "description": "Create a project.",
+                "operationId": "Projects_Create",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the request or does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this edge network record will conflict with an already existing edge network record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Tag"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "correlation-id",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Projects"
+                ],
+                "externalDocs": {
+                    "description": "Product Documentation",
+                    "url": "https://help.zededa.com/hc/en-us/articles/4440351458971-Projects"
+                }
+            }
+        },
+        "/v1/projects/id/{id}": {
+            "delete": {
+                "summary": "Delete project",
+                "description": "Delete the project with the provided ID.",
+                "operationId": "Projects_Delete",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the request or does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the resource group",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "correlation-id",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Projects"
+                ],
+                "externalDocs": {
+                    "description": "Product Documentation",
+                    "url": "https://help.zededa.com/hc/en-us/articles/4440351458971-Projects"
+                }
+            },
+            "get": {
+                "summary": "Get project by ID",
+                "description": "Fetch a project via HTTP/GET request with project-ID as a parameter.",
+                "operationId": "Projects_GetByID",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/Tag"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the request or does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the resource group",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "correlation-id",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Projects"
+                ],
+                "externalDocs": {
+                    "description": "Product Documentation",
+                    "url": "https://help.zededa.com/hc/en-us/articles/4440351458971-Projects"
+                }
+            },
+            "put": {
+                "summary": "Update a project",
+                "description": "Note, partial updates are not supported! The body must contain the complete project data including the fields that have not been changed. Therefore, it might be necessary to fetch the project, apply the changes to the retrieved data before eventually submitting the update request.",
+                "operationId": "Projects_Update",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the request or does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing edge node record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the resource group.",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Tag"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "correlation-id",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Projects"
+                ],
+                "externalDocs": {
+                    "description": "Product Documentation",
+                    "url": "https://help.zededa.com/hc/en-us/articles/4440351458971-Projects"
+                }
+            }
+        },
+        "/v1/projects/name/{name}": {
+            "get": {
+                "summary": "Get project by name",
+                "description": "Fetch a project via HTTP/GET request with project-name as a parameter.",
+                "operationId": "Projects_GetByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/Tag"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the request or does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "User defined name of the resource group, unique across the enterprise. Once resource group is created, name can\u2019t be changed.",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "correlation-id",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "Projects"
+                ],
+                "externalDocs": {
+                    "description": "Product Documentation",
+                    "url": "https://help.zededa.com/hc/en-us/articles/4440351458971-Projects"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Acl": {
+            "type": "object",
+            "properties": {
+                "matches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Match"
+                    },
+                    "description": "Network traffic matching criteria consistngs of one or more of source IP address, destination IP address, protocol, source port and destination port"
+                },
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AclAction"
+                    },
+                    "description": "Chain of actions to be taken on matching network traffic"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the Access Control List"
+                }
+            }
+        },
+        "AclAction": {
+            "type": "object",
+            "properties": {
+                "drop": {
+                    "type": "boolean",
+                    "description": "Drop the packet",
+                    "title": "Not used by ZedUI"
+                },
+                "limit": {
+                    "type": "boolean",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Limit action on ACL rule"
+                },
+                "limitValue": {
+                    "$ref": "#/definitions/LimitParams",
+                    "description": "Value to be used for limit action (Required if limit is true)",
+                    "title": "only valid if limit flag is set, see below.\nNot used by ZedUI"
+                },
+                "limitrate": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Rate limit in ACL rule"
+                },
+                "limitunit": {
+                    "type": "string",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Rate limit unit in ACL rule"
+                },
+                "limitburst": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Rate limit burst in ACL rule"
+                },
+                "portmap": {
+                    "type": "boolean",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Enable device to app port mapping for incoming ACL rule, implicitly added by ZedUI code"
+                },
+                "portmapto": {
+                    "$ref": "#/definitions/MapParams",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Device to app port mapping for incoming ACL rule"
+                }
+            }
+        },
+        "AllocationPolicy": {
+            "type": "string",
+            "enum": [
+                "ALLOCATION_POLICY_UNSPECIFIED",
+                "ALLOCATION_POLICY_HASHED",
+                "ALLOCATION_POLICY_GEOLATENCY",
+                "ALLOCATION_POLICY_STATIC",
+                "ALLOCATION_POLICY_CUSTOM"
+            ],
+            "default": "ALLOCATION_POLICY_UNSPECIFIED",
+            "description": "Iot hub allocation policy."
+        },
+        "AppAccessPolicy": {
+            "type": "object",
+            "properties": {
+                "allowApp": {
+                    "type": "boolean",
+                    "title": "app side of edge-view access is allowed or not"
+                }
+            }
+        },
+        "AppCategory": {
+            "type": "string",
+            "enum": [
+                "APP_CATEGORY_UNSPECIFIED",
+                "APP_CATEGORY_OPERATING_SYSTEM",
+                "APP_CATEGORY_INDUSTRIAL",
+                "APP_CATEGORY_EDGE_APPLICATION",
+                "APP_CATEGORY_NETWORKING",
+                "APP_CATEGORY_SECURITY",
+                "APP_CATEGORY_DATA_ANALYTICS",
+                "APP_CATEGORY_CLOUD_APPLICATION",
+                "APP_CATEGORY_DEVOPS",
+                "APP_CATEGORY_OTHERS"
+            ],
+            "default": "APP_CATEGORY_UNSPECIFIED",
+            "description": "- APP_CATEGORY_UNSPECIFIED: Invalid Edge Application Category\n - APP_CATEGORY_OPERATING_SYSTEM: Edge operating systems\n - APP_CATEGORY_INDUSTRIAL: Connectity solution for industrial protocols\n - APP_CATEGORY_EDGE_APPLICATION: Edge application framework featuring composite functions for data ingestion, buffering, analytics and export\n - APP_CATEGORY_NETWORKING: Edge networking services (e.g. SD-WAN, NFV)\n - APP_CATEGORY_SECURITY: Edge security services (e.g. protocol inspection, firewall)\n - APP_CATEGORY_DATA_ANALYTICS: Edge analytics (e.g. AI/ML) and data management (e.g. database, connectors) services\n - APP_CATEGORY_CLOUD_APPLICATION: Edge application runtimes, cloud connectivity and general application enablement\n - APP_CATEGORY_DEVOPS: Tools for Edge Application CI/CD and performance optimization\n - APP_CATEGORY_OTHERS: Miscellaneous functionality",
+            "title": "Edge Application Category"
+        },
+        "AppConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the edge application",
+                    "readOnly": true,
+                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the edge application, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the edge application. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the edge application",
+                    "maxLength": 256
+                },
+                "appId": {
+                    "type": "string",
+                    "description": "User defined name of the edge app, unique across the enterprise. Once app name is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "networks": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined network options",
+                    "required": [
+                        "networks"
+                    ]
+                },
+                "drives": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined drives",
+                    "readOnly": true,
+                    "required": [
+                        "drives"
+                    ]
+                },
+                "cpus": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined cpus for bundle",
+                    "required": [
+                        "cpus"
+                    ]
+                },
+                "memory": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined memory for bundle",
+                    "required": [
+                        "memory"
+                    ]
+                },
+                "manifestJSON": {
+                    "$ref": "#/definitions/VMManifest",
+                    "description": "Manifest data"
+                },
+                "parentDetail": {
+                    "$ref": "#/definitions/ObjectParentDetail",
+                    "description": "origin and parent related details"
+                },
+                "originType": {
+                    "type": "object",
+                    "$ref": "#/definitions/Origin",
+                    "description": "origin of object",
+                    "required": [
+                        "true"
+                    ]
+                },
+                "appVersion": {
+                    "type": "string",
+                    "description": "Current version of the attached bundle"
+                },
+                "nameProjectPart": {
+                    "type": "string",
+                    "description": "User provided name part  for the auto deployed app"
+                },
+                "nameAppPart": {
+                    "type": "string",
+                    "description": "User provided name part  for the auto deployed app"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "namingScheme": {
+                    "$ref": "#/definitions/AppNamingScheme",
+                    "description": "app naming scheme"
+                },
+                "interfaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appInterface"
+                    },
+                    "description": "application interfaces"
+                },
+                "storage": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined storage for bundle"
+                },
+                "startDelayInSeconds": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "start delay is the time in seconds EVE should wait after boot before starting the application instance"
+                }
+            },
+            "description": "Edge application configuration for an App policy defines configuration details of the Edge application to be installed to all Edge node(s) under the App policy.",
+            "title": "Edge application configuration for App policy",
+            "required": [
+                "name",
+                "title",
+                "manifestJSON",
+                "networks",
+                "drives",
+                "cpus",
+                "memory",
+                "originType"
+            ]
+        },
+        "AppInstConfig": {
+            "type": "object",
+            "example": {
+                "name": "sample-app",
+                "title": "Sample Edge Applications",
+                "originType": "ORIGIN_LOCAL"
+            },
+            "properties": {
+                "networks": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined network options"
+                },
+                "drives": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined drives",
+                    "readOnly": true
+                },
+                "cpus": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined cpus for bundle"
+                },
+                "memory": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined memory for bundle"
+                },
+                "manifestJSON": {
+                    "$ref": "#/definitions/VMManifest",
+                    "description": "user defined manifest in JSON format"
+                },
+                "parentDetail": {
+                    "$ref": "#/definitions/ObjectParentDetail",
+                    "description": "origin and parent related details"
+                },
+                "originType": {
+                    "$ref": "#/definitions/Origin",
+                    "description": "origin of object"
+                },
+                "storage": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined storage for bundle"
+                },
+                "nameProjectPart": {
+                    "type": "string",
+                    "description": "User provided name part  for the auto deployed app"
+                },
+                "nameAppPart": {
+                    "type": "string",
+                    "description": "User provided name part  for the auto deployed app"
+                },
+                "namingScheme": {
+                    "$ref": "#/definitions/AppNamingSchemeV2",
+                    "description": "app naming scheme"
+                },
+                "interfaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appInterface"
+                    },
+                    "description": "application interfaces"
+                },
+                "startDelayInSeconds": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "start delay is the time in seconds EVE should wait after boot before starting the application instance"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "bundleId": {
+                    "type": "string",
+                    "description": "User defined name of the edge app, unique across the enterprise. Once app name is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "logs": {
+                    "$ref": "#/definitions/AppInstanceLogs",
+                    "description": "App Instance logs"
+                },
+                "vminfo": {
+                    "$ref": "#/definitions/vm",
+                    "description": "virtual machine info"
+                },
+                "remoteConsole": {
+                    "type": "boolean",
+                    "description": "Remote console flag"
+                },
+                "newBundleVersionAvailable": {
+                    "type": "boolean",
+                    "description": "this flag denotes whether there is latest bundle available in the marketplace or not"
+                },
+                "bundleVersion": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "current bundle version"
+                }
+            },
+            "description": "Edge application gets installed/uninstalled to/from edge node(s) and perform specific edge computing tasks. Lifecycle of Edge application (upgrade/restart) on Edge node can be managed and monitored by ZEDEDA Cloud controller through this detailed configuration.",
+            "title": "Edge application detailed configuration"
+        },
+        "AppInstPolicy": {
+            "type": "object",
+            "properties": {
+                "metaData": {
+                    "$ref": "#/definitions/PolicyCommon",
+                    "description": "all the required metadata for a policy like id, name, different types of tags"
+                },
+                "appInstConfig": {
+                    "$ref": "#/definitions/AppInstConfig",
+                    "description": "app instance config for automated deployment"
+                }
+            }
+        },
+        "AppInstanceLogs": {
+            "type": "object",
+            "properties": {
+                "access": {
+                    "type": "string",
+                    "description": "Flags to enable / disable sending of logs generated by app instance to zedcloud"
+                }
+            },
+            "description": "App Instance Logs configuration",
+            "title": "App Instance Logs configuration",
+            "required": [
+                "access"
+            ]
+        },
+        "AppNamingScheme": {
+            "type": "string",
+            "enum": [
+                "APP_NAMING_SCHEME_UNSPECIFIED",
+                "APP_NAMING_SCHEME_DEVICE",
+                "APP_NAMING_SCHEME_APP_DEVICE",
+                "APP_NAMING_SCHEME_PROJECT_DEVICE",
+                "APP_NAMING_SCHEME_PROJECT_APP_DEVICE"
+            ],
+            "default": "APP_NAMING_SCHEME_UNSPECIFIED",
+            "description": "type of name aliasing."
+        },
+        "AppNamingSchemeV2": {
+            "type": "string",
+            "enum": [
+                "APP_NAMING_SCHEMEV2_UNSPECIFIED",
+                "APP_NAMING_SCHEMEV2_DEVICE",
+                "APP_NAMING_SCHEMEV2_APP_DEVICE",
+                "APP_NAMING_SCHEMEV2_PROJECT_DEVICE",
+                "APP_NAMING_SCHEMEV2_PROJECT_APP_DEVICE"
+            ],
+            "default": "APP_NAMING_SCHEMEV2_UNSPECIFIED",
+            "description": "type of name aliasing."
+        },
+        "AppPolicy": {
+            "type": "object",
+            "properties": {
+                "apps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AppConfig"
+                    },
+                    "description": "list of app details that will be provisioned on all the devices of the project to which this policy is attached"
+                }
+            },
+            "description": "list of apps that will be provisioned on all the devices of the project to which this policy is attached",
+            "title": "App policy body detail",
+            "required": [
+                "apps"
+            ]
+        },
+        "AppType": {
+            "type": "string",
+            "enum": [
+                "APP_TYPE_UNSPECIFIED",
+                "APP_TYPE_VM",
+                "APP_TYPE_VM_RUNTIME",
+                "APP_TYPE_CONTAINER",
+                "APP_TYPE_MODULE"
+            ],
+            "default": "APP_TYPE_UNSPECIFIED",
+            "description": "type of app bundle."
+        },
+        "AttestPolicyType": {
+            "type": "string",
+            "enum": [
+                "ATTEST_POLICY_TYPE_UNSPECIFIED",
+                "ATTEST_POLICY_TYPE_ACCEPT",
+                "ATTEST_POLICY_TYPE_ENFORCE"
+            ],
+            "default": "ATTEST_POLICY_TYPE_UNSPECIFIED",
+            "description": " - ATTEST_POLICY_TYPE_ACCEPT: Do not enforce attestation. All devices are marked as successfully attested.\n - ATTEST_POLICY_TYPE_ENFORCE: Enforce attestation. Devices failing attestation are marked accordingly."
+        },
+        "AttestationPolicy": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "unique policy id",
+                    "readOnly": true,
+                    "pattern": "[0-9-a-z-]+"
+                },
+                "type": {
+                    "$ref": "#/definitions/AttestPolicyType",
+                    "description": "Attestation policy type"
+                }
+            },
+            "description": "Attestation policy to enforce on all devices of the project",
+            "title": "Attestation policy body detail",
+            "required": [
+                "type"
+            ]
+        },
+        "Author": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DeveloperPane:Name_Field, AppDetailsPage:DeveloperPane:Name_Field",
+                    "title": "Name of the developer"
+                },
+                "group": {
+                    "type": "string",
+                    "title": "Not used by ZedUI"
+                },
+                "company": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:IdentityPane:Category_Field, AppDetailsPage:IdentityPane:Category_Field",
+                    "title": "Company of the developer"
+                },
+                "website": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DeveloperPane:Website_Field, AppDetailsPage:DeveloperPane:Website_Field",
+                    "title": "Website of the developer company"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DeveloperPane:Email_Field, AppDetailsPage:DeveloperPane:Email_Field",
+                    "title": "Contact email of the developer company"
+                }
+            }
+        },
+        "AzurePolicy": {
+            "type": "object",
+            "properties": {
+                "appId": {
+                    "type": "string",
+                    "description": "app id for rbac"
+                },
+                "appPassword": {
+                    "type": "string",
+                    "description": "app password for rbac"
+                },
+                "tenantId": {
+                    "type": "string",
+                    "description": "tenant id for rbac"
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "encrypted AppPassword"
+                },
+                "cryptoKey": {
+                    "type": "string",
+                    "description": "key to decrypt AppPassword"
+                },
+                "azureResourceAndServices": {
+                    "$ref": "#/definitions/AzureResourceAndServices",
+                    "description": "azure resource and service the policy will be interested in"
+                },
+                "customDeploymentManaged": {
+                    "type": "boolean"
+                },
+                "certificate": {
+                    "$ref": "#/definitions/Certificate",
+                    "description": "Certificate object holds the details of certificate like encryption type, validity, subject etc"
+                }
+            },
+            "description": "All azure policy related details that are required to provision an iot edge device and deploy a module on that.",
+            "title": "Azure policy body detail",
+            "required": [
+                "appId",
+                "appPassword",
+                "tenantId"
+            ]
+        },
+        "AzureResourceAndServiceDetail": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "createByDefault": {
+                    "type": "boolean"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "SKU": {
+                    "$ref": "#/definitions/SKUDetail"
+                },
+                "subscriptionId": {
+                    "type": "string"
+                },
+                "resourceGroupName": {
+                    "type": "string"
+                }
+            }
+        },
+        "AzureResourceAndServices": {
+            "type": "object",
+            "properties": {
+                "resourceGroup": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ResourceGroupDetail"
+                    },
+                    "description": "list of resource groups attached to cloud policy"
+                },
+                "iotHubService": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/IotHubServiceDetail"
+                    },
+                    "description": "list of iothubs attached to cloud policy"
+                },
+                "dpsService": {
+                    "type": "object",
+                    "$ref": "#/definitions/DPSServiceDetail",
+                    "description": "dps service attached to cloud policy"
+                }
+            },
+            "description": "Azure resource request paylod for cloud policy",
+            "title": "Azure resource payload detail for cloud policy",
+            "required": [
+                "resourceGroup",
+                "iotHubService",
+                "dpsService"
+            ]
+        },
+        "Certificate": {
+            "type": "object",
+            "properties": {
+                "cert": {
+                    "type": "string",
+                    "description": "base64 string of the parent certificate",
+                    "title": "certificate details"
+                },
+                "pvtKey": {
+                    "type": "string",
+                    "description": "base64 string of the parent pvt key"
+                },
+                "publicKey": {
+                    "type": "string",
+                    "description": "base63 string of the public key"
+                },
+                "passPhrase": {
+                    "type": "string",
+                    "description": "pass phase for the pvt key, this has to be filled if pvt key is encrypted with a pass phrase"
+                },
+                "exportable": {
+                    "type": "boolean",
+                    "description": "Indicates if the private key can be exported."
+                },
+                "reuseKey": {
+                    "type": "boolean",
+                    "description": "Indicates if the same key pair will be used on certificate renewal."
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "user encrypted secrets map",
+                    "title": "secrets encryption"
+                },
+                "cryptoKey": {
+                    "type": "string",
+                    "description": "Crypto Key for decrypting user secret information"
+                },
+                "publicKeyAlgorithm": {
+                    "type": "string",
+                    "description": "Public key algorithm.",
+                    "title": "encryption algorithm"
+                },
+                "rsaEcryption": {
+                    "$ref": "#/definitions/RSA",
+                    "description": "RSA encryption algorithm of the certificate"
+                },
+                "ecdsaEncryption": {
+                    "$ref": "#/definitions/ECDSA",
+                    "description": "ECDSA encryption algorithm of the certificate"
+                },
+                "validFrom": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Certificate validatity start time",
+                    "title": "certificate validity"
+                },
+                "validTill": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Certificate validatity start time"
+                },
+                "sanValues": {
+                    "$ref": "#/definitions/SANValues",
+                    "description": "This holds the alternative name values like URIs, domain names IPs etc.",
+                    "title": "Subject alternative name values"
+                },
+                "subject": {
+                    "$ref": "#/definitions/Subject",
+                    "description": "Parameters for the subject of the X509 component of a certificate."
+                },
+                "issuer": {
+                    "$ref": "#/definitions/Subject",
+                    "description": "Parameters for the issuer of the X509 component of a certificate."
+                },
+                "serialNumber": {
+                    "type": "string",
+                    "description": "Unique identifier for each Certificate generated by an Certificate Issuer. "
+                },
+                "basicContraintsValid": {
+                    "type": "boolean",
+                    "description": "This fields tells the basic constraints like isCA are correct."
+                },
+                "keyUsage": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Key usage extensions define the purpose of the public key contained in a certificate."
+                },
+                "extendedKeyUsage": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Sequence of extended key usages."
+                },
+                "signatureAlgorithm": {
+                    "type": "string"
+                }
+            }
+        },
+        "CertificateEnrollmentDetail": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/EnrollmentType"
+                },
+                "individualCertificateEnrollment": {
+                    "$ref": "#/definitions/IndividualCertificateEnrollment"
+                },
+                "groupCertificateEnrollment": {
+                    "$ref": "#/definitions/GroupCertificateEnrollment"
+                }
+            }
+        },
+        "ClusterConfig": {
+            "type": "object",
+            "properties": {
+                "minNodesRequired": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "ClusterInstPolicy": {
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision"
+                }
+            }
+        },
+        "ClusterPolicy": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/ClusterType",
+                    "description": "Type of cluster"
+                },
+                "appPolicyID": {
+                    "type": "string",
+                    "description": "UUID of the app policy linked to this cluster policy",
+                    "pattern": "[0-9-a-z-]+"
+                },
+                "networkPolicyID": {
+                    "type": "string",
+                    "description": "UUID of the network policy linked to this cluster policy",
+                    "pattern": "[0-9-a-z-]+"
+                },
+                "clusterConfig": {
+                    "$ref": "#/definitions/ClusterConfig",
+                    "description": "Cluster Policy Parameters"
+                }
+            },
+            "description": "cluster policy to bring up cluster on devices in this project",
+            "title": "Cluster policy body detail",
+            "required": [
+                "type",
+                "appPolicyID",
+                "networkPolicyID"
+            ]
+        },
+        "ClusterType": {
+            "type": "string",
+            "enum": [
+                "CLUSTER_TYPE_UNSPECIFIED",
+                "CLUSTER_TYPE_K3S",
+                "CLUSTER_TYPE_TKG_ATTACH"
+            ],
+            "default": "CLUSTER_TYPE_UNSPECIFIED",
+            "title": "- CLUSTER_TYPE_K3S: cluster type is k3s\n - CLUSTER_TYPE_TKG_ATTACH: cluster type is TKG, with subtype ATTACH"
+        },
+        "ContainerDetail": {
+            "type": "object",
+            "properties": {
+                "containerCreateOption": {
+                    "type": "string",
+                    "description": "Create options direct the creation of the Docker container",
+                    "title": "Base64 encoded container specific details"
+                }
+            },
+            "description": "common container detail."
+        },
+        "CustomConfig": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of CustomConfig (Required)"
+                },
+                "add": {
+                    "type": "boolean",
+                    "description": "Add the Custom Config to App Instance (Optional. Default: False)"
+                },
+                "override": {
+                    "type": "boolean",
+                    "description": "Override existing custom config from App Bundle Manifest (Optional. Default: False)"
+                },
+                "allowStorageResize": {
+                    "type": "boolean",
+                    "description": "Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)"
+                },
+                "fieldDelimiter": {
+                    "type": "string",
+                    "description": "Field delimiter used in specifying variables in template. (Required)"
+                },
+                "template": {
+                    "type": "string",
+                    "description": "base64 encrypted template string. (Optional)"
+                },
+                "variableGroups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CustomConfigVariableGroup"
+                    },
+                    "description": "List of Variable groups. (Required)"
+                }
+            }
+        },
+        "CustomConfigVariableGroup": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the Variable Group(Required)"
+                },
+                "variables": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VariableGroupVariable"
+                    },
+                    "description": "List of variables(Required)"
+                },
+                "required": {
+                    "type": "boolean",
+                    "description": "Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)"
+                },
+                "condition": {
+                    "$ref": "#/definitions/VariableGroupCondition",
+                    "description": "Condition to apply the variable group. (Optional. Default: None)"
+                }
+            }
+        },
+        "DPSServiceDetail": {
+            "type": "object",
+            "properties": {
+                "serviceDetail": {
+                    "$ref": "#/definitions/AzureResourceAndServiceDetail"
+                },
+                "enrollment": {
+                    "$ref": "#/definitions/EnrollmentDetail"
+                }
+            }
+        },
+        "Deployment": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "system generated unique id for an deployment"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "user defined name for the deployment"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "user defined title for the deployment"
+                },
+                "appInstPolicies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AppInstPolicy"
+                    },
+                    "description": "list of app instance policies"
+                },
+                "networkInstPolicies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetworkInstPolicy"
+                    },
+                    "description": "list of network instance policies"
+                },
+                "volumeInstPolicies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VolumeInstPolicy"
+                    },
+                    "description": "list of volume instamce policies"
+                },
+                "devicePolicies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DevicePolicy"
+                    },
+                    "description": "list of device policies"
+                },
+                "integrationPolicy": {
+                    "$ref": "#/definitions/IntegrationPolicy",
+                    "description": "integration policy details"
+                },
+                "clusterPolicy": {
+                    "$ref": "#/definitions/ClusterInstPolicy",
+                    "description": "cluster policy details"
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "object revision"
+                },
+                "deploymentTag": {
+                    "type": "string",
+                    "description": "user defined tag for the deployment, which is used while targeting set of devices"
+                }
+            }
+        },
+        "DeploymentType": {
+            "type": "string",
+            "enum": [
+                "DEPLOYMENT_TYPE_UNSPECIFIED",
+                "DEPLOYMENT_TYPE_STAND_ALONE",
+                "DEPLOYMENT_TYPE_AZURE",
+                "DEPLOYMENT_TYPE_K3S",
+                "DEPLOYMENT_TYPE_AWS",
+                "DEPLOYMENT_TYPE_K3S_AZURE",
+                "DEPLOYMENT_TYPE_K3S_AWS",
+                "DEPLOYMENT_TYPE_VMWARE_VCE",
+                "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
+            ],
+            "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+        },
+        "Details": {
+            "type": "object",
+            "example": {
+                "appCategory": "APP_CATEGORY_CLOUD_APPLICATION",
+                "os": "Linux"
+            },
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "default": "All",
+                    "description": "UI map: AppMarketplacePage:AppCard:DescriptionField, AppEditPage:IdentityPane:CategoryField, AppDetailsPage:IdentityPane:CategoryField",
+                    "title": "Type of the Edge application"
+                },
+                "os": {
+                    "type": "string",
+                    "title": "Edge application's Operating System"
+                },
+                "appCategory": {
+                    "$ref": "#/definitions/AppCategory",
+                    "default": "APP_CATEGORY_OTHERS",
+                    "title": "Edge application category"
+                },
+                "logo": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo",
+                    "title": "App Logo"
+                },
+                "screenshotList": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields",
+                    "title": "App Screenshots"
+                },
+                "licenseList": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License",
+                    "title": "App Licenses"
+                },
+                "support": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DeveloperPane:Support_Description_Field, AppDetailsPage:DeveloperPane:Support_Description_Field",
+                    "title": "Support Description"
+                },
+                "agreementList": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field",
+                    "title": "Developer Agreements"
+                }
+            },
+            "description": "Edge Application Artifact Details",
+            "title": "Edge Application detail",
+            "required": [
+                "appCategory"
+            ]
+        },
+        "DevAccessPolicy": {
+            "type": "object",
+            "properties": {
+                "allowDev": {
+                    "type": "boolean",
+                    "title": "device side of edge-view access is allowed or not"
+                }
+            }
+        },
+        "DeviceAttestPolicyType": {
+            "type": "string",
+            "enum": [
+                "DEVICE_ATTEST_POLICY_TYPE_UNSPECIFIED",
+                "DEVICE_ATTEST_POLICY_TYPE_ACCEPT",
+                "DEVICE_ATTEST_POLICY_TYPE_ENFORCE"
+            ],
+            "default": "DEVICE_ATTEST_POLICY_TYPE_UNSPECIFIED",
+            "description": " - DEVICE_ATTEST_POLICY_TYPE_ACCEPT: Do not enforce attestation. All devices are marked as successfully attested.\n - DEVICE_ATTEST_POLICY_TYPE_ENFORCE: Enforce attestation. Devices failing attestation are marked accordingly."
+        },
+        "DeviceAttestationPolicy": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/DeviceAttestPolicyType",
+                    "description": "Attestation policy type"
+                }
+            },
+            "description": "Attestation policy to enforce on devices of a project",
+            "title": "Attestation policy body detail",
+            "required": [
+                "type"
+            ]
+        },
+        "DevicePolicy": {
+            "type": "object",
+            "properties": {
+                "metaData": {
+                    "$ref": "#/definitions/PolicyCommon",
+                    "description": "all the required metadata for a policy like id, name, different types of tags"
+                },
+                "policySubType": {
+                    "$ref": "#/definitions/DevicePolicyType",
+                    "description": "device policy type"
+                },
+                "attestationPolicy": {
+                    "$ref": "#/definitions/DeviceAttestationPolicy",
+                    "description": "device attestation policy"
+                }
+            }
+        },
+        "DevicePolicyType": {
+            "type": "string",
+            "enum": [
+                "DEVICE_POLICY_TYPE_UNSPECIFIED",
+                "DEVICE_POLICY_TYPE_ATTESTATION"
+            ],
+            "default": "DEVICE_POLICY_TYPE_UNSPECIFIED"
+        },
+        "DhcpServerConfig": {
+            "type": "object",
+            "properties": {
+                "subnet": {
+                    "type": "string",
+                    "description": "Subnet address"
+                },
+                "mask": {
+                    "type": "string",
+                    "description": "Subnet Mask"
+                },
+                "gateway": {
+                    "type": "string",
+                    "description": "IP Address of Network Gateway"
+                },
+                "domain": {
+                    "type": "string",
+                    "description": "Network domain"
+                },
+                "ntp": {
+                    "type": "string",
+                    "description": "IP Address of NTP Server"
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "IP Addresses of DNS servers",
+                    "title": "possible DNS ip address"
+                },
+                "dhcpRange": {
+                    "$ref": "#/definitions/dhcpIpRange",
+                    "description": "Range of IP addresses to be used for DHCP"
+                }
+            }
+        },
+        "ECDSA": {
+            "type": "object",
+            "properties": {
+                "curve": {
+                    "type": "string",
+                    "description": "ECDSA curve to be used while signing the certificate."
+                }
+            }
+        },
+        "EIDRegister": {
+            "type": "object",
+            "properties": {
+                "AppCert": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "app certificate"
+                },
+                "AppPublicKey": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "App public key"
+                },
+                "AppPrivateKey": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "App private key"
+                },
+                "UUID": {
+                    "type": "string",
+                    "description": "UUID"
+                },
+                "DisplayName": {
+                    "type": "string",
+                    "description": "Display name"
+                },
+                "LispInstance": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Lisp Instance"
+                },
+                "EID": {
+                    "type": "string",
+                    "description": "EID"
+                },
+                "EIDHashLen": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "EID hash length"
+                },
+                "LispSignature": {
+                    "type": "string",
+                    "description": "Lisp Signature"
+                },
+                "LispMapServers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LispServer"
+                    },
+                    "description": "Lisp Map Server",
+                    "title": "time CreateTime     time.Time"
+                }
+            },
+            "description": "EID Register",
+            "title": "EID Register detail",
+            "required": [
+                "AppCert",
+                "AppPublicKey",
+                "AppPrivateKey",
+                "UUID",
+                "DisplayName",
+                "LispInstance",
+                "EID",
+                "EIDHashLen",
+                "LispSignature",
+                "LispMapServers"
+            ]
+        },
+        "EdgeviewCfg": {
+            "type": "object",
+            "properties": {
+                "jwtInfo": {
+                    "$ref": "#/definitions/JWTInfo"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "devPolicy": {
+                    "$ref": "#/definitions/DevAccessPolicy"
+                },
+                "appPolicy": {
+                    "$ref": "#/definitions/AppAccessPolicy"
+                },
+                "extPolicy": {
+                    "$ref": "#/definitions/ExtAccessPolicy"
+                },
+                "generationId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "EdgeviewPolicy": {
+            "type": "object",
+            "properties": {
+                "edgeviewcfg": {
+                    "$ref": "#/definitions/EdgeviewCfg",
+                    "description": "Edgeview configuration and policies"
+                },
+                "edgeviewAllow": {
+                    "type": "boolean",
+                    "description": "Allow device to enable Edgeview in this project"
+                },
+                "accessAllowChange": {
+                    "type": "boolean",
+                    "description": "Allow inherit instance to change access policy"
+                },
+                "maxExpireSec": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum seconds allowed for Edgeview session"
+                },
+                "maxInst": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum instances allowed for Edgeview"
+                }
+            },
+            "description": "Policy for device edgeview operation",
+            "title": "Edgeview policy body detail",
+            "required": [
+                "edgeviewAllow"
+            ]
+        },
+        "EnrollmentDetail": {
+            "type": "object",
+            "properties": {
+                "attachedIotHubsName": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "enableIotEdgeDevice": {
+                    "type": "boolean"
+                },
+                "mechanism": {
+                    "$ref": "#/definitions/EnrollmentMechanism"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "allocationPolicy": {
+                    "$ref": "#/definitions/AllocationPolicy"
+                },
+                "symmetricKeyEnrollment": {
+                    "$ref": "#/definitions/SymmetricKeyEnrollmentDetail"
+                },
+                "certificateEnrollment": {
+                    "$ref": "#/definitions/CertificateEnrollmentDetail"
+                },
+                "tpmEnrollment": {
+                    "$ref": "#/definitions/TPMEnrollmentDetail"
+                }
+            }
+        },
+        "EnrollmentMechanism": {
+            "type": "string",
+            "enum": [
+                "ENROLLMENT_MECHANISM_UNSPECIFIED",
+                "ENROLLMENT_MECHANISM_SYMMETRICKEY",
+                "ENROLLMENT_MECHANISM_CERTIFICATE",
+                "ENROLLMENT_MECHANISM_TPM"
+            ],
+            "default": "ENROLLMENT_MECHANISM_UNSPECIFIED",
+            "description": "attestation/mechanism supported by azure."
+        },
+        "EnrollmentType": {
+            "type": "string",
+            "enum": [
+                "ENROLLMENT_TYPE_UNSPECIFIED",
+                "ENROLLMENT_TYPE_INDIVIDUAL",
+                "ENROLLMENT_TYPE_GROUP"
+            ],
+            "default": "ENROLLMENT_TYPE_UNSPECIFIED",
+            "description": "enrollment types."
+        },
+        "ExtAccessPolicy": {
+            "type": "object",
+            "properties": {
+                "allowExt": {
+                    "type": "boolean",
+                    "title": "external of device edge-view access is allowed or not"
+                }
+            }
+        },
+        "GroupCertificateEnrollment": {
+            "type": "object",
+            "properties": {
+                "groupName": {
+                    "type": "string"
+                }
+            }
+        },
+        "GroupSymmetricKeyEnrollment": {
+            "type": "object",
+            "properties": {
+                "groupName": {
+                    "type": "string"
+                }
+            }
+        },
+        "IndividualCertificateEnrollment": {
+            "type": "object",
+            "title": "XXX TODO"
+        },
+        "IndividualSymmetricKeyEnrollment": {
+            "type": "object",
+            "properties": {
+                "registrationId": {
+                    "type": "string"
+                }
+            }
+        },
+        "IntegrationPolicy": {
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "string"
+                },
+                "Name": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision"
+                }
+            }
+        },
+        "Interface": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Interface name used by the edge application"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Physical Adapter type for this interface. Applicable only when \"direct attach\" flag is true."
+                },
+                "optional": {
+                    "type": "boolean",
+                    "description": "Indicates if the interface is optional for edge application."
+                },
+                "directattach": {
+                    "type": "boolean",
+                    "description": "If true, a physical adapter is assigned to the edge application directly. If false, a network instance is assigned to the edge application."
+                },
+                "privateip": {
+                    "type": "boolean",
+                    "description": "If true, DHCP network can't be assigned and user needs to provide a static IP address."
+                },
+                "acls": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Acl"
+                    },
+                    "description": "Traffic access control rules for this interface. Applicable only when \"direct attach\" flag is false."
+                }
+            }
+        },
+        "IoType": {
+            "type": "string",
+            "enum": [
+                "IO_TYPE_UNSPECIFIED",
+                "IO_TYPE_ETH",
+                "IO_TYPE_USB",
+                "IO_TYPE_COM",
+                "IO_TYPE_AUDIO",
+                "IO_TYPE_WLAN",
+                "IO_TYPE_WWAN",
+                "IO_TYPE_HDMI",
+                "IO_TYPE_LTE",
+                "IO_TYPE_STORAGE_NVME_DEVICE",
+                "IO_TYPE_STORAGE_SATA_DEVICE",
+                "IO_TYPE_ETH_PF",
+                "IO_TYPE_ETH_VF",
+                "IO_TYPE_OTHER"
+            ],
+            "default": "IO_TYPE_UNSPECIFIED",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_OTHER: Other Io Types",
+            "title": "Input/Output Type"
+        },
+        "IotHubServiceDetail": {
+            "type": "object",
+            "properties": {
+                "serviceDetail": {
+                    "$ref": "#/definitions/AzureResourceAndServiceDetail"
+                }
+            }
+        },
+        "JWTInfo": {
+            "type": "object",
+            "properties": {
+                "dispUrl": {
+                    "type": "string"
+                },
+                "allowSec": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "expireSec": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "numInst": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "encrypt": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "LimitParams": {
+            "type": "object",
+            "properties": {
+                "limitrate": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Rate limit in ACL rule"
+                },
+                "limitunit": {
+                    "type": "string",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Rate limit unit in ACL rule"
+                },
+                "limitburst": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "Rate limit burst in ACL rule"
+                }
+            }
+        },
+        "LispConfig": {
+            "type": "object",
+            "properties": {
+                "lispiid": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "lisp id"
+                },
+                "allocate": {
+                    "type": "boolean",
+                    "description": "Allocate flag"
+                },
+                "exportprivate": {
+                    "type": "boolean",
+                    "description": "Export Private flag"
+                },
+                "allocationprefix": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "Allocation Prefix"
+                },
+                "allocationprefixlen": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Allocation Prefix Length"
+                },
+                "sp": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ServicePoint"
+                    },
+                    "description": "Service Point List"
+                }
+            },
+            "description": "List Configurations.",
+            "title": "Lisp Configurations"
+        },
+        "LispServer": {
+            "type": "object",
+            "properties": {
+                "nameOrIp": {
+                    "type": "string",
+                    "description": "name/IP"
+                },
+                "credential": {
+                    "type": "string",
+                    "description": "lisp credential"
+                }
+            },
+            "description": "LispServer request paylod",
+            "title": "LispServer payload detail",
+            "required": [
+                "nameOrIp",
+                "credential"
+            ]
+        },
+        "LocalOperatorConsolePolicy": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "unique policy id",
+                    "readOnly": true,
+                    "pattern": "[0-9-a-z-]+"
+                },
+                "locURL": {
+                    "type": "string",
+                    "description": "Local operator console URL"
+                }
+            },
+            "description": "Local operator console policy to enforce on all devices of the project",
+            "title": "Local operator console policy body detail",
+            "required": [
+                "locURL"
+            ]
+        },
+        "MapParams": {
+            "type": "object",
+            "properties": {
+                "appPort": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Application Port value"
+                }
+            }
+        },
+        "Match": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Type of Match (Required)",
+                    "title": "enum: host, protocol, fport\nAt the device level it will pick right interface to apply this match"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Value of match (Required)"
+                }
+            }
+        },
+        "MetricsDetail": {
+            "type": "object",
+            "properties": {
+                "queries": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Mapping of queries variable keys and value"
+                },
+                "results": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Mapping of results variable keys and value"
+                }
+            }
+        },
+        "ModuleDetail": {
+            "type": "object",
+            "example": {
+                "twinDetail": "IHsKICAgICAgIm5hbWUiOiAiU2VuZEludGVydmFsIiwKICAgICAgInZhbHVlIjogIjUiCiAgICB9"
+            },
+            "properties": {
+                "twinDetail": {
+                    "type": "string",
+                    "description": "Base64 encoded module twin details, desired properties of the module will be updated to reflect these values"
+                },
+                "routes": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Send messages between modules or send messages from modules to iot hub"
+                },
+                "environment": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Extra information to module to make configuration easier"
+                },
+                "moduleType": {
+                    "$ref": "#/definitions/ModuleType",
+                    "description": "Type of modules"
+                }
+            },
+            "description": "Azure module specific details",
+            "title": "Module detail"
+        },
+        "ModulePolicy": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "unique id for deployment",
+                    "readOnly": true,
+                    "pattern": "[0-9-a-z-]+"
+                },
+                "labels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Mapping of label variable keys and value"
+                },
+                "priority": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "deployment priority of module manifest",
+                    "required": [
+                        "priority"
+                    ]
+                },
+                "targetCondition": {
+                    "type": "string",
+                    "description": "target condition for deployment that matches single device or group of devices"
+                },
+                "metrics": {
+                    "$ref": "#/definitions/MetricsDetail",
+                    "description": "custom metrics for deployment"
+                },
+                "Etag": {
+                    "type": "string",
+                    "description": "etag for deployment"
+                },
+                "routes": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Mapping of routes variable keys and value"
+                },
+                "apps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AppConfig"
+                    },
+                    "description": "list of app details that will be provisioned on all the devices of the project to which this policy is attached"
+                },
+                "targetConditionNew": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "target condition for deployment that matches single device or group of devices"
+                },
+                "azureEdgeAgent": {
+                    "$ref": "#/definitions/AppConfig",
+                    "description": "app that describes the azure edge agent to be deployed on the Azure runtime"
+                },
+                "azureEdgeHub": {
+                    "$ref": "#/definitions/AppConfig",
+                    "description": "app that describes the azure edge hub to be deployed on the Azure runtime"
+                }
+            },
+            "description": "list of modules that will be provisioned on all the devices of the project to which this policy is attached",
+            "title": "Module policy body detail",
+            "required": [
+                "apps",
+                "priority"
+            ]
+        },
+        "ModuleType": {
+            "type": "string",
+            "enum": [
+                "MODULE_TYPE_UNSPECIFIED",
+                "MODULE_TYPE_SYSTEM_DEFINED",
+                "MODULE_TYPE_CUSTOM",
+                "MODULE_TYPE_AZURE_EDGE_AGENT",
+                "MODULE_TYPE_AZURE_EDGE_HUB"
+            ],
+            "default": "MODULE_TYPE_UNSPECIFIED",
+            "description": "module type."
+        },
+        "NetInstConfig": {
+            "type": "object",
+            "example": {
+                "id": "d85a545f-6510-4327-b03d-c02eef119e99",
+                "name": "sample-app"
+            },
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network instance",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the network instance. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the network instance",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info for the object"
+                },
+                "projectId": {
+                    "type": "string",
+                    "description": "id of the project in which network instance is created"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "clusterID": {
+                    "type": "string",
+                    "description": "id of the Cluster in which the network instance is configured",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string",
+                    "description": "id of the device on which network instance is created",
+                    "title": "device on which this network is running"
+                },
+                "port": {
+                    "type": "string",
+                    "description": "name of port mapping in the model",
+                    "title": "name of port mapping in the model"
+                },
+                "portTags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkInstanceKind",
+                    "description": "Kind of Network Instance ( Local, Switch etc )"
+                },
+                "dhcp": {
+                    "type": "boolean",
+                    "description": "Deprecated",
+                    "title": "dhcp - DEPRECATED"
+                },
+                "type": {
+                    "$ref": "#/definitions/NetworkInstanceDhcpType",
+                    "description": "Type of DHCP for this Network Instance"
+                },
+                "ip": {
+                    "$ref": "#/definitions/DhcpServerConfig",
+                    "description": "Dhcp Server Configuration"
+                },
+                "dnsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticDNSList"
+                    },
+                    "description": "List of Static DNS entries"
+                },
+                "oconfig": {
+                    "type": "string",
+                    "title": "Deprecated"
+                },
+                "lisp": {
+                    "$ref": "#/definitions/LispConfig",
+                    "description": "Lisp Config : read only for now. Deprecated."
+                },
+                "opaque": {
+                    "$ref": "#/definitions/NetInstOpaqueConfig",
+                    "description": "Service specific Config"
+                },
+                "deviceDefault": {
+                    "type": "string",
+                    "description": "flag to indicate if this is the default network instance for the device",
+                    "title": "flag to indicate if this is default network"
+                },
+                "networkPolicyId": {
+                    "type": "string",
+                    "description": "id of the network policy to be attached to this network instance"
+                }
+            },
+            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
+            "title": "Network instance detailed configuration",
+            "required": [
+                "name",
+                "title",
+                "deviceId",
+                "port",
+                "kind"
+            ]
+        },
+        "NetInstOpaqueConfig": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "$ref": "#/definitions/OpaqueConfigType",
+                    "description": "type of Opaque config"
+                },
+                "oconfig": {
+                    "type": "string",
+                    "description": "base64 encoded string of opaque config"
+                },
+                "lisp": {
+                    "type": "string",
+                    "$ref": "#/definitions/LispConfig",
+                    "description": "Deprecated - Lisp config",
+                    "title": "lisp - Deprecated"
+                }
+            },
+            "description": "Network Instance Opaque config. This is service specific configuration."
+        },
+        "NetworkInstConfig": {
+            "type": "object",
+            "properties": {
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "port": {
+                    "type": "string",
+                    "description": "name of port mapping in the model",
+                    "title": "name of port mapping in the model"
+                },
+                "portTags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkInstanceKind",
+                    "description": "Kind of Network Instance ( Local, Switch etc )"
+                },
+                "type": {
+                    "$ref": "#/definitions/NetworkInstanceDhcpType",
+                    "description": "Type of DHCP for this Network Instance"
+                },
+                "ip": {
+                    "$ref": "#/definitions/DhcpServerConfig",
+                    "description": "Dhcp Server Configuration"
+                },
+                "dnsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticDNSList"
+                    },
+                    "description": "List of Static DNS entries"
+                },
+                "opaque": {
+                    "$ref": "#/definitions/NetInstOpaqueConfig",
+                    "description": "Service specific Config"
+                },
+                "deviceDefault": {
+                    "type": "string",
+                    "description": "flag to indicate if this is the default network instance for the device",
+                    "title": "flag to indicate if this is default network"
+                }
+            }
+        },
+        "NetworkInstPolicy": {
+            "type": "object",
+            "properties": {
+                "metaData": {
+                    "$ref": "#/definitions/PolicyCommon",
+                    "description": "all the required metadata for a policy like id, name, different types of tags"
+                },
+                "netInstConfig": {
+                    "$ref": "#/definitions/NetworkInstConfig",
+                    "description": "network instance config details"
+                }
+            }
+        },
+        "NetworkInstanceDhcpType": {
+            "type": "string",
+            "enum": [
+                "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED",
+                "NETWORK_INSTANCE_DHCP_TYPE_V4",
+                "NETWORK_INSTANCE_DHCP_TYPE_V6",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOEID",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV4",
+                "NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV6"
+            ],
+            "default": "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED",
+            "title": "NetworkInstanceDhcpType: Used in the network instance provide\n   dhcp server configuration"
+        },
+        "NetworkInstanceKind": {
+            "type": "string",
+            "enum": [
+                "NETWORK_INSTANCE_KIND_UNSPECIFIED",
+                "NETWORK_INSTANCE_KIND_TRANSPARENT",
+                "NETWORK_INSTANCE_KIND_SWITCH",
+                "NETWORK_INSTANCE_KIND_LOCAL",
+                "NETWORK_INSTANCE_KIND_CLOUD",
+                "NETWORK_INSTANCE_KIND_MESH",
+                "NETWORK_INSTANCE_KIND_HONEYPOT"
+            ],
+            "default": "NETWORK_INSTANCE_KIND_UNSPECIFIED"
+        },
+        "NetworkPolicy": {
+            "type": "object",
+            "properties": {
+                "netInstanceConfig": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetInstConfig"
+                    },
+                    "description": "list of network details that will be created on all the devices of the project to which this policy is attached"
+                }
+            },
+            "description": "list of networks that will be created on all the devices of the project to which this policy is attached",
+            "title": "Network policy body detail",
+            "required": [
+                "netInstanceConfig"
+            ]
+        },
+        "ObjectParentDetail": {
+            "type": "object",
+            "properties": {
+                "idOfParentObject": {
+                    "type": "string",
+                    "description": "system defined unique id of parent object",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "required": [
+                        "true"
+                    ]
+                },
+                "versionOfParentObject": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "version of object present in parent",
+                    "readOnly": true,
+                    "pattern": "[0-9]+"
+                },
+                "updateAvailable": {
+                    "type": "boolean",
+                    "description": "Update required flag"
+                },
+                "referenceExists": {
+                    "type": "boolean",
+                    "description": "Relation with child and parent object exists or not"
+                }
+            },
+            "description": "ObjectImportDetail consists of various object attributes like idOfParentObject, versionOfParentObject, updateAvailable, referenceExists",
+            "title": "Object Import Detail",
+            "required": [
+                "idOfParentObject"
+            ]
+        },
+        "ObjectRevision": {
+            "type": "object",
+            "properties": {
+                "prev": {
+                    "type": "string",
+                    "description": "Previous"
+                },
+                "curr": {
+                    "type": "string",
+                    "description": "Current Database version of the record"
+                },
+                "createdAt": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "The time, in milliseconds since the epoch, when the record was created."
+                },
+                "createdBy": {
+                    "type": "string",
+                    "description": "User data: Created By"
+                },
+                "updatedAt": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "The time, in milliseconds since the epoch, when the record was last updated."
+                },
+                "updatedBy": {
+                    "type": "string",
+                    "description": "User data: Updated By"
+                }
+            },
+            "description": "ObjectRevision store the user details, who has doent the necessary operation like Create Operation or update operation",
+            "title": "ObjectRevision is used to store the user information.",
+            "required": [
+                "curr",
+                "createdAt",
+                "createdBy",
+                "updatedAt",
+                "updatedBy"
+            ]
+        },
+        "ObjectType": {
+            "type": "string",
+            "enum": [
+                "OBJECT_TYPE_UNSPECIFIED",
+                "OBJECT_TYPE_USER",
+                "OBJECT_TYPE_EDGE_NODE",
+                "OBJECT_TYPE_EDGE_APP",
+                "OBJECT_TYPE_IMAGE",
+                "OBJECT_TYPE_EDGE_APP_INSTANCE",
+                "OBJECT_TYPE_PROJECT",
+                "OBJECT_TYPE_NETWORK",
+                "OBJECT_TYPE_DATASTORE",
+                "OBJECT_TYPE_SERVICE",
+                "OBJECT_TYPE_SERVICE_INSTANCE",
+                "OBJECT_TYPE_ENTERPRISE",
+                "OBJECT_TYPE_ROLE",
+                "OBJECT_TYPE_CREDENTIAL",
+                "OBJECT_TYPE_NETWORK_INSTANCE",
+                "OBJECT_TYPE_VOLUME_INSTANCE",
+                "OBJECT_TYPE_REALM",
+                "OBJECT_TYPE_AUTHPROFILE",
+                "OBJECT_TYPE_POLICY",
+                "OBJECT_TYPE_APP_POLICY",
+                "OBJECT_TYPE_CLUSTER_INSTANCE",
+                "OBJECT_TYPE_PLUGIN",
+                "OBJECT_TYPE_DOC_POLICY",
+                "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+                "OBJECT_TYPE_TAGS",
+                "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+                "OBJECT_TYPE_DEPLOYMENT",
+                "OBJECT_TYPE_ENTITLEMENTS",
+                "OBJECT_TYPE_DATA_STREAM",
+                "OBJECT_TYPE_API_USAGE"
+            ],
+            "default": "OBJECT_TYPE_UNSPECIFIED"
+        },
+        "OpaqueConfigType": {
+            "type": "string",
+            "enum": [
+                "OPAQUE_CONFIG_TYPE_UNSPECIFIED",
+                "OPAQUE_CONFIG_TYPE_VPN",
+                "OPAQUE_CONFIG_TYPE_LISP"
+            ],
+            "default": "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+        },
+        "Origin": {
+            "type": "string",
+            "enum": [
+                "ORIGIN_UNSPECIFIED",
+                "ORIGIN_IMPORTED",
+                "ORIGIN_LOCAL",
+                "ORIGIN_GLOBAL"
+            ],
+            "default": "ORIGIN_UNSPECIFIED",
+            "description": "- ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+            "title": "OriginType : enum specifies the Object orgigin type"
+        },
+        "Param": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the Parameter (Required)"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Value of the parameter (Required)"
+                }
+            }
+        },
+        "Permission": {
+            "type": "object"
+        },
+        "PolicyCommon": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "system generated unique id for an policy"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "user defined policy name"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "user defined policy title"
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "object revision details"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "user defined key-value pairs of a policy"
+                },
+                "policyTargetCondition": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "user defined key-value pairs of a policy that will be used for targeting by devices"
+                }
+            }
+        },
+        "PolicyConfig": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the policy request, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the policy request",
+                    "readOnly": true,
+                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the policy. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the policy",
+                    "maxLength": 256
+                },
+                "type": {
+                    "$ref": "#/definitions/PolicyType",
+                    "description": "type of policy"
+                },
+                "status": {
+                    "$ref": "#/definitions/PolicyStatus",
+                    "description": "status of the policy",
+                    "readOnly": true
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info",
+                    "readOnly": true
+                },
+                "attr": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Mapping of policy  variable keys and policy variable values"
+                },
+                "appPolicy": {
+                    "$ref": "#/definitions/AppPolicy",
+                    "description": "app policy, which is used in auto app instance deployment"
+                },
+                "azurePolicy": {
+                    "$ref": "#/definitions/AzurePolicy",
+                    "description": "azure policy, which is used in configuring azure iot-edge."
+                },
+                "modulePolicy": {
+                    "$ref": "#/definitions/ModulePolicy",
+                    "description": "module policy, which is used in auto module deployment"
+                },
+                "attestationPolicy": {
+                    "$ref": "#/definitions/AttestationPolicy",
+                    "description": "attestation policy to enforce on all devices in this project"
+                },
+                "networkPolicy": {
+                    "$ref": "#/definitions/NetworkPolicy",
+                    "description": "network policy to enforce on all devices in this project"
+                },
+                "clusterPolicy": {
+                    "$ref": "#/definitions/ClusterPolicy",
+                    "description": "cluster policy to bring up cluster on devices in this project"
+                },
+                "edgeviewPolicy": {
+                    "$ref": "#/definitions/EdgeviewPolicy",
+                    "description": "edgeview policy on devices of this project"
+                },
+                "localOperatorConsolePolicy": {
+                    "$ref": "#/definitions/LocalOperatorConsolePolicy",
+                    "description": "local operator console policy to enforce on all devices in this project"
+                },
+                "statusMessage": {
+                    "type": "string",
+                    "description": "Detailed status message of the policy",
+                    "maxLength": 256
+                }
+            },
+            "description": "Policy configuration defines set of policies to be applied on a resource grup (project). Policy can be one of the types specified in PolicyType. Multiple policies can be applied to a single resource group (project).",
+            "title": "Policy detailed configuration for a resource group (project)",
+            "required": [
+                "name",
+                "title",
+                "type"
+            ]
+        },
+        "PolicyStatus": {
+            "type": "string",
+            "enum": [
+                "POLICY_STATUS_UNSPECIFIED",
+                "POLICY_STATUS_INITIALIZED",
+                "POLICY_STATUS_INPROGRESS",
+                "POLICY_STATUS_READY",
+                "POLICY_STATUS_FAILED"
+            ],
+            "default": "POLICY_STATUS_UNSPECIFIED",
+            "description": "policy status."
+        },
+        "PolicyType": {
+            "type": "string",
+            "enum": [
+                "POLICY_TYPE_UNSPECIFIED",
+                "POLICY_TYPE_APP",
+                "POLICY_TYPE_AZURE",
+                "POLICY_TYPE_AWS",
+                "POLICY_TYPE_GCP",
+                "POLICY_TYPE_MODULE",
+                "POLICY_TYPE_ATTESTATION",
+                "POLICY_TYPE_NETWORK",
+                "POLICY_TYPE_CLUSTER",
+                "POLICY_TYPE_EDGEVIEW",
+                "POLICY_TYPE_LOC"
+            ],
+            "default": "POLICY_TYPE_UNSPECIFIED",
+            "description": "type of policy."
+        },
+        "RSA": {
+            "type": "object",
+            "properties": {
+                "rsaBits": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "RSA Encryption Key bit size."
+                }
+            }
+        },
+        "Resource": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the Resource (Required)"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Value of Resource (Required)"
+                }
+            }
+        },
+        "ResourceGroupDetail": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "resource group name"
+                },
+                "region": {
+                    "type": "string",
+                    "description": "resource group region"
+                },
+                "subscriptionId": {
+                    "type": "string",
+                    "description": "azure subscription id to which resource group is attached"
+                }
+            },
+            "description": "Resource group request paylod for cloud policy",
+            "title": "Resource group payload detail for cloud policy",
+            "required": [
+                "name",
+                "subscriptionId"
+            ]
+        },
+        "SANValues": {
+            "type": "object",
+            "properties": {
+                "hosts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of permitted hosts."
+                },
+                "emaildIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of permitted email addresses."
+                },
+                "uris": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of permitted URIs."
+                },
+                "ips": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of permitted IP addresses."
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of permitted DNS names."
+                },
+                "upns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of permitted User principal names."
+                }
+            }
+        },
+        "SKUDetail": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                },
+                "capacity": {
+                    "type": "string"
+                }
+            }
+        },
+        "ServicePoint": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "object",
+                    "$ref": "#/definitions/spType",
+                    "description": "Service Point Type"
+                },
+                "NameOrIp": {
+                    "type": "string",
+                    "description": "Service name/ service name"
+                },
+                "Credential": {
+                    "type": "string",
+                    "description": "Service credentials"
+                }
+            },
+            "description": "Service Point",
+            "title": "Service Point"
+        },
+        "StaticDNSList": {
+            "type": "object",
+            "properties": {
+                "hostname": {
+                    "type": "string",
+                    "description": "Host name"
+                },
+                "addrs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Addresses"
+                }
+            },
+            "description": "Static DNS list",
+            "title": "Static DNS list"
+        },
+        "Subject": {
+            "type": "object",
+            "properties": {
+                "commonName": {
+                    "type": "string",
+                    "description": "Certificate common name."
+                },
+                "country": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of countries."
+                },
+                "organization": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of organization."
+                },
+                "organizationalUnit": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of Organizational Unit."
+                },
+                "locality": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of locallity."
+                },
+                "postalCode": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of Postal codes."
+                },
+                "province": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of List of Prvince."
+                },
+                "serialNumber": {
+                    "type": "string",
+                    "description": "Subject cerial number"
+                }
+            }
+        },
+        "SymmetricKeyEnrollmentDetail": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/EnrollmentType"
+                },
+                "individualSymmetricKeyEnrollment": {
+                    "$ref": "#/definitions/IndividualSymmetricKeyEnrollment"
+                },
+                "groupSymmetricKeyEnrollment": {
+                    "$ref": "#/definitions/GroupSymmetricKeyEnrollment"
+                }
+            }
+        },
+        "TPMEnrollmentDetail": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/EnrollmentType"
+                }
+            }
+        },
+        "Tag": {
+            "type": "object",
+            "example": {
+                "id": "d1125b0f-633d-459c-99c6-f47e7467cebc",
+                "name": "my-test-project",
+                "title": "My Test resource group",
+                "description": "My test resource group for Edge computing",
+                "revision": {
+                    "curr": "1",
+                    "createdAt": {
+                        "seconds": 1592068270
+                    },
+                    "createdBy": "admin@my-company.com",
+                    "updatedAt": {
+                        "seconds": 1592068271
+                    },
+                    "updatedBy": "admin@my-company.com"
+                },
+                "type": "TAG_TYPE_PROJECT",
+                "attr": {},
+                "numdevices": 208
+            },
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the resource group.",
+                    "readOnly": true,
+                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the resource group, unique across the enterprise. Once resource group is created, name can\u2019t be changed.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the resource group. Title can be changed at any time.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the resource group.",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info",
+                    "readOnly": true
+                },
+                "type": {
+                    "$ref": "#/definitions/TagType",
+                    "description": "Resource group type"
+                },
+                "attr": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Resource group wide configuration for edge nodes",
+                    "readOnly": true
+                },
+                "appPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group",
+                    "readOnly": true
+                },
+                "cloudPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications",
+                    "readOnly": true
+                },
+                "modulePolicy": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PolicyConfig"
+                    },
+                    "description": "Resource group wide policy for Azure module configuration to be applied to all edge applications",
+                    "readOnly": true
+                },
+                "numdevices": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Number of edge nodes in this resource group",
+                    "readOnly": true
+                },
+                "attestationPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Attestation policy to enforce on all devices of this project"
+                },
+                "networkPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Network policy to enforce on all devices of this project"
+                },
+                "deployment": {
+                    "$ref": "#/definitions/Deployment",
+                    "description": "Deployment template containing different types of policies"
+                },
+                "edgeviewPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Edgeview policy on devices of this project"
+                },
+                "localOperatorConsolePolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Local operator console policy on devices of this project"
+                }
+            },
+            "description": "Resource group for edge gateway Base OS or for eedge applications.",
+            "title": "Resource group detail",
+            "required": [
+                "name",
+                "title",
+                "type"
+            ]
+        },
+        "TagType": {
+            "type": "string",
+            "enum": [
+                "TAG_TYPE_UNSPECIFIED",
+                "TAG_TYPE_GENERIC",
+                "TAG_TYPE_PROJECT",
+                "TAG_TYPE_AZURE",
+                "TAG_TYPE_DEPLOYMENT"
+            ],
+            "default": "TAG_TYPE_UNSPECIFIED",
+            "description": "- TAG_TYPE_UNSPECIFIED: Unspecified\n - TAG_TYPE_GENERIC: Generic resource group\n - TAG_TYPE_PROJECT: Project resource group\n - TAG_TYPE_AZURE: Project resource group\n - TAG_TYPE_DEPLOYMENT: Project with deployment",
+            "title": "Resource group types"
+        },
+        "UserDataTemplate": {
+            "type": "object",
+            "properties": {
+                "customConfig": {
+                    "$ref": "#/definitions/CustomConfig"
+                }
+            }
+        },
+        "VMManifest": {
+            "type": "object",
+            "properties": {
+                "acKind": {
+                    "type": "string",
+                    "default": "VMManifest",
+                    "description": "UI map: N/A - not exposed to users",
+                    "title": "Edge Application type"
+                },
+                "acVersion": {
+                    "type": "string",
+                    "default": "1.2.0",
+                    "description": "UI map: N/A - not exposed to users",
+                    "title": "Manifest version"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field",
+                    "title": "Unique id of app manifest, should match object name"
+                },
+                "displayName": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field",
+                    "title": "Display name or title of app manifest"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField",
+                    "title": "Description of the Edge application",
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "owner": {
+                    "$ref": "#/definitions/Author",
+                    "description": "Owner of the application"
+                },
+                "desc": {
+                    "$ref": "#/definitions/Details",
+                    "description": "Description of the application"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VMManifestImage"
+                    },
+                    "description": "UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane",
+                    "title": "Images used by the app"
+                },
+                "interfaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Interface"
+                    },
+                    "description": "UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane",
+                    "title": "I/O adapter settings"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Permission"
+                    }
+                },
+                "vmmode": {
+                    "type": "string",
+                    "default": "HV_HVM",
+                    "description": "UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field",
+                    "title": "VM mode for VM-based app"
+                },
+                "enablevnc": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field",
+                    "title": "Enable VNC for the app"
+                },
+                "resources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Resource"
+                    },
+                    "description": "UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane",
+                    "title": "Hardware resource requirement (CPU, Memory, Storage) for the app"
+                },
+                "configuration": {
+                    "$ref": "#/definitions/UserDataTemplate",
+                    "description": "Template for Custom Configuration. Used for Cloud-Init",
+                    "title": "Annotations   types.Annotations    `json:\"Annotations,omitempty\"`\nLabels        types.Labels         `json:\"Labels,omitempty\"`"
+                },
+                "containerDetail": {
+                    "$ref": "#/definitions/ContainerDetail",
+                    "description": "Create options direct the creation of the Docker container",
+                    "title": "Container specific details"
+                },
+                "module": {
+                    "$ref": "#/definitions/ModuleDetail",
+                    "description": "Azure module specific details like module twin, environment variable, routes",
+                    "title": "Module specific details"
+                },
+                "appType": {
+                    "$ref": "#/definitions/AppType",
+                    "description": "bundle type, eg: vm, container, module"
+                },
+                "deploymentType": {
+                    "$ref": "#/definitions/DeploymentType",
+                    "description": "type of deployment for the app, eg: azure, k3s, standalone"
+                },
+                "cpuPinningEnabled": {
+                    "type": "boolean",
+                    "description": "Enable CpuPinning"
+                }
+            }
+        },
+        "VMManifestImage": {
+            "type": "object",
+            "properties": {
+                "imagename": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field"
+                },
+                "imageid": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field"
+                },
+                "imageformat": {
+                    "$ref": "#/definitions/configFormat",
+                    "description": "UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field"
+                },
+                "maxsize": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field"
+                },
+                "preserve": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field"
+                },
+                "target": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Target_Field, AppDetailsPage:DrivesPane:Target_Field",
+                    "title": "enum: Disk, Kernel, Initrd, RamDisk"
+                },
+                "drvtype": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Drive_Type_Field, AppDetailsPage:DrivesPane:Drive_Type_Field",
+                    "title": "enum: CDROM, HDD, NET"
+                },
+                "params": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Param"
+                    },
+                    "title": "Not used by ZedUI"
+                },
+                "readonly": {
+                    "type": "boolean",
+                    "title": "Not used by ZedUI"
+                },
+                "volumelabel": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Volume_Label, AppDetailsPage:DrivesPane:Volume_Label"
+                },
+                "ignorepurge": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:DrivesPane:Ignorepurge, AppDetailsPage:DrivesPane:Ignorepurgee_Field"
+                },
+                "cleartext": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field"
+                },
+                "mountpath": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field"
+                }
+            }
+        },
+        "VariableFileEncoding": {
+            "type": "string",
+            "enum": [
+                "FILE_ENCODING_UNSPECIFIED",
+                "FILE_ENCODING_BASE64"
+            ],
+            "default": "FILE_ENCODING_UNSPECIFIED",
+            "description": "- FILE_ENCODING_UNSPECIFIED: File content not encoded\n - FILE_ENCODING_BASE64: File content encoded in Base64",
+            "title": "File content encoding type"
+        },
+        "VariableGroupCondition": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                },
+                "operator": {
+                    "$ref": "#/definitions/VariableGroupConditionOperator"
+                }
+            }
+        },
+        "VariableGroupConditionOperator": {
+            "type": "string",
+            "enum": [
+                "CONDITION_OPERATOR_UNSPECIFIED",
+                "CONDITION_OPERATOR_EQUALTO",
+                "CONDITION_OPERATOR_NOTEQUALTO"
+            ],
+            "default": "CONDITION_OPERATOR_UNSPECIFIED"
+        },
+        "VariableGroupVariable": {
+            "type": "object",
+            "example": {
+                "format": "VARIABLE_FORMAT_TEXT",
+                "name": "username",
+                "label": "Enter User Name",
+                "required": "True"
+            },
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Name of the Variable (Required)"
+                },
+                "label": {
+                    "type": "string",
+                    "description": "Label for the variable (Required)"
+                },
+                "maxLength": {
+                    "type": "string",
+                    "description": "Max length of the value of the variable(Optional. Default: 1024)"
+                },
+                "required": {
+                    "type": "boolean",
+                    "description": "This variable MUST be specified when creating an App Instance. (Optional. Default: False)"
+                },
+                "default": {
+                    "type": "string",
+                    "description": "Default value of the variable. (Optional. Default: <Default value based on type>)"
+                },
+                "processInput": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "User-specified value of the variable.(Required if required is true. Optional otherwise)"
+                },
+                "format": {
+                    "$ref": "#/definitions/VariableVariableFormat",
+                    "description": "Format of the user variable. (Required)"
+                },
+                "encode": {
+                    "$ref": "#/definitions/VariableFileEncoding",
+                    "description": "Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE"
+                },
+                "options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VariableOptionVal"
+                    },
+                    "description": "Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN"
+                }
+            },
+            "description": "Edge Application Artifact Details",
+            "title": "Edge Application detail",
+            "required": [
+                "format",
+                "name",
+                "label",
+                "required"
+            ]
+        },
+        "VariableOptionVal": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string",
+                    "description": "Display label of the key in User-Agent"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Value of the key to be used"
+                }
+            }
+        },
+        "VariableVariableFormat": {
+            "type": "string",
+            "enum": [
+                "VARIABLE_FORMAT_UNSPECIFIED",
+                "VARIABLE_FORMAT_TEXT",
+                "VARIABLE_FORMAT_NUMBER",
+                "VARIABLE_FORMAT_FILE",
+                "VARIABLE_FORMAT_DROPDOWN",
+                "VARIABLE_FORMAT_BOOLEAN",
+                "VARIABLE_FORMAT_PASSWORD"
+            ],
+            "default": "VARIABLE_FORMAT_UNSPECIFIED",
+            "description": "- VARIABLE_FORMAT_UNSPECIFIED: Invalid format\n - VARIABLE_FORMAT_TEXT: Value in string format\n - VARIABLE_FORMAT_NUMBER: Value in integer format\n - VARIABLE_FORMAT_FILE: Value to be read from a file\n - VARIABLE_FORMAT_DROPDOWN: Value to be selected from dropdown of options\n - VARIABLE_FORMAT_BOOLEAN: Value in boolean format\n - VARIABLE_FORMAT_PASSWORD: Value in string to be masked in User-Agent",
+            "title": "Custom variable format"
+        },
+        "VolumeInstConfig": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "$ref": "#/definitions/VolumeInstanceType",
+                    "description": "type of Volume Instance"
+                },
+                "multiattach": {
+                    "type": "boolean",
+                    "description": "flag to enable the volume to be attached to multiple app instances"
+                },
+                "cleartext": {
+                    "type": "boolean",
+                    "description": "flag to keep the contents of the volume unencrypted (in clear text)"
+                },
+                "accessmode": {
+                    "type": "string",
+                    "$ref": "#/definitions/VolumeInstanceAccessMode",
+                    "description": "Access mode"
+                },
+                "sizeBytes": {
+                    "type": "integer",
+                    "format": "uint64",
+                    "description": "size of volume"
+                },
+                "image": {
+                    "type": "string",
+                    "description": "name of the image"
+                },
+                "contentTreeId": {
+                    "type": "string",
+                    "description": "content tree ID"
+                },
+                "label": {
+                    "type": "string",
+                    "description": "label"
+                },
+                "purge": {
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Purge Counter information"
+                },
+                "contentTreeTargetCondition": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "user defined key-value pairs of a content tree that will be used for targeting by block storage"
+                },
+                "blockStorageTags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "user defined key-value pairs of a block storage, will be used for targeting content tree"
+                }
+            }
+        },
+        "VolumeInstPolicy": {
+            "type": "object",
+            "properties": {
+                "metaData": {
+                    "$ref": "#/definitions/PolicyCommon",
+                    "description": "all the required metadata for a policy like id, name, different types of tags"
+                },
+                "volInstConfig": {
+                    "$ref": "#/definitions/VolumeInstConfig",
+                    "description": "volume instance config details"
+                }
+            }
+        },
+        "VolumeInstanceAccessMode": {
+            "type": "string",
+            "enum": [
+                "VOLUME_INSTANCE_ACCESS_MODE_INVALID",
+                "VOLUME_INSTANCE_ACCESS_MODE_READWRITE",
+                "VOLUME_INSTANCE_ACCESS_MODE_READONLY",
+                "VOLUME_INSTANCE_ACCESS_MODE_MULTIREAD_SINGLEWRITE"
+            ],
+            "default": "VOLUME_INSTANCE_ACCESS_MODE_INVALID"
+        },
+        "VolumeInstanceType": {
+            "type": "string",
+            "enum": [
+                "VOLUME_INSTANCE_TYPE_UNSPECIFIED",
+                "VOLUME_INSTANCE_TYPE_EMPTYDIR",
+                "VOLUME_INSTANCE_TYPE_BLOCKSTORAGE",
+                "VOLUME_INSTANCE_TYPE_HOSTFS",
+                "VOLUME_INSTANCE_TYPE_TMPFS",
+                "VOLUME_INSTANCE_TYPE_SECRET",
+                "VOLUME_INSTANCE_TYPE_NFS",
+                "VOLUME_INSTANCE_TYPE_AWS_BLOCK_STORAGE",
+                "VOLUME_INSTANCE_TYPE_CONTENT_TREE"
+            ],
+            "default": "VOLUME_INSTANCE_TYPE_UNSPECIFIED"
+        },
+        "ZcOpsStatus": {
+            "type": "string",
+            "enum": [
+                "OPS_STATUS_UNSPECIFIED",
+                "OPS_STATUS_PENDING",
+                "OPS_STATUS_ONGOING",
+                "OPS_STATUS_COMPLETE"
+            ],
+            "default": "OPS_STATUS_UNSPECIFIED",
+            "description": "- OPS_STATUS_PENDING: In rare cases, system may not start operation when it was requested. Client will be notified that operation is PENDING\n - OPS_STATUS_ONGOING: system will start the operation, but at the time response was generated, operation is still ONGOING.\n - OPS_STATUS_COMPLETE: Even if the result of the operations may result in failure, but the OpsStatus will marked COMPLETE for almost all cases.",
+            "title": "ZedCloud internal operation status"
+        },
+        "ZcOpsType": {
+            "type": "string",
+            "enum": [
+                "OPS_TYPE_UNSPECIFIED",
+                "OPS_TYPE_READ",
+                "OPS_TYPE_DELETE",
+                "OPS_TYPE_CREATE",
+                "OPS_TYPE_UPDATE",
+                "OPS_TYPE_LIST"
+            ],
+            "default": "OPS_TYPE_UNSPECIFIED",
+            "title": "ZedCloud internal operation type"
+        },
+        "ZedCloudOpsCmd": {
+            "type": "object",
+            "properties": {
+                "counter": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "counter"
+                },
+                "opsTime": {
+                    "type": "object",
+                    "format": "date-time",
+                    "description": "Timestamp: Operational time"
+                }
+            },
+            "description": "Zed cloud Operation command",
+            "title": "Zed cloud Operation command"
+        },
+        "ZsrvError": {
+            "type": "object",
+            "properties": {
+                "ec": {
+                    "$ref": "#/definitions/ZsrvErrorCode",
+                    "title": "Enumrated error code, describes more granular numerical\nvalue than just httpStatus"
+                },
+                "location": {
+                    "type": "string",
+                    "title": "Ignore: Internal field only"
+                },
+                "details": {
+                    "type": "string",
+                    "title": "Field captures string description of details"
+                }
+            }
+        },
+        "ZsrvErrorCode": {
+            "type": "string",
+            "enum": [
+                "zMsgErrorNone",
+                "zMsgSucess",
+                "NotFound",
+                "AlreadyExists",
+                "VersionMismatch",
+                "RangeError",
+                "LargeResult",
+                "IncompleteData",
+                "InvalidData",
+                "FunctionUnsupported",
+                "NoMemory",
+                "SendFailure",
+                "Timeout",
+                "BadReqBody",
+                "BadReqParam",
+                "InvalidFieldFormat",
+                "UrlNotFound",
+                "ApiVersionNotSupported",
+                "Unauthorized",
+                "Forbidden",
+                "Conflict",
+                "NotModified",
+                "DependencyConflict",
+                "JsonFmtError",
+                "ProtoFmtError",
+                "CertError",
+                "DataBaseConnection",
+                "DBError",
+                "zMsgAccepted",
+                "zMsgCreated",
+                "PreConditionFailed"
+            ],
+            "default": "zMsgErrorNone",
+            "description": "- zMsgErrorNone: common validation errors\n - IncompleteData: message had fields that weren't filled in\n - InvalidData: message contained the field that wasn't expected\n - FunctionUnsupported: this feature unavailable on this version of device\n - InvalidFieldFormat: message contained the field that wasn't correctly formatted\n - JsonFmtError: Marshal / Unmarshal errors\n - DataBaseConnection: generic DB error",
+            "title": "ZedCould internal error code"
+        },
+        "ZsrvResponse": {
+            "type": "object",
+            "properties": {
+                "operationType": {
+                    "$ref": "#/definitions/ZcOpsType",
+                    "title": "Describes one of the operations type : possible values\n                        Read/Delete/Create/Update/List"
+                },
+                "operationStatus": {
+                    "$ref": "#/definitions/ZcOpsStatus",
+                    "title": "if this is log running job"
+                },
+                "objectKind": {
+                    "type": "string",
+                    "title": "zedcloud object kind on which the operation was performed"
+                },
+                "objectId": {
+                    "type": "string",
+                    "title": "Unique value identifies the object that was operated on"
+                },
+                "objectName": {
+                    "type": "string",
+                    "title": "name of the object"
+                },
+                "objectRevision": {
+                    "type": "string",
+                    "title": "object revision post the operation, note Read operation\ndoesn't change the revision"
+                },
+                "objectType": {
+                    "$ref": "#/definitions/ObjectType"
+                },
+                "operationTime": {
+                    "type": "string",
+                    "title": "time of operation"
+                },
+                "startTime": {
+                    "type": "string",
+                    "title": "total time taken by operations"
+                },
+                "endTime": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string",
+                    "title": "the operation is performed on behalf of this user"
+                },
+                "httpStatusCode": {
+                    "type": "integer",
+                    "format": "int32",
+                    "title": "http response"
+                },
+                "httpStatusMsg": {
+                    "type": "string",
+                    "title": "summary of the error in text format"
+                },
+                "jobId": {
+                    "type": "string",
+                    "title": "for tracking asynchronous tasks"
+                },
+                "error": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ZsrvError"
+                    },
+                    "title": "one or more errors will be set if the operation failed\ni.e. httpStatusCode != 2xx"
+                }
+            }
+        },
+        "appACE": {
+            "type": "object",
+            "properties": {
+                "matches": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appACEMatch"
+                    },
+                    "description": "app ACE match"
+                },
+                "actions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appACEAction"
+                    },
+                    "description": "app ACE actions"
+                },
+                "id": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "app ACE id"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the app ACE, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                }
+            },
+            "description": "App ACE Configuration",
+            "title": "App ACE detaisn",
+            "required": [
+                "matches",
+                "actions",
+                "id",
+                "name"
+            ]
+        },
+        "appACEAction": {
+            "type": "object",
+            "properties": {
+                "drop": {
+                    "type": "boolean",
+                    "description": "ACE drop flag"
+                },
+                "limit": {
+                    "type": "boolean",
+                    "description": "ACE limit flag"
+                },
+                "limitrate": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "ACE limit rate"
+                },
+                "limitunit": {
+                    "type": "string",
+                    "description": "ACE limit unit"
+                },
+                "limitburst": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "ACE limit burst"
+                },
+                "portmap": {
+                    "type": "boolean",
+                    "description": "application port map flag"
+                },
+                "mapparams": {
+                    "$ref": "#/definitions/appMapParams",
+                    "description": "Application map params"
+                }
+            },
+            "description": "App ACE actions",
+            "title": "App ACE Action",
+            "required": [
+                "drop",
+                "limit",
+                "limitrate",
+                "limitunit",
+                "limitburst",
+                "portmap",
+                "mapparams"
+            ]
+        },
+        "appACEMatch": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Type"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "Value"
+                }
+            },
+            "description": "App ACE Match",
+            "title": "appACEMatch detail",
+            "required": [
+                "type",
+                "value"
+            ]
+        },
+        "appInterface": {
+            "type": "object",
+            "properties": {
+                "netname": {
+                    "type": "string",
+                    "description": "network name: will be deprecated in future, use netinstname"
+                },
+                "io": {
+                    "$ref": "#/definitions/phyAdapter",
+                    "description": "Physical Adapter to be matched for interface assignment. Applicable only when \"direct attach\" flag is true"
+                },
+                "intforder": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "intforder"
+                },
+                "intfname": {
+                    "type": "string",
+                    "description": "intf Name"
+                },
+                "directattach": {
+                    "type": "boolean",
+                    "description": "direct attach flag",
+                    "title": "comes from manifest during app create"
+                },
+                "privateip": {
+                    "type": "string",
+                    "description": "Private IP flag"
+                },
+                "acls": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appACE"
+                    },
+                    "description": "app Acls"
+                },
+                "ipaddr": {
+                    "type": "string",
+                    "description": "IP address",
+                    "title": "if netname points static DHCP then we need to take\nstatic /32 address here"
+                },
+                "macaddr": {
+                    "type": "string",
+                    "description": "MAC address",
+                    "title": "in case of p2v we might want to provide a mac-address.\napplicable only in case of DHCP=passthrough"
+                },
+                "accessVlanId": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "access port VLAN ID, vlan id of zero will be treated as trunk port and vlan id 1 is implicitly used by linux bridges",
+                    "maximum": 4093,
+                    "minimum": 2
+                },
+                "eidregister": {
+                    "$ref": "#/definitions/EIDRegister",
+                    "description": "EID register details",
+                    "title": "FIXME: Check why is this required"
+                },
+                "netinstname": {
+                    "type": "string",
+                    "description": "Network Instance name to be matched for interface assignment. Applicable only when \"direct attach\" flag is false"
+                },
+                "netinsttag": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Network Instance tag to be matched for interface assignment. Applicable only when \"direct attach\" flag is false"
+                },
+                "netinstid": {
+                    "type": "string",
+                    "description": "Network Instance id to be matched for interface assignment."
+                },
+                "defaultNetInstance": {
+                    "type": "boolean",
+                    "description": "default instance flag"
+                }
+            },
+            "description": "App Interface detail",
+            "title": "App Interface detail",
+            "required": [
+                "io",
+                "intforder",
+                "intfname",
+                "directattach",
+                "privateip",
+                "acls",
+                "ipaddr",
+                "macaddr",
+                "eidregister",
+                "netinstname"
+            ]
+        },
+        "appMapParams": {
+            "type": "object",
+            "properties": {
+                "port": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Application port"
+                }
+            },
+            "description": "Application map parameters",
+            "title": "App map Params detail",
+            "required": [
+                "port"
+            ]
+        },
+        "configFormat": {
+            "type": "string",
+            "enum": [
+                "FmtUnknown",
+                "RAW",
+                "QCOW",
+                "QCOW2",
+                "VHD",
+                "VMDK",
+                "OVA",
+                "VHDX",
+                "CONTAINER",
+                "ISO"
+            ],
+            "default": "FmtUnknown"
+        },
+        "dhcpIpRange": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "string",
+                    "description": "starting IP"
+                },
+                "end": {
+                    "type": "string",
+                    "description": "ending IP"
+                }
+            },
+            "description": "DHCP IP range",
+            "title": "DHCP IP range"
+        },
+        "googlerpcStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/protobufAny"
+                    }
+                }
+            }
+        },
+        "hvMode": {
+            "type": "string",
+            "enum": [
+                "HV_PV",
+                "HV_HVM",
+                "HV_FML",
+                "HV_NOHYPER",
+                "HV_LEGACY"
+            ],
+            "default": "HV_PV",
+            "description": "For now we need to tell the device which virtualization mode\nto use. Later we might use a single one for all VMs (on any particular\nISA). If we end up keeping this we should make the names be less\ntied to a particular hypervisor."
+        },
+        "phyAdapter": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "object",
+                    "$ref": "#/definitions/IoType",
+                    "description": "IoType specifies the type of the Input output of the device"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Physical Adapter name"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                }
+            },
+            "description": "Physical Adapter",
+            "title": "Physical Adapter"
+        },
+        "protobufAny": {
+            "type": "object",
+            "properties": {
+                "typeUrl": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "byte"
+                }
+            }
+        },
+        "spType": {
+            "type": "string",
+            "enum": [
+                "SPTYPE_INVALIDSRV",
+                "SPTYPE_MAPSERVER",
+                "SPTYPE_SUPPORTSERVER"
+            ],
+            "default": "SPTYPE_INVALIDSRV",
+            "description": "clone of types defined in API repo.\n\n - SPTYPE_MAPSERVER: mapping service for zededa overlay service\n - SPTYPE_SUPPORTSERVER: if device has support feature enabled, this ia cloud service\nwhich device can be reached."
+        },
+        "vm": {
+            "type": "object",
+            "properties": {
+                "cpus": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "CPUs"
+                },
+                "memory": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Memory"
+                },
+                "mode": {
+                    "$ref": "#/definitions/hvMode",
+                    "description": "Hardware Virtualization"
+                },
+                "vnc": {
+                    "type": "boolean",
+                    "description": "VNC"
+                },
+                "vncDisplay": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "VNC display",
+                    "readOnly": true
+                },
+                "cpuPinningEnabled": {
+                    "type": "boolean",
+                    "description": "Enable CpuPinning"
+                }
+            },
+            "description": "Virtual machine memory configuration",
+            "title": "vm detail",
+            "required": [
+                "cpus",
+                "memory",
+                "mode",
+                "vnc"
+            ]
+        }
+    },
+    "securityDefinitions": {
+        "BearerToken": {
+            "type": "apiKey",
+            "description": "Bearer token",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "security": [
+        {
+            "BearerToken": []
+        }
+    ],
+    "externalDocs": {
+        "description": "Product Documentation",
+        "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+    },
+    "x-request-id": "correlation-id"
+}

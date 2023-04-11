@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate ObjectParentDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func ObjectParentDetailModel(d *schema.ResourceData) *models.ObjectParentDetail {
 	referenceExists, _ := d.Get("reference_exists").(bool)
 	updateAvailable, _ := d.Get("update_available").(bool)
@@ -26,7 +23,6 @@ func ObjectParentDetailModelFromMap(m map[string]interface{}) *models.ObjectPare
 	}
 }
 
-// Update the underlying ObjectParentDetail resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetObjectParentDetailResourceData(d *schema.ResourceData, m *models.ObjectParentDetail) {
 	d.Set("id_of_parent_object", m.IDOfParentObject)
 	d.Set("reference_exists", m.ReferenceExists)
@@ -34,7 +30,6 @@ func SetObjectParentDetailResourceData(d *schema.ResourceData, m *models.ObjectP
 	d.Set("version_of_parent_object", m.VersionOfParentObject)
 }
 
-// Iterate through and update the ObjectParentDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetObjectParentDetailSubResourceData(m []*models.ObjectParentDetail) (d []*map[string]interface{}) {
 	for _, ObjectParentDetailModel := range m {
 		if ObjectParentDetailModel != nil {
@@ -49,8 +44,7 @@ func SetObjectParentDetailSubResourceData(m []*models.ObjectParentDetail) (d []*
 	return
 }
 
-// Schema mapping representing the ObjectParentDetail resource defined in the Terraform configuration
-func ObjectParentDetailSchema() map[string]*schema.Schema {
+func ObjectParentDetail() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"id_of_parent_object": {
 			Description: `system defined unique id of parent object`,
@@ -78,7 +72,6 @@ func ObjectParentDetailSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the ObjectParentDetail resource
 func GetObjectParentDetailPropertyFields() (t []string) {
 	return []string{
 		"reference_exists",

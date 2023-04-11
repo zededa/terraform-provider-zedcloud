@@ -123,7 +123,7 @@ func SetEIDRegisterSubResourceData(m []*models.EIDRegister) (d []*map[string]int
 }
 
 // Schema mapping representing the EIDRegister resource defined in the Terraform configuration
-func EIDRegisterSchema() map[string]*schema.Schema {
+func EIDRegister() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_cert": {
 			Description: `app certificate`,

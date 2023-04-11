@@ -29,6 +29,12 @@ type ModulePolicy struct {
 	// Required: true
 	Apps []*AppConfig `json:"apps"`
 
+	// app that describes the azure edge agent to be deployed on the Azure runtime
+	AzureEdgeAgent *AppConfig `json:"azureEdgeAgent,omitempty"`
+
+	// app that describes the azure edge hub to be deployed on the Azure runtime
+	AzureEdgeHub *AppConfig `json:"azureEdgeHub,omitempty"`
+
 	// unique id for deployment
 	// Read Only: true
 	// Pattern: [0-9-a-z-]+
@@ -59,6 +65,14 @@ func (m *ModulePolicy) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateApps(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAzureEdgeAgent(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateAzureEdgeHub(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -102,6 +116,44 @@ func (m *ModulePolicy) validateApps(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *ModulePolicy) validateAzureEdgeAgent(formats strfmt.Registry) error {
+	if swag.IsZero(m.AzureEdgeAgent) { // not required
+		return nil
+	}
+
+	if m.AzureEdgeAgent != nil {
+		if err := m.AzureEdgeAgent.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("azureEdgeAgent")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("azureEdgeAgent")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *ModulePolicy) validateAzureEdgeHub(formats strfmt.Registry) error {
+	if swag.IsZero(m.AzureEdgeHub) { // not required
+		return nil
+	}
+
+	if m.AzureEdgeHub != nil {
+		if err := m.AzureEdgeHub.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("azureEdgeHub")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("azureEdgeHub")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -155,6 +207,14 @@ func (m *ModulePolicy) ContextValidate(ctx context.Context, formats strfmt.Regis
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateAzureEdgeAgent(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateAzureEdgeHub(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateID(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -184,6 +244,38 @@ func (m *ModulePolicy) contextValidateApps(ctx context.Context, formats strfmt.R
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *ModulePolicy) contextValidateAzureEdgeAgent(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.AzureEdgeAgent != nil {
+		if err := m.AzureEdgeAgent.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("azureEdgeAgent")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("azureEdgeAgent")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *ModulePolicy) contextValidateAzureEdgeHub(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.AzureEdgeHub != nil {
+		if err := m.AzureEdgeHub.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("azureEdgeHub")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("azureEdgeHub")
+			}
+			return err
+		}
 	}
 
 	return nil

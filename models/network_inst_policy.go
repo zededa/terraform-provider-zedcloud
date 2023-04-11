@@ -22,7 +22,7 @@ type NetworkInstPolicy struct {
 	MetaData *PolicyCommon `json:"metaData,omitempty"`
 
 	// network instance config details
-	NetInstConfig *NetworkInstConfig `json:"netInstConfig,omitempty"`
+	NetInstConfig *NetworkInstance `json:"netInstConfig,omitempty"`
 }
 
 // Validate validates this network inst policy

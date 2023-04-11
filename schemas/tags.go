@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Tags resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func TagsModel(d *schema.ResourceData) *models.Tags {
 	list, _ := d.Get("list").([]*models.Tag) // []*Tag
 	var next *models.Cursor                  // Cursor
@@ -67,7 +64,6 @@ func TagsModelFromMap(m map[string]interface{}) *models.Tags {
 	}
 }
 
-// Update the underlying Tags resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetTagsResourceData(d *schema.ResourceData, m *models.Tags) {
 	d.Set("list", SetTagSubResourceData(m.List))
 	d.Set("next", SetCursorSubResourceData([]*models.Cursor{m.Next}))
@@ -75,7 +71,6 @@ func SetTagsResourceData(d *schema.ResourceData, m *models.Tags) {
 	d.Set("summary_by_type", SetSummarySubResourceData([]*models.Summary{m.SummaryByType}))
 }
 
-// Iterate through and update the Tags resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetTagsSubResourceData(m []*models.Tags) (d []*map[string]interface{}) {
 	for _, TagsModel := range m {
 		if TagsModel != nil {
@@ -90,14 +85,13 @@ func SetTagsSubResourceData(m []*models.Tags) (d []*map[string]interface{}) {
 	return
 }
 
-// Schema mapping representing the Tags resource defined in the Terraform configuration
-func TagsSchema() map[string]*schema.Schema {
+func Tags() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"list": {
 			Description: `List of filtered resource group records`,
 			Type:        schema.TypeList, //GoType: []*Tag
 			Elem: &schema.Resource{
-				Schema: TagSchema(),
+				Schema: Project(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,

@@ -74,7 +74,7 @@ func VolumeInstPolicySchema() map[string]*schema.Schema {
 			Description: `all the required metadata for a policy like id, name, different types of tags`,
 			Type:        schema.TypeList, //GoType: PolicyCommon
 			Elem: &schema.Resource{
-				Schema: PolicyCommonSchema(),
+				Schema: PolicyCommon(),
 			},
 			Optional: true,
 		},

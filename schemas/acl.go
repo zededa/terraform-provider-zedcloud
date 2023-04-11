@@ -110,7 +110,7 @@ func SetACLSubResourceData(m []*models.ACL) (d []*map[string]interface{}) {
 	return
 }
 
-func ACLSchema() map[string]*schema.Schema {
+func ACL() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"actions": {
 			Description: `Chain of actions to be taken on matching network traffic`,

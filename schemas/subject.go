@@ -5,17 +5,104 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate Subject resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SubjectModel(d *schema.ResourceData) *models.Subject {
 	commonName, _ := d.Get("common_name").(string)
-	country, _ := d.Get("country").([]string)
-	locality, _ := d.Get("locality").([]string)
-	organization, _ := d.Get("organization").([]string)
-	organizationalUnit, _ := d.Get("organizational_unit").([]string)
-	postalCode, _ := d.Get("postal_code").([]string)
-	province, _ := d.Get("province").([]string)
+	var country []string
+	countryInterface, countryIsSet := d.GetOk("country")
+	if countryIsSet {
+		var items []interface{}
+		if listItems, isList := countryInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = countryInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			country = append(country, v.(string))
+		}
+	}
+	var locality []string
+	localityInterface, localityIsSet := d.GetOk("locality")
+	if localityIsSet {
+		var items []interface{}
+		if listItems, isList := localityInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = localityInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			locality = append(locality, v.(string))
+		}
+	}
+	var organization []string
+	organizationInterface, organizationIsSet := d.GetOk("organization")
+	if organizationIsSet {
+		var items []interface{}
+		if listItems, isList := organizationInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = organizationInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			organization = append(organization, v.(string))
+		}
+	}
+	var organizationalUnit []string
+	organizationalUnitInterface, organizationalUnitIsSet := d.GetOk("organizationalUnit")
+	if organizationalUnitIsSet {
+		var items []interface{}
+		if listItems, isList := organizationalUnitInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = organizationalUnitInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			organizationalUnit = append(organizationalUnit, v.(string))
+		}
+	}
+	var postalCode []string
+	postalCodeInterface, postalCodeIsSet := d.GetOk("postalCode")
+	if postalCodeIsSet {
+		var items []interface{}
+		if listItems, isList := postalCodeInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = postalCodeInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			postalCode = append(postalCode, v.(string))
+		}
+	}
+	var province []string
+	provinceInterface, provinceIsSet := d.GetOk("province")
+	if provinceIsSet {
+		var items []interface{}
+		if listItems, isList := provinceInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = provinceInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			province = append(province, v.(string))
+		}
+	}
 	serialNumber, _ := d.Get("serial_number").(string)
 	return &models.Subject{
 		CommonName:         commonName,
@@ -31,12 +118,102 @@ func SubjectModel(d *schema.ResourceData) *models.Subject {
 
 func SubjectModelFromMap(m map[string]interface{}) *models.Subject {
 	commonName := m["common_name"].(string)
-	country := m["country"].([]string)
-	locality := m["locality"].([]string)
-	organization := m["organization"].([]string)
-	organizationalUnit := m["organizational_unit"].([]string)
-	postalCode := m["postal_code"].([]string)
-	province := m["province"].([]string)
+	var country []string
+	countryInterface, countryIsSet := m["country"]
+	if countryIsSet {
+		var items []interface{}
+		if listItems, isList := countryInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = countryInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			country = append(country, v.(string))
+		}
+	}
+	var locality []string
+	localityInterface, localityIsSet := m["locality"]
+	if localityIsSet {
+		var items []interface{}
+		if listItems, isList := localityInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = localityInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			locality = append(locality, v.(string))
+		}
+	}
+	var organization []string
+	organizationInterface, organizationIsSet := m["organization"]
+	if organizationIsSet {
+		var items []interface{}
+		if listItems, isList := organizationInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = organizationInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			organization = append(organization, v.(string))
+		}
+	}
+	var organizationalUnit []string
+	organizationalUnitInterface, organizationalUnitIsSet := m["organizationalUnit"]
+	if organizationalUnitIsSet {
+		var items []interface{}
+		if listItems, isList := organizationalUnitInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = organizationalUnitInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			organizationalUnit = append(organizationalUnit, v.(string))
+		}
+	}
+	var postalCode []string
+	postalCodeInterface, postalCodeIsSet := m["postalCode"]
+	if postalCodeIsSet {
+		var items []interface{}
+		if listItems, isList := postalCodeInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = postalCodeInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			postalCode = append(postalCode, v.(string))
+		}
+	}
+	var province []string
+	provinceInterface, provinceIsSet := m["province"]
+	if provinceIsSet {
+		var items []interface{}
+		if listItems, isList := provinceInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = provinceInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			province = append(province, v.(string))
+		}
+	}
 	serialNumber := m["serial_number"].(string)
 	return &models.Subject{
 		CommonName:         commonName,
@@ -50,7 +227,6 @@ func SubjectModelFromMap(m map[string]interface{}) *models.Subject {
 	}
 }
 
-// Update the underlying Subject resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetSubjectResourceData(d *schema.ResourceData, m *models.Subject) {
 	d.Set("common_name", m.CommonName)
 	d.Set("country", m.Country)
@@ -62,7 +238,6 @@ func SetSubjectResourceData(d *schema.ResourceData, m *models.Subject) {
 	d.Set("serial_number", m.SerialNumber)
 }
 
-// Iterate through and update the Subject resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSubjectSubResourceData(m []*models.Subject) (d []*map[string]interface{}) {
 	for _, SubjectModel := range m {
 		if SubjectModel != nil {
@@ -81,8 +256,7 @@ func SetSubjectSubResourceData(m []*models.Subject) (d []*map[string]interface{}
 	return
 }
 
-// Schema mapping representing the Subject resource defined in the Terraform configuration
-func SubjectSchema() map[string]*schema.Schema {
+func Subject() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"common_name": {
 			Description: `Certificate common name.`,
@@ -152,7 +326,6 @@ func SubjectSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the Subject resource
 func GetSubjectPropertyFields() (t []string) {
 	return []string{
 		"common_name",

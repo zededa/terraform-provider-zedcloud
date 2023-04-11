@@ -151,7 +151,7 @@ func {{ $operationGroup }}Model(d *schema.ResourceData) *models.{{ $operationGro
 		{{- range .Properties }}
 			{{- if or (not .ReadOnly) (eq .Name "id") }}
 				{{- if and .IsNullable (and (not .IsComplexObject) (not .IsAliased)) }}
-		{{ pascalize .Name }}: &{{ varname .Name }}, // {{ .GoType }} {{ .IsNullable }} {{ .IsSuperAlias }} {{ .IsAliased }}
+		{{ pascalize .Name }}: &{{ varname .Name }}, // {{ .GoType }}
 				{{- else if and (and (not .IsMap) .IsNullable (not .IsSuperAlias) (not .IsAliased)) (not .IsComplexObject) }}
 		{{ pascalize .Name }}: &{{ varname .Name }},
 				{{- else }}
@@ -305,7 +305,6 @@ func {{ $operationGroup }}ModelFromMap(m map[string]interface{}) *models.{{ $ope
 	{{- end }}
 }
 
-// Update the underlying {{ $operationGroup }} resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func Set{{ $operationGroup }}ResourceData(d *schema.ResourceData, m *models.{{ $operationGroup }}) {
 	{{- range .Properties }}
 		{{- if (eq .Name "id") }}
@@ -322,7 +321,6 @@ func Set{{ $operationGroup }}ResourceData(d *schema.ResourceData, m *models.{{ $
 	{{- end }}
 }
 
-// Iterate through and update the {{ $operationGroup }} resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func Set{{ $operationGroup }}SubResourceData(m []*models.{{ $operationGroup }}) (d []*map[string]interface{}) {
 	{{- $model := camelize $operationGroup }}
 	{{- $model = print $operationGroup "Model" }}
@@ -350,8 +348,6 @@ func Set{{ $operationGroup }}SubResourceData(m []*models.{{ $operationGroup }}) 
 
 {{/* Only resources have respective data sources that need to be mapped to an appropriate schema */}}
 {{- if eq .Example "isResource" }}
-// Schema mapping representing the resource's respective datasource object defined in Terraform configuration
-// Only difference between this and {{ $operationGroup }}Schema() are the computabilty of the id field and the inclusion of a filter field for datasources
 func DataSource{{ $operationGroup }}Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		{{- range .Properties }}
@@ -447,7 +443,6 @@ func DataSource{{ $operationGroup }}Schema() map[string]*schema.Schema {
 }
 {{- end }}
 
-// Schema mapping representing the {{ $operationGroup }} resource defined in the Terraform configuration
 func {{ $operationGroup }}Schema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		{{- range .Properties }}
@@ -551,7 +546,6 @@ func {{ $operationGroup }}Schema() map[string]*schema.Schema {
 }
 
 
-// Retrieve property field names for updating the {{ $operationGroup }} resource
 func Get{{ $operationGroup }}PropertyFields() (t []string) {
 	return []string{
 		{{- range .Properties }}

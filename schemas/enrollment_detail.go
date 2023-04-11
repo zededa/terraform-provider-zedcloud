@@ -5,9 +5,6 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate EnrollmentDetail resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
 	var allocationPolicy *models.AllocationPolicy // AllocationPolicy
 	allocationPolicyInterface, allocationPolicyIsSet := d.GetOk("allocation_policy")
@@ -15,8 +12,30 @@ func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
 		allocationPolicyModel := allocationPolicyInterface.(string)
 		allocationPolicy = models.NewAllocationPolicy(models.AllocationPolicy(allocationPolicyModel))
 	}
-	attachedIotHubsName, _ := d.Get("attached_iot_hubs_name").([]string)
-	certificateEnrollment, _ := d.Get("certificate_enrollment").(models.CertificateEnrollmentDetail) // CertificateEnrollmentDetail
+	var attachedIotHubsName []string
+	attachedIotHubsNameInterface, attachedIotHubsNameIsSet := d.GetOk("attachedIotHubsName")
+	if attachedIotHubsNameIsSet {
+		var items []interface{}
+		if listItems, isList := attachedIotHubsNameInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = attachedIotHubsNameInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			attachedIotHubsName = append(attachedIotHubsName, v.(string))
+		}
+	}
+	var certificateEnrollment *models.CertificateEnrollmentDetail // CertificateEnrollmentDetail
+	certificateEnrollmentInterface, certificateEnrollmentIsSet := d.GetOk("certificate_enrollment")
+	if certificateEnrollmentIsSet && certificateEnrollmentInterface != nil {
+		certificateEnrollmentMap := certificateEnrollmentInterface.([]interface{})
+		if len(certificateEnrollmentMap) > 0 {
+			certificateEnrollment = CertificateEnrollmentDetailModelFromMap(certificateEnrollmentMap[0].(map[string]interface{}))
+		}
+	}
 	enableIotEdgeDevice, _ := d.Get("enable_iot_edge_device").(bool)
 	var mechanism *models.EnrollmentMechanism // EnrollmentMechanism
 	mechanismInterface, mechanismIsSet := d.GetOk("mechanism")
@@ -26,21 +45,36 @@ func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
 	}
 	var symmetricKeyEnrollment *models.SymmetricKeyEnrollmentDetail // SymmetricKeyEnrollmentDetail
 	symmetricKeyEnrollmentInterface, symmetricKeyEnrollmentIsSet := d.GetOk("symmetric_key_enrollment")
-	if symmetricKeyEnrollmentIsSet {
-		symmetricKeyEnrollmentMap := symmetricKeyEnrollmentInterface.([]interface{})[0].(map[string]interface{})
-		symmetricKeyEnrollment = SymmetricKeyEnrollmentDetailModelFromMap(symmetricKeyEnrollmentMap)
+	if symmetricKeyEnrollmentIsSet && symmetricKeyEnrollmentInterface != nil {
+		symmetricKeyEnrollmentMap := symmetricKeyEnrollmentInterface.([]interface{})
+		if len(symmetricKeyEnrollmentMap) > 0 {
+			symmetricKeyEnrollment = SymmetricKeyEnrollmentDetailModelFromMap(symmetricKeyEnrollmentMap[0].(map[string]interface{}))
+		}
 	}
-	tags, _ := d.Get("tags").(map[string]string)  // map[string]string
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := d.GetOk("tags")
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	var tpmEnrollment *models.TPMEnrollmentDetail // TPMEnrollmentDetail
 	tpmEnrollmentInterface, tpmEnrollmentIsSet := d.GetOk("tpm_enrollment")
-	if tpmEnrollmentIsSet {
-		tpmEnrollmentMap := tpmEnrollmentInterface.([]interface{})[0].(map[string]interface{})
-		tpmEnrollment = TPMEnrollmentDetailModelFromMap(tpmEnrollmentMap)
+	if tpmEnrollmentIsSet && tpmEnrollmentInterface != nil {
+		tpmEnrollmentMap := tpmEnrollmentInterface.([]interface{})
+		if len(tpmEnrollmentMap) > 0 {
+			tpmEnrollment = TPMEnrollmentDetailModelFromMap(tpmEnrollmentMap[0].(map[string]interface{}))
+		}
 	}
 	return &models.EnrollmentDetail{
 		AllocationPolicy:       allocationPolicy,
 		AttachedIotHubsName:    attachedIotHubsName,
-		CertificateEnrollment:  certificateEnrollment,
+		CertificateEnrollment:  *certificateEnrollment,
 		EnableIotEdgeDevice:    enableIotEdgeDevice,
 		Mechanism:              mechanism,
 		SymmetricKeyEnrollment: symmetricKeyEnrollment,
@@ -50,30 +84,78 @@ func EnrollmentDetailModel(d *schema.ResourceData) *models.EnrollmentDetail {
 }
 
 func EnrollmentDetailModelFromMap(m map[string]interface{}) *models.EnrollmentDetail {
-	allocationPolicy := m["allocation_policy"].(*models.AllocationPolicy) // AllocationPolicy
-	attachedIotHubsName := m["attached_iot_hubs_name"].([]string)
-	certificateEnrollment := m["certificate_enrollment"].(models.CertificateEnrollmentDetail) // CertificateEnrollmentDetail
-	enableIotEdgeDevice := m["enable_iot_edge_device"].(bool)
-	mechanism := m["mechanism"].(*models.EnrollmentMechanism)       // EnrollmentMechanism
-	var symmetricKeyEnrollment *models.SymmetricKeyEnrollmentDetail // SymmetricKeyEnrollmentDetail
-	symmetricKeyEnrollmentInterface, symmetricKeyEnrollmentIsSet := m["symmetric_key_enrollment"]
-	if symmetricKeyEnrollmentIsSet {
-		symmetricKeyEnrollmentMap := symmetricKeyEnrollmentInterface.([]interface{})[0].(map[string]interface{})
-		symmetricKeyEnrollment = SymmetricKeyEnrollmentDetailModelFromMap(symmetricKeyEnrollmentMap)
+	var allocationPolicy *models.AllocationPolicy // AllocationPolicy
+	allocationPolicyInterface, allocationPolicyIsSet := m["allocation_policy"]
+	if allocationPolicyIsSet {
+		allocationPolicyModel := allocationPolicyInterface.(string)
+		allocationPolicy = models.NewAllocationPolicy(models.AllocationPolicy(allocationPolicyModel))
+	}
+	var attachedIotHubsName []string
+	attachedIotHubsNameInterface, attachedIotHubsNameIsSet := m["attachedIotHubsName"]
+	if attachedIotHubsNameIsSet {
+		var items []interface{}
+		if listItems, isList := attachedIotHubsNameInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = attachedIotHubsNameInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			attachedIotHubsName = append(attachedIotHubsName, v.(string))
+		}
+	}
+	var certificateEnrollment *models.CertificateEnrollmentDetail // CertificateEnrollmentDetail
+	certificateEnrollmentInterface, certificateEnrollmentIsSet := m["certificate_enrollment"]
+	if certificateEnrollmentIsSet && certificateEnrollmentInterface != nil {
+		certificateEnrollmentMap := certificateEnrollmentInterface.([]interface{})
+		if len(certificateEnrollmentMap) > 0 {
+			certificateEnrollment = CertificateEnrollmentDetailModelFromMap(certificateEnrollmentMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	tags := m["tags"].(map[string]string)
+	enableIotEdgeDevice := m["enable_iot_edge_device"].(bool)
+	var mechanism *models.EnrollmentMechanism // EnrollmentMechanism
+	mechanismInterface, mechanismIsSet := m["mechanism"]
+	if mechanismIsSet {
+		mechanismModel := mechanismInterface.(string)
+		mechanism = models.NewEnrollmentMechanism(models.EnrollmentMechanism(mechanismModel))
+	}
+	var symmetricKeyEnrollment *models.SymmetricKeyEnrollmentDetail // SymmetricKeyEnrollmentDetail
+	symmetricKeyEnrollmentInterface, symmetricKeyEnrollmentIsSet := m["symmetric_key_enrollment"]
+	if symmetricKeyEnrollmentIsSet && symmetricKeyEnrollmentInterface != nil {
+		symmetricKeyEnrollmentMap := symmetricKeyEnrollmentInterface.([]interface{})
+		if len(symmetricKeyEnrollmentMap) > 0 {
+			symmetricKeyEnrollment = SymmetricKeyEnrollmentDetailModelFromMap(symmetricKeyEnrollmentMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := m["tags"]
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	var tpmEnrollment *models.TPMEnrollmentDetail // TPMEnrollmentDetail
 	tpmEnrollmentInterface, tpmEnrollmentIsSet := m["tpm_enrollment"]
-	if tpmEnrollmentIsSet {
-		tpmEnrollmentMap := tpmEnrollmentInterface.([]interface{})[0].(map[string]interface{})
-		tpmEnrollment = TPMEnrollmentDetailModelFromMap(tpmEnrollmentMap)
+	if tpmEnrollmentIsSet && tpmEnrollmentInterface != nil {
+		tpmEnrollmentMap := tpmEnrollmentInterface.([]interface{})
+		if len(tpmEnrollmentMap) > 0 {
+			tpmEnrollment = TPMEnrollmentDetailModelFromMap(tpmEnrollmentMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	return &models.EnrollmentDetail{
 		AllocationPolicy:       allocationPolicy,
 		AttachedIotHubsName:    attachedIotHubsName,
-		CertificateEnrollment:  certificateEnrollment,
+		CertificateEnrollment:  *certificateEnrollment,
 		EnableIotEdgeDevice:    enableIotEdgeDevice,
 		Mechanism:              mechanism,
 		SymmetricKeyEnrollment: symmetricKeyEnrollment,
@@ -82,11 +164,10 @@ func EnrollmentDetailModelFromMap(m map[string]interface{}) *models.EnrollmentDe
 	}
 }
 
-// Update the underlying EnrollmentDetail resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetEnrollmentDetailResourceData(d *schema.ResourceData, m *models.EnrollmentDetail) {
 	d.Set("allocation_policy", m.AllocationPolicy)
 	d.Set("attached_iot_hubs_name", m.AttachedIotHubsName)
-	d.Set("certificate_enrollment", m.CertificateEnrollment)
+	d.Set("certificate_enrollment", SetCertificateEnrollmentDetailSubResourceData([]*models.CertificateEnrollmentDetail{&m.CertificateEnrollment}))
 	d.Set("enable_iot_edge_device", m.EnableIotEdgeDevice)
 	d.Set("mechanism", m.Mechanism)
 	d.Set("symmetric_key_enrollment", SetSymmetricKeyEnrollmentDetailSubResourceData([]*models.SymmetricKeyEnrollmentDetail{m.SymmetricKeyEnrollment}))
@@ -94,14 +175,13 @@ func SetEnrollmentDetailResourceData(d *schema.ResourceData, m *models.Enrollmen
 	d.Set("tpm_enrollment", SetTPMEnrollmentDetailSubResourceData([]*models.TPMEnrollmentDetail{m.TpmEnrollment}))
 }
 
-// Iterate through and update the EnrollmentDetail resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetEnrollmentDetailSubResourceData(m []*models.EnrollmentDetail) (d []*map[string]interface{}) {
 	for _, EnrollmentDetailModel := range m {
 		if EnrollmentDetailModel != nil {
 			properties := make(map[string]interface{})
 			properties["allocation_policy"] = EnrollmentDetailModel.AllocationPolicy
 			properties["attached_iot_hubs_name"] = EnrollmentDetailModel.AttachedIotHubsName
-			properties["certificate_enrollment"] = EnrollmentDetailModel.CertificateEnrollment
+			properties["certificate_enrollment"] = SetCertificateEnrollmentDetailSubResourceData([]*models.CertificateEnrollmentDetail{&EnrollmentDetailModel.CertificateEnrollment})
 			properties["enable_iot_edge_device"] = EnrollmentDetailModel.EnableIotEdgeDevice
 			properties["mechanism"] = EnrollmentDetailModel.Mechanism
 			properties["symmetric_key_enrollment"] = SetSymmetricKeyEnrollmentDetailSubResourceData([]*models.SymmetricKeyEnrollmentDetail{EnrollmentDetailModel.SymmetricKeyEnrollment})
@@ -113,8 +193,7 @@ func SetEnrollmentDetailSubResourceData(m []*models.EnrollmentDetail) (d []*map[
 	return
 }
 
-// Schema mapping representing the EnrollmentDetail resource defined in the Terraform configuration
-func EnrollmentDetailSchema() map[string]*schema.Schema {
+func EnrollmentDetail() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"allocation_policy": {
 			Description: ``,
@@ -133,8 +212,11 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 
 		"certificate_enrollment": {
 			Description: ``,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Type:        schema.TypeList, //GoType: CertificateEnrollmentDetail
+			Elem: &schema.Resource{
+				Schema: CertificateEnrollmentDetail(),
+			},
+			Optional: true,
 		},
 
 		"enable_iot_edge_device": {
@@ -153,7 +235,7 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: SymmetricKeyEnrollmentDetail
 			Elem: &schema.Resource{
-				Schema: SymmetricKeyEnrollmentDetailSchema(),
+				Schema: SymmetricKeyEnrollmentDetail(),
 			},
 			Optional: true,
 		},
@@ -171,14 +253,13 @@ func EnrollmentDetailSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeList, //GoType: TPMEnrollmentDetail
 			Elem: &schema.Resource{
-				Schema: TPMEnrollmentDetailSchema(),
+				Schema: TPMEnrollmentDetail(),
 			},
 			Optional: true,
 		},
 	}
 }
 
-// Retrieve property field names for updating the EnrollmentDetail resource
 func GetEnrollmentDetailPropertyFields() (t []string) {
 	return []string{
 		"allocation_policy",

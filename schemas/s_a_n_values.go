@@ -5,16 +5,103 @@ import (
 	"github.com/zededa/terraform-provider/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate SANValues resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SANValuesModel(d *schema.ResourceData) *models.SANValues {
-	dns, _ := d.Get("dns").([]string)
-	emaildIds, _ := d.Get("emaild_ids").([]string)
-	hosts, _ := d.Get("hosts").([]string)
-	ips, _ := d.Get("ips").([]string)
-	upns, _ := d.Get("upns").([]string)
-	uris, _ := d.Get("uris").([]string)
+	var dns []string
+	dnsInterface, dnsIsSet := d.GetOk("dns")
+	if dnsIsSet {
+		var items []interface{}
+		if listItems, isList := dnsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = dnsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			dns = append(dns, v.(string))
+		}
+	}
+	var emaildIds []string
+	emaildIdsInterface, emaildIdsIsSet := d.GetOk("emaildIds")
+	if emaildIdsIsSet {
+		var items []interface{}
+		if listItems, isList := emaildIdsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = emaildIdsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			emaildIds = append(emaildIds, v.(string))
+		}
+	}
+	var hosts []string
+	hostsInterface, hostsIsSet := d.GetOk("hosts")
+	if hostsIsSet {
+		var items []interface{}
+		if listItems, isList := hostsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = hostsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			hosts = append(hosts, v.(string))
+		}
+	}
+	var ips []string
+	ipsInterface, ipsIsSet := d.GetOk("ips")
+	if ipsIsSet {
+		var items []interface{}
+		if listItems, isList := ipsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = ipsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			ips = append(ips, v.(string))
+		}
+	}
+	var upns []string
+	upnsInterface, upnsIsSet := d.GetOk("upns")
+	if upnsIsSet {
+		var items []interface{}
+		if listItems, isList := upnsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = upnsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			upns = append(upns, v.(string))
+		}
+	}
+	var uris []string
+	urisInterface, urisIsSet := d.GetOk("uris")
+	if urisIsSet {
+		var items []interface{}
+		if listItems, isList := urisInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = urisInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			uris = append(uris, v.(string))
+		}
+	}
 	return &models.SANValues{
 		DNS:       dns,
 		EmaildIds: emaildIds,
@@ -26,12 +113,102 @@ func SANValuesModel(d *schema.ResourceData) *models.SANValues {
 }
 
 func SANValuesModelFromMap(m map[string]interface{}) *models.SANValues {
-	dns := m["dns"].([]string)
-	emaildIds := m["emaild_ids"].([]string)
-	hosts := m["hosts"].([]string)
-	ips := m["ips"].([]string)
-	upns := m["upns"].([]string)
-	uris := m["uris"].([]string)
+	var dns []string
+	dnsInterface, dnsIsSet := m["dns"]
+	if dnsIsSet {
+		var items []interface{}
+		if listItems, isList := dnsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = dnsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			dns = append(dns, v.(string))
+		}
+	}
+	var emaildIds []string
+	emaildIdsInterface, emaildIdsIsSet := m["emaildIds"]
+	if emaildIdsIsSet {
+		var items []interface{}
+		if listItems, isList := emaildIdsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = emaildIdsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			emaildIds = append(emaildIds, v.(string))
+		}
+	}
+	var hosts []string
+	hostsInterface, hostsIsSet := m["hosts"]
+	if hostsIsSet {
+		var items []interface{}
+		if listItems, isList := hostsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = hostsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			hosts = append(hosts, v.(string))
+		}
+	}
+	var ips []string
+	ipsInterface, ipsIsSet := m["ips"]
+	if ipsIsSet {
+		var items []interface{}
+		if listItems, isList := ipsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = ipsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			ips = append(ips, v.(string))
+		}
+	}
+	var upns []string
+	upnsInterface, upnsIsSet := m["upns"]
+	if upnsIsSet {
+		var items []interface{}
+		if listItems, isList := upnsInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = upnsInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			upns = append(upns, v.(string))
+		}
+	}
+	var uris []string
+	urisInterface, urisIsSet := m["uris"]
+	if urisIsSet {
+		var items []interface{}
+		if listItems, isList := urisInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = urisInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			uris = append(uris, v.(string))
+		}
+	}
 	return &models.SANValues{
 		DNS:       dns,
 		EmaildIds: emaildIds,
@@ -42,7 +219,6 @@ func SANValuesModelFromMap(m map[string]interface{}) *models.SANValues {
 	}
 }
 
-// Update the underlying SANValues resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetSANValuesResourceData(d *schema.ResourceData, m *models.SANValues) {
 	d.Set("dns", m.DNS)
 	d.Set("emaild_ids", m.EmaildIds)
@@ -52,7 +228,6 @@ func SetSANValuesResourceData(d *schema.ResourceData, m *models.SANValues) {
 	d.Set("uris", m.Uris)
 }
 
-// Iterate through and update the SANValues resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSANValuesSubResourceData(m []*models.SANValues) (d []*map[string]interface{}) {
 	for _, SANValuesModel := range m {
 		if SANValuesModel != nil {
@@ -69,8 +244,7 @@ func SetSANValuesSubResourceData(m []*models.SANValues) (d []*map[string]interfa
 	return
 }
 
-// Schema mapping representing the SANValues resource defined in the Terraform configuration
-func SANValuesSchema() map[string]*schema.Schema {
+func SANValues() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"dns": {
 			Description: `List of permitted DNS names.`,
@@ -128,7 +302,6 @@ func SANValuesSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the SANValues resource
 func GetSANValuesPropertyFields() (t []string) {
 	return []string{
 		"dns",

@@ -6,7 +6,7 @@ import (
 	"golang.org/x/exp/slices"
 )
 
-func ToStaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
+func StaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
 	var addrs []string
 	addrsInterface, addrsIsSet := d.GetOk("addrs")
 	if addrsIsSet {
@@ -71,17 +71,15 @@ func SetStaticDNSListSubResourceData(m []*models.StaticDNSList) (d []*map[string
 	return
 }
 
-// Schema mapping representing the StaticDNSList resource defined in the Terraform configuration
 func StaticDNSList() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"addrs": {
-			Description: "Set of IP addresses for the specified hostname",
+			Description: `Addresses`,
 			Type:        schema.TypeList, //GoType: []string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional:         true,
-			DiffSuppressFunc: diffSuppressStringListOrder,
+			Optional: true,
 		},
 
 		"hostname": {
@@ -92,7 +90,7 @@ func StaticDNSList() map[string]*schema.Schema {
 	}
 }
 
-func StaticDNSListPropertyFields() (t []string) {
+func GetStaticDNSListPropertyFields() (t []string) {
 	return []string{
 		"addrs",
 		"hostname",

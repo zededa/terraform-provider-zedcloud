@@ -11,7 +11,7 @@ layout:
   models:
     # - name: definition
     #   source: asset:model
-    #   target: "{{ joinFilePath .Target .ModelPackage }}"
+    #   target: "{{ joinFilePath .Target .ModelPackage }}/gen"
     #   file_name: "{{ (snakize (pascalize .Name)) }}.go"
     - name: schema
       source: "swagger/templates/schema.gtpl"

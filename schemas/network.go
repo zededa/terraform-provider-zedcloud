@@ -218,8 +218,9 @@ func Network() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: StaticDNSList(),
 			},
-			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional: true,
+			DiffSuppressFunc: diffSuppressDNSListOrder("dns_list"),
+			Optional:         true,
+			Computed:         true,
 		},
 
 		"enterprise_default": {

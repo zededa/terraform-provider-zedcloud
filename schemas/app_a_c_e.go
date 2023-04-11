@@ -119,7 +119,7 @@ func SetAppACESubResourceData(m []*models.AppACE) (d []*map[string]interface{}) 
 }
 
 // Schema mapping representing the AppACE resource defined in the Terraform configuration
-func AppACESchema() map[string]*schema.Schema {
+func AppACE() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"actions": {
 			Description: `app ACE actions`,
