@@ -17,32 +17,30 @@ description: |-
 
 ### Required
 
-- `ds_fqdn` (String) Datastore Fully Qualified Domain Name
-- `ds_path` (String) Datastore relative path w.r.t. Datastore root
-- `ds_type` (String) Datastore type
 - `name` (String) User defined name of the datastore, unique across the enterprise. Once datastore is created, name can’t be changed.
-- `title` (String) User defined title of the datastore. Title can be changed at any time.
 
 ### Optional
 
 - `api_key` (String, Sensitive)
 - `certificate_chain` (Block List) Certificate chain of the certificate (see [below for nested schema](#nestedblock--certificate_chain))
 - `description` (String) Detailed description of the datastore.
+- `ds_fqdn` (String) Datastore Fully Qualified Domain Name
+- `ds_path` (String) Datastore relative path w.r.t. Datastore root
 - `ds_status` (String) Datastore status
-- `enterprise_id` (String)
+- `ds_type` (String) Datastore type
 - `need_clear_text` (Boolean) knob for sending creds in clear text
 - `project_access_list` (List of String) project access list of the datastore
 - `region` (String) Datastore region - valid for AWS S3 and Azure BlobStorage
 - `secret` (Block List) Plain-text sensitive data (see [below for nested schema](#nestedblock--secret))
+- `title` (String) User defined title of the datastore. Title can be changed at any time.
 
 ### Read-Only
 
 - `crypto_key` (String) Internal - Encryption Key context
-- `ds_err` (String) Datastore validation detailed error/status message
 - `encrypted_secrets` (Map of String, Sensitive) Internal - Encrypted sensitive data
 - `id` (String) System defined universally unique Id of the datastore.
 - `origin_type` (String) Origin type of datastore.
-- `revision` (List of Object) system defined info (see [below for nested schema](#nestedatt--revision))
+- `revision` (Block List) Object revision details (see [below for nested schema](#nestedblock--revision))
 
 <a id="nestedblock--certificate_chain"></a>
 ### Nested Schema for `certificate_chain`
@@ -148,16 +146,16 @@ Optional:
 - `api_passwd` (String) Datastore access API password in plain-text
 
 
-<a id="nestedatt--revision"></a>
+<a id="nestedblock--revision"></a>
 ### Nested Schema for `revision`
 
 Read-Only:
 
-- `created_at` (String)
-- `created_by` (String)
-- `curr` (String)
-- `prev` (String)
-- `updated_at` (String)
-- `updated_by` (String)
+- `created_at` (String) The time, in milliseconds since the epoch, when the record was created.
+- `created_by` (String) User data: Created By
+- `curr` (String) Current Database version of the record
+- `prev` (String) Previous
+- `updated_at` (String) The time, in milliseconds since the epoch, when the record was last updated.
+- `updated_by` (String) User data: Updated By
 
 

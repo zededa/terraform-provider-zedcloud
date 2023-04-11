@@ -62,7 +62,7 @@ NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV6
 
 Optional:
 
-- `addrs` (List of String) Set of IP addresses for the specified hostname
+- `addrs` (List of String) Addresses
 - `hostname` (String) Host name
 
 
@@ -74,13 +74,10 @@ Optional:
 - `dhcp_range` (Block List) Range of IP addresses to be used for DHCP (see [below for nested schema](#nestedblock--ip--dhcp_range))
 - `dns` (List of String) IP Addresses of DNS servers
 - `domain` (String) Network domain
+- `gateway` (String) IP Address of Network Gateway
 - `mask` (String) Subnet Mask
 - `ntp` (String) IP Address of NTP Server
 - `subnet` (String) Subnet address
-
-Read-Only:
-
-- `gateway` (String) IP Address of Network Gateway
 
 <a id="nestedblock--ip--dhcp_range"></a>
 ### Nested Schema for `ip.dhcp_range`
