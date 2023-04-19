@@ -14,6 +14,7 @@ import (
 	api_client "github.com/zededa/terraform-provider/client"
 	config "github.com/zededa/terraform-provider/client/datastore"
 	"github.com/zededa/terraform-provider/models"
+	testhelper "github.com/zededa/terraform-provider/testing"
 )
 
 func TestDatastore_Create(t *testing.T) {
@@ -22,11 +23,11 @@ func TestDatastore_Create(t *testing.T) {
 
 	// input config
 	inputPath := "datastore/create.tf"
-	input := mustGetTestInput(t, inputPath)
+	input := testhelper.MustGetTestInput(t, inputPath)
 
 	// expected output
 	expectedPath := "datastore/create.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
+	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{

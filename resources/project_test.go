@@ -13,6 +13,7 @@ import (
 	api_client "github.com/zededa/terraform-provider/client"
 	config "github.com/zededa/terraform-provider/client/projects"
 	"github.com/zededa/terraform-provider/models"
+	testhelper "github.com/zededa/terraform-provider/testing"
 )
 
 func TestProject_Create_RequiredOnly(t *testing.T) {
@@ -20,15 +21,15 @@ func TestProject_Create_RequiredOnly(t *testing.T) {
 
 	// input configs
 	createPath := "project/create_required_only.tf"
-	inputCreate := mustGetTestInput(t, createPath)
+	inputCreate := testhelper.MustGetTestInput(t, createPath)
 
 	// expected output
 	createPath = "project/create_required_only.yaml"
-	mustGetExpectedOutput(t, createPath, &expectCreated)
+	testhelper.MustGetExpectedOutput(t, createPath, &expectCreated)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { testhelper.CheckEnv(t) },
 		CheckDestroy: testProjectDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
@@ -56,19 +57,19 @@ func TestProject_Create(t *testing.T) {
 
 	// input configs
 	createPath := "project/create.tf"
-	inputCreate := mustGetTestInput(t, createPath)
+	inputCreate := testhelper.MustGetTestInput(t, createPath)
 	// updatePath := "project/update.tf"
 	// inputUpdate := mustGetTestInput(t, updatePath)
 
 	// expected output
 	createPath = "project/create.yaml"
-	mustGetExpectedOutput(t, createPath, &expectCreated)
+	testhelper.MustGetExpectedOutput(t, createPath, &expectCreated)
 	// updatePath = "project/update.yaml"
 	// mustGetExpectedOutput(t, updatePath, &expectUpdated)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { testhelper.CheckEnv(t) },
 		CheckDestroy: testProjectDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
