@@ -128,13 +128,13 @@ func AppACE() map[string]*schema.Schema {
 				Schema: AppACEActionSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Required: true,
+			Optional: true,
 		},
 
 		"id": {
 			Description: `app ACE id`,
 			Type:        schema.TypeInt,
-			Computed:    true,
+			Optional:    true,
 		},
 
 		"matches": {
@@ -144,13 +144,13 @@ func AppACE() map[string]*schema.Schema {
 				Schema: AppACEMatchSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Required: true,
+			Optional: true,
 		},
 
 		"name": {
 			Description: `User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }

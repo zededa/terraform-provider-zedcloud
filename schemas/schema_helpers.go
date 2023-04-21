@@ -1,10 +1,12 @@
 package schemas
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider/pkg/compare"
 	"golang.org/x/exp/slices"
 )
 
@@ -173,6 +175,17 @@ func diffSuppressInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc
 		}
 
 		return CompareInterfaceLists(oldMapList, newMapList)
+	}
+}
+
+func diffSupressSliceOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		equal, err := compare.Slices(d.GetChange(mapKey))
+		if err != nil {
+			fmt.Printf("error comparing %s: %+v\n", mapKey, err)
+			return false
+		}
+		return equal
 	}
 }
 

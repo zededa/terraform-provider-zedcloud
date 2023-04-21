@@ -9,7 +9,6 @@ func Slices(a, b interface{}) (bool, error) {
 	if a == nil && b == nil {
 		return true, nil
 	}
-
 	if b == nil {
 		return false, nil
 	}

@@ -592,7 +592,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional:         true,
-			DiffSuppressFunc: diffSuppressInterfaceListOrder("interfaces"),
+			DiffSuppressFunc: diffSupressSliceOrder("interfaces"),
 		},
 
 		"is_secret_updated": {
