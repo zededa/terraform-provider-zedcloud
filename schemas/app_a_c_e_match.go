@@ -48,13 +48,13 @@ func AppACEMatchSchema() map[string]*schema.Schema {
 		"type": {
 			Description: `Type`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"value": {
 			Description: `Value`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }

@@ -43,7 +43,9 @@ func AppInterfaceModel(d *schema.ResourceData) *models.AppInterface {
 	if ioIsSet && ioInterface != nil {
 		ioMap := ioInterface.([]interface{})
 		if len(ioMap) > 0 {
-			io = PhyAdapterModelFromMap(ioMap[0].(map[string]interface{}))
+			if ioMap[0] != nil {
+				io = PhyAdapterModelFromMap(ioMap[0].(map[string]interface{}))
+			}
 		}
 	}
 	ipaddr, _ := d.Get("ipaddr").(string)
@@ -120,7 +122,9 @@ func AppInterfaceModelFromMap(m map[string]interface{}) *models.AppInterface {
 	if ioIsSet && ioInterface != nil {
 		ioMap := ioInterface.([]interface{})
 		if len(ioMap) > 0 {
-			io = PhyAdapterModelFromMap(ioMap[0].(map[string]interface{}))
+			if ioMap[0] != nil {
+				io = PhyAdapterModelFromMap(ioMap[0].(map[string]interface{}))
+			}
 		}
 	}
 	//
@@ -280,7 +284,7 @@ func AppInterface() map[string]*schema.Schema {
 		"netinstid": {
 			Description: `Network Instance id to be matched for interface assignment.`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"netinstname": {

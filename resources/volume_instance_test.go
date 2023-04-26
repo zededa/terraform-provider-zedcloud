@@ -13,6 +13,7 @@ import (
 	api_client "github.com/zededa/terraform-provider/client"
 	config "github.com/zededa/terraform-provider/client/volume_instance"
 	"github.com/zededa/terraform-provider/models"
+	testhelper "github.com/zededa/terraform-provider/testing"
 )
 
 func TestVolumeInstance_Create(t *testing.T) {
@@ -21,15 +22,15 @@ func TestVolumeInstance_Create(t *testing.T) {
 
 	// input config
 	inputPath := "volume_instance/create.tf"
-	input := mustGetTestInput(t, inputPath)
+	input := testhelper.MustGetTestInput(t, inputPath)
 
 	// expected output
 	expectedPath := "volume_instance/create.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
+	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { testhelper.CheckEnv(t) },
 		CheckDestroy: testVolumeInstanceDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{

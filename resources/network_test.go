@@ -14,6 +14,7 @@ import (
 	config "github.com/zededa/terraform-provider/client/network"
 	"github.com/zededa/terraform-provider/models"
 	"github.com/zededa/terraform-provider/schemas"
+	testhelper "github.com/zededa/terraform-provider/testing"
 )
 
 func TestNetwork_Create_RequiredAttributesOnly(t *testing.T) {
@@ -22,15 +23,15 @@ func TestNetwork_Create_RequiredAttributesOnly(t *testing.T) {
 
 	// input config
 	inputPath := "network/create_required_only.tf"
-	input := mustGetTestInput(t, inputPath)
+	input := testhelper.MustGetTestInput(t, inputPath)
 
 	// expected output
 	expectedPath := "network/create_required_only_expected.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
+	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { testhelper.CheckEnv(t) },
 		CheckDestroy: testNetworkDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
@@ -61,15 +62,15 @@ func TestNetwork_Create_AllAttributes_WithProxy(t *testing.T) {
 
 	// input config
 	inputPath := "network/create_complete_with_proxy.tf"
-	input := mustGetTestInput(t, inputPath)
+	input := testhelper.MustGetTestInput(t, inputPath)
 
 	// expected output
 	expectedPath := "network/create_complete_with_proxy.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
+	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { testhelper.CheckEnv(t) },
 		CheckDestroy: testNetworkDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
@@ -102,15 +103,15 @@ func TestNetwork_Create_AllAttributes_WithPac(t *testing.T) {
 
 	// input config
 	inputPath := "network/create_complete_with_pac.tf"
-	input := mustGetTestInput(t, inputPath)
+	input := testhelper.MustGetTestInput(t, inputPath)
 
 	// expected output
 	expectedPath := "network/create_complete_with_pac.yaml"
-	mustGetExpectedOutput(t, expectedPath, &expected)
+	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { testhelper.CheckEnv(t) },
 		CheckDestroy: testNetworkDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{

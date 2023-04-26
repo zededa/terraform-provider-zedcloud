@@ -95,31 +95,31 @@ func AppACEActionSchema() map[string]*schema.Schema {
 		"drop": {
 			Description: `ACE drop flag`,
 			Type:        schema.TypeBool,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"limit": {
 			Description: `ACE limit flag`,
 			Type:        schema.TypeBool,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"limitburst": {
 			Description: `ACE limit burst`,
 			Type:        schema.TypeInt,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"limitrate": {
 			Description: `ACE limit rate`,
 			Type:        schema.TypeInt,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"limitunit": {
 			Description: `ACE limit unit`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"mapparams": {
@@ -128,13 +128,13 @@ func AppACEActionSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppMapParamsSchema(),
 			},
-			Required: true,
+			Optional: true,
 		},
 
 		"portmap": {
 			Description: `application port map flag`,
 			Type:        schema.TypeBool,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }

@@ -1752,64 +1752,130 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
 	    	# mvolname = ""
 	    	# volumelabel = ""
     }
-
     interfaces {
-	    	# required
-        acls {
-            matches {
-                type = "protocol"
+        directattach = false
+        privateip = false
+        netinstname = zedcloud_network_instance.test_tf_provider.name
+        intfname = "indirect"
+	    	# io {
+	        	# name = "adapter"
+	        	# tags = {
+                # "key" = "value"
+            # }
+	        	# type = "IO_TYPE_UNSPECIFIED"
+        # }
+        # acls {
+					  # id = 1
+        #     matches {
+        #         type = "protocol"
+        #         value = "tcp"
+        #     }
+        #     matches {
+        #         type = "lport"
+        #         value = "8022"
+        #     }
+        #     actions {
+        #         portmap = true
+        #         mapparams {
+        #             port = 22
+        #         }
+        #     }
+        # }
+        # acls {
+					  # id = 2
+        #     matches {
+        #         type = "host"
+        #         value = ""
+        #     }
+        # }
+				 acls {
+              id = 1
+              actions {
+                  drop       = false
+                  limit      = false
+                  limitburst = 0
+                  limitrate  = 0
+                  portmap    = true
+
+                  mapparams {
+                    port = 22
+                  }
+              }
+
+              matches {
+                type  = "protocol"
                 value = "tcp"
-            }
-            actions {
-                drop = true
-                limit = true
-                limitrate = 0
-                limitunit = "unit"
-                limitburst = 0
-                portmap = true
-                mapparams {
-                    port = 0
+              }
+              matches {
+                type  = "lport"
+                value = "8022"
                 }
             }
-            name = "tcp"
-        }
-	    	directattach = false
-	    	eidregister {
-	        	# required
-	        	display_name = "display name"
-	        	e_id = "eID"
-	        	e_id_hash_len = 2
-	        	lisp_instance = 2
-	        	lisp_map_servers {
-	            	# required
-	            	credential = "123"
-	            	name_or_ip = "name"
+          acls {
+              id = 2
+              matches {
+                type = "host"
+              }
             }
-	        	lisp_signature = "sig"
-	        	uuid = "1111"
-        }
-        intfname = "indirect"
-	    	intforder = 1
-	    	io {
-	        	name = "adapter"
-	        	tags = {
-                "key" = "value"
-            }
-	        	type = "IO_TYPE_UNSPECIFIED"
-        }
-    		ipaddr = "127.0.0.1"
-    		macaddr = "00:00:00:00:00:00"
-        netinstname = zedcloud_network_instance.test_tf_provider.name
-        privateip = false
-
-	    	# optional
-	    	access_vlan_id = 0
-	    	default_net_instance = false
-	    	netinsttag = {
-            "key" = "value"
-        }
-	    	netname = "netname"
     }
+
+    # interfaces {
+	    	# # required
+    #     acls {
+    #         matches {
+    #             type = "protocol"
+    #             value = "tcp"
+    #         }
+    #         actions {
+    #             drop = true
+    #             limit = true
+    #             limitrate = 0
+    #             limitunit = "unit"
+    #             limitburst = 0
+    #             portmap = true
+    #             mapparams {
+    #                 port = 0
+    #             }
+    #         }
+    #         name = "tcp"
+    #     }
+	    	# directattach = false
+	    	# eidregister {
+	        	# # required
+	        	# display_name = "display name"
+	        	# e_id = "eID"
+	        	# e_id_hash_len = 2
+	        	# lisp_instance = 2
+	        	# lisp_map_servers {
+	            	# # required
+	            	# credential = "123"
+	            	# name_or_ip = "name"
+    #         }
+	        	# lisp_signature = "sig"
+	        	# uuid = "1111"
+    #     }
+    #     intfname = "indirect"
+	    	# intforder = 1
+	    	# io {
+	        	# name = "adapter"
+	        	# tags = {
+    #             "key" = "value"
+    #         }
+	        	# type = "IO_TYPE_UNSPECIFIED"
+    #     }
+    # 		ipaddr = "127.0.0.1"
+    # 		macaddr = "00:00:00:00:00:00"
+    #     netinstname = zedcloud_network_instance.test_tf_provider.name
+    #     privateip = false
+
+	    	# # optional
+	    	# access_vlan_id = 0
+	    	# default_net_instance = false
+	    	# netinsttag = {
+    #         "key" = "value"
+    #     }
+	    	# netname = "netname"
+    # }
 
 		# optional
     remote_console = true

@@ -15,6 +15,7 @@ import (
 	config "github.com/zededa/terraform-provider/client/node"
 	"github.com/zededa/terraform-provider/models"
 	"github.com/zededa/terraform-provider/schemas"
+	testhelper "github.com/zededa/terraform-provider/testing"
 )
 
 func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
@@ -22,11 +23,11 @@ func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
 
 	// input config
 	inputPath := "node/create_required_only.tf"
-	input := mustGetTestInput(t, inputPath)
+	input := testhelper.MustGetTestInput(t, inputPath)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { testhelper.CheckEnv(t) },
 		CheckDestroy: testNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
@@ -53,19 +54,19 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 
 	// input configs
 	createPath := "node/create_all.tf"
-	inputCreate := mustGetTestInput(t, createPath)
+	inputCreate := testhelper.MustGetTestInput(t, createPath)
 	updatePath := "node/update_all.tf"
-	inputUpdate := mustGetTestInput(t, updatePath)
+	inputUpdate := testhelper.MustGetTestInput(t, updatePath)
 
 	// expected output
 	createPath = "node/create_all.yaml"
-	mustGetExpectedOutput(t, createPath, &expectCreated)
+	testhelper.MustGetExpectedOutput(t, createPath, &expectCreated)
 	updatePath = "node/update_all.yaml"
-	mustGetExpectedOutput(t, updatePath, &expectUpdated)
+	testhelper.MustGetExpectedOutput(t, updatePath, &expectUpdated)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
-		PreCheck:     func() { checkEnv(t) },
+		PreCheck:     func() { testhelper.CheckEnv(t) },
 		CheckDestroy: testNodeDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{

@@ -43,7 +43,7 @@ func AppMapParamsSchema() map[string]*schema.Schema {
 		"port": {
 			Description: `Application port`,
 			Type:        schema.TypeInt,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }
