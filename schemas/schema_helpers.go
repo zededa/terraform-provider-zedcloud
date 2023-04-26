@@ -178,6 +178,12 @@ func diffSuppressInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc
 	}
 }
 
+func supress() schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		return true
+	}
+}
+
 func diffSupressSliceOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
 		equal, err := compare.Slices(d.GetChange(mapKey))

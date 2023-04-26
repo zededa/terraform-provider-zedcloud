@@ -134,7 +134,7 @@ func AppACE() map[string]*schema.Schema {
 		"id": {
 			Description: `app ACE id`,
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"matches": {
