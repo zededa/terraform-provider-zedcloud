@@ -1757,6 +1757,13 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
         privateip = false
         netinstname = zedcloud_network_instance.test_tf_provider.name
         intfname = "indirect"
+	    	# io {
+	        	# name = "adapter"
+	        	# tags = {
+                # "key" = "value"
+            # }
+	        	# type = "IO_TYPE_UNSPECIFIED"
+        # }
         # acls {
 					  # id = 1
         #     matches {
@@ -1791,7 +1798,7 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
                   portmap    = true
 
                   mapparams {
-                    port = 23
+                    port = 22
                   }
               }
 
