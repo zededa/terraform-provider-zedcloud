@@ -26,75 +26,75 @@ drives:
       preserve: false
       readonly: false
       target: "Disk"
-interfaces:
-    - accessvlanid: 0
-      acls:
-        - actions:
-            - drop: true
-              limit: true
-              limitburst: 0
-              limitrate: 0
-              limitunit: unit
-              mapparams:
-                port: 0
-              portmap: true
-          id: 1
-          matches:
-            - type: protocol
-              value: tcp
-          name: tcp
-        - actions:
-            - drop: false
-              limit: false
-              limitburst: 0
-              limitrate: 0
-              limitunit: ""
-              mapparams:
-                port: 22
-              portmap: true
-          id: 2
-          matches:
-            - type: protocol
-              value: tcp
-            - type: lport
-              value: "8022"
-          name: ""
-        - actions: []
-          id: 3
-          matches:
-            - type: host
-              value: ""
-          name: ""
-      defaultnetinstance: false
-      directattach: false
-      eidregister:
-        appcert: ""
-        appprivatekey: ""
-        apppublickey: ""
-        displayname: display name
-        eid: eID
-        eidhashlen: 2
-        lispinstance: 2
-        lispmapservers:
-            - credential: "123"
-              nameorip: name
-        lispsignature: sig
-        uuid: "1111"
-      intfname: indirect
-      intforder: 1
-      io:
-        name: adapter
-        tags:
-            key: value
-        type: IO_TYPE_UNSPECIFIED
-      ipaddr: 127.0.0.1
-      macaddr: "00:00:00:00:00:00"
-      netinstid: 042e2821-c7f4-4412-a94b-b28b3e7c81bb
-      netinstname: test_tf_provider
-      netinsttag:
-        key: value
-      netname: netname
-      privateip: false
+# interfaces:
+#     - accessvlanid: 0
+#       acls:
+#         - actions:
+#             - drop: true
+#               limit: true
+#               limitburst: 0
+#               limitrate: 0
+#               limitunit: unit
+#               mapparams:
+#                 port: 0
+#               portmap: true
+#           id: 1
+#           matches:
+#             - type: protocol
+#               value: tcp
+#           name: tcp
+#         - actions:
+#             - drop: false
+#               limit: false
+#               limitburst: 0
+#               limitrate: 0
+#               limitunit: ""
+#               mapparams:
+#                 port: 22
+#               portmap: true
+#           id: 2
+#           matches:
+#             - type: protocol
+#               value: tcp
+#             - type: lport
+#               value: "8022"
+#           name: ""
+#         - actions: []
+#           id: 3
+#           matches:
+#             - type: host
+#               value: ""
+#           name: ""
+#       defaultnetinstance: false
+#       directattach: false
+#       eidregister:
+#         appcert: ""
+#         appprivatekey: ""
+#         apppublickey: ""
+#         displayname: display name
+#         eid: eID
+#         eidhashlen: 2
+#         lispinstance: 2
+#         lispmapservers:
+#             - credential: "123"
+#               nameorip: name
+#         lispsignature: sig
+#         uuid: "1111"
+#       intfname: indirect
+#       intforder: 1
+#       io:
+#         name: adapter
+#         tags:
+#             key: value
+#         type: IO_TYPE_UNSPECIFIED
+#       ipaddr: 127.0.0.1
+#       macaddr: "00:00:00:00:00:00"
+#       netinstid: 042e2821-c7f4-4412-a94b-b28b3e7c81bb
+#       netinstname: test_tf_provider
+#       netinsttag:
+#         key: value
+#       netname: netname
+#       privateip: false
 issecretupdated: false
 logs:
     access: false
