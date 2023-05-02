@@ -53,11 +53,6 @@ func TestApplicationInstance_Create(t *testing.T) {
 						"device_id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					resource.TestMatchResourceAttr(
-						"zedcloud_application_instance.test_tf_provider",
-						"interfaces.0.netinstid",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
 					testApplicationInstanceAttributes(t, &got, &expected),
 				),
 			},
@@ -103,18 +98,10 @@ func testApplicationInstanceExists(resourceName string, applicationModel *models
 func testApplicationInstanceAttributes(t *testing.T, got, expected *models.AppInstance) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		ignoredFields := []string{
-			"Netinstid",
-		}
-		opts := cmpopts.IgnoreFields(models.AppInterface{}, ignoredFields...)
-		if diff := cmp.Diff(*got.Interfaces[0], *expected.Interfaces[0], opts); len(diff) != 0 {
-			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
-		}
-
-		ignoredFields = []string{
 			"Imvolname",
 			"Mvolname",
 		}
-		opts = cmpopts.IgnoreFields(models.Drive{}, ignoredFields...)
+		opts := cmpopts.IgnoreFields(models.Drive{}, ignoredFields...)
 		if diff := cmp.Diff(*got.Drives[0], *expected.Drives[0], opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
