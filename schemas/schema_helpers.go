@@ -178,6 +178,33 @@ func diffSuppressInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc
 	}
 }
 
+// suppressAppInterfacesChangeAfterCreation checks whether we have the newly created AppInterface
+// or not. It suppress any differences after an AppInstance is created.
+// AppInterfaces are never updated after they have been created 
+func suppressAppInterfacesChangeAfterCreation(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		if oldData == nil {
+			return false
+		}
+		if newData == nil {
+			return false
+		}
+
+		o := oldData.([]interface{})
+		n := newData.([]interface{})
+		if len(o) != len(n) && len(o) == 0 {
+			return false
+		}
+
+		return true
+	}
+}
+
 func supress() schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
 		return true
