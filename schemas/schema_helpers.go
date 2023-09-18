@@ -205,7 +205,7 @@ func suppressAppInterfacesChangeAfterCreation(mapKey string) schema.SchemaDiffSu
 	}
 }
 
-// In most cases it's not allowed to change the resources' name after creatinon.
+// In most cases it's not allowed to change the resources' name after creation.
 // The function supresses any differences between names once the resource is created.
 func supressNameAfterCreation(mapKey string) schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {

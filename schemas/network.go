@@ -256,7 +256,7 @@ NETWORK_KIND_V6`,
 			Description: `User defined name of the network, unique across the enterprise. Once object is created, name can’t be changed`,
 			Type:        schema.TypeString,
 			Required:    true,
-			ForceNew: true,
+			ForceNew:    true,
 		},
 
 		"project_id": {

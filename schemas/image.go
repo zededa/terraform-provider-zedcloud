@@ -261,7 +261,7 @@ func Image() map[string]*schema.Schema {
 			Description: `User defined name of the image, unique across the enterprise. Once image is created, name can’t be changed.`,
 			Type:        schema.TypeString,
 			Required:    true,
-			ForceNew: true,
+			ForceNew:    true,
 		},
 
 		"origin_type": {
