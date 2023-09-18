@@ -693,6 +693,7 @@ func Node() map[string]*schema.Schema {
 			Description: `user specified device name`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			DiffSuppressFunc: supressNameAfterCreation("name"),
 		},
 
 		"onboarding_key": {

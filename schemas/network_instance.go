@@ -395,6 +395,7 @@ NETWORK_INSTANCE_KIND_HONEYPOT`,
 			Description: `User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed`,
 			Type:        schema.TypeString,
 			Required:    true,
+			ForceNew: true,
 		},
 
 		"network_policy_id": {

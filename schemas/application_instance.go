@@ -623,6 +623,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `User defined name of the app instance, unique across the enterprise. Once app instance is created, name can’t be changed`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			ForceNew: 	 true,
 		},
 
 		"project_id": {
