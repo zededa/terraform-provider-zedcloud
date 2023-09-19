@@ -280,6 +280,7 @@ func Application() map[string]*schema.Schema {
 			Description: `User defined name of the edge application, unique across the enterprise. Once object is created, name can’t be changed`,
 			Type:        schema.TypeString,
 			Required:    true,
+			ForceNew:    true,
 		},
 
 		"networks": {

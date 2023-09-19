@@ -325,6 +325,7 @@ func Datastore() map[string]*schema.Schema {
 			Description: `User defined name of the datastore, unique across the enterprise. Once datastore is created, name can’t be changed.`,
 			Type:        schema.TypeString,
 			Required:    true,
+			ForceNew:    true,
 		},
 
 		"need_clear_text": {

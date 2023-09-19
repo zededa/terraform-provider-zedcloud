@@ -257,6 +257,7 @@ func VolumeInstance() map[string]*schema.Schema {
 			Description: `User defined name of the volume instance, unique across the enterprise. Once object is created, name can’t be changed.`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			ForceNew:    true,
 		},
 
 		"project_id": {
