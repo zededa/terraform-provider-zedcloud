@@ -17,21 +17,21 @@ description: |-
 
 ### Required
 
+- `datastore_id` (String) Datastore Id where image binary is located.
+- `image_arch` (String) Image Architecture.
+- `image_format` (String) Image binary format.
 - `name` (String) User defined name of the image, unique across the enterprise. Once image is created, name can’t be changed.
+- `title` (String) User defined title of the image. Title can be changed at any time.
 
 ### Optional
 
-- `datastore_id` (String) Datastore Id where image binary is located.
 - `description` (String) Detailed description of the image.
-- `image_arch` (String) Image Architecture.
-- `image_format` (String) Image binary format.
 - `image_rel_url` (String) Image relative path w.r.t. Datastore
 - `image_sha256` (String) Image checksum in SHA256 format
 - `image_size_bytes` (String) Image size in KBytes.
 - `image_type` (String) Image type
 - `image_version` (String) system defined info
 - `project_access_list` (List of String) project access list of the image
-- `title` (String) User defined title of the image. Title can be changed at any time.
 
 ### Read-Only
 
@@ -53,5 +53,3 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
-
-

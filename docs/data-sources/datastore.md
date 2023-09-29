@@ -17,22 +17,22 @@ description: |-
 
 ### Required
 
+- `ds_fqdn` (String) Datastore Fully Qualified Domain Name
+- `ds_type` (String) Datastore type
 - `name` (String) User defined name of the datastore, unique across the enterprise. Once datastore is created, name can’t be changed.
+- `title` (String) User defined title of the datastore. Title can be changed at any time.
 
 ### Optional
 
 - `api_key` (String, Sensitive)
 - `certificate_chain` (Block List) Certificate chain of the certificate (see [below for nested schema](#nestedblock--certificate_chain))
 - `description` (String) Detailed description of the datastore.
-- `ds_fqdn` (String) Datastore Fully Qualified Domain Name
 - `ds_path` (String) Datastore relative path w.r.t. Datastore root
 - `ds_status` (String) Datastore status
-- `ds_type` (String) Datastore type
 - `need_clear_text` (Boolean) knob for sending creds in clear text
 - `project_access_list` (List of String) project access list of the datastore
 - `region` (String) Datastore region - valid for AWS S3 and Azure BlobStorage
 - `secret` (Block List) Plain-text sensitive data (see [below for nested schema](#nestedblock--secret))
-- `title` (String) User defined title of the datastore. Title can be changed at any time.
 
 ### Read-Only
 
@@ -157,5 +157,3 @@ Read-Only:
 - `prev` (String) Previous
 - `updated_at` (String) The time, in milliseconds since the epoch, when the record was last updated.
 - `updated_by` (String) User data: Updated By
-
-
