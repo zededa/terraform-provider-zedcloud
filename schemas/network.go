@@ -241,7 +241,7 @@ func Network() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: IPSpec(),
 			},
-			Required: true,
+			Optional: true, // If a value for this field isn't provided then DHCP configuration will be used
 		},
 
 		"kind": {

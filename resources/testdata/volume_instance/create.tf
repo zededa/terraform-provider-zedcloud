@@ -7,6 +7,8 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 
 data "zedcloud_edgenode" "test_tf_provider" {
 		name = "test_tf_provider-create_edgenode"
+        model_id = zedcloud_edgenode.test_tf_provider.model_id
+        title = zedcloud_edgenode.test_tf_provider.title
     depends_on = [
         zedcloud_edgenode.test_tf_provider
     ]

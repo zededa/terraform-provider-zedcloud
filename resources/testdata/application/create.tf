@@ -7,7 +7,7 @@ resource "zedcloud_application" "test_tf_provider" {
     project_access_list = ["4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"]
     manifest {
         # computed
-    		# ac_kind = "VMManifest"
+    		ac_kind = "VMManifest"
 
     		# optional
         name = "xenial-amd64-docker-20180725"

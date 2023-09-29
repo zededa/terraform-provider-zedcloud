@@ -219,7 +219,7 @@ func VolumeInstance() map[string]*schema.Schema {
 		"device_id": {
 			Description: `id of the device on which volume instance is created`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"id": {
@@ -256,7 +256,7 @@ func VolumeInstance() map[string]*schema.Schema {
 		"name": {
 			Description: `User defined name of the volume instance, unique across the enterprise. Once object is created, name can’t be changed.`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 			ForceNew:    true,
 		},
 
@@ -303,13 +303,13 @@ func VolumeInstance() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the volume instance. Title can be changed at any time.`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"type": {
 			Description: `type of Volume Instance`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }

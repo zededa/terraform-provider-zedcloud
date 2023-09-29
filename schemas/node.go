@@ -686,13 +686,13 @@ func Node() map[string]*schema.Schema {
 		"model_id": {
 			Description: `device model`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"name": {
 			Description: `user specified device name`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 			DiffSuppressFunc: supressNameAfterCreation("name"),
 		},
 
@@ -797,7 +797,7 @@ func Node() map[string]*schema.Schema {
 		"title": {
 			Description: `user specified title`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"token": {

@@ -67,6 +67,8 @@ resource "zedcloud_project" "test_tf_provider" {
 
 data "zedcloud_project" "test_tf_provider" {
 		name = "test_tf_provider"
+    type = zedcloud_project.test_tf_provider.type
+    title = zedcloud_project.test_tf_provider.title
     depends_on = [
         zedcloud_project.test_tf_provider
     ]
@@ -79,7 +81,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 
 		# required
 		name = "test_tf_provider"
-		model_id = "0f16441a-3342-45e5-8c1c-3714c284de51"
+		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
 		project_id = data.zedcloud_project.test_tf_provider.id
 		# project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
 		title = "test_tf_provider-create_edgenode-title"
@@ -119,6 +121,8 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 
 data "zedcloud_edgenode" "test_tf_provider" {
 		name = "test_tf_provider"
+    title = zedcloud_edgenode.test_tf_provider.title
+    model_id = zedcloud_edgenode.test_tf_provider.model_id
     depends_on = [
         zedcloud_edgenode.test_tf_provider
     ]
@@ -132,7 +136,7 @@ resource "zedcloud_application" "test_tf_provider" {
     origin_type = "ORIGIN_LOCAL"
     manifest {
         # computed
-    		# ac_kind = "VMManifest"
+    		ac_kind = "VMManifest"
 
     		# optional
         name = "xenial-amd64-docker-20180725"
@@ -217,6 +221,8 @@ resource "zedcloud_application" "test_tf_provider" {
 
 data "zedcloud_application" "test_tf_provider" {
 		name = "test_tf_provider"
+    title = zedcloud_application.test_tf_provider.title
+    # manifest.ac_kind = zedcloud_application.test_tf_provider.manifest.ac_kind
     depends_on = [
         zedcloud_application.test_tf_provider
     ]
@@ -246,6 +252,9 @@ resource "zedcloud_volume_instance"  "test_tf_provider" {
 
 data "zedcloud_volume_instance" "test_tf_provider" {
 		name = "test_tf_provider"
+    type = zedcloud_volume_instance.test_tf_provider.type
+    device_id = zedcloud_volume_instance.test_tf_provider.device_id
+    title = zedcloud_volume_instance.test_tf_provider.title
     depends_on = [
         zedcloud_volume_instance.test_tf_provider
     ]
@@ -293,6 +302,9 @@ resource "zedcloud_network_instance" "test_tf_provider" {
 
 data "zedcloud_network_instance" "test_tf_provider" {
 		name = "test_tf_provider"
+    kind = zedcloud_network_instance.test_tf_provider.kind
+    device_id = zedcloud_network_instance.test_tf_provider.device_id
+    title = zedcloud_network_instance.test_tf_provider.title
     depends_on = [
         zedcloud_network_instance.test_tf_provider
     ]
@@ -404,4 +416,7 @@ data "zedcloud_application_instance" "test_tf_provider" {
         zedcloud_application_instance.test_tf_provider
     ]
     name = "test_tf_provider"
+    title = zedcloud_application_instance.test_tf_provider.title
+    app_id = zedcloud_application_instance.test_tf_provider.app_id
+    device_id = zedcloud_application_instance.test_tf_provider.device_id
 }

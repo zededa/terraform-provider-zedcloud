@@ -370,15 +370,15 @@ func VMManifest() map[string]*schema.Schema {
 		"ac_kind": {
 			Description: `UI map: N/A - not exposed to users`,
 			Type:        schema.TypeString,
-			Default:     "VMManifest",
-			Optional:    true,
+			// Default:     "VMManifest",
+			Required:    true,
 		},
 
 		"ac_version": {
 			Description: `UI map: N/A - not exposed to users`,
 			Type:        schema.TypeString,
-			Default:     "1.2.0",
-			Optional:    true,
+			// Default:     "1.2.0",
+			Required:    true,
 		},
 
 		"app_type": {
@@ -477,7 +477,7 @@ func VMManifest() map[string]*schema.Schema {
 		"name": {
 			Description: `UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"owner": {
