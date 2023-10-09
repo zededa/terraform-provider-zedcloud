@@ -488,7 +488,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"app_id": {
 			Description: `User defined name of the edge app, unique across the enterprise. Once app name is created, name can’t be changed`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"app_policy_id": {
@@ -554,7 +554,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"device_id": {
 			Description: `User defined name of the device name, unique across the enterprise. Once device name is defined, name can’t be changed`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"drives": {
@@ -622,7 +622,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"name": {
 			Description: `User defined name of the app instance, unique across the enterprise. Once app instance is created, name can’t be changed`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 			ForceNew:    true,
 		},
 
@@ -697,7 +697,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the app instance. Title can be changed at any time`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"user_data": {

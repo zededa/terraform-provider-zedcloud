@@ -6,115 +6,115 @@ isimported: false
 projectaccesslist:
   - 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 manifest:
-    ackind: VMManifest
-    acversion: 1.2.0
-    apptype: APP_TYPE_VM
-    configuration:
-        customconfig:
-            add: false
-            allowstorageresize: false
-            fielddelimiter: ','
-            name: custom_config_name
-            override: false
-            template: dGVzdA==
-            variablegroups:
-                - condition:
-                    name: condition
-                    operator: CONDITION_OPERATOR_EQUALTO
-                    value: val
-                  name: var_group
-                  required: false
-                  variables: []
-    containerdetail: null
-    cpupinningenabled: false
-    deploymenttype: DEPLOYMENT_TYPE_K3S
-    desc:
-        agreementlist: {}
-        appcategory: APP_CATEGORY_OTHERS
-        category: Infrastructure
-        licenselist: {}
-        logo: {}
-        os: Zenix
-        screenshotlist: {}
-        support: support
-    description: description
-    displayname: display_name
-    enablevnc: false
-    images:
-        - cleartext: false
-          drvtype: HDD
-          ignorepurge: false
-          imageformat: ISO
-          imageid: ""
-          imagename: test-xenial-amd64
-          maxsize: "1200000"
-          mountpath: ""
-          params:
-            - name: bootparam
-              value: +k/sre
-          preserve: true
-          readonly: false
-          target: Disk
-          volumelabel: vol_1
-    interfaces:
-        - acls:
-            - actions:
-                - drop: false
-                  limit: false
-                  limitvalue: null
-                  limitburst: 0
-                  limitrate: 0
-                  limitunit: ""
-                  portmap: true
-                  portmapto:
-                    appport: 22
-              matches:
-                - type: protocol
-                  value: tcp
-                - type: lport
-                  value: "8022"
-              name: ""
-            - actions: []
-              matches:
-                - type: host
-                  value: ""
-              name: ""
-          directattach: false
-          name: indirect
-          optional: false
-          privateip: false
-          type: ""
-    module: null
-    name: xenial-amd64-docker-20180725
-    owner:
-        company: Zededa Inc.
-        email: test@zededa.com
-        group: testgroup
-        user: testuser
-        website: http://www.zededa.com
-    permissions: []
-    resources:
-        - name: cpus
-          value: "2"
-        - name: memory
-          value: "1024000"
-    vmmode: HV_HVM
+  ackind: VMManifest
+  acversion: 1.2.0
+  apptype: APP_TYPE_VM
+  configuration:
+    customconfig:
+      add: false
+      allowstorageresize: false
+      fielddelimiter: ","
+      name: custom_config_name
+      override: false
+      template: dGVzdA==
+      variablegroups:
+        - condition:
+            name: condition
+            operator: CONDITION_OPERATOR_EQUALTO
+            value: val
+          name: var_group
+          required: false
+          variables: []
+  containerdetail: null
+  cpupinningenabled: false
+  deploymenttype: DEPLOYMENT_TYPE_K3S
+  desc:
+    agreementlist: {}
+    appcategory: APP_CATEGORY_OTHERS
+    category: APP_CATEGORY_OTHERS
+    licenselist: {}
+    logo: {}
+    os: Zenix
+    screenshotlist: {}
+    support: support
+  description: description
+  displayname: display_name
+  enablevnc: false
+  images:
+    - cleartext: false
+      drvtype: HDD
+      ignorepurge: false
+      imageformat: ISO
+      imageid: ""
+      imagename: test-xenial-amd64
+      maxsize: "1200000"
+      mountpath: ""
+      params:
+        - name: bootparam
+          value: +k/sre
+      preserve: true
+      readonly: false
+      target: Disk
+      volumelabel: vol_1
+  interfaces:
+    - acls:
+        - actions:
+            - drop: false
+              limit: false
+              limitvalue: null
+              limitburst: 0
+              limitrate: 0
+              limitunit: ""
+              portmap: true
+              portmapto:
+                appport: 22
+          matches:
+            - type: protocol
+              value: tcp
+            - type: lport
+              value: "8022"
+          name: ""
+        - actions: []
+          matches:
+            - type: host
+              value: ""
+          name: ""
+      directattach: false
+      name: indirect
+      optional: false
+      privateip: false
+      type: ""
+  module: null
+  name: xenial-amd64-docker-20180725
+  owner:
+    company: Zededa Inc.
+    email: test@zededa.com
+    group: testgroup
+    user: testuser
+    website: http://www.zededa.com
+  permissions: []
+  resources:
+    - name: cpus
+      value: "2"
+    - name: memory
+      value: "1024000"
+  vmmode: HV_HVM
 memory: 1024000
 name: ubuntu-all-ip
 networks: 1
 origintype: ORIGIN_LOCAL
 parentdetail:
-    idofparentobject: ""
-    referenceexists: false
-    updateavailable: false
-    versionofparentobject: 0
+  idofparentobject: ""
+  referenceexists: false
+  updateavailable: false
+  versionofparentobject: 0
 revision:
-    createdat: "2023-02-12T14:45:49.847Z"
-    createdby: us.root@zededa.com
-    curr: "1"
-    prev: ""
-    updatedat: "2023-02-12T14:45:49.847Z"
-    updatedby: us.root@zededa.com
+  createdat: "2023-02-12T14:45:49.847Z"
+  createdby: us.root@zededa.com
+  curr: "1"
+  prev: ""
+  updatedat: "2023-02-12T14:45:49.847Z"
+  updatedby: us.root@zededa.com
 storage: 0
 title: ubuntu-all-ip
 userdefinedversion: "1.1"

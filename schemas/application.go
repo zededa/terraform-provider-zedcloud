@@ -334,7 +334,7 @@ func Application() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the edge application. Title can be changed at any time`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"user_defined_version": {

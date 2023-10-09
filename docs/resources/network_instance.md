@@ -17,17 +17,7 @@ description: |-
 
 ### Required
 
-- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
-
-### Optional
-
-- `cluster_id` (String) ID of the Cluster in which the network instance is configured
-- `description` (String) Detailed description of the network instance
-- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
 - `device_id` (String) ID of the device on which network instance is created
-- `dhcp` (Boolean) Deprecated
-- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--dns_list))
-- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--ip))
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -36,6 +26,17 @@ NETWORK_INSTANCE_KIND_LOCAL
 NETWORK_INSTANCE_KIND_CLOUD
 NETWORK_INSTANCE_KIND_MESH
 NETWORK_INSTANCE_KIND_HONEYPOT
+- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the network instance. Title can be changed at any time
+
+### Optional
+
+- `cluster_id` (String) ID of the Cluster in which the network instance is configured
+- `description` (String) Detailed description of the network instance
+- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `dhcp` (Boolean) Deprecated
+- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--dns_list))
+- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--ip))
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--opaque))
@@ -43,7 +44,6 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `title` (String) User defined title of the network instance. Title can be changed at any time
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
 NETWORK_INSTANCE_DHCP_TYPE_V6
@@ -156,5 +156,3 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
-
-

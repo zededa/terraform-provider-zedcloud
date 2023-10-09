@@ -306,13 +306,13 @@ func Project() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the resource group. Title can be changed at any time.`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"type": {
 			Description: `Resource group type`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }

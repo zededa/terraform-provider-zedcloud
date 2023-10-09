@@ -44,6 +44,8 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 
 data "zedcloud_edgenode" "test_tf_provider" {
 		name = "test_tf_provider"
+    model_id = zedcloud_edgenode.test_tf_provider.model_id
+    title = zedcloud_edgenode.test_tf_provider.title
     depends_on = [
         zedcloud_edgenode.test_tf_provider
     ]
@@ -62,6 +64,7 @@ resource "zedcloud_application" "test_tf_provider" {
     		# optional
         name = "xenial-amd64-docker-20180725"
     		ac_version = "1.2.0"
+        ac_kind = "VMManifest"
     		app_type = "APP_TYPE_VM"
     		configuration {
     		  custom_config {
@@ -162,6 +165,7 @@ resource "zedcloud_application" "test_tf_provider" {
 
 data "zedcloud_application" "test_tf_provider" {
 		name = "test_tf_provider"
+    title = zedcloud_application.test_tf_provider.title
     depends_on = [
         zedcloud_application.test_tf_provider
     ]

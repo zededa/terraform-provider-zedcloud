@@ -17,7 +17,6 @@ description: |-
 
 ### Required
 
-- `ip` (Block List, Min: 1) IP configuration for the network (see [below for nested schema](#nestedblock--ip))
 - `kind` (String) Kind of network:
 NETWORK_KIND_V4
 NETWORK_KIND_V6
@@ -30,6 +29,7 @@ NETWORK_KIND_V6
 - `description` (String) Detailed description of the network
 - `dns_list` (Block List) (see [below for nested schema](#nestedblock--dns_list))
 - `enterprise_default` (Boolean)
+- `ip` (Block List) IP configuration for the network (see [below for nested schema](#nestedblock--ip))
 - `proxy` (Block List) proxy block is used to configure network proxy settings. The following is a brief description of how to use the attributes in the block:
 1) If the proxy server requires certificates, set network_proxy_certs to carry the certificates
 2) To have the EdgeNode auto discover pacfile, set network_proxy to True
@@ -44,6 +44,15 @@ NETWORK_KIND_V6
 
 - `id` (String) System defined universally unique Id of the network
 - `revision` (Block List) system defined info (see [below for nested schema](#nestedblock--revision))
+
+<a id="nestedblock--dns_list"></a>
+### Nested Schema for `dns_list`
+
+Optional:
+
+- `addrs` (List of String) Addresses
+- `hostname` (String) Host name
+
 
 <a id="nestedblock--ip"></a>
 ### Nested Schema for `ip`
@@ -71,15 +80,6 @@ Optional:
 - `end` (String) ending IP
 - `start` (String) starting IP
 
-
-
-<a id="nestedblock--dns_list"></a>
-### Nested Schema for `dns_list`
-
-Optional:
-
-- `addrs` (List of String) Addresses
-- `hostname` (String) Host name
 
 
 <a id="nestedblock--proxy"></a>
@@ -155,5 +155,3 @@ Read-Only:
 - `prev` (String) Previous
 - `updated_at` (String) The time, in milliseconds since the epoch, when the record was last updated.
 - `updated_by` (String) User data: Updated By
-
-

@@ -18,6 +18,8 @@ description: |-
 ### Required
 
 - `name` (String) User defined name of the resource group, unique across the enterprise. Once resource group is created, name can’t be changed.
+- `title` (String) User defined title of the resource group. Title can be changed at any time.
+- `type` (String) Resource group type
 
 ### Optional
 
@@ -28,8 +30,6 @@ description: |-
 - `edgeview_policy` (Block List) Edgeview policy on devices of this project (see [below for nested schema](#nestedblock--edgeview_policy))
 - `local_operator_console_policy` (Block List) Local operator console policy on devices of this project (see [below for nested schema](#nestedblock--local_operator_console_policy))
 - `network_policy` (Block List) Network policy to enforce on all devices of this project (see [below for nested schema](#nestedblock--network_policy))
-- `title` (String) User defined title of the resource group. Title can be changed at any time.
-- `type` (String) Resource group type
 
 ### Read-Only
 
@@ -108,10 +108,14 @@ Read-Only:
 <a id="nestedblock--app_policy--app_policy--apps--manifest_json"></a>
 ### Nested Schema for `app_policy.app_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--container_detail))
@@ -124,7 +128,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--resources))
@@ -380,17 +383,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--app_policy--app_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `app_policy.app_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -400,20 +406,20 @@ Read-Only:
 <a id="nestedblock--app_policy--app_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `app_policy.app_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--app_policy--app_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `app_policy.app_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -422,7 +428,7 @@ Required:
 <a id="nestedblock--app_policy--app_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `app_policy.app_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -908,10 +914,14 @@ Read-Only:
 <a id="nestedblock--app_policy--module_policy--apps--manifest_json"></a>
 ### Nested Schema for `app_policy.module_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--container_detail))
@@ -924,7 +934,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--resources))
@@ -1180,17 +1189,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--app_policy--module_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `app_policy.module_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -1200,20 +1212,20 @@ Read-Only:
 <a id="nestedblock--app_policy--module_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `app_policy.module_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--app_policy--module_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `app_policy.module_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -1222,7 +1234,7 @@ Required:
 <a id="nestedblock--app_policy--module_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `app_policy.module_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -1319,10 +1331,14 @@ Read-Only:
 <a id="nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_agent.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--container_detail))
@@ -1335,7 +1351,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--resources))
@@ -1591,17 +1606,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_agent.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -1611,20 +1629,20 @@ Read-Only:
 <a id="nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--actions"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_agent.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_agent.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -1633,7 +1651,7 @@ Required:
 <a id="nestedblock--app_policy--module_policy--azure_edge_agent--interfaces--acls--matches"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_agent.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -1730,10 +1748,14 @@ Read-Only:
 <a id="nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_hub.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--container_detail))
@@ -1746,7 +1768,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--resources))
@@ -2002,17 +2023,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_hub.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -2022,20 +2046,20 @@ Read-Only:
 <a id="nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--actions"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_hub.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_hub.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -2044,7 +2068,7 @@ Required:
 <a id="nestedblock--app_policy--module_policy--azure_edge_hub--interfaces--acls--matches"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_hub.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -2128,17 +2152,7 @@ Required:
 
 Required:
 
-- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
-
-Optional:
-
-- `cluster_id` (String) ID of the Cluster in which the network instance is configured
-- `description` (String) Detailed description of the network instance
-- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
 - `device_id` (String) ID of the device on which network instance is created
-- `dhcp` (Boolean) Deprecated
-- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--dns_list))
-- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--ip))
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -2147,6 +2161,17 @@ NETWORK_INSTANCE_KIND_LOCAL
 NETWORK_INSTANCE_KIND_CLOUD
 NETWORK_INSTANCE_KIND_MESH
 NETWORK_INSTANCE_KIND_HONEYPOT
+- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the network instance. Title can be changed at any time
+
+Optional:
+
+- `cluster_id` (String) ID of the Cluster in which the network instance is configured
+- `description` (String) Detailed description of the network instance
+- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `dhcp` (Boolean) Deprecated
+- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--dns_list))
+- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--ip))
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--opaque))
@@ -2154,7 +2179,6 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `title` (String) User defined title of the network instance. Title can be changed at any time
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
 NETWORK_INSTANCE_DHCP_TYPE_V6
@@ -2353,10 +2377,14 @@ Read-Only:
 <a id="nestedblock--attestation_policy--app_policy--apps--manifest_json"></a>
 ### Nested Schema for `attestation_policy.app_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--container_detail))
@@ -2369,7 +2397,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--resources))
@@ -2625,17 +2652,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--attestation_policy--app_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `attestation_policy.app_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -2645,20 +2675,20 @@ Read-Only:
 <a id="nestedblock--attestation_policy--app_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `attestation_policy.app_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--attestation_policy--app_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `attestation_policy.app_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -2667,7 +2697,7 @@ Required:
 <a id="nestedblock--attestation_policy--app_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `attestation_policy.app_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -3153,10 +3183,14 @@ Read-Only:
 <a id="nestedblock--attestation_policy--module_policy--apps--manifest_json"></a>
 ### Nested Schema for `attestation_policy.module_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--container_detail))
@@ -3169,7 +3203,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--resources))
@@ -3425,17 +3458,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--attestation_policy--module_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `attestation_policy.module_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -3445,20 +3481,20 @@ Read-Only:
 <a id="nestedblock--attestation_policy--module_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `attestation_policy.module_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--attestation_policy--module_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `attestation_policy.module_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -3467,7 +3503,7 @@ Required:
 <a id="nestedblock--attestation_policy--module_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `attestation_policy.module_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -3564,10 +3600,14 @@ Read-Only:
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_agent.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--container_detail))
@@ -3580,7 +3620,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--resources))
@@ -3836,17 +3875,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_agent.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -3856,20 +3898,20 @@ Read-Only:
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--actions"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_agent.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_agent.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -3878,7 +3920,7 @@ Required:
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_agent--interfaces--acls--matches"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_agent.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -3975,10 +4017,14 @@ Read-Only:
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_hub.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--container_detail))
@@ -3991,7 +4037,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--resources))
@@ -4247,17 +4292,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_hub.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -4267,20 +4315,20 @@ Read-Only:
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--actions"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_hub.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_hub.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -4289,7 +4337,7 @@ Required:
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_hub--interfaces--acls--matches"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_hub.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -4373,17 +4421,7 @@ Required:
 
 Required:
 
-- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
-
-Optional:
-
-- `cluster_id` (String) ID of the Cluster in which the network instance is configured
-- `description` (String) Detailed description of the network instance
-- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
 - `device_id` (String) ID of the device on which network instance is created
-- `dhcp` (Boolean) Deprecated
-- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--dns_list))
-- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--ip))
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -4392,6 +4430,17 @@ NETWORK_INSTANCE_KIND_LOCAL
 NETWORK_INSTANCE_KIND_CLOUD
 NETWORK_INSTANCE_KIND_MESH
 NETWORK_INSTANCE_KIND_HONEYPOT
+- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the network instance. Title can be changed at any time
+
+Optional:
+
+- `cluster_id` (String) ID of the Cluster in which the network instance is configured
+- `description` (String) Detailed description of the network instance
+- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `dhcp` (Boolean) Deprecated
+- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--dns_list))
+- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--ip))
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--opaque))
@@ -4399,7 +4448,6 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `title` (String) User defined title of the network instance. Title can be changed at any time
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
 NETWORK_INSTANCE_DHCP_TYPE_V6
@@ -4607,17 +4655,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls"></a>
 ### Nested Schema for `deployment.app_inst_policies.app_inst_config.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -4627,20 +4678,20 @@ Read-Only:
 <a id="nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--actions"></a>
 ### Nested Schema for `deployment.app_inst_policies.app_inst_config.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `deployment.app_inst_policies.app_inst_config.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -4649,7 +4700,7 @@ Required:
 <a id="nestedblock--deployment--app_inst_policies--app_inst_config--interfaces--acls--matches"></a>
 ### Nested Schema for `deployment.app_inst_policies.app_inst_config.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -4707,10 +4758,14 @@ Required:
 <a id="nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json"></a>
 ### Nested Schema for `deployment.app_inst_policies.app_inst_config.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json--container_detail))
@@ -4723,7 +4778,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--deployment--app_inst_policies--app_inst_config--manifest_json--resources))
@@ -5166,17 +5220,7 @@ Read-Only:
 
 Required:
 
-- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
-
-Optional:
-
-- `cluster_id` (String) ID of the Cluster in which the network instance is configured
-- `description` (String) Detailed description of the network instance
-- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
 - `device_id` (String) ID of the device on which network instance is created
-- `dhcp` (Boolean) Deprecated
-- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--dns_list))
-- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--ip))
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -5185,6 +5229,17 @@ NETWORK_INSTANCE_KIND_LOCAL
 NETWORK_INSTANCE_KIND_CLOUD
 NETWORK_INSTANCE_KIND_MESH
 NETWORK_INSTANCE_KIND_HONEYPOT
+- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the network instance. Title can be changed at any time
+
+Optional:
+
+- `cluster_id` (String) ID of the Cluster in which the network instance is configured
+- `description` (String) Detailed description of the network instance
+- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `dhcp` (Boolean) Deprecated
+- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--dns_list))
+- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--ip))
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--opaque))
@@ -5192,7 +5247,6 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `title` (String) User defined title of the network instance. Title can be changed at any time
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
 NETWORK_INSTANCE_DHCP_TYPE_V6
@@ -5349,23 +5403,26 @@ Read-Only:
 <a id="nestedblock--deployment--volume_inst_policies--vol_inst_config"></a>
 ### Nested Schema for `deployment.volume_inst_policies.vol_inst_config`
 
+Required:
+
+- `device_id` (String) id of the device on which volume instance is created
+- `name` (String) User defined name of the volume instance, unique across the enterprise. Once object is created, name can’t be changed.
+- `title` (String) User defined title of the volume instance. Title can be changed at any time.
+- `type` (String) type of Volume Instance
+
 Optional:
 
 - `accessmode` (String) Access mode
 - `cleartext` (Boolean) flag to keep the contents of the volume unencrypted (in clear text)
 - `content_tree_id` (String) content tree ID
 - `description` (String) Detailed description of the volume instance.
-- `device_id` (String) id of the device on which volume instance is created
 - `image` (String) name of the image
 - `implicit` (Boolean) flag to create implicit volumes
 - `label` (String) label
 - `multiattach` (Boolean) flag to enable the volume to be attached to multiple app instances
-- `name` (String) User defined name of the volume instance, unique across the enterprise. Once object is created, name can’t be changed.
 - `project_id` (String) id of the project in which the volume instance is created
 - `size_bytes` (String) size of volume
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `title` (String) User defined title of the volume instance. Title can be changed at any time.
-- `type` (String) type of Volume Instance
 
 Read-Only:
 
@@ -5469,10 +5526,14 @@ Read-Only:
 <a id="nestedblock--edgeview_policy--app_policy--apps--manifest_json"></a>
 ### Nested Schema for `edgeview_policy.app_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--container_detail))
@@ -5485,7 +5546,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--resources))
@@ -5741,17 +5801,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--edgeview_policy--app_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `edgeview_policy.app_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -5761,20 +5824,20 @@ Read-Only:
 <a id="nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `edgeview_policy.app_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `edgeview_policy.app_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -5783,7 +5846,7 @@ Required:
 <a id="nestedblock--edgeview_policy--app_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `edgeview_policy.app_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -6269,10 +6332,14 @@ Read-Only:
 <a id="nestedblock--edgeview_policy--module_policy--apps--manifest_json"></a>
 ### Nested Schema for `edgeview_policy.module_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--container_detail))
@@ -6285,7 +6352,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--resources))
@@ -6541,17 +6607,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--edgeview_policy--module_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `edgeview_policy.module_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -6561,20 +6630,20 @@ Read-Only:
 <a id="nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `edgeview_policy.module_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `edgeview_policy.module_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -6583,7 +6652,7 @@ Required:
 <a id="nestedblock--edgeview_policy--module_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `edgeview_policy.module_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -6680,10 +6749,14 @@ Read-Only:
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_agent.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--container_detail))
@@ -6696,7 +6769,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--resources))
@@ -6952,17 +7024,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_agent.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -6972,20 +7047,20 @@ Read-Only:
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--actions"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_agent.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_agent.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -6994,7 +7069,7 @@ Required:
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_agent--interfaces--acls--matches"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_agent.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -7091,10 +7166,14 @@ Read-Only:
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_hub.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--container_detail))
@@ -7107,7 +7186,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--resources))
@@ -7363,17 +7441,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_hub.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -7383,20 +7464,20 @@ Read-Only:
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--actions"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_hub.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_hub.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -7405,7 +7486,7 @@ Required:
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_hub--interfaces--acls--matches"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_hub.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -7489,17 +7570,7 @@ Required:
 
 Required:
 
-- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
-
-Optional:
-
-- `cluster_id` (String) ID of the Cluster in which the network instance is configured
-- `description` (String) Detailed description of the network instance
-- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
 - `device_id` (String) ID of the device on which network instance is created
-- `dhcp` (Boolean) Deprecated
-- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--dns_list))
-- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--ip))
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -7508,6 +7579,17 @@ NETWORK_INSTANCE_KIND_LOCAL
 NETWORK_INSTANCE_KIND_CLOUD
 NETWORK_INSTANCE_KIND_MESH
 NETWORK_INSTANCE_KIND_HONEYPOT
+- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the network instance. Title can be changed at any time
+
+Optional:
+
+- `cluster_id` (String) ID of the Cluster in which the network instance is configured
+- `description` (String) Detailed description of the network instance
+- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `dhcp` (Boolean) Deprecated
+- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--dns_list))
+- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--ip))
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--opaque))
@@ -7515,7 +7597,6 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `title` (String) User defined title of the network instance. Title can be changed at any time
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
 NETWORK_INSTANCE_DHCP_TYPE_V6
@@ -7714,10 +7795,14 @@ Read-Only:
 <a id="nestedblock--local_operator_console_policy--app_policy--apps--manifest_json"></a>
 ### Nested Schema for `local_operator_console_policy.app_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--container_detail))
@@ -7730,7 +7815,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--resources))
@@ -7986,17 +8070,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `local_operator_console_policy.app_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -8006,20 +8093,20 @@ Read-Only:
 <a id="nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `local_operator_console_policy.app_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `local_operator_console_policy.app_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -8028,7 +8115,7 @@ Required:
 <a id="nestedblock--local_operator_console_policy--app_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `local_operator_console_policy.app_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -8514,10 +8601,14 @@ Read-Only:
 <a id="nestedblock--local_operator_console_policy--module_policy--apps--manifest_json"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--container_detail))
@@ -8530,7 +8621,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--resources))
@@ -8786,17 +8876,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -8806,20 +8899,20 @@ Read-Only:
 <a id="nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -8828,7 +8921,7 @@ Required:
 <a id="nestedblock--local_operator_console_policy--module_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -8925,10 +9018,14 @@ Read-Only:
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_agent.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--container_detail))
@@ -8941,7 +9038,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--resources))
@@ -9197,17 +9293,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_agent.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -9217,20 +9316,20 @@ Read-Only:
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--actions"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_agent.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_agent.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -9239,7 +9338,7 @@ Required:
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--interfaces--acls--matches"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_agent.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -9336,10 +9435,14 @@ Read-Only:
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_hub.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--container_detail))
@@ -9352,7 +9455,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--resources))
@@ -9608,17 +9710,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_hub.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -9628,20 +9733,20 @@ Read-Only:
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--actions"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_hub.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_hub.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -9650,7 +9755,7 @@ Required:
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--interfaces--acls--matches"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_hub.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -9734,17 +9839,7 @@ Required:
 
 Required:
 
-- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
-
-Optional:
-
-- `cluster_id` (String) ID of the Cluster in which the network instance is configured
-- `description` (String) Detailed description of the network instance
-- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
 - `device_id` (String) ID of the device on which network instance is created
-- `dhcp` (Boolean) Deprecated
-- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--dns_list))
-- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--ip))
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -9753,6 +9848,17 @@ NETWORK_INSTANCE_KIND_LOCAL
 NETWORK_INSTANCE_KIND_CLOUD
 NETWORK_INSTANCE_KIND_MESH
 NETWORK_INSTANCE_KIND_HONEYPOT
+- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the network instance. Title can be changed at any time
+
+Optional:
+
+- `cluster_id` (String) ID of the Cluster in which the network instance is configured
+- `description` (String) Detailed description of the network instance
+- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `dhcp` (Boolean) Deprecated
+- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--dns_list))
+- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--ip))
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--opaque))
@@ -9760,7 +9866,6 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `title` (String) User defined title of the network instance. Title can be changed at any time
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
 NETWORK_INSTANCE_DHCP_TYPE_V6
@@ -9959,10 +10064,14 @@ Read-Only:
 <a id="nestedblock--network_policy--app_policy--apps--manifest_json"></a>
 ### Nested Schema for `network_policy.app_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--container_detail))
@@ -9975,7 +10084,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--resources))
@@ -10231,17 +10339,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--network_policy--app_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `network_policy.app_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -10251,20 +10362,20 @@ Read-Only:
 <a id="nestedblock--network_policy--app_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `network_policy.app_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--network_policy--app_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `network_policy.app_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -10273,7 +10384,7 @@ Required:
 <a id="nestedblock--network_policy--app_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `network_policy.app_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -10759,10 +10870,14 @@ Read-Only:
 <a id="nestedblock--network_policy--module_policy--apps--manifest_json"></a>
 ### Nested Schema for `network_policy.module_policy.apps.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--container_detail))
@@ -10775,7 +10890,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--resources))
@@ -11031,17 +11145,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--network_policy--module_policy--apps--interfaces--acls"></a>
 ### Nested Schema for `network_policy.module_policy.apps.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -11051,20 +11168,20 @@ Read-Only:
 <a id="nestedblock--network_policy--module_policy--apps--interfaces--acls--actions"></a>
 ### Nested Schema for `network_policy.module_policy.apps.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--network_policy--module_policy--apps--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `network_policy.module_policy.apps.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -11073,7 +11190,7 @@ Required:
 <a id="nestedblock--network_policy--module_policy--apps--interfaces--acls--matches"></a>
 ### Nested Schema for `network_policy.module_policy.apps.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -11170,10 +11287,14 @@ Read-Only:
 <a id="nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_agent.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--container_detail))
@@ -11186,7 +11307,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--resources))
@@ -11442,17 +11562,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_agent.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -11462,20 +11585,20 @@ Read-Only:
 <a id="nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--actions"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_agent.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_agent.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -11484,7 +11607,7 @@ Required:
 <a id="nestedblock--network_policy--module_policy--azure_edge_agent--interfaces--acls--matches"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_agent.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -11581,10 +11704,14 @@ Read-Only:
 <a id="nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_hub.manifest_json`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--container_detail))
@@ -11597,7 +11724,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--resources))
@@ -11853,17 +11979,20 @@ Optional:
 - `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--io))
 - `ipaddr` (String) IP address
 - `macaddr` (String) MAC address
-- `netinstid` (String) Network Instance id to be matched for interface assignment.
 - `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
 - `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
 
 <a id="nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_hub.interfaces.acls`
 
-Required:
+Optional:
 
-- `actions` (Block List, Min: 1) app ACE actions (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
-- `matches` (Block List, Min: 1) app ACE match (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
 - `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
 
 Read-Only:
@@ -11873,20 +12002,20 @@ Read-Only:
 <a id="nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--actions"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_hub.interfaces.acls.actions`
 
-Required:
+Optional:
 
 - `drop` (Boolean) ACE drop flag
 - `limit` (Boolean) ACE limit flag
 - `limitburst` (Number) ACE limit burst
 - `limitrate` (Number) ACE limit rate
 - `limitunit` (String) ACE limit unit
-- `mapparams` (Block List, Min: 1) Application map params (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
 - `portmap` (Boolean) application port map flag
 
 <a id="nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_hub.interfaces.acls.actions.mapparams`
 
-Required:
+Optional:
 
 - `port` (Number) Application port
 
@@ -11895,7 +12024,7 @@ Required:
 <a id="nestedblock--network_policy--module_policy--azure_edge_hub--interfaces--acls--matches"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_hub.interfaces.acls.matches`
 
-Required:
+Optional:
 
 - `type` (String) Type
 - `value` (String) Value
@@ -11979,17 +12108,7 @@ Required:
 
 Required:
 
-- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
-
-Optional:
-
-- `cluster_id` (String) ID of the Cluster in which the network instance is configured
-- `description` (String) Detailed description of the network instance
-- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
 - `device_id` (String) ID of the device on which network instance is created
-- `dhcp` (Boolean) Deprecated
-- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--dns_list))
-- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--ip))
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -11998,6 +12117,17 @@ NETWORK_INSTANCE_KIND_LOCAL
 NETWORK_INSTANCE_KIND_CLOUD
 NETWORK_INSTANCE_KIND_MESH
 NETWORK_INSTANCE_KIND_HONEYPOT
+- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the network instance. Title can be changed at any time
+
+Optional:
+
+- `cluster_id` (String) ID of the Cluster in which the network instance is configured
+- `description` (String) Detailed description of the network instance
+- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `dhcp` (Boolean) Deprecated
+- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--dns_list))
+- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--ip))
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--opaque))
@@ -12005,7 +12135,6 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `title` (String) User defined title of the network instance. Title can be changed at any time
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
 NETWORK_INSTANCE_DHCP_TYPE_V6
@@ -16385,5 +16514,3 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
-
-

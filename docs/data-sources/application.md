@@ -18,6 +18,7 @@ description: |-
 ### Required
 
 - `name` (String) User defined name of the edge application, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the edge application. Title can be changed at any time
 
 ### Optional
 
@@ -32,7 +33,6 @@ description: |-
 - `parent_detail` (Block List) origin and parent related details (see [below for nested schema](#nestedblock--parent_detail))
 - `project_access_list` (List of String) project access list of the app bundle
 - `storage` (Number) user defined storage for bundle
-- `title` (String) User defined title of the edge application. Title can be changed at any time
 - `user_defined_version` (String) User defined version for the given edge-app
 
 ### Read-Only
@@ -44,10 +44,14 @@ description: |-
 <a id="nestedblock--manifest"></a>
 ### Nested Schema for `manifest`
 
-Optional:
+Required:
 
 - `ac_kind` (String) UI map: N/A - not exposed to users
 - `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
 - `app_type` (String) bundle type, eg: vm, container, module
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--manifest--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--manifest--container_detail))
@@ -60,7 +64,6 @@ Optional:
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--manifest--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--manifest--interfaces))
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--manifest--module))
-- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--manifest--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--manifest--permissions))
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--manifest--resources))
@@ -321,5 +324,3 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
-
-
