@@ -6,7 +6,7 @@
 
 ### Objects re-creation
 
-Starting from a version 2.2.5-beta the `name` field of the various objects was marked with `ForceNew`. It means that if the name of a object is changed the terraform provider will try to re-create the object. The list of objects that can be re-created are the following:
+Starting from the version 2.2.5-beta the `name` field of the various objects was marked with `ForceNew`. It means that if the name of a object is changed the terraform provider will try to re-create the object. The list of objects that can be re-created are the following:
 
 - application
 - application_instance
@@ -21,9 +21,9 @@ To process an object re-creation, the system will perform the following steps:
 - delete the current object\*
 - create a new object with the new name
 
-\* It's worth mentioning that if a object couln't be deleted by some reason such as: any relation with other objects exists that prevents the object from deletion, the object couldn't be deleted due to some invariants that cannot be broken, etc, then the object won't be deleted and accordingly a new one won't be created.
+\* It's worth mentioning that if an object couln't be deleted by some reason such as: any relation with other objects exists that prevents the object from deletion, the object couldn't be deleted due to some invariants that cannot be broken, etc, then the object won't be deleted and accordingly a new one won't be created.
 
-The process of object re-creation is little bit tricky if the configuraton has got defined both resource of the object and its data. In that case the following steps need to be performed:
+The process of object re-creation is little bit tricky if the configuration has got defined both resource of the object and its data. In that case the following steps need to be performed:
 
 - set a new value for the name of the desired object's resource
 - `terraform apply` - after executing this command an error may occur saying that the system unable to read the object's data: "The requested resource was not found on this server". It's ok because we haven't set a new value for the object's data in the configuration.
@@ -41,7 +41,7 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
 }
 
 data "zedcloud_application_instance"  "test_tf_provider" {
-    name = "old_tf_provider" <-- THIS field stays unchanged!
+    name = "old_tf_provider"
     ...
 }
 ```
@@ -183,9 +183,9 @@ data "zedcloud_application_instance"  "test_tf_provider" {
 
 ### AppInterface
 
-The Applicatin Instance schema contains the field called `interfaces`, which consists of array of `AppInterface` type. The field is marked as `Optional` but not `Required`. Nevertheless, sometimes when the field isn't defined, an error may occur saying that the number of networks in the Bundle doesn't match the number of interfaces in the application instance: "interface count mismatch with Bundle". This means that at least one network is defined in the Bundle and when creating an application instance, the code checks that the number of interfaces in the application instance is equal to or greater than the number of networks in the application.
+The Application Instance schema contains the field called `interfaces`, which consists of array of `AppInterface` type. The field is marked as `Optional` but not `Required`. Nevertheless, sometimes when the field isn't defined, an error may occur saying that the number of networks in the Bundle doesn't match the number of interfaces in the application instance: "interface count mismatch with Bundle". This means that at least one network is defined in the Bundle and when creating an application instance, the code checks that the number of interfaces in the application instance is equal to or greater than the number of networks in the application.
 
-Example of working configuratin:
+Example of working configuration:
 
 ```javascript
 
