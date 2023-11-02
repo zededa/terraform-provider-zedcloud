@@ -15,6 +15,10 @@ Starting from the version 2.2.5-beta the `name` field of the various objects was
 - network
 - network_instance
 - volume_instance
+- node
+
+CATUTION: please, be careful, the action of object re-creatione is a DESTRUCTIVE one. It means that if you decided to change the name of an object and apply the changes, the terraform provider will send a request to delete the object and its relations and after that
+a new object with new ralations will be created. `terraform plan` will ONLY show that the object to be recreated will be deleted, but will not show the objects associated with the recreated object as objects to be deleted.
 
 To process an object re-creation, the system will perform the following steps:
 
