@@ -25,7 +25,7 @@ download-specs:
 
 .PHONY: gen
 gen:
-	swagger generate client -f swagger/$(src).swagger.json \
+	swagger generate client -f swagger/zedge_$(src)_service.swagger.json \
 		-A zedcloudapi \
 		-C swagger/config.yml
 

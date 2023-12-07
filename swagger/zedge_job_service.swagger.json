@@ -131,31 +131,22 @@
                         "format": "int64"
                     },
                     {
-                        "name": "filter.jobStatus",
+                        "name": "jobStatus",
                         "description": "status of the job.",
                         "in": "query",
                         "required": false,
-                        "type": "string",
-                        "enum": [
-                            "JOB_STATUS_UNSPECIFIED",
-                            "JOB_STATUS_INITIALIZED",
-                            "JOB_STATUS_READY",
-                            "JOB_STATUS_INPROGRESS",
-                            "JOB_STATUS_COMPLETED",
-                            "JOB_STATUS_FAILED",
-                            "JOB_STATUS_ABORTED"
-                        ],
-                        "default": "JOB_STATUS_UNSPECIFIED"
+                        "type": "integer",
+                        "format": "int32"
                     },
                     {
-                        "name": "filter.projectName",
+                        "name": "projectName",
                         "description": "project name.",
                         "in": "query",
                         "required": false,
                         "type": "string"
                     },
                     {
-                        "name": "filter.namePattern",
+                        "name": "namePattern",
                         "description": "name pattern of the job.",
                         "in": "query",
                         "required": false,
@@ -779,7 +770,346 @@
                 }
             }
         },
+        "/v1/jobs/devices/deployment/tags": {
+            "put": {
+                "summary": "Update job request to update Deployment tag on edge nodes in bulk.",
+                "description": "Update job request to update Deployment tag on edge nodes in bulk.",
+                "operationId": "BulkJobOps_BulkUpdateEdgeNodeBaseOSDeploymentTag",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/devices/project/target": {
+            "put": {
+                "summary": "Update job request to update EVE image project and target on edge nodes",
+                "description": "Update job request to update EVE image project and target on edge nodes. If edge node is already running the latest EVE image no action is taken.",
+                "operationId": "BulkJobOps_BulkUpdateEdgeNodeBaseOSProject",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
+        "/v1/jobs/devices/tags": {
+            "put": {
+                "summary": "Update job request to update EVE image tag on edge nodes",
+                "description": "Update job request to update EVE image tag on edge nodes. If edge node is already running the latest EVE image no action is taken.",
+                "operationId": "BulkJobOps_BulkUpdateEdgeNodeBaseOSTag",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this operation will conflict with an already existing asynchronous job request record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BulkConfig"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            }
+        },
         "/v1/jobs/id/{id}": {
+            "get": {
+                "summary": "Get asynchronous job request",
+                "description": "Get the configuration and status of an asynchronous job request record.",
+                "operationId": "BulkJobOps_GetJobById",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/JobConfig"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-app level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the job request",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "BulkJobOps"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/jobs"
+                }
+            },
             "put": {
                 "summary": "Update asynchronous job request",
                 "description": "Update an asynchronous job request record. The usual pattern to update an asynchronous job request record is to retrieve the record and update with the modified values in a new body to update the asynchronous job request record.",
@@ -854,11 +1184,6 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "example": {
-                                "id": "d85a545f-6510-4327-b03d-c02eef119e99",
-                                "name": "sample-job",
-                                "objectType": "OBJECT_TYPE_EDGE_NODE"
-                            },
                             "properties": {
                                 "name": {
                                     "type": "string",
@@ -1058,7 +1383,11 @@
                             "OBJECT_TYPE_DEPLOYMENT",
                             "OBJECT_TYPE_ENTITLEMENTS",
                             "OBJECT_TYPE_DATA_STREAM",
-                            "OBJECT_TYPE_API_USAGE"
+                            "OBJECT_TYPE_API_USAGE",
+                            "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
+                            "OBJECT_TYPE_PATCH_ENVELOPE",
+                            "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
                         ]
                     },
                     {
@@ -1181,7 +1510,11 @@
                             "OBJECT_TYPE_DEPLOYMENT",
                             "OBJECT_TYPE_ENTITLEMENTS",
                             "OBJECT_TYPE_DATA_STREAM",
-                            "OBJECT_TYPE_API_USAGE"
+                            "OBJECT_TYPE_API_USAGE",
+                            "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
+                            "OBJECT_TYPE_PATCH_ENVELOPE",
+                            "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
                         ]
                     },
                     {
@@ -1387,7 +1720,11 @@
                             "OBJECT_TYPE_DEPLOYMENT",
                             "OBJECT_TYPE_ENTITLEMENTS",
                             "OBJECT_TYPE_DATA_STREAM",
-                            "OBJECT_TYPE_API_USAGE"
+                            "OBJECT_TYPE_API_USAGE",
+                            "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
+                            "OBJECT_TYPE_PATCH_ENVELOPE",
+                            "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
                         ]
                     },
                     {
@@ -1590,6 +1927,31 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "start delay is the time in seconds EVE should wait after boot before starting the application instance"
+                },
+                "cloudInitVersion": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Cloud-init version that indicates whether it necessary or not for cloud-init tool to restart in a guest"
+                },
+                "allowSnapshots": {
+                    "type": "boolean",
+                    "description": "Flag to determine if a snapshot creation is allowed"
+                },
+                "maxSnapshots": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum number of snapshots allowed to be created"
+                },
+                "availableSnapshots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AppInstanceSnapshot"
+                    },
+                    "description": "The list of available snapshots of the application instance"
+                },
+                "patchEnvelopeId": {
+                    "type": "string",
+                    "description": "patch envelope id"
                 }
             },
             "description": "App Instance detail",
@@ -1638,6 +2000,39 @@
                     "type": "boolean"
                 }
             }
+        },
+        "AppInstanceSnapshot": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the app instance snapshot",
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Snapshot name. Unique across the application instance"
+                },
+                "state": {
+                    "$ref": "#/definitions/SnapshotState",
+                    "description": "Status of the snapshot"
+                },
+                "config": {
+                    "type": "object",
+                    "$ref": "#/definitions/AppInstance",
+                    "description": "The complete configuration of the application instance"
+                },
+                "activate": {
+                    "type": "boolean",
+                    "description": "Indicates whether the snapshot should be activated"
+                }
+            },
+            "description": "App instance snapshot",
+            "title": "App instance snapshot",
+            "required": [
+                "name"
+            ]
         },
         "AppType": {
             "type": "string",
@@ -1768,7 +2163,8 @@
                 "BULK_SERVICE_DEVICE_TAG_UPDATE",
                 "BULK_SERVICE_DEVICE_TAG_DEPLOYMENT_UPDATE",
                 "BULK_SERVICE_DEVICE_PROJECT_AND_TARGET_UPDATE",
-                "BULK_SERVICE_DEPLOYMENT_CREATE"
+                "BULK_SERVICE_DEPLOYMENT_CREATE",
+                "BULK_SERVICE_APPLY_PATCH_ENVELOPE"
             ],
             "default": "BULK_SERVICE_UNSPECIFIED",
             "title": "type of bulk operation"
@@ -1921,7 +2317,8 @@
                 "DEPLOYMENT_TYPE_AWS",
                 "DEPLOYMENT_TYPE_K3S_AZURE",
                 "DEPLOYMENT_TYPE_K3S_AWS",
-                "DEPLOYMENT_TYPE_VMWARE_VCE"
+                "DEPLOYMENT_TYPE_VMWARE_VCE",
+                "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
             ],
             "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
         },
@@ -2088,19 +2485,16 @@
                 "IO_TYPE_LTE",
                 "IO_TYPE_STORAGE_NVME_DEVICE",
                 "IO_TYPE_STORAGE_SATA_DEVICE",
+                "IO_TYPE_ETH_PF",
+                "IO_TYPE_ETH_VF",
                 "IO_TYPE_OTHER"
             ],
             "default": "IO_TYPE_UNSPECIFIED",
-            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_OTHER: Other Io Types",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_OTHER: Other Io Types",
             "title": "Input/Output Type"
         },
         "JobConfig": {
             "type": "object",
-            "example": {
-                "id": "d85a545f-6510-4327-b03d-c02eef119e99",
-                "name": "sample-job",
-                "objectType": "OBJECT_TYPE_EDGE_NODE"
-            },
             "properties": {
                 "name": {
                     "type": "string",
@@ -2211,26 +2605,6 @@
             },
             "description": "Returned list of jobs matched by filter criteria",
             "title": "Job list records"
-        },
-        "JobFilter": {
-            "type": "object",
-            "properties": {
-                "jobStatus": {
-                    "$ref": "#/definitions/JobStatus",
-                    "description": "status of the job."
-                },
-                "projectName": {
-                    "type": "string",
-                    "description": "project name."
-                },
-                "namePattern": {
-                    "type": "string",
-                    "description": "name pattern of the job.",
-                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+"
-                }
-            },
-            "description": "Filter criteria for the job list.",
-            "title": "Job list filter criteria"
         },
         "JobStatus": {
             "type": "string",
@@ -2360,10 +2734,6 @@
         },
         "NetInstConfig": {
             "type": "object",
-            "example": {
-                "id": "d85a545f-6510-4327-b03d-c02eef119e99",
-                "name": "sample-app"
-            },
             "properties": {
                 "id": {
                     "type": "string",
@@ -2473,7 +2843,7 @@
                     "description": "Service specific Config"
                 },
                 "deviceDefault": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "flag to indicate if this is the default network instance for the device",
                     "title": "flag to indicate if this is default network"
                 },
@@ -2622,7 +2992,11 @@
                 "OBJECT_TYPE_DEPLOYMENT",
                 "OBJECT_TYPE_ENTITLEMENTS",
                 "OBJECT_TYPE_DATA_STREAM",
-                "OBJECT_TYPE_API_USAGE"
+                "OBJECT_TYPE_API_USAGE",
+                "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
+                "OBJECT_TYPE_PATCH_ENVELOPE",
+                "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
+                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -2671,6 +3045,23 @@
             },
             "description": "Service Point",
             "title": "Service Point"
+        },
+        "SnapshotState": {
+            "type": "string",
+            "enum": [
+                "INVALID",
+                "IDLE",
+                "CREATING",
+                "CREATED",
+                "CREATE_FAILED",
+                "ROLLING_BACK",
+                "ACTIVE",
+                "ROLLBACK_FAILED",
+                "DELETING",
+                "DELETE_FAILED",
+                "DELETED"
+            ],
+            "default": "INVALID"
         },
         "StaticDNSList": {
             "type": "object",
@@ -2765,7 +3156,9 @@
                 "TRANS_CAUSE_INTER_CA_EXPIRING",
                 "TRANS_CAUSE_INTER_CA_EXPIRED",
                 "TRANS_CAUSE_DEVICE_CA_EXPIRING",
-                "TRANS_CAUSE_DEVICE_CA_EXPIRED"
+                "TRANS_CAUSE_DEVICE_CA_EXPIRED",
+                "TRANS_CAUSE_IDENTITY_CA_EXPIRING",
+                "TRANS_CAUSE_IDENTITY_CA_EXPIRED"
             ],
             "default": "TRANS_CAUSE_UNSPECIFIED"
         },
@@ -3003,7 +3396,8 @@
                 "DBError",
                 "zMsgAccepted",
                 "zMsgCreated",
-                "PreConditionFailed"
+                "PreConditionFailed",
+                "InternalServerError"
             ],
             "default": "zMsgErrorNone",
             "description": "- zMsgErrorNone: common validation errors\n - IncompleteData: message had fields that weren't filled in\n - InvalidData: message contained the field that wasn't expected\n - FunctionUnsupported: this feature unavailable on this version of device\n - InvalidFieldFormat: message contained the field that wasn't correctly formatted\n - JsonFmtError: Marshal / Unmarshal errors\n - DataBaseConnection: generic DB error",
@@ -3475,6 +3869,11 @@
                 "cpuPinningEnabled": {
                     "type": "boolean",
                     "description": "Enable CpuPinning"
+                },
+                "vmmMaxmem": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum amount of memory in kbytes allowed for VM monitor to occupy"
                 }
             },
             "description": "Virtual machine memory configuration",
