@@ -41,6 +41,7 @@ func Provider() *schema.Provider {
 			"zedcloud_datastore":            DatastoreDataSource(),
 			"zedcloud_volume_instance":      VolumeInstanceDataSource(),
 			"zedcloud_project":              ProjectDataSource(),
+			"zedcloud_patch_envelope":       PatchEnvelopeDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":             NodeResource(),
@@ -52,6 +53,7 @@ func Provider() *schema.Provider {
 			"zedcloud_datastore":            DatastoreResource(),
 			"zedcloud_volume_instance":      VolumeInstanceResource(),
 			"zedcloud_project":              ProjectResource(),
+			"zedcloud_patch_envelope":       PatchEnvelopeResource(),
 		},
 	}
 }

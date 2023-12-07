@@ -17,6 +17,7 @@ import (
 	"github.com/zededa/terraform-provider/client/network"
 	"github.com/zededa/terraform-provider/client/network_instance"
 	"github.com/zededa/terraform-provider/client/node"
+	"github.com/zededa/terraform-provider/client/patch_envelope_configuration"
 	"github.com/zededa/terraform-provider/client/projects"
 	"github.com/zededa/terraform-provider/client/volume_instance"
 )
@@ -75,6 +76,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.Application = application.New(transport, formats)
 	cli.ApplicationInstance = application_instance.New(transport, formats)
 	cli.Project = projects.New(transport, formats)
+	cli.PatchEnvelope = patch_envelope_configuration.New(transport, formats)
 	return cli
 }
 
@@ -140,6 +142,8 @@ type ZedcloudAPI struct {
 	Project projects.ClientService
 
 	Transport runtime.ClientTransport
+
+	PatchEnvelope patch_envelope_configuration.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
@@ -154,4 +158,5 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Application.SetTransport(transport)
 	c.ApplicationInstance.SetTransport(transport)
 	c.Project.SetTransport(transport)
+	c.PatchEnvelope.SetTransport(transport)
 }
