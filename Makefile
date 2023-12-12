@@ -29,6 +29,12 @@ gen:
 		-A zedcloudapi \
 		-C swagger/config.yml
 
+.PHONY: datadump-gen
+datadump-gen:
+	swagger generate client -f swagger/zedge_$(src)_service.swagger.json \
+		-A zedcloudapi \
+		-C swagger/datadump.config.yml
+
 .PHONY: build
 build:
 	rm -f terraform-provider-zedcloud_v*
