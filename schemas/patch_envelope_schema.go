@@ -38,6 +38,17 @@ func PatchEnvelopeModel(d *schema.ResourceData) *models.PatchEnvelope {
 	projectName, _ := d.Get("project_name").(string)
 	title, _ := d.Get("title").(string)
 	userDefinedVersion, _ := d.Get("user_defined_version").(string)
+	if userDefinedVersion == "" {
+		userDefinedVersion = "Undefined"
+	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.PatchEnvelope{
 		Action:             action,
 		Artifacts:          artifacts,
@@ -49,6 +60,7 @@ func PatchEnvelopeModel(d *schema.ResourceData) *models.PatchEnvelope {
 		ProjectName:        projectName,
 		Title:              &title, // string
 		UserDefinedVersion: userDefinedVersion,
+		Revision:           revision,
 	}
 }
 
@@ -178,7 +190,7 @@ func PatchEnvelopeSchema() map[string]*schema.Schema {
 		"project_id": {
 			Description: `project id`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"project_name": {
