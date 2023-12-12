@@ -1,12 +1,12 @@
 layout:
   application:
-    # - name: facade
-    #   source: asset:clientFacade
-    #   target: "{{ joinFilePath .Target .ClientPackage }}"
-    #   file_name: "{{ .Name }}_client.go"
+#     - name: facade
+#       source: asset:clientFacade
+#       target: "{{ joinFilePath .Target .ClientPackage }}/gen"
+#       file_name: "{{ .Name }}_client.go"
     # - name: utils
     #   source: "swagger/templates/utils.gtpl"
-    #   target: "{{ joinFilePath .Target }}/resources/utils"
+    #   target: "{{ joinFilePath .Target }}/resources/utils/gen"
     #   file_name: "helper_functions.go"
   models:
     - name: definition
