@@ -1,13 +1,13 @@
 # Copyright (c) 2018-2021 Zededa, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-SWAGGER_FILE_LIST := node.swagger.json \
-					 user.swagger.json \
-					 storage.swagger.json \
-					 job.swagger.json \
-					 diag.swagger.json \
-					 app.swagger.json \
-					 network.swagger.json
+SWAGGER_FILE_LIST := zedge_node_service.swagger.json \
+					 zedge_user_service.swagger.json \
+					 zedge_storage_service.swagger.json \
+					 zedge_job_service.swagger.json \
+					 zedge_diag_service.swagger.json \
+					 zedge_app_service.swagger.json \
+					 zedge_network_service.swagger.json
 
 NAME = terraform-provider-zedcloud
 VERSION = $(shell git describe --always --abbrev=0 --tags)
@@ -25,9 +25,15 @@ download-specs:
 
 .PHONY: gen
 gen:
-	swagger generate client -f swagger/$(src).swagger.json \
+	swagger generate client -f swagger/zedge_$(src)_service.swagger.json \
 		-A zedcloudapi \
 		-C swagger/config.yml
+
+.PHONY: datadump-gen
+datadump-gen:
+	swagger generate client -f swagger/zedge_$(src)_service.swagger.json \
+		-A zedcloudapi \
+		-C swagger/datadump.config.yml
 
 .PHONY: build
 build:

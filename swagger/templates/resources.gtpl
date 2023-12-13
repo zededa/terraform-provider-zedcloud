@@ -104,7 +104,7 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 	params := {{ $operationGroup }}.New{{ pascalize $operation }}Params()
 	params.SetBody(model)
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
@@ -151,7 +151,7 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 
 
 	// makes a bulk update for all properties that were changed
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -191,7 +191,7 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 		{{- template "generateParams" . -}}
 	{{ end }}
 
-	client := m.(*apiclient.Zedcloudapi)
+	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
