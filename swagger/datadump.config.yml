@@ -1,0 +1,11 @@
+layout:
+  models:
+     - name: datadump
+       source: "swagger/templates/datadump.gtpl"
+       target: "{{ joinFilePath .Target }}/data_profile"
+       file_name: "{{ camelize .Name }}_models.profile"
+  operation_groups:
+     - name: datadump
+       source: "swagger/templates/datadump.gtpl"
+       target: "{{ joinFilePath .Target }}/resource_profile"
+       file_name: "{{ camelize .Name }}_resource.profile"

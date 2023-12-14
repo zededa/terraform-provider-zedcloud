@@ -1,5 +1,4 @@
 {
-
     "swagger": "2.0",
     "info": {
         "title": "ZEDEDA Diagnostics Service",
@@ -229,50 +228,10 @@
                 },
                 "parameters": [
                     {
-                        "name": "policy",
+                        "name": "all",
                         "in": "query",
                         "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "version",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "fileURL",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.prev",
-                        "description": "Previous",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.curr",
-                        "description": "Current Database version of the record",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.createdBy",
-                        "description": "User data: Created By",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.updatedBy",
-                        "description": "User data: Updated By",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
+                        "type": "boolean"
                     },
                     {
                         "name": "X-Request-Id",
@@ -291,6 +250,8 @@
                 }
             },
             "post": {
+                "summary": "Create Cloud policy document",
+                "description": "Create policy document",
                 "operationId": "CloudDiagnostics_CreateCloudPolicyDocument",
                 "responses": {
                     "200": {
@@ -299,45 +260,10 @@
                             "$ref": "#/definitions/PolicyDocVersionResp"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
-                        }
-                    },
-                    "504": {
-                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
-                        "schema": {
-                            "$ref": "#/definitions/ZsrvResponse"
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "schema": {
-                            "$ref": "#/definitions/googlerpcStatus"
-                        }
-                    }
-                },
-                "tags": [
-                    "CloudDiagnostics"
-                ],
-                "parameters": [
-                    {
-                        "name": "X-Request-Id",
-                        "in": "header",
-                        "required": false,
-                        "description": "User-Agent specified id to track a request",
-                        "type": "string"
-                    }
-                ]
-            },
-            "put": {
-                "operationId": "CloudDiagnostics_MarkCloudPolicyLatest",
-                "responses": {
-                    "200": {
-                        "description": "A successful response.",
-                        "schema": {
-                            "$ref": "#/definitions/PolicyDocVersionResp"
                         }
                     },
                     "500": {
@@ -359,10 +285,15 @@
                         }
                     }
                 },
-                "tags": [
-                    "CloudDiagnostics"
-                ],
                 "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersion"
+                        }
+                    },
                     {
                         "name": "X-Request-Id",
                         "in": "header",
@@ -370,10 +301,17 @@
                         "description": "User-Agent specified id to track a request",
                         "type": "string"
                     }
-                ]
+                ],
+                "tags": [
+                    "CloudDiagnostics"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                }
             }
         },
-        "/v1/cloud/policies/id/{fileURL}": {
+        "/v1/cloud/policies/id/{id}": {
             "get": {
                 "summary": "Get Cloud policy document",
                 "description": "Get policy document for specific version of Cloud policy.",
@@ -412,49 +350,9 @@
                 },
                 "parameters": [
                     {
-                        "name": "fileURL",
+                        "name": "id",
                         "in": "path",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "policy",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "version",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.prev",
-                        "description": "Previous",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.curr",
-                        "description": "Current Database version of the record",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.createdBy",
-                        "description": "User data: Created By",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.updatedBy",
-                        "description": "User data: Updated By",
-                        "in": "query",
-                        "required": false,
                         "type": "string"
                     },
                     {
@@ -474,98 +372,9 @@
                 }
             },
             "delete": {
+                "summary": "Delete Cloud policy specific version",
+                "description": "Delete policy record for specific version of Cloud policy.",
                 "operationId": "CloudDiagnostics_DeleteCloudPolicyDocument",
-                "responses": {
-                    "200": {
-                        "description": "A successful response.",
-                        "schema": {
-                            "$ref": "#/definitions/PolicyDocVersionResp"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
-                        "schema": {
-                            "$ref": "#/definitions/ZsrvResponse"
-                        }
-                    },
-                    "504": {
-                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
-                        "schema": {
-                            "$ref": "#/definitions/ZsrvResponse"
-                        }
-                    },
-                    "default": {
-                        "description": "An unexpected error response.",
-                        "schema": {
-                            "$ref": "#/definitions/googlerpcStatus"
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "fileURL",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "policy",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "version",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.prev",
-                        "description": "Previous",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.curr",
-                        "description": "Current Database version of the record",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.createdBy",
-                        "description": "User data: Created By",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.updatedBy",
-                        "description": "User data: Updated By",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "X-Request-Id",
-                        "in": "header",
-                        "required": false,
-                        "description": "User-Agent specified id to track a request",
-                        "type": "string"
-                    }
-                ],
-                "tags": [
-                    "CloudDiagnostics"
-                ]
-            }
-        },
-        "/v1/cloud/policies/name/{policy}": {
-            "get": {
-                "summary": "Get Cloud policy latest version",
-                "description": "Get policy record for latest version of Cloud policy.",
-                "operationId": "CloudDiagnostics_GetCloudPolicy",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
@@ -600,49 +409,9 @@
                 },
                 "parameters": [
                     {
-                        "name": "policy",
+                        "name": "id",
                         "in": "path",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "version",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "fileURL",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.prev",
-                        "description": "Previous",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.curr",
-                        "description": "Current Database version of the record",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.createdBy",
-                        "description": "User data: Created By",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.updatedBy",
-                        "description": "User data: Updated By",
-                        "in": "query",
-                        "required": false,
                         "type": "string"
                     },
                     {
@@ -662,16 +431,34 @@
                 }
             }
         },
-        "/v1/cloud/policies/name/{policy}/{version}": {
-            "get": {
-                "summary": "Get Cloud policy specific version",
-                "description": "Get policy record for specific version of Cloud policy.",
-                "operationId": "CloudDiagnostics_GetCloudPolicyVersion",
+        "/v1/cloud/policies/latest": {
+            "put": {
+                "summary": "Update Cloud policy specific version",
+                "description": "Update Cloud policy specific version",
+                "operationId": "CloudDiagnostics_MarkCloudPolicyLatest",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
                         "schema": {
                             "$ref": "#/definitions/PolicyDocVersionResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
                         }
                     },
                     "404": {
@@ -701,50 +488,12 @@
                 },
                 "parameters": [
                     {
-                        "name": "policy",
-                        "in": "path",
+                        "name": "body",
+                        "in": "body",
                         "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "version",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "name": "fileURL",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.prev",
-                        "description": "Previous",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.curr",
-                        "description": "Current Database version of the record",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.createdBy",
-                        "description": "User data: Created By",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "revision.updatedBy",
-                        "description": "User data: Updated By",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
+                        "schema": {
+                            "$ref": "#/definitions/PolicyDocVersion"
+                        }
                     },
                     {
                         "name": "X-Request-Id",
@@ -1600,18 +1349,52 @@
                         "type": "string"
                     },
                     {
-                        "name": "enterpriseId",
-                        "description": "system generated unique id for an enterprise (deprecated) ",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
                         "name": "objid",
                         "description": "Object id",
                         "in": "query",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "name": "objtype",
+                        "description": "Object type",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "UNSPECIFIED",
+                            "USER",
+                            "EDGE_NODE",
+                            "EDGE_APP",
+                            "IMAGE",
+                            "EDGE_APP_INSTANCE",
+                            "PROJECT",
+                            "NETWORK",
+                            "DATASTORE",
+                            "SERVICE",
+                            "SERVICE_INSTANCE",
+                            "ENTERPRISE",
+                            "ROLE",
+                            "CREDENTIAL",
+                            "NETWORK_INSTANCE",
+                            "VOLUME_INSTANCE",
+                            "REALM",
+                            "AUTHPROFILE",
+                            "POLICY",
+                            "APP_POLICY",
+                            "CLUSTER_INSTANCE",
+                            "PLUGIN",
+                            "DOC_POLICY",
+                            "ORCHESTRATOR_CLUSTER",
+                            "TAGS",
+                            "EDGE_NODE_INTERFACE",
+                            "DEPLOYMENT",
+                            "ENTITLEMENTS",
+                            "DATA_STREAM",
+                            "API_USAGE",
+                            "APP_INSTANCE_SNAPSHOT"
+                        ],
+                        "default": "UNSPECIFIED"
                     },
                     {
                         "name": "X-Request-Id",
@@ -1734,7 +1517,11 @@
                             "OBJECT_TYPE_DEPLOYMENT",
                             "OBJECT_TYPE_ENTITLEMENTS",
                             "OBJECT_TYPE_DATA_STREAM",
-                            "OBJECT_TYPE_API_USAGE"
+                            "OBJECT_TYPE_API_USAGE",
+                            "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
+                            "OBJECT_TYPE_PATCH_ENVELOPE",
+                            "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -2028,7 +1815,11 @@
                             "OBJECT_TYPE_DEPLOYMENT",
                             "OBJECT_TYPE_ENTITLEMENTS",
                             "OBJECT_TYPE_DATA_STREAM",
-                            "OBJECT_TYPE_API_USAGE"
+                            "OBJECT_TYPE_API_USAGE",
+                            "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
+                            "OBJECT_TYPE_PATCH_ENVELOPE",
+                            "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -2162,6 +1953,23 @@
                 "pconfig": {
                     "type": "string",
                     "title": "protobuf stringified"
+                },
+                "nextConfig": {
+                    "$ref": "#/definitions/configEdgeDevConfig",
+                    "title": "Next config (config which available for the device, but is not yet pushed to the device)\nLatest config (config which is generated, but not allowed to be pushed to the device due to config lock configured on the device)"
+                },
+                "nextConfigHash": {
+                    "type": "string"
+                },
+                "latestConfig": {
+                    "$ref": "#/definitions/configEdgeDevConfig"
+                },
+                "latestConfigHash": {
+                    "type": "string"
+                },
+                "localOperatorConsoleBlobList": {
+                    "$ref": "#/definitions/LocalOperatorConsoleBlobList",
+                    "title": "Local Operator Console Blob Config"
                 }
             },
             "title": "Edge Device Configuration Response to CLI/UI routed via Kafka"
@@ -2251,6 +2059,43 @@
             ],
             "default": "DeviceNoOp",
             "description": " - DeviceNoOp: Device Operation: No Operation\n - DeviceStart: Device Operation: Start\n - DeviceStop: Device Operation: Stop\n - DeviceReboot: Device Operation: Reboot: Power cycle the device\n - DeviceShutdown: Device Operation: Shutdown- Power off the device\n - DeviceUpdateOS: Device Operation: Update OS- deprecated\n - DeviceApplyOS: Device Operation: Apply OS- Change Boot order of installed images\n - DeviceReset: Device Operation: Reset- Config reset to factory default\n - DeviceAddOS: Device Operation: Add OS- Install new image but don't change boot order\n - DeviceDropOS: Device Operation: Drop OS- Remove uninstalled image but don't change boot order\n - DeviceOffboard: Device Operation Type: offboard the device\n - DeviceActivate: Device Activate\n - DeviceDeActivate: Device Deactivate\n - DeviceBaseosRetry: Device Operation: Retry OS\n - DeviceStartDebugMode: Device Operation: Run device in debug mode.\n - DeviceStopDebugMode: Device Operation: Stop device in debug mode.\n - PreparePowerOff: Device Operation: Gracefully shutdown all apps and prepare for power down.\n - DeviceStartEdgeviewMode: Device Operation: Run device in edgeview mode.\n - DeviceStopEdgeviewMode: Device Operation: Stop device in edgeview mode.\n - DeviceEdgeviewClientScript: Device Operation: get Edgeview client script if activated."
+        },
+        "EventQueryRequestWithType_HttpRequestObjectType_HttpRequest": {
+            "type": "string",
+            "enum": [
+                "UNSPECIFIED",
+                "USER",
+                "EDGE_NODE",
+                "EDGE_APP",
+                "IMAGE",
+                "EDGE_APP_INSTANCE",
+                "PROJECT",
+                "NETWORK",
+                "DATASTORE",
+                "SERVICE",
+                "SERVICE_INSTANCE",
+                "ENTERPRISE",
+                "ROLE",
+                "CREDENTIAL",
+                "NETWORK_INSTANCE",
+                "VOLUME_INSTANCE",
+                "REALM",
+                "AUTHPROFILE",
+                "POLICY",
+                "APP_POLICY",
+                "CLUSTER_INSTANCE",
+                "PLUGIN",
+                "DOC_POLICY",
+                "ORCHESTRATOR_CLUSTER",
+                "TAGS",
+                "EDGE_NODE_INTERFACE",
+                "DEPLOYMENT",
+                "ENTITLEMENTS",
+                "DATA_STREAM",
+                "API_USAGE",
+                "APP_INSTANCE_SNAPSHOT"
+            ],
+            "default": "UNSPECIFIED"
         },
         "EventQueryResponse": {
             "type": "object",
@@ -2470,6 +2315,36 @@
                 }
             }
         },
+        "LocalOperatorConsoleBlob": {
+            "type": "object",
+            "properties": {
+                "devId": {
+                    "type": "string"
+                },
+                "config": {
+                    "type": "string"
+                },
+                "encryptedConfig": {
+                    "type": "string"
+                }
+            },
+            "title": "Local Operator Console Blob"
+        },
+        "LocalOperatorConsoleBlobList": {
+            "type": "object",
+            "properties": {
+                "localOperatorConsoleBlobList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/LocalOperatorConsoleBlob"
+                    }
+                },
+                "controllerCerts": {
+                    "type": "string"
+                }
+            },
+            "title": "Local Operator Console Blob List"
+        },
         "MetricQueryResponse": {
             "type": "object",
             "properties": {
@@ -2540,7 +2415,8 @@
                 "METRIC_TYPE_STORAGE_IO_ZPOOL",
                 "METRIC_TYPE_STORAGE_IO_ZVOL"
             ],
-            "default": "METRIC_TYPE_UNSPECIFIED"
+            "default": "METRIC_TYPE_UNSPECIFIED",
+            "title": "MetricType - On update, please update MetricType_HttpRequest as well"
         },
         "ObjectRevision": {
             "type": "object",
@@ -2614,7 +2490,11 @@
                 "OBJECT_TYPE_DEPLOYMENT",
                 "OBJECT_TYPE_ENTITLEMENTS",
                 "OBJECT_TYPE_DATA_STREAM",
-                "OBJECT_TYPE_API_USAGE"
+                "OBJECT_TYPE_API_USAGE",
+                "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
+                "OBJECT_TYPE_PATCH_ENVELOPE",
+                "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
+                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -2785,7 +2665,8 @@
                 "DBError",
                 "zMsgAccepted",
                 "zMsgCreated",
-                "PreConditionFailed"
+                "PreConditionFailed",
+                "InternalServerError"
             ],
             "default": "zMsgErrorNone",
             "description": "- zMsgErrorNone: common validation errors\n - IncompleteData: message had fields that weren't filled in\n - InvalidData: message contained the field that wasn't expected\n - FunctionUnsupported: this feature unavailable on this version of device\n - InvalidFieldFormat: message contained the field that wasn't correctly formatted\n - JsonFmtError: Marshal / Unmarshal errors\n - DataBaseConnection: generic DB error",
@@ -2858,6 +2739,72 @@
                 }
             }
         },
+        "commonCipherBlock": {
+            "type": "object",
+            "properties": {
+                "cipherContextId": {
+                    "type": "string",
+                    "title": "cipher context id"
+                },
+                "initialValue": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "Initial Value for Symmetric Key derivation"
+                },
+                "cipherData": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "encrypted sensitive data"
+                },
+                "clearTextSha256": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "sha256 of the plaintext sensitive data"
+                }
+            },
+            "title": "Encrypted sensitive data information"
+        },
+        "commonCipherContext": {
+            "type": "object",
+            "properties": {
+                "contextId": {
+                    "type": "string",
+                    "title": "cipher context id, key to this structure"
+                },
+                "hashScheme": {
+                    "$ref": "#/definitions/commonHashAlgorithm",
+                    "title": "algorithm used to compute hash for certificates"
+                },
+                "keyExchangeScheme": {
+                    "$ref": "#/definitions/commonKeyExchangeScheme",
+                    "description": "for key exchange scheme, like ECDH etc."
+                },
+                "encryptionScheme": {
+                    "$ref": "#/definitions/commonEncryptionScheme",
+                    "description": "for encrypting sensitive data, like AES256 etc."
+                },
+                "deviceCertHash": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "device public certificate hash"
+                },
+                "controllerCertHash": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "controller certificate hash"
+                }
+            },
+            "title": "Cipher information to decrypt Sensitive Data"
+        },
+        "commonEncryptionScheme": {
+            "type": "string",
+            "enum": [
+                "SA_NONE",
+                "SA_AES_256_CFB"
+            ],
+            "default": "SA_NONE",
+            "title": "Encryption Scheme for Cipher Payload"
+        },
         "commonHashAlgorithm": {
             "type": "string",
             "enum": [
@@ -2866,6 +2813,15 @@
                 "HASH_ALGORITHM_SHA256_32BYTES"
             ],
             "default": "HASH_ALGORITHM_INVALID"
+        },
+        "commonKeyExchangeScheme": {
+            "type": "string",
+            "enum": [
+                "KEA_NONE",
+                "KEA_ECDH"
+            ],
+            "default": "KEA_NONE",
+            "title": "Security Key Exchange Method"
         },
         "commonPhyIoMemberUsage": {
             "type": "string",
@@ -2899,6 +2855,18 @@
             ],
             "default": "PhyIoNoop",
             "title": "- PhyIoNVMEStorage: enum 8 is reserved for backward compatibility with controller API"
+        },
+        "commonRadioAccessTechnology": {
+            "type": "string",
+            "enum": [
+                "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+                "RADIO_ACCESS_TECHNOLOGY_GSM",
+                "RADIO_ACCESS_TECHNOLOGY_UMTS",
+                "RADIO_ACCESS_TECHNOLOGY_LTE",
+                "RADIO_ACCESS_TECHNOLOGY_5GNR"
+            ],
+            "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+            "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
         },
         "configACE": {
             "type": "object",
@@ -3072,7 +3040,7 @@
                     "description": "Config flag if the app-instance should be made accessible\nthrough a remote console session established by the device."
                 },
                 "cipherData": {
-                    "$ref": "#/definitions/configCipherBlock",
+                    "$ref": "#/definitions/commonCipherBlock",
                     "title": "contains the encrypted userdata"
                 },
                 "collectStatsIPAddr": {
@@ -3101,6 +3069,23 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "start_delay_in_seconds - Applicable only when EVE boots up fresh and starts\napplications for the first time after boot up. This is the amount of time that\nEVE waits (after boot finish) before starting each application.\nDefault value 0 -> start application immediately.\nNon-Zero value -> After EVE is ready to start application instance, wait for the\ngiven amount of time before starting the respective application instance."
+                },
+                "service": {
+                    "type": "boolean",
+                    "title": "service - run app instance as a service container in the host/dom0\nwill override default capabilities with configuration\ndefined in org.mobyproject.config label of image provided by linuxkit"
+                },
+                "cloudInitVersion": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "All changes to the cloud-init config are tracked using this version field -\nonce the version is changed cloud-init tool restarts in a guest."
+                },
+                "snapshot": {
+                    "$ref": "#/definitions/configSnapshotConfig",
+                    "title": "SnapshotConfig is used to track the snapshots of the app instance"
+                },
+                "patchRef": {
+                    "$ref": "#/definitions/configPatchEnvelopeRef",
+                    "title": "PatchEnvelopeRef is used to track all patch envelopes used by the app instance"
                 }
             },
             "description": "The complete configuration for an Application Instance\nWhen changing key fields such as the drives/volumeRefs or the number\nof interfaces, the controller is required to issue a purge command i.e.,\nincrease the purge counter. Otherwise there will be an error (The controller\ncan also issue a purge command to re-construct the content of the first\ndrive/volumeRef without any changes.)\nSome changes such as ACL changes in the interfaces do not require a restart,\nbut all other changes (such as fixedresources and adapters) require a\nrestart command i.e., an increase to the restart counter. The restart counter\ncan also be increased to cause an application instance restart without\nany other change to the application instance."
@@ -3219,12 +3204,64 @@
             "default": "BOND_MODE_UNSPECIFIED",
             "description": "A bonding mode specifies the policy indicating how bonding slaves are used\nduring network transmission.\n\n - BOND_MODE_UNSPECIFIED: BOND_MODE_UNSPECIFIED : if bonding mode is not explicitly specified,\nthen by default Round-Robin policy is applied (BOND_MODE_BALANCE_RR).\n - BOND_MODE_BALANCE_RR: BOND_MODE_BALANCE_RR : transmit packets in sequential order from the first\navailable slave through the last. This mode provides load balancing\nand fault tolerance.\nThis is the default bonding mode.\n - BOND_MODE_ACTIVE_BACKUP: BOND_MODE_ACTIVE_BACKUP : only one slave in the bond is active.\nA different slave becomes active if, and only if, the active slave fails.\nThe bond's MAC address is externally visible on only one port to avoid\nconfusing the switch.\nThis mode provides fault tolerance.\n - BOND_MODE_BALANCE_XOR: BOND_MODE_BALANCE_XOR : packet source and destination MAC addresses are\nused to calculate hash and select the output slave interface accordingly.\nThis algorithm will place all traffic destined to a particular network\npeer on the same slave.\nThis mode provides load balancing and fault tolerance.\n - BOND_MODE_BROADCAST: BOND_MODE_BROADCAST: transmits everything on all slave interfaces.\nThis mode provides fault tolerance.\n - BOND_MODE_802_3AD: BOND_MODE_802_3AD : IEEE 802.3ad Dynamic link aggregation.\nCreates aggregation groups that share the same speed and duplex settings.\nUtilizes all slaves in the active aggregator according to the 802.3ad\nspecification.\nRequires that upstream networks equipment supports and has the IEEE 802.3ad\nDynamic link aggregation properly configured.\n - BOND_MODE_BALANCE_TLB: BOND_MODE_BALANCE_TLB : adaptive transmit load balancing. Channel bonding that\ndoes not require any special switch support. The outgoing traffic\nis distributed according to the current load (computed relative to the speed)\non each slave.\nIncoming traffic is received by the current slave. If the receiving slave\nfails, another slave takes over the MAC address of the failed receiving slave.\nThis mode provides (TX) load balancing and fault tolerance.\n - BOND_MODE_BALANCE_ALB: BOND_MODE_BALANCE_ALB : adaptive load balancing. Includes BOND_MODE_BALANCE_TLB\nplus receive load balancing (RLB) for IPV4 traffic, and does not require\nany special switch support. The receive load balancing is achieved by ARP\nnegotiation.\nThis mode provides load balancing and fault tolerance."
         },
+        "configCellularAccessPoint": {
+            "type": "object",
+            "properties": {
+                "simSlot": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "SIM card slot to which this configuration applies.\n0 - unspecified (apply to currently activated or the only available)\n1 - config for SIM card in the first slot\n2 - config for SIM card in the second slot\netc."
+                },
+                "apn": {
+                    "type": "string",
+                    "description": "Access Point Network to connect into.\nBy default it is \"internet\"."
+                },
+                "authProtocol": {
+                    "$ref": "#/definitions/configCellularAuthProtocol",
+                    "description": "Authentication protocol used by the network."
+                },
+                "cipherData": {
+                    "$ref": "#/definitions/commonCipherBlock",
+                    "description": "Cipher data may contain encrypted user credentials\n(inside cellNetUsername and cellNetPassword fields)."
+                },
+                "preferredPlmns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "The set of cellular network operators that modem should preferably try to register\nand connect into.\nNetwork operator should be referenced by PLMN (Public Land Mobile Network) code,\nconsisting of 3-digits MCC (Mobile Country Code) and 2 or 3-digits MNC (Mobile Network Code),\nseparated by a dash, e.g. \"310-260\".\nIf empty, then modem will select the network automatically based on the SIM card config."
+                },
+                "forbidRoaming": {
+                    "type": "boolean",
+                    "description": "If true, then modem will avoid connecting to networks with roaming."
+                },
+                "preferredRats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/commonRadioAccessTechnology"
+                    },
+                    "description": "The list of preferred Radio Access Technologies (RATs) to use for connecting\nto the network.\nOrder matters, first is the most preferred, second is tried next, etc.\nNot listed technologies will not be tried.\nIf empty, then modem will select RAT automatically."
+                }
+            },
+            "description": "CellularAccessPoint contains config parameters for connecting to a cellular network."
+        },
+        "configCellularAuthProtocol": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_AUTH_PROTOCOL_NONE",
+                "CELLULAR_AUTH_PROTOCOL_PAP",
+                "CELLULAR_AUTH_PROTOCOL_CHAP",
+                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
+            ],
+            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
+            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
+        },
         "configCellularConfig": {
             "type": "object",
             "properties": {
                 "APN": {
                     "type": "string",
-                    "title": "APN string - by default it is \"internet\""
+                    "description": "APN string - by default it is \"internet\".\nTO BE DEPRECATED: Fill connection arguments inside access_points instead.\nIf access_points is non-empty, then APN field is ignored."
                 },
                 "probe": {
                     "$ref": "#/definitions/configCellularConnectivityProbe",
@@ -3233,6 +3270,18 @@
                 "locationTracking": {
                     "type": "boolean",
                     "description": "Some LTE modems have GNSS receiver integrated and can be used for device\nlocation tracking.\nEnable this option to have location info periodically obtained from this\nmodem and published to controller and to applications."
+                },
+                "accessPoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configCellularAccessPoint"
+                    },
+                    "description": "Parameters to apply for connecting to cellular networks.\nConfigured separately for every SIM card inserted into the modem."
+                },
+                "activatedSimSlot": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Select SIM card slot to activate.\nCurrently, EVE support only single-standby SIM card mode.\n0 - unspecified (leave the currently activated)\n1 - activate the first SIM slot\n2 - activate the second SIM slot\netc."
                 }
             }
         },
@@ -3245,67 +3294,10 @@
                 },
                 "probeAddress": {
                     "type": "string",
-                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nDefault address is \"8.8.8.8\" (Google Public DNS)."
+                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThe default probing behavior (i.e. without user-defined probing endpoint), is more complex\nthat just pinging a remote endpoint and the goal is to minimize generated traffic,\nprobing time and false negatives (that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the default remote endpoint \"8.8.8.8\" (Google public DNS)\nusing ICMP ping.\nIt is recommended to use custom probe_address only for private LTE networks where\npublic DNS servers are not allowed by the firewall (and hence ping would fail even with\nworking connectivity)."
                 }
             },
             "description": "CellularConnectivityProbe is used to periodically check the connectivity status of a cellular network\nby probing a remote endpoint.\nWhenever the probe fails, the cellular connection is automatically restarted. If the probe keeps failing\neven after the restart, the failure is reported in ZCellularStatus.probeError.\nThe connectivity probing interval is 5 minutes and currently it is not configurable."
-        },
-        "configCipherBlock": {
-            "type": "object",
-            "properties": {
-                "cipherContextId": {
-                    "type": "string",
-                    "title": "cipher context id"
-                },
-                "initialValue": {
-                    "type": "string",
-                    "format": "byte",
-                    "title": "Initial Value for Symmetric Key derivation"
-                },
-                "cipherData": {
-                    "type": "string",
-                    "format": "byte",
-                    "title": "encrypted sensitive data"
-                },
-                "clearTextSha256": {
-                    "type": "string",
-                    "format": "byte",
-                    "title": "sha256 of the plaintext sensitive data"
-                }
-            },
-            "title": "Encrypted sensitive data information"
-        },
-        "configCipherContext": {
-            "type": "object",
-            "properties": {
-                "contextId": {
-                    "type": "string",
-                    "title": "cipher context id, key to this structure"
-                },
-                "hashScheme": {
-                    "$ref": "#/definitions/commonHashAlgorithm",
-                    "title": "algorithm used to compute hash for certificates"
-                },
-                "keyExchangeScheme": {
-                    "$ref": "#/definitions/configKeyExchangeScheme",
-                    "description": "for key exchange scheme, like ECDH etc."
-                },
-                "encryptionScheme": {
-                    "$ref": "#/definitions/configEncryptionScheme",
-                    "description": "for encrypting sensitive data, like AES256 etc."
-                },
-                "deviceCertHash": {
-                    "type": "string",
-                    "format": "byte",
-                    "title": "device public certificate hash"
-                },
-                "controllerCertHash": {
-                    "type": "string",
-                    "format": "byte",
-                    "title": "controller certificate hash"
-                }
-            },
-            "title": "Cipher information to decrypt Sensitive Data"
         },
         "configConfigItem": {
             "type": "object",
@@ -3353,6 +3345,17 @@
                     "type": "string",
                     "format": "int64",
                     "description": "For container ContentTree, sha256 might not be available in config.\nIf the sha256 is not available then it needs to be resolved corresponding to the tag\nchange in generation_count indicates that the resolution of tag is needed\ngeneration_count needs to be updated when purge is required for an existing\ninstance. In case of new instance using the same content tree, EVE will get\nnew content tree UUID in the device configuration from the controller."
+                },
+                "customMetaData": {
+                    "type": "string",
+                    "description": "An arbitrary string. Usage depends on the content purpose. Currently the\nonly usage is with custom application blobs (AppCustom) - this string will\nappear in the restAPI endpoint available at http://169.254.169.254. So user\napplication can read that data and treat the blob accordingly."
+                },
+                "dsIdsList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of DatastoreConfig UUIDs, that must have the same content. In case of\nnetwork failure, the download process can fallback to the next datastore\nin the list."
                 }
             },
             "title": "ContentTree describes the top of some content tree. The controller needs\nto allocate a uuid for it, and that uuid will be sent by EVE in the\nZInfoContentTree message"
@@ -3397,7 +3400,7 @@
                     "title": "Applies for some datastore types"
                 },
                 "cipherData": {
-                    "$ref": "#/definitions/configCipherBlock",
+                    "$ref": "#/definitions/commonCipherBlock",
                     "title": "contains the encrypted credentials"
                 },
                 "dsCertPEM": {
@@ -3555,6 +3558,24 @@
             ],
             "default": "DsUnknown"
         },
+        "configEVE_OPAQUE_OBJECT_CATEGORY": {
+            "type": "string",
+            "enum": [
+                "UNKOWN",
+                "BASE64",
+                "BINARYBLOB",
+                "SECRET"
+            ],
+            "default": "UNKOWN"
+        },
+        "configEVE_PATCH_ENVELOPE_ACTION": {
+            "type": "string",
+            "enum": [
+                "STORE",
+                "ACTIVATE"
+            ],
+            "default": "STORE"
+        },
         "configEdgeDevConfig": {
             "type": "object",
             "properties": {
@@ -3628,7 +3649,7 @@
                 "cipherContexts": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/configCipherContext"
+                        "$ref": "#/definitions/commonCipherContext"
                     },
                     "title": "controller supplies a list of cipher contexts,\ncontaining certificate and other details, to be\nused for sensitive data decryption"
                 },
@@ -3719,6 +3740,16 @@
                     "type": "string",
                     "format": "date-time",
                     "description": "Timestamp updated by controller whenever device config is modified.\nUsed by EVE to properly order configurations that originate at the same controller\nbut get submitted to device through different ways:\n    /config API vs. initial config for bootstrapping vs. USB-based config override etc.\nThis ensures that device will not accidentally revert back to an older configuration.\nDoes not apply to legacy override.json and usb.json mechanisms."
+                },
+                "locConfig": {
+                    "$ref": "#/definitions/configLOCConfig",
+                    "title": "Configuration of the Local Operator Console (LOC)"
+                },
+                "patchEnvelopes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configEvePatchEnvelope"
+                    }
                 }
             },
             "description": "This is the response to a GET /api/v1/edgeDevice/config\nThe EdgeDevConfig message carries all of the device's configuration from\nthe controller to the device.\nThe device will request these messages either periodically or as a result\nof some TBD notification.\nThe message is assumed to be protected by a TLS session bound to the\ndevice certificate."
@@ -3757,15 +3788,6 @@
                 }
             }
         },
-        "configEncryptionScheme": {
-            "type": "string",
-            "enum": [
-                "SA_NONE",
-                "SA_AES_256_CFB"
-            ],
-            "default": "SA_NONE",
-            "title": "Encryption Scheme for Cipher Payload"
-        },
         "configEthVF": {
             "type": "object",
             "properties": {
@@ -3782,6 +3804,63 @@
                 }
             },
             "title": "Information regarding Virtual Function (VF) customisation"
+        },
+        "configEveBinaryArtifact": {
+            "type": "object",
+            "properties": {
+                "format": {
+                    "$ref": "#/definitions/configEVE_OPAQUE_OBJECT_CATEGORY",
+                    "title": "base64 or binary blob only - secret type is invalid"
+                },
+                "inline": {
+                    "$ref": "#/definitions/eveconfigInlineOpaqueBase64Data"
+                },
+                "volumeRef": {
+                    "$ref": "#/definitions/eveconfigExternalOpaqueBinaryBlob"
+                },
+                "artifactMetaData": {
+                    "type": "string"
+                }
+            }
+        },
+        "configEvePatchEnvelope": {
+            "type": "object",
+            "properties": {
+                "displayName": {
+                    "type": "string",
+                    "title": "Unique name provided by user"
+                },
+                "uuid": {
+                    "type": "string",
+                    "title": "Unique"
+                },
+                "version": {
+                    "type": "string",
+                    "title": "arbitrary version from user"
+                },
+                "action": {
+                    "$ref": "#/definitions/configEVE_PATCH_ENVELOPE_ACTION",
+                    "title": "way this object should be treated"
+                },
+                "artifacts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configEveBinaryArtifact"
+                    }
+                },
+                "appInstIdsAllowed": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "List of application instance ids that should\nbe allowed to access this patch envelope"
+                },
+                "createTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Time object created in UTC format"
+                }
+            }
         },
         "configExternalEndPointPolicy": {
             "type": "object",
@@ -3805,7 +3884,8 @@
                 "OVA",
                 "VHDX",
                 "CONTAINER",
-                "ISO"
+                "ISO",
+                "PVC"
             ],
             "default": "FmtUnknown"
         },
@@ -3821,14 +3901,14 @@
                 }
             }
         },
-        "configKeyExchangeScheme": {
-            "type": "string",
-            "enum": [
-                "KEA_NONE",
-                "KEA_ECDH"
-            ],
-            "default": "KEA_NONE",
-            "title": "Security Key Exchange Method"
+        "configLOCConfig": {
+            "type": "object",
+            "properties": {
+                "locUrl": {
+                    "type": "string",
+                    "title": "If set indicates URL of the Local Operator Console (LOC)"
+                }
+            }
         },
         "configLacpRate": {
             "type": "string",
@@ -4055,6 +4135,18 @@
             ],
             "default": "NETWORKTYPENOOP"
         },
+        "configPatchEnvelopeRef": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "one of them should be non-empty\nnon-empty name overrides the id"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "configPhyIOUsagePolicy": {
             "type": "object",
             "properties": {
@@ -4179,6 +4271,55 @@
             },
             "description": "XXX this will be deprecated when all deployed instances of EVE\nno longer expect it. 5.6.X depend on it. 5.7.1 does not."
         },
+        "configSnapshotConfig": {
+            "type": "object",
+            "properties": {
+                "activeSnapshot": {
+                    "type": "string",
+                    "description": "active_snapshot is the id of the snapshot which is expected to be used by\nthe application.\nIt may be empty if no snapshot expected to be used."
+                },
+                "rollbackCmd": {
+                    "$ref": "#/definitions/configInstanceOpsCmd",
+                    "description": "rollback_cmd is used to trigger a rollback to the snapshot with the\nactive_snapshot id.\nThe counter inside the InstanceOpsCmd is incremented when a snapshot is\nused for a rollback. It should not be decreased.\nThe counter's semantics is the same as the one used in the restart/purge\ncommands. It's necessary for the cases, when the state of the device is\nbehind the controller because it hasn't yet managed to fetch the latest\ndeclarative statement. Only increasing the counter will trigger the\nrollback."
+                },
+                "maxSnapshots": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "max_snapshots is the maximum number of snapshots that can be stored for the\napplication instance.\nIf the number of snapshots exceeds the max_snapshots, the oldest snapshot\nwill be deleted. It's so even if the oldest snapshot is the active one.\nAs an example, let's consider the following scenario:\nThe value of max_snapshots is 1. Then a snapshot is created. VM continues\nworking. Then a rollback to the snapshot created earlier is requested, so\nthe first snapshot becomes active. EVE performs the rollback. Then the\ncontroller requests a new snapshot be created. EVE is configured to store\nonly 1 snapshot, hence the first one should be deleted."
+                },
+                "snapshots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configSnapshotDesc"
+                    },
+                    "description": "snapshots is the list of snapshots of the application instance.\nIt is used to synchronize the list of snapshots between the controller and\nthe device. This can be used to provide an id of a new snapshot or to\ndelete an existing snapshot.\nTo provide a new snapshot id, the controller should send a message with\nthe new snapshot id in the snapshots list. The id is generated by\nController in this case. (It can be also generated by EVE, if the snapshot\ncreation is triggered locally. In this case the ID will be returned in the\nZInfoApp.snapshots[].id field, see the `info.proto` file).\nWorth noting that the snapshot creation is not triggered by the appearance\nof the snapshot id in the available_snapshots list. The snapshot creation\nwill be triggered by the behaviour defined in the snapshot type field.\nTo delete a snapshot, the controller should send a message that does not\ncontain the snapshot id in the available_snapshots list. The device will\ndelete the snapshot with the absent id."
+                }
+            },
+            "title": "The snapshot information for an Application Instance"
+        },
+        "configSnapshotDesc": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "id of the snapshot.\nThe format of the ID is a standard UUIDv4.\nShould be unique within the app instance. Generated by the Controller in\nthe case the snapshot creation is requested by the Controller, or by EVE\nin the case the snapshot creation is triggered locally.\nCorresponds to the ZInfoApp.snapshots[].id field (see the `info.proto`\nfile)."
+                },
+                "type": {
+                    "$ref": "#/definitions/configSnapshotType",
+                    "description": "type of the snapshot creation trigger."
+                }
+            },
+            "title": "A descriptor of the snapshot instance"
+        },
+        "configSnapshotType": {
+            "type": "string",
+            "enum": [
+                "SNAPSHOT_TYPE_UNSPECIFIED",
+                "SNAPSHOT_TYPE_APP_UPDATE"
+            ],
+            "default": "SNAPSHOT_TYPE_UNSPECIFIED",
+            "title": "Type of the snapshot creation trigger"
+        },
         "configSystemAdapter": {
             "type": "object",
             "properties": {
@@ -4225,7 +4366,8 @@
                 "Disk",
                 "Kernel",
                 "Initrd",
-                "RamDisk"
+                "RamDisk",
+                "AppCustom"
             ],
             "default": "TgtUnknown"
         },
@@ -4291,19 +4433,23 @@
                 },
                 "memory": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "title": "in kbytes; rounded up to Mbytes for xen"
                 },
                 "maxmem": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "title": "in kbytes; xen only, default equal to 'memory', so no ballooning"
                 },
                 "vcpus": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "description": "The amount of the VCPUs in the VM."
                 },
                 "maxcpus": {
                     "type": "integer",
-                    "format": "int64"
+                    "format": "int64",
+                    "description": "In the case of the Xen hypervisor - the maximal amount of the VCPUs\navailable to the VM. Can be greater than `vcpus` (the VCPUs online on the\nVM start). If the field is not set, it is initialized by EVE to the value\nin the `vcpus` field."
                 },
                 "rootdev": {
                     "type": "string"
@@ -4315,7 +4461,8 @@
                     "type": "string"
                 },
                 "cpus": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Currently is not handled by EVE.\nCPU mask of the CPUs assigned to the VM. Represented in the form\n\"d[[,-]d]*\". E.g. \"0-2\" or \"0-2,5,6\". CPUs start with 0. For example, the\nmask \"0,3\" would mean that only physical CPUs 0 and 3 are available for\nthe VM."
                 },
                 "devicetree": {
                     "type": "string"
@@ -4353,11 +4500,17 @@
                     "type": "string"
                 },
                 "disableLogs": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "title": "Change of the 'disable logs' field can be handled without VM reboot"
                 },
                 "pinCpu": {
                     "type": "boolean",
                     "description": "Set if the VM should run in a mode with pinned CPUs.\nIn this case any VCPU thread created by QEMU runs on a dedicated physical\nCPU. All the other QEMU threads will be limited to run on the physical\nCPUs defined by CPU mask. The CPU mask is provided with the 'cpus' field,\ndefined above. If the CPU mask is not set, the physical CPUs to be used\nfor running QEMU threads are picked automatically by Pillar: it just takes\nthat amount of available physical CPUs that is defined with the 'vcpus'\nparameter defined above."
+                },
+                "vmmMaxmem": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "Maximum amount of memory in kbytes allowed for VM monitor to occupy,\naka \"overhead\". E.g. for the qemu-kvm hypervisor the memory limit\nfor one VM instance (guest RAM + VM monitor) is set according to the\nfollowing equation: `memory` + `vmm_maxmem`"
                 }
             }
         },
@@ -4409,6 +4562,9 @@
                 },
                 "clearText": {
                     "type": "boolean"
+                },
+                "target": {
+                    "$ref": "#/definitions/configTarget"
                 }
             },
             "description": "The Volume describes a storage volume which should exist on the device.\nThis can currently either be blank or created from a ContentTree\nIf maxSizeBytes is zero it means unlimited by the controller. In that\ncase EVE needs to determine how much space it can assign and limit any\ndownloaded ContentTree and the created volume based on that calculated size."
@@ -4493,7 +4649,7 @@
                     "format": "int32"
                 },
                 "cipherData": {
-                    "$ref": "#/definitions/configCipherBlock"
+                    "$ref": "#/definitions/commonCipherBlock"
                 }
             }
         },
@@ -4657,6 +4813,27 @@
             },
             "title": "DiskDescription describes disk\nwe can use different data to locate disk in the system"
         },
+        "eveconfigExternalOpaqueBinaryBlob": {
+            "type": "object",
+            "properties": {
+                "imageName": {
+                    "type": "string",
+                    "title": "Name of the image uploaded into data store"
+                },
+                "fileNameToUse": {
+                    "type": "string",
+                    "title": "file name to be used for storing this data in EVE\nthe same file name shall be advertised to application agent\nif it's empty EVE will use image name"
+                },
+                "blobMetaData": {
+                    "type": "string",
+                    "title": "can be image type or size encoded into a single string"
+                },
+                "imageId": {
+                    "type": "string",
+                    "title": "Target field of Volume set to AppCustom\nrefers to UUID of a volume"
+                }
+            }
+        },
         "eveconfigImage": {
             "type": "object",
             "properties": {
@@ -4687,6 +4864,23 @@
                 }
             },
             "title": "XXX the Image will be deprecated and we will use ContentTree instead"
+        },
+        "eveconfigInlineOpaqueBase64Data": {
+            "type": "object",
+            "properties": {
+                "base64Data": {
+                    "type": "string",
+                    "title": "base64 encoded data"
+                },
+                "fileNameToUse": {
+                    "type": "string",
+                    "title": "file name to be used for storing this data\nsame file name shall be advertised to application agent"
+                },
+                "base64MetaData": {
+                    "type": "string",
+                    "title": "any arbitraty metadata encoded to base64 string"
+                }
+            }
         },
         "googlerpcStatus": {
             "type": "object",

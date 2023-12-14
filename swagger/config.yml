@@ -1,30 +1,26 @@
 layout:
   application:
-    # - name: facade
-    #   source: asset:clientFacade
-    #   target: "{{ joinFilePath .Target .ClientPackage }}"
-    #   file_name: "{{ .Name }}_client.go"
+#     - name: facade
+#       source: asset:clientFacade
+#       target: "{{ joinFilePath .Target .ClientPackage }}/gen"
+#       file_name: "{{ .Name }}_client.go"
     # - name: utils
     #   source: "swagger/templates/utils.gtpl"
-    #   target: "{{ joinFilePath .Target }}/resources/utils"
+    #   target: "{{ joinFilePath .Target }}/resources/utils/gen"
     #   file_name: "helper_functions.go"
   models:
-    # - name: definition
-    #   source: asset:model
-    #   target: "{{ joinFilePath .Target .ModelPackage }}/gen"
-    #   file_name: "{{ (snakize (pascalize .Name)) }}.go"
-    - name: schema
-      source: "swagger/templates/schema.gtpl"
-      target: "{{ joinFilePath .Target }}/schemas/gen"
-      file_name: "{{ camelize .Name }}_schema.go"
+    - name: definition
+      source: asset:model
+      target: "{{ joinFilePath .Target .ModelPackage }}/gen"
+      file_name: "{{ (snakize (pascalize .Name)) }}.go"
+    # - name: schema
+    #   source: "swagger/templates/schema.gtpl"
+    #   target: "{{ joinFilePath .Target }}/schemas/gen"
+    #   file_name: "{{ camelize .Name }}_schema.go"
     # - name: tf_config
     #   source: "swagger/templates/tf_config.gtpl"
     #   target: "{{ joinFilePath .Target }}/tf_config/gen"
     #   file_name: "{{ camelize .Name }}_schema.tf"
-    # - name: datadump
-    #   source: "swagger/templates/datadump.gtpl"
-    #   target: "{{ joinFilePath .Target }}/data_profile"
-    #   file_name: "{{ camelize .Name }}_models.profile"
   operations:
     # - name: parameters
     #   source: asset:clientParameter
@@ -43,7 +39,3 @@ layout:
     #   source: "swagger/templates/resources.gtpl"
     #   target: "{{ joinFilePath .Target }}/resources/gen"
     #   file_name: "{{ camelize .Name }}_resource.go"
-    # - name: datadump
-    #   source: "swagger/templates/datadump.gtpl"
-    #   target: "{{ joinFilePath .Target }}/resource_profile"
-    #   file_name: "{{ camelize .Name }}_resource.profile"
