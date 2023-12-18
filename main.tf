@@ -2003,7 +2003,21 @@ resource "zedcloud_patch_envelope" "test_tf_provider" {
   }
   project_name = data.zedcloud_project.test_tf_provider.name
   project_id = data.zedcloud_project.test_tf_provider.id
+  user_defined_version = "1.0"
   depends_on = [
-    resource.zedcloud_image.test_tf_provider
+    zedcloud_image.test_tf_provider
     ]
 }
+
+resource "zedcloud_patch_reference_update" "test_tf_provider" {
+  app_inst_id_list = [resource.zedcloud_application_instance.test_tf_provider.id]
+  patchenvelope_id = resource.zedcloud_patch_envelope.test_tf_provider.id
+  project_id = resource.zedcloud_project.test_tf_provider.id
+  depends_on = [
+    zedcloud_application_instance.test_tf_provider,
+    zedcloud_patch_envelope.test_tf_provider,
+    zedcloud_project.test_tf_provider
+    ]
+
+}
+

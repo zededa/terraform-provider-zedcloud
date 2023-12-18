@@ -7,7 +7,7 @@ import (
 
 func PatchReferenceUpdateConfigModel(d *schema.ResourceData) *models.PatchReferenceUpdateConfig {
 	var appInstIDList []string
-	appInstIDListInterface, appInstIDListIsSet := d.GetOk("appInstIDList")
+	appInstIDListInterface, appInstIDListIsSet := d.GetOk("app_inst_id_list")
 	if appInstIDListIsSet {
 		var items []interface{}
 		if listItems, isList := appInstIDListInterface.([]interface{}); isList {
@@ -84,19 +84,19 @@ func PatchReferenceUpdateConfigSchema() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Required: true,
 		},
 
 		"patchenvelope_id": {
 			Description: ``,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"project_id": {
 			Description: ``,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }
