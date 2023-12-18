@@ -8,11 +8,11 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/go-retryablehttp"
-
 	"github.com/zededa/terraform-provider/client/application"
 	"github.com/zededa/terraform-provider/client/application_instance"
 	"github.com/zededa/terraform-provider/client/datastore"
 	"github.com/zededa/terraform-provider/client/hardware_model"
+	"github.com/zededa/terraform-provider/client/identity_access_management"
 	"github.com/zededa/terraform-provider/client/image"
 	"github.com/zededa/terraform-provider/client/network"
 	"github.com/zededa/terraform-provider/client/network_instance"
@@ -75,6 +75,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.Application = application.New(transport, formats)
 	cli.ApplicationInstance = application_instance.New(transport, formats)
 	cli.Project = projects.New(transport, formats)
+	cli.IdentityAccessManagement = identity_access_management.New(transport, formats)
 	return cli
 }
 
@@ -140,6 +141,8 @@ type ZedcloudAPI struct {
 	Project projects.ClientService
 
 	Transport runtime.ClientTransport
+
+	IdentityAccessManagement identity_access_management.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
@@ -154,4 +157,5 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Application.SetTransport(transport)
 	c.ApplicationInstance.SetTransport(transport)
 	c.Project.SetTransport(transport)
+	c.IdentityAccessManagement.SetTransport(transport)
 }
