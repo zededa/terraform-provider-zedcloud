@@ -196,7 +196,7 @@ func PatchEnvelopeSchema() map[string]*schema.Schema {
 		"project_name": {
 			Description: `project name`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"revision": {

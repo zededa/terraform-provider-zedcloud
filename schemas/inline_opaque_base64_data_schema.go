@@ -51,7 +51,7 @@ func InlineOpaqueBase64DataSchema() map[string]*schema.Schema {
 		"base64_data": {
 			Description: ``,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"base64_meta_data": {
@@ -63,7 +63,7 @@ func InlineOpaqueBase64DataSchema() map[string]*schema.Schema {
 		"file_name_to_use": {
 			Description: ``,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }

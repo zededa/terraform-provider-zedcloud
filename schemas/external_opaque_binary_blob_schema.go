@@ -65,19 +65,19 @@ only the application instance agents will interpret this.`,
 		"file_name_to_use": {
 			Description: ``,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"image_id": {
 			Description: ``,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"image_name": {
 			Description: ``,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }
