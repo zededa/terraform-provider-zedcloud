@@ -93,7 +93,7 @@ IdentityAccessManagementUpdateRoleOK describes a response with status code 200, 
 A successful response.
 */
 type IdentityAccessManagementUpdateRoleOK struct {
-	Payload *models.CrudResponse
+	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this identity access management update role o k response has a 2xx status code
@@ -134,13 +134,13 @@ func (o *IdentityAccessManagementUpdateRoleOK) String() string {
 	return fmt.Sprintf("[PUT /v1/roles/id/{id}][%d] identityAccessManagementUpdateRoleOK  %+v", 200, o.Payload)
 }
 
-func (o *IdentityAccessManagementUpdateRoleOK) GetPayload() *models.CrudResponse {
+func (o *IdentityAccessManagementUpdateRoleOK) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
 func (o *IdentityAccessManagementUpdateRoleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.CrudResponse)
+	o.Payload = new(models.ZsrvResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

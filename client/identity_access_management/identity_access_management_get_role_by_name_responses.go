@@ -82,7 +82,7 @@ IdentityAccessManagementGetRoleByNameOK describes a response with status code 20
 A successful response.
 */
 type IdentityAccessManagementGetRoleByNameOK struct {
-	Payload *models.CrudResponseRead
+	Payload *models.Role
 }
 
 // IsSuccess returns true when this identity access management get role by name o k response has a 2xx status code
@@ -123,13 +123,13 @@ func (o *IdentityAccessManagementGetRoleByNameOK) String() string {
 	return fmt.Sprintf("[GET /v1/roles/name/{name}][%d] identityAccessManagementGetRoleByNameOK  %+v", 200, o.Payload)
 }
 
-func (o *IdentityAccessManagementGetRoleByNameOK) GetPayload() *models.CrudResponseRead {
+func (o *IdentityAccessManagementGetRoleByNameOK) GetPayload() *models.Role {
 	return o.Payload
 }
 
 func (o *IdentityAccessManagementGetRoleByNameOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.CrudResponseRead)
+	o.Payload = new(models.Role)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

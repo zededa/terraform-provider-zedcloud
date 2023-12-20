@@ -42,6 +42,7 @@ func Provider() *schema.Provider {
 			"zedcloud_volume_instance":      VolumeInstanceDataSource(),
 			"zedcloud_project":              ProjectDataSource(),
 			"zedcloud_user":                 UserDataSource(),
+			"zedcloud_role":                 RoleDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":             NodeResource(),
@@ -54,6 +55,7 @@ func Provider() *schema.Provider {
 			"zedcloud_volume_instance":      VolumeInstanceResource(),
 			"zedcloud_project":              ProjectResource(),
 			"zedcloud_user":                 UserResource(),
+			"zedcloud_role":                 RoleResource(),
 		},
 	}
 }

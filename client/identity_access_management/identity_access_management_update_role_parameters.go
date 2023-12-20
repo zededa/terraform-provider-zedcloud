@@ -7,6 +7,7 @@ package identity_access_management
 
 import (
 	"context"
+	"github.com/zededa/terraform-provider/models"
 	"net/http"
 	"time"
 
@@ -68,7 +69,7 @@ type IdentityAccessManagementUpdateRoleParams struct {
 	XRequestID *string
 
 	// Body.
-	Body IdentityAccessManagementUpdateRoleBody
+	Body *models.Role
 
 	/* ID.
 
@@ -141,13 +142,13 @@ func (o *IdentityAccessManagementUpdateRoleParams) SetXRequestID(xRequestID *str
 }
 
 // WithBody adds the body to the identity access management update role params
-func (o *IdentityAccessManagementUpdateRoleParams) WithBody(body IdentityAccessManagementUpdateRoleBody) *IdentityAccessManagementUpdateRoleParams {
+func (o *IdentityAccessManagementUpdateRoleParams) WithBody(body *models.Role) *IdentityAccessManagementUpdateRoleParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the identity access management update role params
-func (o *IdentityAccessManagementUpdateRoleParams) SetBody(body IdentityAccessManagementUpdateRoleBody) {
+func (o *IdentityAccessManagementUpdateRoleParams) SetBody(body *models.Role) {
 	o.Body = body
 }
 

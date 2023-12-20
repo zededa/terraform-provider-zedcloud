@@ -40,7 +40,7 @@ type Role struct {
 	Name *string `json:"name"`
 
 	// Map of project tags filter
-	ProjectTags string `json:"projectTags,omitempty"`
+	ProjectTags map[string]string `json:"projectTags,omitempty"`
 
 	// System defined info
 	// Read Only: true

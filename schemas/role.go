@@ -9,7 +9,7 @@ func RoleModel(d *schema.ResourceData) *models.Role {
 	description, _ := d.Get("description").(string)
 	id, _ := d.Get("id").(string)
 	name, _ := d.Get("name").(string)
-	projectTags, _ := d.Get("project_tags").(string)
+	projectTags, _ := d.Get("project_tags").(map[string]string)
 	var scopes []*models.Scope // []*Scope
 	scopesInterface, scopesIsSet := d.GetOk("scopes")
 	if scopesIsSet {
@@ -56,7 +56,7 @@ func RoleModelFromMap(m map[string]interface{}) *models.Role {
 	description := m["description"].(string)
 	id := m["id"].(string)
 	name := m["name"].(string)
-	projectTags := m["project_tags"].(string)
+	projectTags := m["project_tags"].(map[string]string)
 	var scopes []*models.Scope // []*Scope
 	scopesInterface, scopesIsSet := m["scopes"]
 	if scopesIsSet {
@@ -152,8 +152,11 @@ func RoleSchema() map[string]*schema.Schema {
 
 		"project_tags": {
 			Description: `Map of project tags filter`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Type:        schema.TypeMap, //GoType: map[string]string
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
 		},
 
 		"revision": {

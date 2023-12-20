@@ -88,7 +88,7 @@ IdentityAccessManagementCreateRoleOK describes a response with status code 200, 
 A successful response.
 */
 type IdentityAccessManagementCreateRoleOK struct {
-	Payload *models.CrudResponse
+	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this identity access management create role o k response has a 2xx status code
@@ -129,13 +129,13 @@ func (o *IdentityAccessManagementCreateRoleOK) String() string {
 	return fmt.Sprintf("[POST /v1/roles][%d] identityAccessManagementCreateRoleOK  %+v", 200, o.Payload)
 }
 
-func (o *IdentityAccessManagementCreateRoleOK) GetPayload() *models.CrudResponse {
+func (o *IdentityAccessManagementCreateRoleOK) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
 func (o *IdentityAccessManagementCreateRoleOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.CrudResponse)
+	o.Payload = new(models.ZsrvResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
