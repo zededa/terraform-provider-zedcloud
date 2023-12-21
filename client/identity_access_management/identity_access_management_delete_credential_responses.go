@@ -82,7 +82,7 @@ IdentityAccessManagementDeleteCredentialOK describes a response with status code
 A successful response.
 */
 type IdentityAccessManagementDeleteCredentialOK struct {
-	Payload *models.CrudResponse
+	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this identity access management delete credential o k response has a 2xx status code
@@ -123,13 +123,13 @@ func (o *IdentityAccessManagementDeleteCredentialOK) String() string {
 	return fmt.Sprintf("[DELETE /v1/credentials/id/{id}][%d] identityAccessManagementDeleteCredentialOK  %+v", 200, o.Payload)
 }
 
-func (o *IdentityAccessManagementDeleteCredentialOK) GetPayload() *models.CrudResponse {
+func (o *IdentityAccessManagementDeleteCredentialOK) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
 func (o *IdentityAccessManagementDeleteCredentialOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.CrudResponse)
+	o.Payload = new(models.ZsrvResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
