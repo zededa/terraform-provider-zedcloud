@@ -88,7 +88,7 @@ IdentityAccessManagementCreateCredentialOK describes a response with status code
 A successful response.
 */
 type IdentityAccessManagementCreateCredentialOK struct {
-	Payload *models.CrudResponse
+	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this identity access management create credential o k response has a 2xx status code
@@ -129,13 +129,13 @@ func (o *IdentityAccessManagementCreateCredentialOK) String() string {
 	return fmt.Sprintf("[POST /v1/credentials][%d] identityAccessManagementCreateCredentialOK  %+v", 200, o.Payload)
 }
 
-func (o *IdentityAccessManagementCreateCredentialOK) GetPayload() *models.CrudResponse {
+func (o *IdentityAccessManagementCreateCredentialOK) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
 func (o *IdentityAccessManagementCreateCredentialOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.CrudResponse)
+	o.Payload = new(models.ZsrvResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

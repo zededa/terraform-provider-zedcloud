@@ -43,6 +43,7 @@ func Provider() *schema.Provider {
 			"zedcloud_project":              ProjectDataSource(),
 			"zedcloud_user":                 UserDataSource(),
 			"zedcloud_role":                 RoleDataSource(),
+			"zedcloud_credential":           CredentialDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":             NodeResource(),
@@ -56,6 +57,7 @@ func Provider() *schema.Provider {
 			"zedcloud_project":              ProjectResource(),
 			"zedcloud_user":                 UserResource(),
 			"zedcloud_role":                 RoleResource(),
+			"zedcloud_credential":           CredentialResource(),
 		},
 	}
 }

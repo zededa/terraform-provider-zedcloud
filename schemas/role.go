@@ -40,6 +40,14 @@ func RoleModel(d *schema.ResourceData) *models.Role {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewUserRole(models.UserRole(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.Role{
 		Description: description,
 		ID:          id,
@@ -49,6 +57,7 @@ func RoleModel(d *schema.ResourceData) *models.Role {
 		State:       state,
 		Title:       &title, // string
 		Type:        typeVar,
+		Revision:    revision,
 	}
 }
 
@@ -87,6 +96,15 @@ func RoleModelFromMap(m map[string]interface{}) *models.Role {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewUserRole(models.UserRole(typeModel))
 	}
+	//
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := m["revision"]
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.Role{
 		Description: description,
 		ID:          id,
@@ -96,6 +114,7 @@ func RoleModelFromMap(m map[string]interface{}) *models.Role {
 		State:       state,
 		Title:       &title,
 		Type:        typeVar,
+		Revision:    revision,
 	}
 }
 

@@ -87,6 +87,7 @@ func CredentialSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Sensitive:   true,
 		},
 
 		"forgot": {
@@ -105,6 +106,7 @@ func CredentialSchema() map[string]*schema.Schema {
 			Description: ``,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Sensitive:   true,
 		},
 
 		"owner": {

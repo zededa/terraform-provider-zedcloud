@@ -88,7 +88,7 @@ IdentityAccessManagementUpdateCredentialOK describes a response with status code
 A successful response.
 */
 type IdentityAccessManagementUpdateCredentialOK struct {
-	Payload *models.CrudResponse
+	Payload *models.ZsrvResponse
 }
 
 // IsSuccess returns true when this identity access management update credential o k response has a 2xx status code
@@ -129,13 +129,13 @@ func (o *IdentityAccessManagementUpdateCredentialOK) String() string {
 	return fmt.Sprintf("[PUT /v1/credentials][%d] identityAccessManagementUpdateCredentialOK  %+v", 200, o.Payload)
 }
 
-func (o *IdentityAccessManagementUpdateCredentialOK) GetPayload() *models.CrudResponse {
+func (o *IdentityAccessManagementUpdateCredentialOK) GetPayload() *models.ZsrvResponse {
 	return o.Payload
 }
 
 func (o *IdentityAccessManagementUpdateCredentialOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(models.CrudResponse)
+	o.Payload = new(models.ZsrvResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
