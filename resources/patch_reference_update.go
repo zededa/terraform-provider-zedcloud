@@ -18,7 +18,7 @@ func PatchEnvelopeReferenceUpdate() *schema.Resource {
 		CreateContext: CreatePatchEnvelopeReference,
 		UpdateContext: CreatePatchEnvelopeReference,
 		ReadContext:   schema.NoopContext,
-		DeleteContext: schema.NoopContext,
+		DeleteContext: DeletePatchEnvelopeReference,
 		Schema:        zschema.PatchReferenceUpdateConfigSchema(),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -36,7 +36,7 @@ func CreatePatchEnvelopeReference(ctx context.Context, d *schema.ResourceData, m
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	log.Printf("[TRACE] CreatePatchEnvelopeReference response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
 		return diags
@@ -66,6 +66,43 @@ func CreatePatchEnvelopeReference(ctx context.Context, d *schema.ResourceData, m
 	if errs := readPatchEnvelopeByName(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
+
+	return diags
+}
+
+func DeletePatchEnvelopeReference(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	model := zschema.PatchReferenceUpdateConfigModel(d)
+	model.PatchenvelopeID = ""
+	params := config.NewEdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceParams()
+	params.SetBody(model)
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params, nil)
+	log.Printf("[TRACE] DeletePatchEnvelopeReference response: %v", resp)
+	if err != nil {
+		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return diags
+	}
+
+	responseData := resp.GetPayload()
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeAccepted {
+				continue
+			}
+			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+		}
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	d.SetId("")
 
 	return diags
 }
