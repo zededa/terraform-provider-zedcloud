@@ -1973,10 +1973,12 @@ resource "zedcloud_image"  "test_tf_provider" {
   title = "test_tf_provider"
   image_arch = "UNSPECIFIED"
   image_format = "RAW"
-  datastore_id = "bfa12a79-7dc8-4639-8909-882e8c44eaf4"
+  datastore_id = "55c029bd-5d0a-46dd-b0ab-c6c9895b0d9a"
   image_rel_url = "test_url"
-  image_size_bytes = 0
+  image_size_bytes = 5000
   image_type = "IMAGE_TYPE_ARTIFACT"
+  image_sha256 = "815fa14f544f2e955af18848667320fefd90d82e42497f429b53cc57cc76fb5c"
+  project_access_list = []
 }
 
 
@@ -1985,6 +1987,7 @@ resource "zedcloud_patch_envelope" "test_tf_provider" {
   action = "PATCH_ENVELOPE_ACTION_ACTIVATE"
   title  = "test_tf_provider"
   description = "test tf provider"
+  user_defined_version = "1.0"
 
   artifacts {
     format = "OpaqueObjectCategoryInline"
@@ -2003,7 +2006,6 @@ resource "zedcloud_patch_envelope" "test_tf_provider" {
   }
   project_name = data.zedcloud_project.test_tf_provider.name
   project_id = data.zedcloud_project.test_tf_provider.id
-  user_defined_version = "1.0"
   depends_on = [
     zedcloud_image.test_tf_provider
     ]

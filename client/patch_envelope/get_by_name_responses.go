@@ -41,6 +41,12 @@ func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameReader) ReadResponse(re
 			return nil, err
 		}
 		return nil, result
+	case 404:
+		result := NewPatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewPatchEnvelopeConfigurationGetPatchEnvelopeByNameInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -258,6 +264,74 @@ func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameForbidden) GetPayload()
 }
 
 func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewPatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound creates a PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound with default headers values
+func NewPatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound() *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound {
+	return &PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound{}
+}
+
+/*
+PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound describes a response with status code 404, with default header values.
+
+Not Found. The API gateway did not process the request because the requested resource could not be found.
+*/
+type PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this patch envelope configuration get patch envelope by name not found response has a 2xx status code
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this patch envelope configuration get patch envelope by name not found response has a 3xx status code
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this patch envelope configuration get patch envelope by name not found response has a 4xx status code
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this patch envelope configuration get patch envelope by name not found response has a 5xx status code
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this patch envelope configuration get patch envelope by name not found response a status code equal to that given
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the patch envelope configuration get patch envelope by name not found response
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) Code() int {
+	return 404
+}
+
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) Error() string {
+	return fmt.Sprintf("[GET /v1/patch-envelope/name/{name}][%d] patchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound  %+v", 404, o.Payload)
+}
+
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) String() string {
+	return fmt.Sprintf("[GET /v1/patch-envelope/name/{name}][%d] patchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound  %+v", 404, o.Payload)
+}
+
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *PatchEnvelopeConfigurationGetPatchEnvelopeByNameNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

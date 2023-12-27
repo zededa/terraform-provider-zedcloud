@@ -1,11 +1,12 @@
 package testing
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"gopkg.in/yaml.v3"
+	"github.com/ghodss/yaml"
 )
 
 func MustGetTestInput(t *testing.T, path string) string {
@@ -29,7 +30,8 @@ func MustGetExpectedOutput(t *testing.T, path string, i interface{}) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := yaml.Unmarshal(bytes, i); err != nil {
+	jsonBytes, _ := yaml.YAMLToJSON(bytes)
+	if err := json.Unmarshal(jsonBytes, i); err != nil {
 		t.Fatal(err)
 	}
 }
@@ -45,7 +47,12 @@ func ToYAML(path string, i interface{}) {
 	}
 	defer file.Close()
 
-	err = yaml.NewEncoder(file).Encode(i)
+	yamlBytes, err := yaml.Marshal(i)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = file.Write(yamlBytes)
 	if err != nil {
 		panic(err)
 	}
