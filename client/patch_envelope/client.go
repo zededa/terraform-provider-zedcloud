@@ -56,7 +56,7 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	PatchEnvelopeConfigurationCreatePatchEnvelope(params *PatchEnvelopeConfigurationCreatePatchEnvelopeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PatchEnvelopeConfigurationCreatePatchEnvelopeOK, error)
 
-	PatchEnvelopeConfigurationDeleteAppInstanceSnapshot(params *PatchEnvelopeConfigurationDeleteAppInstanceSnapshotParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PatchEnvelopeConfigurationDeleteAppInstanceSnapshotOK, error)
+	PatchEnvelopeConfigurationDeletePatchEnvelope(params *PatchEnvelopeConfigurationDeletePatchEnvelopeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PatchEnvelopeConfigurationDeletePatchEnvelopeOK, error)
 
 	PatchEnvelopeConfigurationGetPatchEnvelope(params *PatchEnvelopeConfigurationGetPatchEnvelopeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PatchEnvelopeConfigurationGetPatchEnvelopeOK, error)
 
@@ -112,24 +112,24 @@ func (a *Client) PatchEnvelopeConfigurationCreatePatchEnvelope(params *PatchEnve
 }
 
 /*
-PatchEnvelopeConfigurationDeleteAppInstanceSnapshot deletes patch envelope
+PatchEnvelopeConfigurationDeletePatchEnvelope deletes patch envelope
 
 Deletes patch envelope with specified id
 */
-func (a *Client) PatchEnvelopeConfigurationDeleteAppInstanceSnapshot(params *PatchEnvelopeConfigurationDeleteAppInstanceSnapshotParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PatchEnvelopeConfigurationDeleteAppInstanceSnapshotOK, error) {
+func (a *Client) PatchEnvelopeConfigurationDeletePatchEnvelope(params *PatchEnvelopeConfigurationDeletePatchEnvelopeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*PatchEnvelopeConfigurationDeletePatchEnvelopeOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewPatchEnvelopeConfigurationDeleteAppInstanceSnapshotParams()
+		params = NewPatchEnvelopeConfigurationDeletePatchEnvelopeParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "PatchEnvelopeConfiguration_DeleteAppInstanceSnapshot",
+		ID:                 "PatchEnvelopeConfiguration_DeletePatchEnvelope",
 		Method:             "DELETE",
 		PathPattern:        "/v1/patch-envelope/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &PatchEnvelopeConfigurationDeleteAppInstanceSnapshotReader{formats: a.formats},
+		Reader:             &PatchEnvelopeConfigurationDeletePatchEnvelopeReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -142,12 +142,12 @@ func (a *Client) PatchEnvelopeConfigurationDeleteAppInstanceSnapshot(params *Pat
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*PatchEnvelopeConfigurationDeleteAppInstanceSnapshotOK)
+	success, ok := result.(*PatchEnvelopeConfigurationDeletePatchEnvelopeOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	unexpectedSuccess := result.(*PatchEnvelopeConfigurationDeleteAppInstanceSnapshotDefault)
+	unexpectedSuccess := result.(*PatchEnvelopeConfigurationDeletePatchEnvelopeDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

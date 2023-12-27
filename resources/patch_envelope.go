@@ -213,7 +213,7 @@ func UpdatePatchEnvelope(ctx context.Context, d *schema.ResourceData, m interfac
 func DeletePatchEnvelope(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := config.NewPatchEnvelopeConfigurationDeleteAppInstanceSnapshotParams()
+	params := config.NewPatchEnvelopeConfigurationDeletePatchEnvelopeParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -231,7 +231,7 @@ func DeletePatchEnvelope(ctx context.Context, d *schema.ResourceData, m interfac
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.PatchEnvelope.PatchEnvelopeConfigurationDeleteAppInstanceSnapshot(params, nil)
+	resp, err := client.PatchEnvelope.PatchEnvelopeConfigurationDeletePatchEnvelope(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)

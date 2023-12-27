@@ -13,6 +13,13 @@ import (
 	zschema "github.com/zededa/terraform-provider/schemas"
 )
 
+// Patch envelope reference update only updates the reference between patch envelope
+// and app instance. Only POST api is supported for that.
+// Hence both CreateContext and UpdateContext call the same function CreatePatchEnvelopeReference
+// that does POST API call with updated params.
+// Since there is no GET api support for getting the reference, ReadContext is set to noop.
+// DeletePatchEnvelopeReference will remove any existing reference created for the
+// app instance when the resource block is removed.
 func PatchEnvelopeReferenceUpdate() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreatePatchEnvelopeReference,
