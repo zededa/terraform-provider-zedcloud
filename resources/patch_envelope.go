@@ -110,9 +110,9 @@ func readPatchEnvelopeByID(ctx context.Context, d *schema.ResourceData, m interf
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
 
-	appInstance := resp.GetPayload()
-	zschema.SetPatchEnvelopeResourceData(d, appInstance)
-	d.SetId(appInstance.ID)
+	patchEnv := resp.GetPayload()
+	zschema.SetPatchEnvelopeResourceData(d, patchEnv)
+	d.SetId(patchEnv.ID)
 
 	return diags
 
@@ -144,9 +144,9 @@ func readPatchEnvelopeByName(ctx context.Context, d *schema.ResourceData, m inte
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
 
-	appInstance := resp.GetPayload()
-	zschema.SetPatchEnvelopeResourceData(d, appInstance)
-	d.SetId(appInstance.ID)
+	patchEnv := resp.GetPayload()
+	zschema.SetPatchEnvelopeResourceData(d, patchEnv)
+	d.SetId(patchEnv.ID)
 
 	return diags
 
