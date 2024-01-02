@@ -3,7 +3,6 @@ package resources
 import (
 	"errors"
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -16,47 +15,37 @@ import (
 	testhelper "github.com/zededa/terraform-provider/testing"
 )
 
-func TestPatchEnvelope_Create(t *testing.T) {
+func TestPatchReferenceUpdate_Create(t *testing.T) {
 	var got models.PatchEnvelope
 	var expected models.PatchEnvelope
 
 	// input config
-	inputPath := "patch_envelope/create.tf"
+	inputPath := "patch_reference_update/create.tf"
 	input := testhelper.MustGetTestInput(t, inputPath)
 
 	// expected output
-	expectedPath := "patch_envelope/create.yaml"
+	expectedPath := "patch_reference_update/create.yaml"
 	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
 
 	// terraform acceptance test case
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testhelper.CheckEnv(t) },
-		CheckDestroy: testPatchEnvelopeDestroy,
+		CheckDestroy: testPatchEnvelopeReferenceDestroy,
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: input,
 				Check: resource.ComposeTestCheckFunc(
-					testPatchEnvelopeExists("zedcloud_patch_envelope.test_tf_provider", &got),
-					resource.TestMatchResourceAttr(
-						"zedcloud_patch_envelope.test_tf_provider",
-						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
-					resource.TestMatchResourceAttr(
-						"zedcloud_patch_envelope.test_tf_provider",
-						"project_id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					),
-					testPatchEnvelopeAttributes(t, &got, &expected),
+					testPatchEnvelopeWithRefExists("zedcloud_patch_envelope.test_tf_provider", &got),
+					testPatchEnvelopeReferenceUpdateAttributes(t, &got, &expected),
 				),
 			},
 		},
 	})
 }
 
-// testPatchEnvelopeExists retrieves the PatchEnvelope and stores it in the provided *models.PatchEnvelope.
-func testPatchEnvelopeExists(resourceName string, patchEnvelopeModel *models.PatchEnvelope) resource.TestCheckFunc {
+// testPatchEnvelopeForRefExists retrieves the PatchEnvelope and stores it in the provided *models.PatchEnvelope.
+func testPatchEnvelopeWithRefExists(resourceName string, patchEnvelopeModel *models.PatchEnvelope) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
 		rs, ok := s.RootModule().Resources[resourceName]
@@ -89,8 +78,8 @@ func testPatchEnvelopeExists(resourceName string, patchEnvelopeModel *models.Pat
 	}
 }
 
-// testPatchEnvelopeAttributes verifies attributes are set correctly by Terraform
-func testPatchEnvelopeAttributes(t *testing.T, got, expected *models.PatchEnvelope) resource.TestCheckFunc {
+// testPatchEnvelopeReferenceUpdateAttributes verifies attributes are set correctly by Terraform
+func testPatchEnvelopeReferenceUpdateAttributes(t *testing.T, got, expected *models.PatchEnvelope) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 
 		ignoredFields := []string{
@@ -131,8 +120,8 @@ func testPatchEnvelopeAttributes(t *testing.T, got, expected *models.PatchEnvelo
 	}
 }
 
-// testPatchEnvelopeInstanceDestroy verifies the PatchEnvelope has been destroyed.
-func testPatchEnvelopeDestroy(s *terraform.State) error {
+// testPatchEnvelopeReferenceDestroy verifies the PatchEnvelope has been destroyed.
+func testPatchEnvelopeReferenceDestroy(s *terraform.State) error {
 	// retrieve the client established in Provider configuration
 	client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
