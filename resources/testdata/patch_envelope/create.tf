@@ -32,8 +32,8 @@ resource "zedcloud_patch_envelope" "test_tf_provider" {
   artifacts {
     format = "OpaqueObjectCategoryExternalBinary"
     binary_artifact {
-      image_id = resource.zedcloud_image.test_tf_provider.id
-      image_name = resource.zedcloud_image.test_tf_provider.name
+      image_id = zedcloud_image.test_tf_provider.id
+      image_name = zedcloud_image.test_tf_provider.name
       file_name_to_use = "new_filename"
     }
   }
