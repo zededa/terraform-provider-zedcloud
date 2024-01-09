@@ -1963,8 +1963,8 @@ data "zedcloud_application_instance" "test_tf_provider" {
   ]
   name      = "test_tf_provider"
   title     = "test_tf_provider"
-  device_id = data.zedcloud_edgenode.test_tf_provider.id
-  app_id    = data.zedcloud_application.test_tf_provider.id
+  device_id = zedcloud_edgenode.test_tf_provider.id
+  app_id    = zedcloud_application.test_tf_provider.id
 }
 
 
@@ -1999,22 +1999,22 @@ resource "zedcloud_patch_envelope" "test_tf_provider" {
   artifacts {
     format = "OpaqueObjectCategoryExternalBinary"
     binary_artifact {
-      image_id = resource.zedcloud_image.test_tf_provider.id
-      image_name = resource.zedcloud_image.test_tf_provider.name
+      image_id = zedcloud_image.test_tf_provider.id
+      image_name = zedcloud_image.test_tf_provider.name
       file_name_to_use = "new_filename"
     }
   }
-  project_name = data.zedcloud_project.test_tf_provider.name
-  project_id = data.zedcloud_project.test_tf_provider.id
+  project_name = zedcloud_project.test_tf_provider.name
+  project_id = zedcloud_project.test_tf_provider.id
   depends_on = [
     zedcloud_image.test_tf_provider
     ]
 }
 
 resource "zedcloud_patch_reference_update" "test_tf_provider" {
-  app_inst_id_list = [resource.zedcloud_application_instance.test_tf_provider.id]
-  patchenvelope_id = resource.zedcloud_patch_envelope.test_tf_provider.id
-  project_id = resource.zedcloud_project.test_tf_provider.id
+  app_inst_id_list = [zedcloud_application_instance.test_tf_provider.id]
+  patchenvelope_id = zedcloud_patch_envelope.test_tf_provider.id
+  project_id = zedcloud_project.test_tf_provider.id
   depends_on = [
     zedcloud_application_instance.test_tf_provider,
     zedcloud_patch_envelope.test_tf_provider,

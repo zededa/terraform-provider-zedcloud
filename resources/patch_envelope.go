@@ -70,8 +70,8 @@ func CreatePatchEnvelope(ctx context.Context, d *schema.ResourceData, m interfac
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := readPatchEnvelopeByName(ctx, d, m); err != nil {
-		return append(diags, errs...)
+	if diags := readPatchEnvelopeByName(ctx, d, m); diags.HasError() {
+		return diags
 	}
 
 	return diags
@@ -203,8 +203,8 @@ func UpdatePatchEnvelope(ctx context.Context, d *schema.ResourceData, m interfac
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := readPatchEnvelopeByName(ctx, d, m); err != nil {
-		return append(diags, errs...)
+	if diags := readPatchEnvelopeByName(ctx, d, m); diags.HasError() {
+		return diags
 	}
 
 	return diags
