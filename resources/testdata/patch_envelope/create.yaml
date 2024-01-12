@@ -1,0 +1,21 @@
+action: PATCH_ENVELOPE_ACTION_STORE
+artifacts:
+  - base64Artifact:
+      base64Data: YXJ0aWZhY3QgZGF0YQ==
+      fileNameToUse: testfile
+    format: OpaqueObjectCategoryInline
+    id: 3f4bb708-9892-4578-bc84-08fa9044610f
+  - binaryArtifact:
+      fileNameToUse: new_filename
+      imageId: 334dc3a6-7de7-4e2b-ad14-a165767ae324
+      imageName: test_tf_provider
+    format: OpaqueObjectCategoryExternalBinary
+    id: 3f4bb708-9892-4578-bc84-08fa9044610f
+description: test tf provider
+id: c054c11c-1558-4032-aa0b-c7b4650a3350
+name: test_tf_provider
+projectId: 36742c48-224a-4454-a8c1-b3f75b3f78bd
+projectName: test_tf_provider
+title: test_tf_provider
+userDefinedVersion: "1.0"
+deviceCount: 0

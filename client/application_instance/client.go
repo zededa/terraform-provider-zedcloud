@@ -50,6 +50,8 @@ type ClientService interface {
 
 	Update(params *EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationUpdateEdgeApplicationInstanceOK, error)
 
+	EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params *EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceOK, error)
+
 	SetTransport(transport runtime.ClientTransport)
 }
 
@@ -536,4 +538,44 @@ func (a *Client) Update(params *EdgeApplicationInstanceConfigurationUpdateEdgeAp
 // SetTransport changes the transport on the client
 func (a *Client) SetTransport(transport runtime.ClientTransport) {
 	a.transport = transport
+}
+
+/*
+EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance patches envelope reference update
+
+Attach/detach a patch envelope to app instance. For detaching, pass patch envelope id as empty string
+*/
+func (a *Client) EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params *EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewEdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "EdgeApplicationInstanceConfiguration_UpdatePatchEnvelopeReferencetoAppInstance",
+		Method:             "POST",
+		PathPattern:        "/v1/apps/instances/patch-reference-update",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstanceDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
