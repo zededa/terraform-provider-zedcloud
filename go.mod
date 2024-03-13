@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/davecgh/go-spew v1.1.1
+	github.com/ghodss/yaml v1.0.0
 	github.com/go-openapi/errors v0.20.3
 	github.com/go-openapi/runtime v0.24.2
 	github.com/go-openapi/strfmt v0.21.7
@@ -21,7 +22,6 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/fatih/color v1.13.0 // indirect
-	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-openapi/analysis v0.21.4 // indirect
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
@@ -75,6 +75,6 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.56.3 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
