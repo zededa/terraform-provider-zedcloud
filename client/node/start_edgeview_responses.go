@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 
-	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 // EdgeNodeConfigurationStartEdgeviewEdgeNodeReader is a Reader for the EdgeNodeConfigurationStartEdgeviewEdgeNode structure.

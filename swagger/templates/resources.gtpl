@@ -2,8 +2,8 @@ package resources
 
 import (
 	httptransport "github.com/go-openapi/runtime/client"
-	api_client "github.com/zededa/terraform-provider/client"
-	zschema "github.com/zededa/terraform-provider/schemas"
+	api_client "github.com/zededa/terraform-provider-zedcloud/client"
+	zschema "github.com/zededa/terraform-provider-zedcloud/schemas"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )

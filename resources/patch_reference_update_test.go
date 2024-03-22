@@ -9,10 +9,10 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	api_client "github.com/zededa/terraform-provider/client"
-	config "github.com/zededa/terraform-provider/client/patch_envelope"
-	"github.com/zededa/terraform-provider/models"
-	testhelper "github.com/zededa/terraform-provider/testing"
+	api_client "github.com/zededa/terraform-provider-zedcloud/client"
+	config "github.com/zededa/terraform-provider-zedcloud/client/patch_envelope"
+	"github.com/zededa/terraform-provider-zedcloud/models"
+	testhelper "github.com/zededa/terraform-provider-zedcloud/testing"
 )
 
 func TestPatchReferenceUpdate_Create(t *testing.T) {

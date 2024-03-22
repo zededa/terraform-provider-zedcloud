@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider/models"
-	"github.com/zededa/terraform-provider/pkg/compare"
+	"github.com/zededa/terraform-provider-zedcloud/models"
+	"github.com/zededa/terraform-provider-zedcloud/pkg/compare"
 	"golang.org/x/exp/slices"
 )
 
@@ -180,7 +180,7 @@ func diffSuppressInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc
 
 // suppressAppInterfacesChangeAfterCreation checks whether we have the newly created AppInterface
 // or not. It suppress any differences after an AppInstance is created.
-// AppInterfaces are never updated after they have been created 
+// AppInterfaces are never updated after they have been created
 func suppressAppInterfacesChangeAfterCreation(mapKey string) schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
 		oldData, newData := d.GetChange(mapKey)

@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 // EdgeNodeConfigurationCreateEdgeNodeReader is a Reader for the EdgeNodeConfigurationCreateEdgeNode structure.
