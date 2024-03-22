@@ -10,7 +10,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider/client"
+	"github.com/zededa/terraform-provider-zedcloud/client"
 )
 
 func Provider() *schema.Provider {
@@ -56,7 +56,7 @@ func Provider() *schema.Provider {
 			"zedcloud_datastore":              DatastoreResource(),
 			"zedcloud_volume_instance":        VolumeInstanceResource(),
 			"zedcloud_project":                ProjectResource(),
-      "zedcloud_user":                   UserResource(),
+			"zedcloud_user":                   UserResource(),
 			"zedcloud_role":                   RoleResource(),
 			"zedcloud_credential":             CredentialResource(),
 			"zedcloud_patch_envelope":         PatchEnvelopeResource(),

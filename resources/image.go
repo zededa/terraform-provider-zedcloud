@@ -7,10 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	api_client "github.com/zededa/terraform-provider/client"
-	config "github.com/zededa/terraform-provider/client/image"
-	"github.com/zededa/terraform-provider/models"
-	zschema "github.com/zededa/terraform-provider/schemas"
+	api_client "github.com/zededa/terraform-provider-zedcloud/client"
+	config "github.com/zededa/terraform-provider-zedcloud/client/image"
+	"github.com/zededa/terraform-provider-zedcloud/models"
+	zschema "github.com/zededa/terraform-provider-zedcloud/schemas"
 )
 
 func ImageResource() *schema.Resource {

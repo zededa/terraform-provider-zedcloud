@@ -2,7 +2,7 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 func NetworkWifiModel(d *schema.ResourceData) *models.Wifi {
@@ -170,9 +170,9 @@ func NetworkWifi() map[string]*schema.Schema {
 
 		"identity": {
 			Description: `WPA2 enterprise user identity/username. Use value from Vault.	This field will not be published by terraform import`,
-			Type:      schema.TypeString,
-			Optional:  true,
-			Sensitive: true,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Sensitive:   true,
 		},
 
 		"key_scheme": {

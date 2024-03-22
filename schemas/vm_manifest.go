@@ -2,7 +2,7 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
@@ -371,14 +371,14 @@ func VMManifest() map[string]*schema.Schema {
 			Description: `UI map: N/A - not exposed to users`,
 			Type:        schema.TypeString,
 			// Default:     "VMManifest",
-			Required:    true,
+			Required: true,
 		},
 
 		"ac_version": {
 			Description: `UI map: N/A - not exposed to users`,
 			Type:        schema.TypeString,
 			// Default:     "1.2.0",
-			Required:    true,
+			Required: true,
 		},
 
 		"app_type": {

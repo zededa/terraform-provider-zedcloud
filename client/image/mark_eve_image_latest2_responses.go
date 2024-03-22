@@ -14,7 +14,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 // ImageConfigurationMarkEveImageLatest2Reader is a Reader for the ImageConfigurationMarkEveImageLatest2 structure.

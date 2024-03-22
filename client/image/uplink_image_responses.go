@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/swag"
 	"github.com/go-openapi/validate"
 
-	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 // ImageConfigurationUplinkImageReader is a Reader for the ImageConfigurationUplinkImage structure.

@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 func NodeModel(d *schema.ResourceData) *models.Node {
@@ -693,7 +693,7 @@ func Node() map[string]*schema.Schema {
 			Description: `user specified device name`,
 			Type:        schema.TypeString,
 			Required:    true,
-			ForceNew: 	 true,
+			ForceNew:    true,
 		},
 
 		"onboarding_key": {

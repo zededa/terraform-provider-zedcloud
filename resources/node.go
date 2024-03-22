@@ -7,10 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	api_client "github.com/zededa/terraform-provider/client"
-	config "github.com/zededa/terraform-provider/client/node"
-	"github.com/zededa/terraform-provider/models"
-	zschema "github.com/zededa/terraform-provider/schemas"
+	api_client "github.com/zededa/terraform-provider-zedcloud/client"
+	config "github.com/zededa/terraform-provider-zedcloud/client/node"
+	"github.com/zededa/terraform-provider-zedcloud/models"
+	zschema "github.com/zededa/terraform-provider-zedcloud/schemas"
 )
 
 // Note, an edge-node and a device-config are the same thing. Due is inconcistency in the API

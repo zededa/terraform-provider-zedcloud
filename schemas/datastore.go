@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 // Note, when providing secrets as variable instead of hard-coding them, the fields api_key, ds_err and enterprise_id
@@ -273,7 +273,7 @@ func Datastore() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Required:    true,
 			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
-				return oldValue == fmt.Sprintf("https://%s", newValue) 
+				return oldValue == fmt.Sprintf("https://%s", newValue)
 			},
 		},
 
