@@ -16,7 +16,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - 'fake_v*'
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
