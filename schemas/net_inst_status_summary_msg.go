@@ -4,7 +4,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-	"github.com/zededa/terraform-provider-zedcloud/models"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 func NetInstStatusSummaryMsgModel(d *schema.ResourceData) *models.NetInstStatusSummaryMsg {

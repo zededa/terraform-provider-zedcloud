@@ -10,7 +10,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/zededa/terraform-provider-zedcloud/models"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 // EdgeApplicationConfigurationQueryEdgeApplicationBundleProjectListReader is a Reader for the EdgeApplicationConfigurationQueryEdgeApplicationBundleProjectList structure.

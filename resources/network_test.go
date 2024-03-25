@@ -10,11 +10,11 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	api_client "github.com/zededa/terraform-provider-zedcloud/client"
-	config "github.com/zededa/terraform-provider-zedcloud/client/network"
-	"github.com/zededa/terraform-provider-zedcloud/models"
-	"github.com/zededa/terraform-provider-zedcloud/schemas"
-	testhelper "github.com/zededa/terraform-provider-zedcloud/testing"
+	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
+	config "github.com/zededa/terraform-provider-zedcloud/v2/client/network"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
+	"github.com/zededa/terraform-provider-zedcloud/v2/schemas"
+	testhelper "github.com/zededa/terraform-provider-zedcloud/v2/testing"
 )
 
 func TestNetwork_Create_RequiredAttributesOnly(t *testing.T) {
