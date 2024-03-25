@@ -10,10 +10,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	api_client "github.com/zededa/terraform-provider-zedcloud/client"
-	config "github.com/zededa/terraform-provider-zedcloud/client/identity_access_management"
-	"github.com/zededa/terraform-provider-zedcloud/models"
-	testhelper "github.com/zededa/terraform-provider-zedcloud/testing"
+	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
+	config "github.com/zededa/terraform-provider-zedcloud/v2/client/identity_access_management"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
+	testhelper "github.com/zededa/terraform-provider-zedcloud/v2/testing"
 )
 
 func TestUser_Create(t *testing.T) {

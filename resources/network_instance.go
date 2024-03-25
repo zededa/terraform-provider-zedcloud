@@ -7,10 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	api_client "github.com/zededa/terraform-provider-zedcloud/client"
-	config "github.com/zededa/terraform-provider-zedcloud/client/network_instance"
-	"github.com/zededa/terraform-provider-zedcloud/models"
-	zschema "github.com/zededa/terraform-provider-zedcloud/schemas"
+	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
+	config "github.com/zededa/terraform-provider-zedcloud/v2/client/network_instance"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
+	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
 
 func NetworkInstanceResource() *schema.Resource {

@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider-zedcloud/models"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 func ObjectRevisionModel(d *schema.ResourceData) *models.ObjectRevision {

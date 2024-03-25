@@ -10,7 +10,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider-zedcloud/client"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client"
 )
 
 func Provider() *schema.Provider {
