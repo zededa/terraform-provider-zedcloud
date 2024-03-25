@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider-zedcloud/v2/models"
-	"github.com/zededa/terraform-provider-zedcloud/v2/pkg/compare"
+	"github.com/zededa/terraform-provider-zedcloud/models"
+	"github.com/zededa/terraform-provider-zedcloud/pkg/compare"
 	"golang.org/x/exp/slices"
 )
 

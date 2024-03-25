@@ -10,7 +10,7 @@ import (
 	"flag"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
-	"github.com/zededa/terraform-provider-zedcloud/v2/resources"
+	"github.com/zededa/terraform-provider-zedcloud/resources"
 )
 
 var (

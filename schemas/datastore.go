@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider-zedcloud/v2/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 // Note, when providing secrets as variable instead of hard-coding them, the fields api_key, ds_err and enterprise_id

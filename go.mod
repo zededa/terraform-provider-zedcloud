@@ -1,4 +1,4 @@
-module github.com/zededa/terraform-provider-zedcloud/v2
+module github.com/zededa/terraform-provider-zedcloud
 
 go 1.18
 
