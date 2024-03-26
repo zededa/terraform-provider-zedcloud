@@ -6,7 +6,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		title = "test_tf_provider-title"
 
     # optional
-    onboarding_key = "5d0767ee-0547-4569-b530-387e526f8cb9"
+    onboarding_key = ""
 		serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b"
     admin_state = "ADMIN_STATE_ACTIVE"
     asset_id = "asset_id"
