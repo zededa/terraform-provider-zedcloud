@@ -1,5 +1,5 @@
 resource "zedcloud_edgenode" "test_tf_provider" {
-    onboarding_key = "5d0767ee-0547-4569-b530-387e526f8cb9"
+    onboarding_key = ""
 		serialno = "2293dbe8-29ce-420c-8264-962857efc46b"
     # identity = "identity"
 

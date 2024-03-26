@@ -56,7 +56,7 @@ location: ""
 memory: 0
 modelid: 2f716b55-2639-486c-9a2f-55a2e94146a6
 name: test_tf_provider
-obkey: 5d0767ee-0547-4569-b530-387e526f8cb9
+obkey: ""
 onboarding: null
 preparepoweroffcounter: 0
 preparepowerofftime: ""
