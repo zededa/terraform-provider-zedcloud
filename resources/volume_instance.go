@@ -7,10 +7,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
-	config "github.com/zededa/terraform-provider-zedcloud/v2/client/volume_instance"
-	"github.com/zededa/terraform-provider-zedcloud/v2/models"
-	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
+	api_client "github.com/zededa/terraform-provider-zedcloud/client"
+	config "github.com/zededa/terraform-provider-zedcloud/client/volume_instance"
+	"github.com/zededa/terraform-provider-zedcloud/models"
+	zschema "github.com/zededa/terraform-provider-zedcloud/schemas"
 )
 
 func VolumeInstanceResource() *schema.Resource {

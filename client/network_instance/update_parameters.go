@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-	"github.com/zededa/terraform-provider-zedcloud/v2/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 // NewEdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams creates a new EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams object,

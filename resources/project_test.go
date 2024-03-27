@@ -10,10 +10,10 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
-	config "github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
-	"github.com/zededa/terraform-provider-zedcloud/v2/models"
-	testhelper "github.com/zededa/terraform-provider-zedcloud/v2/testing"
+	api_client "github.com/zededa/terraform-provider-zedcloud/client"
+	config "github.com/zededa/terraform-provider-zedcloud/client/projects"
+	"github.com/zededa/terraform-provider-zedcloud/models"
+	testhelper "github.com/zededa/terraform-provider-zedcloud/testing"
 )
 
 func TestProject_Create_RequiredOnly(t *testing.T) {

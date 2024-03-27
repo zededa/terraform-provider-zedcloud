@@ -13,7 +13,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/zededa/terraform-provider-zedcloud/v2/models"
+	"github.com/zededa/terraform-provider-zedcloud/models"
 )
 
 // CreateParams creates a new EdgeNetworkConfigurationCreateEdgeNetworkParams object,
