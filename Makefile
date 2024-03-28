@@ -37,9 +37,9 @@ datadump-gen:
 
 .PHONY: build
 build:
-	rm -f terraform-provider-zedcloud_v*
-	go build -o $(NAME)_$(VERSION)
-	chmod a+x  $(NAME)_$(VERSION)
+	rm -f ./v2/terraform-provider-zedcloud_v*
+	go build -C ./v2 -o $(NAME)_$(VERSION)
+	chmod a+x  ./v2/$(NAME)_$(VERSION)
 
 # acceptance tests
 .PHONY: test
