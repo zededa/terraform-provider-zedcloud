@@ -1,6 +1,8 @@
 module github.com/zededa/terraform-provider-zedcloud
 
-go 1.18
+go 1.21
+
+toolchain go1.21.0
 
 replace github.com/zededa/terraform-provider-zedcloud/v2 => ./v2
 
