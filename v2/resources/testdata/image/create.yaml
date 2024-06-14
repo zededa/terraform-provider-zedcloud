@@ -3,7 +3,6 @@ datastoreid: "aa7eb10b-7c1e-4f07-87c3-b30331e5d451"
 imagearch: "AMD64"
 imageformat: "CONTAINER"
 imagerelurl: "test_url"
-imagesizebytes: 0
 imagetype:  "IMAGE_TYPE_APPLICATION"
 title: "test"
 origintype: "ORIGIN_LOCAL"

@@ -175,6 +175,7 @@ func testNetworkAttributes(t *testing.T, got, expected *models.Network) resource
 		ignoredFields := []string{
 			"ID",
 			"Revision",
+			"ProjectID",
 		}
 		if expected.Proxy != nil && expected.Proxy.NetworkProxyCerts == nil {
 			ignoredFields = append(ignoredFields, "Proxy.NetworkProxyCerts")

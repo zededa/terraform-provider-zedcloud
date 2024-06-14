@@ -1,36 +1,117 @@
-resource "zedcloud_edgenode" "test_tf_provider" {
-		name = "test_tf_provider-create_edgenode"
-		model_id = "2f716b55-2639-486c-9a2f-55a2e94146a6"
-		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
-		title = "title"
+resource "zedcloud_project" "test_tf_provider" {
+    # required
+    name = "test_tf_provider-create_netinst_2"
+    title = "title"
+
+    # optional
+    type = "TAG_TYPE_PROJECT"
+    attestation_policy {
+        # required
+        title = "title"
+        type = "POLICY_TYPE_ATTESTATION"
+
+        attestation_policy {
+            # required
+            type = "ATTEST_POLICY_TYPE_ACCEPT"
+        }
+    }
 }
 
-data "zedcloud_edgenode" "test_tf_provider" {
-		name = "test_tf_provider-create_edgenode"
-		model_id = zedcloud_edgenode.test_tf_provider.model_id
-		title = zedcloud_edgenode.test_tf_provider.title
+
+resource "zedcloud_datastore"  "test_tf_provider" {
     depends_on = [
-        zedcloud_edgenode.test_tf_provider
+        zedcloud_project.test_tf_provider
     ]
+    # required
+    ds_fqdn = "my-datastore.my-company.com"
+    ds_path = "download/AMD64"
+    ds_type = "DATASTORE_TYPE_AZUREBLOB"
+    name = "test"
+    title = "title"
+    description = "description"
+    region = "eu"
+    project_access_list = [zedcloud_project.test_tf_provider.id]
+}
+
+resource "zedcloud_image" "test_tf_provider" {
+    depends_on = [
+        zedcloud_datastore.test_tf_provider,
+        zedcloud_project.test_tf_provider
+    ]
+    name = "test_tf_provider-create_edgenode"
+    datastore_id = zedcloud_datastore.test_tf_provider.id
+    image_arch = "AMD64"
+    image_format = "CONTAINER"
+    image_rel_url = "test_url"
+    image_size_bytes = 0
+    image_type =  "IMAGE_TYPE_APPLICATION"
+    title = "test"
+    project_access_list = [zedcloud_project.test_tf_provider.id]
+}
+
+resource "zedcloud_brand" "test_tf_provider" {
+    name = "test_tf_provider-create_edgenode"
+    title = "test_tf_provider-create_edgenode"
+    description = "description"
+    origin_type = "ORIGIN_LOCAL"
+}
+
+resource "zedcloud_model" "test_tf_provider" {
+    brand_id = zedcloud_brand.test_tf_provider.id
+    name = "test_tf_provider-create_edgenode"
+    title = "test_tf_provider-create_edgenode"
+    type = "AMD64"
+    origin_type = "ORIGIN_LOCAL"
+    state = "SYS_MODEL_STATE_ACTIVE"
+    attr = {
+        memory = "8G"
+        storage = "100G"
+        Cpus = "4"
+    }
+    io_member_list {
+        ztype = "IO_TYPE_ETH"
+        phylabel =  "firstEth"
+        usage = "ADAPTER_USAGE_MANAGEMENT"
+        assigngrp = "eth0"
+        phyaddrs = {
+            Ifname = "eth0"
+            PciLong = "0000:02:00.0"
+        }
+        logicallabel = "ethernet0"
+        usage_policy = {
+            FreeUplink = true
+        }
+        cost = 0
+    }
+    depends_on = [
+        zedcloud_brand.test_tf_provider
+    ]
+}
+
+resource "zedcloud_edgenode" "test_tf_provider" {
+    name = "test_tf_provider-create_edgenode"
+    model_id = zedcloud_model.test_tf_provider.id
+    project_id = zedcloud_project.test_tf_provider.id
+    title = "title"
 }
 
 resource "zedcloud_network_instance" "complete" {
     depends_on = [
-        data.zedcloud_edgenode.test_tf_provider
+        zedcloud_edgenode.test_tf_provider
     ]
 
-	  # required
-    device_id = data.zedcloud_edgenode.test_tf_provider.id
+    # required
+    device_id = zedcloud_edgenode.test_tf_provider.id
     name = "complete"
     title = "complete"
     kind = "NETWORK_INSTANCE_KIND_LOCAL"
     port = "eth1"
 
-	  # optional
+    # optional
     description = "zedcloud_network_instance-complete-description"
     type = "NETWORK_INSTANCE_DHCP_TYPE_V4"
     device_default = false
-	  dhcp = false
+    dhcp = false
     dns_list {
         addrs = [
             "10.1.2.2",
@@ -47,17 +128,12 @@ resource "zedcloud_network_instance" "complete" {
     }
     ip {
         domain = "htttp://example.com"
-
         gateway = "10.0.20.1"
         subnet = "10.0.20.0/24"
-
         dhcp_range {
             end = "10.0.20.100"
             start = "10.0.20.50"
         }
-        # dns = [
-        #     "10.0.20.1"
-        # ]
         mask = "255.255.255.0"
         ntp = "10.1.0.2"
     }
@@ -69,117 +145,4 @@ resource "zedcloud_network_instance" "complete" {
         "ni-tag1" = "ni-tag-value-1"
         "ni-tag2" = "ni-tag-value-2"
     }
-    # not supported yet / by API?
-	  # lisp = {
-    		# # optional
-    		# allocate = false
-    		# allocationprefix = ""
-    		# allocationprefixlen = 0
-    		# exportprivate = false
-    		# lispiid = 0
-    		# sp = []
-    # }
-	  # network_policy_id = ""
-	  # oconfig = ""
-	  # opaque = {
-    		# # computed
-        # # id =
-
-    		# # required
-    		# device_id = ""
-    		# kind = ""
-    		# name = ""
-    		# port = ""
-    		# title = ""
-
-    		# # optional
-    		# cluster_id = ""
-    		# description = ""
-    		# device_default = ""
-    		# dhcp = false
-    		# dns_list = []
-    		# ip = {
-        		# # optional
-        		# dhcp_range = {
-            		# # optional
-            		# end = ""
-            		# start = ""
-            # }
-        		# dns = []
-        		# domain = ""
-        		# gateway = ""
-        		# mask = ""
-        		# ntp = ""
-        		# subnet = ""
-        # }
-    		# lisp = # LispConfig
-    		# network_policy_id = ""
-    		# oconfig = ""
-    		# opaque =
-    		# port_tags {}
-    		# project_id = ""
-	     	# revision = {
-         		# # required
-         		# created_at =
-         		# created_by = ""
-         		# curr = ""
-         		# updated_at =
-         		# updated_by = ""
-         		# # optional
-         		# prev = ""
-        # }
-    		# tags {}
-    		# type = ""
-    # }
-	  # port_tags {}
-	  # project_id = ""
-	  # revision = {
-    		# # required
-    		# created_at =
-    		# created_by = ""
-    		# curr = ""
-    		# updated_at =
-    		# updated_by = ""
-    		# # optional
-    		# prev = ""
-    # }
-	  # tags {}
-	  # type = ""
-     # }
-	 	# dlisp = {
-     		# e_id = "e id"
-     		# e_id_hash_len = 1
-     		# client_addr = ""
-     		# eid_allocation_prefix = "prefix"
-     		# eid_allocation_prefix_len = 0
-     		# lisp_instance = 0
-     		# lisp_map_servers = []
-     		# mode = ""
-     		# zed_servers = []
-     # }
-	 	# edgeviewconfig = {
-     		# # optional
-     		# app_policy = {
-         		# # optional
-         		# allow_app = false
-         # }
-     		# dev_policy = {
-         		# # optional
-         		# allow_dev = false
-         # }
-     		# ext_policy = {
-         		# # optional
-         		# allow_ext = false
-         # }
-     		# generation_id = 0
-     		# jwt_info = {
-         		# # optional
-         		# allow_sec = 0
-         		# disp_url = ""
-         		# encrypt = false
-         		# expire_sec = ""
-         		# num_inst = 0
-         # }
-     		# token = ""
-     # }
 }

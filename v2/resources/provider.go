@@ -45,6 +45,8 @@ func Provider() *schema.Provider {
 			"zedcloud_role":                 RoleDataSource(),
 			"zedcloud_credential":           CredentialDataSource(),
 			"zedcloud_patch_envelope":       PatchEnvelopeDataSource(),
+			"zedcloud_model": 			     HardwareModelDataSource(),
+			"zedcloud_brand":                HardwareBrandDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":               NodeResource(),
@@ -61,6 +63,8 @@ func Provider() *schema.Provider {
 			"zedcloud_credential":             CredentialResource(),
 			"zedcloud_patch_envelope":         PatchEnvelopeResource(),
 			"zedcloud_patch_reference_update": PatchEnvelopeReferenceUpdate(),
+			"zedcloud_model": 				   HardwareModelResource(),
+			"zedcloud_brand":                  HardwareBrandResource(),
 		},
 	}
 }

@@ -1,12 +1,51 @@
+resource "zedcloud_project" "test_tf_provider" {
+    # required
+    name = "test_tf_provider-create_image"
+    title = "title"
+
+    # optional
+    type = "TAG_TYPE_PROJECT"
+    attestation_policy {
+        # required
+        title = "title"
+        type = "POLICY_TYPE_ATTESTATION"
+
+        attestation_policy {
+            # required
+            type = "ATTEST_POLICY_TYPE_ACCEPT"
+        }
+    }
+}
+
+
+resource "zedcloud_datastore"  "test_datastore" {
+    depends_on = [
+        zedcloud_project.test_tf_provider
+    ]
+    # required
+    ds_fqdn = "my-datastore.my-company.com"
+    ds_path = "download/AMD64"
+    ds_type = "DATASTORE_TYPE_AZUREBLOB"
+    name = "test"
+    title = "title"
+    description = "description"
+    region = "eu"
+    project_access_list = [zedcloud_project.test_tf_provider.id]
+}
+
 resource "zedcloud_image" "test_image" {
+    depends_on = [
+        zedcloud_project.test_tf_provider,
+        zedcloud_datastore.test_datastore
+    ]
     name = "test_tf_provider"
-    datastore_id = "aa7eb10b-7c1e-4f07-87c3-b30331e5d451"
+    datastore_id = zedcloud_datastore.test_datastore.id
     image_arch = "AMD64"
     image_format = "CONTAINER"
     image_rel_url = "test_url"
     image_size_bytes = 0
     image_type =  "IMAGE_TYPE_APPLICATION"
     title = "test"
-    project_access_list = ["4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"]
+    project_access_list = [zedcloud_project.test_tf_provider.id]
 }
 

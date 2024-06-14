@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
-	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -36,7 +35,6 @@ func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.required_only", &got),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "required_only"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "title", "required_only-title"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.required_only",
@@ -75,7 +73,6 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_provider", &gotCreated),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_provider",
@@ -90,7 +87,6 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_provider", &gotUpdated),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_provider",
@@ -141,9 +137,6 @@ func testNodeExists(resourceName string, edgeNodeModel *models.Node) resource.Te
 // testNodeAttributes verifies attributes are set correctly by Terraform
 func testNodeAttributes(t *testing.T, got, expected *models.Node) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		if keyGot, keyExpect := strings.Split(got.Obkey, ":")[0], strings.Split(expected.Obkey, ":")[0]; keyGot != keyExpect {
-			return fmt.Errorf("expect Obkey %s but got %+v", keyExpect, keyGot)
-		}
 		opts := cmpopts.IgnoreFields(
 			models.Node{},
 			"ID",
@@ -155,6 +148,7 @@ func testNodeAttributes(t *testing.T, got, expected *models.Node) resource.TestC
 			"Utype",
 			"Obkey",
 			"Interfaces",
+			"ModelID",
 		)
 		// API and YAML unmarshal might change order of list elements so we need to ignore order when comparing
 		if !schemas.CompareSystemInterfaceList(got.Interfaces, expected.Interfaces) {

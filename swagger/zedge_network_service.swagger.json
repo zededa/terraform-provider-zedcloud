@@ -599,6 +599,17 @@
                                 "networkPolicyId": {
                                     "type": "string",
                                     "description": "id of the network policy to be attached to this network instance"
+                                },
+                                "propagateConnectedRoutes": {
+                                    "type": "boolean",
+                                    "description": "Automatically propagate connected routes"
+                                },
+                                "staticRoutes": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/StaticIPRoute"
+                                    },
+                                    "description": "List of Static IP routes"
                                 }
                             },
                             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -2290,10 +2301,12 @@
                 "IO_TYPE_STORAGE_SATA_DEVICE",
                 "IO_TYPE_ETH_PF",
                 "IO_TYPE_ETH_VF",
+                "IO_TYPE_USB_CONTROLLER",
+                "IO_TYPE_USB_DEVICE",
                 "IO_TYPE_OTHER"
             ],
             "default": "IO_TYPE_UNSPECIFIED",
-            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_OTHER: Other Io Types",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type - General\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_USB_CONTROLLER: USB Type - Controller\n - IO_TYPE_USB_DEVICE: USB Type - Device\n - IO_TYPE_OTHER: Other Io Types",
             "title": "Input/Output Type"
         },
         "IpSpec": {
@@ -2440,7 +2453,7 @@
                 "preferredRats": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/commonRadioAccessTechnology"
+                        "$ref": "#/definitions/evecommonRadioAccessTechnology"
                     },
                     "description": "The list of preferred Radio Access Technologies (RATs) to use for connecting\nto the network.\nOrder matters, first is the most preferred, second is tried next, etc.\nNot listed technologies will not be tried.\nIf empty, then modem will select RAT automatically."
                 },
@@ -2717,6 +2730,17 @@
                 "networkPolicyId": {
                     "type": "string",
                     "description": "id of the network policy to be attached to this network instance"
+                },
+                "propagateConnectedRoutes": {
+                    "type": "boolean",
+                    "description": "Automatically propagate connected routes"
+                },
+                "staticRoutes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticIPRoute"
+                    },
+                    "description": "List of Static IP routes"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -3471,7 +3495,8 @@
                 "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                "OBJECT_TYPE_DEV_PASSTHROUGH"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -3609,6 +3634,21 @@
             },
             "description": "Static DNS list",
             "title": "Static DNS list"
+        },
+        "StaticIPRoute": {
+            "type": "object",
+            "properties": {
+                "prefix": {
+                    "type": "string",
+                    "description": "IP Prefix"
+                },
+                "gateway": {
+                    "type": "string",
+                    "description": "Gateway IP"
+                }
+            },
+            "description": "Static IP Routes",
+            "title": "Static IP Routes"
         },
         "Summary": {
             "type": "object",
@@ -3822,18 +3862,6 @@
             },
             "title": "Encrypted sensitive data information"
         },
-        "commonRadioAccessTechnology": {
-            "type": "string",
-            "enum": [
-                "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
-                "RADIO_ACCESS_TECHNOLOGY_GSM",
-                "RADIO_ACCESS_TECHNOLOGY_UMTS",
-                "RADIO_ACCESS_TECHNOLOGY_LTE",
-                "RADIO_ACCESS_TECHNOLOGY_5GNR"
-            ],
-            "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
-            "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
-        },
         "configCellularAuthProtocol": {
             "type": "string",
             "enum": [
@@ -3873,6 +3901,18 @@
             },
             "description": "DHCP IP range",
             "title": "DHCP IP range"
+        },
+        "evecommonRadioAccessTechnology": {
+            "type": "string",
+            "enum": [
+                "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+                "RADIO_ACCESS_TECHNOLOGY_GSM",
+                "RADIO_ACCESS_TECHNOLOGY_UMTS",
+                "RADIO_ACCESS_TECHNOLOGY_LTE",
+                "RADIO_ACCESS_TECHNOLOGY_5GNR"
+            ],
+            "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+            "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
         },
         "googlerpcStatus": {
             "type": "object",

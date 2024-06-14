@@ -1600,6 +1600,11 @@
                                 "configLock": {
                                     "$ref": "#/definitions/DeviceConfigLock",
                                     "description": "device configuration lock setting"
+                                },
+                                "edgeviewAllow": {
+                                    "type": "boolean",
+                                    "description": "Allow device to enable Edgeview",
+                                    "title": "To support edge view policy in deployments, adding a new column in device table"
                                 }
                             },
                             "description": "Device Configuration request paylod holds the device properties",
@@ -8702,6 +8707,10 @@
                                 "deploymentTag": {
                                     "type": "string",
                                     "description": "user defined tag for the deployment, which is used while targeting set of devices"
+                                },
+                                "edgeviewPolicy": {
+                                    "$ref": "#/definitions/EdgeViewPolicy",
+                                    "description": "edge view policy details"
                                 }
                             }
                         }
@@ -9433,6 +9442,93 @@
                 }
             }
         },
+        "CellularMetrics": {
+            "type": "object",
+            "properties": {
+                "ifName": {
+                    "type": "string",
+                    "description": "Network Interface name"
+                },
+                "signalRSSI": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "Signal RSSI"
+                },
+                "signalRSRQ": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "Signal RSRQ"
+                },
+                "signalRSRP": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "Signal RSRP"
+                },
+                "signalSNR": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "Signal SNR"
+                },
+                "rxTotalPackets": {
+                    "type": "number",
+                    "format": "uint64",
+                    "description": "Rx Total Packets"
+                },
+                "rxDrops": {
+                    "type": "number",
+                    "format": "uint64",
+                    "description": "Rx Drops"
+                },
+                "rxTotalBytes": {
+                    "type": "number",
+                    "format": "uint64",
+                    "description": "Rx Total Bytes"
+                },
+                "txTotalPackets": {
+                    "type": "number",
+                    "format": "uint64",
+                    "description": "Tx Total Packets"
+                },
+                "txDrops": {
+                    "type": "number",
+                    "format": "uint64",
+                    "description": "Tx Drops"
+                },
+                "txTotalBytes": {
+                    "type": "number",
+                    "format": "uint64",
+                    "description": "Tx Total Bytes"
+                }
+            },
+            "description": "CellularMetrics stores the Cellular Network Stats and Counters",
+            "title": "CellularMetrics stores the Cellular Network Stats and Counters"
+        },
+        "CellularStatus": {
+            "type": "object",
+            "properties": {
+                "providers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetworkProvider"
+                    },
+                    "description": "List of network providers"
+                },
+                "modem": {
+                    "type": "object",
+                    "$ref": "#/definitions/ModemDetail",
+                    "description": "Modem detail"
+                },
+                "simCards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SIMCard"
+                    },
+                    "description": "List of SIM Cards"
+                }
+            },
+            "description": "CellularStatus contains status information for a single cellular network",
+            "title": "CellularStatus contains status information for a single cellular network"
+        },
         "Certificate": {
             "type": "object",
             "properties": {
@@ -9905,6 +10001,10 @@
                     "type": "string",
                     "description": "project id",
                     "title": "Adding projectId to support for URL params"
+                },
+                "edgeviewPolicy": {
+                    "$ref": "#/definitions/EdgeViewPolicy",
+                    "description": "edge view policy details"
                 }
             }
         },
@@ -9966,6 +10066,10 @@
                 "deploymentTag": {
                     "type": "string",
                     "description": "user defined tag for an deployment"
+                },
+                "edgeViewPolicy": {
+                    "$ref": "#/definitions/PolicyCommon",
+                    "description": "edge view policy details"
                 }
             }
         },
@@ -10417,6 +10521,11 @@
                 "configLock": {
                     "$ref": "#/definitions/DeviceConfigLock",
                     "description": "device configuration lock setting"
+                },
+                "edgeviewAllow": {
+                    "type": "boolean",
+                    "description": "Allow device to enable Edgeview",
+                    "title": "To support edge view policy in deployments, adding a new column in device table"
                 }
             },
             "description": "Device Configuration request paylod holds the device properties",
@@ -10831,6 +10940,13 @@
                 "zpoolMetrics": {
                     "$ref": "#/definitions/StorageDeviceMetrics",
                     "description": "Last received counters for zpool metrics."
+                },
+                "cellularMetrics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CellularMetrics"
+                    },
+                    "description": "Last received cellular metrics."
                 }
             }
         },
@@ -11595,6 +11711,42 @@
                 "LispMapServers"
             ]
         },
+        "EdgeViewPolicy": {
+            "type": "object",
+            "properties": {
+                "metaData": {
+                    "$ref": "#/definitions/PolicyCommon",
+                    "description": "all the required metadata for a policy like id, name, different types of tags"
+                },
+                "edgeviewcfg": {
+                    "$ref": "#/definitions/EdgeviewCfg",
+                    "description": "Edgeview configuration and policies"
+                },
+                "edgeviewAllow": {
+                    "type": "boolean",
+                    "description": "Allow device to enable Edgeview in this project"
+                },
+                "accessAllowChange": {
+                    "type": "boolean",
+                    "description": "Allow inherit instance to change access policy"
+                },
+                "maxExpireSec": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum seconds allowed for Edgeview session"
+                },
+                "maxInst": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum instances allowed for Edgeview"
+                }
+            },
+            "description": "Policy for device edgeview operation",
+            "title": "Edgeview policy body detail",
+            "required": [
+                "edgeviewAllow"
+            ]
+        },
         "EdgeviewCfg": {
             "type": "object",
             "properties": {
@@ -12103,10 +12255,12 @@
                 "IO_TYPE_STORAGE_SATA_DEVICE",
                 "IO_TYPE_ETH_PF",
                 "IO_TYPE_ETH_VF",
+                "IO_TYPE_USB_CONTROLLER",
+                "IO_TYPE_USB_DEVICE",
                 "IO_TYPE_OTHER"
             ],
             "default": "IO_TYPE_UNSPECIFIED",
-            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_OTHER: Other Io Types",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type - General\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_USB_CONTROLLER: USB Type - Controller\n - IO_TYPE_USB_DEVICE: USB Type - Device\n - IO_TYPE_OTHER: Other Io Types",
             "title": "Input/Output Type"
         },
         "IotHubServiceDetail": {
@@ -12440,6 +12594,39 @@
             ],
             "default": "UNSPECIFIED"
         },
+        "ModemDetail": {
+            "type": "object",
+            "properties": {
+                "manufacturer": {
+                    "type": "string",
+                    "description": "Modem manufacturer"
+                },
+                "model": {
+                    "type": "string",
+                    "description": "Modem model"
+                },
+                "firmwareVersion": {
+                    "type": "string",
+                    "description": "Modem firmware version"
+                },
+                "imei": {
+                    "type": "string",
+                    "description": "Modem IMEI"
+                },
+                "operatingState": {
+                    "type": "string",
+                    "$ref": "#/definitions/ZCellularOperatingState",
+                    "description": "Modem operating state"
+                },
+                "controlProtocol": {
+                    "type": "string",
+                    "$ref": "#/definitions/ZCellularControlProtocol",
+                    "description": "Modem control protocol"
+                }
+            },
+            "description": "ModemDetail describes a cellular Modem",
+            "title": "ModemDetail describes a cellular Modem"
+        },
         "ModuleDetail": {
             "type": "object",
             "example": {
@@ -12675,6 +12862,17 @@
                 "networkPolicyId": {
                     "type": "string",
                     "description": "id of the network policy to be attached to this network instance"
+                },
+                "propagateConnectedRoutes": {
+                    "type": "boolean",
+                    "description": "Automatically propagate connected routes"
+                },
+                "staticRoutes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticIPRoute"
+                    },
+                    "description": "List of Static IP routes"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -12891,6 +13089,19 @@
                     "type": "boolean",
                     "description": "flag to indicate if this is the default network instance for the device",
                     "title": "flag to indicate if this is default network"
+                },
+                "propagateConnectedRoutes": {
+                    "type": "boolean",
+                    "description": "Automatically propagate connected routes",
+                    "title": "flag to indicate automatically propagate connected routes"
+                },
+                "staticRoutes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticIPRoute"
+                    },
+                    "description": "List of Static IP routes",
+                    "title": "list of static IP routes"
                 }
             }
         },
@@ -12949,6 +13160,35 @@
             "required": [
                 "netInstanceConfig"
             ]
+        },
+        "NetworkProvider": {
+            "type": "object",
+            "properties": {
+                "plmn": {
+                    "type": "string",
+                    "description": "PLMN code"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Human-friendly name"
+                },
+                "rat": {
+                    "type": "string",
+                    "$ref": "#/definitions/RadioAccessTechnology",
+                    "description": "Radio Access Technology"
+                },
+                "roaming": {
+                    "type": "boolean",
+                    "description": "Is Roaming ON"
+                },
+                "connectedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Time when was the connection established"
+                }
+            },
+            "description": "NetworkProvider describes a cellular Network Provider",
+            "title": "NetworkProvider describes a cellular Network Provider"
         },
         "NetworkProxyProto": {
             "type": "string",
@@ -13018,6 +13258,16 @@
                     "type": "object",
                     "$ref": "#/definitions/GPSLocation",
                     "description": "Location from GNSS receivers on WWAN type adapters"
+                },
+                "cellular": {
+                    "type": "object",
+                    "$ref": "#/definitions/CellularStatus",
+                    "description": "Cellular network status"
+                },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Network MTU"
                 }
             },
             "description": "NetworkStatus is used to store the Network status",
@@ -13190,7 +13440,8 @@
                 "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                "OBJECT_TYPE_DEV_PASSTHROUGH"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -13605,6 +13856,18 @@
                 }
             }
         },
+        "RadioAccessTechnology": {
+            "type": "string",
+            "enum": [
+                "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+                "RADIO_ACCESS_TECHNOLOGY_GSM",
+                "RADIO_ACCESS_TECHNOLOGY_UMTS",
+                "RADIO_ACCESS_TECHNOLOGY_LTE",
+                "RADIO_ACCESS_TECHNOLOGY_5GNR"
+            ],
+            "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+            "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
+        },
         "Resource": {
             "type": "object",
             "properties": {
@@ -13721,6 +13984,34 @@
                 }
             }
         },
+        "SIMCard": {
+            "type": "object",
+            "properties": {
+                "slotNumber": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Slot number"
+                },
+                "slotActivated": {
+                    "type": "boolean",
+                    "description": "Is Slot activated"
+                },
+                "iccid": {
+                    "type": "string",
+                    "description": "Integrated Circuit Card Identifier"
+                },
+                "imsi": {
+                    "type": "string",
+                    "description": "International Mobile Subscriber Identity"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "Current state of the SIM card"
+                }
+            },
+            "description": "SIMCard describes a SIM slot",
+            "title": "SIMCard describes a SIM slot"
+        },
         "SKUDetail": {
             "type": "object",
             "properties": {
@@ -13823,6 +14114,21 @@
             },
             "description": "Static DNS list",
             "title": "Static DNS list"
+        },
+        "StaticIPRoute": {
+            "type": "object",
+            "properties": {
+                "prefix": {
+                    "type": "string",
+                    "description": "IP Prefix"
+                },
+                "gateway": {
+                    "type": "string",
+                    "description": "Gateway IP"
+                }
+            },
+            "description": "Static IP Routes",
+            "title": "Static IP Routes"
         },
         "StorageDeviceMetrics": {
             "type": "object",
@@ -14905,6 +15211,27 @@
             "default": "VOLUME_INSTANCE_TYPE_UNSPECIFIED",
             "title": "VolumeInstanceType - On update, please update VolumeInstanceType_HttpRequest as well"
         },
+        "ZCellularControlProtocol": {
+            "type": "string",
+            "enum": [
+                "Z_CELLULAR_CONTROL_PROTOCOL_UNSPECIFIED",
+                "Z_CELLULAR_CONTROL_PROTOCOL_QMI",
+                "Z_CELLULAR_CONTROL_PROTOCOL_MBIM"
+            ],
+            "default": "Z_CELLULAR_CONTROL_PROTOCOL_UNSPECIFIED"
+        },
+        "ZCellularOperatingState": {
+            "type": "string",
+            "enum": [
+                "Z_CELLULAR_OPERATING_STATE_UNSPECIFIED",
+                "Z_CELLULAR_OPERATING_STATE_OFFLINE",
+                "Z_CELLULAR_OPERATING_STATE_RADIO_OFF",
+                "Z_CELLULAR_OPERATING_STATE_ONLINE",
+                "Z_CELLULAR_OPERATING_STATE_ONLINE_AND_CONNECTED",
+                "Z_CELLULAR_OPERATING_STATE_UNRECOGNIZED"
+            ],
+            "default": "Z_CELLULAR_OPERATING_STATE_UNSPECIFIED"
+        },
         "ZManufacturerInfo": {
             "type": "object",
             "properties": {
@@ -15324,6 +15651,10 @@
                 "defaultNetInstance": {
                     "type": "boolean",
                     "description": "default instance flag"
+                },
+                "allowToDiscover": {
+                    "type": "boolean",
+                    "description": "flag tells if appInstance have permission to access the network mappings from the connected netInstance"
                 }
             },
             "description": "App Interface detail",
@@ -15556,6 +15887,10 @@
                 "vfs": {
                     "$ref": "#/definitions/Vfs",
                     "title": "Single Root Input Output Virtualization (SR-IOV) support in device configuration"
+                },
+                "parentassigngrp": {
+                    "type": "string",
+                    "description": "Parent group for a IoMember. Can be empty if there is no parent group."
                 }
             },
             "description": " ioMember consists of list of various networking attributes like physical label, physical address etc  associated with SysModel",

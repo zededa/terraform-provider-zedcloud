@@ -41,6 +41,9 @@ type IoMember struct {
 	// Required: true
 	Logicallabel *string `json:"logicallabel"`
 
+	// Parent group for a IoMember. Can be empty if there is no parent group.
+	Parentassigngrp string `json:"parentassigngrp,omitempty"`
+
 	// Map of Physical Addresses
 	// Required: true
 	Phyaddrs map[string]string `json:"phyaddrs"`
@@ -54,6 +57,9 @@ type IoMember struct {
 
 	// usagePolicy
 	UsagePolicy map[string]bool `json:"usagePolicy,omitempty"`
+
+	// Single Root Input Output Virtualization (SR-IOV) support in device configuration
+	Vfs *Vfs `json:"vfs,omitempty"`
 
 	// Z Type
 	// Required: true
@@ -85,6 +91,10 @@ func (m *IoMember) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateUsage(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateVfs(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -166,6 +176,25 @@ func (m *IoMember) validateUsage(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *IoMember) validateVfs(formats strfmt.Registry) error {
+	if swag.IsZero(m.Vfs) { // not required
+		return nil
+	}
+
+	if m.Vfs != nil {
+		if err := m.Vfs.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("vfs")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("vfs")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *IoMember) validateZtype(formats strfmt.Registry) error {
 
 	if err := validate.Required("ztype", "body", m.Ztype); err != nil {
@@ -198,6 +227,10 @@ func (m *IoMember) ContextValidate(ctx context.Context, formats strfmt.Registry)
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateVfs(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateZtype(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -211,6 +244,11 @@ func (m *IoMember) ContextValidate(ctx context.Context, formats strfmt.Registry)
 func (m *IoMember) contextValidateUsage(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Usage != nil {
+
+		if swag.IsZero(m.Usage) { // not required
+			return nil
+		}
+
 		if err := m.Usage.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("usage")
@@ -224,9 +262,31 @@ func (m *IoMember) contextValidateUsage(ctx context.Context, formats strfmt.Regi
 	return nil
 }
 
+func (m *IoMember) contextValidateVfs(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Vfs != nil {
+
+		if swag.IsZero(m.Vfs) { // not required
+			return nil
+		}
+
+		if err := m.Vfs.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("vfs")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("vfs")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *IoMember) contextValidateZtype(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Ztype != nil {
+
 		if err := m.Ztype.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("ztype")

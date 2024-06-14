@@ -1521,7 +1521,8 @@
                             "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                            "OBJECT_TYPE_DEV_PASSTHROUGH"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -1819,7 +1820,8 @@
                             "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                            "OBJECT_TYPE_DEV_PASSTHROUGH"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -2494,7 +2496,8 @@
                 "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                "OBJECT_TYPE_DEV_PASSTHROUGH"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -2851,22 +2854,14 @@
                 "PhyIoSATAStorage",
                 "PhyIoNetEthPF",
                 "PhyIoNetEthVF",
+                "PhyIoUSBController",
+                "PhyIoUSBDevice",
+                "PhyIoCAN",
+                "PhyIoVCAN",
+                "PhyIoLCAN",
                 "PhyIoOther"
             ],
-            "default": "PhyIoNoop",
-            "title": "- PhyIoNVMEStorage: enum 8 is reserved for backward compatibility with controller API"
-        },
-        "commonRadioAccessTechnology": {
-            "type": "string",
-            "enum": [
-                "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
-                "RADIO_ACCESS_TECHNOLOGY_GSM",
-                "RADIO_ACCESS_TECHNOLOGY_UMTS",
-                "RADIO_ACCESS_TECHNOLOGY_LTE",
-                "RADIO_ACCESS_TECHNOLOGY_5GNR"
-            ],
-            "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
-            "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
+            "default": "PhyIoNoop"
         },
         "configACE": {
             "type": "object",
@@ -3086,6 +3081,10 @@
                 "patchRef": {
                     "$ref": "#/definitions/configPatchEnvelopeRef",
                     "title": "PatchEnvelopeRef is used to track all patch envelopes used by the app instance"
+                },
+                "designatedNodeId": {
+                    "type": "string",
+                    "title": "This edge-node UUID for the Designate Node for the Application"
                 }
             },
             "description": "The complete configuration for an Application Instance\nWhen changing key fields such as the drives/volumeRefs or the number\nof interfaces, the controller is required to issue a purge command i.e.,\nincrease the purge counter. Otherwise there will be an error (The controller\ncan also issue a purge command to re-construct the content of the first\ndrive/volumeRef without any changes.)\nSome changes such as ACL changes in the interfaces do not require a restart,\nbut all other changes (such as fixedresources and adapters) require a\nrestart command i.e., an increase to the restart counter. The restart counter\ncan also be increased to cause an application instance restart without\nany other change to the application instance."
@@ -3238,7 +3237,7 @@
                 "preferredRats": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/commonRadioAccessTechnology"
+                        "$ref": "#/definitions/evecommonRadioAccessTechnology"
                     },
                     "description": "The list of preferred Radio Access Technologies (RATs) to use for connecting\nto the network.\nOrder matters, first is the most preferred, second is tried next, etc.\nNot listed technologies will not be tried.\nIf empty, then modem will select RAT automatically."
                 }
@@ -3750,9 +3749,46 @@
                     "items": {
                         "$ref": "#/definitions/configEvePatchEnvelope"
                     }
+                },
+                "cluster": {
+                    "$ref": "#/definitions/configEdgeNodeCluster",
+                    "title": "cluster configuration"
                 }
             },
             "description": "This is the response to a GET /api/v1/edgeDevice/config\nThe EdgeDevConfig message carries all of the device's configuration from\nthe controller to the device.\nThe device will request these messages either periodically or as a result\nof some TBD notification.\nThe message is assumed to be protected by a TLS session bound to the\ndevice certificate."
+        },
+        "configEdgeNodeCluster": {
+            "type": "object",
+            "properties": {
+                "clusterName": {
+                    "type": "string",
+                    "title": "cluster name, in case it has multiple cluster on the same site"
+                },
+                "clusterId": {
+                    "type": "string",
+                    "title": "cluster UUID"
+                },
+                "clusterInterface": {
+                    "type": "string",
+                    "title": "Cluster-Interface, for example \"mgmt0\", this is the logicallabel of the physicalIO"
+                },
+                "clusterIpPrefix": {
+                    "type": "string",
+                    "title": "the 'cluster-prefix' IP address of the 'Cluster-Interface', 10.244.244.2/28"
+                },
+                "isWorkerNode": {
+                    "type": "boolean",
+                    "title": "This device is an 'Agent' node"
+                },
+                "joinServerIp": {
+                    "type": "string",
+                    "title": "Server IP address to join the cluster. E.g. 10.244.244.1"
+                },
+                "encryptedClusterToken": {
+                    "$ref": "#/definitions/commonCipherBlock",
+                    "title": "encrypted token string, use edge-node TPM to decrypt"
+                }
+            }
         },
         "configEdgeViewConfig": {
             "type": "object",
@@ -3889,6 +3925,19 @@
             ],
             "default": "FmtUnknown"
         },
+        "configIPRoute": {
+            "type": "object",
+            "properties": {
+                "destinationNetwork": {
+                    "type": "string",
+                    "description": "Destination network address in the CIDR format: <IP-address>/<prefix-length>\nIt is allowed to submit default route with all-zeroes destination network address\n0.0.0.0/0 or ::/0."
+                },
+                "gateway": {
+                    "type": "string",
+                    "description": "Gateway IP address.\nThis must be a valid IP address and can not be all-zeroes."
+                }
+            }
+        },
         "configInstanceOpsCmd": {
             "type": "object",
             "properties": {
@@ -3997,6 +4046,10 @@
                     "type": "integer",
                     "format": "int64",
                     "title": "access port vlan id\napp interface with access vlan id of zero will be treated as trunk port\nvalid vlan id range: 2 - 4093\nvlan id 1 is implicitly used by linux bridges"
+                },
+                "allowToDiscover": {
+                    "type": "boolean",
+                    "title": "allow AppInstance to discover other AppInstances\nattached to this network instance. Default is false"
                 }
             }
         },
@@ -4060,7 +4113,7 @@
                 },
                 "ip": {
                     "$ref": "#/definitions/configipspec",
-                    "title": "network ip specification"
+                    "description": "network ip specification\nNote that ip.gateway must be a valid IP address and can not be all-zeroes.\nTo suppress automatic propagation of the default route into apps, configure network\ninstance as air-gapped (without uplink) or mark the uplink as app-shared\n(not for management) and ensure that it will not get a default route\n(e.g. set ip.gateway of the attached NetworkConfig to all-zeroes IP)."
                 },
                 "dns": {
                     "type": "array",
@@ -4068,6 +4121,17 @@
                         "$ref": "#/definitions/configZnetStaticDNSEntry"
                     },
                     "title": "static DNS entry, if we are running DNS/DHCP service"
+                },
+                "propagateConnectedRoutes": {
+                    "type": "boolean",
+                    "description": "Enable to use DHCP to automatically propagate routes for uplink subnets\ninto applications connected to them indirectly through local network instances.\nThis option is only valid for local network instances. For other types\nof network instances, it will be ignored."
+                },
+                "staticRoutes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configIPRoute"
+                    },
+                    "description": "List of IP routes statically added to the network instance routing table.\nStatically routed subnets are also propagated to connected applications\nusing DHCP, with gateway set to the network instance bridge IP if it is\noutside of the network instance subnet.\n\nIP route gateway may point to an external endpoint (provided that network\ninstance is not air-gapped), or to an IP address of one of the applications\nconnected to the network instance.\n\nStatic routes are handled independently from connected routes. While connected\nroutes are propagated to applications only if enabled by propagate_connected_routes,\nstatic routes are always propagated. Both connected and statically configured\nroutes can be propagated at the same time, there are no restrictions for using both.\n\nNote that the default route (with the bridge IP as the gateway) is automatically\npropagated to connected applications, unless network instance is air-gapped\n(without uplink) or the uplink is app-shared (not management) and does not have\na default route of its own. In both cases, it is possible to enforce default\nroute propagation by configuring a static default route for the network instance.\n\nFor more info on static and connected routes please refer to:\nhttps://wiki.lfedge.org/display/EVE/Connected+and+Static+IP+Route\n\nThis option is only valid for local network instances. For other types\nof network instances, it will be ignored."
                 }
             }
         },
@@ -4200,6 +4264,11 @@
                 "vflist": {
                     "$ref": "#/definitions/configVfList",
                     "title": "list of Virtual Functions (VF) for given Physical Function (PF)\nonly applies for PHY_IO_TYPE_PHY_IO_NET_ETH_PF"
+                },
+                "parentassigngrp": {
+                    "type": "string",
+                    "description": "Parent Assignment Group is there to reference the parent assignment\ngroup in order to make the device dependent on a different device.\nCurrently the concrete reason to do this is to make a usb device dependent\non the PCI address the USB controller is using to prevent passthrough of\nthe USB controller in one application while trying to passthrough\na USB device on this controller to another application.\n\nWe only allow these two cases:\n- children and their parent devices are assigned to the same application\n  instance\n- parent device stays in host and one or more children (in separate\n  assignment groups) are assigned to one or more application instances",
+                    "title": "parentassigngrp"
                 }
             },
             "title": "PhysicalIO:\n   Absolute low level description of physical buses and ports that are\n   available on given platform.\n   Collection of these IOs, constitute what we would call as hardware\n   model. Each physical IO is manageable and visible to EVE software, and\n   it can be further configured to either provide IP connectivity or\n   directly be given to workloads"
@@ -4422,6 +4491,16 @@
             },
             "description": "VlanAdapter represents a single VLAN sub-interface.\nThe parent, which is referenced by lower_layer_name,\nshould be either PhysicalIO or BondAdapter."
         },
+        "configVmBootMode": {
+            "type": "string",
+            "enum": [
+                "VM_BOOT_MODE_UNSPECIFIED",
+                "VM_BOOT_MODE_LEGACY",
+                "VM_BOOT_MODE_UEFI"
+            ],
+            "default": "VM_BOOT_MODE_UNSPECIFIED",
+            "title": "Boot mechanisms supported by the BIOS of the Virtual Machine"
+        },
         "configVmConfig": {
             "type": "object",
             "properties": {
@@ -4490,7 +4569,8 @@
                     "$ref": "#/definitions/configVmMode"
                 },
                 "enableVnc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "title": "Enable VNC access to the edge application"
                 },
                 "vncDisplay": {
                     "type": "integer",
@@ -4511,6 +4591,14 @@
                     "type": "integer",
                     "format": "int64",
                     "title": "Maximum amount of memory in kbytes allowed for VM monitor to occupy,\naka \"overhead\". E.g. for the qemu-kvm hypervisor the memory limit\nfor one VM instance (guest RAM + VM monitor) is set according to the\nfollowing equation: `memory` + `vmm_maxmem`"
+                },
+                "enableVncShimVm": {
+                    "type": "boolean",
+                    "title": "Enable VNC access to the shim VM harboring the edge application (for containers only)"
+                },
+                "bootMode": {
+                    "$ref": "#/definitions/configVmBootMode",
+                    "title": "Boot mode: Legacy or UEFI"
                 }
             }
         },
@@ -4565,6 +4653,10 @@
                 },
                 "target": {
                     "$ref": "#/definitions/configTarget"
+                },
+                "designatedNodeId": {
+                    "type": "string",
+                    "title": "To inform the edge-node if the device receiving this Volume is\nresponsible for volume creation, convert PVC, or not"
                 }
             },
             "description": "The Volume describes a storage volume which should exist on the device.\nThis can currently either be blank or created from a ContentTree\nIf maxSizeBytes is zero it means unlimited by the controller. In that\ncase EVE needs to determine how much space it can assign and limit any\ndownloaded ContentTree and the created volume based on that calculated size."
@@ -4812,6 +4904,18 @@
                 }
             },
             "title": "DiskDescription describes disk\nwe can use different data to locate disk in the system"
+        },
+        "evecommonRadioAccessTechnology": {
+            "type": "string",
+            "enum": [
+                "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+                "RADIO_ACCESS_TECHNOLOGY_GSM",
+                "RADIO_ACCESS_TECHNOLOGY_UMTS",
+                "RADIO_ACCESS_TECHNOLOGY_LTE",
+                "RADIO_ACCESS_TECHNOLOGY_5GNR"
+            ],
+            "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+            "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
         },
         "eveconfigExternalOpaqueBinaryBlob": {
             "type": "object",

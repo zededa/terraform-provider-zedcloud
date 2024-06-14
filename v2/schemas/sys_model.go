@@ -5,18 +5,69 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate SysModel resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysModelModel(d *schema.ResourceData) *models.SysModel {
-	pCRTemplates, _ := d.Get("p_c_r_templates").([]*models.PCRTemplate) // []*PCRTemplate
-	attr, _ := d.Get("attr").(map[string]string)                        // map[string]string
+	var pCRTemplates []*models.PCRTemplate // []*PCRTemplate
+	PCRTemplatesInterface, PCRTemplatesIsSet := d.GetOk("p_c_r_templates")
+	if PCRTemplatesIsSet {
+		var items []interface{}
+		if listItems, isList := PCRTemplatesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = PCRTemplatesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := PCRTemplateModelFromMap(v.(map[string]interface{}))
+			pCRTemplates = append(pCRTemplates, m)
+		}
+	}
+	attr := map[string]string{}
+	attrInterface, attrIsSet := d.GetOk("attr")
+	if attrIsSet {
+		attrMap := attrInterface.(map[string]interface{})
+		for k, v := range attrMap {
+			if v == nil {
+				continue
+			}
+			attr[k] = v.(string)
+		}
+	}
+
 	brandID, _ := d.Get("brand_id").(string)
 	description, _ := d.Get("description").(string)
 	id, _ := d.Get("id").(string)
-	ioMemberList, _ := d.Get("io_member_list").([]*models.IoMember) // []*IoMember
+	var ioMemberList []*models.IoMember // []*IoMember
+	ioMemberListInterface, ioMemberListIsSet := d.GetOk("io_member_list")
+	if ioMemberListIsSet {
+		var items []interface{}
+		if listItems, isList := ioMemberListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = ioMemberListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := IoMemberModelFromMap(v.(map[string]interface{}))
+			ioMemberList = append(ioMemberList, m)
+		}
+	}
 	isImported, _ := d.Get("is_imported").(bool)
-	logo, _ := d.Get("logo").(map[string]string) // map[string]string
+	logo := map[string]string{}
+	logoInterface, logoIsSet := d.GetOk("logo")
+	if logoIsSet {
+		logoMap := logoInterface.(map[string]interface{})
+		for k, v := range logoMap {
+			if v == nil {
+				continue
+			}
+			logo[k] = v.(string)
+		}
+	}
+
 	name, _ := d.Get("name").(string)
 	var originType *models.Origin // Origin
 	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
@@ -26,9 +77,11 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	}
 	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")
-	if parentDetailIsSet {
-		parentDetailMap := parentDetailInterface.([]interface{})[0].(map[string]interface{})
-		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
+	if parentDetailIsSet && parentDetailInterface != nil {
+		parentDetailMap := parentDetailInterface.([]interface{})
+		if len(parentDetailMap) > 0 {
+			parentDetail = ObjectParentDetailModelFromMap(parentDetailMap[0].(map[string]interface{}))
+		}
 	}
 	productStatus, _ := d.Get("product_status").(string)
 	productURL, _ := d.Get("product_url").(string)
@@ -48,46 +101,117 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 	return &models.SysModel{
 		PCRTemplates:  pCRTemplates,
 		Attr:          attr,
-		BrandID:       &brandID, // string true false false
+		BrandID:       &brandID, // string
 		Description:   description,
 		ID:            id,
 		IoMemberList:  ioMemberList,
 		IsImported:    isImported,
 		Logo:          logo,
-		Name:          &name, // string true false false
+		Name:          &name, // string
 		OriginType:    originType,
 		ParentDetail:  parentDetail,
 		ProductStatus: productStatus,
 		ProductURL:    productURL,
 		State:         state,
-		Title:         &title, // string true false false
+		Title:         &title, // string
 		Type:          typeVar,
 	}
 }
 
 func SysModelModelFromMap(m map[string]interface{}) *models.SysModel {
-	pCRTemplates := m["p_c_r_templates"].([]*models.PCRTemplate) // []*PCRTemplate
-	attr := m["attr"].(map[string]string)
+	var pCRTemplates []*models.PCRTemplate // []*PCRTemplate
+	PCRTemplatesInterface, PCRTemplatesIsSet := m["p_c_r_templates"]
+	if PCRTemplatesIsSet {
+		var items []interface{}
+		if listItems, isList := PCRTemplatesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = PCRTemplatesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := PCRTemplateModelFromMap(v.(map[string]interface{}))
+			pCRTemplates = append(pCRTemplates, m)
+		}
+	}
+	attr := map[string]string{}
+	attrInterface, attrIsSet := m["attr"]
+	if attrIsSet {
+		attrMap := attrInterface.(map[string]interface{})
+		for k, v := range attrMap {
+			if v == nil {
+				continue
+			}
+			attr[k] = v.(string)
+		}
+	}
+
 	brandID := m["brand_id"].(string)
 	description := m["description"].(string)
 	id := m["id"].(string)
-	ioMemberList := m["io_member_list"].([]*models.IoMember) // []*IoMember
+	var ioMemberList []*models.IoMember // []*IoMember
+	ioMemberListInterface, ioMemberListIsSet := m["io_member_list"]
+	if ioMemberListIsSet {
+		var items []interface{}
+		if listItems, isList := ioMemberListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = ioMemberListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := IoMemberModelFromMap(v.(map[string]interface{}))
+			ioMemberList = append(ioMemberList, m)
+		}
+	}
 	isImported := m["is_imported"].(bool)
-	logo := m["logo"].(map[string]string)
+	logo := map[string]string{}
+	logoInterface, logoIsSet := m["logo"]
+	if logoIsSet {
+		logoMap := logoInterface.(map[string]interface{})
+		for k, v := range logoMap {
+			if v == nil {
+				continue
+			}
+			logo[k] = v.(string)
+		}
+	}
+
 	name := m["name"].(string)
-	originType := m["origin_type"].(*models.Origin) // Origin
-	var parentDetail *models.ObjectParentDetail     // ObjectParentDetail
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := m["origin_type"]
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
+	}
+	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
 	parentDetailInterface, parentDetailIsSet := m["parent_detail"]
-	if parentDetailIsSet {
-		parentDetailMap := parentDetailInterface.([]interface{})[0].(map[string]interface{})
-		parentDetail = ObjectParentDetailModelFromMap(parentDetailMap)
+	if parentDetailIsSet && parentDetailInterface != nil {
+		parentDetailMap := parentDetailInterface.([]interface{})
+		if len(parentDetailMap) > 0 {
+			parentDetail = ObjectParentDetailModelFromMap(parentDetailMap[0].(map[string]interface{}))
+		}
 	}
 	//
 	productStatus := m["product_status"].(string)
 	productURL := m["product_url"].(string)
-	state := m["state"].(*models.SysModelState) // SysModelState
+	var state *models.SysModelState // SysModelState
+	stateInterface, stateIsSet := m["state"]
+	if stateIsSet {
+		stateModel := stateInterface.(string)
+		state = models.NewSysModelState(models.SysModelState(stateModel))
+	}
 	title := m["title"].(string)
-	typeVar := m["type"].(*models.ModelArchType) // ModelArchType
+	var typeVar *models.ModelArchType // ModelArchType
+	typeInterface, typeIsSet := m["type"]
+	if typeIsSet {
+		typeModel := typeInterface.(string)
+		typeVar = models.NewModelArchType(models.ModelArchType(typeModel))
+	}
 	return &models.SysModel{
 		PCRTemplates:  pCRTemplates,
 		Attr:          attr,
@@ -108,7 +232,6 @@ func SysModelModelFromMap(m map[string]interface{}) *models.SysModel {
 	}
 }
 
-// Update the underlying SysModel resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetSysModelResourceData(d *schema.ResourceData, m *models.SysModel) {
 	d.Set("p_c_r_templates", SetPCRTemplateSubResourceData(m.PCRTemplates))
 	d.Set("attr", m.Attr)
@@ -129,7 +252,6 @@ func SetSysModelResourceData(d *schema.ResourceData, m *models.SysModel) {
 	d.Set("type", m.Type)
 }
 
-// Iterate through and update the SysModel resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysModelSubResourceData(m []*models.SysModel) (d []*map[string]interface{}) {
 	for _, SysModelModel := range m {
 		if SysModelModel != nil {
@@ -157,7 +279,6 @@ func SetSysModelSubResourceData(m []*models.SysModel) (d []*map[string]interface
 	return
 }
 
-// Schema mapping representing the SysModel resource defined in the Terraform configuration
 func SysModelSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"p_c_r_templates": {
@@ -205,6 +326,7 @@ func SysModelSchema() map[string]*schema.Schema {
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
+			DiffSuppressFunc: diffSuppressIoMemberListOrder("io_member_list"),
 		},
 
 		"is_imported": {
@@ -241,6 +363,7 @@ func SysModelSchema() map[string]*schema.Schema {
 				Schema: ObjectParentDetail(),
 			},
 			Optional: true,
+			DiffSuppressFunc: supress(),
 		},
 
 		"product_status": {
@@ -284,7 +407,6 @@ func SysModelSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the SysModel resource
 func GetSysModelPropertyFields() (t []string) {
 	return []string{
 		"p_c_r_templates",

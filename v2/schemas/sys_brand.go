@@ -5,14 +5,33 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate SysBrand resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func SysBrandModel(d *schema.ResourceData) *models.SysBrand {
-	attr, _ := d.Get("attr").(map[string]string) // map[string]string
+	attr := map[string]string{}
+	attrInterface, attrIsSet := d.GetOk("attr")
+	if attrIsSet {
+		attrMap := attrInterface.(map[string]interface{})
+		for k, v := range attrMap {
+			if v == nil {
+				continue
+			}
+			attr[k] = v.(string)
+		}
+	}
+
 	description, _ := d.Get("description").(string)
 	id, _ := d.Get("id").(string)
-	logo, _ := d.Get("logo").(map[string]string) // map[string]string
+	logo := map[string]string{}
+	logoInterface, logoIsSet := d.GetOk("logo")
+	if logoIsSet {
+		logoMap := logoInterface.(map[string]interface{})
+		for k, v := range logoMap {
+			if v == nil {
+				continue
+			}
+			logo[k] = v.(string)
+		}
+	}
+
 	name, _ := d.Get("name").(string)
 	var originType *models.Origin // Origin
 	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
@@ -22,9 +41,11 @@ func SysBrandModel(d *schema.ResourceData) *models.SysBrand {
 	}
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	var state *models.SysModelState // SysModelState
 	stateInterface, stateIsSet := d.GetOk("state")
@@ -40,31 +61,65 @@ func SysBrandModel(d *schema.ResourceData) *models.SysBrand {
 		Description:   description,
 		ID:            id,
 		Logo:          logo,
-		Name:          &name, // string true false false
+		Name:          &name, // string
 		OriginType:    originType,
 		Revision:      revision,
 		State:         state,
 		Svg:           svg,
 		SystemMfgName: systemMfgName,
-		Title:         &title, // string true false false
+		Title:         &title, // string
 	}
 }
 
 func SysBrandModelFromMap(m map[string]interface{}) *models.SysBrand {
-	attr := m["attr"].(map[string]string)
+	attr := map[string]string{}
+	attrInterface, attrIsSet := m["attr"]
+	if attrIsSet {
+		attrMap := attrInterface.(map[string]interface{})
+		for k, v := range attrMap {
+			if v == nil {
+				continue
+			}
+			attr[k] = v.(string)
+		}
+	}
+
 	description := m["description"].(string)
 	id := m["id"].(string)
-	logo := m["logo"].(map[string]string)
+	logo := map[string]string{}
+	logoInterface, logoIsSet := m["logo"]
+	if logoIsSet {
+		logoMap := logoInterface.(map[string]interface{})
+		for k, v := range logoMap {
+			if v == nil {
+				continue
+			}
+			logo[k] = v.(string)
+		}
+	}
+
 	name := m["name"].(string)
-	originType := m["origin_type"].(*models.Origin) // Origin
-	var revision *models.ObjectRevision             // ObjectRevision
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := m["origin_type"]
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
+	}
+	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := m["revision"]
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	//
-	state := m["state"].(*models.SysModelState) // SysModelState
+	var state *models.SysModelState // SysModelState
+	stateInterface, stateIsSet := m["state"]
+	if stateIsSet {
+		stateModel := stateInterface.(string)
+		state = models.NewSysModelState(models.SysModelState(stateModel))
+	}
 	svg := m["svg"].(string)
 	systemMfgName := m["system_mfg_name"].(string)
 	title := m["title"].(string)
@@ -83,7 +138,6 @@ func SysBrandModelFromMap(m map[string]interface{}) *models.SysBrand {
 	}
 }
 
-// Update the underlying SysBrand resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetSysBrandResourceData(d *schema.ResourceData, m *models.SysBrand) {
 	d.Set("attr", m.Attr)
 	d.Set("description", m.Description)
@@ -98,7 +152,6 @@ func SetSysBrandResourceData(d *schema.ResourceData, m *models.SysBrand) {
 	d.Set("title", m.Title)
 }
 
-// Iterate through and update the SysBrand resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetSysBrandSubResourceData(m []*models.SysBrand) (d []*map[string]interface{}) {
 	for _, SysBrandModel := range m {
 		if SysBrandModel != nil {
@@ -120,7 +173,6 @@ func SetSysBrandSubResourceData(m []*models.SysBrand) (d []*map[string]interface
 	return
 }
 
-// Schema mapping representing the SysBrand resource defined in the Terraform configuration
 func SysBrandSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"attr": {
@@ -136,6 +188,7 @@ func SysBrandSchema() map[string]*schema.Schema {
 			Description: `Detailed description of the image.`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			DiffSuppressFunc: supress(),
 		},
 
 		"id": {
@@ -172,12 +225,14 @@ func SysBrandSchema() map[string]*schema.Schema {
 				Schema: ObjectRevision(),
 			},
 			Optional: true,
+			DiffSuppressFunc: supress(),
 		},
 
 		"state": {
 			Description: `Sys Model Status`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			DiffSuppressFunc: supress(),
 		},
 
 		"svg": {
@@ -190,6 +245,7 @@ func SysBrandSchema() map[string]*schema.Schema {
 			Description: `System Manufacturer name`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			DiffSuppressFunc: supress(),
 		},
 
 		"title": {
@@ -200,7 +256,6 @@ func SysBrandSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the SysBrand resource
 func GetSysBrandPropertyFields() (t []string) {
 	return []string{
 		"attr",

@@ -151,8 +151,8 @@ func DetailedUserModelFromMap(m map[string]interface{}) *models.DetailedUser {
 
 func SetDetailedUserResourceData(d *schema.ResourceData, m *models.DetailedUser) {
 	d.Set("hubspot_id", m.HubspotID)
-	d.Set("last_login_time", m.LastLoginTime)
-	d.Set("last_logout_time", m.LastLogoutTime)
+	d.Set("last_login_time", m.LastLoginTime.String())
+	d.Set("last_logout_time", m.LastLogoutTime.String())
 	d.Set("sfdc_id", m.SfdcID)
 	d.Set("allowed_enterprises", SetAllowedEnterpriseSubResourceData(m.AllowedEnterprises))
 	d.Set("custom_user_input", m.CustomUserInput)
@@ -221,6 +221,7 @@ func DetailedUserSchema() map[string]*schema.Schema {
 			Type:         schema.TypeString,
 			ValidateFunc: validation.IsRFC3339Time,
 			Optional:     true,
+			DiffSuppressFunc: supress(),
 		},
 
 		"last_logout_time": {
@@ -228,6 +229,7 @@ func DetailedUserSchema() map[string]*schema.Schema {
 			Type:         schema.TypeString,
 			ValidateFunc: validation.IsRFC3339Time,
 			Optional:     true,
+			DiffSuppressFunc: supress(),
 		},
 
 		"sfdc_id": {
@@ -244,6 +246,7 @@ func DetailedUserSchema() map[string]*schema.Schema {
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
+			DiffSuppressFunc: diffSuppressChangedList("allowed_enterprises"),
 		},
 
 		"custom_user_input": {

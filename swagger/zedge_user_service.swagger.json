@@ -1998,6 +1998,11 @@
                                 "totpSettings": {
                                     "$ref": "#/definitions/TOTPSettings",
                                     "description": "Enterprise settings to enforce TOTP"
+                                },
+                                "apiTokenExpiryInSeconds": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "Enterprise settings for API Token expiry to be set in seconds"
                                 }
                             },
                             "description": "Enterprise meta data",
@@ -8088,6 +8093,11 @@
                 "totpSettings": {
                     "$ref": "#/definitions/TOTPSettings",
                     "description": "Enterprise settings to enforce TOTP"
+                },
+                "apiTokenExpiryInSeconds": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Enterprise settings for API Token expiry to be set in seconds"
                 }
             },
             "description": "Enterprise meta data",
@@ -8177,10 +8187,35 @@
                 "plugins": {
                     "$ref": "#/definitions/PluginEntitlement",
                     "description": "Plugin entitlement data"
+                },
+                "features": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/FeatureEntitlement"
+                    },
+                    "description": "Features entitlement data"
                 }
             },
             "description": "Get Entitlement data",
             "title": "Entitlement data"
+        },
+        "FeatureEntitlement": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "active": {
+                    "type": "boolean"
+                },
+                "subFeatureEntitlement": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/FeatureEntitlement"
+                    },
+                    "title": "SubFeatureEntitlement represents nested sub-features entitlement"
+                }
+            }
         },
         "IdState": {
             "type": "string",
@@ -8279,6 +8314,13 @@
                 "idpId": {
                     "type": "string",
                     "description": "id for Vmware IDP"
+                },
+                "additionalParameters": {
+                    "type": "string",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "pass additional url parameters during the exchange and authorization process"
                 }
             }
         },
@@ -8369,7 +8411,8 @@
                 "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                "OBJECT_TYPE_DEV_PASSTHROUGH"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -8970,6 +9013,10 @@
                     "type": "string",
                     "description": "Application Instance access permission"
                 },
+                "accessEnterpriseIntegrationItems": {
+                    "type": "string",
+                    "description": "datastream and 3rd party integration access permission"
+                },
                 "uuid": {
                     "type": "string",
                     "description": "Unique system defined scope ID",
@@ -9070,10 +9117,10 @@
                 "enforce": {
                     "type": "boolean"
                 },
-                "setForChildren": {
+                "enforceInChildren": {
                     "type": "boolean"
                 },
-                "allowOverwriteByChildren": {
+                "enforcedByParent": {
                     "type": "boolean"
                 }
             }

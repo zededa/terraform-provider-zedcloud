@@ -1,32 +1,22 @@
 allowed_enterprises:
   id: "AAFlABDe6Nm63ixF5LJBbk9Keqp6"
   name: "zededa"
-  role_id: "AAGFABCnEbWH56VAfZUHmv6ZfXRc"
-custom_user_input: null
+  roleid: "AAGFABCnEbWH56VAfZUHmv6ZfXRc"
 email: "user1@example.com"
-email_state: ID_STATE_VERIFIED
-enterprise_id: "AAFlABDe6Nm63ixF5LJBbk9Keqp6"
-first_name: "user"
-full_name: ""
-hubspot_id: ""
+emailstate: ID_STATE_VERIFIED
+enterpriseid: "AAFlABDe6Nm63ixF5LJBbk9Keqp6"
+firstname: "user"
+fullname: ""
+hubspotid: ""
 id": "AAF1ABBcPfB84ZVPDL6wRAFnDMc7"
-last_login_time: null
-last_logout_time: null
 locale: ""
-notify_pref: ""
+notifypref: ""
 phone: ""
-phone_state: ID_STATE_UNSPECIFIED
-revision:
-  - created_at: "2023-12-18T14:49:05.638Z"
-    created_by: "us.root@zededa.com"
-    curr: "1"
-    prev: ""
-    updated_at: "0001-01-01T00:00:00.000Z"
-    updated_by: "us.root@zededa.com"
-role_id: "AAGFABCnEbWH56VAfZUHmv6ZfXRc"
-sfdc_id: ""
+phonestate: ID_STATE_UNSPECIFIED
+roleid: "AAGFABCnEbWH56VAfZUHmv6ZfXRc"
+sfdcid: ""
 state: "USER_STATE_ACTIVE"
-time_zone: ""
-totp_enabled: false
+timezone: ""
+totpenabled: false
 type: "AUTH_TYPE_LOCAL"
 username: "user2@example.com"

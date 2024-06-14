@@ -44,12 +44,16 @@ build:
 # acceptance tests
 .PHONY: test
 test:
-	TF_ACC=1 go test -v ./...
+	cd v2 && \
+	TF_ACC=1 go test -v ./... && \
+	cd -
 
 .PHONY: test-run
 test-run:
-	go vet ./...
-	TF_ACC=1 go test -v ./... -run $(case)
+	cd v2 && \
+	go vet ./... && \
+	TF_ACC=1 go test -v ./... -run $(case) && \
+	cd -
 
 .PHONY: udpatedeps
 updatedeps:

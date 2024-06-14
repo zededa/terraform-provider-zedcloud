@@ -106,10 +106,8 @@ func testDatastoreAttributes(t *testing.T, got, expected *models.Datastore) reso
 			"ID",
 			"Revision",
 			"EncryptedSecrets",
+			"ProjectAccessList",
 		}
-		// if expected.Proxy != nil && expected.Proxy.Proxies != nil {
-		// 	ignoredFields = append(ignoredFields, "Proxy.Proxies")
-		// }
 		opts := cmpopts.IgnoreFields(models.Datastore{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)

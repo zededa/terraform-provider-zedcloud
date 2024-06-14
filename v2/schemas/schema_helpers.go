@@ -3,11 +3,11 @@ package schemas
 import (
 	"fmt"
 	"strings"
+	"slices"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	"github.com/zededa/terraform-provider-zedcloud/v2/pkg/compare"
-	"golang.org/x/exp/slices"
 )
 
 // diffSuppressStringListOrder suppresses diffs in schema.List element order. If the lists elements differ, it still
@@ -245,6 +245,59 @@ func diffSupressSliceOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 			return false
 		}
 		return equal
+	}
+}
+
+func diffSuppressIoMemberListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		if oldData == nil {
+			return false
+		}
+		if newData == nil {
+			return false
+		}
+
+		o := oldData.([]interface{})
+		n := newData.([]interface{})
+		if len(o) != len(n) {
+			return false
+		}
+
+		oldMapList := make([]*models.IoMember, len(o))
+		for i, m := range o {
+			oldMapList[i] = IoMemberModelFromMap(m.(map[string]interface{}))
+		}
+		newMapList := make([]*models.IoMember, len(o))
+		for i, m := range o {
+			newMapList[i] = IoMemberModelFromMap(m.(map[string]interface{}))
+		}
+
+		return CompareIoMemberLists(oldMapList, newMapList)
+	}
+}
+
+func diffSuppressChangedList(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		o := oldData.([]interface{})
+		n := newData.([]interface{})
+		if len(o) == 0 || len(n) == 0 {
+			return true
+		}
+		if len(o) != len(n) {
+			return false
+		}
+
+		return true
 	}
 }
 
