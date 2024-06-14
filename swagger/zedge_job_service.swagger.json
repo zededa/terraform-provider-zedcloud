@@ -1387,7 +1387,8 @@
                             "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                            "OBJECT_TYPE_DEV_PASSTHROUGH"
                         ]
                     },
                     {
@@ -1514,7 +1515,8 @@
                             "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                            "OBJECT_TYPE_DEV_PASSTHROUGH"
                         ]
                     },
                     {
@@ -1724,7 +1726,8 @@
                             "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                            "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                            "OBJECT_TYPE_DEV_PASSTHROUGH"
                         ]
                     },
                     {
@@ -1952,6 +1955,10 @@
                 "patchEnvelopeId": {
                     "type": "string",
                     "description": "patch envelope id"
+                },
+                "patchEnvelopeName": {
+                    "type": "string",
+                    "description": "patch envelope name"
                 }
             },
             "description": "App Instance detail",
@@ -2487,10 +2494,12 @@
                 "IO_TYPE_STORAGE_SATA_DEVICE",
                 "IO_TYPE_ETH_PF",
                 "IO_TYPE_ETH_VF",
+                "IO_TYPE_USB_CONTROLLER",
+                "IO_TYPE_USB_DEVICE",
                 "IO_TYPE_OTHER"
             ],
             "default": "IO_TYPE_UNSPECIFIED",
-            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_OTHER: Other Io Types",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type - General\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_USB_CONTROLLER: USB Type - Controller\n - IO_TYPE_USB_DEVICE: USB Type - Device\n - IO_TYPE_OTHER: Other Io Types",
             "title": "Input/Output Type"
         },
         "JobConfig": {
@@ -2850,6 +2859,17 @@
                 "networkPolicyId": {
                     "type": "string",
                     "description": "id of the network policy to be attached to this network instance"
+                },
+                "propagateConnectedRoutes": {
+                    "type": "boolean",
+                    "description": "Automatically propagate connected routes"
+                },
+                "staticRoutes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticIPRoute"
+                    },
+                    "description": "List of Static IP routes"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -2996,7 +3016,8 @@
                 "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                "OBJECT_TYPE_DEV_PASSTHROUGH"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -3080,6 +3101,21 @@
             },
             "description": "Static DNS list",
             "title": "Static DNS list"
+        },
+        "StaticIPRoute": {
+            "type": "object",
+            "properties": {
+                "prefix": {
+                    "type": "string",
+                    "description": "IP Prefix"
+                },
+                "gateway": {
+                    "type": "string",
+                    "description": "Gateway IP"
+                }
+            },
+            "description": "Static IP Routes",
+            "title": "Static IP Routes"
         },
         "Summary": {
             "type": "object",
@@ -3651,6 +3687,10 @@
                 "defaultNetInstance": {
                     "type": "boolean",
                     "description": "default instance flag"
+                },
+                "allowToDiscover": {
+                    "type": "boolean",
+                    "description": "flag tells if appInstance have permission to access the network mappings from the connected netInstance"
                 }
             },
             "description": "App Interface detail",

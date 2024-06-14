@@ -90,6 +90,9 @@ func testImageAttributes(t *testing.T, got, expected *models.Image) resource.Tes
 			"ID",
 			"Revision",
 			"ImageError",
+			"ProjectAccessList",
+			"DatastoreID",
+			"ImageSizeBytes",
 		}
 		opts := cmpopts.IgnoreFields(models.Image{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {

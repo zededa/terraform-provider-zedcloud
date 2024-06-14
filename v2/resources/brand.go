@@ -3,63 +3,57 @@ package resources
 import (
 	"context"
 	"errors"
-	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
-	identity_access_management "github.com/zededa/terraform-provider-zedcloud/v2/client/identity_access_management"
+	hardware_model "github.com/zededa/terraform-provider-zedcloud/v2/client/hardware_model"
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 /*
-IdentityAccessManagement identity access management API
+HardwareModel hardware model API
 */
 
-func RoleResource() *schema.Resource {
+func HardwareBrandResource() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: IdentityAccessManagement_CreateRole,
-		DeleteContext: IdentityAccessManagement_DeleteRole,
-		ReadContext:   IdentityAccessManagement_GetRole,
-		UpdateContext: IdentityAccessManagement_UpdateRole,
-		Schema:        zschema.RoleSchema(),
+		CreateContext: CreateHardwareBrand,
+		DeleteContext: DeleteHardwareBrand,
+		ReadContext: GetHardwareBrand,
+		UpdateContext: UpdateHardwareBrand,
+		Schema: zschema.SysBrandSchema(),
 	}
 }
 
-func RoleDataSource() *schema.Resource {
+func HardwareBrandDataSource() *schema.Resource {
 	return &schema.Resource{
-		Schema: zschema.RoleSchema(),
+		ReadContext: GetHardwareBrand,
+		Schema: zschema.SysBrandSchema(),
 	}
 }
 
-func IdentityAccessManagement_GetRole(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var role *models.Role
-
-	if _, isSet := d.GetOk("name"); isSet {
-		role, diags = getRoleByName(ctx, d, m)
-	} else if _, isSet := d.GetOk("id"); isSet {
-		role, diags = getRoleById(ctx, d, m)
+func GetHardwareBrand(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+if _, isSet := d.GetOk("name"); isSet {
+		return GetHardwareBrandByName(ctx, d, m)
 	}
-
-	if diags.HasError() {
-		return diags
-	}
-
-	d.SetId(role.ID)
-
-	return diags
+	return GetHardwareBrandById(ctx, d, m)
 }
 
-func getRoleById(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Role, diag.Diagnostics) {
+func GetHardwareBrandById(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := identity_access_management.NewIdentityAccessManagementGetRoleParams()
+	params := hardware_model.NewHardwareModelGetHardwareBrandParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	enterpriseIdVal, enterpriseIdIsSet := d.GetOk("enterprise_id")
+	if enterpriseIdIsSet {
+		params.EnterpriseID = enterpriseIdVal.(*string)
 	}
 
 	idVal, idIsSet := d.GetOk("id")
@@ -68,32 +62,37 @@ func getRoleById(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 		params.ID = id
 	} else {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-		return nil, diags
+		return diags
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRole(params, nil)
+	resp, err := client.HardwareModel.HardwareModelGetHardwareBrand(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
 
 	respModel := resp.GetPayload()
-	zschema.SetRoleResourceData(d, respModel)
+	zschema.SetSysBrandResourceData(d, respModel)
 	d.SetId(respModel.ID)
 
-	return respModel, diags
+	return diags
 }
 
-func getRoleByName(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Role, diag.Diagnostics) {
+func GetHardwareBrandByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := identity_access_management.NewIdentityAccessManagementGetRoleByNameParams()
+	params := hardware_model.NewHardwareModelGetHardwareBrandByNameParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	enterpriseIdVal, enterpriseIdIsSet := d.GetOk("enterprise_id")
+	if enterpriseIdIsSet {
+		params.EnterpriseID = enterpriseIdVal.(*string)
 	}
 
 	nameVal, nameIsSet := d.GetOk("name")
@@ -101,34 +100,34 @@ func getRoleByName(ctx context.Context, d *schema.ResourceData, m interface{}) (
 		params.Name = nameVal.(string)
 	} else {
 		diags = append(diags, diag.Errorf("missing client parameter: name")...)
-		return nil, diags
+		return diags
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRoleByName(params, nil)
+	resp, err := client.HardwareModel.HardwareModelGetHardwareBrandByName(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
 
 	respModel := resp.GetPayload()
-	zschema.SetRoleResourceData(d, respModel)
+	zschema.SetSysBrandResourceData(d, respModel)
 	d.SetId(respModel.ID)
 
-	return respModel, diags
+	return diags
 }
 
-func IdentityAccessManagement_CreateRole(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func CreateHardwareBrand(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	model := zschema.RoleModel(d)
-	params := identity_access_management.NewIdentityAccessManagementCreateRoleParams()
+	model := zschema.SysBrandModel(d)
+	params := hardware_model.NewHardwareModelCreateHardwareBrandParams()
 	params.SetBody(model)
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementCreateRole(params, nil)
+	resp, err := client.HardwareModel.HardwareModelCreateHardwareBrand(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -150,28 +149,30 @@ func IdentityAccessManagement_CreateRole(ctx context.Context, d *schema.Resource
 		}
 	}
 
+	d.SetId(responseData.ObjectID)
+
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if diags := IdentityAccessManagement_GetRole(ctx, d, m); diags.HasError() {
-		return diags
+	if errs := GetHardwareBrandByName(ctx, d, m); err != nil {
+		return append(diags, errs...)
 	}
 
 	return diags
 }
 
-func IdentityAccessManagement_UpdateRole(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func UpdateHardwareBrand(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	d.Partial(true)
 
-	params := identity_access_management.NewIdentityAccessManagementUpdateRoleParams()
+	params := hardware_model.NewHardwareModelUpdateHardwareBrandParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.RoleModel(d))
-	// IdentityAccessManagementUpdateRoleBody
+	params.SetBody(zschema.SysBrandModel(d))
+	// HardwareModelUpdateHardwareBrandBody
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {
@@ -184,7 +185,7 @@ func IdentityAccessManagement_UpdateRole(ctx context.Context, d *schema.Resource
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementUpdateRole(params, nil)
+	resp, err := client.HardwareModel.HardwareModelUpdateHardwareBrand(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
@@ -193,37 +194,33 @@ func IdentityAccessManagement_UpdateRole(ctx context.Context, d *schema.Resource
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
-			// FIXME: zedcloud api returns a response that contains and error even in case of success.
-			// remove this code once it is fixed on API side.
-			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
-				continue
-			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		if diags.HasError() {
-			return diags
-		}
+		return diags
 	}
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if diags := IdentityAccessManagement_GetRole(ctx, d, m); diags.HasError() {
-		return diags
+	if errs := GetHardwareBrandByName(ctx, d, m); err != nil {
+		return append(diags, errs...)
 	}
-
-	d.Partial(false)
 
 	return diags
 }
 
-func IdentityAccessManagement_DeleteRole(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func DeleteHardwareBrand(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := identity_access_management.NewIdentityAccessManagementDeleteRoleParams()
+	params := hardware_model.NewHardwareModelDeleteHardwareBrandParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	enterpriseIdVal, enterpriseIdIsSet := d.GetOk("enterprise_id")
+	if enterpriseIdIsSet {
+		params.EnterpriseID = enterpriseIdVal.(*string)
 	}
 
 	idVal, idIsSet := d.GetOk("id")
@@ -237,7 +234,7 @@ func IdentityAccessManagement_DeleteRole(ctx context.Context, d *schema.Resource
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementDeleteRole(params, nil)
+	resp, err := client.HardwareModel.HardwareModelDeleteHardwareBrand(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)

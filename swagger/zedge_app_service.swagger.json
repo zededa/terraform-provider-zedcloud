@@ -4211,6 +4211,12 @@
                             "$ref": "#/definitions/ZsrvResponse"
                         }
                     },
+                    "202": {
+                        "description": "Accepted. The API gateway accepted the request for updating patch envelope reference but the update process has not been completed. Please check the job status to track the status of patch envelope reference update and any error messages.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
                         "schema": {
@@ -5368,6 +5374,12 @@
                             "$ref": "#/definitions/ZsrvResponse"
                         }
                     },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
                         "schema": {
@@ -5426,6 +5438,12 @@
                     },
                     "403": {
                         "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
                         "schema": {
                             "$ref": "#/definitions/ZsrvResponse"
                         }
@@ -8441,6 +8459,12 @@
                             "$ref": "#/definitions/ZsrvResponse"
                         }
                     },
+                    "202": {
+                        "description": "Accepted. The API gateway accepted the request for updating patch envelope reference but the update process has not been completed. Please check the job status to track the status of patch envelope reference update and any error messages.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
                     "401": {
                         "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
                         "schema": {
@@ -10256,6 +10280,32 @@
                 }
             }
         },
+        "CellularStatus": {
+            "type": "object",
+            "properties": {
+                "providers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetworkProvider"
+                    },
+                    "description": "List of network providers"
+                },
+                "modem": {
+                    "type": "object",
+                    "$ref": "#/definitions/ModemDetail",
+                    "description": "Modem detail"
+                },
+                "simCards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SIMCard"
+                    },
+                    "description": "List of SIM Cards"
+                }
+            },
+            "description": "CellularStatus contains status information for a single cellular network",
+            "title": "CellularStatus contains status information for a single cellular network"
+        },
         "ClassificationItem": {
             "type": "object",
             "properties": {
@@ -11322,6 +11372,39 @@
                 }
             }
         },
+        "ModemDetail": {
+            "type": "object",
+            "properties": {
+                "manufacturer": {
+                    "type": "string",
+                    "description": "Modem manufacturer"
+                },
+                "model": {
+                    "type": "string",
+                    "description": "Modem model"
+                },
+                "firmwareVersion": {
+                    "type": "string",
+                    "description": "Modem firmware version"
+                },
+                "imei": {
+                    "type": "string",
+                    "description": "Modem IMEI"
+                },
+                "operatingState": {
+                    "type": "string",
+                    "$ref": "#/definitions/ZCellularOperatingState",
+                    "description": "Modem operating state"
+                },
+                "controlProtocol": {
+                    "type": "string",
+                    "$ref": "#/definitions/ZCellularControlProtocol",
+                    "description": "Modem control protocol"
+                }
+            },
+            "description": "ModemDetail describes a cellular Modem",
+            "title": "ModemDetail describes a cellular Modem"
+        },
         "ModuleDetail": {
             "type": "object",
             "example": {
@@ -11507,6 +11590,35 @@
             "description": "NetworkCounter is used to store the Network Stats and Counters",
             "title": "NetworkCounter is used to store the Network Stats and Counters"
         },
+        "NetworkProvider": {
+            "type": "object",
+            "properties": {
+                "plmn": {
+                    "type": "string",
+                    "description": "PLMN code"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Human-friendly name"
+                },
+                "rat": {
+                    "type": "string",
+                    "$ref": "#/definitions/RadioAccessTechnology",
+                    "description": "Radio Access Technology"
+                },
+                "roaming": {
+                    "type": "boolean",
+                    "description": "Is Roaming ON"
+                },
+                "connectedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Time when was the connection established"
+                }
+            },
+            "description": "NetworkProvider describes a cellular Network Provider",
+            "title": "NetworkProvider describes a cellular Network Provider"
+        },
         "NetworkProxyProto": {
             "type": "string",
             "enum": [
@@ -11575,6 +11687,16 @@
                     "type": "object",
                     "$ref": "#/definitions/GPSLocation",
                     "description": "Location from GNSS receivers on WWAN type adapters"
+                },
+                "cellular": {
+                    "type": "object",
+                    "$ref": "#/definitions/CellularStatus",
+                    "description": "Cellular network status"
+                },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Network MTU"
                 }
             },
             "description": "NetworkStatus is used to store the Network status",
@@ -12058,6 +12180,18 @@
         "Permission": {
             "type": "object"
         },
+        "RadioAccessTechnology": {
+            "type": "string",
+            "enum": [
+                "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+                "RADIO_ACCESS_TECHNOLOGY_GSM",
+                "RADIO_ACCESS_TECHNOLOGY_UMTS",
+                "RADIO_ACCESS_TECHNOLOGY_LTE",
+                "RADIO_ACCESS_TECHNOLOGY_5GNR"
+            ],
+            "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+            "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
+        },
         "Resource": {
             "type": "object",
             "properties": {
@@ -12135,6 +12269,34 @@
             ],
             "default": "UNSPECIFIED",
             "title": "RunState_HttpRequest - Only for swagger documentation"
+        },
+        "SIMCard": {
+            "type": "object",
+            "properties": {
+                "slotNumber": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Slot number"
+                },
+                "slotActivated": {
+                    "type": "boolean",
+                    "description": "Is Slot activated"
+                },
+                "iccid": {
+                    "type": "string",
+                    "description": "Integrated Circuit Card Identifier"
+                },
+                "imsi": {
+                    "type": "string",
+                    "description": "International Mobile Subscriber Identity"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "Current state of the SIM card"
+                }
+            },
+            "description": "SIMCard describes a SIM slot",
+            "title": "SIMCard describes a SIM slot"
         },
         "SWInfo": {
             "type": "object",
@@ -12899,6 +13061,27 @@
             "description": "- VARIABLE_FORMAT_UNSPECIFIED: Invalid format\n - VARIABLE_FORMAT_TEXT: Value in string format\n - VARIABLE_FORMAT_NUMBER: Value in integer format\n - VARIABLE_FORMAT_FILE: Value to be read from a file\n - VARIABLE_FORMAT_DROPDOWN: Value to be selected from dropdown of options\n - VARIABLE_FORMAT_BOOLEAN: Value in boolean format\n - VARIABLE_FORMAT_PASSWORD: Value in string to be masked in User-Agent",
             "title": "Custom variable format"
         },
+        "ZCellularControlProtocol": {
+            "type": "string",
+            "enum": [
+                "Z_CELLULAR_CONTROL_PROTOCOL_UNSPECIFIED",
+                "Z_CELLULAR_CONTROL_PROTOCOL_QMI",
+                "Z_CELLULAR_CONTROL_PROTOCOL_MBIM"
+            ],
+            "default": "Z_CELLULAR_CONTROL_PROTOCOL_UNSPECIFIED"
+        },
+        "ZCellularOperatingState": {
+            "type": "string",
+            "enum": [
+                "Z_CELLULAR_OPERATING_STATE_UNSPECIFIED",
+                "Z_CELLULAR_OPERATING_STATE_OFFLINE",
+                "Z_CELLULAR_OPERATING_STATE_RADIO_OFF",
+                "Z_CELLULAR_OPERATING_STATE_ONLINE",
+                "Z_CELLULAR_OPERATING_STATE_ONLINE_AND_CONNECTED",
+                "Z_CELLULAR_OPERATING_STATE_UNRECOGNIZED"
+            ],
+            "default": "Z_CELLULAR_OPERATING_STATE_UNSPECIFIED"
+        },
         "ZcOpsStatus": {
             "type": "string",
             "enum": [
@@ -13370,6 +13553,10 @@
                 "defaultNetInstance": {
                     "type": "boolean",
                     "description": "default instance flag"
+                },
+                "allowToDiscover": {
+                    "type": "boolean",
+                    "description": "flag tells if appInstance have permission to access the network mappings from the connected netInstance"
                 }
             },
             "description": "App Interface detail",

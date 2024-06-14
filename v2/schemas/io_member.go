@@ -1,84 +1,189 @@
 package schemas
 
 import (
+	"slices"
+	"cmp"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
-// Function to perform the following actions:
-// (1) Translate IoMember resource data into a schema model struct that will sent to the LM API for resource creation/updating
-// (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func IoMemberModel(d *schema.ResourceData) *models.IoMember {
 	assigngrp, _ := d.Get("assigngrp").(string)
-	cbattr, _ := d.Get("cbattr").(map[string]string) // map[string]string
+	cbattr := map[string]string{}
+	cbattrInterface, cbattrIsSet := d.GetOk("cbattr")
+	if cbattrIsSet {
+		cbattrMap := cbattrInterface.(map[string]interface{})
+		for k, v := range cbattrMap {
+			if v == nil {
+				continue
+			}
+			cbattr[k] = v.(string)
+		}
+	}
+
 	costInt, _ := d.Get("cost").(int)
 	cost := int64(costInt)
 	logicallabel, _ := d.Get("logicallabel").(string)
-	phyaddrs, _ := d.Get("phyaddrs").(map[string]string) // map[string]string
+	parentassigngrp, _ := d.Get("parentassigngrp").(string)
+	phyaddrs := map[string]string{}
+	phyaddrsInterface, phyaddrsIsSet := d.GetOk("phyaddrs")
+	if phyaddrsIsSet {
+		phyaddrsMap := phyaddrsInterface.(map[string]interface{})
+		for k, v := range phyaddrsMap {
+			if v == nil {
+				continue
+			}
+			phyaddrs[k] = v.(string)
+		}
+	}
+
 	phylabel, _ := d.Get("phylabel").(string)
 	var usage *models.AdapterUsage // AdapterUsage
 	usageInterface, usageIsSet := d.GetOk("usage")
 	if usageIsSet {
 		usageModel := usageInterface.(string)
+		if usageModel == "" {
+			usageModel = "ADAPTER_USAGE_UNSPECIFIED"
+		}
 		usage = models.NewAdapterUsage(models.AdapterUsage(usageModel))
+	} 
+	usagePolicy := map[string]bool{} // map[string]bool
+	usagePolicyInterface, usagePolicyIsSet := d.GetOk("phyaddrs")
+	if usagePolicyIsSet {
+		usagePolicyMap := usagePolicyInterface.(map[string]interface{})
+		for k, v := range usagePolicyMap {
+			if v == nil {
+				continue
+			}
+			usagePolicy[k] = v.(bool)
+		}
 	}
-	usagePolicy, _ := d.Get("usage_policy").(map[string]bool) // map[string]bool
-	var ztype *models.IoType                                  // IoType
+
+	var vfs *models.Vfs // Vfs
+	vfsInterface, vfsIsSet := d.GetOk("vfs")
+	if vfsIsSet && vfsInterface != nil {
+		vfsMap := vfsInterface.([]interface{})
+		if len(vfsMap) > 0 {
+			vfs = VfsModelFromMap(vfsMap[0].(map[string]interface{}))
+		}
+	}
+	var ztype *models.IoType // IoType
 	ztypeInterface, ztypeIsSet := d.GetOk("ztype")
 	if ztypeIsSet {
 		ztypeModel := ztypeInterface.(string)
 		ztype = models.NewIoType(models.IoType(ztypeModel))
 	}
 	return &models.IoMember{
-		Assigngrp:    &assigngrp, // string true false false
-		Cbattr:       cbattr,
-		Cost:         &cost,         // int64 true false false
-		Logicallabel: &logicallabel, // string true false false
-		Phyaddrs:     phyaddrs,
-		Phylabel:     &phylabel, // string true false false
-		Usage:        usage,
-		UsagePolicy:  usagePolicy,
-		Ztype:        ztype,
+		Assigngrp:       &assigngrp, // string
+		Cbattr:          cbattr,
+		Cost:            &cost,         // int64
+		Logicallabel:    &logicallabel, // string
+		Parentassigngrp: parentassigngrp,
+		Phyaddrs:        phyaddrs,
+		Phylabel:        &phylabel, // string
+		Usage:           usage,
+		UsagePolicy:     usagePolicy,
+		Vfs:             vfs,
+		Ztype:           ztype,
 	}
 }
 
 func IoMemberModelFromMap(m map[string]interface{}) *models.IoMember {
 	assigngrp := m["assigngrp"].(string)
-	cbattr := m["cbattr"].(map[string]string)
-	cost := int64(m["cost"].(int)) // int64 true false false
+	cbattr := map[string]string{}
+	cbattrInterface, cbattrIsSet := m["cbattr"]
+	if cbattrIsSet {
+		cbattrMap := cbattrInterface.(map[string]interface{})
+		for k, v := range cbattrMap {
+			if v == nil {
+				continue
+			}
+			cbattr[k] = v.(string)
+		}
+	}
+
+	cost := int64(m["cost"].(int)) // int64
 	logicallabel := m["logicallabel"].(string)
-	phyaddrs := m["phyaddrs"].(map[string]string)
+	parentassigngrp := m["parentassigngrp"].(string)
+	phyaddrs := map[string]string{}
+	phyaddrsInterface, phyaddrsIsSet := m["phyaddrs"]
+	if phyaddrsIsSet {
+		phyaddrsMap := phyaddrsInterface.(map[string]interface{})
+		for k, v := range phyaddrsMap {
+			if v == nil {
+				continue
+			}
+			phyaddrs[k] = v.(string)
+		}
+	}
+
 	phylabel := m["phylabel"].(string)
-	usage := m["usage"].(*models.AdapterUsage) // AdapterUsage
-	usagePolicy := m["usage_policy"].(map[string]bool)
-	ztype := m["ztype"].(*models.IoType) // IoType
+	var usage *models.AdapterUsage // AdapterUsage
+	usageInterface, usageIsSet := m["usage"]
+	if usageIsSet {
+		usageModel := usageInterface.(string)
+		if usageModel == "" {
+			usageModel = "ADAPTER_USAGE_UNSPECIFIED"
+		}
+		usage = models.NewAdapterUsage(models.AdapterUsage(usageModel))
+	} 
+	usagePolicy := map[string]bool{} // map[string]bool
+	usagePolicyInterface, usagePolicyIsSet := m["usage_policy"]
+	if usagePolicyIsSet {
+		usagePolicyMap := usagePolicyInterface.(map[string]interface{})
+		for k, v := range usagePolicyMap {
+			if v == nil {
+				continue
+			}
+			usagePolicy[k] = v.(bool)
+		}
+	}
+
+	var vfs *models.Vfs // Vfs
+	vfsInterface, vfsIsSet := m["vfs"]
+	if vfsIsSet && vfsInterface != nil {
+		vfsMap := vfsInterface.([]interface{})
+		if len(vfsMap) > 0 {
+			vfs = VfsModelFromMap(vfsMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	var ztype *models.IoType // IoType
+	ztypeInterface, ztypeIsSet := m["ztype"]
+	if ztypeIsSet {
+		ztypeModel := ztypeInterface.(string)
+		ztype = models.NewIoType(models.IoType(ztypeModel))
+	}
 	return &models.IoMember{
-		Assigngrp:    &assigngrp,
-		Cbattr:       cbattr,
-		Cost:         &cost,
-		Logicallabel: &logicallabel,
-		Phyaddrs:     phyaddrs,
-		Phylabel:     &phylabel,
-		Usage:        usage,
-		UsagePolicy:  usagePolicy,
-		Ztype:        ztype,
+		Assigngrp:       &assigngrp,
+		Cbattr:          cbattr,
+		Cost:            &cost,
+		Logicallabel:    &logicallabel,
+		Parentassigngrp: parentassigngrp,
+		Phyaddrs:        phyaddrs,
+		Phylabel:        &phylabel,
+		Usage:           usage,
+		UsagePolicy:     usagePolicy,
+		Vfs:             vfs,
+		Ztype:           ztype,
 	}
 }
 
-// Update the underlying IoMember resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
 func SetIoMemberResourceData(d *schema.ResourceData, m *models.IoMember) {
 	d.Set("assigngrp", m.Assigngrp)
 	d.Set("cbattr", m.Cbattr)
 	d.Set("cost", m.Cost)
 	d.Set("logicallabel", m.Logicallabel)
+	d.Set("parentassigngrp", m.Parentassigngrp)
 	d.Set("phyaddrs", m.Phyaddrs)
 	d.Set("phylabel", m.Phylabel)
 	d.Set("usage", m.Usage)
 	d.Set("usage_policy", m.UsagePolicy)
+	d.Set("vfs", SetVfsSubResourceData([]*models.Vfs{m.Vfs}))
 	d.Set("ztype", m.Ztype)
 }
 
-// Iterate through and update the IoMember resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
 func SetIoMemberSubResourceData(m []*models.IoMember) (d []*map[string]interface{}) {
 	for _, IoMemberModel := range m {
 		if IoMemberModel != nil {
@@ -87,10 +192,12 @@ func SetIoMemberSubResourceData(m []*models.IoMember) (d []*map[string]interface
 			properties["cbattr"] = IoMemberModel.Cbattr
 			properties["cost"] = IoMemberModel.Cost
 			properties["logicallabel"] = IoMemberModel.Logicallabel
+			properties["parentassigngrp"] = IoMemberModel.Parentassigngrp
 			properties["phyaddrs"] = IoMemberModel.Phyaddrs
 			properties["phylabel"] = IoMemberModel.Phylabel
 			properties["usage"] = IoMemberModel.Usage
 			properties["usage_policy"] = IoMemberModel.UsagePolicy
+			properties["vfs"] = SetVfsSubResourceData([]*models.Vfs{IoMemberModel.Vfs})
 			properties["ztype"] = IoMemberModel.Ztype
 			d = append(d, &properties)
 		}
@@ -98,7 +205,6 @@ func SetIoMemberSubResourceData(m []*models.IoMember) (d []*map[string]interface
 	return
 }
 
-// Schema mapping representing the IoMember resource defined in the Terraform configuration
 func IoMemberSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"assigngrp": {
@@ -126,6 +232,12 @@ func IoMemberSchema() map[string]*schema.Schema {
 			Description: `Logical Label`,
 			Type:        schema.TypeString,
 			Required:    true,
+		},
+
+		"parentassigngrp": {
+			Description: `Parent group for a IoMember. Can be empty if there is no parent group.`,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"phyaddrs": {
@@ -158,6 +270,15 @@ func IoMemberSchema() map[string]*schema.Schema {
 			Optional: true,
 		},
 
+		"vfs": {
+			Description: ``,
+			Type:        schema.TypeList, //GoType: Vfs
+			Elem: &schema.Resource{
+				Schema: VfsSchema(),
+			},
+			Optional: true,
+		},
+
 		"ztype": {
 			Description: `Z Type`,
 			Type:        schema.TypeString,
@@ -166,17 +287,54 @@ func IoMemberSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the IoMember resource
 func GetIoMemberPropertyFields() (t []string) {
 	return []string{
 		"assigngrp",
 		"cbattr",
 		"cost",
 		"logicallabel",
+		"parentassigngrp",
 		"phyaddrs",
 		"phylabel",
 		"usage",
 		"usage_policy",
+		"vfs",
 		"ztype",
 	}
+}
+
+func CompareIoMemberLists(a, b []*models.IoMember) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	slices.SortStableFunc(a, func(left, right *models.IoMember) int {
+		return cmp.Compare(*left.Logicallabel, *right.Logicallabel)
+	})
+	slices.SortStableFunc(b, func(left, right *models.IoMember) int {
+		return cmp.Compare(*left.Logicallabel, *right.Logicallabel)
+	})
+	for i, v := range a {
+		if cmp.Compare(*v.Logicallabel, *b[i].Logicallabel) != 0 {
+			return false
+		}
+		if cmp.Compare(*v.Phylabel, *b[i].Phylabel) != 0 {
+			return false
+		}
+		if cmp.Compare(*v.Ztype, *b[i].Ztype) != 0 {
+			return false
+		}
+		if cmp.Compare(*v.Cost, *b[i].Cost) != 0 {
+			return false
+		}
+		if cmp.Compare(*v.Assigngrp, *b[i].Assigngrp) != 0 {
+			return false
+		}
+		if cmp.Compare(v.Parentassigngrp, b[i].Parentassigngrp) != 0 {
+			return false
+		}
+		if cmp.Compare(*v.Usage, *b[i].Usage) != 0 {
+			return false
+		}
+	}
+	return true
 }

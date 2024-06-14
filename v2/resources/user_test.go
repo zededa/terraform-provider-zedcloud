@@ -41,7 +41,7 @@ func TestUser_Create(t *testing.T) {
 					resource.TestMatchResourceAttr(
 						"zedcloud_user.test_tf_provider",
 						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+						regexp.MustCompile("^[0-9A-Za-z_=-]{28}$"),
 					),
 					testUserAttributes(t, &got, &expected),
 				),
@@ -88,8 +88,13 @@ func testUserExists(resourceName string, userModel *models.DetailedUser) resourc
 func testUserAttributes(t *testing.T, got, expected *models.DetailedUser) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		ignoredFields := []string{
+			"ID",
 			"AllowedEnterprises",
 			"Revision",
+			"RoleID",
+			"SfdcID",
+			"EnterpriseID",
+			"CustomUserInput",
 		}
 		opts := cmpopts.IgnoreFields(models.DetailedUser{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {

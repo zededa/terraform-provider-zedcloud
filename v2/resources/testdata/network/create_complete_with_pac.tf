@@ -1,11 +1,31 @@
-resource "zedcloud_network" "complete_with_pac" {
-		# computed
-    # id =
+resource "zedcloud_project" "test_tf_provider" {
+    # required
+    name = "test_tf_provider-create_net_3"
+    title = "title"
 
-		# required
+    # optional
+    type = "TAG_TYPE_PROJECT"
+    attestation_policy {
+        # required
+        title = "title"
+        type = "POLICY_TYPE_ATTESTATION"
+
+        attestation_policy {
+            # required
+            type = "ATTEST_POLICY_TYPE_ACCEPT"
+        }
+    }
+}
+
+
+resource "zedcloud_network" "complete_with_pac" {
+    depends_on = [
+        zedcloud_project.test_tf_provider
+    ]
+    # required
     name = "zedcloud_network.complete_with_pac.name"
-		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
-		title = "zedcloud_network.complete_with_pac.title"
+    project_id = zedcloud_project.test_tf_provider.id
+    title = "zedcloud_network.complete_with_pac.title"
     ip {
         dhcp = "NETWORK_DHCP_TYPE_STATIC"
         dhcp_range {
@@ -24,7 +44,7 @@ resource "zedcloud_network" "complete_with_pac" {
     }
     kind = "NETWORK_KIND_V4"
 
-		# optional
+    # optional
     description = "terraform test network"
 
     # not supported
@@ -36,21 +56,12 @@ resource "zedcloud_network" "complete_with_pac" {
     enterprise_default = false
 
     proxy {
-        # not supported by API
-        # exceptions = "1.1.1.1"
-
-        # related to the PAC file
-        # network_proxy = true
-        # network_proxy_url = "http://www.proxy.com"
-        # network_proxy_certs = []
         pacfile = "testpacfile"
-   }
+    }
 
     wireless {
         cellular {
             apn = "1234"
-            # not supported by API
-            # location_tracking = true
         }
         type = "NETWORK_WIRELESS_TYPE_WIFI"
         wifi {

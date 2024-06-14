@@ -1,11 +1,29 @@
-resource "zedcloud_network" "required_only" {
-		# computed
-    # id =
+resource "zedcloud_project" "test_tf_provider" {
+    # required
+    name = "test_tf_provider-create_net_1"
+    title = "title"
 
-		# required
+    # optional
+    type = "TAG_TYPE_PROJECT"
+    attestation_policy {
+        # required
+        title = "title"
+        type = "POLICY_TYPE_ATTESTATION"
+
+        attestation_policy {
+            # required
+            type = "ATTEST_POLICY_TYPE_ACCEPT"
+        }
+    }
+}
+
+resource "zedcloud_network" "required_only" {
+    depends_on = [
+        zedcloud_project.test_tf_provider
+    ]
     name = "zedcloud_network.required_only.name"
-		title = "zedcloud_network.required_only.title"
-		project_id = "4754cd0f-82d7-4e06-a68f-ff9e23e75ccf"
+    title = "zedcloud_network.required_only.title"
+    project_id = zedcloud_project.test_tf_provider.id
     ip {
         dhcp = "NETWORK_DHCP_TYPE_STATIC"
         dhcp_range {

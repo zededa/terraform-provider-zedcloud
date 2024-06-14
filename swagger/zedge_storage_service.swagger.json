@@ -808,6 +808,7 @@
                                 "datastoreId": {
                                     "type": "string",
                                     "description": "Datastore Id where image binary is located.",
+                                    "title": "datastoreId will be deprecated",
                                     "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
                                 },
                                 "imageSizeBytes": {
@@ -1156,6 +1157,7 @@
                                 "datastoreId": {
                                     "type": "string",
                                     "description": "Datastore Id where image binary is located.",
+                                    "title": "datastoreId will be deprecated",
                                     "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
                                 },
                                 "imageSizeBytes": {
@@ -1361,6 +1363,7 @@
                                 "datastoreId": {
                                     "type": "string",
                                     "description": "Datastore Id where image binary is located.",
+                                    "title": "datastoreId will be deprecated",
                                     "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
                                 },
                                 "imageSizeBytes": {
@@ -5430,6 +5433,7 @@
                 "datastoreId": {
                     "type": "string",
                     "description": "Datastore Id where image binary is located.",
+                    "title": "datastoreId will be deprecated",
                     "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
                 },
                 "imageSizeBytes": {
@@ -5667,7 +5671,8 @@
                 "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
-                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE"
+                "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+                "OBJECT_TYPE_DEV_PASSTHROUGH"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
