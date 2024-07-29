@@ -30,6 +30,7 @@ NETWORK_KIND_V6
 - `dns_list` (Block List) (see [below for nested schema](#nestedblock--dns_list))
 - `enterprise_default` (Boolean)
 - `ip` (Block List) IP configuration for the network (see [below for nested schema](#nestedblock--ip))
+- `mtu` (Number) Maximum Transmission Unit (MTU) for the network
 - `proxy` (Block List) proxy block is used to configure network proxy settings. The following is a brief description of how to use the attributes in the block:
 1) If the proxy server requires certificates, set network_proxy_certs to carry the certificates
 2) To have the EdgeNode auto discover pacfile, set network_proxy to True

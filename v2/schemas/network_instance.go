@@ -51,6 +51,8 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetworkInstance {
 			lisp = LispModelFromMap(lispMap[0].(map[string]interface{}))
 		}
 	}
+	mtuInt, _ := d.Get("mtu").(int)
+	mtu := int64(mtuInt)
 	name, _ := d.Get("name").(string)
 	networkPolicyID, _ := d.Get("network_policy_id").(string)
 	oconfig, _ := d.Get("oconfig").(string)
@@ -72,6 +74,25 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetworkInstance {
 				continue
 			}
 			portTags[k] = v.(string)
+		}
+	}
+
+	propagateConnectedRoutes, _ := d.Get("propagate_connected_routes").(bool)
+	var staticRoutes []*models.StaticIPRoute // []*StaticIPRoute
+	staticRoutesInterface, staticRoutesIsSet := d.GetOk("static_routes")
+	if staticRoutesIsSet {
+		var items []interface{}
+		if listItems, isList := staticRoutesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = staticRoutesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := StaticIPRouteModelFromMap(v.(map[string]interface{}))
+			staticRoutes = append(staticRoutes, m)
 		}
 	}
 
@@ -104,27 +125,30 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetworkInstance {
 		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
 	}
 	return &models.NetworkInstance{
-		ClusterID:       clusterID,
-		Description:     description,
-		DeviceDefault:   deviceDefault,
-		DeviceID:        &deviceID, // string true false false
-		Dhcp:            dhcp,
-		DNSList:         dNSList,
-		ID:              id,
-		IP:              ip,
-		Kind:            kind,
-		Lisp:            lisp,
-		Name:            &name, // string true false false
-		NetworkPolicyID: networkPolicyID,
-		Oconfig:         oconfig,
-		Opaque:          opaque,
-		Port:            &port, // string true false false
-		PortTags:        portTags,
-		ProjectID:       projectID,
-		Revision:        revision,
-		Tags:            tags,
-		Title:           &title, // string true false false
-		Type:            typeVar,
+		ClusterID:       			clusterID,
+		Description:    			description,
+		DeviceDefault:   			deviceDefault,
+		DeviceID:        			&deviceID, // string true false false
+		Dhcp:            			dhcp,
+		DNSList:         			dNSList,
+		ID:              			id,
+		IP:              			ip,
+		Kind:            			kind,
+		Lisp:            			lisp,
+		Mtu:            			mtu,
+		Name:            			&name, // string true false false
+		NetworkPolicyID: 			networkPolicyID,
+		Oconfig:         			oconfig,
+		Opaque:          			opaque,
+		Port:            			&port, // string true false false
+		PortTags:        			portTags,
+		ProjectID:       			projectID,
+		PropagateConnectedRoutes: 	propagateConnectedRoutes,
+		Revision:        			revision,
+		StaticRoutes:	 			staticRoutes,
+		Tags:            			tags,
+		Title:           			&title, // string true false false
+		Type:            			typeVar,
 	}
 }
 
@@ -176,6 +200,7 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetworkInstan
 		}
 	}
 	//
+	mtu := int64(m["mtu"].(int)) // int64
 	name := m["name"].(string)
 	networkPolicyID := m["network_policy_id"].(string)
 	oconfig := m["oconfig"].(string)
@@ -198,6 +223,25 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetworkInstan
 				continue
 			}
 			portTags[k] = v.(string)
+		}
+	}
+
+	propagateConnectedRoutes := m["propagate_connected_routes"].(bool)
+	var staticRoutes []*models.StaticIPRoute // []*StaticIPRoute
+	staticRoutesInterface, staticRoutesIsSet := m["static_routes"]
+	if staticRoutesIsSet {
+		var items []interface{}
+		if listItems, isList := staticRoutesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = staticRoutesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := StaticIPRouteModelFromMap(v.(map[string]interface{}))
+			staticRoutes = append(staticRoutes, m)
 		}
 	}
 
@@ -231,27 +275,30 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetworkInstan
 		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
 	}
 	return &models.NetworkInstance{
-		ClusterID:       clusterID,
-		Description:     description,
-		DeviceDefault:   deviceDefault,
-		DeviceID:        &deviceID,
-		Dhcp:            dhcp,
-		DNSList:         dNSList,
-		ID:              id,
-		IP:              ip,
-		Kind:            kind,
-		Lisp:            lisp,
-		Name:            &name,
-		NetworkPolicyID: networkPolicyID,
-		Oconfig:         oconfig,
-		Opaque:          opaque,
-		Port:            &port,
-		PortTags:        portTags,
-		ProjectID:       projectID,
-		Revision:        revision,
-		Tags:            tags,
-		Title:           &title,
-		Type:            typeVar,
+		ClusterID:       			clusterID,
+		Description:     			description,
+		DeviceDefault:   			deviceDefault,
+		DeviceID:        			&deviceID,
+		Dhcp:            			dhcp,
+		DNSList:         			dNSList,
+		ID:              			id,
+		IP:              			ip,
+		Kind:            			kind,
+		Lisp:            			lisp,
+		Mtu: 		   	 			mtu,
+		Name:            			&name,
+		NetworkPolicyID: 			networkPolicyID,
+		Oconfig:         			oconfig,
+		Opaque:          			opaque,
+		Port:            			&port,
+		PortTags:        			portTags,
+		ProjectID:       			projectID,
+		PropagateConnectedRoutes: 	propagateConnectedRoutes,
+		Revision:       		 	revision,
+		StaticRoutes:            	staticRoutes,
+		Tags:            			tags,
+		Title:        			   	&title,
+		Type:          				typeVar,
 	}
 }
 
@@ -266,6 +313,7 @@ func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetworkIns
 	d.Set("ip", SetDHCPServerSubResourceData([]*models.DhcpServerConfig{m.IP}))
 	d.Set("kind", m.Kind)
 	d.Set("lisp", SetLispSubResourceData([]*models.LispConfig{m.Lisp}))
+	d.Set("mtu", m.Mtu)
 	d.Set("name", m.Name)
 	d.Set("network_policy_id", m.NetworkPolicyID)
 	d.Set("oconfig", m.Oconfig)
@@ -273,7 +321,9 @@ func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetworkIns
 	d.Set("port", m.Port)
 	d.Set("port_tags", m.PortTags)
 	d.Set("project_id", m.ProjectID)
+	d.Set("propagate_connected_routes", m.PropagateConnectedRoutes)
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
+	d.Set("static_routes", SetStaticIPRouteSubResourceData(m.StaticRoutes))
 	d.Set("tags", m.Tags)
 	d.Set("title", m.Title)
 	d.Set("type", m.Type)
@@ -293,6 +343,7 @@ func SetNetworkInstanceSubResourceData(m []*models.NetworkInstance) (d []*map[st
 			properties["ip"] = SetDHCPServerSubResourceData([]*models.DhcpServerConfig{NetInstConfigModel.IP})
 			properties["kind"] = NetInstConfigModel.Kind
 			properties["lisp"] = SetLispSubResourceData([]*models.LispConfig{NetInstConfigModel.Lisp})
+			properties["mtu"] = NetInstConfigModel.Mtu
 			properties["name"] = NetInstConfigModel.Name
 			properties["network_policy_id"] = NetInstConfigModel.NetworkPolicyID
 			properties["oconfig"] = NetInstConfigModel.Oconfig
@@ -300,7 +351,9 @@ func SetNetworkInstanceSubResourceData(m []*models.NetworkInstance) (d []*map[st
 			properties["port"] = NetInstConfigModel.Port
 			properties["port_tags"] = NetInstConfigModel.PortTags
 			properties["project_id"] = NetInstConfigModel.ProjectID
+			properties["propagate_connected_routes"] = NetInstConfigModel.PropagateConnectedRoutes
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{NetInstConfigModel.Revision})
+			properties["static_routes"] = SetStaticIPRouteSubResourceData(NetInstConfigModel.StaticRoutes)
 			properties["tags"] = NetInstConfigModel.Tags
 			properties["title"] = NetInstConfigModel.Title
 			properties["type"] = NetInstConfigModel.Type
@@ -391,6 +444,12 @@ NETWORK_INSTANCE_KIND_HONEYPOT`,
 			Computed: true,
 		},
 
+		"mtu": {
+			Description: `Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it`,
+			Type:        schema.TypeInt,
+			Optional:    true,
+		},
+
 		"name": {
 			Description: `User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed`,
 			Type:        schema.TypeString,
@@ -441,6 +500,12 @@ NETWORK_INSTANCE_KIND_HONEYPOT`,
 			Computed:    true,
 		},
 
+		"propagate_connected_routes": {
+			Description: `Automatically propagate connected routes`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
 		"revision": {
 			Description: `system defined info for the object`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
@@ -448,6 +513,16 @@ NETWORK_INSTANCE_KIND_HONEYPOT`,
 				Schema: ObjectRevision(),
 			},
 			Computed: true,
+		},
+
+		"static_routes": {
+			Description: `List of Static IP routes`,
+			Type:        schema.TypeList, //GoType: []*StaticIPRoute
+			Elem: &schema.Resource{
+				Schema: StaticIPRouteSchema(),
+			},
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"tags": {
@@ -492,6 +567,7 @@ func GetNetworkInstancePropertyFields() (t []string) {
 		"ip",
 		"kind",
 		"lisp",
+		"mtu",
 		"name",
 		"network_policy_id",
 		"oconfig",
@@ -499,7 +575,9 @@ func GetNetworkInstancePropertyFields() (t []string) {
 		"port",
 		"port_tags",
 		"project_id",
+		"propagate_connected_routes",
 		"revision",
+		"static_routes",
 		"tags",
 		"title",
 		"type",

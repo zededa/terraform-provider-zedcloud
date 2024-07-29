@@ -37,6 +37,8 @@ func NetworkStatusModel(d *schema.ResourceData) *models.NetworkStatus {
 		location = GeoLocationModelFromMap(locationMap)
 	}
 	macAddr, _ := d.Get("mac_addr").(string)
+	mtuInt, _ := d.Get("mtu").(int)
+	mtu := int64(mtuInt)
 	var proxy *models.NetProxyStatus // NetProxyStatus
 	proxyInterface, proxyIsSet := d.GetOk("proxy")
 	if proxyIsSet {
@@ -54,6 +56,7 @@ func NetworkStatusModel(d *schema.ResourceData) *models.NetworkStatus {
 		IPAddrs:        iPAddrs,
 		Location:       location,
 		MacAddr:        macAddr,
+		Mtu:			mtu,
 		Proxy:          proxy,
 		Up:             up,
 		Uplink:         uplink,
@@ -93,6 +96,7 @@ func NetworkStatusModelFromMap(m map[string]interface{}) *models.NetworkStatus {
 	}
 	//
 	macAddr := m["mac_addr"].(string)
+	mtu := int64(m["mtu"].(int))     // int64
 	var proxy *models.NetProxyStatus // NetProxyStatus
 	proxyInterface, proxyIsSet := m["proxy"]
 	if proxyIsSet {
@@ -111,6 +115,7 @@ func NetworkStatusModelFromMap(m map[string]interface{}) *models.NetworkStatus {
 		IPAddrs:        iPAddrs,
 		Location:       location,
 		MacAddr:        macAddr,
+		Mtu:			mtu,
 		Proxy:          proxy,
 		Up:             up,
 		Uplink:         uplink,
@@ -127,6 +132,7 @@ func SetNetworkStatusResourceData(d *schema.ResourceData, m *models.NetworkStatu
 	d.Set("ip_addrs", m.IPAddrs)
 	d.Set("location", SetGeoLocationSubResourceData([]*models.GeoLocation{m.Location}))
 	d.Set("mac_addr", m.MacAddr)
+	d.Set("mtu", m.Mtu)
 	d.Set("proxy", SetNetProxyStatusSubResourceData([]*models.NetProxyStatus{m.Proxy}))
 	d.Set("up", m.Up)
 	d.Set("uplink", m.Uplink)
@@ -145,6 +151,7 @@ func SetNetworkStatusSubResourceData(m []*models.NetworkStatus) (d []*map[string
 			properties["ip_addrs"] = NetworkStatusModel.IPAddrs
 			properties["location"] = SetGeoLocationSubResourceData([]*models.GeoLocation{NetworkStatusModel.Location})
 			properties["mac_addr"] = NetworkStatusModel.MacAddr
+			properties["mtu"] = NetworkStatusModel.Mtu
 			properties["proxy"] = SetNetProxyStatusSubResourceData([]*models.NetProxyStatus{NetworkStatusModel.Proxy})
 			properties["up"] = NetworkStatusModel.Up
 			properties["uplink"] = NetworkStatusModel.Uplink
@@ -223,6 +230,12 @@ func NetworkStatusSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		"mtu": {
+			Description: `Network MTU`,
+			Type:        schema.TypeInt,
+			Optional:    true,
+		},
+
 		"proxy": {
 			Description: `Network Proxy status`,
 			Type:        schema.TypeList, //GoType: NetProxyStatus
@@ -257,6 +270,7 @@ func GetNetworkStatusPropertyFields() (t []string) {
 		"ip_addrs",
 		"location",
 		"mac_addr",
+		"mtu",
 		"proxy",
 		"up",
 		"uplink",

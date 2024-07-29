@@ -67,6 +67,9 @@ type NetworkInstance struct {
 	// Lisp Config : read only for now. Deprecated.
 	Lisp *LispConfig `json:"lisp,omitempty"`
 
+	// Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
+	Mtu int64 `json:"mtu,omitempty"`
+
 	// User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
 	// Required: true
 	// Max Length: 256
@@ -95,8 +98,14 @@ type NetworkInstance struct {
 	// id of the project in which network instance is created
 	ProjectID string `json:"projectId,omitempty"`
 
+	// Automatically propagate connected routes
+	PropagateConnectedRoutes bool `json:"propagateConnectedRoutes,omitempty"`
+
 	// system defined info for the object
 	Revision *ObjectRevision `json:"revision,omitempty"`
+
+	// List of Static IP routes
+	StaticRoutes []*StaticIPRoute `json:"staticRoutes"`
 
 	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
@@ -161,6 +170,10 @@ func (m *NetworkInstance) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateRevision(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStaticRoutes(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -387,6 +400,32 @@ func (m *NetworkInstance) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *NetworkInstance) validateStaticRoutes(formats strfmt.Registry) error {
+	if swag.IsZero(m.StaticRoutes) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.StaticRoutes); i++ {
+		if swag.IsZero(m.StaticRoutes[i]) { // not required
+			continue
+		}
+
+		if m.StaticRoutes[i] != nil {
+			if err := m.StaticRoutes[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 func (m *NetworkInstance) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
@@ -456,6 +495,10 @@ func (m *NetworkInstance) ContextValidate(ctx context.Context, formats strfmt.Re
 	}
 
 	if err := m.contextValidateRevision(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateStaticRoutes(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -573,6 +616,31 @@ func (m *NetworkInstance) contextValidateRevision(ctx context.Context, formats s
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *NetworkInstance) contextValidateStaticRoutes(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.StaticRoutes); i++ {
+
+		if m.StaticRoutes[i] != nil {
+
+			if swag.IsZero(m.StaticRoutes[i]) { // not required
+				return nil
+			}
+
+			if err := m.StaticRoutes[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil

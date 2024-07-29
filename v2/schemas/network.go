@@ -42,6 +42,8 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 		kind = models.NewNetworkKind(models.NetworkKind(kindModel))
 	}
 	name, _ := d.Get("name").(string)
+	mtuInt, _ := d.Get("mtu").(int)
+	mtu := int64(mtuInt)
 	projectID, _ := d.Get("project_id").(string)
 	var proxy *models.Proxy // NetProxyConfig
 	proxyInterface, proxyIsSet := d.GetOk("proxy")
@@ -75,6 +77,7 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 		ID:                id,
 		IP:                ip,
 		Kind:              kind,
+		Mtu:			   mtu,
 		Name:              &name,
 		ProjectID:         &projectID,
 		Proxy:             proxy,
@@ -120,6 +123,7 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 		kindModel := kindInterface.(string)
 		kind = models.NewNetworkKind(models.NetworkKind(kindModel))
 	}
+	mtu := int64(m["mtu"].(int)) // int64
 	name := m["name"].(string)
 	projectID := m["project_id"].(string)
 	var proxy *models.Proxy // NetProxyConfig
@@ -157,6 +161,7 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 		ID:                id,
 		IP:                ip,
 		Kind:              kind,
+		Mtu:			   mtu,
 		Name:              &name,
 		ProjectID:         &projectID,
 		Proxy:             proxy,
@@ -173,6 +178,7 @@ func SetNetworkResourceData(d *schema.ResourceData, m *models.Network) {
 	d.Set("id", m.ID)
 	d.Set("ip", SetIPSpecSubResourceData([]*models.IPSpec{m.IP}))
 	d.Set("kind", m.Kind)
+	d.Set("mtu", m.Mtu)
 	d.Set("name", m.Name)
 	d.Set("project_id", m.ProjectID)
 	d.Set("proxy", SetNetProxyConfigSubResourceData([]*models.Proxy{m.Proxy}))
@@ -191,6 +197,7 @@ func SetNetworkSubResourceData(m []*models.Network) (d []*map[string]interface{}
 			properties["id"] = NetConfigModel.ID
 			properties["ip"] = SetIPSpecSubResourceData([]*models.IPSpec{NetConfigModel.IP})
 			properties["kind"] = NetConfigModel.Kind
+			properties["mtu"] = NetConfigModel.Mtu
 			properties["name"] = NetConfigModel.Name
 			properties["project_id"] = NetConfigModel.ProjectID
 			properties["proxy"] = SetNetProxyConfigSubResourceData([]*models.Proxy{NetConfigModel.Proxy})
@@ -250,6 +257,12 @@ NETWORK_KIND_V4
 NETWORK_KIND_V6`,
 			Type:     schema.TypeString,
 			Required: true,
+		},
+
+		"mtu": {
+			Description: `Maximum Transmission Unit (MTU) for the network`,
+			Type:        schema.TypeInt,
+			Optional:    true,
 		},
 
 		"name": {
@@ -321,6 +334,7 @@ func NetworkPropertyFields() (t []string) {
 		"id",
 		"ip",
 		"kind",
+		"mtu",
 		"name",
 		"project_id",
 		"proxy",

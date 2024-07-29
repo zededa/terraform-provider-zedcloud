@@ -46,6 +46,9 @@ type Network struct {
 	// Required: true
 	Kind *NetworkKind `json:"kind"`
 
+	// Maximum transmission unit (MTU) to set on the associated network adapter(s)
+	Mtu int64 `json:"mtu,omitempty"`
+
 	// User defined name of the network, unique across the enterprise. Once object is created, name can’t be changed
 	// Required: true
 	// Max Length: 256

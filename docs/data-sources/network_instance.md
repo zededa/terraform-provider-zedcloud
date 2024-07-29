@@ -37,12 +37,15 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--dns_list))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--ip))
+- `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--opaque))
 - `port` (String) name of port mapping in the model
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
+- `propagate_connected_routes` (Boolean) Automatically propagate connected routes
+- `static_routes` (Block List) List of Static IP routes (see [below for nested schema](#nestedblock--static_routes))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
@@ -120,6 +123,15 @@ Optional:
 - `type` (String) Service Point Type
 
 
+
+
+<a id="nestedblock--static_routes"></a>
+### Nested Schema for `static_routes`
+
+Optional:
+
+- `gateway` (String) Gateway IP
+- `prefix` (String) IP Prefix
 
 
 <a id="nestedatt--lisp"></a>

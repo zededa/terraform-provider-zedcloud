@@ -20,6 +20,9 @@ import (
 // swagger:model NetworkStatus
 type NetworkStatus struct {
 
+	// Cellular network status
+	Cellular *CellularStatus `json:"cellular,omitempty"`
+
 	// Default Routers
 	DefaultRouters []string `json:"defaultRouters"`
 
@@ -44,6 +47,9 @@ type NetworkStatus struct {
 	// mac Address
 	MacAddr string `json:"macAddr,omitempty"`
 
+	// Network MTU
+	Mtu int64 `json:"mtu,omitempty"`
+
 	// Network Proxy status
 	Proxy *NetProxyStatus `json:"proxy,omitempty"`
 
@@ -57,6 +63,10 @@ type NetworkStatus struct {
 // Validate validates this network status
 func (m *NetworkStatus) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateCellular(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateDNS(formats); err != nil {
 		res = append(res, err)
@@ -81,6 +91,25 @@ func (m *NetworkStatus) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *NetworkStatus) validateCellular(formats strfmt.Registry) error {
+	if swag.IsZero(m.Cellular) { // not required
+		return nil
+	}
+
+	if m.Cellular != nil {
+		if err := m.Cellular.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("cellular")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("cellular")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -183,6 +212,10 @@ func (m *NetworkStatus) validateProxy(formats strfmt.Registry) error {
 func (m *NetworkStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateCellular(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateDNS(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -206,6 +239,27 @@ func (m *NetworkStatus) ContextValidate(ctx context.Context, formats strfmt.Regi
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *NetworkStatus) contextValidateCellular(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Cellular != nil {
+
+		if swag.IsZero(m.Cellular) { // not required
+			return nil
+		}
+
+		if err := m.Cellular.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("cellular")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("cellular")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 

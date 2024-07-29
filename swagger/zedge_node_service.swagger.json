@@ -10947,6 +10947,10 @@
                         "$ref": "#/definitions/CellularMetrics"
                     },
                     "description": "Last received cellular metrics."
+                },
+                "ntpSources": {
+                    "$ref": "#/definitions/NtpSources",
+                    "description": "List of peers describing to which NTP daemon (e.g. chronyd) is synchronized on EVE side"
                 }
             }
         },
@@ -11167,6 +11171,10 @@
                 "subStatusProgress": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "isLTS": {
+                    "type": "boolean",
+                    "description": "flag to indicate device running  LTS eve version or not"
                 }
             }
         },
@@ -12257,10 +12265,13 @@
                 "IO_TYPE_ETH_VF",
                 "IO_TYPE_USB_CONTROLLER",
                 "IO_TYPE_USB_DEVICE",
+                "IO_TYPE_CAN",
+                "IO_TYPE_VCAN",
+                "IO_TYPE_LCAN",
                 "IO_TYPE_OTHER"
             ],
             "default": "IO_TYPE_UNSPECIFIED",
-            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type - General\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_USB_CONTROLLER: USB Type - Controller\n - IO_TYPE_USB_DEVICE: USB Type - Device\n - IO_TYPE_OTHER: Other Io Types",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type - General\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_USB_CONTROLLER: USB Type - Controller\n - IO_TYPE_USB_DEVICE: USB Type - Device\n - IO_TYPE_CAN: CAN - Device\n - IO_TYPE_VCAN: VCAN - Virtual CAN device\n - IO_TYPE_LCAN: LCAN - Logical CAN device\n - IO_TYPE_OTHER: Other Io Types",
             "title": "Input/Output Type"
         },
         "IotHubServiceDetail": {
@@ -12873,6 +12884,11 @@
                         "$ref": "#/definitions/StaticIPRoute"
                     },
                     "description": "List of Static IP routes"
+                },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -13272,6 +13288,131 @@
             },
             "description": "NetworkStatus is used to store the Network status",
             "title": "NetworkStatus is used to store the Network Status"
+        },
+        "NtpSource": {
+            "type": "object",
+            "properties": {
+                "authenticated": {
+                    "type": "boolean"
+                },
+                "reachable": {
+                    "type": "boolean"
+                },
+                "reachability": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "state": {
+                    "$ref": "#/definitions/NtpSourceState"
+                },
+                "mode": {
+                    "$ref": "#/definitions/NtpSourceMode"
+                },
+                "hostname": {
+                    "type": "string"
+                },
+                "srcAddr": {
+                    "type": "string"
+                },
+                "srcPort": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "dstAddr": {
+                    "type": "string"
+                },
+                "dstPort": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "leap": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "stratum": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "precision": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "refId": {
+                    "type": "string"
+                },
+                "refTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "poll": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "flags": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "offset": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "delay": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "dispersion": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "jitter": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "rootDelay": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "rootDisp": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "NtpSourceMode": {
+            "type": "string",
+            "enum": [
+                "NTP_SOURCE_MODE_UNSPECIFIED",
+                "NTP_SOURCE_MODE_CLIENT",
+                "NTP_SOURCE_MODE_PEER",
+                "NTP_SOURCE_MODE_REF"
+            ],
+            "default": "NTP_SOURCE_MODE_UNSPECIFIED",
+            "description": "Enum for describing the NTP source mode, see chrony client\nhttps://gitlab.com/chrony/chrony/-/blob/master/client.c\nand its output of the command 'sources'."
+        },
+        "NtpSourceState": {
+            "type": "string",
+            "enum": [
+                "NTP_SOURCE_STATE_UNSPECIFIED",
+                "NTP_SOURCE_STATE_SYNC",
+                "NTP_SOURCE_STATE_UNREACH",
+                "NTP_SOURCE_STATE_FALSETICKER",
+                "NTP_SOURCE_STATE_JITTERY",
+                "NTP_SOURCE_STATE_CANDIDATE",
+                "NTP_SOURCE_STATE_OUTLIER"
+            ],
+            "default": "NTP_SOURCE_STATE_UNSPECIFIED",
+            "description": "Enum for describing the NTP source state, see chrony client\nsources https://gitlab.com/chrony/chrony/-/blob/master/client.c\nand its output of the command 'sources'."
+        },
+        "NtpSources": {
+            "type": "object",
+            "properties": {
+                "source": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NtpSource"
+                    }
+                }
+            }
         },
         "ObjectParentDetail": {
             "type": "object",
@@ -15114,6 +15255,16 @@
                 }
             }
         },
+        "VmBootloaderMode": {
+            "type": "string",
+            "enum": [
+                "VM_BOOTLOADER_MODE_UNSPECIFIED",
+                "VM_BOOTLOADER_MODE_LEGACY",
+                "VM_BOOTLOADER_MODE_UEFI"
+            ],
+            "default": "VM_BOOTLOADER_MODE_UNSPECIFIED",
+            "title": "VmBootloaderMode is used to specify the bootloader mode that will be used for the VM.\nIt represents the boot mechanism to be used to boot the VM"
+        },
         "VolumeInstConfig": {
             "type": "object",
             "properties": {
@@ -16112,6 +16263,10 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Maximum amount of memory in kbytes allowed for VM monitor to occupy"
+                },
+                "bootloaderMode": {
+                    "$ref": "#/definitions/VmBootloaderMode",
+                    "description": "The bootloader mode that will be used for the VM. Default is VM_BOOTLOADER_MODE_LEGACY"
                 }
             },
             "description": "Virtual machine memory configuration",
