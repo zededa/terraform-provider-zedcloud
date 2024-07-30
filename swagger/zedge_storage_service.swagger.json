@@ -844,6 +844,10 @@
                                         "type": "string"
                                     },
                                     "description": "datastore Id list where image binary is located."
+                                },
+                                "isLTS": {
+                                    "type": "boolean",
+                                    "description": "flag to indicate eve image is LTS or not"
                                 }
                             },
                             "description": "Image metadata for edge gateway Base OS or for eedge applications.",
@@ -1193,6 +1197,10 @@
                                         "type": "string"
                                     },
                                     "description": "datastore Id list where image binary is located."
+                                },
+                                "isLTS": {
+                                    "type": "boolean",
+                                    "description": "flag to indicate eve image is LTS or not"
                                 }
                             },
                             "description": "Image metadata for edge gateway Base OS or for eedge applications.",
@@ -1399,6 +1407,10 @@
                                         "type": "string"
                                     },
                                     "description": "datastore Id list where image binary is located."
+                                },
+                                "isLTS": {
+                                    "type": "boolean",
+                                    "description": "flag to indicate eve image is LTS or not"
                                 }
                             },
                             "description": "Image metadata for edge gateway Base OS or for eedge applications.",
@@ -5469,6 +5481,10 @@
                         "type": "string"
                     },
                     "description": "datastore Id list where image binary is located."
+                },
+                "isLTS": {
+                    "type": "boolean",
+                    "description": "flag to indicate eve image is LTS or not"
                 }
             },
             "description": "Image metadata for edge gateway Base OS or for eedge applications.",

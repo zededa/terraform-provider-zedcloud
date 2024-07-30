@@ -351,6 +351,7 @@ resource "zedcloud_network_instance" "test_tf_provider" {
     oconfig = "Test OConfig"
     type = "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
   }
+  mtu = 1500
   tags = {
     "ni-tag1" = "ni-tag-value-1"
     "ni-tag2" = "ni-tag-value-2"

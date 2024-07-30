@@ -2172,12 +2172,15 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--dns_list))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--ip))
+- `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--opaque))
 - `port` (String) name of port mapping in the model
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
+- `propagate_connected_routes` (Boolean) Automatically propagate connected routes
+- `static_routes` (Block List) List of Static IP routes (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--static_routes))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
@@ -2255,6 +2258,15 @@ Optional:
 - `type` (String) Service Point Type
 
 
+
+
+<a id="nestedblock--app_policy--network_policy--net_instance_config--static_routes"></a>
+### Nested Schema for `app_policy.network_policy.net_instance_config.static_routes`
+
+Optional:
+
+- `gateway` (String) Gateway IP
+- `prefix` (String) IP Prefix
 
 
 <a id="nestedatt--app_policy--network_policy--net_instance_config--lisp"></a>
@@ -4441,12 +4453,15 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--dns_list))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--ip))
+- `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--opaque))
 - `port` (String) name of port mapping in the model
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
+- `propagate_connected_routes` (Boolean) Automatically propagate connected routes
+- `static_routes` (Block List) List of Static IP routes (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--static_routes))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
@@ -4524,6 +4539,15 @@ Optional:
 - `type` (String) Service Point Type
 
 
+
+
+<a id="nestedblock--attestation_policy--network_policy--net_instance_config--static_routes"></a>
+### Nested Schema for `attestation_policy.network_policy.net_instance_config.static_routes`
+
+Optional:
+
+- `gateway` (String) Gateway IP
+- `prefix` (String) IP Prefix
 
 
 <a id="nestedatt--attestation_policy--network_policy--net_instance_config--lisp"></a>
@@ -5240,12 +5264,15 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--dns_list))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--ip))
+- `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--opaque))
 - `port` (String) name of port mapping in the model
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
+- `propagate_connected_routes` (Boolean) Automatically propagate connected routes
+- `static_routes` (Block List) List of Static IP routes (see [below for nested schema](#nestedblock--deployment--network_inst_policies--net_inst_config--static_routes))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
@@ -5323,6 +5350,15 @@ Optional:
 - `type` (String) Service Point Type
 
 
+
+
+<a id="nestedblock--deployment--network_inst_policies--net_inst_config--static_routes"></a>
+### Nested Schema for `deployment.network_inst_policies.net_inst_config.static_routes`
+
+Optional:
+
+- `gateway` (String) Gateway IP
+- `prefix` (String) IP Prefix
 
 
 <a id="nestedatt--deployment--network_inst_policies--net_inst_config--lisp"></a>
@@ -7590,12 +7626,15 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--dns_list))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--ip))
+- `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--opaque))
 - `port` (String) name of port mapping in the model
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
+- `propagate_connected_routes` (Boolean) Automatically propagate connected routes
+- `static_routes` (Block List) List of Static IP routes (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--static_routes))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
@@ -7673,6 +7712,15 @@ Optional:
 - `type` (String) Service Point Type
 
 
+
+
+<a id="nestedblock--edgeview_policy--network_policy--net_instance_config--static_routes"></a>
+### Nested Schema for `edgeview_policy.network_policy.net_instance_config.static_routes`
+
+Optional:
+
+- `gateway` (String) Gateway IP
+- `prefix` (String) IP Prefix
 
 
 <a id="nestedatt--edgeview_policy--network_policy--net_instance_config--lisp"></a>
@@ -9859,12 +9907,15 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--dns_list))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--ip))
+- `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--opaque))
 - `port` (String) name of port mapping in the model
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
+- `propagate_connected_routes` (Boolean) Automatically propagate connected routes
+- `static_routes` (Block List) List of Static IP routes (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--static_routes))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
@@ -9942,6 +9993,15 @@ Optional:
 - `type` (String) Service Point Type
 
 
+
+
+<a id="nestedblock--local_operator_console_policy--network_policy--net_instance_config--static_routes"></a>
+### Nested Schema for `local_operator_console_policy.network_policy.net_instance_config.static_routes`
+
+Optional:
+
+- `gateway` (String) Gateway IP
+- `prefix` (String) IP Prefix
 
 
 <a id="nestedatt--local_operator_console_policy--network_policy--net_instance_config--lisp"></a>
@@ -12128,12 +12188,15 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--dns_list))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--ip))
+- `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
 - `oconfig` (String)
 - `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--opaque))
 - `port` (String) name of port mapping in the model
 - `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `project_id` (String) id of the project in which network instance is created
+- `propagate_connected_routes` (Boolean) Automatically propagate connected routes
+- `static_routes` (Block List) List of Static IP routes (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--static_routes))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `type` (String) Type of DHCP for this Network Instance:
 NETWORK_INSTANCE_DHCP_TYPE_V4
@@ -12211,6 +12274,15 @@ Optional:
 - `type` (String) Service Point Type
 
 
+
+
+<a id="nestedblock--network_policy--network_policy--net_instance_config--static_routes"></a>
+### Nested Schema for `network_policy.network_policy.net_instance_config.static_routes`
+
+Optional:
+
+- `gateway` (String) Gateway IP
+- `prefix` (String) IP Prefix
 
 
 <a id="nestedatt--network_policy--network_policy--net_instance_config--lisp"></a>
@@ -14255,6 +14327,7 @@ Read-Only:
 - `ip` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--ip))
 - `kind` (String)
 - `lisp` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--lisp))
+- `mtu` (Number)
 - `name` (String)
 - `network_policy_id` (String)
 - `oconfig` (String)
@@ -14262,7 +14335,9 @@ Read-Only:
 - `port` (String)
 - `port_tags` (Map of String)
 - `project_id` (String)
+- `propagate_connected_routes` (Boolean)
 - `revision` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--revision))
+- `static_routes` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes))
 - `tags` (Map of String)
 - `title` (String)
 - `type` (String)
@@ -14366,6 +14441,15 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
+
+
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type`
+
+Read-Only:
+
+- `gateway` (String)
+- `prefix` (String)
 
 
 
@@ -16374,6 +16458,7 @@ Read-Only:
 - `ip` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--ip))
 - `kind` (String)
 - `lisp` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--lisp))
+- `mtu` (Number)
 - `name` (String)
 - `network_policy_id` (String)
 - `oconfig` (String)
@@ -16381,7 +16466,9 @@ Read-Only:
 - `port` (String)
 - `port_tags` (Map of String)
 - `project_id` (String)
+- `propagate_connected_routes` (Boolean)
 - `revision` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--revision))
+- `static_routes` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--static_routes))
 - `tags` (Map of String)
 - `title` (String)
 - `type` (String)
@@ -16485,6 +16572,15 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
+
+
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--static_routes"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.type`
+
+Read-Only:
+
+- `gateway` (String)
+- `prefix` (String)
 
 
 

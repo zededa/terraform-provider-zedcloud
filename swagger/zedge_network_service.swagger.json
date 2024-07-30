@@ -610,6 +610,11 @@
                                         "$ref": "#/definitions/StaticIPRoute"
                                     },
                                     "description": "List of Static IP routes"
+                                },
+                                "mtu": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
                                 }
                             },
                             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -1874,6 +1879,11 @@
                                     "type": "boolean",
                                     "title": "make this network default for device"
                                 },
+                                "mtu": {
+                                    "type": "integer",
+                                    "format": "int64",
+                                    "title": "Maximum transmission unit (MTU) to set on the associated network adapter(s)"
+                                },
                                 "wireless": {
                                     "$ref": "#/definitions/NetWirelessConfig",
                                     "title": "Wifi configuration"
@@ -2303,10 +2313,13 @@
                 "IO_TYPE_ETH_VF",
                 "IO_TYPE_USB_CONTROLLER",
                 "IO_TYPE_USB_DEVICE",
+                "IO_TYPE_CAN",
+                "IO_TYPE_VCAN",
+                "IO_TYPE_LCAN",
                 "IO_TYPE_OTHER"
             ],
             "default": "IO_TYPE_UNSPECIFIED",
-            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type - General\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_USB_CONTROLLER: USB Type - Controller\n - IO_TYPE_USB_DEVICE: USB Type - Device\n - IO_TYPE_OTHER: Other Io Types",
+            "description": "- IO_TYPE_UNSPECIFIED: No operation/ Invalid peration\n - IO_TYPE_ETH: Ethernet\n - IO_TYPE_USB: USB Type - General\n - IO_TYPE_COM: Communication Port\n - IO_TYPE_AUDIO: Audio Port\n - IO_TYPE_WLAN: wireless LAN\n - IO_TYPE_WWAN: Wireless wide area network\n - IO_TYPE_HDMI: High-Definition Multimedia Interface\n - IO_TYPE_LTE: LTE Interfaces\n - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device\n - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device\n - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions\n - IO_TYPE_ETH_VF: Virtual Function (VF)\n - IO_TYPE_USB_CONTROLLER: USB Type - Controller\n - IO_TYPE_USB_DEVICE: USB Type - Device\n - IO_TYPE_CAN: CAN - Device\n - IO_TYPE_VCAN: VCAN - Virtual CAN device\n - IO_TYPE_LCAN: LCAN - Logical CAN device\n - IO_TYPE_OTHER: Other Io Types",
             "title": "Input/Output Type"
         },
         "IpSpec": {
@@ -2570,6 +2583,11 @@
                     "type": "boolean",
                     "title": "make this network default for device"
                 },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "Maximum transmission unit (MTU) to set on the associated network adapter(s)"
+                },
                 "wireless": {
                     "$ref": "#/definitions/NetWirelessConfig",
                     "title": "Wifi configuration"
@@ -2741,6 +2759,11 @@
                         "$ref": "#/definitions/StaticIPRoute"
                     },
                     "description": "List of Static IP routes"
+                },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -3062,6 +3085,11 @@
                 },
                 "uplinkIntf": {
                     "type": "string"
+                },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
                 },
                 "errInfo": {
                     "type": "array",
