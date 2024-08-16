@@ -5,7 +5,7 @@ provider_installation {
   # verifications for this provider and forces Terraform to look for the
   # null provider plugin in the given directory.
   dev_overrides {
-    "zededa/zedcloud" = "<path/to/module/>github.com/zededa/terraform-provider-zedcloud"
+    "zededa/zedcloud" = "./v2"
   }
 
   # For all other providers, install them directly from their origin provider

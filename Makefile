@@ -43,13 +43,13 @@ build:
 
 # acceptance tests
 .PHONY: test
-test:
+test: build
 	cd v2 && \
 	TF_ACC=1 go test -v ./... && \
 	cd -
 
 .PHONY: test-run
-test-run:
+test-run: build
 	cd v2 && \
 	go vet ./... && \
 	TF_ACC=1 go test -v ./... -run $(case) && \
