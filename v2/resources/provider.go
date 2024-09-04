@@ -4,6 +4,9 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"net/http"
+	"fmt"
+	"os"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -11,6 +14,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client"
+)
+
+var (
+	version   string = "dev"
 )
 
 func Provider() *schema.Provider {
@@ -69,6 +76,39 @@ func Provider() *schema.Provider {
 	}
 }
 
+type HttpTransportWrapper struct {
+	http.RoundTripper
+	providerVersion string
+}
+
+func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
+	wrapper := &HttpTransportWrapper{RoundTripper: rt}
+	execName, err := os.Executable()
+	if err != nil {
+		wrapper.providerVersion = "v0.0.0"
+	} else {
+		execNameParts := strings.Split(execName, "_")
+		if len(execNameParts) != 2 {
+			if version != "dev" {
+				wrapper.providerVersion = fmt.Sprintf("v%s", version)
+			} else {
+				wrapper.providerVersion = "v0.0.0"
+			}
+		} else {
+			wrapper.providerVersion = execNameParts[1]
+		}
+	}
+
+	return wrapper
+}
+
+func (h *HttpTransportWrapper) RoundTrip(req *http.Request) (*http.Response, error) {
+	version = fmt.Sprintf("zededa-terraform-provider_%s", h.providerVersion)
+	req.Header.Add("User-Agent", version)
+	req.Header.Add("X-Custom-User-Agent", version)
+	return h.RoundTripper.RoundTrip(req)
+}
+
 func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	zedCloudURL := d.Get("zedcloud_url").(string)
 
@@ -83,6 +123,7 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	transport := httptransport.New(zedCloudURL, "/api", []string{"https"})
 	transport.SetDebug(false)
 	transport.DefaultAuthentication = BearerToken(token)
+	transport.Transport = NewHttpTransportWrapper(transport.Transport)
 
 	return client.New(transport, strfmt.Default), nil
 }
