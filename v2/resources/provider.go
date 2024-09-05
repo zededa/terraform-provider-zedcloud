@@ -103,7 +103,7 @@ func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
 }
 
 func (h *HttpTransportWrapper) RoundTrip(req *http.Request) (*http.Response, error) {
-	version = fmt.Sprintf("zededa-terraform-provider_%s", h.providerVersion)
+	version = fmt.Sprintf("zededa-terraform-provider/%s", h.providerVersion)
 	req.Header.Add("User-Agent", version)
 	req.Header.Add("X-Custom-User-Agent", version)
 	return h.RoundTripper.RoundTrip(req)

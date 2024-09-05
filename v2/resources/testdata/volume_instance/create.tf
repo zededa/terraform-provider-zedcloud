@@ -75,7 +75,7 @@ resource "zedcloud_volume_instance"  "test_volume_instance" {
   type = "VOLUME_INSTANCE_TYPE_EMPTYDIR"
   multiattach = true
   cleartext = true
-  accessmode = "VOLUME_INSTANCE_ACCESS_MODE_INVALID"
+  accessmode = "VOLUME_INSTANCE_ACCESS_MODE_READWRITE"
   size_bytes = "1024"
   implicit = false
   label = "label"
