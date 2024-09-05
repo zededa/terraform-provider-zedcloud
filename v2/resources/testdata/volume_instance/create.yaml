@@ -4,7 +4,7 @@ description: "test-description"
 type: "VOLUME_INSTANCE_TYPE_EMPTYDIR"
 multiattach: true
 cleartext: true
-accessmode: "VOLUME_INSTANCE_ACCESS_MODE_INVALID"
+accessmode: "VOLUME_INSTANCE_ACCESS_MODE_READWRITE"
 label: "label"
 implicit: false
 tags:

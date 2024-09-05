@@ -34,6 +34,10 @@ type ClientService interface {
 
 	IdentityAccessManagementCreateUser(params *IdentityAccessManagementCreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateUserOK, error)
 
+	IdentityAccessManagementLogin(params *IdentityAccessManagementLoginParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginOK, error)
+
+	IdentityAccessManagementLogout(params *IdentityAccessManagementLogoutParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLogoutOK, error)
+
 	IdentityAccessManagementDeleteRole(params *IdentityAccessManagementDeleteRoleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteRoleOK, error)
 
 	IdentityAccessManagementDeleteUser(params *IdentityAccessManagementDeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteUserOK, error)
@@ -172,6 +176,86 @@ func (a *Client) IdentityAccessManagementCreateUser(params *IdentityAccessManage
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*IdentityAccessManagementCreateUserDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementLogin logins locally
+
+Login with zedcontrol as identity provider.
+*/
+func (a *Client) IdentityAccessManagementLogin(params *IdentityAccessManagementLoginParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementLoginParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_Login",
+		Method:             "POST",
+		PathPattern:        "/v1/login",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementLoginReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementLoginOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementLoginDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementLogout logouts
+
+Logout from zedcontrol. Current user session will be terminated. In case of login with external identity provider, user session in the identity provider will not be impacted.
+*/
+func (a *Client) IdentityAccessManagementLogout(params *IdentityAccessManagementLogoutParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLogoutOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementLogoutParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_Logout",
+		Method:             "POST",
+		PathPattern:        "/v1/logout",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementLogoutReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementLogoutOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementLogoutDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

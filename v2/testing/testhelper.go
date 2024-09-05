@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"errors"
 
 	"github.com/ghodss/yaml"
 )
@@ -61,8 +62,11 @@ func ToYAML(path string, i interface{}) {
 // CheckEnv validates the necessary test API keys exist in the testing environment.
 func CheckEnv(t *testing.T) {
 	if v := os.Getenv("TF_CLI_CONFIG_FILE"); v == "" {
-		t.Fatal("TF_CLI_CONFIG_FILE must be set for acceptance tests, it should contain the dev_overrides config that points to local instance of the provider")
+		if _, err := os.Stat("dev.tfrc"); errors.Is(err, os.ErrNotExist) {
+			t.Fatal("TF_CLI_CONFIG_FILE must be set or dev.tfrc file must be present for acceptance tests, it should contain the dev_overrides config that points to local instance of the provider")
+		}
 	}
+
 	if v := os.Getenv("TF_VAR_zedcloud_token"); v == "" {
 		t.Fatal("TF_VAR_zedcloud_token must be set for acceptance tests to access the zedcloud API")
 	}
