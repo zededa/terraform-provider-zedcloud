@@ -1,5 +1,5 @@
 cpus: 2
-description: ubuntu-all-ip
+description: test_tf_provider-ubuntu-all-ip
 drives: 1
 id: 179a7fda-eadd-4047-95a2-cd936fffa4e6
 isimported: false
@@ -83,7 +83,7 @@ manifest:
       value: "1024000"
   vmmode: ""
 memory: 1024000
-name: ubuntu-all-ip
+name: test_tf_provider-ubuntu-all-ip
 networks: 1
 origintype: ORIGIN_LOCAL
 parentdetail:
@@ -100,5 +100,5 @@ revision:
   updatedat: "2023-02-12T14:45:19.575Z"
   updatedby: us.root@zededa.com
 storage: 0
-title: ubuntu-all-ip
+title: test_tf_provider-ubuntu-all-ip
 userdefinedversion: "1.1"

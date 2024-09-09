@@ -43,16 +43,16 @@ build:
 
 # acceptance tests
 .PHONY: test
-test: build
+test:
 	cd v2 && \
-	TF_ACC=1 go test -v ./... && \
+	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v ./... && \
 	cd -
 
 .PHONY: test-run
-test-run: build
+test-run:
 	cd v2 && \
 	go vet ./... && \
-	TF_ACC=1 go test -v ./... -run $(case) && \
+	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v ./... -run $(case) && \
 	cd -
 
 .PHONY: udpatedeps

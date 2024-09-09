@@ -25,8 +25,8 @@ resource "zedcloud_datastore"  "test_tf_provider" {
   ds_fqdn = "my-datastore.my-company.com"
   ds_path = "download/AMD64"
   ds_type = "DATASTORE_TYPE_AZUREBLOB"
-  name = "test"
-  title = "title"
+  name = "test_tf_provider-test-datastore"
+  title = "test_tf_provider-title"
   description = "description"
   region = "eu"
   project_access_list = [zedcloud_project.test_tf_provider.id]
@@ -145,8 +145,8 @@ data "zedcloud_edgenode" "test_tf_provider" {
 
 resource "zedcloud_application" "test_tf_provider" {
   name = "test_tf_provider"
-  title = "ubuntu-all-ip"
-  description = "ubuntu-all-ip"
+  title = "test_tf_provider-ubuntu-all-ip"
+  description = "test_tf_provider-ubuntu-all-ip"
   user_defined_version = "1.1"
   origin_type = "ORIGIN_LOCAL"
   manifest {

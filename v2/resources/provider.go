@@ -18,6 +18,7 @@ import (
 
 var (
 	version   string = "dev"
+	defaultURL string = "zedcontrol.local.zededa.net"
 )
 
 func Provider() *schema.Provider {
@@ -28,8 +29,7 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Description: "ZEDCloud url. Ex: https://zedcontrol.zededa.net",
-				Default:     "zedcontrol.local.zededa.net",
-				DefaultFunc: schema.EnvDefaultFunc("TF_VAR_zedcloud_url", nil),
+				DefaultFunc: schema.EnvDefaultFunc("TF_VAR_zedcloud_url", defaultURL),
 			},
 			"zedcloud_token": {
 				Type:        schema.TypeString,
@@ -87,16 +87,21 @@ func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
 	if err != nil {
 		wrapper.providerVersion = "v0.0.0"
 	} else {
-		execNameParts := strings.Split(execName, "_")
-		if len(execNameParts) != 2 {
-			if version != "dev" {
-				wrapper.providerVersion = fmt.Sprintf("v%s", version)
+		if !strings.Contains(execName, "resources.test") {
+			execNameParts := strings.Split(execName, "_")
+			if len(execNameParts) != 2 {
+				if version != "dev" {
+					wrapper.providerVersion = fmt.Sprintf("v%s", version)
+				} else {
+					wrapper.providerVersion = "v0.0.0"
+				}
 			} else {
-				wrapper.providerVersion = "v0.0.0"
+				wrapper.providerVersion = execNameParts[1]
 			}
 		} else {
-			wrapper.providerVersion = execNameParts[1]
+			wrapper.providerVersion = "testbuild"
 		}
+
 	}
 
 	return wrapper
@@ -110,7 +115,10 @@ func (h *HttpTransportWrapper) RoundTrip(req *http.Request) (*http.Response, err
 }
 
 func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-	zedCloudURL := d.Get("zedcloud_url").(string)
+	zedCloudURL, urlIsSet := d.Get("zedcloud_url").(string)
+	if !urlIsSet || zedCloudURL == "" {
+		return nil, diag.FromErr(errors.New("zedcloud URL must be set"))
+	}
 
 	token, tokenIsSet := d.Get("zedcloud_token").(string)
 	if !tokenIsSet || token == "" {
