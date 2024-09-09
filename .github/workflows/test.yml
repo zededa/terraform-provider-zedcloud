@@ -13,9 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: make build
-      run:  make build
-
     - name: make test
       run:  make test
       env:
