@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: make test
+      run:  make test
+      env:
+        TF_VAR_zedcloud_token: ${{ secrets.TF_VAR_ZEDCLOUD_TOKEN }}
+        TF_VAR_zedcloud_url : ${{ vars.TF_VAR_ZEDCLOUD_URL }}
