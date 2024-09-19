@@ -38,6 +38,8 @@ type ClientService interface {
 
 	IdentityAccessManagementLoginExternal(params *IdentityAccessManagementLoginExternalParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginExternalOK, error)
 
+	IdentityAccessManagementLoginExternalOAuth2Callback(params *IdentityAccessManagementLoginExternalOAuth2CallbackParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginExternalOAuth2CallbackOK, error)
+
 	IdentityAccessManagementLogout(params *IdentityAccessManagementLogoutParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLogoutOK, error)
 
 	IdentityAccessManagementCreateAuthProfile(params *IdentityAccessManagementCreateAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateAuthProfileOK, error)
@@ -268,6 +270,46 @@ func (a *Client) IdentityAccessManagementLoginExternal(params *IdentityAccessMan
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*IdentityAccessManagementLoginExternalDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementLoginExternalOAuth2Callback logins callback
+
+Login callback for external OAauth2 identity provider
+*/
+func (a *Client) IdentityAccessManagementLoginExternalOAuth2Callback(params *IdentityAccessManagementLoginExternalOAuth2CallbackParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginExternalOAuth2CallbackOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementLoginExternalOAuth2CallbackParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_LoginExternalOAuth2Callback",
+		Method:             "POST",
+		PathPattern:        "/v1/login/oauth/callback",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementLoginExternalOAuth2CallbackReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementLoginExternalOAuth2CallbackOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementLoginExternalOAuth2CallbackDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
