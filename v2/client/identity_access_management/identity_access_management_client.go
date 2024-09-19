@@ -36,6 +36,8 @@ type ClientService interface {
 
 	IdentityAccessManagementLogin(params *IdentityAccessManagementLoginParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginOK, error)
 
+	IdentityAccessManagementLoginExternal(params *IdentityAccessManagementLoginExternalParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginExternalOK, error)
+
 	IdentityAccessManagementLogout(params *IdentityAccessManagementLogoutParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLogoutOK, error)
 
 	IdentityAccessManagementCreateAuthProfile(params *IdentityAccessManagementCreateAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateAuthProfileOK, error)
@@ -226,6 +228,46 @@ func (a *Client) IdentityAccessManagementLogin(params *IdentityAccessManagementL
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*IdentityAccessManagementLoginDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementLoginExternal logins externally
+
+Login with external identity provider (e.g. Okta, gmail, Azure AD etc.). If the enterprise has an AAA Profile configured, zedcontrol will redirect the user to the login page of the external identity provider.
+*/
+func (a *Client) IdentityAccessManagementLoginExternal(params *IdentityAccessManagementLoginExternalParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginExternalOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementLoginExternalParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_LoginExternal",
+		Method:             "POST",
+		PathPattern:        "/v1/login/external",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementLoginExternalReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementLoginExternalOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementLoginExternalDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
