@@ -38,9 +38,13 @@ type ClientService interface {
 
 	IdentityAccessManagementLogout(params *IdentityAccessManagementLogoutParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLogoutOK, error)
 
+	IdentityAccessManagementCreateAuthProfile(params *IdentityAccessManagementCreateAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateAuthProfileOK, error)
+
 	IdentityAccessManagementDeleteRole(params *IdentityAccessManagementDeleteRoleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteRoleOK, error)
 
 	IdentityAccessManagementDeleteUser(params *IdentityAccessManagementDeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteUserOK, error)
+
+	IdentityAccessManagementDeleteAuthProfile(params *IdentityAccessManagementDeleteAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteAuthProfileOK, error)
 
 	IdentityAccessManagementGetRole(params *IdentityAccessManagementGetRoleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetRoleOK, error)
 
@@ -50,11 +54,17 @@ type ClientService interface {
 
 	IdentityAccessManagementGetUserByName(params *IdentityAccessManagementGetUserByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetUserByNameOK, error)
 
+	IdentityAccessManagementGetAuthProfile(params *IdentityAccessManagementGetAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetAuthProfileOK, error)
+
+	IdentityAccessManagementGetAuthProfileByName(params *IdentityAccessManagementGetAuthProfileByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetAuthProfileByNameOK, error)
+
 	IdentityAccessManagementUpdateCredential(params *IdentityAccessManagementUpdateCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateCredentialOK, error)
 
 	IdentityAccessManagementUpdateRole(params *IdentityAccessManagementUpdateRoleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateRoleOK, error)
 
 	IdentityAccessManagementUpdateUser2(params *IdentityAccessManagementUpdateUser2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateUser2OK, error)
+
+	IdentityAccessManagementUpdateAuthProfile(params *IdentityAccessManagementUpdateAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateAuthProfileOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -260,6 +270,46 @@ func (a *Client) IdentityAccessManagementLogout(params *IdentityAccessManagement
 }
 
 /*
+IdentityAccessManagementCreateAuthProfile creates a a a profile
+
+Create an AAA profile record.
+*/
+func (a *Client) IdentityAccessManagementCreateAuthProfile(params *IdentityAccessManagementCreateAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateAuthProfileOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementCreateAuthProfileParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_CreateAuthProfile",
+		Method:             "POST",
+		PathPattern:        "/v1/authorization/profiles",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementCreateAuthProfileReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementCreateAuthProfileOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementCreateAuthProfileDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
 IdentityAccessManagementDeleteCredential deletes i a m credential
 
 Delete an IAM credential record.
@@ -376,6 +426,47 @@ func (a *Client) IdentityAccessManagementDeleteUser(params *IdentityAccessManage
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*IdentityAccessManagementDeleteUserDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+
+/*
+IdentityAccessManagementDeleteAuthProfile deletes a a a profile
+
+Delete an AAA profile record.
+*/
+func (a *Client) IdentityAccessManagementDeleteAuthProfile(params *IdentityAccessManagementDeleteAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteAuthProfileOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementDeleteAuthProfileParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_DeleteAuthProfile",
+		Method:             "DELETE",
+		PathPattern:        "/v1/authorization/profiles/id/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementDeleteAuthProfileReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementDeleteAuthProfileOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementDeleteAuthProfileDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
@@ -540,6 +631,86 @@ func (a *Client) IdentityAccessManagementGetUserByName(params *IdentityAccessMan
 }
 
 /*
+IdentityAccessManagementGetAuthProfile gets a a a profile
+
+Get the configuration (without security details) of an AAA profile record.
+*/
+func (a *Client) IdentityAccessManagementGetAuthProfile(params *IdentityAccessManagementGetAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetAuthProfileOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementGetAuthProfileParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_GetAuthProfile",
+		Method:             "GET",
+		PathPattern:        "/v1/authorization/profiles/id/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementGetAuthProfileReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementGetAuthProfileOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementGetAuthProfileDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementGetAuthProfileByName gets a a a profile
+
+Get the configuration (without security details) of an AAA profile record.
+*/
+func (a *Client) IdentityAccessManagementGetAuthProfileByName(params *IdentityAccessManagementGetAuthProfileByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetAuthProfileByNameOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementGetAuthProfileByNameParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_GetAuthProfileByName",
+		Method:             "GET",
+		PathPattern:        "/v1/authorization/profiles/name/{name}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementGetAuthProfileByNameReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementGetAuthProfileByNameOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementGetAuthProfileByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
 IdentityAccessManagementUpdateCredential updates i a m credential
 
 Update an IAM credential record.
@@ -656,6 +827,46 @@ func (a *Client) IdentityAccessManagementUpdateUser2(params *IdentityAccessManag
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*IdentityAccessManagementUpdateUser2Default)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementUpdateAuthProfile updates a a a profile
+
+Update an AAA profile record. The usual pattern to update an AAA profile record is to retrieve the record and update with the modified values in a new body to update the AAA profile record.
+*/
+func (a *Client) IdentityAccessManagementUpdateAuthProfile(params *IdentityAccessManagementUpdateAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateAuthProfileOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementUpdateAuthProfileParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_UpdateAuthProfile",
+		Method:             "PUT",
+		PathPattern:        "/v1/authorization/profiles/id/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementUpdateAuthProfileReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementUpdateAuthProfileOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementUpdateAuthProfileDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
