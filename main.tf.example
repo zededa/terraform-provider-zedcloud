@@ -11,6 +11,29 @@ terraform {
   }
 }
 
+resource "zedcloud_role" "test_tf_provider" {
+  name = "test_tf_provider"
+  title = "test_tf_provider"
+  type = "USER_ROLE_USER_DEFINED"
+  state = "ROLE_STATE_ACTIVE"
+  scopes {
+    enterprise_filter = []
+    project_filter = []
+  }
+}
+
+resource "zedcloud_auth_profile" "test_tf_provider" {
+  depends_on = [zedcloud_role.test_tf_provider]
+  name = "test_tf_provider"
+  title = "test_tf_provider"
+  default_role_id = zedcloud_role.test_tf_provider.id
+  oauth_profile {
+    o_id_c_end_point = "https://example.com/api/v1/oauth2/token"
+    client_id = "client_id"
+    client_secret = "client_secret"
+  }
+}
+
 resource "zedcloud_project" "test_tf_provider" {
   # required
   name = "test_tf_provider"
