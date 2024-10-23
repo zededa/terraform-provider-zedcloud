@@ -15,6 +15,9 @@ resource "zedcloud_project" "test_tf_provider" {
       type = "ATTEST_POLICY_TYPE_ACCEPT"
     }
   }
+  tag_level_settings {
+    flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
+  }
 }
 
 

@@ -38,6 +38,9 @@ type Tag struct {
 	// Read Only: true
 	CloudPolicy *Policy `json:"cloudPolicy,omitempty"`
 
+	// Configuration lock prevents users to send unintentional misconfigurations
+	ConfigurationLockPolicy *Policy `json:"configurationLockPolicy,omitempty"`
+
 	// Deployment template containing different types of policies
 	Deployment *Deployment `json:"deployment,omitempty"`
 
@@ -78,6 +81,12 @@ type Tag struct {
 	// Read Only: true
 	Revision *ObjectRevision `json:"revision,omitempty"`
 
+	// tag level setting within a enterprise
+	TagLevelSettings *TagLevelSettings `json:"tagLevelSettings,omitempty"`
+
+	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+	Tags map[string]string `json:"tags,omitempty"`
+
 	// User defined title of the resource group. Title can be changed at any time.
 	// Required: true
 	// Max Length: 256
@@ -103,6 +112,10 @@ func (m *Tag) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateCloudPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateConfigurationLockPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -139,6 +152,10 @@ func (m *Tag) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateRevision(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTagLevelSettings(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -205,6 +222,25 @@ func (m *Tag) validateCloudPolicy(formats strfmt.Registry) error {
 				return ve.ValidateName("cloudPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("cloudPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Tag) validateConfigurationLockPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.ConfigurationLockPolicy) { // not required
+		return nil
+	}
+
+	if m.ConfigurationLockPolicy != nil {
+		if err := m.ConfigurationLockPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("configurationLockPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("configurationLockPolicy")
 			}
 			return err
 		}
@@ -379,6 +415,25 @@ func (m *Tag) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Tag) validateTagLevelSettings(formats strfmt.Registry) error {
+	if swag.IsZero(m.TagLevelSettings) { // not required
+		return nil
+	}
+
+	if m.TagLevelSettings != nil {
+		if err := m.TagLevelSettings.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tagLevelSettings")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tagLevelSettings")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *Tag) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
@@ -444,6 +499,10 @@ func (m *Tag) ContextValidate(ctx context.Context, formats strfmt.Registry) erro
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateConfigurationLockPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateDeployment(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -473,6 +532,10 @@ func (m *Tag) ContextValidate(ctx context.Context, formats strfmt.Registry) erro
 	}
 
 	if err := m.contextValidateRevision(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateTagLevelSettings(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -531,6 +594,22 @@ func (m *Tag) contextValidateCloudPolicy(ctx context.Context, formats strfmt.Reg
 				return ve.ValidateName("cloudPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("cloudPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Tag) contextValidateConfigurationLockPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ConfigurationLockPolicy != nil {
+		if err := m.ConfigurationLockPolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("configurationLockPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("configurationLockPolicy")
 			}
 			return err
 		}
@@ -653,6 +732,22 @@ func (m *Tag) contextValidateRevision(ctx context.Context, formats strfmt.Regist
 				return ve.ValidateName("revision")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("revision")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Tag) contextValidateTagLevelSettings(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.TagLevelSettings != nil {
+		if err := m.TagLevelSettings.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tagLevelSettings")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tagLevelSettings")
 			}
 			return err
 		}

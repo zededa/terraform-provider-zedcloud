@@ -36,6 +36,9 @@ type Policy struct {
 	// cluster policy to bring up cluster on devices in this project
 	ClusterPolicy *ClusterPolicy `json:"clusterPolicy,omitempty"`
 
+	// configuration lock policy to enforce on all devices in this project
+	ConfigurationLockPolicy *ConfigurationLockPolicy `json:"configurationLockPolicy,omitempty"`
+
 	// Detailed description of the policy
 	// Max Length: 256
 	Description string `json:"description,omitempty"`
@@ -105,6 +108,10 @@ func (m *Policy) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateClusterPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateConfigurationLockPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -230,6 +237,21 @@ func (m *Policy) validateClusterPolicy(formats strfmt.Registry) error {
 				return ve.ValidateName("clusterPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("clusterPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Policy) validateConfigurationLockPolicy(formats strfmt.Registry) error {
+	if m.ConfigurationLockPolicy != nil {
+		if err := m.ConfigurationLockPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("configurationLockPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("configurationLockPolicy")
 			}
 			return err
 		}
@@ -474,6 +496,10 @@ func (m *Policy) ContextValidate(ctx context.Context, formats strfmt.Registry) e
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateConfigurationLockPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateEdgeviewPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -568,6 +594,22 @@ func (m *Policy) contextValidateClusterPolicy(ctx context.Context, formats strfm
 				return ve.ValidateName("clusterPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("clusterPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Policy) contextValidateConfigurationLockPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ConfigurationLockPolicy != nil {
+		if err := m.ConfigurationLockPolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("configurationLockPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("configurationLockPolicy")
 			}
 			return err
 		}
