@@ -32,3 +32,6 @@ edgeviewpolicy:
   statusmessage: "Policy configured successfully"
   type: POLICY_TYPE_EDGEVIEW
   title: ""
+taglevelsettings:
+  flowlogtransmission: "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
+tags: {}  

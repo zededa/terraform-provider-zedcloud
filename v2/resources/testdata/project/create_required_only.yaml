@@ -3,3 +3,6 @@ type: TAG_TYPE_PROJECT
 title: title
 attr: {}
 modulepolicy: []
+taglevelsettings:
+  flowlogtransmission: "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
+tags: {}  

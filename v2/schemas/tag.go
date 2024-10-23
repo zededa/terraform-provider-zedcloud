@@ -14,6 +14,14 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 			attestationPolicy = PolicyConfigModelFromMap(attestationPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var configurationLockPolicy *models.Policy // Policy
+	configurationLockPolicyInterface, configurationLockPolicyIsSet := d.GetOk("configuration_lock_policy")
+	if configurationLockPolicyIsSet && configurationLockPolicyInterface != nil {
+		configurationLockPolicyMap := configurationLockPolicyInterface.([]interface{})
+		if len(configurationLockPolicyMap) > 0 {
+			configurationLockPolicy = PolicyConfigModelFromMap(configurationLockPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	var deployment *models.Deployment // Deployment
 	deploymentInterface, deploymentIsSet := d.GetOk("deployment")
 	if deploymentIsSet && deploymentInterface != nil {
@@ -23,7 +31,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		}
 	}
 	description, _ := d.Get("description").(string)
-	var edgeviewPolicy *models.Policy // PolicyConfig
+	var edgeviewPolicy *models.Policy // Policy
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
 	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
 		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
@@ -49,6 +57,26 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 			networkPolicy = PolicyConfigModelFromMap(networkPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var tagLevelSettings *models.TagLevelSettings // TagLevelSettings
+	tagLevelSettingsInterface, tagLevelSettingsIsSet := d.GetOk("tag_level_settings")
+	if tagLevelSettingsIsSet && tagLevelSettingsInterface != nil {
+		tagLevelSettingsMap := tagLevelSettingsInterface.([]interface{})
+		if len(tagLevelSettingsMap) > 0 {
+			tagLevelSettings = TagLevelSettingsModelFromMap(tagLevelSettingsMap[0].(map[string]interface{}))
+		}
+	}
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := d.GetOk("tags")
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	title, _ := d.Get("title").(string)
 	var typeVar *models.TagType // TagType
 	typeInterface, typeIsSet := d.GetOk("type")
@@ -58,14 +86,17 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 	}
 	return &models.Tag{
 		AttestationPolicy:          attestationPolicy,
+		ConfigurationLockPolicy:    configurationLockPolicy,
 		Deployment:                 deployment,
 		Description:                description,
 		EdgeviewPolicy:             edgeviewPolicy,
 		ID:                         id,
 		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
-		Name:                       &name, // string true false false
+		Name:                       &name, // string
 		NetworkPolicy:              networkPolicy,
-		Title:                      &title, // string true false false
+		TagLevelSettings:           tagLevelSettings,
+		Tags:                       tags,
+		Title:                      &title, // string
 		Type:                       typeVar,
 	}
 }
@@ -77,6 +108,15 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		attestationPolicyMap := attestationPolicyInterface.([]interface{})
 		if len(attestationPolicyMap) > 0 {
 			attestationPolicy = PolicyConfigModelFromMap(attestationPolicyMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	var configurationLockPolicy *models.Policy // Policy
+	configurationLockPolicyInterface, configurationLockPolicyIsSet := m["configuration_lock_policy"]
+	if configurationLockPolicyIsSet && configurationLockPolicyInterface != nil {
+		configurationLockPolicyMap := configurationLockPolicyInterface.([]interface{})
+		if len(configurationLockPolicyMap) > 0 {
+			configurationLockPolicy = PolicyConfigModelFromMap(configurationLockPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -119,6 +159,27 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		}
 	}
 	//
+	var tagLevelSettings *models.TagLevelSettings // TagLevelSettings
+	tagLevelSettingsInterface, tagLevelSettingsIsSet := m["tag_level_settings"]
+	if tagLevelSettingsIsSet && tagLevelSettingsInterface != nil {
+		tagLevelSettingsMap := tagLevelSettingsInterface.([]interface{})
+		if len(tagLevelSettingsMap) > 0 {
+			tagLevelSettings = TagLevelSettingsModelFromMap(tagLevelSettingsMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	tags := map[string]string{}
+	tagsInterface, tagsIsSet := m["tags"]
+	if tagsIsSet {
+		tagsMap := tagsInterface.(map[string]interface{})
+		for k, v := range tagsMap {
+			if v == nil {
+				continue
+			}
+			tags[k] = v.(string)
+		}
+	}
+
 	title := m["title"].(string)
 	var typeVar *models.TagType // TagType
 	typeInterface, typeIsSet := m["type"]
@@ -128,6 +189,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 	}
 	return &models.Tag{
 		AttestationPolicy:          attestationPolicy,
+		ConfigurationLockPolicy:    configurationLockPolicy,
 		Deployment:                 deployment,
 		Description:                description,
 		EdgeviewPolicy:             edgeviewPolicy,
@@ -135,6 +197,8 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
 		Name:                       &name,
 		NetworkPolicy:              networkPolicy,
+		TagLevelSettings:           tagLevelSettings,
+		Tags:                       tags,
 		Title:                      &title,
 		Type:                       typeVar,
 	}
@@ -145,6 +209,7 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("attestation_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.AttestationPolicy}))
 	d.Set("attr", m.Attr)
 	d.Set("cloud_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.CloudPolicy}))
+	d.Set("configuration_lock_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.ConfigurationLockPolicy}))
 	d.Set("deployment", SetDeploymentSubResourceData([]*models.Deployment{m.Deployment}))
 	d.Set("description", m.Description)
 	d.Set("edgeview_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.EdgeviewPolicy}))
@@ -155,6 +220,8 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("network_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.NetworkPolicy}))
 	d.Set("numdevices", m.Numdevices)
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
+	d.Set("tag_level_settings", SetTagLevelSettingsSubResourceData([]*models.TagLevelSettings{m.TagLevelSettings}))
+	d.Set("tags", m.Tags)
 	d.Set("title", m.Title)
 	d.Set("type", m.Type)
 }
@@ -167,6 +234,7 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 			properties["attestation_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.AttestationPolicy})
 			properties["attr"] = TagModel.Attr
 			properties["cloud_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.CloudPolicy})
+			properties["configuration_lock_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.ConfigurationLockPolicy})
 			properties["deployment"] = SetDeploymentSubResourceData([]*models.Deployment{TagModel.Deployment})
 			properties["description"] = TagModel.Description
 			properties["edgeview_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.EdgeviewPolicy})
@@ -177,6 +245,8 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 			properties["network_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.NetworkPolicy})
 			properties["numdevices"] = TagModel.Numdevices
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{TagModel.Revision})
+			properties["tag_level_settings"] = SetTagLevelSettingsSubResourceData([]*models.TagLevelSettings{TagModel.TagLevelSettings})
+			properties["tags"] = TagModel.Tags
 			properties["title"] = TagModel.Title
 			properties["type"] = TagModel.Type
 			d = append(d, &properties)
@@ -222,6 +292,15 @@ func Project() map[string]*schema.Schema {
 				Schema: Policy(),
 			},
 			Computed: true,
+		},
+
+		"configuration_lock_policy": {
+			Description: `Configuration lock prevents users to send unintentional misconfigurations`,
+			Type:        schema.TypeList, //GoType: Policy
+			Elem: &schema.Resource{
+				Schema: Policy(),
+			},
+			Optional: true,
 		},
 
 		"deployment": {
@@ -303,6 +382,24 @@ func Project() map[string]*schema.Schema {
 			Computed: true,
 		},
 
+		"tag_level_settings": {
+			Description: `tag level setting within a enterprise`,
+			Type:        schema.TypeList, //GoType: TagLevelSettings
+			Elem: &schema.Resource{
+				Schema: TagLevelSettingsSchema(),
+			},
+			Optional: true,
+		},
+
+		"tags": {
+			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
+			Type:        schema.TypeMap, //GoType: map[string]string
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
+		},
+
 		"title": {
 			Description: `User defined title of the resource group. Title can be changed at any time.`,
 			Type:        schema.TypeString,
@@ -320,6 +417,7 @@ func Project() map[string]*schema.Schema {
 func GetTagPropertyFields() (t []string) {
 	return []string{
 		"attestation_policy",
+		"configuration_lock_policy",
 		"deployment",
 		"description",
 		"edgeview_policy",
@@ -327,6 +425,8 @@ func GetTagPropertyFields() (t []string) {
 		"local_operator_console_policy",
 		"name",
 		"network_policy",
+		"tag_level_settings",
+		"tags",
 		"title",
 		"type",
 	}

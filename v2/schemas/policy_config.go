@@ -50,6 +50,14 @@ func PolicyConfigModel(d *schema.ResourceData) *models.Policy {
 			clusterPolicy = ClusterPolicyModelFromMap(clusterPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var configurationLockPolicy *models.ConfigurationLockPolicy // ConfigurationLockPolicy
+	configurationLockPolicyInterface, configurationLockPolicyIsSet := d.GetOk("configuration_lock_policy")
+	if configurationLockPolicyIsSet && configurationLockPolicyInterface != nil {
+		configurationLockPolicyMap := configurationLockPolicyInterface.([]interface{})
+		if len(configurationLockPolicyMap) > 0 {
+			configurationLockPolicy = ConfigurationLockPolicyModelFromMap(configurationLockPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	description, _ := d.Get("description").(string)
 	var edgeviewPolicy *models.EdgeviewPolicy // EdgeviewPolicy
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
@@ -99,15 +107,16 @@ func PolicyConfigModel(d *schema.ResourceData) *models.Policy {
 		Attr:                       attr,
 		AzurePolicy:                azurePolicy,
 		ClusterPolicy:              clusterPolicy,
+		ConfigurationLockPolicy:    configurationLockPolicy,
 		Description:                description,
 		EdgeviewPolicy:             edgeviewPolicy,
 		ID:                         id,
 		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
 		ModulePolicy:               modulePolicy,
-		Name:                       &name, // string true false false
+		Name:                       &name, // string
 		NetworkPolicy:              networkPolicy,
 		StatusMessage:              statusMessage,
-		Title:                      &title, // string true false false
+		Title:                      &title, // string
 		Type:                       typeVar,
 	}
 }
@@ -158,6 +167,15 @@ func PolicyConfigModelFromMap(m map[string]interface{}) *models.Policy {
 		clusterPolicyMap := clusterPolicyInterface.([]interface{})
 		if len(clusterPolicyMap) > 0 {
 			clusterPolicy = ClusterPolicyModelFromMap(clusterPolicyMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	var configurationLockPolicy *models.ConfigurationLockPolicy // ConfigurationLockPolicy
+	configurationLockPolicyInterface, configurationLockPolicyIsSet := m["configuration_lock_policy"]
+	if configurationLockPolicyIsSet && configurationLockPolicyInterface != nil {
+		configurationLockPolicyMap := configurationLockPolicyInterface.([]interface{})
+		if len(configurationLockPolicyMap) > 0 {
+			configurationLockPolicy = ConfigurationLockPolicyModelFromMap(configurationLockPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -214,6 +232,7 @@ func PolicyConfigModelFromMap(m map[string]interface{}) *models.Policy {
 		Attr:                       attr,
 		AzurePolicy:                azurePolicy,
 		ClusterPolicy:              clusterPolicy,
+		ConfigurationLockPolicy:    configurationLockPolicy,
 		Description:                description,
 		EdgeviewPolicy:             edgeviewPolicy,
 		ID:                         id,
@@ -233,6 +252,7 @@ func SetPolicyConfigResourceData(d *schema.ResourceData, m *models.Policy) {
 	d.Set("attr", m.Attr)
 	d.Set("azure_policy", SetAzurePolicySubResourceData([]*models.AzurePolicy{m.AzurePolicy}))
 	d.Set("cluster_policy", SetClusterPolicySubResourceData([]*models.ClusterPolicy{m.ClusterPolicy}))
+	d.Set("configuration_lock_policy", SetConfigurationLockPolicySubResourceData([]*models.ConfigurationLockPolicy{m.ConfigurationLockPolicy}))
 	d.Set("description", m.Description)
 	d.Set("edgeview_policy", SetEdgeviewPolicySubResourceData([]*models.EdgeviewPolicy{m.EdgeviewPolicy}))
 	d.Set("id", m.ID)
@@ -256,6 +276,7 @@ func SetPolicyConfigSubResourceData(m []*models.Policy) (d []*map[string]interfa
 			properties["attr"] = PolicyConfigModel.Attr
 			properties["azure_policy"] = SetAzurePolicySubResourceData([]*models.AzurePolicy{PolicyConfigModel.AzurePolicy})
 			properties["cluster_policy"] = SetClusterPolicySubResourceData([]*models.ClusterPolicy{PolicyConfigModel.ClusterPolicy})
+			properties["configuration_lock_policy"] = SetConfigurationLockPolicySubResourceData([]*models.ConfigurationLockPolicy{PolicyConfigModel.ConfigurationLockPolicy})
 			properties["description"] = PolicyConfigModel.Description
 			properties["edgeview_policy"] = SetEdgeviewPolicySubResourceData([]*models.EdgeviewPolicy{PolicyConfigModel.EdgeviewPolicy})
 			properties["id"] = PolicyConfigModel.ID
@@ -318,6 +339,15 @@ func Policy() map[string]*schema.Schema {
 			Type:        schema.TypeList, //GoType: ClusterPolicy
 			Elem: &schema.Resource{
 				Schema: ClusterPolicy(),
+			},
+			Optional: true,
+		},
+
+		"configuration_lock_policy": {
+			Description: `configuration lock policy to enforce on all devices in this project`,
+			Type:        schema.TypeList, //GoType: ConfigurationLockPolicy
+			Elem: &schema.Resource{
+				Schema: ConfigurationLockPolicySchema(),
 			},
 			Optional: true,
 		},
@@ -419,6 +449,7 @@ func GetPolicyConfigPropertyFields() (t []string) {
 		"attr",
 		"azure_policy",
 		"cluster_policy",
+		"configuration_lock_policy",
 		"description",
 		"edgeview_policy",
 		"id",
