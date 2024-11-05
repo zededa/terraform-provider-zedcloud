@@ -1,9 +1,16 @@
 # terraform-provider-zedcloud
 
-The __terraform-provider-zedcloud__ provides access to Zededa's public API for the zedcloud cloud services.
+[![Terraform Registry](https://img.shields.io/badge/terraform-registry-blue.svg)](https://registry.terraform.io/providers/zededa/zedcloud/latest)
+[![Go Report Card](https://goreportcard.com/badge/github.com/zededa/terraform-provider-zedcloud)](https://goreportcard.com/report/github.com/zededa/terraform-provider-zedcloud)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-Supported resources are:
-- [x] Edge-Node (also called Device-Config)
+## Overview
+
+The Terraform Provider for Zededa Cloud enables infrastructure automation for Zededa's edge computing platform. It provides seamless integration with Zededa's public API, allowing you to manage your edge computing resources through Infrastructure as Code.
+
+## Supported Resources
+
+- [x] Edge-Node (Device-Config)
 - [x] Edge-App
 - [x] Edge-App-Instance
 - [x] Network
@@ -15,6 +22,23 @@ Supported resources are:
 - [x] Credential
 - [x] Patch Envelope
 - [ ] Image
+
+## Quickstart
+
+1. **Installation**
+```
+go install github.com/zededa/terraform-provider-zedcloud/v2@latest
+```
+
+2. **Configuration**
+
+Set the following environment variables to use the provider:
+```
+export TF_VAR_zedcloud_url="zedcontrol.zededa.net"
+export TF_VAR_zedcloud_token=<YOUR-API-TOKEN>
+export TF_LOG=ERROR
+export TF_LOG_PATH=./terraform.log
+```
 
 ## Documentation
 
@@ -29,21 +53,9 @@ Schema documentation generated from the schema files contained in this repo can 
 
 > Note, the resource schemas match the API schemas but support for some fields might be incomplete in the provider. The testdata directory contains examples with the full set of supported fields for the supported resources of the latest version deployed in the Terraform provider registry.
 
----
-
 ### Product
 
 Product documentation including explanations of workflows and data schemas can be found under https://help.zededa.com/hc/en-us
-
-## Installation and configuration
-
-Information on how to install and configure a Terraform provider can be found under https://developer.hashicorp.com/terraform/language/providers. If you need help setting up the __terraform-provider-zedcloud__ please reach out to Zededa support.
-The latest version of the provider can be found in the official Terraform provider registry under https://registry.terraform.io/providers/zededa/zedcloud/latest.
-
-To download the latest version of v2.*.* using golang, run the following command:
-```
-go install github.com/zededa/terraform-provider-zedcloud/v2@latest
-```
 
 ## Breaking changes in v2
 
@@ -56,13 +68,13 @@ go install github.com/zededa/terraform-provider-zedcloud/v2@latest
 
 The project structure has changed starting from the version 2.2.7. All the folders directly related to the provider are moved to the `v2` subfolder.
 
-## Environment configuration
+## Contribution
 
-The following environment variables need to be set to use the provider.
-```
-export TF_VAR_zedcloud_url="zedcontrol.zededa.net"
-export TF_VAR_zedcloud_token=<YOUR-API-TOKEN>
-export TF_LOG=ERROR
-export TF_LOG_PATH=./terraform.log
-```
+We welcome contributions! Please see our [contributing guidelines](CONTRIBUTING.md) for more details.
+
+## Support
+
+If you need help setting up the __terraform-provider-zedcloud__ please reach out to Zededa support.
+
+The latest version of the provider can be found in the official Terraform provider registry under https://registry.terraform.io/providers/zededa/zedcloud/latest.
 
