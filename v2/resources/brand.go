@@ -24,6 +24,9 @@ func HardwareBrandResource() *schema.Resource {
 		ReadContext: GetHardwareBrand,
 		UpdateContext: UpdateHardwareBrand,
 		Schema: zschema.SysBrandSchema(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 

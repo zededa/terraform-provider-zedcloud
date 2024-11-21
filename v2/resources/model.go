@@ -24,6 +24,9 @@ func HardwareModelResource() *schema.Resource {
 		ReadContext: GetHardwareModel,
 		UpdateContext: UpdateHardwareModel,
 		Schema: zschema.SysModelSchema(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 
