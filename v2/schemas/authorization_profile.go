@@ -43,6 +43,12 @@ func AuthorizationProfileModel(d *schema.ResourceData) *models.AuthorizationProf
 		typeModel := typeInterface.(string)
 		typeVar = models.NewAuthType(models.AuthType(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet {
+		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
+		revision = ObjectRevisionModelFromMap(revisionMap)
+	}
 	return &models.AuthorizationProfile{
 		Active:                active,
 		DefaultRoleID:         &defaultRoleID, // string
@@ -54,6 +60,7 @@ func AuthorizationProfileModel(d *schema.ResourceData) *models.AuthorizationProf
 		OauthProfile:          oauthProfile,
 		PasswordProfile:       passwordProfile,
 		ProfileType:           profileType,
+		Revision: 	    	   revision,
 		TestOnly:              testOnly,
 		Title:                 &title, // string
 		Type:                  typeVar,
@@ -100,6 +107,14 @@ func AuthorizationProfileModelFromMap(m map[string]interface{}) *models.Authoriz
 		typeModel := typeInterface.(string)
 		typeVar = models.NewAuthType(models.AuthType(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := m["revision"]
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.AuthorizationProfile{
 		Active:                active,
 		DefaultRoleID:         &defaultRoleID,
@@ -111,6 +126,7 @@ func AuthorizationProfileModelFromMap(m map[string]interface{}) *models.Authoriz
 		OauthProfile:          oauthProfile,
 		PasswordProfile:       passwordProfile,
 		ProfileType:           profileType,
+		Revision: 			   revision,
 		TestOnly:              testOnly,
 		Title:                 &title,
 		Type:                  typeVar,

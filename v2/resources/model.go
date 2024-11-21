@@ -184,18 +184,21 @@ func UpdateHardwareModel(ctx context.Context, d *schema.ResourceData, m interfac
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		return diags
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	// the zedcloud API does not return the partially updated object but a custom response.
-	// thus, we need to fetch the object and populate the state.
-	if errs := GetHardwareModelByName(ctx, d, m); err != nil {
-		return append(diags, errs...)
-	}
-
-	return diags
+	// thus, we need to fetch the object and populate the state. 
+	return GetHardwareModelByName(ctx, d, m)
 }
 
 func DeleteHardwareModel(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
