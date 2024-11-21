@@ -84,6 +84,12 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewTagType(models.TagType(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet {
+		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
+		revision = ObjectRevisionModelFromMap(revisionMap)
+	}
 	return &models.Tag{
 		AttestationPolicy:          attestationPolicy,
 		ConfigurationLockPolicy:    configurationLockPolicy,
@@ -94,6 +100,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
 		Name:                       &name, // string
 		NetworkPolicy:              networkPolicy,
+		Revision: 				    revision,
 		TagLevelSettings:           tagLevelSettings,
 		Tags:                       tags,
 		Title:                      &title, // string
@@ -187,6 +194,14 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewTagType(models.TagType(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := m["revision"]
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.Tag{
 		AttestationPolicy:          attestationPolicy,
 		ConfigurationLockPolicy:    configurationLockPolicy,
@@ -197,6 +212,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
 		Name:                       &name,
 		NetworkPolicy:              networkPolicy,
+		Revision:			 	    revision,
 		TagLevelSettings:           tagLevelSettings,
 		Tags:                       tags,
 		Title:                      &title,

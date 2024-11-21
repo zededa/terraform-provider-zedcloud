@@ -24,6 +24,9 @@ func HardwareBrandResource() *schema.Resource {
 		ReadContext: GetHardwareBrand,
 		UpdateContext: UpdateHardwareBrand,
 		Schema: zschema.SysBrandSchema(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 
@@ -194,9 +197,16 @@ func UpdateHardwareBrand(ctx context.Context, d *schema.ResourceData, m interfac
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		return diags
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	// the zedcloud API does not return the partially updated object but a custom response.

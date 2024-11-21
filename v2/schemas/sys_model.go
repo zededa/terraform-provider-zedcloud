@@ -98,6 +98,12 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewModelArchType(models.ModelArchType(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet {
+		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
+		revision = ObjectRevisionModelFromMap(revisionMap)
+	}
 	return &models.SysModel{
 		PCRTemplates:  pCRTemplates,
 		Attr:          attr,
@@ -112,6 +118,7 @@ func SysModelModel(d *schema.ResourceData) *models.SysModel {
 		ParentDetail:  parentDetail,
 		ProductStatus: productStatus,
 		ProductURL:    productURL,
+		Revision:	   revision,
 		State:         state,
 		Title:         &title, // string
 		Type:          typeVar,
@@ -212,6 +219,14 @@ func SysModelModelFromMap(m map[string]interface{}) *models.SysModel {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewModelArchType(models.ModelArchType(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := m["revision"]
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.SysModel{
 		PCRTemplates:  pCRTemplates,
 		Attr:          attr,
@@ -226,6 +241,7 @@ func SysModelModelFromMap(m map[string]interface{}) *models.SysModel {
 		ParentDetail:  parentDetail,
 		ProductStatus: productStatus,
 		ProductURL:    productURL,
+		Revision:	   revision,
 		State:         state,
 		Title:         &title,
 		Type:          typeVar,
@@ -384,6 +400,7 @@ func SysModelSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
 			},
+			Optional: true,
 			Computed: true,
 		},
 
