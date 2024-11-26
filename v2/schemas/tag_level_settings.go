@@ -12,8 +12,15 @@ func TagLevelSettingsModel(d *schema.ResourceData) *models.TagLevelSettings {
 		flowLogTransmissionModel := flowLogTransmissionInterface.(string)
 		flowLogTransmission = models.NewNetworkInstanceFlowLogTransmission(models.NetworkInstanceFlowLogTransmission(flowLogTransmissionModel))
 	}
+	var interfaceOrdering *models.InterfaceOrdering // InterfaceOrdering
+	interfaceOrderingInterface, interfaceOrderingIsSet := d.GetOk("interface_ordering")
+	if interfaceOrderingIsSet {
+		interfaceOrderingModel := interfaceOrderingInterface.(string)
+		interfaceOrdering = models.NewInterfaceOrdering(models.InterfaceOrdering(interfaceOrderingModel))
+	}
 	return &models.TagLevelSettings{
 		FlowLogTransmission: flowLogTransmission,
+		InterfaceOrdering:   interfaceOrdering,
 	}
 }
 
@@ -24,13 +31,21 @@ func TagLevelSettingsModelFromMap(m map[string]interface{}) *models.TagLevelSett
 		flowLogTransmissionModel := flowLogTransmissionInterface.(string)
 		flowLogTransmission = models.NewNetworkInstanceFlowLogTransmission(models.NetworkInstanceFlowLogTransmission(flowLogTransmissionModel))
 	}
+	var interfaceOrdering *models.InterfaceOrdering // InterfaceOrdering
+	interfaceOrderingInterface, interfaceOrderingIsSet := m["interface_ordering"]
+	if interfaceOrderingIsSet {
+		interfaceOrderingModel := interfaceOrderingInterface.(string)
+		interfaceOrdering = models.NewInterfaceOrdering(models.InterfaceOrdering(interfaceOrderingModel))
+	}
 	return &models.TagLevelSettings{
 		FlowLogTransmission: flowLogTransmission,
+		InterfaceOrdering:   interfaceOrdering,
 	}
 }
 
 func SetTagLevelSettingsResourceData(d *schema.ResourceData, m *models.TagLevelSettings) {
 	d.Set("flow_log_transmission", m.FlowLogTransmission)
+	d.Set("interface_ordering", m.InterfaceOrdering)
 }
 
 func SetTagLevelSettingsSubResourceData(m []*models.TagLevelSettings) (d []*map[string]interface{}) {
@@ -38,6 +53,7 @@ func SetTagLevelSettingsSubResourceData(m []*models.TagLevelSettings) (d []*map[
 		if TagLevelSettingsModel != nil {
 			properties := make(map[string]interface{})
 			properties["flow_log_transmission"] = TagLevelSettingsModel.FlowLogTransmission
+			properties["interface_ordering"] = TagLevelSettingsModel.InterfaceOrdering
 			d = append(d, &properties)
 		}
 	}
@@ -51,11 +67,18 @@ func TagLevelSettingsSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
+
+		"interface_ordering": {
+			Description: `interface ordering for app instances`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 	}
 }
 
 func GetTagLevelSettingsPropertyFields() (t []string) {
 	return []string{
 		"flow_log_transmission",
+		"interface_ordering",
 	}
 }

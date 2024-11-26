@@ -1436,5 +1436,6 @@ resource "zedcloud_project" "test_tf_provider" {
     # }
 	tag_level_settings {
 		flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
+		interface_ordering = "INTERFACE_ORDERING_ENABLED"
 	}
 }
