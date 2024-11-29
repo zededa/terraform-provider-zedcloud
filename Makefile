@@ -59,3 +59,10 @@ test-run:
 updatedeps:
 	go get -f -t -u ./...
 	go get -f -u ./...
+
+.PHONY: tfclean
+clean:
+	rm -rf ./.terraform
+	rm -f .terraform.lock.hcl
+	rm -f terraform.log
+	rm -f terraform.tfstate

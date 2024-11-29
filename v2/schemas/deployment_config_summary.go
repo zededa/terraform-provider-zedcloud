@@ -5,8 +5,8 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
-func DeploymentModel(d *schema.ResourceData) *models.Deployment {
-	var appInstPolicies []*models.AppInstPolicy // []*AppInstPolicy
+func DeploymentConfigSummaryModel(d *schema.ResourceData) *models.DeploymentConfigSummary {
+	var appInstPolicies []*models.PolicyCommon // []*PolicyCommon
 	appInstPoliciesInterface, appInstPoliciesIsSet := d.GetOk("app_inst_policies")
 	if appInstPoliciesIsSet {
 		var items []interface{}
@@ -19,20 +19,20 @@ func DeploymentModel(d *schema.ResourceData) *models.Deployment {
 			if v == nil {
 				continue
 			}
-			m := AppInstPolicyModelFromMap(v.(map[string]interface{}))
+			m := PolicyCommonModelFromMap(v.(map[string]interface{}))
 			appInstPolicies = append(appInstPolicies, m)
 		}
 	}
-	var clusterPolicy *models.ClusterInstPolicy // ClusterInstPolicy
+	var clusterPolicy *models.PolicyCommon // PolicyCommon
 	clusterPolicyInterface, clusterPolicyIsSet := d.GetOk("cluster_policy")
 	if clusterPolicyIsSet && clusterPolicyInterface != nil {
 		clusterPolicyMap := clusterPolicyInterface.([]interface{})
 		if len(clusterPolicyMap) > 0 {
-			clusterPolicy = ClusterInstPolicyModelFromMap(clusterPolicyMap[0].(map[string]interface{}))
+			clusterPolicy = PolicyCommonModelFromMap(clusterPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	deploymentTag, _ := d.Get("deployment_tag").(string)
-	var devicePolicies []*models.DevicePolicy // []*DevicePolicy
+	var devicePolicies []*models.PolicyCommon // []*PolicyCommon
 	devicePoliciesInterface, devicePoliciesIsSet := d.GetOk("device_policies")
 	if devicePoliciesIsSet {
 		var items []interface{}
@@ -45,29 +45,29 @@ func DeploymentModel(d *schema.ResourceData) *models.Deployment {
 			if v == nil {
 				continue
 			}
-			m := DevicePolicyModelFromMap(v.(map[string]interface{}))
+			m := PolicyCommonModelFromMap(v.(map[string]interface{}))
 			devicePolicies = append(devicePolicies, m)
 		}
 	}
-	var edgeviewPolicy *models.EdgeviewPolicy // EdgeViewPolicy
-	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
-	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
-		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
-		if len(edgeviewPolicyMap) > 0 {
-			edgeviewPolicy = EdgeviewPolicyModelFromMap(edgeviewPolicyMap[0].(map[string]interface{}))
+	var edgeViewPolicy *models.PolicyCommon // PolicyCommon
+	edgeViewPolicyInterface, edgeViewPolicyIsSet := d.GetOk("edge_view_policy")
+	if edgeViewPolicyIsSet && edgeViewPolicyInterface != nil {
+		edgeViewPolicyMap := edgeViewPolicyInterface.([]interface{})
+		if len(edgeViewPolicyMap) > 0 {
+			edgeViewPolicy = PolicyCommonModelFromMap(edgeViewPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	id, _ := d.Get("id").(string)
-	var integrationPolicy *models.IntegrationPolicy // IntegrationPolicy
+	var integrationPolicy *models.PolicyCommon // PolicyCommon
 	integrationPolicyInterface, integrationPolicyIsSet := d.GetOk("integration_policy")
 	if integrationPolicyIsSet && integrationPolicyInterface != nil {
 		integrationPolicyMap := integrationPolicyInterface.([]interface{})
 		if len(integrationPolicyMap) > 0 {
-			integrationPolicy = IntegrationPolicyModelFromMap(integrationPolicyMap[0].(map[string]interface{}))
+			integrationPolicy = PolicyCommonModelFromMap(integrationPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	name, _ := d.Get("name").(string)
-	var networkInstPolicies []*models.NetworkInstPolicy // []*NetworkInstPolicy
+	var networkInstPolicies []*models.PolicyCommon // []*PolicyCommon
 	networkInstPoliciesInterface, networkInstPoliciesIsSet := d.GetOk("network_inst_policies")
 	if networkInstPoliciesIsSet {
 		var items []interface{}
@@ -80,11 +80,10 @@ func DeploymentModel(d *schema.ResourceData) *models.Deployment {
 			if v == nil {
 				continue
 			}
-			m := NetworkInstPolicyModelFromMap(v.(map[string]interface{}))
+			m := PolicyCommonModelFromMap(v.(map[string]interface{}))
 			networkInstPolicies = append(networkInstPolicies, m)
 		}
 	}
-	projectID, _ := d.Get("project_id").(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
 	if revisionIsSet && revisionInterface != nil {
@@ -94,7 +93,7 @@ func DeploymentModel(d *schema.ResourceData) *models.Deployment {
 		}
 	}
 	title, _ := d.Get("title").(string)
-	var volumeInstPolicies []*models.VolumeInstPolicy // []*VolumeInstPolicy
+	var volumeInstPolicies []*models.PolicyCommon // []*PolicyCommon
 	volumeInstPoliciesInterface, volumeInstPoliciesIsSet := d.GetOk("volume_inst_policies")
 	if volumeInstPoliciesIsSet {
 		var items []interface{}
@@ -107,29 +106,28 @@ func DeploymentModel(d *schema.ResourceData) *models.Deployment {
 			if v == nil {
 				continue
 			}
-			m := VolumeInstPolicyModelFromMap(v.(map[string]interface{}))
+			m := PolicyCommonModelFromMap(v.(map[string]interface{}))
 			volumeInstPolicies = append(volumeInstPolicies, m)
 		}
 	}
-	return &models.Deployment{
+	return &models.DeploymentConfigSummary{
 		AppInstPolicies:     appInstPolicies,
 		ClusterPolicy:       clusterPolicy,
 		DeploymentTag:       deploymentTag,
 		DevicePolicies:      devicePolicies,
-		EdgeviewPolicy:      edgeviewPolicy,
+		EdgeViewPolicy:      edgeViewPolicy,
 		ID:                  id,
 		IntegrationPolicy:   integrationPolicy,
 		Name:                name,
 		NetworkInstPolicies: networkInstPolicies,
-		ProjectID:           projectID,
 		Revision:            revision,
 		Title:               title,
 		VolumeInstPolicies:  volumeInstPolicies,
 	}
 }
 
-func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
-	var appInstPolicies []*models.AppInstPolicy // []*AppInstPolicy
+func DeploymentConfigSummaryModelFromMap(m map[string]interface{}) *models.DeploymentConfigSummary {
+	var appInstPolicies []*models.PolicyCommon // []*PolicyCommon
 	appInstPoliciesInterface, appInstPoliciesIsSet := m["app_inst_policies"]
 	if appInstPoliciesIsSet {
 		var items []interface{}
@@ -142,21 +140,21 @@ func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
 			if v == nil {
 				continue
 			}
-			m := AppInstPolicyModelFromMap(v.(map[string]interface{}))
+			m := PolicyCommonModelFromMap(v.(map[string]interface{}))
 			appInstPolicies = append(appInstPolicies, m)
 		}
 	}
-	var clusterPolicy *models.ClusterInstPolicy // ClusterInstPolicy
+	var clusterPolicy *models.PolicyCommon // PolicyCommon
 	clusterPolicyInterface, clusterPolicyIsSet := m["cluster_policy"]
 	if clusterPolicyIsSet && clusterPolicyInterface != nil {
 		clusterPolicyMap := clusterPolicyInterface.([]interface{})
 		if len(clusterPolicyMap) > 0 {
-			clusterPolicy = ClusterInstPolicyModelFromMap(clusterPolicyMap[0].(map[string]interface{}))
+			clusterPolicy = PolicyCommonModelFromMap(clusterPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	//
 	deploymentTag := m["deployment_tag"].(string)
-	var devicePolicies []*models.DevicePolicy // []*DevicePolicy
+	var devicePolicies []*models.PolicyCommon // []*PolicyCommon
 	devicePoliciesInterface, devicePoliciesIsSet := m["device_policies"]
 	if devicePoliciesIsSet {
 		var items []interface{}
@@ -169,31 +167,31 @@ func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
 			if v == nil {
 				continue
 			}
-			m := DevicePolicyModelFromMap(v.(map[string]interface{}))
+			m := PolicyCommonModelFromMap(v.(map[string]interface{}))
 			devicePolicies = append(devicePolicies, m)
 		}
 	}
-	var edgeviewPolicy *models.EdgeviewPolicy // EdgeViewPolicy
-	edgeviewPolicyInterface, edgeviewPolicyIsSet := m["edgeview_policy"]
-	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
-		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
-		if len(edgeviewPolicyMap) > 0 {
-			edgeviewPolicy = EdgeviewPolicyModelFromMap(edgeviewPolicyMap[0].(map[string]interface{}))
+	var edgeViewPolicy *models.PolicyCommon // PolicyCommon
+	edgeViewPolicyInterface, edgeViewPolicyIsSet := m["edge_view_policy"]
+	if edgeViewPolicyIsSet && edgeViewPolicyInterface != nil {
+		edgeViewPolicyMap := edgeViewPolicyInterface.([]interface{})
+		if len(edgeViewPolicyMap) > 0 {
+			edgeViewPolicy = PolicyCommonModelFromMap(edgeViewPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	//
 	id := m["id"].(string)
-	var integrationPolicy *models.IntegrationPolicy // IntegrationPolicy
+	var integrationPolicy *models.PolicyCommon // PolicyCommon
 	integrationPolicyInterface, integrationPolicyIsSet := m["integration_policy"]
 	if integrationPolicyIsSet && integrationPolicyInterface != nil {
 		integrationPolicyMap := integrationPolicyInterface.([]interface{})
 		if len(integrationPolicyMap) > 0 {
-			integrationPolicy = IntegrationPolicyModelFromMap(integrationPolicyMap[0].(map[string]interface{}))
+			integrationPolicy = PolicyCommonModelFromMap(integrationPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	//
 	name := m["name"].(string)
-	var networkInstPolicies []*models.NetworkInstPolicy // []*NetworkInstPolicy
+	var networkInstPolicies []*models.PolicyCommon // []*PolicyCommon
 	networkInstPoliciesInterface, networkInstPoliciesIsSet := m["network_inst_policies"]
 	if networkInstPoliciesIsSet {
 		var items []interface{}
@@ -206,11 +204,10 @@ func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
 			if v == nil {
 				continue
 			}
-			m := NetworkInstPolicyModelFromMap(v.(map[string]interface{}))
+			m := PolicyCommonModelFromMap(v.(map[string]interface{}))
 			networkInstPolicies = append(networkInstPolicies, m)
 		}
 	}
-	projectID := m["project_id"].(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := m["revision"]
 	if revisionIsSet && revisionInterface != nil {
@@ -221,7 +218,7 @@ func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
 	}
 	//
 	title := m["title"].(string)
-	var volumeInstPolicies []*models.VolumeInstPolicy // []*VolumeInstPolicy
+	var volumeInstPolicies []*models.PolicyCommon // []*PolicyCommon
 	volumeInstPoliciesInterface, volumeInstPoliciesIsSet := m["volume_inst_policies"]
 	if volumeInstPoliciesIsSet {
 		var items []interface{}
@@ -234,73 +231,70 @@ func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
 			if v == nil {
 				continue
 			}
-			m := VolumeInstPolicyModelFromMap(v.(map[string]interface{}))
+			m := PolicyCommonModelFromMap(v.(map[string]interface{}))
 			volumeInstPolicies = append(volumeInstPolicies, m)
 		}
 	}
-	return &models.Deployment{
+	return &models.DeploymentConfigSummary{
 		AppInstPolicies:     appInstPolicies,
 		ClusterPolicy:       clusterPolicy,
 		DeploymentTag:       deploymentTag,
 		DevicePolicies:      devicePolicies,
-		EdgeviewPolicy:      edgeviewPolicy,
+		EdgeViewPolicy:      edgeViewPolicy,
 		ID:                  id,
 		IntegrationPolicy:   integrationPolicy,
 		Name:                name,
 		NetworkInstPolicies: networkInstPolicies,
-		ProjectID:           projectID,
 		Revision:            revision,
 		Title:               title,
 		VolumeInstPolicies:  volumeInstPolicies,
 	}
 }
 
-func SetDeploymentResourceData(d *schema.ResourceData, m *models.Deployment) {
-	d.Set("app_inst_policies", SetAppInstPolicySubResourceData(m.AppInstPolicies))
-	d.Set("cluster_policy", SetClusterInstPolicySubResourceData([]*models.ClusterInstPolicy{m.ClusterPolicy}))
+func SetDeploymentConfigSummaryResourceData(d *schema.ResourceData, m *models.DeploymentConfigSummary) {
+	d.Set("app_inst_policies", SetPolicyCommonSubResourceData(m.AppInstPolicies))
+	d.Set("cluster_policy", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.ClusterPolicy}))
 	d.Set("deployment_tag", m.DeploymentTag)
-	d.Set("device_policies", SetDevicePolicySubResourceData(m.DevicePolicies))
-	d.Set("edgeview_policy", SetEdgeviewPolicySubResourceData([]*models.EdgeviewPolicy{m.EdgeviewPolicy}))
+	d.Set("device_policies", SetPolicyCommonSubResourceData(m.DevicePolicies))
+	d.Set("edge_view_policy", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.EdgeViewPolicy}))
 	d.Set("id", m.ID)
-	d.Set("integration_policy", SetIntegrationPolicySubResourceData([]*models.IntegrationPolicy{m.IntegrationPolicy}))
+	d.Set("integration_policy", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.IntegrationPolicy}))
 	d.Set("name", m.Name)
-	d.Set("network_inst_policies", SetNetworkInstPolicySubResourceData(m.NetworkInstPolicies))
-	d.Set("project_id", m.ProjectID)
+	d.Set("network_inst_policies", SetPolicyCommonSubResourceData(m.NetworkInstPolicies))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("title", m.Title)
-	d.Set("volume_inst_policies", SetVolumeInstPolicySubResourceData(m.VolumeInstPolicies))
+	d.Set("volume_inst_policies", SetPolicyCommonSubResourceData(m.VolumeInstPolicies))
 }
 
-func SetDeploymentSubResourceData(m []*models.Deployment) (d []*map[string]interface{}) {
-	for _, DeploymentModel := range m {
-		if DeploymentModel != nil {
+func SetDeploymentConfigSummarySubResourceData(m []*models.DeploymentConfigSummary) (d []*map[string]interface{}) {
+	for _, DeploymentConfigSummaryModel := range m {
+		if DeploymentConfigSummaryModel != nil {
 			properties := make(map[string]interface{})
-			properties["app_inst_policies"] = SetAppInstPolicySubResourceData(DeploymentModel.AppInstPolicies)
-			properties["cluster_policy"] = SetClusterInstPolicySubResourceData([]*models.ClusterInstPolicy{DeploymentModel.ClusterPolicy})
-			properties["deployment_tag"] = DeploymentModel.DeploymentTag
-			properties["device_policies"] = SetDevicePolicySubResourceData(DeploymentModel.DevicePolicies)
-			properties["edgeview_policy"] = SetEdgeviewPolicySubResourceData([]*models.EdgeviewPolicy{DeploymentModel.EdgeviewPolicy})
-			properties["id"] = DeploymentModel.ID
-			properties["integration_policy"] = SetIntegrationPolicySubResourceData([]*models.IntegrationPolicy{DeploymentModel.IntegrationPolicy})
-			properties["name"] = DeploymentModel.Name
-			properties["network_inst_policies"] = SetNetworkInstPolicySubResourceData(DeploymentModel.NetworkInstPolicies)
-			properties["project_id"] = DeploymentModel.ProjectID
-			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{DeploymentModel.Revision})
-			properties["title"] = DeploymentModel.Title
-			properties["volume_inst_policies"] = SetVolumeInstPolicySubResourceData(DeploymentModel.VolumeInstPolicies)
+			properties["app_inst_policies"] = SetPolicyCommonSubResourceData(DeploymentConfigSummaryModel.AppInstPolicies)
+			properties["cluster_policy"] = SetPolicyCommonSubResourceData([]*models.PolicyCommon{DeploymentConfigSummaryModel.ClusterPolicy})
+			properties["deployment_tag"] = DeploymentConfigSummaryModel.DeploymentTag
+			properties["device_policies"] = SetPolicyCommonSubResourceData(DeploymentConfigSummaryModel.DevicePolicies)
+			properties["edge_view_policy"] = SetPolicyCommonSubResourceData([]*models.PolicyCommon{DeploymentConfigSummaryModel.EdgeViewPolicy})
+			properties["id"] = DeploymentConfigSummaryModel.ID
+			properties["integration_policy"] = SetPolicyCommonSubResourceData([]*models.PolicyCommon{DeploymentConfigSummaryModel.IntegrationPolicy})
+			properties["name"] = DeploymentConfigSummaryModel.Name
+			properties["network_inst_policies"] = SetPolicyCommonSubResourceData(DeploymentConfigSummaryModel.NetworkInstPolicies)
+			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{DeploymentConfigSummaryModel.Revision})
+			properties["title"] = DeploymentConfigSummaryModel.Title
+			properties["volume_inst_policies"] = SetPolicyCommonSubResourceData(DeploymentConfigSummaryModel.VolumeInstPolicies)
 			d = append(d, &properties)
 		}
 	}
 	return
 }
 
-func DeploymentSchema() map[string]*schema.Schema {
+func DeploymentConfigSummarySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_inst_policies": {
 			Description: `list of app instance policies`,
-			Type:        schema.TypeList, //GoType: []*AppInstPolicy
+			Type:        schema.TypeList, //GoType: []*PolicyCommon
 			Elem: &schema.Resource{
-				Schema: AppInstPolicy(),
+				Schema: PolicyCommon(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -308,34 +302,34 @@ func DeploymentSchema() map[string]*schema.Schema {
 
 		"cluster_policy": {
 			Description: `cluster policy details`,
-			Type:        schema.TypeList, //GoType: ClusterInstPolicy
+			Type:        schema.TypeList, //GoType: PolicyCommon
 			Elem: &schema.Resource{
-				Schema: ClusterInstPolicy(),
+				Schema: PolicyCommon(),
 			},
 			Optional: true,
 		},
 
 		"deployment_tag": {
-			Description: `user defined tag for the deployment, which is used while targeting set of devices`,
+			Description: `user defined tag for an deployment`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"device_policies": {
 			Description: `list of device policies`,
-			Type:        schema.TypeList, //GoType: []*DevicePolicy
+			Type:        schema.TypeList, //GoType: []*PolicyCommon
 			Elem: &schema.Resource{
-				Schema: DevicePolicy(),
+				Schema: PolicyCommon(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
 		},
 
-		"edgeview_policy": {
+		"edge_view_policy": {
 			Description: `edge view policy details`,
-			Type:        schema.TypeList, //GoType: EdgeViewPolicy
+			Type:        schema.TypeList, //GoType: PolicyCommon
 			Elem: &schema.Resource{
-				Schema: EdgeviewPolicy(),
+				Schema: PolicyCommon(),
 			},
 			Optional: true,
 		},
@@ -348,37 +342,31 @@ func DeploymentSchema() map[string]*schema.Schema {
 
 		"integration_policy": {
 			Description: `integration policy details`,
-			Type:        schema.TypeList, //GoType: IntegrationPolicy
+			Type:        schema.TypeList, //GoType: PolicyCommon
 			Elem: &schema.Resource{
-				Schema: IntegrationPolicy(),
+				Schema: PolicyCommon(),
 			},
 			Optional: true,
 		},
 
 		"name": {
-			Description: `user defined name for the deployment`,
+			Description: `user defined deployment name`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"network_inst_policies": {
 			Description: `list of network instance policies`,
-			Type:        schema.TypeList, //GoType: []*NetworkInstPolicy
+			Type:        schema.TypeList, //GoType: []*PolicyCommon
 			Elem: &schema.Resource{
-				Schema: NetworkInstPolicySchema(),
+				Schema: PolicyCommon(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
 		},
 
-		"project_id": {
-			Description: `project id`,
-			Type:        schema.TypeString,
-			Optional:    true,
-		},
-
 		"revision": {
-			Description: `object revision`,
+			Description: `object revision details`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
@@ -387,16 +375,16 @@ func DeploymentSchema() map[string]*schema.Schema {
 		},
 
 		"title": {
-			Description: `user defined title for the deployment`,
+			Description: `user defined deployment title`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"volume_inst_policies": {
-			Description: `list of volume instamce policies`,
-			Type:        schema.TypeList, //GoType: []*VolumeInstPolicy
+			Description: `list of volume instance policies`,
+			Type:        schema.TypeList, //GoType: []*PolicyCommon
 			Elem: &schema.Resource{
-				Schema: VolumeInstPolicySchema(),
+				Schema: PolicyCommon(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -404,18 +392,17 @@ func DeploymentSchema() map[string]*schema.Schema {
 	}
 }
 
-func GetDeploymentPropertyFields() (t []string) {
+func GetDeploymentConfigSummaryPropertyFields() (t []string) {
 	return []string{
 		"app_inst_policies",
 		"cluster_policy",
 		"deployment_tag",
 		"device_policies",
-		"edgeview_policy",
+		"edge_view_policy",
 		"id",
 		"integration_policy",
 		"name",
 		"network_inst_policies",
-		"project_id",
 		"revision",
 		"title",
 		"volume_inst_policies",

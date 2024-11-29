@@ -22,7 +22,7 @@ type NetworkInstConfig struct {
 	// flag to indicate if this is default network
 	//
 	// flag to indicate if this is the default network instance for the device
-	DeviceDefault string `json:"deviceDefault,omitempty"`
+	DeviceDefault bool `json:"deviceDefault,omitempty"`
 
 	// List of Static DNS entries
 	DNSList []*StaticDNSList `json:"dnsList"`
@@ -43,6 +43,16 @@ type NetworkInstConfig struct {
 
 	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	PortTags map[string]string `json:"portTags,omitempty"`
+
+	// flag to indicate automatically propagate connected routes
+	//
+	// Automatically propagate connected routes
+	PropagateConnectedRoutes bool `json:"propagateConnectedRoutes,omitempty"`
+
+	// list of static IP routes
+	//
+	// List of Static IP routes
+	StaticRoutes []*StaticIPRoute `json:"staticRoutes"`
 
 	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
@@ -68,6 +78,10 @@ func (m *NetworkInstConfig) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateOpaque(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateStaticRoutes(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -164,6 +178,32 @@ func (m *NetworkInstConfig) validateOpaque(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *NetworkInstConfig) validateStaticRoutes(formats strfmt.Registry) error {
+	if swag.IsZero(m.StaticRoutes) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.StaticRoutes); i++ {
+		if swag.IsZero(m.StaticRoutes[i]) { // not required
+			continue
+		}
+
+		if m.StaticRoutes[i] != nil {
+			if err := m.StaticRoutes[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 func (m *NetworkInstConfig) validateType(formats strfmt.Registry) error {
 	if swag.IsZero(m.Type) { // not required
 		return nil
@@ -203,6 +243,10 @@ func (m *NetworkInstConfig) ContextValidate(ctx context.Context, formats strfmt.
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateStaticRoutes(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateType(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -218,6 +262,11 @@ func (m *NetworkInstConfig) contextValidateDNSList(ctx context.Context, formats 
 	for i := 0; i < len(m.DNSList); i++ {
 
 		if m.DNSList[i] != nil {
+
+			if swag.IsZero(m.DNSList[i]) { // not required
+				return nil
+			}
+
 			if err := m.DNSList[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("dnsList" + "." + strconv.Itoa(i))
@@ -236,6 +285,11 @@ func (m *NetworkInstConfig) contextValidateDNSList(ctx context.Context, formats 
 func (m *NetworkInstConfig) contextValidateIP(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IP != nil {
+
+		if swag.IsZero(m.IP) { // not required
+			return nil
+		}
+
 		if err := m.IP.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("ip")
@@ -252,6 +306,11 @@ func (m *NetworkInstConfig) contextValidateIP(ctx context.Context, formats strfm
 func (m *NetworkInstConfig) contextValidateKind(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Kind != nil {
+
+		if swag.IsZero(m.Kind) { // not required
+			return nil
+		}
+
 		if err := m.Kind.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("kind")
@@ -268,6 +327,11 @@ func (m *NetworkInstConfig) contextValidateKind(ctx context.Context, formats str
 func (m *NetworkInstConfig) contextValidateOpaque(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Opaque != nil {
+
+		if swag.IsZero(m.Opaque) { // not required
+			return nil
+		}
+
 		if err := m.Opaque.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("opaque")
@@ -281,9 +345,39 @@ func (m *NetworkInstConfig) contextValidateOpaque(ctx context.Context, formats s
 	return nil
 }
 
+func (m *NetworkInstConfig) contextValidateStaticRoutes(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.StaticRoutes); i++ {
+
+		if m.StaticRoutes[i] != nil {
+
+			if swag.IsZero(m.StaticRoutes[i]) { // not required
+				return nil
+			}
+
+			if err := m.StaticRoutes[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 func (m *NetworkInstConfig) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Type != nil {
+
+		if swag.IsZero(m.Type) { // not required
+			return nil
+		}
+
 		if err := m.Type.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("type")
