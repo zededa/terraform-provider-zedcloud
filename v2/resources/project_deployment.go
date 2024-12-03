@@ -9,13 +9,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/project_deployment"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
 
 func ProjectDeploymentResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateProjectDeployment,
-		DeleteContext: DeleteProjectDeployment,
+		DeleteContext: DeleteProjectDeploymentAll,
 		ReadContext:   GetProjectDeploymentByID,
 		UpdateContext: UpdateProjectDeployment,
 		Schema:        zschema.Project(),
@@ -24,7 +25,7 @@ func ProjectDeploymentResource() *schema.Resource {
 
 func ProjectDeploymentDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: GetProjectDeploymentListbyID,
+		ReadContext: GetProject,
 		Schema:      zschema.Project(),
 	}
 }
@@ -128,14 +129,23 @@ func CreateProjectDeployment(ctx context.Context, d *schema.ResourceData, m inte
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		return diags
+		if diags.HasError() {
+			return diags
+		}
 	}
+	// note, we need to set the ID before fetching the newly created project.
+	d.SetId(responseData.ObjectID)
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := GetProject(ctx, d, m); err != nil {
+	if errs := GetProject(ctx, d, m); errs != nil {
 		return append(diags, errs...)
 	}
 
@@ -210,7 +220,7 @@ func DeleteProjectDeploymentAll(ctx context.Context, d *schema.ResourceData, m i
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	projectIdVal, projectIdIsSet := d.GetOk("project_id")
+	projectIdVal, projectIdIsSet := d.GetOk("id")
 	if projectIdIsSet {
 		params.ProjectID = projectIdVal.(string)
 	} else {

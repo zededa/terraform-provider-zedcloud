@@ -30,6 +30,12 @@ func (o *CreateReader) ReadResponse(response runtime.ClientResponse, consumer ru
 			return nil, err
 		}
 		return result, nil
+	case 202:
+		result := NewCreateAccepted()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return result, nil
 	case 401:
 		result := NewCreateUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -125,6 +131,76 @@ func (o *CreateOK) GetPayload() *models.ZsrvResponse {
 }
 
 func (o *CreateOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateAccepted creates a CreateAccepted with default headers values
+func NewCreateAccepted() *CreateAccepted {
+	return &CreateAccepted{}
+}
+
+/*
+CreateAccepted describes a response with status code 202, with default header values.
+
+Accepted. The API gateway accepted the request and will process it asynchronously.
+*/
+type CreateAccepted struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this resource group create resource group v2 accepted response has a 2xx status code
+func (o *CreateAccepted) IsSuccess() bool {
+	return true
+}
+
+// IsRedirect returns true when this resource group create resource group v2 accepted response has a 3xx status code
+func (o *CreateAccepted) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this resource group create resource group v2 accepted response has a 4xx status code
+func (o *CreateAccepted) IsClientError() bool {
+	return false
+}
+
+// IsServerError returns true when this resource group create resource group v2 accepted response has a 5xx status code
+func (o *CreateAccepted) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this resource group create resource group v2 accepted response a status code equal to that given
+func (o *CreateAccepted) IsCode(code int) bool {
+	return code == 202
+}
+
+// Code gets the status code for the resource group create resource group v2 accepted response
+func (o *CreateAccepted) Code() int {
+	return 202
+}
+
+func (o *CreateAccepted) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /v2/projects][%d] projectDeploymentCreateAccepted %s", 202, payload)
+}
+
+func (o *CreateAccepted) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /v2/projects][%d] projectDeploymentCreateAccepted %s", 202, payload)
+}
+
+func (o *CreateAccepted) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *CreateAccepted) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 
