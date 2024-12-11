@@ -272,8 +272,8 @@ func diffSuppressIoMemberListOrder(mapKey string) schema.SchemaDiffSuppressFunc 
 		for i, m := range o {
 			oldMapList[i] = IoMemberModelFromMap(m.(map[string]interface{}))
 		}
-		newMapList := make([]*models.IoMember, len(o))
-		for i, m := range o {
+		newMapList := make([]*models.IoMember, len(n))
+		for i, m := range n {
 			newMapList[i] = IoMemberModelFromMap(m.(map[string]interface{}))
 		}
 
