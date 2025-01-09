@@ -329,6 +329,7 @@ func Application() map[string]*schema.Schema {
 			Description: `user defined storage for bundle`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"title": {
