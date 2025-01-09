@@ -12,3 +12,5 @@ gen/
 terraform.log
 main.tf
 dev.tfrc
+.vscode/
+*.plan
