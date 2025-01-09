@@ -217,7 +217,6 @@ func Application() map[string]*schema.Schema {
 		"cpus": {
 			Description: `user defined cpus for bundle`,
 			Type:        schema.TypeInt,
-			Optional:    true,
 			Computed:    true,
 		},
 
@@ -272,7 +271,6 @@ func Application() map[string]*schema.Schema {
 		"memory": {
 			Description: `user defined memory for bundle`,
 			Type:        schema.TypeInt,
-			Optional:    true,
 			Computed:    true,
 		},
 
@@ -328,7 +326,6 @@ func Application() map[string]*schema.Schema {
 		"storage": {
 			Description: `user defined storage for bundle`,
 			Type:        schema.TypeInt,
-			Optional:    true,
 			Computed:    true,
 		},
 
