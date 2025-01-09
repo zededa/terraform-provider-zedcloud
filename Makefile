@@ -61,7 +61,7 @@ updatedeps:
 	go get -f -u ./...
 
 .PHONY: tfclean
-clean:
+tfclean:
 	rm -rf ./.terraform
 	rm -f .terraform.lock.hcl
 	rm -f terraform.log

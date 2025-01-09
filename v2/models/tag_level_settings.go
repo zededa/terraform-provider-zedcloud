@@ -22,6 +22,9 @@ type TagLevelSettings struct {
 
 	// Flow log transmission setting for the network instances
 	FlowLogTransmission *NetworkInstanceFlowLogTransmission `json:"flowLogTransmission,omitempty"`
+
+	// interface ordering for app instances
+	InterfaceOrdering *InterfaceOrdering `json:"interfaceOrdering,omitempty"`
 }
 
 // Validate validates this tag level settings
@@ -29,6 +32,10 @@ func (m *TagLevelSettings) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateFlowLogTransmission(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateInterfaceOrdering(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -57,11 +64,34 @@ func (m *TagLevelSettings) validateFlowLogTransmission(formats strfmt.Registry) 
 	return nil
 }
 
+func (m *TagLevelSettings) validateInterfaceOrdering(formats strfmt.Registry) error {
+	if swag.IsZero(m.InterfaceOrdering) { // not required
+		return nil
+	}
+
+	if m.InterfaceOrdering != nil {
+		if err := m.InterfaceOrdering.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("interfaceOrdering")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("interfaceOrdering")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this tag level settings based on the context it is used
 func (m *TagLevelSettings) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateFlowLogTransmission(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateInterfaceOrdering(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -74,16 +104,27 @@ func (m *TagLevelSettings) ContextValidate(ctx context.Context, formats strfmt.R
 func (m *TagLevelSettings) contextValidateFlowLogTransmission(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.FlowLogTransmission != nil {
-
-		if swag.IsZero(m.FlowLogTransmission) { // not required
-			return nil
-		}
-
 		if err := m.FlowLogTransmission.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("flowLogTransmission")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("flowLogTransmission")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *TagLevelSettings) contextValidateInterfaceOrdering(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.InterfaceOrdering != nil {
+		if err := m.InterfaceOrdering.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("interfaceOrdering")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("interfaceOrdering")
 			}
 			return err
 		}

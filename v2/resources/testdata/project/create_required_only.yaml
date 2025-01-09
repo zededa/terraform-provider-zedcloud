@@ -5,4 +5,5 @@ attr: {}
 modulepolicy: []
 taglevelsettings:
   flowlogtransmission: "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
+  interfaceOrdering: "INTERFACE_ORDERING_ENABLED"
 tags: {}  

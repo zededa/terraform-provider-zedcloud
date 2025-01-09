@@ -96,7 +96,7 @@ func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadApplication(ctx, d, m); err != nil {
+	if errs := ReadApplication(ctx, d, m); errs != nil {
 		return append(diags, errs...)
 	}
 
@@ -247,7 +247,7 @@ func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadApplication(ctx, d, m); err != nil {
+	if errs := ReadApplication(ctx, d, m); errs != nil {
 		return append(diags, errs...)
 	}
 
