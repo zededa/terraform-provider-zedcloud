@@ -1,20 +1,25 @@
 name: Test
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: make test
-      run:  make test
-      env:
+    env:
         TF_VAR_zedcloud_token: ${{ secrets.TF_VAR_ZEDCLOUD_TOKEN }}
         TF_VAR_zedcloud_url : ${{ vars.TF_VAR_ZEDCLOUD_URL }}
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.21
+
+    - name: Install dependencies
+      run: go mod tidy
+    
+    - name: make test
+      run:  make test
+      
+        
