@@ -100,7 +100,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
 		Name:                       &name, // string
 		NetworkPolicy:              networkPolicy,
-		Revision: 				    revision,
+		Revision:                   revision,
 		TagLevelSettings:           tagLevelSettings,
 		Tags:                       tags,
 		Title:                      &title, // string
@@ -212,7 +212,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
 		Name:                       &name,
 		NetworkPolicy:              networkPolicy,
-		Revision:			 	    revision,
+		Revision:                   revision,
 		TagLevelSettings:           tagLevelSettings,
 		Tags:                       tags,
 		Title:                      &title,
@@ -404,7 +404,7 @@ func Project() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: TagLevelSettingsSchema(),
 			},
-			Optional: true,
+			Required: true,
 		},
 
 		"tags": {
