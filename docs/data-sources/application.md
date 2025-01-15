@@ -22,24 +22,24 @@ description: |-
 
 ### Optional
 
-- `cpus` (Number) user defined cpus for bundle
 - `description` (String) Detailed description of the edge application
 - `is_imported` (Boolean) Flag to represent where app bundle is already imported
 - `manifest` (Block List, Max: 1) user defined manifest in JSON format (see [below for nested schema](#nestedblock--manifest))
 - `manifest_file` (String) path to manifest.json
-- `memory` (Number) user defined memory for bundle
 - `networks` (Number) user defined network options
 - `origin_type` (String) origin of object
 - `parent_detail` (Block List) origin and parent related details (see [below for nested schema](#nestedblock--parent_detail))
 - `project_access_list` (List of String) project access list of the app bundle
-- `storage` (Number) user defined storage for bundle
 - `user_defined_version` (String) User defined version for the given edge-app
 
 ### Read-Only
 
+- `cpus` (Number) user defined cpus for bundle
 - `drives` (Number) user defined drives
 - `id` (String) System defined universally unique Id of the edge application
+- `memory` (Number) user defined memory for bundle
 - `revision` (List of Object) system defined info (see [below for nested schema](#nestedatt--revision))
+- `storage` (Number) user defined storage for bundle
 
 <a id="nestedblock--manifest"></a>
 ### Nested Schema for `manifest`

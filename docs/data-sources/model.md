@@ -39,7 +39,7 @@ description: |-
 ### Read-Only
 
 - `id` (String) System defined universally unique Id of the model.
-- `revision` (List of Object) Object Revision  of the model (see [below for nested schema](#nestedatt--revision))
+- `revision` (Block List) Object Revision  of the model (see [below for nested schema](#nestedblock--revision))
 
 <a id="nestedblock--io_member_list"></a>
 ### Nested Schema for `io_member_list`
@@ -112,14 +112,14 @@ Read-Only:
 - `version_of_parent_object` (Number) version of object present in parent
 
 
-<a id="nestedatt--revision"></a>
+<a id="nestedblock--revision"></a>
 ### Nested Schema for `revision`
 
 Read-Only:
 
-- `created_at` (String)
-- `created_by` (String)
-- `curr` (String)
-- `prev` (String)
-- `updated_at` (String)
-- `updated_by` (String)
+- `created_at` (String) The time, in milliseconds since the epoch, when the record was created.
+- `created_by` (String) User data: Created By
+- `curr` (String) Current Database version of the record
+- `prev` (String) Previous
+- `updated_at` (String) The time, in milliseconds since the epoch, when the record was last updated.
+- `updated_by` (String) User data: Updated By
