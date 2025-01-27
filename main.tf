@@ -18,44 +18,48 @@ resource "zedcloud_project" "test_tf_provider" {
 
   # optional
   type = "TAG_TYPE_PROJECT"
-  attestation_policy {
-    # required
-    title = "tf-attestation-policy"
-    name = "tf-attestation-policy"
-    type  = "POLICY_TYPE_ATTESTATION"
+  tag_level_settings {
+    flow_log_transmission =  "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED"
+    interface_ordering = "INTERFACE_ORDERING_DISABLED"
+  }
+  # attestation_policy {
+  #   # required
+  #   title = "tf-attestation-policy"
+  #   name  = "tf-attestation-policy"
+  #   type  = "POLICY_TYPE_ATTESTATION"
 
-    attestation_policy {
-      type = "ATTEST_POLICY_TYPE_ACCEPT"
-    }
-  }
-  edgeview_policy {
-    title = "tf-edgeview-policy"
-    name = "tf-edgeview-policy"
-    edgeview_policy {
-      # required
-      edgeview_allow = false
-      # optional
-      access_allow_change = true
-      edgeviewcfg {
-        dev_policy {
-          allow_dev = true
-        }
-        ext_policy {
-          allow_ext = false
-        }
-        generation_id = 0
-        jwt_info {
-          allow_sec = 18000
-          disp_url  = "zedcloud.local.zededa.net/api/v1/edge-view"
-          encrypt   = false
-          num_inst = 1
-        }
-      }
-      max_expire_sec = 2592000
-      max_inst       = 3
-    }
-    type = "POLICY_TYPE_EDGEVIEW"
-  }
+  #   attestation_policy {
+  #     type = "ATTEST_POLICY_TYPE_ACCEPT"
+  #   }
+  # }
+  # edgeview_policy {
+  #   title = "tf-edgeview-policy"
+  #   name  = "tf-edgeview-policy"
+  #   edgeview_policy {
+  #     # required
+  #     edgeview_allow = false
+  #     # optional
+  #     access_allow_change = true
+  #     edgeviewcfg {
+  #       dev_policy {
+  #         allow_dev = true
+  #       }
+  #       ext_policy {
+  #         allow_ext = false
+  #       }
+  #       generation_id = 0
+  #       jwt_info {
+  #         allow_sec = 18000
+  #         disp_url  = "zedcloud.local.zededa.net/api/v1/edge-view"
+  #         encrypt   = false
+  #         num_inst  = 1
+  #       }
+  #     }
+  #     max_expire_sec = 2592000
+  #     max_inst       = 3
+  #   }
+  #   type = "POLICY_TYPE_EDGEVIEW"
+  # }
 }
 
 data "zedcloud_project" "test_tf_provider" {
@@ -143,7 +147,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   # required
   name       = "test_tf_provider"
   model_id   = zedcloud_model.test_tf_provider.id
-  project_id = data.zedcloud_project.test_tf_provider.id
+  project_id = zedcloud_project.test_tf_provider.id
   title      = "test_tf_provider-create_edgenode-title"
 
   admin_state = "ADMIN_STATE_ACTIVE"
@@ -158,7 +162,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     value_type   = "value type"
   }
   deployment_tag = "depl_tag"
-  description = "description"
+  description    = "description"
   dev_location {
     city        = "berlin"
     country     = "germany"
@@ -175,6 +179,17 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     "tag-key-1" = "tag-value-1"
   }
   token = "token"
+  interfaces {
+    cost       = 255
+    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    intfname   = "defaultIPv4"
+    ipaddr     = "127.0.0.1"
+    # macaddr = "00:00:00:00:00:00"
+    tags = {
+      "system_interface_1_key" = "system_interface_1_value"
+      "system_interface_2_key" = "system_interface_2_value"
+    }
+  }
 }
 
 data "zedcloud_edgenode" "test_tf_provider" {
@@ -186,94 +201,29 @@ data "zedcloud_edgenode" "test_tf_provider" {
   ]
 }
 
-resource "zedcloud_application" "test_tf_provider" {
-  name                 = "test_tf_provider"
-  title                = "ubuntu-all-ip"
-  description          = "ubuntu-all-ip"
-  user_defined_version = "1.1"
-  origin_type          = "ORIGIN_LOCAL"
+resource "zedcloud_application" "alpine_vm_app" {
+  name                 = "alpine_vm_app"
+  title                = "alpine_vm_app"
+  user_defined_version = "24.0.4"
+  depends_on = [ zedcloud_image.alpine_image ]
+  project_access_list = [zedcloud_project.test_tf_provider.id]
   manifest {
-    # computed
-    ac_kind = "VMManifest"
-
-    # optional
-    name       = "xenial-amd64-docker-20180725"
-    ac_version = "1.2.0"
-    app_type   = "APP_TYPE_VM"
-    configuration {
-      custom_config {
-        add                  = false
-        allow_storage_resize = false
-        field_delimiter      = ","
-        name                 = "custom_config_name"
-        override             = false
-        template             = "dGVzdA=="
-        variable_groups {
-          condition {
-            # optional
-            name     = "condition"
-            operator = "CONDITION_OPERATOR_EQUALTO"
-            value    = "val"
-          }
-          name     = "var_group"
-          required = false
-        }
-      }
-    }
+    ac_kind             = "VMManifest"
+    ac_version          = "1.2.0"
+    name                = "alpine_24"
+    vmmode              = "HV_HVM"
+    enablevnc           = true
+    app_type            = "APP_TYPE_VM"
+    deployment_type     = "DEPLOYMENT_TYPE_STAND_ALONE"
     cpu_pinning_enabled = false
-    deployment_type     = "DEPLOYMENT_TYPE_K3S"
-    desc {
-      category     = "Infrastructure"
-      os           = "Zenix"
-      app_category = "APP_CATEGORY_OTHERS"
-      support      = "support"
-    }
-    description  = "description"
-    display_name = "display_name"
-    enablevnc    = false
-    interfaces {
-      name         = "indirect"
-      directattach = false
-      privateip    = false
-      acls {
-        matches {
-          type  = "protocol"
-          value = "tcp"
-        }
-        matches {
-          type  = "lport"
-          value = "8022"
-        }
-        actions {
-          portmap = true
-          portmapto {
-            app_port = 22
-          }
-        }
-      }
-      acls {
-        matches {
-          type  = "host"
-          value = ""
-        }
-      }
-    }
-    owner {
-      company = "Zededa Inc."
-      email   = "test@zededa.com"
-      group   = "testgroup"
-      user    = "testuser"
-      website = "http://www.zededa.com"
-    }
     resources {
       name  = "cpus"
-      value = "2"
+      value = 2
     }
     resources {
       name  = "memory"
-      value = "1024000"
+      value = 8000000
     }
-    vmmode = "HV_HVM"
   }
 }
 

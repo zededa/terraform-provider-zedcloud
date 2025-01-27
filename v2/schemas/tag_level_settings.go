@@ -63,15 +63,15 @@ func SetTagLevelSettingsSubResourceData(m []*models.TagLevelSettings) (d []*map[
 func TagLevelSettingsSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"flow_log_transmission": {
-			Description: `Flow log transmission setting for the network instances`,
+			Description: `Flow log transmission setting for the network instances, it has two possible values NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED or NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_ENABLED`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"interface_ordering": {
-			Description: `interface ordering for app instances`,
+			Description: `interface ordering for app instances, it has two possible values INTERFACE_ORDERING_DISABLED or INTERFACE_ORDERING_ENABLED`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }
