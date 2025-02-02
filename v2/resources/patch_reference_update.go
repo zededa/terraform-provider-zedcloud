@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -43,9 +44,14 @@ func CreatePatchEnvelopeReference(ctx context.Context, d *schema.ResourceData, m
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params, nil)
-	log.Printf("[TRACE] CreatePatchEnvelopeReference response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] patch reference update create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("patch reference update create error: %s", err)...)
 		return diags
 	}
 
@@ -79,10 +85,15 @@ func DeletePatchEnvelopeReference(ctx context.Context, d *schema.ResourceData, m
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params, nil)
-	log.Printf("[TRACE] DeletePatchEnvelopeReference response: %v", resp)
+	_, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] patch reference update delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("patch reference update delete error: %s", err)...)
 		return diags
 	}
 

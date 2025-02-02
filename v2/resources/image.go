@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -43,9 +44,14 @@ func CreateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Image.Create(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] image create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("image create error: %s", err)...)
 		return diags
 	}
 
@@ -200,9 +206,15 @@ func UpdateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Image.Update(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] image update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("image update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -222,7 +234,7 @@ func UpdateImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := ReadImage(ctx, d, m); err != nil {
+	if errs := ReadImage(ctx, d, m); errs != nil {
 		return append(diags, errs...)
 	}
 
@@ -250,10 +262,15 @@ func DeleteImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Image.Delete(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.Image.Delete(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] image delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("image delete error: %s", err)...)
 		return diags
 	}
 
@@ -277,9 +294,15 @@ func uplinkImage(ctx context.Context, d *schema.ResourceData, m interface{}, ima
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, accepted, err := client.Image.Uplink(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] image unlink error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("image unlink error: %s", err)...)
+		return diags
 	}
 
 	var responseData *models.ZsrvResponse

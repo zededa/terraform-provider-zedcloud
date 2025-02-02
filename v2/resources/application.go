@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -69,9 +70,14 @@ func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Application.Create(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge application create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge application create error: %s", err)...)
 		return diags
 	}
 
@@ -221,9 +227,15 @@ func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Application.Update(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge application update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge application update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -275,10 +287,15 @@ func DeleteApplication(ctx context.Context, d *schema.ResourceData, m interface{
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Application.Delete(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.Application.Delete(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge application delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge application delete error: %s", err)...)
 		return diags
 	}
 

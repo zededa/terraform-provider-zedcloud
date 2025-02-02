@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -121,9 +122,14 @@ func CreateHardwareModel(ctx context.Context, d *schema.ResourceData, m interfac
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.HardwareModel.HardwareModelCreateHardwareModel(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] model create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("model create error: %s", err)...)
 		return diags
 	}
 
@@ -179,9 +185,15 @@ func UpdateHardwareModel(ctx context.Context, d *schema.ResourceData, m interfac
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.HardwareModel.HardwareModelUpdateHardwareModel(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] model update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("model update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -225,10 +237,15 @@ func DeleteHardwareModel(ctx context.Context, d *schema.ResourceData, m interfac
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.HardwareModel.HardwareModelDeleteHardwareModel(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.HardwareModel.HardwareModelDeleteHardwareModel(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] model delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("model delete error: %s", err)...)
 		return diags
 	}
 

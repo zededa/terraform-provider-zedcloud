@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -43,9 +44,14 @@ func CreateVolumeInstance(ctx context.Context, d *schema.ResourceData, m interfa
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.VolumeInstance.Create(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] volume instance create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("volume instance create error: %s", err)...)
 		return diags
 	}
 
@@ -173,9 +179,15 @@ func UpdateVolumeInstance(ctx context.Context, d *schema.ResourceData, m interfa
 
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.VolumeInstance.Update(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] volume instance update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("volume instance update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -227,10 +239,15 @@ func DeleteVolumeInstance(ctx context.Context, d *schema.ResourceData, m interfa
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.VolumeInstance.Delete(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.VolumeInstance.Delete(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] volume instance delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("volume instance delete error: %s", err)...)
 		return diags
 	}
 

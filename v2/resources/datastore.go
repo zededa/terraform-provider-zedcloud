@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -44,16 +45,22 @@ func CreateDatastore(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	success, created, err := client.Datastore.Create(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] datastore create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("datastore create error: %s", err)...)
 		return diags
 	}
 
 	var responseData *models.ZsrvResponse
 	if success != nil {
-		log.Printf("[TRACE] response: %v", success)
+		log.Printf("[TRACE] datastore create response: %s", spew.Sdump(success))
 		responseData = success.GetPayload()
 	} else {
-		log.Printf("[TRACE] response: %v", created)
+		log.Printf("[TRACE] datastore create response: %s", spew.Sdump(created))
 		responseData = created.GetPayload()
 	}
 
@@ -79,7 +86,7 @@ func CreateDatastore(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := readDatastoreByName(ctx, d, m); err != nil {
+	if errs := readDatastoreByName(ctx, d, m); errs != nil {
 		return append(diags, errs...)
 	}
 
@@ -183,9 +190,15 @@ func UpdateDatastore(ctx context.Context, d *schema.ResourceData, m interface{})
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Datastore.Update(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] datastore update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("datastore update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -205,7 +218,7 @@ func UpdateDatastore(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := readDatastoreByName(ctx, d, m); err != nil {
+	if errs := readDatastoreByName(ctx, d, m); errs != nil {
 		return append(diags, errs...)
 	}
 
@@ -233,10 +246,15 @@ func DeleteDatastore(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Datastore.Delete(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.Datastore.Delete(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] datastore delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("datastore delete error: %s", err)...)
 		return diags
 	}
 

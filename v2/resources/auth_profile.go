@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -128,9 +129,14 @@ func IdentityAccessManagement_CreateAuthProfile(ctx context.Context, d *schema.R
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementCreateAuthProfile(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] auth profile create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("auth profile create error: %s", err)...)
 		return diags
 	}
 
@@ -185,11 +191,17 @@ func IdentityAccessManagement_UpdateAuthProfile(ctx context.Context, d *schema.R
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementUpdateAuthProfile(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
-	}
+		log.Printf("[TRACE] auth profile update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
 
+		diags = append(diags, diag.Errorf("auth profile update error: %s", err)...)
+		return diags
+	}
+	
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
@@ -238,10 +250,15 @@ func IdentityAccessManagement_DeleteAuthProfile(ctx context.Context, d *schema.R
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementDeleteAuthProfile(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.IdentityAccessManagement.IdentityAccessManagementDeleteAuthProfile(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] auth profile delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("auth profile delete error: %s", err)...)
 		return diags
 	}
 
