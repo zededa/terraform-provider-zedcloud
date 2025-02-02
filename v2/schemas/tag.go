@@ -6,6 +6,14 @@ import (
 )
 
 func TagModel(d *schema.ResourceData) *models.Tag {
+	var appPolicy *models.Policy // AppPolicyConfig
+	appPolicyInterface, appPolicyIsSet := d.GetOk("app_policy")
+	if appPolicyIsSet && appPolicyInterface != nil {
+		appPolicyMap := appPolicyInterface.([]interface{})
+		if len(appPolicyMap) > 0 {
+			appPolicy = PolicyConfigModelFromMap(appPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	var attestationPolicy *models.Policy // PolicyConfig
 	attestationPolicyInterface, attestationPolicyIsSet := d.GetOk("attestation_policy")
 	if attestationPolicyIsSet && attestationPolicyInterface != nil {
@@ -91,6 +99,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		revision = ObjectRevisionModelFromMap(revisionMap)
 	}
 	return &models.Tag{
+		AppPolicy:                  appPolicy,
 		AttestationPolicy:          attestationPolicy,
 		ConfigurationLockPolicy:    configurationLockPolicy,
 		Deployment:                 deployment,
@@ -109,6 +118,14 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 }
 
 func TagModelFromMap(m map[string]interface{}) *models.Tag {
+	var appPolicy *models.Policy // AppPolicyConfig
+	appPolicyInterface, appPolicyIsSet := m["app_policy"]
+	if appPolicyIsSet && appPolicyInterface != nil {
+		appPolicyMap := appPolicyInterface.([]interface{})
+		if len(appPolicyMap) > 0 {
+			appPolicy = PolicyConfigModelFromMap(appPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	var attestationPolicy *models.Policy // PolicyConfig
 	attestationPolicyInterface, attestationPolicyIsSet := m["attestation_policy"]
 	if attestationPolicyIsSet && attestationPolicyInterface != nil {
@@ -203,6 +220,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		}
 	}
 	return &models.Tag{
+		AppPolicy:                  appPolicy,
 		AttestationPolicy:          attestationPolicy,
 		ConfigurationLockPolicy:    configurationLockPolicy,
 		Deployment:                 deployment,
@@ -275,7 +293,7 @@ func Project() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_policy": {
 			Description: `Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
+			Type:        schema.TypeList, // GoType: PolicyConfig
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
@@ -284,7 +302,7 @@ func Project() map[string]*schema.Schema {
 
 		"attestation_policy": {
 			Description: `Attestation policy to enforce on all devices of this project`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
+			Type:        schema.TypeList, // GoType: PolicyConfig
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
@@ -294,7 +312,7 @@ func Project() map[string]*schema.Schema {
 
 		"attr": {
 			Description: `Resource group wide configuration for edge nodes`,
-			Type:        schema.TypeMap, //GoType: map[string]string
+			Type:        schema.TypeMap, // GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
@@ -303,7 +321,7 @@ func Project() map[string]*schema.Schema {
 
 		"cloud_policy": {
 			Description: `Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
+			Type:        schema.TypeList, // GoType: PolicyConfig
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
@@ -312,7 +330,7 @@ func Project() map[string]*schema.Schema {
 
 		"configuration_lock_policy": {
 			Description: `Configuration lock prevents users to send unintentional misconfigurations`,
-			Type:        schema.TypeList, //GoType: Policy
+			Type:        schema.TypeList, // GoType: Policy
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
@@ -321,7 +339,7 @@ func Project() map[string]*schema.Schema {
 
 		"deployment": {
 			Description: `Deployment template containing different types of policies`,
-			Type:        schema.TypeList, //GoType: Deployment
+			Type:        schema.TypeList, // GoType: Deployment
 			Elem: &schema.Resource{
 				Schema: DeploymentSchema(),
 			},
@@ -336,7 +354,7 @@ func Project() map[string]*schema.Schema {
 
 		"edgeview_policy": {
 			Description: `Edgeview policy on devices of this project`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
+			Type:        schema.TypeList, // GoType: PolicyConfig
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
@@ -351,7 +369,7 @@ func Project() map[string]*schema.Schema {
 
 		"local_operator_console_policy": {
 			Description: `Local operator console policy on devices of this project`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
+			Type:        schema.TypeList, // GoType: PolicyConfig
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
@@ -360,7 +378,7 @@ func Project() map[string]*schema.Schema {
 
 		"module_policy": {
 			Description: `Resource group wide policy for Azure module configuration to be applied to all edge applications`,
-			Type:        schema.TypeList, //GoType: []*PolicyConfig
+			Type:        schema.TypeList, // GoType: []*PolicyConfig
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
@@ -376,7 +394,7 @@ func Project() map[string]*schema.Schema {
 
 		"network_policy": {
 			Description: `Network policy to enforce on all devices of this project`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
+			Type:        schema.TypeList, // GoType: PolicyConfig
 			Elem: &schema.Resource{
 				Schema: Policy(),
 			},
@@ -391,7 +409,7 @@ func Project() map[string]*schema.Schema {
 
 		"revision": {
 			Description: `system defined info`,
-			Type:        schema.TypeList, //GoType: ObjectRevision
+			Type:        schema.TypeList, // GoType: ObjectRevision
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
 			},
@@ -400,7 +418,7 @@ func Project() map[string]*schema.Schema {
 
 		"tag_level_settings": {
 			Description: `tag level setting within a enterprise`,
-			Type:        schema.TypeList, //GoType: TagLevelSettings
+			Type:        schema.TypeList, // GoType: TagLevelSettings
 			Elem: &schema.Resource{
 				Schema: TagLevelSettingsSchema(),
 			},
@@ -409,7 +427,7 @@ func Project() map[string]*schema.Schema {
 
 		"tags": {
 			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
-			Type:        schema.TypeMap, //GoType: map[string]string
+			Type:        schema.TypeMap, // GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
@@ -432,6 +450,7 @@ func Project() map[string]*schema.Schema {
 
 func GetTagPropertyFields() (t []string) {
 	return []string{
+		"app_policy",
 		"attestation_policy",
 		"configuration_lock_policy",
 		"deployment",
