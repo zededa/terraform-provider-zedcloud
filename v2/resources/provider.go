@@ -3,10 +3,10 @@ package resources
 import (
 	"context"
 	"errors"
-	"strings"
-	"net/http"
 	"fmt"
+	"net/http"
 	"os"
+	"strings"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	version   string = "dev"
+	version    string = "dev"
 	defaultURL string = "zedcontrol.local.zededa.net"
 )
 
@@ -52,9 +52,9 @@ func Provider() *schema.Provider {
 			"zedcloud_role":                 RoleDataSource(),
 			"zedcloud_credential":           CredentialDataSource(),
 			"zedcloud_patch_envelope":       PatchEnvelopeDataSource(),
-			"zedcloud_model": 			     HardwareModelDataSource(),
+			"zedcloud_model":                HardwareModelDataSource(),
 			"zedcloud_brand":                HardwareBrandDataSource(),
-			"zedcloud_auth_profile": 		 AuthProfileDataSource(),
+			"zedcloud_auth_profile":         AuthProfileDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":               NodeResource(),
@@ -71,7 +71,7 @@ func Provider() *schema.Provider {
 			"zedcloud_credential":             CredentialResource(),
 			"zedcloud_patch_envelope":         PatchEnvelopeResource(),
 			"zedcloud_patch_reference_update": PatchEnvelopeReferenceUpdate(),
-			"zedcloud_model": 				   HardwareModelResource(),
+			"zedcloud_model":                  HardwareModelResource(),
 			"zedcloud_brand":                  HardwareBrandResource(),
 			"zedcloud_auth_profile":           AuthProfileResource(),
 		},
@@ -103,7 +103,6 @@ func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
 		} else {
 			wrapper.providerVersion = "testbuild"
 		}
-
 	}
 
 	return wrapper
@@ -131,7 +130,11 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		zedCloudURL = strings.TrimPrefix(zedCloudURL, "https://")
 	}
 	transport := httptransport.New(zedCloudURL, "/api", []string{"https"})
-	transport.SetDebug(false)
+	httpSessionDebugEnabled := envVarIsEnabled("TF_HTTP_SESSION_DEBUG")
+	if httpSessionDebugEnabled {
+		transport.SetDebug(true)
+		transport.SetLogger(HTLogger{})
+	}
 	transport.DefaultAuthentication = BearerToken(token)
 	transport.Transport = NewHttpTransportWrapper(transport.Transport)
 

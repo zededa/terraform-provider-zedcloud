@@ -7,6 +7,7 @@ import (
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -74,9 +75,15 @@ func getUserById(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetUser(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] user read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("user read error: %s", err)...)
+		return nil, diags
 	}
 
 	respModel := resp.GetPayload()
@@ -106,9 +113,15 @@ func getUserByName(ctx context.Context, d *schema.ResourceData, m interface{}) (
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetUserByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] user read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("user read error: %s", err)...)
+		return nil, diags
 	}
 
 	respModel := resp.GetPayload()
@@ -128,7 +141,13 @@ func IdentityAccessManagement_CreateUser(ctx context.Context, d *schema.Resource
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementCreateUser(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] user create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("user create error: %s", err)...)
 		return diags
 	}
 
@@ -182,9 +201,15 @@ func IdentityAccessManagement_UpdateUser2(ctx context.Context, d *schema.Resourc
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementUpdateUser2(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] user update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("user update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -234,10 +259,15 @@ func IdentityAccessManagement_DeleteUser(ctx context.Context, d *schema.Resource
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementDeleteUser(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.IdentityAccessManagement.IdentityAccessManagementDeleteUser(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] user delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("user delete error: %s", err)...)
 		return diags
 	}
 

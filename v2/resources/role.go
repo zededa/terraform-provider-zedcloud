@@ -6,6 +6,7 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -74,9 +75,15 @@ func getRoleById(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRole(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] role read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("role read error: %s", err)...)
+		return nil, diags
 	}
 
 	respModel := resp.GetPayload()
@@ -107,9 +114,15 @@ func getRoleByName(ctx context.Context, d *schema.ResourceData, m interface{}) (
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRoleByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] role read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("role read error: %s", err)...)
+		return nil, diags
 	}
 
 	respModel := resp.GetPayload()
@@ -129,9 +142,14 @@ func IdentityAccessManagement_CreateRole(ctx context.Context, d *schema.Resource
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementCreateRole(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] role create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("role create error: %s", err)...)
 		return diags
 	}
 
@@ -185,9 +203,15 @@ func IdentityAccessManagement_UpdateRole(ctx context.Context, d *schema.Resource
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementUpdateRole(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] role update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("role update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -237,10 +261,15 @@ func IdentityAccessManagement_DeleteRole(ctx context.Context, d *schema.Resource
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementDeleteRole(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.IdentityAccessManagement.IdentityAccessManagementDeleteRole(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] role delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("role delete error: %s", err)...)
 		return diags
 	}
 

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -40,9 +41,14 @@ func CreateProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Project.Create(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] project create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("project create error: %s", err)...)
 		return diags
 	}
 
@@ -66,7 +72,7 @@ func CreateProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := GetProject(ctx, d, m); err != nil {
+	if errs := GetProject(ctx, d, m); errs != nil {
 		return append(diags, errs...)
 	}
 
@@ -113,9 +119,14 @@ func readProjectByID(ctx context.Context, d *schema.ResourceData, m interface{})
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Project.GetByID(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] project read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("project read error: %s", err)...)
 		return nil, diags
 	}
 
@@ -142,9 +153,14 @@ func readProjectByName(ctx context.Context, d *schema.ResourceData, m interface{
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Project.GetByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] project read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("project read error: %s", err)...)
 		return nil, diags
 	}
 
@@ -174,9 +190,15 @@ func UpdateProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Project.Update(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] project update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("project update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -224,10 +246,15 @@ func DeleteProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Project.Delete(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.Project.Delete(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] project delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("project delete error: %s", err)...)
 		return diags
 	}
 
