@@ -422,7 +422,7 @@ func Project() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: TagLevelSettingsSchema(),
 			},
-			Required: true,
+			Optional: true,
 		},
 
 		"tags": {
