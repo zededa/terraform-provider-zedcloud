@@ -56,14 +56,23 @@ func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 	// the ac_kind depends on the app_type set in the manifest.
 	// this should be read-only and be computed in the backend but is not, so we have to compute it in the client.
 	if model.Manifest != nil {
+		appType := getAppType(model.Manifest.AppType)
+		model.Manifest.AppType = &appType
+		
+		deploymentType := getDeploymentType(model.Manifest.DeploymentType)
+		model.Manifest.DeploymentType = &deploymentType
+		
 		acKind, err := getAcKind(model.Manifest.AppType)
 		if err != nil {
 			diags = append(diags, diag.FromErr(err)...)
 			return diags
 		}
 		model.Manifest.AcKind = acKind
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: manifest or manifest_file")...)
+		return diags
 	}
-
+			
 	params := config.CreateParams()
 	params.SetBody(model)
 
@@ -345,4 +354,18 @@ func getAcKind(appType *models.AppType) (*string, error) {
 	default:
 		return nil, fmt.Errorf("could not determine ac_kind, unsupported app_type (%s)", *appType)
 	}
+}
+
+func getAppType(appType *models.AppType) models.AppType {
+	if appType == nil || *appType == "" {
+		return models.AppTypeAPPTYPEUNSPECIFIED
+	}
+	return *appType
+}
+
+func getDeploymentType(deploymentType *models.DeploymentType) models.DeploymentType {
+	if deploymentType == nil || *deploymentType == "" {
+		return models.DeploymentTypeDEPLOYMENTTYPEUNSPECIFIED
+	}
+	return *deploymentType
 }
