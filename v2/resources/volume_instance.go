@@ -111,9 +111,15 @@ func readVolumeInstanceByID(ctx context.Context, d *schema.ResourceData, m inter
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.VolumeInstance.GetByID(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] volume instance error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("volume instance read error: %s", err)...)
+		return diags
 	}
 
 	volume := resp.GetPayload()
@@ -144,9 +150,15 @@ func readVolumeInstanceByName(ctx context.Context, d *schema.ResourceData, m int
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.VolumeInstance.GetByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] volume instance error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("volume instance read error: %s", err)...)
+		return diags
 	}
 
 	volume := resp.GetPayload()

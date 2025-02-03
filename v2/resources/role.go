@@ -75,9 +75,15 @@ func getRoleById(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRole(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] role read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("role read error: %s", err)...)
+		return nil, diags
 	}
 
 	respModel := resp.GetPayload()
@@ -108,9 +114,15 @@ func getRoleByName(ctx context.Context, d *schema.ResourceData, m interface{}) (
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRoleByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] role read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("role read error: %s", err)...)
+		return nil, diags
 	}
 
 	respModel := resp.GetPayload()

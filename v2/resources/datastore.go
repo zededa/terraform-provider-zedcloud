@@ -121,9 +121,15 @@ func readDatastoreByID(ctx context.Context, d *schema.ResourceData, m interface{
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Datastore.GetByID(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] datastore read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("datastore read error: %s", err)...)
+		return diags
 	}
 
 	datastore := resp.GetPayload()
@@ -154,9 +160,15 @@ func readDatastoreByName(ctx context.Context, d *schema.ResourceData, m interfac
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Datastore.GetByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] datastore read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("datastore read error: %s", err)...)
+		return diags
 	}
 
 	datastore := resp.GetPayload()

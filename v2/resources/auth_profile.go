@@ -75,9 +75,15 @@ func GetAuthProfileById(ctx context.Context, d *schema.ResourceData, m interface
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetAuthProfile(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] auth profile read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("auth profile read error: %s", err)...)
+		return nil, diags
 	}
 
 	respModel := resp.GetPayload()
@@ -107,9 +113,15 @@ func GetAuthProfileByName(ctx context.Context, d *schema.ResourceData, m interfa
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetAuthProfileByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] auth profile read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("auth profile read error: %s", err)...)
+		return nil, diags
 	}
 
 	respModel := resp.GetPayload()

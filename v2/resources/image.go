@@ -140,10 +140,14 @@ func readImageByID(ctx context.Context, d *schema.ResourceData, m interface{}) (
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Image.GetByID(params, nil)
-
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] image read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("image read error: %s", err)...)
 		return nil, diags
 	}
 
@@ -172,10 +176,14 @@ func readImageByName(ctx context.Context, d *schema.ResourceData, m interface{})
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Image.GetByName(params, nil)
-
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] image read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("image read error: %s", err)...)
 		return nil, diags
 	}
 

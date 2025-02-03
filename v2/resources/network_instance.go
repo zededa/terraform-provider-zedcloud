@@ -112,9 +112,15 @@ func readNetworkInstanceByID(ctx context.Context, d *schema.ResourceData, m inte
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.NetworkInstance.GetByID(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] network instance read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("network instance read error: %s", err)...)
+		return diags
 	}
 
 	networkInstance := resp.GetPayload()
@@ -145,9 +151,15 @@ func readNetworkInstanceByName(ctx context.Context, d *schema.ResourceData, m in
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.NetworkInstance.GetByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] network instance read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("network instance read error: %s", err)...)
+		return diags
 	}
 
 	networkInstance := resp.GetPayload()

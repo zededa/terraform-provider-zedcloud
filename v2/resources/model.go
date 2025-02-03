@@ -67,9 +67,15 @@ func GetHardwareModelById(ctx context.Context, d *schema.ResourceData, m interfa
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.HardwareModel.HardwareModelGetHardwareModel(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] model read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("model read error: %s", err)...)
+		return diags
 	}
 
 	respModel := resp.GetPayload()
@@ -100,9 +106,15 @@ func GetHardwareModelByName(ctx context.Context, d *schema.ResourceData, m inter
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.HardwareModel.HardwareModelGetHardwareModelByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] model read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("model read error: %s", err)...)
+		return diags
 	}
 
 	respModel := resp.GetPayload()

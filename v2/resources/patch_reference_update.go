@@ -85,7 +85,7 @@ func DeletePatchEnvelopeReference(ctx context.Context, d *schema.ResourceData, m
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	_, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params, nil)
+	resp, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params, nil)
 	if err != nil {
 		log.Printf("[TRACE] patch reference update delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
