@@ -9,14 +9,14 @@ layout:
     #   target: "{{ joinFilePath .Target }}/resources/utils/gen"
     #   file_name: "helper_functions.go"
   models:
-#    - name: definition
-#      source: asset:model
-#      target: "{{ joinFilePath .Target .ModelPackage }}/gen"
-#      file_name: "{{ (snakize (pascalize .Name)) }}.go"
-     - name: schema
-       source: "swagger/templates/schema.gtpl"
-       target: "{{ joinFilePath .Target }}/schemas/gen"
-       file_name: "{{ camelize .Name }}.go"
+    - name: definition
+      source: asset:model
+      target: "{{ joinFilePath .Target .ModelPackage }}/gen"
+      file_name: "{{ (snakize (pascalize .Name)) }}.go"
+#    - name: schema
+#      source: "swagger/templates/schema.gtpl"
+#      target: "{{ joinFilePath .Target }}/schemas/gen"
+#      file_name: "{{ camelize .Name }}.go"
     # - name: tf_config
     #   source: "swagger/templates/tf_config.gtpl"
     #   target: "{{ joinFilePath .Target }}/tf_config/gen"

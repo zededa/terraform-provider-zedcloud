@@ -1,9 +1,10 @@
 package resources
 
 import (
+	"github.com/davecgh/go-spew/spew"
 	httptransport "github.com/go-openapi/runtime/client"
-	api_client "github.com/zededa/terraform-provider-zedcloud/client"
-	zschema "github.com/zededa/terraform-provider-zedcloud/schemas"
+	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
+	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -68,10 +69,16 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
-	if(err != nil){
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
-	}
+	if err != nil {
+        log.Printf("[TRACE] {{ pascalize $operationGroup }}.{{ pascalize $operation }} error: %s", spew.Sdump(err))
+        if ds, ok := ZsrvResponderToDiags(err); ok {
+            diags = append(diags, ds...)
+            return diags
+        }
+
+        diags = append(diags, diag.Errorf("{{ pascalize $operationGroup }}.{{ pascalize $operation }} error: %s", err)...)
+        return diags
+    }
 
 	respModel := resp.GetPayload()
 	{{- if stringContains $operation "List" }}
@@ -107,23 +114,35 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
-	if(err != nil){
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
-		return diags
-	}
+	if err != nil {
+        log.Printf("[TRACE] {{ pascalize $operationGroup }}.{{ pascalize $operation }} error: %s", spew.Sdump(err))
+        if ds, ok := ZsrvResponderToDiags(err); ok {
+            diags = append(diags, ds...)
+            return diags
+        }
+
+        diags = append(diags, diag.Errorf("{{ pascalize $operationGroup }}.{{ pascalize $operation }} error: %s", err)...)
+        return diags
+    }
 
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		return diags
+		if diags.HasError() {
+			return diags
+		}
 	}
 
     // the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-    if errs := GetDevice(ctx, d, m); err!=nil {
+    if errs := GetDevice(ctx, d, m); errs != nil {
 		return append(diags, errs...)
     }
 
@@ -153,22 +172,35 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
-	}
+        log.Printf("[TRACE] {{ pascalize $operationGroup }}.{{ pascalize $operation }} error: %s", spew.Sdump(err))
+        if ds, ok := ZsrvResponderToDiags(err); ok {
+            diags = append(diags, ds...)
+            return diags
+        }
+
+        diags = append(diags, diag.Errorf("{{ pascalize $operationGroup }}.{{ pascalize $operation }} error: %s", err)...)
+        return diags
+    }
 
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		return diags
+		if diags.HasError() {
+			return diags
+		}
 	}
 
     // the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-    if errs := GetDevice(ctx, d, m); err!=nil {
+    if errs := GetDevice(ctx, d, m); errs != nil {
 		return append(diags, errs...)
     }
 
@@ -193,12 +225,17 @@ func {{ $operation }}(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.{{ pascalize $operationGroup }}.{{ pascalize $operation }}(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
-		return diags
-	}
+        log.Printf("[TRACE] {{ pascalize $operationGroup }}.{{ pascalize $operation }} error: %s", spew.Sdump(err))
+        if ds, ok := ZsrvResponderToDiags(err); ok {
+            diags = append(diags, ds...)
+            return diags
+        }
+
+        diags = append(diags, diag.Errorf("{{ pascalize $operationGroup }}.{{ pascalize $operation }} error: %s", err)...)
+        return diags
+    }
 
 	d.SetId("")
 	return diags

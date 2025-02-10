@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 SWAGGER_FILE_LIST := zedge_node_service.swagger.json \
+					 zedge_node_cluster_service.swagger.json \
 					 zedge_user_service.swagger.json \
 					 zedge_storage_service.swagger.json \
 					 zedge_job_service.swagger.json \
