@@ -49,12 +49,12 @@ func DeploymentModel(d *schema.ResourceData) *models.Deployment {
 			devicePolicies = append(devicePolicies, m)
 		}
 	}
-	var edgeviewPolicy *models.EdgeviewPolicy // EdgeViewPolicy
+	var edgeviewPolicy *models.EdgeViewPolicy // EdgeViewPolicy
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
 	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
 		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
 		if len(edgeviewPolicyMap) > 0 {
-			edgeviewPolicy = EdgeviewPolicyModelFromMap(edgeviewPolicyMap[0].(map[string]interface{}))
+			edgeviewPolicy = EdgeViewPolicyModelFromMap(edgeviewPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	id, _ := d.Get("id").(string)
@@ -173,12 +173,12 @@ func DeploymentModelFromMap(m map[string]interface{}) *models.Deployment {
 			devicePolicies = append(devicePolicies, m)
 		}
 	}
-	var edgeviewPolicy *models.EdgeviewPolicy // EdgeViewPolicy
+	var edgeviewPolicy *models.EdgeViewPolicy // EdgeViewPolicy
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := m["edgeview_policy"]
 	if edgeviewPolicyIsSet && edgeviewPolicyInterface != nil {
 		edgeviewPolicyMap := edgeviewPolicyInterface.([]interface{})
 		if len(edgeviewPolicyMap) > 0 {
-			edgeviewPolicy = EdgeviewPolicyModelFromMap(edgeviewPolicyMap[0].(map[string]interface{}))
+			edgeviewPolicy = EdgeViewPolicyModelFromMap(edgeviewPolicyMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -260,7 +260,7 @@ func SetDeploymentResourceData(d *schema.ResourceData, m *models.Deployment) {
 	d.Set("cluster_policy", SetClusterInstPolicySubResourceData([]*models.ClusterInstPolicy{m.ClusterPolicy}))
 	d.Set("deployment_tag", m.DeploymentTag)
 	d.Set("device_policies", SetDevicePolicySubResourceData(m.DevicePolicies))
-	d.Set("edgeview_policy", SetEdgeviewPolicySubResourceData([]*models.EdgeviewPolicy{m.EdgeviewPolicy}))
+	d.Set("edgeview_policy", SetEdgeViewPolicySubResourceData([]*models.EdgeViewPolicy{m.EdgeviewPolicy}))
 	d.Set("id", m.ID)
 	d.Set("integration_policy", SetIntegrationPolicySubResourceData([]*models.IntegrationPolicy{m.IntegrationPolicy}))
 	d.Set("name", m.Name)
@@ -279,7 +279,7 @@ func SetDeploymentSubResourceData(m []*models.Deployment) (d []*map[string]inter
 			properties["cluster_policy"] = SetClusterInstPolicySubResourceData([]*models.ClusterInstPolicy{DeploymentModel.ClusterPolicy})
 			properties["deployment_tag"] = DeploymentModel.DeploymentTag
 			properties["device_policies"] = SetDevicePolicySubResourceData(DeploymentModel.DevicePolicies)
-			properties["edgeview_policy"] = SetEdgeviewPolicySubResourceData([]*models.EdgeviewPolicy{DeploymentModel.EdgeviewPolicy})
+			properties["edgeview_policy"] = SetEdgeViewPolicySubResourceData([]*models.EdgeViewPolicy{DeploymentModel.EdgeviewPolicy})
 			properties["id"] = DeploymentModel.ID
 			properties["integration_policy"] = SetIntegrationPolicySubResourceData([]*models.IntegrationPolicy{DeploymentModel.IntegrationPolicy})
 			properties["name"] = DeploymentModel.Name
@@ -294,7 +294,7 @@ func SetDeploymentSubResourceData(m []*models.Deployment) (d []*map[string]inter
 	return
 }
 
-func DeploymentSchema() map[string]*schema.Schema {
+func Deployment() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_inst_policies": {
 			Description: `list of app instance policies`,
@@ -335,7 +335,7 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Description: `edge view policy details`,
 			Type:        schema.TypeList, //GoType: EdgeViewPolicy
 			Elem: &schema.Resource{
-				Schema: EdgeviewPolicy(),
+				Schema: EdgeViewPolicy(),
 			},
 			Optional: true,
 		},
@@ -383,7 +383,7 @@ func DeploymentSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"title": {

@@ -32,7 +32,7 @@ type Deployment struct {
 	DevicePolicies []*DevicePolicy `json:"devicePolicies"`
 
 	// edge view policy details
-	EdgeviewPolicy *EdgeviewPolicy `json:"edgeviewPolicy,omitempty"`
+	EdgeviewPolicy *EdgeViewPolicy `json:"edgeviewPolicy,omitempty"`
 
 	// system generated unique id for an deployment
 	ID string `json:"id,omitempty"`

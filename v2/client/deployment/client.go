@@ -1,4 +1,4 @@
-package project_deployment
+package deployment
 
 import (
 	"github.com/go-openapi/runtime"
@@ -49,29 +49,29 @@ type ClientOption func(*runtime.ClientOperation)
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	CreateProjectDeployment(params *CreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateAccepted, error)
-	DeleteProjectDeploymentAll(params *DeleteAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteAllOK, error)
-	DeleteProjectDeployment(params *DeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteOK, error)
-	GetProjectDeploymentByID(params *GetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetByIDOK, error)
-	GetProjectDeploymentListByID(params *GetListbyIdParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetListbyIdOK, error)
-	UpdateProjectDeployment(params *UpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateOK, error)
+	Create(params *CreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateAccepted, error)
+	DeleteAll(params *DeleteAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteAllOK, error)
+	Delete(params *DeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteOK, error)
+	GetByID(params *GetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetByIDOK, error)
+	GetListByProjectID(params *GetListbyIdParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetListbyIdOK, error)
+	CreateNewVersion(params *CreateNewVersionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNewVersionAccepted, error)
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-CreateProjectDeployment creates resource group
+Create creates resource group
 
 v2 API to create a resource group record.
 */
-func (a *Client) CreateProjectDeployment(params *CreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateAccepted, error) {
+func (a *Client) Create(params *CreateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewCreateParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "ResourceGroup_CreateResourceGroupV2",
+		ID:                 "CreateDeployment",
 		Method:             "POST",
-		PathPattern:        "/v2/projects",
+		PathPattern:        "/v2/projects/id/{projectId}/deployments",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
@@ -99,17 +99,17 @@ func (a *Client) CreateProjectDeployment(params *CreateParams, authInfo runtime.
 }
 
 /*
-DeleteProjectDeploymentAll deletes all deployments in a project
+DeleteAll deletes all deployments in a project
 
 v2 API to delete all deployments in a project by project ID.
 */
-func (a *Client) DeleteProjectDeploymentAll(params *DeleteAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteAllOK, error) {
+func (a *Client) DeleteAll(params *DeleteAllParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteAllOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteAllParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "ResourceGroup_DeleteResourceGroupAllV2",
+		ID:                 "DeleteDeploymentsAllV2",
 		Method:             "DELETE",
 		PathPattern:        "/v2/projects/id/{projectId}/deployments",
 		ProducesMediaTypes: []string{"application/json"},
@@ -139,17 +139,17 @@ func (a *Client) DeleteProjectDeploymentAll(params *DeleteAllParams, authInfo ru
 }
 
 /*
-DeleteProjectDeployment deletes deployment in a project
+Delete deletes deployment in a project
 
 v2 API to delete a specific deployment in a project by project ID and deployment ID.
 */
-func (a *Client) DeleteProjectDeployment(params *DeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteOK, error) {
+func (a *Client) Delete(params *DeleteParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewDeleteParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "ResourceGroup_DeleteResourceGroupV2",
+		ID:                 "DeleteDeploymentV2",
 		Method:             "DELETE",
 		PathPattern:        "/v2/projects/id/{projectId}/deployments/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
@@ -179,17 +179,17 @@ func (a *Client) DeleteProjectDeployment(params *DeleteParams, authInfo runtime.
 }
 
 /*
-GetProjectDeploymentByID gets specific deployment status in a project by project ID and deployment ID
+GetByID gets specific deployment status in a project by project ID and deployment ID
 
 v2 API to get project status by project ID
 */
-func (a *Client) GetProjectDeploymentByID(params *GetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetByIDOK, error) {
+func (a *Client) GetByID(params *GetByIDParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetByIDOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetByIDParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "ResourceGroup_GetDeploymentByIdV2",
+		ID:                 "RGetDeploymentByIdV2",
 		Method:             "GET",
 		PathPattern:        "/v2/projects/id/{projectId}/deployments/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
@@ -219,17 +219,17 @@ func (a *Client) GetProjectDeploymentByID(params *GetByIDParams, authInfo runtim
 }
 
 /*
-GetProjectDeploymentListByID gets deployment list in a project by ID
+GetListByProjectID gets deployment list in a project by ID
 
 v2 API to get deployment list by project ID
 */
-func (a *Client) GetProjectDeploymentListByID(params *GetListbyIdParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetListbyIdOK, error) {
+func (a *Client) GetListByProjectID(params *GetListbyIdParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetListbyIdOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = NewGetListbyIdParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "ResourceGroup_GetDeploymentListbyIdv2",
+		ID:                 "GetDeploymentListbyProjectIdv2",
 		Method:             "GET",
 		PathPattern:        "/v2/projects/id/{projectId}/deployments",
 		ProducesMediaTypes: []string{"application/json"},
@@ -258,25 +258,21 @@ func (a *Client) GetProjectDeploymentListByID(params *GetListbyIdParams, authInf
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
-/*
-UpdateProjectDeployment updates deployment in a project
-
-v2 API to update deployment in a project. The usual pattern to update deployment is to retrieve the record and update with the modified values in a new body to update the deployment record.
-*/
-func (a *Client) UpdateProjectDeployment(params *UpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateOK, error) {
+// CreateNewVersion creates a new version of deployment in a project
+func (a *Client) CreateNewVersion(params *CreateNewVersionParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateNewVersionAccepted, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewUpdateParams()
+		params = NewCreateNewVersionParams()
 	}
 	op := &runtime.ClientOperation{
-		ID:                 "ResourceGroup_UpdateResourceGroupV2",
+		ID:                 "UpdateDeploymentGroupV2",
 		Method:             "PUT",
 		PathPattern:        "/v2/projects/id/{projectId}/deployments/id/{id}",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,
-		Reader:             &UpdateReader{formats: a.formats},
+		Reader:             &CreateNewVersionReader{formats: a.formats},
 		AuthInfo:           authInfo,
 		Context:            params.Context,
 		Client:             params.HTTPClient,
@@ -289,12 +285,12 @@ func (a *Client) UpdateProjectDeployment(params *UpdateParams, authInfo runtime.
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*UpdateOK)
+	success, ok := result.(*CreateNewVersionAccepted)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	unexpectedSuccess := result.(*UpdateDefault)
+	unexpectedSuccess := result.(*CreateNewVersionDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

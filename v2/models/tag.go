@@ -41,8 +41,9 @@ type Tag struct {
 	// Configuration lock prevents users to send unintentional misconfigurations
 	ConfigurationLockPolicy *Policy `json:"configurationLockPolicy,omitempty"`
 
-	// Deployment template containing different types of policies
-	Deployment *Deployment `json:"deployment,omitempty"`
+	// We don't support deployment as part of project resource in terraform.
+	// There is a separate resource for deployment.
+	// Deployment *Deployment `json:"deployment,omitempty"`
 
 	// Detailed description of the resource group.
 	// Max Length: 256
@@ -116,10 +117,6 @@ func (m *Tag) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateConfigurationLockPolicy(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateDeployment(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -241,25 +238,6 @@ func (m *Tag) validateConfigurationLockPolicy(formats strfmt.Registry) error {
 				return ve.ValidateName("configurationLockPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("configurationLockPolicy")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *Tag) validateDeployment(formats strfmt.Registry) error {
-	if swag.IsZero(m.Deployment) { // not required
-		return nil
-	}
-
-	if m.Deployment != nil {
-		if err := m.Deployment.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deployment")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deployment")
 			}
 			return err
 		}
@@ -503,10 +481,6 @@ func (m *Tag) ContextValidate(ctx context.Context, formats strfmt.Registry) erro
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateDeployment(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
 	if err := m.contextValidateEdgeviewPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -610,22 +584,6 @@ func (m *Tag) contextValidateConfigurationLockPolicy(ctx context.Context, format
 				return ve.ValidateName("configurationLockPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("configurationLockPolicy")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (m *Tag) contextValidateDeployment(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Deployment != nil {
-		if err := m.Deployment.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("deployment")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("deployment")
 			}
 			return err
 		}

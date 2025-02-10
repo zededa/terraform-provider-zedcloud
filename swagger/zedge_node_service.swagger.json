@@ -1636,6 +1636,10 @@
                                     "type": "object",
                                     "$ref": "#/definitions/EdgeNodeClusterConfig",
                                     "description": "Edge Node Cluster Configuration"
+                                },
+                                "baseOsForceUpgrade": {
+                                    "type": "boolean",
+                                    "description": "Force upgrade base OS"
                                 }
                             },
                             "description": "Device Configuration request paylod holds the device properties",
@@ -5844,7 +5848,6 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "description": "System defined universally unique Id of the resource group.",
                         "in": "path",
                         "required": true,
                         "type": "string"
@@ -5854,114 +5857,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "User defined name of the resource group, unique across the enterprise. Once resource group is created, name can\u2019t be changed.",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "description": "User defined title of the resource group. Title can be changed at any time.",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
-                                },
-                                "description": {
-                                    "type": "string",
-                                    "description": "Detailed description of the resource group.",
-                                    "maxLength": 256
-                                },
-                                "revision": {
-                                    "$ref": "#/definitions/ObjectRevision",
-                                    "description": "system defined info",
-                                    "readOnly": true
-                                },
-                                "tagLevelSettings": {
-                                    "$ref": "#/definitions/TagLevelSettings",
-                                    "description": "tag level setting within a enterprise"
-                                },
-                                "type": {
-                                    "$ref": "#/definitions/TagType",
-                                    "description": "Resource group type"
-                                },
-                                "attr": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    },
-                                    "description": "Resource group wide configuration for edge nodes",
-                                    "readOnly": true
-                                },
-                                "appPolicy": {
-                                    "$ref": "#/definitions/PolicyConfig",
-                                    "description": "Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group",
-                                    "readOnly": true
-                                },
-                                "cloudPolicy": {
-                                    "$ref": "#/definitions/PolicyConfig",
-                                    "description": "Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications",
-                                    "readOnly": true
-                                },
-                                "modulePolicy": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/PolicyConfig"
-                                    },
-                                    "description": "Resource group wide policy for Azure module configuration to be applied to all edge applications",
-                                    "readOnly": true
-                                },
-                                "numdevices": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "Number of edge nodes in this resource group",
-                                    "readOnly": true
-                                },
-                                "attestationPolicy": {
-                                    "$ref": "#/definitions/PolicyConfig",
-                                    "description": "Attestation policy to enforce on all devices of this project"
-                                },
-                                "networkPolicy": {
-                                    "$ref": "#/definitions/PolicyConfig",
-                                    "description": "Network policy to enforce on all devices of this project"
-                                },
-                                "deployment": {
-                                    "$ref": "#/definitions/Deployment",
-                                    "description": "Deployment template containing different types of policies"
-                                },
-                                "edgeviewPolicy": {
-                                    "$ref": "#/definitions/PolicyConfig",
-                                    "description": "Edgeview policy on devices of this project"
-                                },
-                                "localOperatorConsolePolicy": {
-                                    "$ref": "#/definitions/PolicyConfig",
-                                    "description": "Local operator console policy on devices of this project"
-                                },
-                                "tags": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    },
-                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
-                                    "maxLength": 32,
-                                    "pattern": "^[^<%&?/\\>]+$"
-                                },
-                                "configurationLockPolicy": {
-                                    "$ref": "#/definitions/PolicyConfig",
-                                    "description": "Configuration lock prevents users to send unintentional misconfigurations"
-                                }
-                            },
-                            "description": "Resource group for edge gateway Base OS or for eedge applications.",
-                            "title": "Resource group detail",
-                            "required": [
-                                "name",
-                                "title",
-                                "type"
-                            ]
+                            "$ref": "#/definitions/TagUpdate_HttpRequest"
                         }
                     },
                     {
@@ -6787,19 +6683,11 @@
                     },
                     {
                         "name": "status",
-                        "description": "Resource group status to be matched.\n\n - TAG_STATUS_UNSPECIFIED: Tag Status : UNSPECIFIED\n - TAG_STATUS_ARCHIVE: Tag Status : ARCHIVE\n - TAG_STATUS_ACTIVE: Tag Status : ACTIVE\n - TAG_STATUS_INACTIVE: Tag Status : INACTIVE",
+                        "description": "Resource group status to be matched.",
                         "in": "query",
                         "required": false,
-                        "type": "string",
-                        "enum": [
-                            "TAG_STATUS_UNSPECIFIED",
-                            "TAG_STATUS_ARCHIVE",
-                            "TAG_STATUS_ACTIVE",
-                            "TAG_STATUS_INACTIVE",
-                            "TAG_STATUS_INITIALIZED",
-                            "TAG_STATUS_FAILED"
-                        ],
-                        "default": "TAG_STATUS_UNSPECIFIED"
+                        "type": "integer",
+                        "format": "int32"
                     },
                     {
                         "name": "type",
@@ -6959,19 +6847,11 @@
                     },
                     {
                         "name": "status",
-                        "description": "Resource group status to be matched.\n\n - TAG_STATUS_UNSPECIFIED: Tag Status : UNSPECIFIED\n - TAG_STATUS_ARCHIVE: Tag Status : ARCHIVE\n - TAG_STATUS_ACTIVE: Tag Status : ACTIVE\n - TAG_STATUS_INACTIVE: Tag Status : INACTIVE",
+                        "description": "Resource group status to be matched.",
                         "in": "query",
                         "required": false,
-                        "type": "string",
-                        "enum": [
-                            "TAG_STATUS_UNSPECIFIED",
-                            "TAG_STATUS_ARCHIVE",
-                            "TAG_STATUS_ACTIVE",
-                            "TAG_STATUS_INACTIVE",
-                            "TAG_STATUS_INITIALIZED",
-                            "TAG_STATUS_FAILED"
-                        ],
-                        "default": "TAG_STATUS_UNSPECIFIED"
+                        "type": "integer",
+                        "format": "int32"
                     },
                     {
                         "name": "type",
@@ -9823,6 +9703,9 @@
                 },
                 "internalIP": {
                     "type": "string"
+                },
+                "conditions": {
+                    "type": "string"
                 }
             }
         },
@@ -10698,6 +10581,10 @@
                     "type": "object",
                     "$ref": "#/definitions/EdgeNodeClusterConfig",
                     "description": "Edge Node Cluster Configuration"
+                },
+                "baseOsForceUpgrade": {
+                    "type": "boolean",
+                    "description": "Force upgrade base OS"
                 }
             },
             "description": "Device Configuration request paylod holds the device properties",
@@ -11785,7 +11672,7 @@
                     "$ref": "#/definitions/dhcpIpRange",
                     "description": "Range of IP addresses to be used for DHCP"
                 },
-                "ntpservers": {
+                "ntpServers": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/NtpServer"
@@ -12433,6 +12320,16 @@
                     "description": "Traffic access control rules for this interface. Applicable only when \"direct attach\" flag is false."
                 }
             }
+        },
+        "InterfaceOrdering": {
+            "type": "string",
+            "enum": [
+                "INTERFACE_ORDERING_DISABLED",
+                "INTERFACE_ORDERING_ENABLED"
+            ],
+            "default": "INTERFACE_ORDERING_DISABLED",
+            "description": "- INTERFACE_ORDERING_DISABLED: Default value. interface order will not be sent to eve\n - INTERFACE_ORDERING_ENABLED: interface ordering is enabled. interface order will be sent to eve according to app template",
+            "title": "this enum is used for enable and disable the interface ordering for app instances\nif the value of it set to INTERFACE_ORDERING_ENABLED then the interface ordering is\nsent to eve and therfaces will be mapped in same order during the deployment of app instances"
         },
         "IoAddresses": {
             "type": "object",
@@ -15195,6 +15092,10 @@
                 "flowLogTransmission": {
                     "$ref": "#/definitions/NetworkInstanceFlowLogTransmission",
                     "description": "Flow log transmission setting for the network instances"
+                },
+                "interfaceOrdering": {
+                    "$ref": "#/definitions/InterfaceOrdering",
+                    "description": "interface ordering for app instances"
                 }
             },
             "description": "TagLevelSettings defines settings at a specific tag level within a enterprise.\nIt includes configurations that control certain behaviors or features,\nsuch as the transmission of flow logs for monitoring and analysis purposes."
@@ -15290,6 +15191,123 @@
             "default": "TAG_TYPE_UNSPECIFIED",
             "description": "- TAG_TYPE_UNSPECIFIED: Unspecified\n - TAG_TYPE_GENERIC: Generic resource group\n - TAG_TYPE_PROJECT: Project resource group\n - TAG_TYPE_AZURE: Project resource group\n - TAG_TYPE_DEPLOYMENT: Project with deployment",
             "title": "Resource group types"
+        },
+        "TagUpdate_HttpRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the resource group.",
+                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the resource group, unique across the enterprise. Once resource group is created, name can\u2019t be changed.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the resource group. Title can be changed at any time.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the resource group.",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info",
+                    "readOnly": true
+                },
+                "tagLevelSettings": {
+                    "$ref": "#/definitions/TagLevelSettings",
+                    "description": "tag level setting within a enterprise"
+                },
+                "type": {
+                    "$ref": "#/definitions/TagType",
+                    "description": "Resource group type"
+                },
+                "attr": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Resource group wide configuration for edge nodes",
+                    "readOnly": true
+                },
+                "appPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group",
+                    "readOnly": true
+                },
+                "cloudPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications",
+                    "readOnly": true
+                },
+                "modulePolicy": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PolicyConfig"
+                    },
+                    "description": "Resource group wide policy for Azure module configuration to be applied to all edge applications",
+                    "readOnly": true
+                },
+                "numdevices": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Number of edge nodes in this resource group",
+                    "readOnly": true
+                },
+                "attestationPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Attestation policy to enforce on all devices of this project"
+                },
+                "networkPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Network policy to enforce on all devices of this project"
+                },
+                "deployment": {
+                    "$ref": "#/definitions/Deployment",
+                    "description": "Deployment template containing different types of policies"
+                },
+                "edgeviewPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Edgeview policy on devices of this project"
+                },
+                "localOperatorConsolePolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Local operator console policy on devices of this project"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "configurationLockPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Configuration lock prevents users to send unintentional misconfigurations"
+                }
+            },
+            "description": "Resource group for edge gateway Base OS or for eedge applications.",
+            "title": "Resource group detail",
+            "required": [
+                "id",
+                "name",
+                "title",
+                "type"
+            ]
         },
         "Tags": {
             "type": "object",

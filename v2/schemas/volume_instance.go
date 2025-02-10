@@ -32,7 +32,7 @@ func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstance {
 	// 		purge = ZedCloudOpsCmdModelFromMap(purgeMap[0].(map[string]interface{}))
 	// 	}
 	// }
-	sizeBytes, _ := d.Get("size_bytes").(uint64)
+	sizeBytes, _ := d.Get("size_bytes").(string)
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := d.GetOk("tags")
 	if tagsIsSet {
@@ -102,7 +102,7 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstance
 	// 	}
 	// }
 	//
-	sizeBytes, _ := m["size_bytes"].(uint64)
+	sizeBytes, _ := m["size_bytes"].(string)
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := m["tags"]
 	if tagsIsSet {
