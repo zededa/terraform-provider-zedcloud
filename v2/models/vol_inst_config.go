@@ -35,6 +35,9 @@ type VolumeInstance struct {
 	// id of the device on which volume instance is created
 	DeviceID string `json:"deviceId,omitempty"`
 
+	// edge node cluster associated with the volume instance
+	EdgeNodeCluster *VolInstEdgeNodeCluster `json:"edgeNodeCluster,omitempty"`
+	
 	// System defined universally unique Id of the volume instance.
 	// Read Only: true
 	// Pattern: [a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}
@@ -96,6 +99,10 @@ func (m *VolumeInstance) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateEdgeNodeCluster(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateID(formats); err != nil {
 		res = append(res, err)
 	}
@@ -152,6 +159,25 @@ func (m *VolumeInstance) validateDescription(formats strfmt.Registry) error {
 
 	if err := validate.MaxLength("description", "body", m.Description, 256); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *VolumeInstance) validateEdgeNodeCluster(formats strfmt.Registry) error {
+	if swag.IsZero(m.EdgeNodeCluster) { // not required
+		return nil
+	}
+
+	if m.EdgeNodeCluster != nil {
+		if err := m.EdgeNodeCluster.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeNodeCluster")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeNodeCluster")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -274,6 +300,10 @@ func (m *VolumeInstance) ContextValidate(ctx context.Context, formats strfmt.Reg
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateEdgeNodeCluster(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateID(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -304,6 +334,27 @@ func (m *VolumeInstance) contextValidateAccessmode(ctx context.Context, formats 
 				return ve.ValidateName("accessmode")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("accessmode")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *VolumeInstance) contextValidateEdgeNodeCluster(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.EdgeNodeCluster != nil {
+
+		if swag.IsZero(m.EdgeNodeCluster) { // not required
+			return nil
+		}
+
+		if err := m.EdgeNodeCluster.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeNodeCluster")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeNodeCluster")
 			}
 			return err
 		}
