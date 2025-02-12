@@ -14,12 +14,12 @@ func VolumeInstPolicyModel(d *schema.ResourceData) *models.VolumeInstPolicy {
 			metaData = PolicyCommonModelFromMap(metaDataMap[0].(map[string]interface{}))
 		}
 	}
-	var volInstConfig *models.VolumeInstance // VolumeInstConfig
+	var volInstConfig *models.VolumeInstConfig // VolumeInstConfig
 	volInstConfigInterface, volInstConfigIsSet := d.GetOk("vol_inst_config")
 	if volInstConfigIsSet && volInstConfigInterface != nil {
 		volInstConfigMap := volInstConfigInterface.([]interface{})
 		if len(volInstConfigMap) > 0 {
-			volInstConfig = VolumeInstanceModelFromMap(volInstConfigMap[0].(map[string]interface{}))
+			volInstConfig = VolumeInstConfigModelFromMap(volInstConfigMap[0].(map[string]interface{}))
 		}
 	}
 	return &models.VolumeInstPolicy{
@@ -38,12 +38,12 @@ func VolumeInstPolicyModelFromMap(m map[string]interface{}) *models.VolumeInstPo
 		}
 	}
 	//
-	var volInstConfig *models.VolumeInstance // VolumeInstConfig
+	var volInstConfig *models.VolumeInstConfig // VolumeInstConfig
 	volInstConfigInterface, volInstConfigIsSet := m["vol_inst_config"]
 	if volInstConfigIsSet && volInstConfigInterface != nil {
 		volInstConfigMap := volInstConfigInterface.([]interface{})
 		if len(volInstConfigMap) > 0 {
-			volInstConfig = VolumeInstanceModelFromMap(volInstConfigMap[0].(map[string]interface{}))
+			volInstConfig = VolumeInstConfigModelFromMap(volInstConfigMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -55,7 +55,7 @@ func VolumeInstPolicyModelFromMap(m map[string]interface{}) *models.VolumeInstPo
 
 func SetVolumeInstPolicyResourceData(d *schema.ResourceData, m *models.VolumeInstPolicy) {
 	d.Set("meta_data", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.MetaData}))
-	d.Set("vol_inst_config", SetVolumeInstanceSubResourceData([]*models.VolumeInstance{m.VolInstConfig}))
+	d.Set("vol_inst_config", SetVolumeInstConfigSubResourceData([]*models.VolumeInstConfig{m.VolInstConfig}))
 }
 
 func SetVolumeInstPolicySubResourceData(m []*models.VolumeInstPolicy) (d []*map[string]interface{}) {
@@ -63,7 +63,7 @@ func SetVolumeInstPolicySubResourceData(m []*models.VolumeInstPolicy) (d []*map[
 		if VolumeInstPolicyModel != nil {
 			properties := make(map[string]interface{})
 			properties["meta_data"] = SetPolicyCommonSubResourceData([]*models.PolicyCommon{VolumeInstPolicyModel.MetaData})
-			properties["vol_inst_config"] = SetVolumeInstanceSubResourceData([]*models.VolumeInstance{VolumeInstPolicyModel.VolInstConfig})
+			properties["vol_inst_config"] = SetVolumeInstConfigSubResourceData([]*models.VolumeInstConfig{VolumeInstPolicyModel.VolInstConfig})
 			d = append(d, &properties)
 		}
 	}
@@ -85,7 +85,7 @@ func VolumeInstPolicySchema() map[string]*schema.Schema {
 			Description: `volume instance config details`,
 			Type:        schema.TypeList, //GoType: VolumeInstConfig
 			Elem: &schema.Resource{
-				Schema: VolumeInstance(),
+				Schema: VolumeInstConfig(),
 			},
 			Optional: true,
 		},

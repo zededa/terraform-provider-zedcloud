@@ -36,6 +36,12 @@ func (o *GetByIDReader) ReadResponse(response runtime.ClientResponse, consumer r
 			return nil, err
 		}
 		return nil, result
+	case 404:
+		result := NewGetByIDNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 403:
 		result := NewGetByIDForbidden()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -265,6 +271,76 @@ func (o *GetByIDForbidden) GetPayload() *models.ZsrvResponse {
 }
 
 func (o *GetByIDForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewGetByIDForbidden creates a GetByIDForbidden with default headers values
+func NewGetByIDNotFound() *GetByIDNotFound {
+	return &GetByIDNotFound{}
+}
+
+/*
+GetByIDForbidden describes a response with status code 403, with default header values.
+
+Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.
+*/
+type GetByIDNotFound struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this resource group get deployment by Id v2 forbidden response has a 2xx status code
+func (o *GetByIDNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this resource group get deployment by Id v2 forbidden response has a 3xx status code
+func (o *GetByIDNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this resource group get deployment by Id v2 forbidden response has a 4xx status code
+func (o *GetByIDNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this resource group get deployment by Id v2 forbidden response has a 5xx status code
+func (o *GetByIDNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this resource group get deployment by Id v2 forbidden response a status code equal to that given
+func (o *GetByIDNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the resource group get deployment by Id v2 forbidden response
+func (o *GetByIDNotFound) Code() int {
+	return 404
+}
+
+func (o *GetByIDNotFound) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /v2/projects/id/{projectId}/deployments/id/{id}][%d] projectDeploymentGetByIdForbidden %s", 404, payload)
+}
+
+func (o *GetByIDNotFound) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[GET /v2/projects/id/{projectId}/deployments/id/{id}][%d] projectDeploymentGetByIdForbidden %s", 404, payload)
+}
+
+func (o *GetByIDNotFound) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *GetByIDNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 

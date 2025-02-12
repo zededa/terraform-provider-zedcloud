@@ -58,9 +58,6 @@ type VolumeInstance struct {
 	// Pattern: [a-zA-Z0-9][a-zA-Z0-9_.-]+
 	Name string `json:"name,omitempty"`
 
-	// flag to indicate whether volume instance is created for patch envelope external artifact
-	Patchartifactvolume string `json:"patchartifactvolume,omitempty"`
-
 	// id of the project in which the volume instance is created
 	ProjectID string `json:"projectId,omitempty"`
 
@@ -302,11 +299,6 @@ func (m *VolumeInstance) ContextValidate(ctx context.Context, formats strfmt.Reg
 func (m *VolumeInstance) contextValidateAccessmode(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Accessmode != nil {
-
-		if swag.IsZero(m.Accessmode) { // not required
-			return nil
-		}
-
 		if err := m.Accessmode.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("accessmode")
@@ -332,11 +324,6 @@ func (m *VolumeInstance) contextValidateID(ctx context.Context, formats strfmt.R
 func (m *VolumeInstance) contextValidatePurge(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Purge != nil {
-
-		if swag.IsZero(m.Purge) { // not required
-			return nil
-		}
-
 		if err := m.Purge.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("purge")
@@ -353,11 +340,6 @@ func (m *VolumeInstance) contextValidatePurge(ctx context.Context, formats strfm
 func (m *VolumeInstance) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
-
-		if swag.IsZero(m.Revision) { // not required
-			return nil
-		}
-
 		if err := m.Revision.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("revision")
@@ -374,11 +356,6 @@ func (m *VolumeInstance) contextValidateRevision(ctx context.Context, formats st
 func (m *VolumeInstance) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Type != nil {
-
-		if swag.IsZero(m.Type) { // not required
-			return nil
-		}
-
 		if err := m.Type.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("type")

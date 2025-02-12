@@ -22,7 +22,6 @@ func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstance {
 	label, _ := d.Get("label").(string)
 	multiattach, _ := d.Get("multiattach").(bool)
 	name, _ := d.Get("name").(string)
-	patchartifactvolume, _ := d.Get("patchartifactvolume").(string)
 	projectID, _ := d.Get("project_id").(string)
 	// var purge *models.ZedCloudOpsCmd // ZedCloudOpsCmd
 	// purgeInterface, purgeIsSet := d.GetOk("purge")
@@ -53,20 +52,19 @@ func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstance {
 		typeVar = models.NewVolumeInstanceType(models.VolumeInstanceType(typeModel))
 	}
 	return &models.VolumeInstance{
-		Accessmode:          accessmode,
-		Cleartext:           cleartext,
-		ContentTreeID:       contentTreeID,
-		Description:         description,
-		DeviceID:            deviceID,
-		ID:                  id,
-		Image:               image,
-		Implicit:            implicit,
-		Label:               label,
-		Multiattach:         multiattach,
-		Name:                name,
-		Patchartifactvolume: patchartifactvolume,
-		ProjectID:           projectID,
-		// Purge:               purge,
+		Accessmode:    accessmode,
+		Cleartext:     cleartext,
+		ContentTreeID: contentTreeID,
+		Description:   description,
+		DeviceID:      deviceID,
+		ID:            id,
+		Image:         image,
+		Implicit:      implicit,
+		Label:         label,
+		Multiattach:   multiattach,
+		Name:          name,
+		ProjectID:     projectID,
+		// Purge:         purge,
 		SizeBytes: sizeBytes,
 		Tags:      tags,
 		Title:     title,
@@ -81,18 +79,17 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstance
 		accessmodeModel := accessmodeInterface.(string)
 		accessmode = models.NewVolumeInstanceAccessMode(models.VolumeInstanceAccessMode(accessmodeModel))
 	}
-	cleartext, _ := m["cleartext"].(bool)
-	contentTreeID, _ := m["content_tree_id"].(string)
-	description, _ := m["description"].(string)
-	deviceID, _ := m["device_id"].(string)
-	id, _ := m["id"].(string)
-	image, _ := m["image"].(string)
-	implicit, _ := m["implicit"].(bool)
-	label, _ := m["label"].(string)
-	multiattach, _ := m["multiattach"].(bool)
-	name, _ := m["name"].(string)
-	patchartifactvolume, _ := m["patchartifactvolume"].(string)
-	projectID, _ := m["project_id"].(string)
+	cleartext := m["cleartext"].(bool)
+	contentTreeID := m["content_tree_id"].(string)
+	description := m["description"].(string)
+	deviceID := m["device_id"].(string)
+	id := m["id"].(string)
+	image := m["image"].(string)
+	implicit := m["implicit"].(bool)
+	label := m["label"].(string)
+	multiattach := m["multiattach"].(bool)
+	name := m["name"].(string)
+	projectID := m["project_id"].(string)
 	// var purge *models.ZedCloudOpsCmd // ZedCloudOpsCmd
 	// purgeInterface, purgeIsSet := m["purge"]
 	// if purgeIsSet && purgeInterface != nil {
@@ -102,7 +99,7 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstance
 	// 	}
 	// }
 	//
-	sizeBytes, _ := m["size_bytes"].(string)
+	sizeBytes := m["size_bytes"].(string)
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := m["tags"]
 	if tagsIsSet {
@@ -115,7 +112,7 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstance
 		}
 	}
 
-	title, _ := m["title"].(string)
+	title := m["title"].(string)
 	var typeVar *models.VolumeInstanceType // VolumeInstanceType
 	typeInterface, typeIsSet := m["type"]
 	if typeIsSet {
@@ -123,20 +120,19 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstance
 		typeVar = models.NewVolumeInstanceType(models.VolumeInstanceType(typeModel))
 	}
 	return &models.VolumeInstance{
-		Accessmode:          accessmode,
-		Cleartext:           cleartext,
-		ContentTreeID:       contentTreeID,
-		Description:         description,
-		DeviceID:            deviceID,
-		ID:                  id,
-		Image:               image,
-		Implicit:            implicit,
-		Label:               label,
-		Multiattach:         multiattach,
-		Name:                name,
-		Patchartifactvolume: patchartifactvolume,
-		ProjectID:           projectID,
-		// Purge:               purge,
+		Accessmode:    accessmode,
+		Cleartext:     cleartext,
+		ContentTreeID: contentTreeID,
+		Description:   description,
+		DeviceID:      deviceID,
+		ID:            id,
+		Image:         image,
+		Implicit:      implicit,
+		Label:         label,
+		Multiattach:   multiattach,
+		Name:          name,
+		ProjectID:     projectID,
+		// Purge:         purge,
 		SizeBytes: sizeBytes,
 		Tags:      tags,
 		Title:     title,
@@ -156,7 +152,6 @@ func SetVolumeInstanceResourceData(d *schema.ResourceData, m *models.VolumeInsta
 	d.Set("label", m.Label)
 	d.Set("multiattach", m.Multiattach)
 	d.Set("name", m.Name)
-	d.Set("patchartifactvolume", m.Patchartifactvolume)
 	d.Set("project_id", m.ProjectID)
 	// d.Set("purge", SetZedCloudOpsCmdSubResourceData([]*models.ZedCloudOpsCmd{m.Purge}))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
@@ -181,7 +176,6 @@ func SetVolumeInstanceSubResourceData(m []*models.VolumeInstance) (d []*map[stri
 			properties["label"] = VolInstConfigModel.Label
 			properties["multiattach"] = VolInstConfigModel.Multiattach
 			properties["name"] = VolInstConfigModel.Name
-			properties["patchartifactvolume"] = VolInstConfigModel.Patchartifactvolume
 			properties["project_id"] = VolInstConfigModel.ProjectID
 			// properties["purge"] = SetZedCloudOpsCmdSubResourceData([]*models.ZedCloudOpsCmd{VolInstConfigModel.Purge})
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{VolInstConfigModel.Revision})
@@ -213,6 +207,7 @@ func VolumeInstance() map[string]*schema.Schema {
 			Description: `content tree ID`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"description": {
@@ -224,7 +219,7 @@ func VolumeInstance() map[string]*schema.Schema {
 		"device_id": {
 			Description: `id of the device on which volume instance is created`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"id": {
@@ -237,6 +232,7 @@ func VolumeInstance() map[string]*schema.Schema {
 			Description: `name of the image`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"implicit": {
@@ -260,19 +256,15 @@ func VolumeInstance() map[string]*schema.Schema {
 		"name": {
 			Description: `User defined name of the volume instance, unique across the enterprise. Once object is created, name can’t be changed.`,
 			Type:        schema.TypeString,
-			Optional:    true,
-		},
-
-		"patchartifactvolume": {
-			Description: `flag to indicate whether volume instance is created for patch envelope external artifact`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
+			ForceNew:    true,
 		},
 
 		"project_id": {
 			Description: `id of the project in which the volume instance is created`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		// "purge": {
@@ -295,7 +287,7 @@ func VolumeInstance() map[string]*schema.Schema {
 
 		"size_bytes": {
 			Description: `size of volume`,
-			Type:        schema.TypeInt,
+			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
@@ -311,13 +303,13 @@ func VolumeInstance() map[string]*schema.Schema {
 		"title": {
 			Description: `User defined title of the volume instance. Title can be changed at any time.`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"type": {
 			Description: `type of Volume Instance`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }
@@ -336,7 +328,6 @@ func GetVolInstConfigPropertyFields() (t []string) {
 		"label",
 		"multiattach",
 		"name",
-		"patchartifactvolume",
 		"project_id",
 		"purge",
 		"size_bytes",
