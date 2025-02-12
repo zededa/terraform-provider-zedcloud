@@ -27,7 +27,7 @@ func DeploymentResource() *schema.Resource {
 	}
 }
 
-func ProjectDeploymentDataSource() *schema.Resource {
+func DeploymentDataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: GetDeploymentByID,
 		Schema:      zschema.Deployment(),
