@@ -21,6 +21,9 @@ func DeploymentResource() *schema.Resource {
 		ReadContext:   GetDeploymentByID,
 		UpdateContext: UpdateDeployment,
 		Schema:        zschema.Deployment(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 
