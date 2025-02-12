@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -46,9 +47,14 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Node.Create(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge node create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge node create error: %s", err)...)
 		return diags
 	}
 
@@ -134,9 +140,15 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Node.Update(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge node update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge node update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -203,10 +215,15 @@ func DeleteNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Node.Delete(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.Node.Delete(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge node delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge node delete error: %s", err)...)
 		return diags
 	}
 
@@ -490,9 +507,15 @@ func readNodeByID(ctx context.Context, d *schema.ResourceData, m interface{}) (*
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Node.GetByID(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge node read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("edge node read error: %s", err)...)
+		return nil, diags
 	}
 
 	edgeNode := resp.GetPayload()
@@ -520,9 +543,15 @@ func readNodeByName(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Node.GetByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return nil, append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge node read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return nil, diags
+		}
+
+		diags = append(diags, diag.Errorf("edge node read error: %s", err)...)
+		return nil, diags
 	}
 
 	edgeNode := resp.GetPayload()

@@ -293,7 +293,7 @@ func AppConfig() map[string]*schema.Schema {
 
 		"interfaces": {
 			Description: `application interfaces`,
-			Type:        schema.TypeList, //GoType: []*AppInterface
+			Type:        schema.TypeList, // GoType: []*AppInterface
 			Elem: &schema.Resource{
 				Schema: AppInterface(),
 			},
@@ -303,11 +303,11 @@ func AppConfig() map[string]*schema.Schema {
 
 		"manifest_json": {
 			Description: `Manifest data`,
-			Type:        schema.TypeList, //GoType: VMManifest
+			Type:        schema.TypeList, // GoType: VMManifest
 			Elem: &schema.Resource{
 				Schema: VMManifest(),
 			},
-			Required: true,
+			Optional: true,
 		},
 
 		"memory": {
@@ -354,7 +354,7 @@ func AppConfig() map[string]*schema.Schema {
 
 		"parent_detail": {
 			Description: `origin and parent related details`,
-			Type:        schema.TypeList, //GoType: ObjectParentDetail
+			Type:        schema.TypeList, // GoType: ObjectParentDetail
 			Elem: &schema.Resource{
 				Schema: ObjectParentDetail(),
 			},
@@ -375,7 +375,7 @@ func AppConfig() map[string]*schema.Schema {
 
 		"tags": {
 			Description: `Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.`,
-			Type:        schema.TypeMap, //GoType: map[string]string
+			Type:        schema.TypeMap, // GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},

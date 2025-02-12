@@ -52,11 +52,11 @@ Required:
 
 Optional:
 
-- `app_type` (String) bundle type, eg: vm, container, module
+- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE".
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--manifest--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--manifest--container_detail))
 - `cpu_pinning_enabled` (Boolean) Enable CpuPinning
-- `deployment_type` (String) type of deployment for the app, eg: azure, k3s, standalone
+- `deployment_type` (String) Deployment type for the app. The correct values are: "DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE","DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS","DEPLOYMENT_TYPE_VMWARE_VCE".
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--manifest--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field

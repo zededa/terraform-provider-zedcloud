@@ -56,6 +56,7 @@ func Provider() *schema.Provider {
 			"zedcloud_brand":                HardwareBrandDataSource(),
 			"zedcloud_auth_profile":         AuthProfileDataSource(),
 			"zedcloud_deployment":           DeploymentDataSource(),
+			"zedcloud_edgenode_cluster":     ClusterDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":               NodeResource(),
@@ -76,6 +77,7 @@ func Provider() *schema.Provider {
 			"zedcloud_model":                  HardwareModelResource(),
 			"zedcloud_brand":                  HardwareBrandResource(),
 			"zedcloud_auth_profile":           AuthProfileResource(),
+			"zedcloud_edgenode_cluster":       ClusterResource(),
 		},
 	}
 }
@@ -105,7 +107,6 @@ func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
 		} else {
 			wrapper.providerVersion = "testbuild"
 		}
-
 	}
 
 	return wrapper
@@ -133,7 +134,11 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		zedCloudURL = strings.TrimPrefix(zedCloudURL, "https://")
 	}
 	transport := httptransport.New(zedCloudURL, "/api", []string{"https"})
-	transport.SetDebug(false)
+	httpSessionDebugEnabled := envVarIsEnabled("TF_HTTP_SESSION_DEBUG")
+	if httpSessionDebugEnabled {
+		transport.SetDebug(true)
+		transport.SetLogger(HTLogger{})
+	}
 	transport.DefaultAuthentication = BearerToken(token)
 	transport.Transport = NewHttpTransportWrapper(transport.Transport)
 

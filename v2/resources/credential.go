@@ -6,6 +6,7 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -39,9 +40,14 @@ func IdentityAccessManagement_CreateCredential(ctx context.Context, d *schema.Re
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementCreateCredential(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] credential create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("credential create error: %s", err)...)
 		return diags
 	}
 
@@ -82,9 +88,15 @@ func IdentityAccessManagement_UpdateCredential(ctx context.Context, d *schema.Re
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementUpdateCredential(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] credential update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("credential update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()

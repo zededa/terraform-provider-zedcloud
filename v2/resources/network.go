@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -43,9 +44,14 @@ func CreateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Network.Create(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] network create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("network create error: %s", err)...)
 		return diags
 	}
 
@@ -105,9 +111,15 @@ func readNetworkByID(ctx context.Context, d *schema.ResourceData, m interface{})
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Network.GetByID(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] network read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("network read error: %s", err)...)
+		return diags
 	}
 
 	network := resp.GetPayload()
@@ -138,9 +150,15 @@ func readNetworkByName(ctx context.Context, d *schema.ResourceData, m interface{
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Network.GetByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] network read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("network read error: %s", err)...)
+		return diags
 	}
 
 	network := resp.GetPayload()
@@ -173,9 +191,15 @@ func UpdateNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Network.Update(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] network update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("network update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -223,10 +247,15 @@ func DeleteNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Network.DeleteNetwork(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.Network.DeleteNetwork(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] network delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("network delete error: %s", err)...)
 		return diags
 	}
 
