@@ -18,6 +18,7 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/network"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/network_instance"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/node"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/patch_envelope"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/volume_instance"
@@ -80,6 +81,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.IdentityAccessManagement = identity_access_management.New(transport, formats)
 	cli.PatchEnvelope = patch_envelope.New(transport, formats)
 	cli.Deployment = deployment.New(transport, formats)
+	cli.Cluster = cluster.New(transport, formats)
 	return cli
 }
 
@@ -151,12 +153,15 @@ type ZedcloudAPI struct {
 	PatchEnvelope patch_envelope.ClientService
 
 	Deployment deployment.ClientService
+	
+	Cluster cluster.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
 func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 	c.Node.SetTransport(transport)
+	c.Cluster.SetTransport(transport)
 	c.HardwareModel.SetTransport(transport)
 	c.Network.SetTransport(transport)
 	c.NetworkInstance.SetTransport(transport)

@@ -474,3 +474,83 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
     "tag-key-1" = "tag-value-1"
   }
 }
+
+
+
+# The below are the configurations for the edge-node clustering deployment.
+# The configurations are commented as they require some real devices to run on.
+
+# resource "zedcloud_edgenode" "test_tf_provider_cluster_node_1" {
+#   # required
+#   name = "test_tf_provider_cluster_node_1"
+#   model_id = zedcloud_model.test_tf_provider.id
+#   project_id = data.zedcloud_project.test_tf_provider.id
+#   title = "test_tf_provider-create_edgenode-title"
+#
+#   admin_state = "ADMIN_STATE_REGISTERED"
+#   description = "description"
+#   generate_soft_serial = true
+#   depends_on = [
+#     zedcloud_model.test_tf_provider,
+#     data.zedcloud_project.test_tf_provider
+#   ]
+# }
+#
+# resource "zedcloud_edgenode" "test_tf_provider_cluster_node_2" {
+#   # required
+#   name = "test_tf_provider_cluster_node_2"
+#   model_id = zedcloud_model.test_tf_provider.id
+#   project_id = data.zedcloud_project.test_tf_provider.id
+#   title = "test_tf_provider-create_edgenode-title"
+#
+#   admin_state = "ADMIN_STATE_REGISTERED"
+#   description = "description"
+#   generate_soft_serial = true
+#   depends_on = [
+#     zedcloud_model.test_tf_provider,
+#     data.zedcloud_project.test_tf_provider
+#   ]
+# }
+#
+# resource "zedcloud_edgenode" "test_tf_provider_cluster_node_3" {
+#   # required
+#   name = "test_tf_provider_cluster_node_3"
+#   model_id = zedcloud_model.test_tf_provider.id
+#   project_id = data.zedcloud_project.test_tf_provider.id
+#   title = "test_tf_provider-create_edgenode-title"
+#
+#   admin_state = "ADMIN_STATE_REGISTERED"
+#   description = "description"
+#   generate_soft_serial = true
+#   depends_on = [
+#     zedcloud_model.test_tf_provider,
+#     data.zedcloud_project.test_tf_provider
+#   ]
+# }
+#
+# resource "zedcloud_edgenode_cluster" "test_tf_provider" {
+#   project_id = data.zedcloud_project.test_tf_provider.id
+#   name = "test_tf_provider_cluster"
+#   title = "test_tf_provider_cluster"
+#   description = "description"
+#   nodes {
+#     id = zedcloud_edgenode.test_tf_provider_cluster_node_1.id
+#     cluster_interface = "ethernet0"
+#     node_type = "EDGE_NODE_CLUSTER_NODE_TYPE_SERVER"
+#   }
+#   nodes {
+#     id = zedcloud_edgenode.test_tf_provider_cluster_node_2.id
+#     cluster_interface = "ethernet0"
+#     node_type = "EDGE_NODE_CLUSTER_NODE_TYPE_SERVER"
+#   }
+#   nodes {
+#     id = zedcloud_edgenode.test_tf_provider_cluster_node_3.id
+#     cluster_interface = "ethernet0"
+#     node_type = "EDGE_NODE_CLUSTER_NODE_TYPE_SERVER"
+#   }
+#   depends_on = [
+#     zedcloud_edgenode.test_tf_provider_cluster_node_1,
+#     zedcloud_edgenode.test_tf_provider_cluster_node_2,
+#     zedcloud_edgenode.test_tf_provider_cluster_node_3
+#   ]
+# }

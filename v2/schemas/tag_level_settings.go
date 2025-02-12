@@ -16,7 +16,9 @@ func TagLevelSettingsModel(d *schema.ResourceData) *models.TagLevelSettings {
 	interfaceOrderingInterface, interfaceOrderingIsSet := d.GetOk("interface_ordering")
 	if interfaceOrderingIsSet {
 		interfaceOrderingModel := interfaceOrderingInterface.(string)
-		interfaceOrdering = models.NewInterfaceOrdering(models.InterfaceOrdering(interfaceOrderingModel))
+		if len(interfaceOrderingModel) > 0 {
+			interfaceOrdering = models.NewInterfaceOrdering(models.InterfaceOrdering(interfaceOrderingModel))
+		}
 	}
 	return &models.TagLevelSettings{
 		FlowLogTransmission: flowLogTransmission,
@@ -35,7 +37,9 @@ func TagLevelSettingsModelFromMap(m map[string]interface{}) *models.TagLevelSett
 	interfaceOrderingInterface, interfaceOrderingIsSet := m["interface_ordering"]
 	if interfaceOrderingIsSet {
 		interfaceOrderingModel := interfaceOrderingInterface.(string)
-		interfaceOrdering = models.NewInterfaceOrdering(models.InterfaceOrdering(interfaceOrderingModel))
+		if len(interfaceOrderingModel) > 0 {
+			interfaceOrdering = models.NewInterfaceOrdering(models.InterfaceOrdering(interfaceOrderingModel))
+		}
 	}
 	return &models.TagLevelSettings{
 		FlowLogTransmission: flowLogTransmission,
@@ -63,15 +67,17 @@ func SetTagLevelSettingsSubResourceData(m []*models.TagLevelSettings) (d []*map[
 func TagLevelSettingsSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"flow_log_transmission": {
-			Description: `Flow log transmission setting for the network instances, it has two possible values NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED or NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_ENABLED`,
+			Description: `Flow log transmission setting for the network instances, it has two possible values `+
+				`NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED or NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_ENABLED`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"interface_ordering": {
-			Description: `interface ordering for app instances, it has two possible values INTERFACE_ORDERING_DISABLED or INTERFACE_ORDERING_ENABLED`,
+			Description: `interface ordering for app instances, it has two possible values INTERFACE_ORDERING_DISABLED`+
+				` or INTERFACE_ORDERING_ENABLED`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }

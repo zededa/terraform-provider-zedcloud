@@ -9,46 +9,47 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
-	hardware_model "github.com/zededa/terraform-provider-zedcloud/v2/client/hardware_model"
+	cluster "github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 /*
-HardwareModel hardware model API
+ edge node cluster configuration API
 */
 
-func HardwareModelResource() *schema.Resource {
+func ClusterResource() *schema.Resource {
 	return &schema.Resource{
-		CreateContext: CreateHardwareModel,
-		DeleteContext: DeleteHardwareModel,
-		ReadContext: GetHardwareModel,
-		UpdateContext: UpdateHardwareModel,
-		Schema: zschema.SysModelSchema(),
+		CreateContext: CreateCluster,
+		UpdateContext: UpdateCluster,
+		ReadContext: GetCluster,
+		DeleteContext: DeleteCluster,
+		Schema: zschema.ClusterSchema(),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }
 
-func HardwareModelDataSource() *schema.Resource {
+func ClusterDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: GetHardwareModel,
-		Schema: zschema.SysModelSchema(),
+		ReadContext: GetCluster,
+		Schema: zschema.ClusterSchema(),
 	}
 }
 
-func GetHardwareModel(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	if _, isSet := d.GetOk("name"); isSet {
-		return GetHardwareModelByName(ctx, d, m)
+func GetCluster(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	if _, nameIsSet := d.GetOk("name"); nameIsSet {
+		return GetClusterByName(ctx, d, m)
 	}
-	return GetHardwareModelById(ctx, d, m)
+	
+	return GetClusterByID(ctx, d, m)
 }
 
-func GetHardwareModelById(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func GetClusterByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := hardware_model.NewHardwareModelGetHardwareModelParams()
+	params := cluster.NewGetParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -66,29 +67,28 @@ func GetHardwareModelById(ctx context.Context, d *schema.ResourceData, m interfa
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.HardwareModel.HardwareModelGetHardwareModel(params, nil)
+	resp, err := client.Cluster.GetCluster(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] model read error: %s", spew.Sdump(err))
+		log.Printf("[TRACE] edge node cluster read error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
 			return diags
 		}
 
-		diags = append(diags, diag.Errorf("model read error: %s", err)...)
+		diags = append(diags, diag.Errorf("edge node cluster read error: %s", err)...)
 		return diags
 	}
 
 	respModel := resp.GetPayload()
-	zschema.SetSysModelResourceData(d, respModel)
-	d.SetId(respModel.ID)
+	zschema.SetClusterResourceData(d, respModel)
 
 	return diags
 }
 
-func GetHardwareModelByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func GetClusterByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := hardware_model.NewHardwareModelGetHardwareModelByNameParams()
+	params := cluster.NewGetByNameParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -105,43 +105,41 @@ func GetHardwareModelByName(ctx context.Context, d *schema.ResourceData, m inter
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.HardwareModel.HardwareModelGetHardwareModelByName(params, nil)
+	resp, err := client.Cluster.GetClusterByName(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] model read error: %s", spew.Sdump(err))
+		log.Printf("[TRACE] edge node cluster read error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
 			return diags
 		}
 
-		diags = append(diags, diag.Errorf("model read error: %s", err)...)
-		return diags
+		diags = append(diags, diag.Errorf("edge node cluster read error: %s", err)...)
 	}
 
 	respModel := resp.GetPayload()
-	zschema.SetSysModelResourceData(d, respModel)
-	d.SetId(respModel.ID)
+	zschema.SetClusterResourceData(d, respModel)
 
 	return diags
 }
 
-func CreateHardwareModel(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func CreateCluster(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	model := zschema.SysModelModel(d)
-	params := hardware_model.NewHardwareModelCreateHardwareModelParams()
+	model := zschema.ClusterModel(d)
+	params := cluster.NewCreateParams()
 	params.SetBody(model)
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.HardwareModel.HardwareModelCreateHardwareModel(params, nil)
+	resp, err := client.Cluster.CreateCluster(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] model create error: %s", spew.Sdump(err))
+		log.Printf("[TRACE] edge node cluster create error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
 			return diags
 		}
 
-		diags = append(diags, diag.Errorf("model create error: %s", err)...)
+		diags = append(diags, diag.Errorf("edge node cluster create error: %s", err)...)
 		return diags
 	}
 
@@ -164,26 +162,26 @@ func CreateHardwareModel(ctx context.Context, d *schema.ResourceData, m interfac
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := GetHardwareModelByName(ctx, d, m); err != nil {
+	if errs := GetCluster(ctx, d, m); err != nil {
 		return append(diags, errs...)
 	}
 
 	return diags
 }
 
-func UpdateHardwareModel(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func UpdateCluster(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	d.Partial(true)
 
-	params := hardware_model.NewHardwareModelUpdateHardwareModelParams()
+	params := cluster.NewUpdateParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.SysModelModel(d))
-	// HardwareModelUpdateHardwareModelBody
+	params.SetBody(zschema.ClusterModel(d))
+	// UpdateClusterBody
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {
@@ -196,15 +194,15 @@ func UpdateHardwareModel(ctx context.Context, d *schema.ResourceData, m interfac
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
-	resp, err := client.HardwareModel.HardwareModelUpdateHardwareModel(params, nil)
+	resp, err := client.Cluster.UpdateCluster(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] model update error: %s", spew.Sdump(err))
+		log.Printf("[TRACE] edge node cluster update error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
 			return diags
 		}
 
-		diags = append(diags, diag.Errorf("model update error: %s", err)...)
+		diags = append(diags, diag.Errorf("edge node cluster update error: %s", err)...)
 		return diags
 	}
 
@@ -223,15 +221,21 @@ func UpdateHardwareModel(ctx context.Context, d *schema.ResourceData, m interfac
 		}
 	}
 
+	d.SetId(responseData.ObjectID)
+
 	// the zedcloud API does not return the partially updated object but a custom response.
-	// thus, we need to fetch the object and populate the state. 
-	return GetHardwareModelByName(ctx, d, m)
+	// thus, we need to fetch the object and populate the state.
+	if errs := GetCluster(ctx, d, m); errs != nil {
+		return append(diags, errs...)
+	}
+
+	return diags
 }
 
-func DeleteHardwareModel(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func DeleteCluster(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := hardware_model.NewHardwareModelDeleteHardwareModelParams()
+	params := cluster.NewDeleteParams()
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -249,18 +253,19 @@ func DeleteHardwareModel(ctx context.Context, d *schema.ResourceData, m interfac
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	_, err := client.HardwareModel.HardwareModelDeleteHardwareModel(params, nil)
+	_, err := client.Cluster.DeleteCluster(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] model delete error: %s", spew.Sdump(err))
+		log.Printf("[TRACE] edge node cluster delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
 			return diags
 		}
 
-		diags = append(diags, diag.Errorf("model delete error: %s", err)...)
+		diags = append(diags, diag.Errorf("edge node cluster error: %s", err)...)
 		return diags
 	}
 
 	d.SetId("")
+	
 	return diags
 }

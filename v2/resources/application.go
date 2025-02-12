@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -55,23 +56,37 @@ func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 	// the ac_kind depends on the app_type set in the manifest.
 	// this should be read-only and be computed in the backend but is not, so we have to compute it in the client.
 	if model.Manifest != nil {
+		appType := getAppType(model.Manifest.AppType)
+		model.Manifest.AppType = &appType
+		
+		deploymentType := getDeploymentType(model.Manifest.DeploymentType)
+		model.Manifest.DeploymentType = &deploymentType
+		
 		acKind, err := getAcKind(model.Manifest.AppType)
 		if err != nil {
 			diags = append(diags, diag.FromErr(err)...)
 			return diags
 		}
 		model.Manifest.AcKind = acKind
+	} else {
+		diags = append(diags, diag.Errorf("missing client parameter: manifest or manifest_file")...)
+		return diags
 	}
-
+			
 	params := config.CreateParams()
 	params.SetBody(model)
 
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Application.Create(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge application create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge application create error: %s", err)...)
 		return diags
 	}
 
@@ -132,9 +147,15 @@ func readApplicationByID(ctx context.Context, d *schema.ResourceData, m interfac
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Application.GetByID(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge application read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge application read error: %s", err)...)
+		return diags
 	}
 
 	app := resp.GetPayload()
@@ -165,9 +186,15 @@ func readApplicationByName(ctx context.Context, d *schema.ResourceData, m interf
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.Application.GetByName(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge application read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge application read error: %s", err)...)
+		return diags
 	}
 
 	app := resp.GetPayload()
@@ -221,9 +248,15 @@ func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Application.Update(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
-		return append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge application update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge application update error: %s", err)...)
+		return diags
 	}
 
 	responseData := resp.GetPayload()
@@ -275,10 +308,15 @@ func DeleteApplication(ctx context.Context, d *schema.ResourceData, m interface{
 
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.Application.Delete(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	_, err := client.Application.Delete(params, nil)
 	if err != nil {
-		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		log.Printf("[TRACE] edge application delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
+
+		diags = append(diags, diag.Errorf("edge application delete error: %s", err)...)
 		return diags
 	}
 
@@ -316,4 +354,18 @@ func getAcKind(appType *models.AppType) (*string, error) {
 	default:
 		return nil, fmt.Errorf("could not determine ac_kind, unsupported app_type (%s)", *appType)
 	}
+}
+
+func getAppType(appType *models.AppType) models.AppType {
+	if appType == nil || *appType == "" {
+		return models.AppTypeAPPTYPEUNSPECIFIED
+	}
+	return *appType
+}
+
+func getDeploymentType(deploymentType *models.DeploymentType) models.DeploymentType {
+	if deploymentType == nil || *deploymentType == "" {
+		return models.DeploymentTypeDEPLOYMENTTYPEUNSPECIFIED
+	}
+	return *deploymentType
 }
