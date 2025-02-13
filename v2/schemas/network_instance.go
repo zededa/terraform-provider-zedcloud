@@ -433,6 +433,7 @@ func NetworkInstance() map[string]*schema.Schema {
 				Schema: NetInstEdgeNodeClusterSchema(),
 			},
 			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("edge_node_cluster", "id"),
 		},
 
 		"id": {

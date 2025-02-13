@@ -51,7 +51,7 @@ func AppInstEdgeNodeClusterSchema() map[string]*schema.Schema {
 		"id": {
 			Description: `Id of the edge node cluster`,
 			Type:        schema.TypeString,
-			Computed:    true,
+			Optional:    true,
 		},
 	}
 }

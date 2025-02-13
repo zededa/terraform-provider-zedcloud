@@ -312,6 +312,7 @@ func EnterpriseSchema() map[string]*schema.Schema {
 			Description: `Enterprise settings for API Token expiry to be set in seconds`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+			Default: 	 7776000,
 		},
 
 		"attributes": {
@@ -373,6 +374,7 @@ func EnterpriseSchema() map[string]*schema.Schema {
 			Description: `Parent enterprise ID`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			DiffSuppressFunc: diffSupressStringNonConfigChanges("parent_entp_id"),
 		},
 
 		"policy_list": {
@@ -382,6 +384,7 @@ func EnterpriseSchema() map[string]*schema.Schema {
 				Schema: PolicyVersionListSchema(),
 			},
 			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("policy_list", ""),
 		},
 
 		"realms": {
@@ -406,6 +409,7 @@ func EnterpriseSchema() map[string]*schema.Schema {
 			Description: `Enterprise state`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     "ENTERPRISE_STATE_ACTIVE",
 		},
 
 		"stream_events": {
@@ -430,12 +434,14 @@ func EnterpriseSchema() map[string]*schema.Schema {
 				Schema: TOTPSettingsSchema(),
 			},
 			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("totp_settings", "enforce"),
 		},
 
 		"type": {
 			Description: `Enterprise type`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:	 "ENTERPRISE_TYPE_UNSPECIFIED",
 		},
 	}
 }

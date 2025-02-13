@@ -594,6 +594,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: AppInstEdgeNodeClusterSchema(),
 			},
 			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("edge_node_cluster", "id"),
 		},
 
 		"encrypted_secrets": {

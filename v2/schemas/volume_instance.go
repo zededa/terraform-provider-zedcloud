@@ -249,6 +249,7 @@ func VolumeInstance() map[string]*schema.Schema {
 				Schema: VolInstEdgeNodeClusterSchema(),
 			},
 			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("edge_node_cluster", "id"),
 		},
 
 		"id": {
