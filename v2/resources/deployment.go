@@ -14,8 +14,13 @@ import (
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
 
+// DeploymentResource returns the schema and methods for the Deployment resource.
 func DeploymentResource() *schema.Resource {
 	return &schema.Resource{
+		Description: `Resource "zedcloud_deployment" manages deployments in ZedCloud. A deployment is a collection of policies applied to a device.
+The api design does not support updates on a deployment. If you want to add changes to a deployment, you need to create a new version.
+When you create a new version of a deployment, it makes sense to show that it depends on the previous version. 
+It will help create a proper dependency graph for the Terraform plan.`,
 		CreateContext: CreateDeployment,
 		DeleteContext: DeleteDeployment,
 		ReadContext:   GetDeploymentByID,
@@ -27,13 +32,7 @@ func DeploymentResource() *schema.Resource {
 	}
 }
 
-func DeploymentDataSource() *schema.Resource {
-	return &schema.Resource{
-		ReadContext: GetDeploymentByID,
-		Schema:      zschema.Deployment(),
-	}
-}
-
+// CreateDeployment creates a new deployment in ZedCloud.
 func CreateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -101,6 +100,7 @@ func CreateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 	return diags
 }
 
+// DeleteDeployment deletes a deployment in ZedCloud.
 func DeleteDeployment(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -141,6 +141,7 @@ func DeleteDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 	return diags
 }
 
+// GetDeploymentByID reads a deployment by ID.
 func GetDeploymentByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
@@ -152,24 +153,21 @@ func GetDeploymentByID(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 
 	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
-	} else {
+	if !idIsSet {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
 		return diags
 	}
+	id, _ := idVal.(string)
+	params.ID = id
 
 	projectIdVal, projectIdIsSet := d.GetOk("project_id")
-	if projectIdIsSet {
-		params.ProjectID = projectIdVal.(string)
-	} else {
+	if !projectIdIsSet {
 		diags = append(diags, diag.Errorf("missing client parameter: projectId")...)
 		return diags
 	}
+	params.ProjectID = projectIdVal.(string)
 
 	client := m.(*api_client.ZedcloudAPI)
-
 	resp, err := client.Deployment.GetByID(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -182,11 +180,12 @@ func GetDeploymentByID(ctx context.Context, d *schema.ResourceData, m interface{
 	return diags
 }
 
+// UpdateDeployment updates a deployment in ZedCloud.
 func UpdateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 	diags = append(diags, diag.Diagnostic{
 		Severity: diag.Warning,
-		Summary:  "update not supported for deployment",
+		Summary:  "Update not supported for deployment, you need to create a new version instead",
 	})
 	return diags
 }

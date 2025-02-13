@@ -302,7 +302,6 @@ func Deployment() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppInstPolicy(),
 			},
-			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
 		},
 
@@ -327,7 +326,6 @@ func Deployment() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: DevicePolicy(),
 			},
-			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
 		},
 
@@ -358,7 +356,7 @@ func Deployment() map[string]*schema.Schema {
 		"name": {
 			Description: `user defined name for the deployment`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"network_inst_policies": {
@@ -367,14 +365,13 @@ func Deployment() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: NetworkInstPolicySchema(),
 			},
-			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
 		},
 
 		"project_id": {
 			Description: `project id`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"revision": {
@@ -398,7 +395,6 @@ func Deployment() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: VolumeInstPolicySchema(),
 			},
-			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
 		},
 	}
