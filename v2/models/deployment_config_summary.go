@@ -14,55 +14,50 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Deployment deployment
+// DeploymentConfigSummary deployment config summary
 //
-// swagger:model Deployment
-type Deployment struct {
+// swagger:model DeploymentConfigSummary
+type DeploymentConfigSummary struct {
 
 	// list of app instance policies
-	AppInstPolicies []*AppInstPolicy `json:"appInstPolicies"`
+	AppInstPolicies []*PolicyCommon `json:"appInstPolicies"`
 
 	// cluster policy details
-	ClusterPolicy *ClusterInstPolicy `json:"clusterPolicy,omitempty"`
+	ClusterPolicy *PolicyCommon `json:"clusterPolicy,omitempty"`
 
-	// user defined tag for the deployment, which is used while targeting set of devices
+	// user defined tag for an deployment
 	DeploymentTag string `json:"deploymentTag,omitempty"`
 
 	// list of device policies
-	DevicePolicies []*DevicePolicy `json:"devicePolicies"`
+	DevicePolicies []*PolicyCommon `json:"devicePolicies"`
 
 	// edge view policy details
-	EdgeviewPolicy *EdgeViewPolicy `json:"edgeviewPolicy,omitempty"`
+	EdgeViewPolicy *PolicyCommon `json:"edgeViewPolicy,omitempty"`
 
 	// system generated unique id for an deployment
 	ID string `json:"id,omitempty"`
 
 	// integration policy details
-	IntegrationPolicy *IntegrationPolicy `json:"integrationPolicy,omitempty"`
+	IntegrationPolicy *PolicyCommon `json:"integrationPolicy,omitempty"`
 
-	// user defined name for the deployment
+	// user defined deployment name
 	Name string `json:"name,omitempty"`
 
 	// list of network instance policies
-	NetworkInstPolicies []*NetworkInstPolicy `json:"networkInstPolicies"`
+	NetworkInstPolicies []*PolicyCommon `json:"networkInstPolicies"`
 
-	// Adding projectId to support for URL params
-	//
-	// project id
-	ProjectID string `json:"projectId,omitempty"`
-
-	// object revision
+	// object revision details
 	Revision *ObjectRevision `json:"revision,omitempty"`
 
-	// user defined title for the deployment
+	// user defined deployment title
 	Title string `json:"title,omitempty"`
 
-	// list of volume instamce policies
-	VolumeInstPolicies []*VolumeInstPolicy `json:"volumeInstPolicies"`
+	// list of volume instance policies
+	VolumeInstPolicies []*PolicyCommon `json:"volumeInstPolicies"`
 }
 
-// Validate validates this deployment
-func (m *Deployment) Validate(formats strfmt.Registry) error {
+// Validate validates this deployment config summary
+func (m *DeploymentConfigSummary) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAppInstPolicies(formats); err != nil {
@@ -77,7 +72,7 @@ func (m *Deployment) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validateEdgeviewPolicy(formats); err != nil {
+	if err := m.validateEdgeViewPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -103,7 +98,7 @@ func (m *Deployment) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Deployment) validateAppInstPolicies(formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) validateAppInstPolicies(formats strfmt.Registry) error {
 	if swag.IsZero(m.AppInstPolicies) { // not required
 		return nil
 	}
@@ -129,7 +124,7 @@ func (m *Deployment) validateAppInstPolicies(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Deployment) validateClusterPolicy(formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) validateClusterPolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.ClusterPolicy) { // not required
 		return nil
 	}
@@ -148,7 +143,7 @@ func (m *Deployment) validateClusterPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Deployment) validateDevicePolicies(formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) validateDevicePolicies(formats strfmt.Registry) error {
 	if swag.IsZero(m.DevicePolicies) { // not required
 		return nil
 	}
@@ -174,17 +169,17 @@ func (m *Deployment) validateDevicePolicies(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Deployment) validateEdgeviewPolicy(formats strfmt.Registry) error {
-	if swag.IsZero(m.EdgeviewPolicy) { // not required
+func (m *DeploymentConfigSummary) validateEdgeViewPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.EdgeViewPolicy) { // not required
 		return nil
 	}
 
-	if m.EdgeviewPolicy != nil {
-		if err := m.EdgeviewPolicy.Validate(formats); err != nil {
+	if m.EdgeViewPolicy != nil {
+		if err := m.EdgeViewPolicy.Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("edgeviewPolicy")
+				return ve.ValidateName("edgeViewPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("edgeviewPolicy")
+				return ce.ValidateName("edgeViewPolicy")
 			}
 			return err
 		}
@@ -193,7 +188,7 @@ func (m *Deployment) validateEdgeviewPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Deployment) validateIntegrationPolicy(formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) validateIntegrationPolicy(formats strfmt.Registry) error {
 	if swag.IsZero(m.IntegrationPolicy) { // not required
 		return nil
 	}
@@ -212,7 +207,7 @@ func (m *Deployment) validateIntegrationPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Deployment) validateNetworkInstPolicies(formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) validateNetworkInstPolicies(formats strfmt.Registry) error {
 	if swag.IsZero(m.NetworkInstPolicies) { // not required
 		return nil
 	}
@@ -238,7 +233,7 @@ func (m *Deployment) validateNetworkInstPolicies(formats strfmt.Registry) error 
 	return nil
 }
 
-func (m *Deployment) validateRevision(formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
 	}
@@ -257,7 +252,7 @@ func (m *Deployment) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Deployment) validateVolumeInstPolicies(formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) validateVolumeInstPolicies(formats strfmt.Registry) error {
 	if swag.IsZero(m.VolumeInstPolicies) { // not required
 		return nil
 	}
@@ -283,8 +278,8 @@ func (m *Deployment) validateVolumeInstPolicies(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this deployment based on the context it is used
-func (m *Deployment) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this deployment config summary based on the context it is used
+func (m *DeploymentConfigSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateAppInstPolicies(ctx, formats); err != nil {
@@ -299,7 +294,7 @@ func (m *Deployment) ContextValidate(ctx context.Context, formats strfmt.Registr
 		res = append(res, err)
 	}
 
-	if err := m.contextValidateEdgeviewPolicy(ctx, formats); err != nil {
+	if err := m.contextValidateEdgeViewPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -325,7 +320,7 @@ func (m *Deployment) ContextValidate(ctx context.Context, formats strfmt.Registr
 	return nil
 }
 
-func (m *Deployment) contextValidateAppInstPolicies(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) contextValidateAppInstPolicies(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.AppInstPolicies); i++ {
 
@@ -350,7 +345,7 @@ func (m *Deployment) contextValidateAppInstPolicies(ctx context.Context, formats
 	return nil
 }
 
-func (m *Deployment) contextValidateClusterPolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) contextValidateClusterPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.ClusterPolicy != nil {
 
@@ -371,7 +366,7 @@ func (m *Deployment) contextValidateClusterPolicy(ctx context.Context, formats s
 	return nil
 }
 
-func (m *Deployment) contextValidateDevicePolicies(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) contextValidateDevicePolicies(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.DevicePolicies); i++ {
 
@@ -396,19 +391,19 @@ func (m *Deployment) contextValidateDevicePolicies(ctx context.Context, formats 
 	return nil
 }
 
-func (m *Deployment) contextValidateEdgeviewPolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) contextValidateEdgeViewPolicy(ctx context.Context, formats strfmt.Registry) error {
 
-	if m.EdgeviewPolicy != nil {
+	if m.EdgeViewPolicy != nil {
 
-		if swag.IsZero(m.EdgeviewPolicy) { // not required
+		if swag.IsZero(m.EdgeViewPolicy) { // not required
 			return nil
 		}
 
-		if err := m.EdgeviewPolicy.ContextValidate(ctx, formats); err != nil {
+		if err := m.EdgeViewPolicy.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("edgeviewPolicy")
+				return ve.ValidateName("edgeViewPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("edgeviewPolicy")
+				return ce.ValidateName("edgeViewPolicy")
 			}
 			return err
 		}
@@ -417,7 +412,7 @@ func (m *Deployment) contextValidateEdgeviewPolicy(ctx context.Context, formats 
 	return nil
 }
 
-func (m *Deployment) contextValidateIntegrationPolicy(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) contextValidateIntegrationPolicy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IntegrationPolicy != nil {
 
@@ -438,7 +433,7 @@ func (m *Deployment) contextValidateIntegrationPolicy(ctx context.Context, forma
 	return nil
 }
 
-func (m *Deployment) contextValidateNetworkInstPolicies(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) contextValidateNetworkInstPolicies(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.NetworkInstPolicies); i++ {
 
@@ -463,7 +458,7 @@ func (m *Deployment) contextValidateNetworkInstPolicies(ctx context.Context, for
 	return nil
 }
 
-func (m *Deployment) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
 
@@ -484,7 +479,7 @@ func (m *Deployment) contextValidateRevision(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *Deployment) contextValidateVolumeInstPolicies(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeploymentConfigSummary) contextValidateVolumeInstPolicies(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.VolumeInstPolicies); i++ {
 
@@ -510,7 +505,7 @@ func (m *Deployment) contextValidateVolumeInstPolicies(ctx context.Context, form
 }
 
 // MarshalBinary interface implementation
-func (m *Deployment) MarshalBinary() ([]byte, error) {
+func (m *DeploymentConfigSummary) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -518,8 +513,8 @@ func (m *Deployment) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Deployment) UnmarshalBinary(b []byte) error {
-	var res Deployment
+func (m *DeploymentConfigSummary) UnmarshalBinary(b []byte) error {
+	var res DeploymentConfigSummary
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

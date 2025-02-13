@@ -152,7 +152,7 @@ func PolicyCommon() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"tags": {

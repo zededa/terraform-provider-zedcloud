@@ -22,7 +22,7 @@ type VolumeInstPolicy struct {
 	MetaData *PolicyCommon `json:"metaData,omitempty"`
 
 	// volume instance config details
-	VolInstConfig *VolumeInstance `json:"volInstConfig,omitempty"`
+	VolInstConfig *VolumeInstConfig `json:"volInstConfig,omitempty"`
 }
 
 // Validate validates this volume inst policy
