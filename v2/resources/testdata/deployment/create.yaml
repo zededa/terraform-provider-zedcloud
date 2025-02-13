@@ -1,11 +1,11 @@
-name: "tf_deployment-v1"
-title: "terraform_deployment"
+name: "test_tf_provider-deployment-v1"
+title: "test_tf_provider-deployment"
 deploymentTag: "depl:1234"
 
 devicePolicies:
   - metaData:
-      name: "tf-edge-node-attestation-v1"
-      title: "tf-edge-node"
+      name: "test_tf_provider-edge-node-policy-attestation-v1"
+      title: "test_tf_provider-edge-node-policy"
       policyTargetCondition:
         depl: "1234"
       tags:
@@ -16,8 +16,8 @@ devicePolicies:
 
 networkInstPolicies:
   - metaData:
-      name: "tf-network-instance-v1"
-      title: "tf-network-instance"
+      name: "test_tf_provider-network-instance-policy-v1"
+      title: "test_tf_provider-network-instance-policy"
       policyTargetCondition:
         depl: "1234"
       tags: {}
@@ -32,8 +32,8 @@ networkInstPolicies:
 
 appInstPolicies:
   - metaData:
-      name: "tf-app-instance-v1"
-      title: "tf-app-instance"
+      name: "test_tf_provider-app-instance-policy-v1"
+      title: "test_tf_provider-app-instance-policy"
       policyTargetCondition:
         depl: "1234"
       tags:
@@ -73,7 +73,7 @@ appInstPolicies:
         interfaces: []
         permissions: []
         images:
-          - imageName: "alpine"
+          - imageName: "test_tf_provider-alpine"
             maxSize: "0"
             imageFormat: "CONTAINER"
             preserve: false
@@ -110,8 +110,8 @@ appInstPolicies:
 
 volumeInstPolicies:
   - metaData:
-      name: "tf-volume-instance-v1"
-      title: "tf-volume-instance"
+      name: "test_tf_provider-volume-instance-policy-v1"
+      title: "test_tf_provider-volume-instance-policy"
       policyTargetCondition:
         depl: "1234"
       tags:
@@ -126,8 +126,8 @@ volumeInstPolicies:
 
 edgeviewPolicy:
   metaData:
-    name: "tf-edgeview-policy-v1"
-    title: "tf-edgeview-policy"
+    name: "test_tf_provider-edgeview-policy-v1"
+    title: "test_tf_provider-edgeview-policy"
     policyTargetCondition:
       depl: "1234"
     tags: {}

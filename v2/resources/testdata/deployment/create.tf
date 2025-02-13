@@ -1,7 +1,7 @@
-resource "zedcloud_project" "depl_project" {
+resource "zedcloud_project" "test_tf_project" {
   # required
-  name  = "depl_project"
-  title = "depl_project"
+  name  = "test_tf_project-deployment"
+  title = "test_tf_project-deployment"
   type = "TAG_TYPE_DEPLOYMENT"
   tag_level_settings {
     flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED"
@@ -10,8 +10,8 @@ resource "zedcloud_project" "depl_project" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-  name        = "qemu"
-  title       = "QEMU"
+  name        = "test_tf_provider-qemu"
+  title       = "test_tf_provider-QEMU"
   description = "qemu"
   origin_type = "ORIGIN_LOCAL"
 }
@@ -50,42 +50,42 @@ resource "zedcloud_model" "test_tf_provider" {
 
 resource "zedcloud_datastore" "test_datastore" {
   depends_on = [
-    zedcloud_project.depl_project
+    zedcloud_project.test_tf_project
   ]
   # required
   ds_fqdn             = "docker://docker.io"
   ds_path             = ""
   ds_type             = "DATASTORE_TYPE_CONTAINERREGISTRY"
-  name                = "dockerhub"
-  title               = "dockerhub"
-  description         = "dockerhub"
+  name                = "test_tf_provider-dockerhub"
+  title               = "test_tf_provider-dockerhub"
+  description         = "test_tf_provider-dockerhub"
   region              = "eu"
-  project_access_list = [zedcloud_project.depl_project.id]
+  project_access_list = [zedcloud_project.test_tf_project.id]
 }
 
 resource "zedcloud_image" "test_image" {
   depends_on = [
-    zedcloud_project.depl_project,
+    zedcloud_project.test_tf_project,
     zedcloud_datastore.test_datastore
   ]
-  name                = "alpine"
+  name                = "test_tf_provider-alpine"
   datastore_id        = zedcloud_datastore.test_datastore.id
   image_arch          = "ARM64"
   image_format        = "CONTAINER"
   image_rel_url       = "alpine:latest"
-  image_size_bytes    = 0
+  image_size_bytes    = 1024
   image_type          = "IMAGE_TYPE_APPLICATION"
   title               = "alpine"
-  project_access_list = [zedcloud_project.depl_project.id]
+  project_access_list = [zedcloud_project.test_tf_project.id]
 }
 
 
 resource "zedcloud_application" "alpine_vm_app" {
-  name                 = "alpine_vm_app"
-  title                = "alpine_vm_app"
+  name                 = "test_tf_provider-alpine_vm_app"
+  title                = "test_tf_provider-alpine_vm_app"
   user_defined_version = "24.0.4"
   depends_on           = [zedcloud_image.test_image]
-  project_access_list  = [zedcloud_project.depl_project.id]
+  project_access_list  = [zedcloud_project.test_tf_project.id]
   manifest {
     ac_kind             = "VMManifest"
     ac_version          = "1.2.0"
@@ -110,19 +110,19 @@ resource "zedcloud_deployment" "tf_deployment" {
   depends_on = [
     zedcloud_application.alpine_vm_app,
     zedcloud_brand.test_tf_provider,
-    zedcloud_project.depl_project
+    zedcloud_project.test_tf_project
   ]
 
-  name           = "tf_deployment"
-  title          = "terraform_deployment"
+  name           = "test_tf_provider-deployment"
+  title          = "test_tf_provider-deployment"
   deployment_tag = "depl:1234"
 
-  project_id = zedcloud_project.depl_project.id
+  project_id = zedcloud_project.test_tf_project.id
 
   device_policies {
     meta_data {
-      name  = "tf-edge-node"
-      title = "tf-edge-node"
+      name  = "test_tf_provider-edge-node-policy"
+      title = "test_tf_provider-edge-node-policy"
       policy_target_condition = {
         "depl" : "1234"
       }
@@ -138,8 +138,8 @@ resource "zedcloud_deployment" "tf_deployment" {
 
   network_inst_policies {
     meta_data {
-      name  = "tf-network-instance"
-      title = "tf-network-instance"
+      name  = "test_tf_provider-network-instance-policy"
+      title = "test_tf_provider-network-instance-policy"
       policy_target_condition = {
         "depl" : "1234"
       }
@@ -153,8 +153,8 @@ resource "zedcloud_deployment" "tf_deployment" {
 
   app_inst_policies {
     meta_data {
-      name  = "tf-app-instance"
-      title = "tf-app-instance"
+      name  = "test_tf_provider-app-instance-policy"
+      title = "test_tf_provider-app-instance-policy"
       policy_target_condition = {
         "depl" : "1234"
       }
@@ -239,8 +239,8 @@ resource "zedcloud_deployment" "tf_deployment" {
 
   volume_inst_policies {
     meta_data {
-      name  = "tf-volume-instance"
-      title = "tf-volume-instance"
+      name  = "test_tf_provider-volume-instance-policy"
+      title = "test_tf_provider-volume-instance-policy"
       policy_target_condition = {
         "depl" : "1234"
       }
@@ -258,8 +258,8 @@ resource "zedcloud_deployment" "tf_deployment" {
 
   edgeview_policy {
     meta_data {
-      name  = "tf-edgeview-policy"
-      title = "tf-edgeview-policy"
+      name  = "test_tf_provider-edgeview-policy"
+      title = "test_tf_provider-edgeview-policy"
       policy_target_condition = {
         "depl" : "1234"
       }
