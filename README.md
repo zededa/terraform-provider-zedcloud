@@ -10,7 +10,9 @@ The Terraform Provider for Zededa Cloud enables infrastructure automation for Ze
 
 ## Supported Resources
 
+- [x] Enterprise
 - [x] Edge-Node (Device-Config)
+- [x] Edge-Node Cluster
 - [x] Edge-App
 - [x] Edge-App-Instance
 - [x] Network
