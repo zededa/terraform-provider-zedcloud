@@ -131,13 +131,17 @@ resource "zedcloud_network_instance" "complete" {
         hostname = "wwww.ns1.example.com"
     }
     ip {
-        domain = "htttp://example.com"
+        domain = "http://example.com"
         gateway = "10.0.20.1"
         subnet = "10.0.20.0/24"
         dhcp_range {
             end = "10.0.20.100"
             start = "10.0.20.50"
         }
+        dns = [
+          "9.9.9.9",
+          "8.8.8.8"
+        ]
         mask = "255.255.255.0"
         ntp = "10.1.0.2"
     }

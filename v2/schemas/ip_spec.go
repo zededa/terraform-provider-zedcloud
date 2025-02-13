@@ -63,7 +63,6 @@ func IPSpecModelFromMap(m map[string]interface{}) *models.IPSpec {
 			dhcpRange = DhcpIPRangeModelFromMap(dhcpRangeMap[0].(map[string]interface{}))
 		}
 	}
-	//
 	var dns []string
 	dnsInterface, dnsIsSet := m["dns"]
 	if dnsIsSet {
@@ -143,7 +142,7 @@ NETWORK_DHCP_TYPE_CLIENT`,
 
 		"dhcp_range": {
 			Description: `Range of IP addresses to be used for DHCP for IPAM management when dhcp is turned on. If none provided, system will default pool.`,
-			Type:        schema.TypeList, //GoType: DhcpIPRange
+			Type:        schema.TypeList, // GoType: DhcpIPRange
 			Elem: &schema.Resource{
 				Schema: DhcpIPRange(),
 			},
@@ -152,7 +151,7 @@ NETWORK_DHCP_TYPE_CLIENT`,
 
 		"dns": {
 			Description: "List of IP Addresses of DNS servers",
-			Type:        schema.TypeList, //GoType: []string
+			Type:        schema.TypeList, // GoType: []string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
