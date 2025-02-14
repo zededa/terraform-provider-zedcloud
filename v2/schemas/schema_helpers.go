@@ -335,6 +335,58 @@ func diffSupressMapInterfaceNonConfigChanges(field string, mapKey string) schema
 	}
 }
 
+func diffSupressMapInterfaceNonConfigChangesV2(field string, mapKeys []string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(field)
+
+		oldValues := make(map[string]string, len(mapKeys))
+		oldDataList, ok := oldData.([]interface{})
+		if ok {
+			for _, oldData := range oldDataList {
+				gotOld, okOld := oldData.(map[string]interface{})
+				if okOld {
+					for _, mapKey := range mapKeys {
+						idOld, _ := gotOld[mapKey].(string)
+						if idOld != "" {
+							oldValues[mapKey] = idOld
+						}
+					}
+				}
+			}
+		}
+
+		newDataList, ok := newData.([]interface{})
+		if !ok || len(newDataList) == 0 {
+			return true
+		}
+		
+		for _, newData := range newDataList {
+			gotNew, okNew := newData.(map[string]interface{})
+			if !okNew {
+				return true
+			}
+
+			allEqual := true
+
+			for _, mapKey := range mapKeys {
+				val, _ := gotNew[mapKey].(string)
+				if val == "" {
+					return true
+				} else if val != oldValues[mapKey] {
+					allEqual = false
+					break
+				}
+			}
+
+			if allEqual {
+				return true
+			}
+		}
+
+		return false
+	}
+}
+
 func diffSupressStringNonConfigChanges(field string) schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
 		oldData, newData := d.GetChange(field)
