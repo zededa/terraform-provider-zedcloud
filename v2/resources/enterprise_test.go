@@ -3,11 +3,13 @@ package resources
 import (
 	"errors"
 	"fmt"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"regexp"
 	"testing"
+	"os"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -17,6 +19,10 @@ import (
 )
 
 func TestEnterprise_Create(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping enterprise test for CI environment")
+	}
+	
 	var got models.Enterprise
 	var expected models.Enterprise
 

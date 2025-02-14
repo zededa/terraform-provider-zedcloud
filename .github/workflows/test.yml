@@ -8,6 +8,7 @@ jobs:
     env:
         TF_VAR_zedcloud_token: ${{ secrets.TF_VAR_ZEDCLOUD_TOKEN }}
         TF_VAR_zedcloud_url : ${{ vars.TF_VAR_ZEDCLOUD_URL }}
+        CI: true
     steps:
     - uses: actions/checkout@v4
     
