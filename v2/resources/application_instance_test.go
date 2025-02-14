@@ -114,6 +114,7 @@ func testApplicationInstanceAttributes(t *testing.T, got, expected *models.AppIn
 			"Interfaces",
 			"Drives",
 			"ProjectID",
+			"EdgeNodeCluster",
 		}
 		opts = cmpopts.IgnoreFields(models.AppInstance{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {

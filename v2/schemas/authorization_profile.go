@@ -204,6 +204,7 @@ func AuthorizationProfileSchema() map[string]*schema.Schema {
 			Description: `Parent enterprise ID of the authorization profile`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			DiffSuppressFunc: diffSupressStringNonConfigChanges("enterprise_id"),
 		},
 
 		"id": {
@@ -234,12 +235,27 @@ func AuthorizationProfileSchema() map[string]*schema.Schema {
 				Schema: PasswordProfileSchema(),
 			},
 			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChangesV2("password_profile",
+				[]string{
+					"max_length",
+					"min_length",
+					"max_password_age",
+					"min_lowercase_chars",
+					"min_numeric_chars",
+					"min_password_age",
+					"min_symbol_chars",
+					"min_uppercase_chars",
+					"num_prev_password_check",
+					"password_expiry_notification_period_in_seconds",
+				},
+			),
 		},
 
 		"profile_type": {
 			Description: `Authorization profile type`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     "AUTH_PROFILE_TYPE_UNSPECIFIED",
 		},
 
 		"revision": {
@@ -267,6 +283,7 @@ func AuthorizationProfileSchema() map[string]*schema.Schema {
 			Description: `Type of the profile`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     "AUTH_TYPE_LOCAL",
 		},
 	}
 }

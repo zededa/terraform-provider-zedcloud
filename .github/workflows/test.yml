@@ -1,6 +1,6 @@
 name: Test
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   test:
@@ -8,6 +8,7 @@ jobs:
     env:
         TF_VAR_zedcloud_token: ${{ secrets.TF_VAR_ZEDCLOUD_TOKEN }}
         TF_VAR_zedcloud_url : ${{ vars.TF_VAR_ZEDCLOUD_URL }}
+        CI: true
     steps:
     - uses: actions/checkout@v4
     
@@ -17,7 +18,7 @@ jobs:
         go-version: 1.21
 
     - name: Install dependencies
-      run: go mod tidy
+      run: cd ./v2 && go mod tidy && cd -
     
     - name: make test
       run:  make test

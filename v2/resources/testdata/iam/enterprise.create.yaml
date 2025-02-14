@@ -1,0 +1,13 @@
+name: "test_tf_provider"
+title: "test_tf_provider"
+apitokenexpiryinseconds: 7776000
+attributes: {}
+childenterprises: []
+controllerhosturl: ""
+description: ""
+policylist:
+  list: []
+realms: []
+state: "ENTERPRISE_STATE_ACTIVE"
+totpsettings: {}
+type: "ENTERPRISE_TYPE_UNSPECIFIED"

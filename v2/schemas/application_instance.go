@@ -57,6 +57,14 @@ func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 			drives = append(drives, m)
 		}
 	}
+	var edgeNodeCluster *models.AppInstEdgeNodeCluster // AppInstEdgeNodeCluster
+	edgeNodeClusterInterface, edgeNodeClusterIsSet := d.GetOk("edge_node_cluster")
+	if edgeNodeClusterIsSet && edgeNodeClusterInterface != nil {
+		edgeNodeClusterMap := edgeNodeClusterInterface.([]interface{})
+		if len(edgeNodeClusterMap) > 0 {
+			edgeNodeCluster = AppInstEdgeNodeClusterModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
+		}
+	}
 	encryptedSecrets := map[string]string{}
 	encryptedSecretsInterface, encryptedSecretsIsSet := d.GetOk("encryptedSecrets")
 	if encryptedSecretsIsSet {
@@ -178,6 +186,7 @@ func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 		Description:         description,
 		DeviceID:            &deviceID, // string true false false
 		Drives:              drives,
+		EdgeNodeCluster:     edgeNodeCluster,
 		EncryptedSecrets:    encryptedSecrets,
 		ID:                  id,
 		Interfaces:          interfaces,
@@ -249,6 +258,14 @@ func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstan
 			}
 			m := DriveModelFromMap(v.(map[string]interface{}))
 			drives = append(drives, m)
+		}
+	}
+	var edgeNodeCluster *models.AppInstEdgeNodeCluster // AppInstEdgeNodeCluster
+	edgeNodeClusterInterface, edgeNodeClusterIsSet := m["edge_node_cluster"]
+	if edgeNodeClusterIsSet && edgeNodeClusterInterface != nil {
+		edgeNodeClusterMap := edgeNodeClusterInterface.([]interface{})
+		if len(edgeNodeClusterMap) > 0 {
+			edgeNodeCluster = AppInstEdgeNodeClusterModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
 		}
 	}
 	encryptedSecrets := map[string]string{}
@@ -378,6 +395,7 @@ func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstan
 		Description:         description,
 		DeviceID:            &deviceID,
 		Drives:              drives,
+		EdgeNodeCluster:     edgeNodeCluster,
 		EncryptedSecrets:    encryptedSecrets,
 		ID:                  id,
 		Interfaces:          interfaces,
@@ -414,6 +432,7 @@ func SetApplicationInstanceResourceData(d *schema.ResourceData, m *models.AppIns
 	d.Set("description", m.Description)
 	d.Set("device_id", m.DeviceID)
 	d.Set("drives", SetDriveSubResourceData(m.Drives))
+	d.Set("edge_node_cluster", SetAppInstEdgeNodeClusterSubResourceData([]*models.AppInstEdgeNodeCluster{m.EdgeNodeCluster}))
 	d.Set("encrypted_secrets", m.EncryptedSecrets)
 	d.Set("id", m.ID)
 	d.Set("interfaces", SetAppInterfaceSubResourceData(m.Interfaces))
@@ -452,6 +471,7 @@ func SetApplicationInstanceSubResourceData(m []*models.AppInstance) (d []*map[st
 			properties["description"] = AppInstanceModel.Description
 			properties["device_id"] = AppInstanceModel.DeviceID
 			properties["drives"] = SetDriveSubResourceData(AppInstanceModel.Drives)
+			properties["edge_node_cluster"] = SetAppInstEdgeNodeClusterSubResourceData([]*models.AppInstEdgeNodeCluster{AppInstanceModel.EdgeNodeCluster})
 			properties["encrypted_secrets"] = AppInstanceModel.EncryptedSecrets
 			properties["id"] = AppInstanceModel.ID
 			properties["interfaces"] = SetAppInterfaceSubResourceData(AppInstanceModel.Interfaces)
@@ -565,6 +585,16 @@ func ApplicationInstance() map[string]*schema.Schema {
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
+		},
+
+		"edge_node_cluster": {
+			Description: `edge node cluster`,
+			Type:        schema.TypeList, //GoType: AppInstEdgeNodeCluster
+			Elem: &schema.Resource{
+				Schema: AppInstEdgeNodeClusterSchema(),
+			},
+			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("edge_node_cluster", "id"),
 		},
 
 		"encrypted_secrets": {
@@ -739,6 +769,7 @@ func GetApplicationInstancePropertyFields() (t []string) {
 		"description",
 		"device_id",
 		"drives",
+		"edge_node_cluster",
 		"encrypted_secrets",
 		"id",
 		"interfaces",

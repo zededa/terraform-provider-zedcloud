@@ -75,6 +75,9 @@ type AppInstance struct {
 	// Required: true
 	Drives []*Drive `json:"drives"`
 
+	// edge node cluster
+	EdgeNodeCluster *AppInstEdgeNodeCluster `json:"edgeNodeCluster,omitempty"`
+	
 	// user encrypted secrets map
 	EncryptedSecrets map[string]string `json:"encryptedSecrets,omitempty"`
 
@@ -182,6 +185,10 @@ func (m *AppInstance) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateDrives(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEdgeNodeCluster(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -401,6 +408,25 @@ func (m *AppInstance) validateDrives(formats strfmt.Registry) error {
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *AppInstance) validateEdgeNodeCluster(formats strfmt.Registry) error {
+	if swag.IsZero(m.EdgeNodeCluster) { // not required
+		return nil
+	}
+
+	if m.EdgeNodeCluster != nil {
+		if err := m.EdgeNodeCluster.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeNodeCluster")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeNodeCluster")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -649,6 +675,10 @@ func (m *AppInstance) ContextValidate(ctx context.Context, formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateEdgeNodeCluster(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateID(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -754,6 +784,27 @@ func (m *AppInstance) contextValidateDrives(ctx context.Context, formats strfmt.
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *AppInstance) contextValidateEdgeNodeCluster(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.EdgeNodeCluster != nil {
+
+		if swag.IsZero(m.EdgeNodeCluster) { // not required
+			return nil
+		}
+
+		if err := m.EdgeNodeCluster.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeNodeCluster")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeNodeCluster")
+			}
+			return err
+		}
 	}
 
 	return nil
