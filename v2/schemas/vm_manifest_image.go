@@ -189,7 +189,8 @@ func VMManifestImage() map[string]*schema.Schema {
 		"maxsize": {
 			Description: `UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Default:     "0",
+			Optional:    true,
 		},
 
 		"mountpath": {

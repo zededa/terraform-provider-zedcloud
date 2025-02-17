@@ -151,7 +151,7 @@ func EdgeView() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ExtAccessPolicy(),
 			},
-			Required: true,
+			Optional: true,
 		},
 
 		"generation_id": {
