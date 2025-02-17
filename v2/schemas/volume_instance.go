@@ -16,6 +16,14 @@ func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstance {
 	contentTreeID, _ := d.Get("content_tree_id").(string)
 	description, _ := d.Get("description").(string)
 	deviceID, _ := d.Get("device_id").(string)
+	var edgeNodeCluster *models.VolInstEdgeNodeCluster // VolInstEdgeNodeCluster
+	edgeNodeClusterInterface, edgeNodeClusterIsSet := d.GetOk("edge_node_cluster")
+	if edgeNodeClusterIsSet && edgeNodeClusterInterface != nil {
+		edgeNodeClusterMap := edgeNodeClusterInterface.([]interface{})
+		if len(edgeNodeClusterMap) > 0 {
+			edgeNodeCluster = VolInstEdgeNodeClusterModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
+		}
+	}
 	id, _ := d.Get("id").(string)
 	image, _ := d.Get("image").(string)
 	implicit, _ := d.Get("implicit").(bool)
@@ -57,6 +65,7 @@ func VolumeInstanceModel(d *schema.ResourceData) *models.VolumeInstance {
 		ContentTreeID: contentTreeID,
 		Description:   description,
 		DeviceID:      deviceID,
+		EdgeNodeCluster:     edgeNodeCluster,
 		ID:            id,
 		Image:         image,
 		Implicit:      implicit,
@@ -83,6 +92,14 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstance
 	contentTreeID := m["content_tree_id"].(string)
 	description := m["description"].(string)
 	deviceID := m["device_id"].(string)
+	var edgeNodeCluster *models.VolInstEdgeNodeCluster // VolInstEdgeNodeCluster
+	edgeNodeClusterInterface, edgeNodeClusterIsSet := m["edge_node_cluster"]
+	if edgeNodeClusterIsSet && edgeNodeClusterInterface != nil {
+		edgeNodeClusterMap := edgeNodeClusterInterface.([]interface{})
+		if len(edgeNodeClusterMap) > 0 {
+			edgeNodeCluster = VolInstEdgeNodeClusterModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
+		}
+	}
 	id := m["id"].(string)
 	image := m["image"].(string)
 	implicit := m["implicit"].(bool)
@@ -125,6 +142,7 @@ func VolumeInstanceModelFromMap(m map[string]interface{}) *models.VolumeInstance
 		ContentTreeID: contentTreeID,
 		Description:   description,
 		DeviceID:      deviceID,
+		EdgeNodeCluster:     edgeNodeCluster,
 		ID:            id,
 		Image:         image,
 		Implicit:      implicit,
@@ -146,6 +164,7 @@ func SetVolumeInstanceResourceData(d *schema.ResourceData, m *models.VolumeInsta
 	d.Set("content_tree_id", m.ContentTreeID)
 	d.Set("description", m.Description)
 	d.Set("device_id", m.DeviceID)
+	d.Set("edge_node_cluster", SetVolInstEdgeNodeClusterSubResourceData([]*models.VolInstEdgeNodeCluster{m.EdgeNodeCluster}))
 	d.Set("id", m.ID)
 	d.Set("image", m.Image)
 	d.Set("implicit", m.Implicit)
@@ -170,6 +189,7 @@ func SetVolumeInstanceSubResourceData(m []*models.VolumeInstance) (d []*map[stri
 			properties["content_tree_id"] = VolInstConfigModel.ContentTreeID
 			properties["description"] = VolInstConfigModel.Description
 			properties["device_id"] = VolInstConfigModel.DeviceID
+			properties["edge_node_cluster"] = SetVolInstEdgeNodeClusterSubResourceData([]*models.VolInstEdgeNodeCluster{VolInstConfigModel.EdgeNodeCluster})
 			properties["id"] = VolInstConfigModel.ID
 			properties["image"] = VolInstConfigModel.Image
 			properties["implicit"] = VolInstConfigModel.Implicit
@@ -220,6 +240,16 @@ func VolumeInstance() map[string]*schema.Schema {
 			Description: `id of the device on which volume instance is created`,
 			Type:        schema.TypeString,
 			Required:    true,
+		},
+
+		"edge_node_cluster": {
+			Description: `edge node cluster associated with the volume instance`,
+			Type:        schema.TypeList, //GoType: VolInstEdgeNodeCluster
+			Elem: &schema.Resource{
+				Schema: VolInstEdgeNodeClusterSchema(),
+			},
+			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("edge_node_cluster", "id"),
 		},
 
 		"id": {
@@ -322,6 +352,7 @@ func GetVolInstConfigPropertyFields() (t []string) {
 		"content_tree_id",
 		"description",
 		"device_id",
+		"edge_node_cluster",
 		"id",
 		"image",
 		"implicit",

@@ -394,6 +394,8 @@ func Project() map[string]*schema.Schema {
 				Schema: TagLevelSettingsSchema(),
 			},
 			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChangesV2("tag_level_settings",
+				[]string{"flow_log_transmission", "interface_ordering"}),
 		},
 
 		"tags": {

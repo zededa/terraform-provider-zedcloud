@@ -56,6 +56,7 @@ func Provider() *schema.Provider {
 			"zedcloud_brand":                HardwareBrandDataSource(),
 			"zedcloud_auth_profile":         AuthProfileDataSource(),
 			"zedcloud_edgenode_cluster":     ClusterDataSource(),
+			"zedcloud_enterprise":           EnterpriseDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":               NodeResource(),
@@ -77,6 +78,7 @@ func Provider() *schema.Provider {
 			"zedcloud_brand":                  HardwareBrandResource(),
 			"zedcloud_auth_profile":           AuthProfileResource(),
 			"zedcloud_edgenode_cluster":       ClusterResource(),
+			"zedcloud_enterprise":             EnterpriseResource(),
 		},
 	}
 }

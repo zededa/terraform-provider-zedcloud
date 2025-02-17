@@ -14,7 +14,6 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.2
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.24.1
 	golang.org/x/exp v0.0.0-20230131160201-f062dba9d201
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -77,4 +76,5 @@ require (
 	google.golang.org/grpc v1.56.3 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

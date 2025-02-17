@@ -71,6 +71,7 @@ func TagLevelSettingsSchema() map[string]*schema.Schema {
 				`NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED or NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_ENABLED`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:   	 "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED",
 		},
 
 		"interface_ordering": {
@@ -78,6 +79,7 @@ func TagLevelSettingsSchema() map[string]*schema.Schema {
 				` or INTERFACE_ORDERING_ENABLED`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:   	 "INTERFACE_ORDERING_DISABLED",
 		},
 	}
 }

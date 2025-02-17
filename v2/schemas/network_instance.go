@@ -28,6 +28,14 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetworkInstance {
 			dNSList = append(dNSList, m)
 		}
 	}
+	var edgeNodeCluster *models.NetInstEdgeNodeCluster // NetInstEdgeNodeCluster
+	edgeNodeClusterInterface, edgeNodeClusterIsSet := d.GetOk("edge_node_cluster")
+	if edgeNodeClusterIsSet && edgeNodeClusterInterface != nil {
+		edgeNodeClusterMap := edgeNodeClusterInterface.([]interface{})
+		if len(edgeNodeClusterMap) > 0 {
+			edgeNodeCluster = NetInstEdgeNodeClusterModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
+		}
+	}
 	id, _ := d.Get("id").(string)
 	var ip *models.DhcpServerConfig // DhcpServerConfig
 	ipInterface, ipIsSet := d.GetOk("ip")
@@ -131,6 +139,7 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetworkInstance {
 		DeviceID:        			&deviceID, // string true false false
 		Dhcp:            			dhcp,
 		DNSList:         			dNSList,
+		EdgeNodeCluster:          edgeNodeCluster,
 		ID:              			id,
 		IP:              			ip,
 		Kind:            			kind,
@@ -173,6 +182,14 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetworkInstan
 			}
 			m := StaticDNSListModelFromMap(v.(map[string]interface{}))
 			dNSList = append(dNSList, m)
+		}
+	}
+	var edgeNodeCluster *models.NetInstEdgeNodeCluster // NetInstEdgeNodeCluster
+	edgeNodeClusterInterface, edgeNodeClusterIsSet := m["edge_node_cluster"]
+	if edgeNodeClusterIsSet && edgeNodeClusterInterface != nil {
+		edgeNodeClusterMap := edgeNodeClusterInterface.([]interface{})
+		if len(edgeNodeClusterMap) > 0 {
+			edgeNodeCluster = NetInstEdgeNodeClusterModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
 		}
 	}
 	id := m["id"].(string)
@@ -281,6 +298,7 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetworkInstan
 		DeviceID:        			&deviceID,
 		Dhcp:            			dhcp,
 		DNSList:         			dNSList,
+		EdgeNodeCluster:          edgeNodeCluster,
 		ID:              			id,
 		IP:              			ip,
 		Kind:            			kind,
@@ -309,6 +327,7 @@ func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetworkIns
 	d.Set("device_id", m.DeviceID)
 	d.Set("dhcp", m.Dhcp)
 	d.Set("dns_list", SetStaticDNSListSubResourceData(m.DNSList))
+	d.Set("edge_node_cluster", SetNetInstEdgeNodeClusterSubResourceData([]*models.NetInstEdgeNodeCluster{m.EdgeNodeCluster}))
 	d.Set("id", m.ID)
 	d.Set("ip", SetDHCPServerSubResourceData([]*models.DhcpServerConfig{m.IP}))
 	d.Set("kind", m.Kind)
@@ -339,6 +358,7 @@ func SetNetworkInstanceSubResourceData(m []*models.NetworkInstance) (d []*map[st
 			properties["device_id"] = NetInstConfigModel.DeviceID
 			properties["dhcp"] = NetInstConfigModel.Dhcp
 			properties["dns_list"] = SetStaticDNSListSubResourceData(NetInstConfigModel.DNSList)
+			properties["edge_node_cluster"] = SetNetInstEdgeNodeClusterSubResourceData([]*models.NetInstEdgeNodeCluster{NetInstConfigModel.EdgeNodeCluster})
 			properties["id"] = NetInstConfigModel.ID
 			properties["ip"] = SetDHCPServerSubResourceData([]*models.DhcpServerConfig{NetInstConfigModel.IP})
 			properties["kind"] = NetInstConfigModel.Kind
@@ -404,6 +424,16 @@ func NetworkInstance() map[string]*schema.Schema {
 			DiffSuppressFunc: diffSuppressDNSListOrder("dns_list"),
 			Optional:         true,
 			Computed:         true,
+		},
+
+		"edge_node_cluster": {
+			Description: `Edge Node Cluster`,
+			Type:        schema.TypeList, //GoType: NetInstEdgeNodeCluster
+			Elem: &schema.Resource{
+				Schema: NetInstEdgeNodeClusterSchema(),
+			},
+			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("edge_node_cluster", "id"),
 		},
 
 		"id": {
@@ -563,6 +593,7 @@ func GetNetworkInstancePropertyFields() (t []string) {
 		"device_id",
 		"dhcp",
 		"dns_list",
+		"edge_node_cluster",
 		"id",
 		"ip",
 		"kind",

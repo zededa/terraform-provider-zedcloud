@@ -33,6 +33,8 @@ type ClientService interface {
 	IdentityAccessManagementCreateRole(params *IdentityAccessManagementCreateRoleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateRoleOK, error)
 
 	IdentityAccessManagementCreateUser(params *IdentityAccessManagementCreateUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateUserOK, error)
+	
+	IdentityAccessManagementCreateEnterprise(params *IdentityAccessManagementCreateEnterpriseParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateEnterpriseOK, error)
 
 	IdentityAccessManagementLogin(params *IdentityAccessManagementLoginParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementLoginOK, error)
 
@@ -49,6 +51,8 @@ type ClientService interface {
 	IdentityAccessManagementDeleteUser(params *IdentityAccessManagementDeleteUserParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteUserOK, error)
 
 	IdentityAccessManagementDeleteAuthProfile(params *IdentityAccessManagementDeleteAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteAuthProfileOK, error)
+	
+	IdentityAccessManagementDeleteEnterprise(params *IdentityAccessManagementDeleteEnterpriseParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteEnterpriseOK, error)
 
 	IdentityAccessManagementGetRole(params *IdentityAccessManagementGetRoleParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetRoleOK, error)
 
@@ -61,6 +65,10 @@ type ClientService interface {
 	IdentityAccessManagementGetAuthProfile(params *IdentityAccessManagementGetAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetAuthProfileOK, error)
 
 	IdentityAccessManagementGetAuthProfileByName(params *IdentityAccessManagementGetAuthProfileByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetAuthProfileByNameOK, error)
+	
+	IdentityAccessManagementGetEnterprise(params *IdentityAccessManagementGetEnterpriseParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetEnterpriseOK, error)
+
+	IdentityAccessManagementGetEnterpriseByName(params *IdentityAccessManagementGetEnterpriseByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetEnterpriseByNameOK, error)
 
 	IdentityAccessManagementUpdateCredential(params *IdentityAccessManagementUpdateCredentialParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateCredentialOK, error)
 
@@ -69,6 +77,8 @@ type ClientService interface {
 	IdentityAccessManagementUpdateUser2(params *IdentityAccessManagementUpdateUser2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateUser2OK, error)
 
 	IdentityAccessManagementUpdateAuthProfile(params *IdentityAccessManagementUpdateAuthProfileParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateAuthProfileOK, error)
+	
+	IdentityAccessManagementUpdateEnterprise2(params *IdentityAccessManagementUpdateEnterprise2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateEnterprise2OK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -190,6 +200,46 @@ func (a *Client) IdentityAccessManagementCreateUser(params *IdentityAccessManage
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*IdentityAccessManagementCreateUserDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementCreateEnterprise creates i a m enterprise
+
+Create an IAM enterprise record.
+*/
+func (a *Client) IdentityAccessManagementCreateEnterprise(params *IdentityAccessManagementCreateEnterpriseParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementCreateEnterpriseOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementCreateEnterpriseParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_CreateEnterprise",
+		Method:             "POST",
+		PathPattern:        "/v1/enterprises",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementCreateEnterpriseReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementCreateEnterpriseOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementCreateEnterpriseDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
@@ -513,6 +563,46 @@ func (a *Client) IdentityAccessManagementDeleteUser(params *IdentityAccessManage
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
+/*
+IdentityAccessManagementDeleteEnterprise deletes i a m role
+
+Delete an IAM enterprise record.
+*/
+func (a *Client) IdentityAccessManagementDeleteEnterprise(params *IdentityAccessManagementDeleteEnterpriseParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementDeleteEnterpriseOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementDeleteEnterpriseParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_DeleteEnterprise",
+		Method:             "DELETE",
+		PathPattern:        "/v1/enterprises/id/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementDeleteEnterpriseReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementDeleteEnterpriseOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementDeleteEnterpriseDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
 
 /*
 IdentityAccessManagementDeleteAuthProfile deletes a a a profile
@@ -715,6 +805,86 @@ func (a *Client) IdentityAccessManagementGetUserByName(params *IdentityAccessMan
 }
 
 /*
+IdentityAccessManagementGetEnterprise gets enterprise
+
+Get the configuration (without security details) and status of an enterprise record.
+*/
+func (a *Client) IdentityAccessManagementGetEnterprise(params *IdentityAccessManagementGetEnterpriseParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetEnterpriseOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementGetEnterpriseParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_GetEnterprise",
+		Method:             "GET",
+		PathPattern:        "/v1/enterprises/id/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementGetEnterpriseReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementGetEnterpriseOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementGetEnterpriseDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementGetEnterpriseByName gets enterprise
+
+Get the configuration (without security details) and status of an enterprise record.
+*/
+func (a *Client) IdentityAccessManagementGetEnterpriseByName(params *IdentityAccessManagementGetEnterpriseByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementGetEnterpriseByNameOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementGetEnterpriseByNameParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_GetEnterpriseByName",
+		Method:             "GET",
+		PathPattern:        "/v1/enterprises/name/{name}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementGetEnterpriseByNameReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementGetEnterpriseByNameOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementGetEnterpriseByNameDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
 IdentityAccessManagementGetAuthProfile gets a a a profile
 
 Get the configuration (without security details) of an AAA profile record.
@@ -911,6 +1081,46 @@ func (a *Client) IdentityAccessManagementUpdateUser2(params *IdentityAccessManag
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*IdentityAccessManagementUpdateUser2Default)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+IdentityAccessManagementUpdateEnterprise2 updates enterprise
+
+Update an enterprise record. The usual pattern to update an enterprise record is to retrieve the record and update with the modified values in a new body to update the enterprise record.
+*/
+func (a *Client) IdentityAccessManagementUpdateEnterprise2(params *IdentityAccessManagementUpdateEnterprise2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*IdentityAccessManagementUpdateEnterprise2OK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewIdentityAccessManagementUpdateEnterprise2Params()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "IdentityAccessManagement_UpdateEnterprise2",
+		Method:             "PUT",
+		PathPattern:        "/v1/enterprises/id/{id}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &IdentityAccessManagementUpdateEnterprise2Reader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*IdentityAccessManagementUpdateEnterprise2OK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*IdentityAccessManagementUpdateEnterprise2Default)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

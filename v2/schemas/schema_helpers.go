@@ -301,6 +301,109 @@ func diffSuppressChangedList(mapKey string) schema.SchemaDiffSuppressFunc {
 	}
 }
 
+func diffSupressMapInterfaceNonConfigChanges(field string, mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(field)
+
+		idOld := ""
+		oldDataList, ok := oldData.([]interface{})
+		if ok && len(oldDataList) > 0 {
+			gotOld, okOld := oldDataList[0].(map[string]interface{})
+			if okOld {
+				idOld, _ = gotOld[mapKey].(string)
+			}
+		}
+
+		newDataList, ok := newData.([]interface{})
+		if !ok || len(newDataList) == 0 {
+			return true
+		}
+
+		gotNew, okNew := newDataList[0].(map[string]interface{})
+		if !okNew {
+			return true
+		}
+
+		id, _ := gotNew[mapKey].(string)
+		if  id == "" {
+			return true
+		} else if id == idOld {
+			return true
+		}
+
+		return false
+	}
+}
+
+func diffSupressMapInterfaceNonConfigChangesV2(field string, mapKeys []string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(field)
+
+		oldValues := make(map[string]string, len(mapKeys))
+		oldDataList, ok := oldData.([]interface{})
+		if ok {
+			for _, oldData := range oldDataList {
+				gotOld, okOld := oldData.(map[string]interface{})
+				if okOld {
+					for _, mapKey := range mapKeys {
+						idOld, _ := gotOld[mapKey].(string)
+						if idOld != "" {
+							oldValues[mapKey] = idOld
+						}
+					}
+				}
+			}
+		}
+
+		newDataList, ok := newData.([]interface{})
+		if !ok || len(newDataList) == 0 {
+			return true
+		}
+		
+		for _, newData := range newDataList {
+			gotNew, okNew := newData.(map[string]interface{})
+			if !okNew {
+				return true
+			}
+
+			allEqual := true
+
+			for _, mapKey := range mapKeys {
+				val, _ := gotNew[mapKey].(string)
+				if val == "" {
+					return true
+				} else if val != oldValues[mapKey] {
+					allEqual = false
+					break
+				}
+			}
+
+			if allEqual {
+				return true
+			}
+		}
+
+		return false
+	}
+}
+
+func diffSupressStringNonConfigChanges(field string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(field)
+		if oldData == nil || newData == nil {
+			return true
+		}
+
+		old, _ := oldData.(string)
+		new, okNew := newData.(string)
+		if !okNew || new == "" || old == new {
+			return true
+		}
+
+		return old == new
+	}
+}
+
 // Equal tells whether a and b contain the same elements.
 // A nil argument is equivalent to an empty slice.
 func Equal(a, b []string) bool {

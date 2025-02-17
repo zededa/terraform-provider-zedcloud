@@ -21,6 +21,9 @@ func ProjectResource() *schema.Resource {
 		UpdateContext: UpdateProject,
 		DeleteContext: DeleteProject,
 		Schema:        zschema.Project(),
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 	}
 }
 

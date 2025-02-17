@@ -98,6 +98,7 @@ func testVolumeInstanceAttributes(t *testing.T, got, expected *models.VolumeInst
 			"DeviceID",
 			"Purge",
 			"SizeBytes",
+			"EdgeNodeCluster",
 		}
 		opts := cmpopts.IgnoreFields(models.VolumeInstance{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
