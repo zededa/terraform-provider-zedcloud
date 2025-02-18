@@ -46,7 +46,7 @@ type VolumeInstConfig struct {
 	Purge *ZedCloudOpsCmd `json:"purge,omitempty"`
 
 	// size of volume
-	SizeBytes uint64 `json:"sizeBytes,omitempty"`
+	SizeBytes string `json:"sizeBytes,omitempty"`
 
 	// type of Volume Instance
 	Type *VolumeInstanceType `json:"type,omitempty"`

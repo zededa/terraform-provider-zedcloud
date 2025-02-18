@@ -11,6 +11,7 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/datastore"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/deployment"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/hardware_model"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/identity_access_management"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/image"
@@ -79,6 +80,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.Project = projects.New(transport, formats)
 	cli.IdentityAccessManagement = identity_access_management.New(transport, formats)
 	cli.PatchEnvelope = patch_envelope.New(transport, formats)
+	cli.Deployment = deployment.New(transport, formats)
 	cli.Cluster = cluster.New(transport, formats)
 	return cli
 }
@@ -149,6 +151,8 @@ type ZedcloudAPI struct {
 	IdentityAccessManagement identity_access_management.ClientService
 
 	PatchEnvelope patch_envelope.ClientService
+
+	Deployment deployment.ClientService
 	
 	Cluster cluster.ClientService
 }
@@ -170,4 +174,6 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.IdentityAccessManagement.SetTransport(transport)
 
 	c.PatchEnvelope.SetTransport(transport)
+
+	c.Deployment.SetTransport(transport)
 }

@@ -39,6 +39,7 @@ func ExtAccessPolicy() map[string]*schema.Schema {
 		"allow_ext": {
 			Description: ``,
 			Type:        schema.TypeBool,
+			Default:     false,
 			Optional:    true,
 		},
 	}

@@ -68,6 +68,7 @@ func Provider() *schema.Provider {
 			"zedcloud_datastore":              DatastoreResource(),
 			"zedcloud_volume_instance":        VolumeInstanceResource(),
 			"zedcloud_project":                ProjectResource(),
+			"zedcloud_deployment":             DeploymentResource(),
 			"zedcloud_user":                   UserResource(),
 			"zedcloud_role":                   RoleResource(),
 			"zedcloud_credential":             CredentialResource(),

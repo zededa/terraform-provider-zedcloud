@@ -23,6 +23,8 @@ The Terraform Provider for Zededa Cloud enables infrastructure automation for Ze
 - [x] Role
 - [x] Credential
 - [x] Patch Envelope
+- [x] Project
+- [x] Deployment
 - [ ] Image
 
 ## Quickstart

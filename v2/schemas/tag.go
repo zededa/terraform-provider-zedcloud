@@ -30,14 +30,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 			configurationLockPolicy = PolicyConfigModelFromMap(configurationLockPolicyMap[0].(map[string]interface{}))
 		}
 	}
-	var deployment *models.Deployment // Deployment
-	deploymentInterface, deploymentIsSet := d.GetOk("deployment")
-	if deploymentIsSet && deploymentInterface != nil {
-		deploymentMap := deploymentInterface.([]interface{})
-		if len(deploymentMap) > 0 {
-			deployment = DeploymentModelFromMap(deploymentMap[0].(map[string]interface{}))
-		}
-	}
+
 	description, _ := d.Get("description").(string)
 	var edgeviewPolicy *models.Policy // Policy
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
@@ -102,7 +95,6 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		AppPolicy:                  appPolicy,
 		AttestationPolicy:          attestationPolicy,
 		ConfigurationLockPolicy:    configurationLockPolicy,
-		Deployment:                 deployment,
 		Description:                description,
 		EdgeviewPolicy:             edgeviewPolicy,
 		ID:                         id,
@@ -141,15 +133,6 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		configurationLockPolicyMap := configurationLockPolicyInterface.([]interface{})
 		if len(configurationLockPolicyMap) > 0 {
 			configurationLockPolicy = PolicyConfigModelFromMap(configurationLockPolicyMap[0].(map[string]interface{}))
-		}
-	}
-	//
-	var deployment *models.Deployment // Deployment
-	deploymentInterface, deploymentIsSet := m["deployment"]
-	if deploymentIsSet && deploymentInterface != nil {
-		deploymentMap := deploymentInterface.([]interface{})
-		if len(deploymentMap) > 0 {
-			deployment = DeploymentModelFromMap(deploymentMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -223,7 +206,6 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		AppPolicy:                  appPolicy,
 		AttestationPolicy:          attestationPolicy,
 		ConfigurationLockPolicy:    configurationLockPolicy,
-		Deployment:                 deployment,
 		Description:                description,
 		EdgeviewPolicy:             edgeviewPolicy,
 		ID:                         id,
@@ -244,7 +226,6 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("attr", m.Attr)
 	d.Set("cloud_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.CloudPolicy}))
 	d.Set("configuration_lock_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.ConfigurationLockPolicy}))
-	d.Set("deployment", SetDeploymentSubResourceData([]*models.Deployment{m.Deployment}))
 	d.Set("description", m.Description)
 	d.Set("edgeview_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.EdgeviewPolicy}))
 	d.Set("id", m.ID)
@@ -269,7 +250,6 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 			properties["attr"] = TagModel.Attr
 			properties["cloud_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.CloudPolicy})
 			properties["configuration_lock_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.ConfigurationLockPolicy})
-			properties["deployment"] = SetDeploymentSubResourceData([]*models.Deployment{TagModel.Deployment})
 			properties["description"] = TagModel.Description
 			properties["edgeview_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.EdgeviewPolicy})
 			properties["id"] = TagModel.ID
@@ -333,15 +313,6 @@ func Project() map[string]*schema.Schema {
 			Type:        schema.TypeList, // GoType: Policy
 			Elem: &schema.Resource{
 				Schema: Policy(),
-			},
-			Optional: true,
-		},
-
-		"deployment": {
-			Description: `Deployment template containing different types of policies`,
-			Type:        schema.TypeList, // GoType: Deployment
-			Elem: &schema.Resource{
-				Schema: DeploymentSchema(),
 			},
 			Optional: true,
 		},

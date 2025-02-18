@@ -2,10 +2,10 @@ package testing
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
-	"errors"
 
 	"github.com/ghodss/yaml"
 )
@@ -31,7 +31,11 @@ func MustGetExpectedOutput(t *testing.T, path string, i interface{}) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	jsonBytes, _ := yaml.YAMLToJSON(bytes)
+	jsonBytes, err := yaml.YAMLToJSON(bytes)
+	if err != nil {
+		t.Logf("unexpected error: %s", err)
+		return
+	}
 	if err := json.Unmarshal(jsonBytes, i); err != nil {
 		t.Fatal(err)
 	}

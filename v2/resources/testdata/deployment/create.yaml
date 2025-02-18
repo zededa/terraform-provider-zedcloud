@@ -1,0 +1,150 @@
+name: "test_tf_provider-deployment-v1"
+title: "test_tf_provider-deployment"
+deploymentTag: "depl:1234"
+
+devicePolicies:
+  - metaData:
+      name: "test_tf_provider-edge-node-policy-attestation-v1"
+      title: "test_tf_provider-edge-node-policy"
+      policyTargetCondition:
+        depl: "1234"
+      tags:
+        depl: "1234"
+    policySubType: "DEVICE_POLICY_TYPE_ATTESTATION"
+    attestationPolicy:
+      type: "DEVICE_ATTEST_POLICY_TYPE_ACCEPT"
+
+networkInstPolicies:
+  - metaData:
+      name: "test_tf_provider-network-instance-policy-v1"
+      title: "test_tf_provider-network-instance-policy"
+      policyTargetCondition:
+        depl: "1234"
+      tags: {}
+    netInstConfig:
+      port: "uplink"
+      kind: "NETWORK_INSTANCE_KIND_LOCAL"
+      type: "NETWORK_INSTANCE_DHCP_TYPE_V4"
+      dnsList: []
+      portTags: {}
+      staticRoutes: []
+      tags: {}
+
+appInstPolicies:
+  - metaData:
+      name: "test_tf_provider-app-instance-policy-v1"
+      title: "test_tf_provider-app-instance-policy"
+      policyTargetCondition:
+        depl: "1234"
+      tags:
+        depl: "1234"
+    appInstConfig:
+      namingScheme: "APP_NAMING_SCHEMEV2_PROJECT_APP_DEVICE"
+      nameProjectPart: "depl-project"
+      startDelayInSeconds: 0
+      nameAppPart: "test_tf_provider"
+      originType: "ORIGIN_LOCAL"
+      interfaces:
+        - intforder: 1
+          intfName: "indirect"
+          directAttach: false
+          netInstName: ""
+          privateIp: false
+          acls: []
+          netinsttag: {}
+          ipaddr: ""
+          macaddr: ""
+      tags:
+        depl: "1234"
+      manifestJson:
+        name: "tf-app-instance"
+        acKind: "VMManifest"
+        acVersion: "1.2.0"
+        deploymentType: "DEPLOYMENT_TYPE_STAND_ALONE"
+        appType: "APP_TYPE_VM"
+        owner:
+          user: "testuser"
+          group: "testgroup"
+          company: "Zededa Inc."
+          website: "https://www.zededa.com"
+          email: "test@zededa.com"
+        description: "test app instance"
+        cpuPinningEnabled: false
+        interfaces: []
+        permissions: []
+        images:
+          - imageName: "test_tf_provider-alpine"
+            maxSize: "0"
+            imageFormat: "CONTAINER"
+            preserve: false
+            readOnly: false
+            ignorePurge: false
+            clearText: false
+            params: []
+        desc:
+          category: "APP_CATEGORY_CLOUD_APPLICATION"
+          appCategory: "APP_CATEGORY_UNSPECIFIED"
+          support: "support"
+          agreementList: {}
+          licenseList: {}
+          logo: {}
+          screenshotList: {}
+        vmMode: "HV_HVM"
+        enableVnc: false
+        resources:
+          - name: "resourceType"
+            value: "Custom"
+          - name: "cpus"
+            value: "2"
+          - name: "memory"
+            value: "1024000.00"
+        configuration:
+          customConfig:
+            name: "custom_config_name"
+            add: false
+            override: false
+            allowStorageResize: false
+            fieldDelimiter: ""
+            template: ""
+            variableGroups: []
+
+volumeInstPolicies:
+  - metaData:
+      name: "test_tf_provider-volume-instance-policy-v1"
+      title: "test_tf_provider-volume-instance-policy"
+      policyTargetCondition:
+        depl: "1234"
+      tags:
+        depl: "1234"
+    volInstConfig:
+      type: "VOLUME_INSTANCE_TYPE_BLOCKSTORAGE"
+      accessMode: "VOLUME_INSTANCE_ACCESS_MODE_READWRITE"
+      sizeBytes: "1048576"
+      clearText: true
+      blockStorageTags: {}
+      contentTreeTargetCondition: {}
+
+edgeviewPolicy:
+  metaData:
+    name: "test_tf_provider-edgeview-policy-v1"
+    title: "test_tf_provider-edgeview-policy"
+    policyTargetCondition:
+      depl: "1234"
+    tags: {}
+  edgeviewCfg:
+    jwtInfo:
+      dispUrl: "zedcloud.local.zededa.net/api/v1/edge-view"
+      allowSec: 18000
+      numInst: 1
+      encrypt: false
+      expireSec: "0"
+    devPolicy:
+      allowDev: true
+    appPolicy:
+      allowApp: true
+    extPolicy:
+      allowExt: false
+  accessAllowChange: true
+  maxExpireSec: 2592000
+  maxInst: 3
+  edgeviewAllow: true

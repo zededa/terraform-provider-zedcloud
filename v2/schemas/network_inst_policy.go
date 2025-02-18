@@ -14,12 +14,12 @@ func NetworkInstPolicyModel(d *schema.ResourceData) *models.NetworkInstPolicy {
 			metaData = PolicyCommonModelFromMap(metaDataMap[0].(map[string]interface{}))
 		}
 	}
-	var netInstConfig *models.NetworkInstance // NetworkInstConfig
+	var netInstConfig *models.NetworkInstConfig // NetworkInstConfig
 	netInstConfigInterface, netInstConfigIsSet := d.GetOk("net_inst_config")
 	if netInstConfigIsSet && netInstConfigInterface != nil {
 		netInstConfigMap := netInstConfigInterface.([]interface{})
 		if len(netInstConfigMap) > 0 {
-			netInstConfig = NetworkInstanceModelFromMap(netInstConfigMap[0].(map[string]interface{}))
+			netInstConfig = NetworkInstConfigModelFromMap(netInstConfigMap[0].(map[string]interface{}))
 		}
 	}
 	return &models.NetworkInstPolicy{
@@ -38,12 +38,12 @@ func NetworkInstPolicyModelFromMap(m map[string]interface{}) *models.NetworkInst
 		}
 	}
 	//
-	var netInstConfig *models.NetworkInstance // NetworkInstConfig
+	var netInstConfig *models.NetworkInstConfig // NetworkInstConfig
 	netInstConfigInterface, netInstConfigIsSet := m["net_inst_config"]
 	if netInstConfigIsSet && netInstConfigInterface != nil {
 		netInstConfigMap := netInstConfigInterface.([]interface{})
 		if len(netInstConfigMap) > 0 {
-			netInstConfig = NetworkInstanceModelFromMap(netInstConfigMap[0].(map[string]interface{}))
+			netInstConfig = NetworkInstConfigModelFromMap(netInstConfigMap[0].(map[string]interface{}))
 		}
 	}
 	//
@@ -55,7 +55,7 @@ func NetworkInstPolicyModelFromMap(m map[string]interface{}) *models.NetworkInst
 
 func SetNetworkInstPolicyResourceData(d *schema.ResourceData, m *models.NetworkInstPolicy) {
 	d.Set("meta_data", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.MetaData}))
-	d.Set("net_inst_config", SetNetworkInstanceSubResourceData([]*models.NetworkInstance{m.NetInstConfig}))
+	d.Set("net_inst_config", SetNetworkInstConfigSubResourceData([]*models.NetworkInstConfig{m.NetInstConfig}))
 }
 
 func SetNetworkInstPolicySubResourceData(m []*models.NetworkInstPolicy) (d []*map[string]interface{}) {
@@ -63,7 +63,7 @@ func SetNetworkInstPolicySubResourceData(m []*models.NetworkInstPolicy) (d []*ma
 		if NetworkInstPolicyModel != nil {
 			properties := make(map[string]interface{})
 			properties["meta_data"] = SetPolicyCommonSubResourceData([]*models.PolicyCommon{NetworkInstPolicyModel.MetaData})
-			properties["net_inst_config"] = SetNetworkInstanceSubResourceData([]*models.NetworkInstance{NetworkInstPolicyModel.NetInstConfig})
+			properties["net_inst_config"] = SetNetworkInstConfigSubResourceData([]*models.NetworkInstConfig{NetworkInstPolicyModel.NetInstConfig})
 			d = append(d, &properties)
 		}
 	}
@@ -85,7 +85,7 @@ func NetworkInstPolicySchema() map[string]*schema.Schema {
 			Description: `network instance config details`,
 			Type:        schema.TypeList, //GoType: NetworkInstConfig
 			Elem: &schema.Resource{
-				Schema: NetworkInstance(),
+				Schema: NetworkInstConfig(),
 			},
 			Optional: true,
 		},
