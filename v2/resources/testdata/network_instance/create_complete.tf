@@ -140,6 +140,15 @@ resource "zedcloud_network_instance" "complete" {
         }
         mask = "255.255.255.0"
         ntp = "10.1.0.2"
+        dns = [
+          "9.9.9.9",
+          "8.8.8.8",
+          "7.7.7.7",
+          "6.6.6.6",
+          "5.5.5.5",
+          "4.4.4.4",
+          "3.3.3.3"
+        ]
     }
     opaque {
         oconfig = "Test OConfig"
