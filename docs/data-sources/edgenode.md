@@ -306,25 +306,14 @@ Required:
 <a id="nestedblock--edgeviewconfig"></a>
 ### Nested Schema for `edgeviewconfig`
 
-Required:
-
-- `ext_policy` (Block List, Min: 1) (see [below for nested schema](#nestedblock--edgeviewconfig--ext_policy))
-
 Optional:
 
 - `app_policy` (Block List) (see [below for nested schema](#nestedblock--edgeviewconfig--app_policy))
 - `dev_policy` (Block List) (see [below for nested schema](#nestedblock--edgeviewconfig--dev_policy))
+- `ext_policy` (Block List) (see [below for nested schema](#nestedblock--edgeviewconfig--ext_policy))
 - `generation_id` (Number)
 - `jwt_info` (Block List) (see [below for nested schema](#nestedblock--edgeviewconfig--jwt_info))
 - `token` (String)
-
-<a id="nestedblock--edgeviewconfig--ext_policy"></a>
-### Nested Schema for `edgeviewconfig.ext_policy`
-
-Optional:
-
-- `allow_ext` (Boolean)
-
 
 <a id="nestedblock--edgeviewconfig--app_policy"></a>
 ### Nested Schema for `edgeviewconfig.app_policy`
@@ -340,6 +329,13 @@ Optional:
 Optional:
 
 - `allow_dev` (Boolean)
+
+<a id="nestedblock--edgeviewconfig--ext_policy"></a>
+### Nested Schema for `edgeviewconfig.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
 
 
 <a id="nestedblock--edgeviewconfig--jwt_info"></a>

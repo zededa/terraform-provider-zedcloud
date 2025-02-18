@@ -171,10 +171,6 @@ Optional:
 <a id="nestedblock--manifest--images"></a>
 ### Nested Schema for `manifest.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -183,6 +179,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--manifest--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
