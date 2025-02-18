@@ -69,10 +69,6 @@ data "zedcloud_project" "test_tf_provider" {
   depends_on = [
     zedcloud_project.test_tf_provider
   ]
-  tag_level_settings {
-    flow_log_transmission =  "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED"
-    interface_ordering = "INTERFACE_ORDERING_DISABLED"
-  }
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
