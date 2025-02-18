@@ -6,6 +6,7 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -41,6 +42,11 @@ func CreateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	latestDeploymentID, err := getLatestProjectDeployment(ctx, client, model.ProjectID)
 	if err != nil {
+		log.Printf("[TRACE] deployment create error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
 		log.Printf("[ERROR] failed to get latest deployment for project: %s", err)
 		diags = append(diags, diag.Errorf("failed to get latest deployment for project: %s", err)...)
 		return diags
@@ -53,8 +59,12 @@ func CreateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 		params.SetBody(model)
 		params.SetProjectID(model.ProjectID)
 		resp, err := client.Deployment.Create(params, nil)
-		log.Printf("[TRACE] response: %v", resp)
 		if err != nil {
+			log.Printf("[TRACE] deployment create error: %s", spew.Sdump(err))
+			if ds, ok := ZsrvResponderToDiags(err); ok {
+				diags = append(diags, ds...)
+				return diags
+			}
 			diags = append(diags, diag.Errorf("unexpected: %s", err)...)
 			return diags
 		}
@@ -67,8 +77,12 @@ func CreateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 		params.SetProjectID(model.ProjectID)
 		params.SetID(latestDeploymentID)
 		resp, err := client.Deployment.CreateNewVersion(params, nil)
-		log.Printf("[TRACE] response: %v", resp)
 		if err != nil {
+			log.Printf("[TRACE] deployment create error: %s", spew.Sdump(err))
+			if ds, ok := ZsrvResponderToDiags(err); ok {
+				diags = append(diags, ds...)
+				return diags
+			}
 			diags = append(diags, diag.Errorf("unexpected: %s", err)...)
 			return diags
 		}
@@ -133,6 +147,11 @@ func DeleteDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 	resp, err := client.Deployment.Delete(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
+		log.Printf("[TRACE] deployment delete error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
 		return diags
 	}
@@ -171,6 +190,11 @@ func GetDeploymentByID(ctx context.Context, d *schema.ResourceData, m interface{
 	resp, err := client.Deployment.GetByID(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
+		log.Printf("[TRACE] deployment get by id error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			diags = append(diags, ds...)
+			return diags
+		}
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
 
