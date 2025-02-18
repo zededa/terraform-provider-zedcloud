@@ -117,7 +117,6 @@ func DHCPServer() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			// DiffSuppressFunc: diffSuppressDNSListOrder("dns"),
 			Optional: true,
 		},
 
