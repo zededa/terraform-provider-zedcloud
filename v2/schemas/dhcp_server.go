@@ -19,7 +19,7 @@ func DHCPServerModel(d *schema.ResourceData) *models.DhcpServerConfig {
 	if dnsIsSet {
 		dnsSlice := dnsInterface.([]interface{})
 		for _, i := range dnsSlice {
-			dnsSlice = append(dnsSlice, i.(string))
+			dns = append(dns, i.(string))
 		}
 	}
 	domain, _ := d.Get("domain").(string)
@@ -53,7 +53,7 @@ func DHCPServerModelFromMap(m map[string]interface{}) *models.DhcpServerConfig {
 	if dnsIsSet {
 		dnsSlice := dnsInterface.([]interface{})
 		for _, i := range dnsSlice {
-			dnsSlice = append(dnsSlice, i.(string))
+			dns = append(dns, i.(string))
 		}
 	}
 	domain, _ := m["domain"].(string)
@@ -117,8 +117,8 @@ func DHCPServer() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			DiffSuppressFunc: diffSuppressDNSListOrder("dns"),
-			Optional:         true,
+			// DiffSuppressFunc: diffSuppressDNSListOrder("dns"),
+			Optional: true,
 		},
 
 		"domain": {
