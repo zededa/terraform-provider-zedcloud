@@ -114,6 +114,7 @@ func ClusterNodeSchema() map[string]*schema.Schema {
 			Description: `Type of node. Currently it supports only: EDGE_NODE_CLUSTER_NODE_TYPE_SERVER`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:	"EDGE_NODE_CLUSTER_NODE_TYPE_SERVER",
 		},
 
 		"resource_labels": {

@@ -38,7 +38,7 @@ func TestDeployment_Create(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 				Check: resource.ComposeTestCheckFunc(
 					testDeploymentExists("zedcloud_deployment.tf_deployment", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_deployment.tf_deployment", "name", "test_tf_provider-deployment-v1"),
+					resource.TestCheckResourceAttr("zedcloud_deployment.tf_deployment", "name", "test_tf_provider-deployment"),
 					resource.TestCheckResourceAttr("zedcloud_deployment.tf_deployment", "title", "test_tf_provider-deployment"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_deployment.tf_deployment",

@@ -1,10 +1,10 @@
-name: "test_tf_provider-deployment-v1"
+name: "test_tf_provider-deployment"
 title: "test_tf_provider-deployment"
 deploymentTag: "depl:1234"
 
 devicePolicies:
   - metaData:
-      name: "test_tf_provider-edge-node-policy-attestation-v1"
+      name: "test_tf_provider-edge-node-policy-attestation"
       title: "test_tf_provider-edge-node-policy"
       policyTargetCondition:
         depl: "1234"
@@ -16,7 +16,7 @@ devicePolicies:
 
 networkInstPolicies:
   - metaData:
-      name: "test_tf_provider-network-instance-policy-v1"
+      name: "test_tf_provider-network-instance-policy"
       title: "test_tf_provider-network-instance-policy"
       policyTargetCondition:
         depl: "1234"
@@ -32,7 +32,7 @@ networkInstPolicies:
 
 appInstPolicies:
   - metaData:
-      name: "test_tf_provider-app-instance-policy-v1"
+      name: "test_tf_provider-app-instance-policy"
       title: "test_tf_provider-app-instance-policy"
       policyTargetCondition:
         depl: "1234"
@@ -110,7 +110,7 @@ appInstPolicies:
 
 volumeInstPolicies:
   - metaData:
-      name: "test_tf_provider-volume-instance-policy-v1"
+      name: "test_tf_provider-volume-instance-policy"
       title: "test_tf_provider-volume-instance-policy"
       policyTargetCondition:
         depl: "1234"
@@ -126,7 +126,7 @@ volumeInstPolicies:
 
 edgeviewPolicy:
   metaData:
-    name: "test_tf_provider-edgeview-policy-v1"
+    name: "test_tf_provider-edgeview-policy"
     title: "test_tf_provider-edgeview-policy"
     policyTargetCondition:
       depl: "1234"

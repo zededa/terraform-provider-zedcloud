@@ -9,7 +9,7 @@ artifacts:
       fileNameToUse: new_filename
       imageId: 334dc3a6-7de7-4e2b-ad14-a165767ae324
       imageName: test_tf_provider
-    format: OpaqueObjectCategoryExternalBinary
+    format: OpaqueObjectCategoryInline
     id: 3f4bb708-9892-4578-bc84-08fa9044610f
 description: test tf provider
 id: c054c11c-1558-4032-aa0b-c7b4650a3350
