@@ -51,7 +51,7 @@ func VolInstEdgeNodeClusterSchema() map[string]*schema.Schema {
 		"id": {
 			Description: `edge node cluster ID`,
 			Type:        schema.TypeString,
-			Computed:    true,
+			Required:    true,
 		},
 	}
 }

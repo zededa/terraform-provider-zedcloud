@@ -239,7 +239,7 @@ func VolumeInstance() map[string]*schema.Schema {
 		"device_id": {
 			Description: `id of the device on which volume instance is created`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"edge_node_cluster": {
