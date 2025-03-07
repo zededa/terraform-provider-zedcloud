@@ -574,7 +574,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 		"device_id": {
 			Description: `User defined name of the device name, unique across the enterprise. Once device name is defined, name can’t be changed`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"drives": {

@@ -40,6 +40,13 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	model := zschema.ApplicationInstanceModel(d)
 	params := config.CreateParams()
 	params.SetBody(model)
+	
+	_, isDevIDSet := d.GetOk("device_id")
+	_, isEdgeNodeClusterSet := d.GetOk("edge_node_cluster")
+	if !isDevIDSet && !isEdgeNodeClusterSet {
+		diags = append(diags, diag.Errorf("either device_id or edge_node_cluster has to be specified")...)
+		return diags
+	}
 
 	client := m.(*api_client.ZedcloudAPI)
 
