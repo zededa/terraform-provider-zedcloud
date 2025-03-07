@@ -821,6 +821,30 @@ Optional:
 - `jwt_info` (Block List) (see [below for nested schema](#nestedblock--app_policy--edgeview_policy--edgeviewcfg--jwt_info))
 - `token` (String)
 
+<a id="nestedblock--app_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
+### Nested Schema for `app_policy.edgeview_policy.edgeviewcfg.app_policy`
+
+Optional:
+
+- `allow_app` (Boolean)
+
+
+<a id="nestedblock--app_policy--edgeview_policy--edgeviewcfg--dev_policy"></a>
+### Nested Schema for `app_policy.edgeview_policy.edgeviewcfg.dev_policy`
+
+Optional:
+
+- `allow_dev` (Boolean)
+
+
+<a id="nestedblock--app_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
+### Nested Schema for `app_policy.edgeview_policy.edgeviewcfg.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
+
+
 <a id="nestedblock--app_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
 ### Nested Schema for `app_policy.edgeview_policy.edgeviewcfg.jwt_info`
 
@@ -1144,10 +1168,6 @@ Optional:
 <a id="nestedblock--app_policy--module_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `app_policy.module_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -1156,6 +1176,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -1564,10 +1585,6 @@ Optional:
 <a id="nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_agent.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -1576,6 +1593,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -1984,10 +2002,6 @@ Optional:
 <a id="nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
 ### Nested Schema for `app_policy.module_policy.azure_edge_hub.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -1996,6 +2010,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -2152,7 +2167,6 @@ Required:
 
 Required:
 
-- `device_id` (String) ID of the device on which network instance is created
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -2169,8 +2183,10 @@ Optional:
 - `cluster_id` (String) ID of the Cluster in which the network instance is configured
 - `description` (String) Detailed description of the network instance
 - `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `device_id` (String) ID of the device on which network instance is created
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--edge_node_cluster))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -2202,6 +2218,18 @@ Optional:
 
 - `addrs` (List of String) Addresses
 - `hostname` (String) Host name
+
+
+<a id="nestedblock--app_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `app_policy.network_policy.net_instance_config.edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the Edge Node Cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated Edge Node
 
 
 <a id="nestedblock--app_policy--network_policy--net_instance_config--ip"></a>
@@ -2629,10 +2657,6 @@ Optional:
 <a id="nestedblock--attestation_policy--app_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `attestation_policy.app_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -2641,6 +2665,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -3094,25 +3119,14 @@ Optional:
 <a id="nestedblock--attestation_policy--edgeview_policy--edgeviewcfg"></a>
 ### Nested Schema for `attestation_policy.edgeview_policy.edgeviewcfg`
 
-Required:
-
-- `ext_policy` (Block List, Min: 1) (see [below for nested schema](#nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--ext_policy))
-
 Optional:
 
 - `app_policy` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--app_policy))
 - `dev_policy` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--dev_policy))
+- `ext_policy` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--ext_policy))
 - `generation_id` (Number)
 - `jwt_info` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--jwt_info))
 - `token` (String)
-
-<a id="nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
-### Nested Schema for `attestation_policy.edgeview_policy.edgeviewcfg.ext_policy`
-
-Optional:
-
-- `allow_ext` (Boolean)
-
 
 <a id="nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
 ### Nested Schema for `attestation_policy.edgeview_policy.edgeviewcfg.app_policy`
@@ -3128,6 +3142,14 @@ Optional:
 Optional:
 
 - `allow_dev` (Boolean)
+
+
+<a id="nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
+### Nested Schema for `attestation_policy.edgeview_policy.edgeviewcfg.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
 
 
 <a id="nestedblock--attestation_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
@@ -3453,10 +3475,6 @@ Optional:
 <a id="nestedblock--attestation_policy--module_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `attestation_policy.module_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -3465,6 +3483,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -3873,10 +3892,6 @@ Optional:
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_agent.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -3885,6 +3900,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -4293,10 +4309,6 @@ Optional:
 <a id="nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
 ### Nested Schema for `attestation_policy.module_policy.azure_edge_hub.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -4305,6 +4317,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -4461,7 +4474,6 @@ Required:
 
 Required:
 
-- `device_id` (String) ID of the device on which network instance is created
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -4478,8 +4490,10 @@ Optional:
 - `cluster_id` (String) ID of the Cluster in which the network instance is configured
 - `description` (String) Detailed description of the network instance
 - `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `device_id` (String) ID of the device on which network instance is created
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--edge_node_cluster))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -4511,6 +4525,18 @@ Optional:
 
 - `addrs` (List of String) Addresses
 - `hostname` (String) Host name
+
+
+<a id="nestedblock--attestation_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `attestation_policy.network_policy.net_instance_config.edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the Edge Node Cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated Edge Node
 
 
 <a id="nestedblock--attestation_policy--network_policy--net_instance_config--ip"></a>
@@ -4938,10 +4964,6 @@ Optional:
 <a id="nestedblock--configuration_lock_policy--app_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `configuration_lock_policy.app_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -4950,6 +4972,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--configuration_lock_policy--app_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -5403,25 +5426,14 @@ Optional:
 <a id="nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg"></a>
 ### Nested Schema for `configuration_lock_policy.edgeview_policy.edgeviewcfg`
 
-Required:
-
-- `ext_policy` (Block List, Min: 1) (see [below for nested schema](#nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--ext_policy))
-
 Optional:
 
 - `app_policy` (Block List) (see [below for nested schema](#nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--app_policy))
 - `dev_policy` (Block List) (see [below for nested schema](#nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--dev_policy))
+- `ext_policy` (Block List) (see [below for nested schema](#nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--ext_policy))
 - `generation_id` (Number)
 - `jwt_info` (Block List) (see [below for nested schema](#nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--jwt_info))
 - `token` (String)
-
-<a id="nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
-### Nested Schema for `configuration_lock_policy.edgeview_policy.edgeviewcfg.ext_policy`
-
-Optional:
-
-- `allow_ext` (Boolean)
-
 
 <a id="nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
 ### Nested Schema for `configuration_lock_policy.edgeview_policy.edgeviewcfg.app_policy`
@@ -5437,6 +5449,14 @@ Optional:
 Optional:
 
 - `allow_dev` (Boolean)
+
+
+<a id="nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
+### Nested Schema for `configuration_lock_policy.edgeview_policy.edgeviewcfg.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
 
 
 <a id="nestedblock--configuration_lock_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
@@ -5762,10 +5782,6 @@ Optional:
 <a id="nestedblock--configuration_lock_policy--module_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `configuration_lock_policy.module_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -5774,6 +5790,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -6182,10 +6199,6 @@ Optional:
 <a id="nestedblock--configuration_lock_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
 ### Nested Schema for `configuration_lock_policy.module_policy.azure_edge_agent.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -6194,6 +6207,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--azure_edge_agent--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -6602,10 +6616,6 @@ Optional:
 <a id="nestedblock--configuration_lock_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
 ### Nested Schema for `configuration_lock_policy.module_policy.azure_edge_hub.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -6614,6 +6624,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--azure_edge_hub--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -6770,7 +6781,6 @@ Required:
 
 Required:
 
-- `device_id` (String) ID of the device on which network instance is created
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -6787,8 +6797,10 @@ Optional:
 - `cluster_id` (String) ID of the Cluster in which the network instance is configured
 - `description` (String) Detailed description of the network instance
 - `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `device_id` (String) ID of the device on which network instance is created
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--edge_node_cluster))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -6820,6 +6832,18 @@ Optional:
 
 - `addrs` (List of String) Addresses
 - `hostname` (String) Host name
+
+
+<a id="nestedblock--configuration_lock_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `configuration_lock_policy.network_policy.net_instance_config.edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the Edge Node Cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated Edge Node
 
 
 <a id="nestedblock--configuration_lock_policy--network_policy--net_instance_config--ip"></a>
@@ -7247,10 +7271,6 @@ Optional:
 <a id="nestedblock--edgeview_policy--app_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `edgeview_policy.app_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -7259,6 +7279,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -7712,25 +7733,14 @@ Optional:
 <a id="nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg"></a>
 ### Nested Schema for `edgeview_policy.edgeview_policy.edgeviewcfg`
 
-Required:
-
-- `ext_policy` (Block List, Min: 1) (see [below for nested schema](#nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--ext_policy))
-
 Optional:
 
 - `app_policy` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--app_policy))
 - `dev_policy` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--dev_policy))
+- `ext_policy` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--ext_policy))
 - `generation_id` (Number)
 - `jwt_info` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--jwt_info))
 - `token` (String)
-
-<a id="nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
-### Nested Schema for `edgeview_policy.edgeview_policy.edgeviewcfg.ext_policy`
-
-Optional:
-
-- `allow_ext` (Boolean)
-
 
 <a id="nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
 ### Nested Schema for `edgeview_policy.edgeview_policy.edgeviewcfg.app_policy`
@@ -7746,6 +7756,14 @@ Optional:
 Optional:
 
 - `allow_dev` (Boolean)
+
+
+<a id="nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
+### Nested Schema for `edgeview_policy.edgeview_policy.edgeviewcfg.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
 
 
 <a id="nestedblock--edgeview_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
@@ -8071,10 +8089,6 @@ Optional:
 <a id="nestedblock--edgeview_policy--module_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `edgeview_policy.module_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -8083,6 +8097,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -8491,10 +8506,6 @@ Optional:
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_agent.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -8503,6 +8514,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -8911,10 +8923,6 @@ Optional:
 <a id="nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
 ### Nested Schema for `edgeview_policy.module_policy.azure_edge_hub.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -8923,6 +8931,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -9079,7 +9088,6 @@ Required:
 
 Required:
 
-- `device_id` (String) ID of the device on which network instance is created
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -9096,8 +9104,10 @@ Optional:
 - `cluster_id` (String) ID of the Cluster in which the network instance is configured
 - `description` (String) Detailed description of the network instance
 - `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `device_id` (String) ID of the device on which network instance is created
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--edge_node_cluster))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -9129,6 +9139,18 @@ Optional:
 
 - `addrs` (List of String) Addresses
 - `hostname` (String) Host name
+
+
+<a id="nestedblock--edgeview_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `edgeview_policy.network_policy.net_instance_config.edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the Edge Node Cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated Edge Node
 
 
 <a id="nestedblock--edgeview_policy--network_policy--net_instance_config--ip"></a>
@@ -9556,10 +9578,6 @@ Optional:
 <a id="nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `local_operator_console_policy.app_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -9568,6 +9586,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -10021,25 +10040,14 @@ Optional:
 <a id="nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg"></a>
 ### Nested Schema for `local_operator_console_policy.edgeview_policy.edgeviewcfg`
 
-Required:
-
-- `ext_policy` (Block List, Min: 1) (see [below for nested schema](#nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--ext_policy))
-
 Optional:
 
 - `app_policy` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--app_policy))
 - `dev_policy` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--dev_policy))
+- `ext_policy` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--ext_policy))
 - `generation_id` (Number)
 - `jwt_info` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--jwt_info))
 - `token` (String)
-
-<a id="nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
-### Nested Schema for `local_operator_console_policy.edgeview_policy.edgeviewcfg.ext_policy`
-
-Optional:
-
-- `allow_ext` (Boolean)
-
 
 <a id="nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
 ### Nested Schema for `local_operator_console_policy.edgeview_policy.edgeviewcfg.app_policy`
@@ -10055,6 +10063,14 @@ Optional:
 Optional:
 
 - `allow_dev` (Boolean)
+
+
+<a id="nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
+### Nested Schema for `local_operator_console_policy.edgeview_policy.edgeviewcfg.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
 
 
 <a id="nestedblock--local_operator_console_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
@@ -10380,10 +10396,6 @@ Optional:
 <a id="nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -10392,6 +10404,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -10800,10 +10813,6 @@ Optional:
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_agent.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -10812,6 +10821,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -11220,10 +11230,6 @@ Optional:
 <a id="nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
 ### Nested Schema for `local_operator_console_policy.module_policy.azure_edge_hub.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -11232,6 +11238,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -11388,7 +11395,6 @@ Required:
 
 Required:
 
-- `device_id` (String) ID of the device on which network instance is created
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -11405,8 +11411,10 @@ Optional:
 - `cluster_id` (String) ID of the Cluster in which the network instance is configured
 - `description` (String) Detailed description of the network instance
 - `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `device_id` (String) ID of the device on which network instance is created
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--edge_node_cluster))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -11438,6 +11446,18 @@ Optional:
 
 - `addrs` (List of String) Addresses
 - `hostname` (String) Host name
+
+
+<a id="nestedblock--local_operator_console_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `local_operator_console_policy.network_policy.net_instance_config.edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the Edge Node Cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated Edge Node
 
 
 <a id="nestedblock--local_operator_console_policy--network_policy--net_instance_config--ip"></a>
@@ -11865,10 +11885,6 @@ Optional:
 <a id="nestedblock--network_policy--app_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `network_policy.app_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -11877,6 +11893,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -12330,25 +12347,14 @@ Optional:
 <a id="nestedblock--network_policy--edgeview_policy--edgeviewcfg"></a>
 ### Nested Schema for `network_policy.edgeview_policy.edgeviewcfg`
 
-Required:
-
-- `ext_policy` (Block List, Min: 1) (see [below for nested schema](#nestedblock--network_policy--edgeview_policy--edgeviewcfg--ext_policy))
-
 Optional:
 
 - `app_policy` (Block List) (see [below for nested schema](#nestedblock--network_policy--edgeview_policy--edgeviewcfg--app_policy))
 - `dev_policy` (Block List) (see [below for nested schema](#nestedblock--network_policy--edgeview_policy--edgeviewcfg--dev_policy))
+- `ext_policy` (Block List) (see [below for nested schema](#nestedblock--network_policy--edgeview_policy--edgeviewcfg--ext_policy))
 - `generation_id` (Number)
 - `jwt_info` (Block List) (see [below for nested schema](#nestedblock--network_policy--edgeview_policy--edgeviewcfg--jwt_info))
 - `token` (String)
-
-<a id="nestedblock--network_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
-### Nested Schema for `network_policy.edgeview_policy.edgeviewcfg.ext_policy`
-
-Optional:
-
-- `allow_ext` (Boolean)
-
 
 <a id="nestedblock--network_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
 ### Nested Schema for `network_policy.edgeview_policy.edgeviewcfg.app_policy`
@@ -12364,6 +12370,14 @@ Optional:
 Optional:
 
 - `allow_dev` (Boolean)
+
+
+<a id="nestedblock--network_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
+### Nested Schema for `network_policy.edgeview_policy.edgeviewcfg.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
 
 
 <a id="nestedblock--network_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
@@ -12689,10 +12703,6 @@ Optional:
 <a id="nestedblock--network_policy--module_policy--apps--manifest_json--images"></a>
 ### Nested Schema for `network_policy.module_policy.apps.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -12701,6 +12711,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -13109,10 +13120,6 @@ Optional:
 <a id="nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_agent.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -13121,6 +13128,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -13529,10 +13537,6 @@ Optional:
 <a id="nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
 ### Nested Schema for `network_policy.module_policy.azure_edge_hub.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -13541,6 +13545,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -13697,7 +13702,6 @@ Required:
 
 Required:
 
-- `device_id` (String) ID of the device on which network instance is created
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -13714,8 +13718,10 @@ Optional:
 - `cluster_id` (String) ID of the Cluster in which the network instance is configured
 - `description` (String) Detailed description of the network instance
 - `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `device_id` (String) ID of the device on which network instance is created
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--edge_node_cluster))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -13747,6 +13753,18 @@ Optional:
 
 - `addrs` (List of String) Addresses
 - `hostname` (String) Host name
+
+
+<a id="nestedblock--network_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `network_policy.network_policy.net_instance_config.edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the Edge Node Cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated Edge Node
 
 
 <a id="nestedblock--network_policy--network_policy--net_instance_config--ip"></a>
@@ -13933,18 +13951,18 @@ Read-Only:
 - `title` (String)
 
 <a id="nestedobjatt--cloud_policy--app_policy--apps--interfaces"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.interfaces`
+### Nested Schema for `cloud_policy.app_policy.apps.title`
 
 Read-Only:
 
 - `access_vlan_id` (Number)
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--acls))
 - `default_net_instance` (Boolean)
 - `directattach` (Boolean)
-- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--interfaces--eidregister))
+- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--eidregister))
 - `intfname` (String)
 - `intforder` (Number)
-- `io` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--interfaces--io))
+- `io` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--io))
 - `ipaddr` (String)
 - `macaddr` (String)
 - `netinstid` (String)
@@ -13953,18 +13971,18 @@ Read-Only:
 - `netname` (String)
 - `privateip` (Boolean)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--interfaces--acls"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.interfaces.acls`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--acls"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.acls`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--interfaces--acls--actions))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--acls--actions))
 - `id` (Number)
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--interfaces--acls--matches))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--acls--matches))
 - `name` (String)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--interfaces--acls--actions"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.interfaces.acls.actions`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--acls--actions"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.acls.name`
 
 Read-Only:
 
@@ -13973,11 +13991,11 @@ Read-Only:
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
-- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--acls--name--mapparams))
 - `portmap` (Boolean)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--interfaces--acls--actions--mapparams"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.interfaces.acls.actions.mapparams`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--acls--name--mapparams"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.acls.name.portmap`
 
 Read-Only:
 
@@ -13985,8 +14003,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--interfaces--acls--matches"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.interfaces.acls.matches`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--acls--matches"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.acls.name`
 
 Read-Only:
 
@@ -13995,8 +14013,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--interfaces--eidregister"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.interfaces.eidregister`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--eidregister"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.eidregister`
 
 Read-Only:
 
@@ -14007,12 +14025,12 @@ Read-Only:
 - `e_id` (String)
 - `e_id_hash_len` (Number)
 - `lisp_instance` (Number)
-- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--interfaces--eidregister--lisp_map_servers))
+- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--eidregister--lisp_map_servers))
 - `lisp_signature` (String)
 - `uuid` (String)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--interfaces--eidregister--lisp_map_servers"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.interfaces.eidregister.lisp_map_servers`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--eidregister--lisp_map_servers"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.eidregister.uuid`
 
 Read-Only:
 
@@ -14021,8 +14039,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--interfaces--io"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.interfaces.io`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--io"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.io`
 
 Read-Only:
 
@@ -14033,39 +14051,39 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json`
+### Nested Schema for `cloud_policy.app_policy.apps.title`
 
 Read-Only:
 
 - `ac_kind` (String)
 - `ac_version` (String)
 - `app_type` (String)
-- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration))
-- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--container_detail))
+- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--configuration))
+- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--container_detail))
 - `cpu_pinning_enabled` (Boolean)
 - `deployment_type` (String)
-- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--desc))
+- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--desc))
 - `description` (String)
 - `display_name` (String)
 - `enablevnc` (Boolean)
-- `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--images))
-- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces))
-- `module` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--module))
+- `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--images))
+- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--interfaces))
+- `module` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--module))
 - `name` (String)
-- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--owner))
-- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--permissions))
-- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--resources))
+- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--owner))
+- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--permissions))
+- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--resources))
 - `vmmode` (String)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.configuration`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--configuration"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.configuration`
 
 Read-Only:
 
-- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config))
+- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config))
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.configuration.custom_config`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.configuration.custom_config`
 
 Read-Only:
 
@@ -14075,20 +14093,20 @@ Read-Only:
 - `name` (String)
 - `override` (Boolean)
 - `template` (String)
-- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups))
+- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config--variable_groups))
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.configuration.custom_config.variable_groups`
 
 Read-Only:
 
-- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition))
+- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config--variable_groups--condition))
 - `name` (String)
 - `required` (Boolean)
-- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables))
+- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config--variable_groups--variables))
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.condition`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -14097,8 +14115,8 @@ Read-Only:
 - `value` (String)
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -14108,14 +14126,14 @@ Read-Only:
 - `label` (String)
 - `max_length` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config--variable_groups--variables--options))
 - `process_input` (String)
 - `required` (Boolean)
 - `type` (String)
 - `value` (String)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables.options`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.configuration.custom_config.variable_groups.variables.options`
 
 Read-Only:
 
@@ -14127,16 +14145,16 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--container_detail"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.container_detail`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--container_detail"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.container_detail`
 
 Read-Only:
 
 - `container_create_option` (String)
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--desc"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.desc`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--desc"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.desc`
 
 Read-Only:
 
@@ -14150,8 +14168,8 @@ Read-Only:
 - `support` (String)
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--images"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.images`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--images"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.images`
 
 Read-Only:
 
@@ -14163,14 +14181,14 @@ Read-Only:
 - `imagename` (String)
 - `maxsize` (String)
 - `mountpath` (String)
-- `params` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--images--params))
+- `params` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--images--params))
 - `preserve` (Boolean)
 - `readonly` (Boolean)
 - `target` (String)
 - `volumelabel` (String)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--images--params"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.images.params`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--images--params"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.images.volumelabel`
 
 Read-Only:
 
@@ -14179,43 +14197,43 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.interfaces`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--interfaces"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.interfaces`
 
 Read-Only:
 
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--acls))
 - `directattach` (Boolean)
 - `name` (String)
 - `optional` (Boolean)
 - `privateip` (Boolean)
 - `type` (String)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.interfaces.acls`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--acls"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.interfaces.type`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls--actions))
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls--matches))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--type--actions))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--type--matches))
 - `name` (String)
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls--actions"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.interfaces.acls.actions`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--type--actions"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.interfaces.type.name`
 
 Read-Only:
 
 - `drop` (Boolean)
 - `limit` (Boolean)
-- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls--actions--limit_value))
+- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--type--name--limit_value))
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
 - `portmap` (Boolean)
-- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls--actions--portmapto))
+- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--type--name--portmapto))
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls--actions--limit_value"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.interfaces.acls.actions.limit_value`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--type--name--limit_value"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -14224,8 +14242,8 @@ Read-Only:
 - `limitunit` (String)
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls--actions--portmapto"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.interfaces.acls.actions.portmapto`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--type--name--portmapto"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -14233,8 +14251,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces--acls--matches"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.interfaces.acls.matches`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--interfaces--type--matches"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.interfaces.type.name`
 
 Read-Only:
 
@@ -14244,8 +14262,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--module"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.module`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--module"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.module`
 
 Read-Only:
 
@@ -14255,8 +14273,8 @@ Read-Only:
 - `twin_detail` (String)
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--owner"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.owner`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--owner"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.owner`
 
 Read-Only:
 
@@ -14267,15 +14285,15 @@ Read-Only:
 - `website` (String)
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--permissions"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.permissions`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--permissions"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.permissions`
 
 Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--app_policy--apps--manifest_json--resources"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.manifest_json.resources`
+<a id="nestedobjatt--cloud_policy--app_policy--apps--title--resources"></a>
+### Nested Schema for `cloud_policy.app_policy.apps.title.resources`
 
 Read-Only:
 
@@ -14285,7 +14303,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--app_policy--apps--parent_detail"></a>
-### Nested Schema for `cloud_policy.app_policy.apps.parent_detail`
+### Nested Schema for `cloud_policy.app_policy.apps.title`
 
 Read-Only:
 
@@ -14330,38 +14348,38 @@ Read-Only:
 - `resource_group` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group))
 
 <a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service`
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group`
 
 Read-Only:
 
-- `enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment))
-- `service_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--service_detail))
+- `enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment))
+- `service_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--service_detail))
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.enrollment`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.enrollment`
 
 Read-Only:
 
 - `allocation_policy` (String)
 - `attached_iot_hubs_name` (List of String)
-- `certificate_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment))
+- `certificate_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--certificate_enrollment))
 - `enable_iot_edge_device` (Boolean)
 - `mechanism` (String)
-- `symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment))
+- `symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--symmetric_key_enrollment))
 - `tags` (Map of String)
-- `tpm_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--tpm_enrollment))
+- `tpm_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment))
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.certificate_enrollment`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--certificate_enrollment"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment`
 
 Read-Only:
 
-- `group_certificate_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment--group_certificate_enrollment))
+- `group_certificate_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--group_certificate_enrollment))
 - `individual_certificate_enrollment` (String)
 - `type` (String)
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment--group_certificate_enrollment"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.certificate_enrollment.group_certificate_enrollment`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--group_certificate_enrollment"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment.type`
 
 Read-Only:
 
@@ -14369,25 +14387,25 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--symmetric_key_enrollment"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment`
 
 Read-Only:
 
-- `group_symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--group_symmetric_key_enrollment))
-- `individual_symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--individual_symmetric_key_enrollment))
+- `group_symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--group_symmetric_key_enrollment))
+- `individual_symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--individual_symmetric_key_enrollment))
 - `type` (String)
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--group_symmetric_key_enrollment"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment.group_symmetric_key_enrollment`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--group_symmetric_key_enrollment"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment.type`
 
 Read-Only:
 
 - `group_name` (String)
 
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--individual_symmetric_key_enrollment"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment.individual_symmetric_key_enrollment`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--individual_symmetric_key_enrollment"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment.type`
 
 Read-Only:
 
@@ -14395,8 +14413,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--tpm_enrollment"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.tpm_enrollment`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment`
 
 Read-Only:
 
@@ -14404,8 +14422,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--service_detail"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.service_detail`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--service_detail"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.service_detail`
 
 Read-Only:
 
@@ -14413,11 +14431,11 @@ Read-Only:
 - `name` (String)
 - `region` (String)
 - `resource_group_name` (String)
-- `s_k_u` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--service_detail--s_k_u))
+- `s_k_u` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--service_detail--s_k_u))
 - `subscription_id` (String)
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--dps_service--service_detail--s_k_u"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.dps_service.service_detail.s_k_u`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--service_detail--s_k_u"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.service_detail.subscription_id`
 
 Read-Only:
 
@@ -14429,14 +14447,14 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--iot_hub_service"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.iot_hub_service`
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group`
 
 Read-Only:
 
-- `service_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail))
+- `service_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--service_detail))
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.iot_hub_service.service_detail`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--service_detail"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.service_detail`
 
 Read-Only:
 
@@ -14444,11 +14462,11 @@ Read-Only:
 - `name` (String)
 - `region` (String)
 - `resource_group_name` (String)
-- `s_k_u` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail--s_k_u))
+- `s_k_u` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--service_detail--s_k_u))
 - `subscription_id` (String)
 
-<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail--s_k_u"></a>
-### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.iot_hub_service.service_detail.s_k_u`
+<a id="nestedobjatt--cloud_policy--azure_policy--azure_resource_and_services--resource_group--service_detail--s_k_u"></a>
+### Nested Schema for `cloud_policy.azure_policy.azure_resource_and_services.resource_group.service_detail.subscription_id`
 
 Read-Only:
 
@@ -14498,7 +14516,7 @@ Read-Only:
 - `valid_till` (String)
 
 <a id="nestedobjatt--cloud_policy--azure_policy--certificate--ecdsa_encryption"></a>
-### Nested Schema for `cloud_policy.azure_policy.certificate.ecdsa_encryption`
+### Nested Schema for `cloud_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -14506,7 +14524,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--azure_policy--certificate--issuer"></a>
-### Nested Schema for `cloud_policy.azure_policy.certificate.issuer`
+### Nested Schema for `cloud_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -14521,7 +14539,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--azure_policy--certificate--rsa_ecryption"></a>
-### Nested Schema for `cloud_policy.azure_policy.certificate.rsa_ecryption`
+### Nested Schema for `cloud_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -14529,7 +14547,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--azure_policy--certificate--san_values"></a>
-### Nested Schema for `cloud_policy.azure_policy.certificate.san_values`
+### Nested Schema for `cloud_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -14542,7 +14560,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--azure_policy--certificate--subject"></a>
-### Nested Schema for `cloud_policy.azure_policy.certificate.subject`
+### Nested Schema for `cloud_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -14610,7 +14628,7 @@ Read-Only:
 - `token` (String)
 
 <a id="nestedobjatt--cloud_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
-### Nested Schema for `cloud_policy.edgeview_policy.edgeviewcfg.app_policy`
+### Nested Schema for `cloud_policy.edgeview_policy.edgeviewcfg.token`
 
 Read-Only:
 
@@ -14618,7 +14636,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--edgeview_policy--edgeviewcfg--dev_policy"></a>
-### Nested Schema for `cloud_policy.edgeview_policy.edgeviewcfg.dev_policy`
+### Nested Schema for `cloud_policy.edgeview_policy.edgeviewcfg.token`
 
 Read-Only:
 
@@ -14626,7 +14644,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
-### Nested Schema for `cloud_policy.edgeview_policy.edgeviewcfg.ext_policy`
+### Nested Schema for `cloud_policy.edgeview_policy.edgeviewcfg.token`
 
 Read-Only:
 
@@ -14634,7 +14652,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
-### Nested Schema for `cloud_policy.edgeview_policy.edgeviewcfg.jwt_info`
+### Nested Schema for `cloud_policy.edgeview_policy.edgeviewcfg.token`
 
 Read-Only:
 
@@ -14700,18 +14718,18 @@ Read-Only:
 - `title` (String)
 
 <a id="nestedobjatt--cloud_policy--module_policy--apps--interfaces"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.interfaces`
+### Nested Schema for `cloud_policy.module_policy.apps.title`
 
 Read-Only:
 
 - `access_vlan_id` (Number)
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--acls))
 - `default_net_instance` (Boolean)
 - `directattach` (Boolean)
-- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--interfaces--eidregister))
+- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--eidregister))
 - `intfname` (String)
 - `intforder` (Number)
-- `io` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--interfaces--io))
+- `io` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--io))
 - `ipaddr` (String)
 - `macaddr` (String)
 - `netinstid` (String)
@@ -14720,18 +14738,18 @@ Read-Only:
 - `netname` (String)
 - `privateip` (Boolean)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--interfaces--acls"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.interfaces.acls`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--acls"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.acls`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--interfaces--acls--actions))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--acls--actions))
 - `id` (Number)
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--interfaces--acls--matches))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--acls--matches))
 - `name` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--interfaces--acls--actions"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.interfaces.acls.actions`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--acls--actions"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.acls.name`
 
 Read-Only:
 
@@ -14740,11 +14758,11 @@ Read-Only:
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
-- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--acls--name--mapparams))
 - `portmap` (Boolean)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--interfaces--acls--actions--mapparams"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.interfaces.acls.actions.mapparams`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--acls--name--mapparams"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.acls.name.portmap`
 
 Read-Only:
 
@@ -14752,8 +14770,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--interfaces--acls--matches"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.interfaces.acls.matches`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--acls--matches"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.acls.name`
 
 Read-Only:
 
@@ -14762,8 +14780,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--interfaces--eidregister"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.interfaces.eidregister`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--eidregister"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.eidregister`
 
 Read-Only:
 
@@ -14774,12 +14792,12 @@ Read-Only:
 - `e_id` (String)
 - `e_id_hash_len` (Number)
 - `lisp_instance` (Number)
-- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--interfaces--eidregister--lisp_map_servers))
+- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--eidregister--lisp_map_servers))
 - `lisp_signature` (String)
 - `uuid` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--interfaces--eidregister--lisp_map_servers"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.interfaces.eidregister.lisp_map_servers`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--eidregister--lisp_map_servers"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.eidregister.uuid`
 
 Read-Only:
 
@@ -14788,8 +14806,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--interfaces--io"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.interfaces.io`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--io"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.io`
 
 Read-Only:
 
@@ -14800,39 +14818,39 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json`
+### Nested Schema for `cloud_policy.module_policy.apps.title`
 
 Read-Only:
 
 - `ac_kind` (String)
 - `ac_version` (String)
 - `app_type` (String)
-- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration))
-- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--container_detail))
+- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--configuration))
+- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--container_detail))
 - `cpu_pinning_enabled` (Boolean)
 - `deployment_type` (String)
-- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--desc))
+- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--desc))
 - `description` (String)
 - `display_name` (String)
 - `enablevnc` (Boolean)
-- `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--images))
-- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces))
-- `module` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--module))
+- `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--images))
+- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--interfaces))
+- `module` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--module))
 - `name` (String)
-- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--owner))
-- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--permissions))
-- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--resources))
+- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--owner))
+- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--permissions))
+- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--resources))
 - `vmmode` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.configuration`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--configuration"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.configuration`
 
 Read-Only:
 
-- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config))
+- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config))
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.configuration.custom_config`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.configuration.custom_config`
 
 Read-Only:
 
@@ -14842,20 +14860,20 @@ Read-Only:
 - `name` (String)
 - `override` (Boolean)
 - `template` (String)
-- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups))
+- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config--variable_groups))
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.configuration.custom_config.variable_groups`
 
 Read-Only:
 
-- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition))
+- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config--variable_groups--condition))
 - `name` (String)
 - `required` (Boolean)
-- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables))
+- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config--variable_groups--variables))
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.condition`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -14864,8 +14882,8 @@ Read-Only:
 - `value` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -14875,14 +14893,14 @@ Read-Only:
 - `label` (String)
 - `max_length` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config--variable_groups--variables--options))
 - `process_input` (String)
 - `required` (Boolean)
 - `type` (String)
 - `value` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables.options`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.configuration.custom_config.variable_groups.variables.options`
 
 Read-Only:
 
@@ -14894,16 +14912,16 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--container_detail"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.container_detail`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--container_detail"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.container_detail`
 
 Read-Only:
 
 - `container_create_option` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--desc"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.desc`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--desc"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.desc`
 
 Read-Only:
 
@@ -14917,8 +14935,8 @@ Read-Only:
 - `support` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--images"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.images`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--images"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.images`
 
 Read-Only:
 
@@ -14930,14 +14948,14 @@ Read-Only:
 - `imagename` (String)
 - `maxsize` (String)
 - `mountpath` (String)
-- `params` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--images--params))
+- `params` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--images--params))
 - `preserve` (Boolean)
 - `readonly` (Boolean)
 - `target` (String)
 - `volumelabel` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--images--params"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.images.params`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--images--params"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.images.volumelabel`
 
 Read-Only:
 
@@ -14946,43 +14964,43 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.interfaces`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--interfaces"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.interfaces`
 
 Read-Only:
 
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--acls))
 - `directattach` (Boolean)
 - `name` (String)
 - `optional` (Boolean)
 - `privateip` (Boolean)
 - `type` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.interfaces.acls`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--acls"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.interfaces.type`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls--actions))
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls--matches))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--type--actions))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--type--matches))
 - `name` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls--actions"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.interfaces.acls.actions`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--type--actions"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.interfaces.type.name`
 
 Read-Only:
 
 - `drop` (Boolean)
 - `limit` (Boolean)
-- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls--actions--limit_value))
+- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--type--name--limit_value))
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
 - `portmap` (Boolean)
-- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls--actions--portmapto))
+- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--type--name--portmapto))
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls--actions--limit_value"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.interfaces.acls.actions.limit_value`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--type--name--limit_value"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -14991,8 +15009,8 @@ Read-Only:
 - `limitunit` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls--actions--portmapto"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.interfaces.acls.actions.portmapto`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--type--name--portmapto"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -15000,8 +15018,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces--acls--matches"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.interfaces.acls.matches`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--interfaces--type--matches"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.interfaces.type.name`
 
 Read-Only:
 
@@ -15011,8 +15029,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--module"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.module`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--module"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.module`
 
 Read-Only:
 
@@ -15022,8 +15040,8 @@ Read-Only:
 - `twin_detail` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--owner"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.owner`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--owner"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.owner`
 
 Read-Only:
 
@@ -15034,15 +15052,15 @@ Read-Only:
 - `website` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--permissions"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.permissions`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--permissions"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.permissions`
 
 Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--apps--manifest_json--resources"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.manifest_json.resources`
+<a id="nestedobjatt--cloud_policy--module_policy--apps--title--resources"></a>
+### Nested Schema for `cloud_policy.module_policy.apps.title.resources`
 
 Read-Only:
 
@@ -15052,7 +15070,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--module_policy--apps--parent_detail"></a>
-### Nested Schema for `cloud_policy.module_policy.apps.parent_detail`
+### Nested Schema for `cloud_policy.module_policy.apps.title`
 
 Read-Only:
 
@@ -15090,18 +15108,18 @@ Read-Only:
 - `title` (String)
 
 <a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.interfaces`
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title`
 
 Read-Only:
 
 - `access_vlan_id` (Number)
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--acls))
 - `default_net_instance` (Boolean)
 - `directattach` (Boolean)
-- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--eidregister))
+- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--eidregister))
 - `intfname` (String)
 - `intforder` (Number)
-- `io` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--io))
+- `io` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--io))
 - `ipaddr` (String)
 - `macaddr` (String)
 - `netinstid` (String)
@@ -15110,18 +15128,18 @@ Read-Only:
 - `netname` (String)
 - `privateip` (Boolean)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--acls"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.interfaces.acls`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--acls"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.acls`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--acls--actions))
 - `id` (Number)
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--acls--matches))
 - `name` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--acls--actions"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.interfaces.acls.actions`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--acls--actions"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.acls.name`
 
 Read-Only:
 
@@ -15130,11 +15148,11 @@ Read-Only:
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
-- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
+- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--acls--name--mapparams))
 - `portmap` (Boolean)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.interfaces.acls.actions.mapparams`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--acls--name--mapparams"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.acls.name.portmap`
 
 Read-Only:
 
@@ -15142,8 +15160,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--acls--matches"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.interfaces.acls.matches`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--acls--matches"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.acls.name`
 
 Read-Only:
 
@@ -15152,8 +15170,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--eidregister"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.interfaces.eidregister`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--eidregister"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.eidregister`
 
 Read-Only:
 
@@ -15164,12 +15182,12 @@ Read-Only:
 - `e_id` (String)
 - `e_id_hash_len` (Number)
 - `lisp_instance` (Number)
-- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--eidregister--lisp_map_servers))
+- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--eidregister--lisp_map_servers))
 - `lisp_signature` (String)
 - `uuid` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--eidregister--lisp_map_servers"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.interfaces.eidregister.lisp_map_servers`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--eidregister--lisp_map_servers"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.eidregister.uuid`
 
 Read-Only:
 
@@ -15178,8 +15196,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--interfaces--io"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.interfaces.io`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--io"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.io`
 
 Read-Only:
 
@@ -15190,39 +15208,39 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json`
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title`
 
 Read-Only:
 
 - `ac_kind` (String)
 - `ac_version` (String)
 - `app_type` (String)
-- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration))
-- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--container_detail))
+- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration))
+- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--container_detail))
 - `cpu_pinning_enabled` (Boolean)
 - `deployment_type` (String)
-- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--desc))
+- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--desc))
 - `description` (String)
 - `display_name` (String)
 - `enablevnc` (Boolean)
-- `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--images))
-- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
-- `module` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--module))
+- `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--images))
+- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces))
+- `module` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--module))
 - `name` (String)
-- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--owner))
-- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--permissions))
-- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--resources))
+- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--owner))
+- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--permissions))
+- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--resources))
 - `vmmode` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.configuration`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.configuration`
 
 Read-Only:
 
-- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config))
+- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config))
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.configuration.custom_config`
 
 Read-Only:
 
@@ -15232,20 +15250,20 @@ Read-Only:
 - `name` (String)
 - `override` (Boolean)
 - `template` (String)
-- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups))
+- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups))
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.configuration.custom_config.variable_groups`
 
 Read-Only:
 
-- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--condition))
+- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--condition))
 - `name` (String)
 - `required` (Boolean)
-- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables))
+- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--variables))
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--condition"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.condition`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -15254,8 +15272,8 @@ Read-Only:
 - `value` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.variables`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -15265,14 +15283,14 @@ Read-Only:
 - `label` (String)
 - `max_length` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--variables--options))
 - `process_input` (String)
 - `required` (Boolean)
 - `type` (String)
 - `value` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.variables.options`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.configuration.custom_config.variable_groups.variables.options`
 
 Read-Only:
 
@@ -15284,16 +15302,16 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--container_detail"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.container_detail`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--container_detail"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.container_detail`
 
 Read-Only:
 
 - `container_create_option` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--desc"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.desc`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--desc"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.desc`
 
 Read-Only:
 
@@ -15307,8 +15325,8 @@ Read-Only:
 - `support` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.images`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--images"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.images`
 
 Read-Only:
 
@@ -15320,14 +15338,14 @@ Read-Only:
 - `imagename` (String)
 - `maxsize` (String)
 - `mountpath` (String)
-- `params` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--images--params))
+- `params` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--images--params))
 - `preserve` (Boolean)
 - `readonly` (Boolean)
 - `target` (String)
 - `volumelabel` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--images--params"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.images.params`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--images--params"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.images.volumelabel`
 
 Read-Only:
 
@@ -15336,43 +15354,43 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.interfaces`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.interfaces`
 
 Read-Only:
 
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--acls))
 - `directattach` (Boolean)
 - `name` (String)
 - `optional` (Boolean)
 - `privateip` (Boolean)
 - `type` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--acls"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.interfaces.type`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions))
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--matches))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--type--actions))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--type--matches))
 - `name` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--type--actions"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.interfaces.type.name`
 
 Read-Only:
 
 - `drop` (Boolean)
 - `limit` (Boolean)
-- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--limit_value))
+- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--type--name--limit_value))
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
 - `portmap` (Boolean)
-- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--portmapto))
+- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--type--name--portmapto))
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--limit_value"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions.limit_value`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--type--name--limit_value"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -15381,8 +15399,8 @@ Read-Only:
 - `limitunit` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--portmapto"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions.portmapto`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--type--name--portmapto"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -15390,8 +15408,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--matches"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.matches`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--interfaces--type--matches"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.interfaces.type.name`
 
 Read-Only:
 
@@ -15401,8 +15419,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--module"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.module`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--module"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.module`
 
 Read-Only:
 
@@ -15412,8 +15430,8 @@ Read-Only:
 - `twin_detail` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--owner"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.owner`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--owner"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.owner`
 
 Read-Only:
 
@@ -15424,15 +15442,15 @@ Read-Only:
 - `website` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--permissions"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.permissions`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--permissions"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.permissions`
 
 Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--resources"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.manifest_json.resources`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--title--resources"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title.resources`
 
 Read-Only:
 
@@ -15442,7 +15460,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--module_policy--azure_edge_agent--parent_detail"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.parent_detail`
+### Nested Schema for `cloud_policy.module_policy.azure_edge_agent.title`
 
 Read-Only:
 
@@ -15480,18 +15498,18 @@ Read-Only:
 - `title` (String)
 
 <a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.interfaces`
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title`
 
 Read-Only:
 
 - `access_vlan_id` (Number)
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--acls))
 - `default_net_instance` (Boolean)
 - `directattach` (Boolean)
-- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--eidregister))
+- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--eidregister))
 - `intfname` (String)
 - `intforder` (Number)
-- `io` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--io))
+- `io` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--io))
 - `ipaddr` (String)
 - `macaddr` (String)
 - `netinstid` (String)
@@ -15500,18 +15518,18 @@ Read-Only:
 - `netname` (String)
 - `privateip` (Boolean)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--acls"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.interfaces.acls`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--acls"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.acls`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--acls--actions))
 - `id` (Number)
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--acls--matches))
 - `name` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--acls--actions"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.interfaces.acls.actions`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--acls--actions"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.acls.name`
 
 Read-Only:
 
@@ -15520,11 +15538,11 @@ Read-Only:
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
-- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
+- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--acls--name--mapparams))
 - `portmap` (Boolean)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.interfaces.acls.actions.mapparams`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--acls--name--mapparams"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.acls.name.portmap`
 
 Read-Only:
 
@@ -15532,8 +15550,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--acls--matches"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.interfaces.acls.matches`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--acls--matches"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.acls.name`
 
 Read-Only:
 
@@ -15542,8 +15560,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--eidregister"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.interfaces.eidregister`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--eidregister"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.eidregister`
 
 Read-Only:
 
@@ -15554,12 +15572,12 @@ Read-Only:
 - `e_id` (String)
 - `e_id_hash_len` (Number)
 - `lisp_instance` (Number)
-- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--eidregister--lisp_map_servers))
+- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--eidregister--lisp_map_servers))
 - `lisp_signature` (String)
 - `uuid` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--eidregister--lisp_map_servers"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.interfaces.eidregister.lisp_map_servers`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--eidregister--lisp_map_servers"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.eidregister.uuid`
 
 Read-Only:
 
@@ -15568,8 +15586,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--interfaces--io"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.interfaces.io`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--io"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.io`
 
 Read-Only:
 
@@ -15580,39 +15598,39 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json`
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title`
 
 Read-Only:
 
 - `ac_kind` (String)
 - `ac_version` (String)
 - `app_type` (String)
-- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration))
-- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--container_detail))
+- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration))
+- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--container_detail))
 - `cpu_pinning_enabled` (Boolean)
 - `deployment_type` (String)
-- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--desc))
+- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--desc))
 - `description` (String)
 - `display_name` (String)
 - `enablevnc` (Boolean)
-- `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--images))
-- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
-- `module` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--module))
+- `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--images))
+- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces))
+- `module` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--module))
 - `name` (String)
-- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--owner))
-- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--permissions))
-- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--resources))
+- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--owner))
+- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--permissions))
+- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--resources))
 - `vmmode` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.configuration`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.configuration`
 
 Read-Only:
 
-- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config))
+- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config))
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.configuration.custom_config`
 
 Read-Only:
 
@@ -15622,20 +15640,20 @@ Read-Only:
 - `name` (String)
 - `override` (Boolean)
 - `template` (String)
-- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups))
+- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups))
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.configuration.custom_config.variable_groups`
 
 Read-Only:
 
-- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--condition))
+- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--condition))
 - `name` (String)
 - `required` (Boolean)
-- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables))
+- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--variables))
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--condition"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.condition`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -15644,8 +15662,8 @@ Read-Only:
 - `value` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.variables`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -15655,14 +15673,14 @@ Read-Only:
 - `label` (String)
 - `max_length` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--variables--options))
 - `process_input` (String)
 - `required` (Boolean)
 - `type` (String)
 - `value` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.variables.options`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.configuration.custom_config.variable_groups.variables.options`
 
 Read-Only:
 
@@ -15674,16 +15692,16 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--container_detail"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.container_detail`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--container_detail"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.container_detail`
 
 Read-Only:
 
 - `container_create_option` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--desc"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.desc`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--desc"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.desc`
 
 Read-Only:
 
@@ -15697,8 +15715,8 @@ Read-Only:
 - `support` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.images`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--images"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.images`
 
 Read-Only:
 
@@ -15710,14 +15728,14 @@ Read-Only:
 - `imagename` (String)
 - `maxsize` (String)
 - `mountpath` (String)
-- `params` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--images--params))
+- `params` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--images--params))
 - `preserve` (Boolean)
 - `readonly` (Boolean)
 - `target` (String)
 - `volumelabel` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--images--params"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.images.params`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--images--params"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.images.volumelabel`
 
 Read-Only:
 
@@ -15726,43 +15744,43 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.interfaces`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.interfaces`
 
 Read-Only:
 
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--acls))
 - `directattach` (Boolean)
 - `name` (String)
 - `optional` (Boolean)
 - `privateip` (Boolean)
 - `type` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--acls"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.interfaces.type`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions))
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--matches))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--type--actions))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--type--matches))
 - `name` (String)
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--type--actions"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.interfaces.type.name`
 
 Read-Only:
 
 - `drop` (Boolean)
 - `limit` (Boolean)
-- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--limit_value))
+- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--type--name--limit_value))
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
 - `portmap` (Boolean)
-- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--portmapto))
+- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--type--name--portmapto))
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--limit_value"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions.limit_value`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--type--name--limit_value"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -15771,8 +15789,8 @@ Read-Only:
 - `limitunit` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--portmapto"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions.portmapto`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--type--name--portmapto"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -15780,8 +15798,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--matches"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.matches`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--interfaces--type--matches"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.interfaces.type.name`
 
 Read-Only:
 
@@ -15791,8 +15809,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--module"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.module`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--module"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.module`
 
 Read-Only:
 
@@ -15802,8 +15820,8 @@ Read-Only:
 - `twin_detail` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--owner"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.owner`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--owner"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.owner`
 
 Read-Only:
 
@@ -15814,15 +15832,15 @@ Read-Only:
 - `website` (String)
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--permissions"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.permissions`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--permissions"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.permissions`
 
 Read-Only:
 
 
 
-<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--resources"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.manifest_json.resources`
+<a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--title--resources"></a>
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title.resources`
 
 Read-Only:
 
@@ -15832,7 +15850,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--module_policy--azure_edge_hub--parent_detail"></a>
-### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.parent_detail`
+### Nested Schema for `cloud_policy.module_policy.azure_edge_hub.title`
 
 Read-Only:
 
@@ -15871,6 +15889,7 @@ Read-Only:
 - `device_id` (String)
 - `dhcp` (Boolean)
 - `dns_list` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--edge_node_cluster))
 - `id` (String)
 - `ip` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--ip))
 - `kind` (String)
@@ -15891,7 +15910,7 @@ Read-Only:
 - `type` (String)
 
 <a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--dns_list"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.dns_list`
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
@@ -15899,12 +15918,21 @@ Read-Only:
 - `hostname` (String)
 
 
-<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--ip"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.ip`
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
-- `dhcp_range` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--ip--dhcp_range))
+- `designated_node_id` (String)
+- `id` (String)
+
+
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--ip"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type`
+
+Read-Only:
+
+- `dhcp_range` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--type--dhcp_range))
 - `dns` (List of String)
 - `domain` (String)
 - `gateway` (String)
@@ -15912,8 +15940,8 @@ Read-Only:
 - `ntp` (String)
 - `subnet` (String)
 
-<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--ip--dhcp_range"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.ip.dhcp_range`
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--type--dhcp_range"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type.dhcp_range`
 
 Read-Only:
 
@@ -15923,7 +15951,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--lisp"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.lisp`
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
@@ -15932,10 +15960,10 @@ Read-Only:
 - `allocationprefixlen` (Number)
 - `exportprivate` (Boolean)
 - `lispiid` (Number)
-- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--lisp--sp))
+- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--type--sp))
 
-<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--lisp--sp"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.lisp.sp`
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--type--sp"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type.sp`
 
 Read-Only:
 
@@ -15946,16 +15974,16 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--opaque"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.opaque`
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
-- `lisp` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--opaque--lisp))
+- `lisp` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--type--lisp))
 - `oconfig` (String)
 - `type` (String)
 
-<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--opaque--lisp"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.opaque.lisp`
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--type--lisp"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type.lisp`
 
 Read-Only:
 
@@ -15964,10 +15992,10 @@ Read-Only:
 - `allocationprefixlen` (Number)
 - `exportprivate` (Boolean)
 - `lispiid` (Number)
-- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--opaque--lisp--sp))
+- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--type--lisp--sp))
 
-<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--opaque--lisp--sp"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.opaque.lisp.sp`
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--type--lisp--sp"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type.lisp.sp`
 
 Read-Only:
 
@@ -15979,7 +16007,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--revision"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.revision`
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
@@ -15992,7 +16020,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes"></a>
-### Nested Schema for `cloud_policy.network_policy.net_instance_config.static_routes`
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
@@ -16074,18 +16102,18 @@ Read-Only:
 - `title` (String)
 
 <a id="nestedobjatt--module_policy--app_policy--apps--interfaces"></a>
-### Nested Schema for `module_policy.app_policy.apps.interfaces`
+### Nested Schema for `module_policy.app_policy.apps.title`
 
 Read-Only:
 
 - `access_vlan_id` (Number)
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--acls))
 - `default_net_instance` (Boolean)
 - `directattach` (Boolean)
-- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--interfaces--eidregister))
+- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--eidregister))
 - `intfname` (String)
 - `intforder` (Number)
-- `io` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--interfaces--io))
+- `io` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--io))
 - `ipaddr` (String)
 - `macaddr` (String)
 - `netinstid` (String)
@@ -16094,18 +16122,18 @@ Read-Only:
 - `netname` (String)
 - `privateip` (Boolean)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--interfaces--acls"></a>
-### Nested Schema for `module_policy.app_policy.apps.interfaces.acls`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--acls"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.acls`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--interfaces--acls--actions))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--acls--actions))
 - `id` (Number)
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--interfaces--acls--matches))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--acls--matches))
 - `name` (String)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--interfaces--acls--actions"></a>
-### Nested Schema for `module_policy.app_policy.apps.interfaces.acls.actions`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--acls--actions"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.acls.name`
 
 Read-Only:
 
@@ -16114,11 +16142,11 @@ Read-Only:
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
-- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--acls--name--mapparams))
 - `portmap` (Boolean)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--interfaces--acls--actions--mapparams"></a>
-### Nested Schema for `module_policy.app_policy.apps.interfaces.acls.actions.mapparams`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--acls--name--mapparams"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.acls.name.portmap`
 
 Read-Only:
 
@@ -16126,8 +16154,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--interfaces--acls--matches"></a>
-### Nested Schema for `module_policy.app_policy.apps.interfaces.acls.matches`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--acls--matches"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.acls.name`
 
 Read-Only:
 
@@ -16136,8 +16164,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--interfaces--eidregister"></a>
-### Nested Schema for `module_policy.app_policy.apps.interfaces.eidregister`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--eidregister"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.eidregister`
 
 Read-Only:
 
@@ -16148,12 +16176,12 @@ Read-Only:
 - `e_id` (String)
 - `e_id_hash_len` (Number)
 - `lisp_instance` (Number)
-- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--interfaces--eidregister--lisp_map_servers))
+- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--eidregister--lisp_map_servers))
 - `lisp_signature` (String)
 - `uuid` (String)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--interfaces--eidregister--lisp_map_servers"></a>
-### Nested Schema for `module_policy.app_policy.apps.interfaces.eidregister.lisp_map_servers`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--eidregister--lisp_map_servers"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.eidregister.uuid`
 
 Read-Only:
 
@@ -16162,8 +16190,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--interfaces--io"></a>
-### Nested Schema for `module_policy.app_policy.apps.interfaces.io`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--io"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.io`
 
 Read-Only:
 
@@ -16174,39 +16202,39 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--app_policy--apps--manifest_json"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json`
+### Nested Schema for `module_policy.app_policy.apps.title`
 
 Read-Only:
 
 - `ac_kind` (String)
 - `ac_version` (String)
 - `app_type` (String)
-- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration))
-- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--container_detail))
+- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--configuration))
+- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--container_detail))
 - `cpu_pinning_enabled` (Boolean)
 - `deployment_type` (String)
-- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--desc))
+- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--desc))
 - `description` (String)
 - `display_name` (String)
 - `enablevnc` (Boolean)
-- `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--images))
-- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces))
-- `module` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--module))
+- `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--images))
+- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--interfaces))
+- `module` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--module))
 - `name` (String)
-- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--owner))
-- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--permissions))
-- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--resources))
+- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--owner))
+- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--permissions))
+- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--resources))
 - `vmmode` (String)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.configuration`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--configuration"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.configuration`
 
 Read-Only:
 
-- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config))
+- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config))
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.configuration.custom_config`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.configuration.custom_config`
 
 Read-Only:
 
@@ -16216,20 +16244,20 @@ Read-Only:
 - `name` (String)
 - `override` (Boolean)
 - `template` (String)
-- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups))
+- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config--variable_groups))
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.configuration.custom_config.variable_groups`
 
 Read-Only:
 
-- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition))
+- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config--variable_groups--condition))
 - `name` (String)
 - `required` (Boolean)
-- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables))
+- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config--variable_groups--variables))
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.condition`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -16238,8 +16266,8 @@ Read-Only:
 - `value` (String)
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -16249,14 +16277,14 @@ Read-Only:
 - `label` (String)
 - `max_length` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config--variable_groups--variables--options))
 - `process_input` (String)
 - `required` (Boolean)
 - `type` (String)
 - `value` (String)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables.options`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.configuration.custom_config.variable_groups.variables.options`
 
 Read-Only:
 
@@ -16268,16 +16296,16 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--container_detail"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.container_detail`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--container_detail"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.container_detail`
 
 Read-Only:
 
 - `container_create_option` (String)
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--desc"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.desc`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--desc"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.desc`
 
 Read-Only:
 
@@ -16291,8 +16319,8 @@ Read-Only:
 - `support` (String)
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--images"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.images`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--images"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.images`
 
 Read-Only:
 
@@ -16304,14 +16332,14 @@ Read-Only:
 - `imagename` (String)
 - `maxsize` (String)
 - `mountpath` (String)
-- `params` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--images--params))
+- `params` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--images--params))
 - `preserve` (Boolean)
 - `readonly` (Boolean)
 - `target` (String)
 - `volumelabel` (String)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--images--params"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.images.params`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--images--params"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.images.volumelabel`
 
 Read-Only:
 
@@ -16320,43 +16348,43 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.interfaces`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--interfaces"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.interfaces`
 
 Read-Only:
 
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--interfaces--acls))
 - `directattach` (Boolean)
 - `name` (String)
 - `optional` (Boolean)
 - `privateip` (Boolean)
 - `type` (String)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.interfaces.acls`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--interfaces--acls"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.interfaces.type`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls--actions))
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls--matches))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--interfaces--type--actions))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--interfaces--type--matches))
 - `name` (String)
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls--actions"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.interfaces.acls.actions`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--interfaces--type--actions"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.interfaces.type.name`
 
 Read-Only:
 
 - `drop` (Boolean)
 - `limit` (Boolean)
-- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls--actions--limit_value))
+- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--interfaces--type--name--limit_value))
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
 - `portmap` (Boolean)
-- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls--actions--portmapto))
+- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--title--interfaces--type--name--portmapto))
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls--actions--limit_value"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.interfaces.acls.actions.limit_value`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--interfaces--type--name--limit_value"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -16365,8 +16393,8 @@ Read-Only:
 - `limitunit` (String)
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls--actions--portmapto"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.interfaces.acls.actions.portmapto`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--interfaces--type--name--portmapto"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -16374,8 +16402,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces--acls--matches"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.interfaces.acls.matches`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--interfaces--type--matches"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.interfaces.type.name`
 
 Read-Only:
 
@@ -16385,8 +16413,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--module"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.module`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--module"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.module`
 
 Read-Only:
 
@@ -16396,8 +16424,8 @@ Read-Only:
 - `twin_detail` (String)
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--owner"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.owner`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--owner"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.owner`
 
 Read-Only:
 
@@ -16408,15 +16436,15 @@ Read-Only:
 - `website` (String)
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--permissions"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.permissions`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--permissions"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.permissions`
 
 Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--app_policy--apps--manifest_json--resources"></a>
-### Nested Schema for `module_policy.app_policy.apps.manifest_json.resources`
+<a id="nestedobjatt--module_policy--app_policy--apps--title--resources"></a>
+### Nested Schema for `module_policy.app_policy.apps.title.resources`
 
 Read-Only:
 
@@ -16426,7 +16454,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--app_policy--apps--parent_detail"></a>
-### Nested Schema for `module_policy.app_policy.apps.parent_detail`
+### Nested Schema for `module_policy.app_policy.apps.title`
 
 Read-Only:
 
@@ -16471,38 +16499,38 @@ Read-Only:
 - `resource_group` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group))
 
 <a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service`
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group`
 
 Read-Only:
 
-- `enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment))
-- `service_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--service_detail))
+- `enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment))
+- `service_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--service_detail))
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.enrollment`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.enrollment`
 
 Read-Only:
 
 - `allocation_policy` (String)
 - `attached_iot_hubs_name` (List of String)
-- `certificate_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment))
+- `certificate_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--certificate_enrollment))
 - `enable_iot_edge_device` (Boolean)
 - `mechanism` (String)
-- `symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment))
+- `symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--symmetric_key_enrollment))
 - `tags` (Map of String)
-- `tpm_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--tpm_enrollment))
+- `tpm_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment))
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.certificate_enrollment`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--certificate_enrollment"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment`
 
 Read-Only:
 
-- `group_certificate_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment--group_certificate_enrollment))
+- `group_certificate_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--group_certificate_enrollment))
 - `individual_certificate_enrollment` (String)
 - `type` (String)
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment--group_certificate_enrollment"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.certificate_enrollment.group_certificate_enrollment`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--group_certificate_enrollment"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment.type`
 
 Read-Only:
 
@@ -16510,25 +16538,25 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--symmetric_key_enrollment"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment`
 
 Read-Only:
 
-- `group_symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--group_symmetric_key_enrollment))
-- `individual_symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--individual_symmetric_key_enrollment))
+- `group_symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--group_symmetric_key_enrollment))
+- `individual_symmetric_key_enrollment` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--individual_symmetric_key_enrollment))
 - `type` (String)
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--group_symmetric_key_enrollment"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment.group_symmetric_key_enrollment`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--group_symmetric_key_enrollment"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment.type`
 
 Read-Only:
 
 - `group_name` (String)
 
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--individual_symmetric_key_enrollment"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment.individual_symmetric_key_enrollment`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment--individual_symmetric_key_enrollment"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment.type`
 
 Read-Only:
 
@@ -16536,8 +16564,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--tpm_enrollment"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.tpm_enrollment`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--enrollment--tpm_enrollment"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.enrollment.tpm_enrollment`
 
 Read-Only:
 
@@ -16545,8 +16573,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--service_detail"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.service_detail`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--service_detail"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.service_detail`
 
 Read-Only:
 
@@ -16554,11 +16582,11 @@ Read-Only:
 - `name` (String)
 - `region` (String)
 - `resource_group_name` (String)
-- `s_k_u` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--service_detail--s_k_u))
+- `s_k_u` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--service_detail--s_k_u))
 - `subscription_id` (String)
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--dps_service--service_detail--s_k_u"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.dps_service.service_detail.s_k_u`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--service_detail--s_k_u"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.service_detail.subscription_id`
 
 Read-Only:
 
@@ -16570,14 +16598,14 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--iot_hub_service"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.iot_hub_service`
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group`
 
 Read-Only:
 
-- `service_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail))
+- `service_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--service_detail))
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.iot_hub_service.service_detail`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--service_detail"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.service_detail`
 
 Read-Only:
 
@@ -16585,11 +16613,11 @@ Read-Only:
 - `name` (String)
 - `region` (String)
 - `resource_group_name` (String)
-- `s_k_u` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail--s_k_u))
+- `s_k_u` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--service_detail--s_k_u))
 - `subscription_id` (String)
 
-<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail--s_k_u"></a>
-### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.iot_hub_service.service_detail.s_k_u`
+<a id="nestedobjatt--module_policy--azure_policy--azure_resource_and_services--resource_group--service_detail--s_k_u"></a>
+### Nested Schema for `module_policy.azure_policy.azure_resource_and_services.resource_group.service_detail.subscription_id`
 
 Read-Only:
 
@@ -16639,7 +16667,7 @@ Read-Only:
 - `valid_till` (String)
 
 <a id="nestedobjatt--module_policy--azure_policy--certificate--ecdsa_encryption"></a>
-### Nested Schema for `module_policy.azure_policy.certificate.ecdsa_encryption`
+### Nested Schema for `module_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -16647,7 +16675,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--azure_policy--certificate--issuer"></a>
-### Nested Schema for `module_policy.azure_policy.certificate.issuer`
+### Nested Schema for `module_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -16662,7 +16690,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--azure_policy--certificate--rsa_ecryption"></a>
-### Nested Schema for `module_policy.azure_policy.certificate.rsa_ecryption`
+### Nested Schema for `module_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -16670,7 +16698,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--azure_policy--certificate--san_values"></a>
-### Nested Schema for `module_policy.azure_policy.certificate.san_values`
+### Nested Schema for `module_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -16683,7 +16711,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--azure_policy--certificate--subject"></a>
-### Nested Schema for `module_policy.azure_policy.certificate.subject`
+### Nested Schema for `module_policy.azure_policy.certificate.valid_till`
 
 Read-Only:
 
@@ -16751,7 +16779,7 @@ Read-Only:
 - `token` (String)
 
 <a id="nestedobjatt--module_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
-### Nested Schema for `module_policy.edgeview_policy.edgeviewcfg.app_policy`
+### Nested Schema for `module_policy.edgeview_policy.edgeviewcfg.token`
 
 Read-Only:
 
@@ -16759,7 +16787,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--edgeview_policy--edgeviewcfg--dev_policy"></a>
-### Nested Schema for `module_policy.edgeview_policy.edgeviewcfg.dev_policy`
+### Nested Schema for `module_policy.edgeview_policy.edgeviewcfg.token`
 
 Read-Only:
 
@@ -16767,7 +16795,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
-### Nested Schema for `module_policy.edgeview_policy.edgeviewcfg.ext_policy`
+### Nested Schema for `module_policy.edgeview_policy.edgeviewcfg.token`
 
 Read-Only:
 
@@ -16775,7 +16803,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
-### Nested Schema for `module_policy.edgeview_policy.edgeviewcfg.jwt_info`
+### Nested Schema for `module_policy.edgeview_policy.edgeviewcfg.token`
 
 Read-Only:
 
@@ -16841,18 +16869,18 @@ Read-Only:
 - `title` (String)
 
 <a id="nestedobjatt--module_policy--module_policy--apps--interfaces"></a>
-### Nested Schema for `module_policy.module_policy.apps.interfaces`
+### Nested Schema for `module_policy.module_policy.apps.title`
 
 Read-Only:
 
 - `access_vlan_id` (Number)
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--acls))
 - `default_net_instance` (Boolean)
 - `directattach` (Boolean)
-- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--interfaces--eidregister))
+- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--eidregister))
 - `intfname` (String)
 - `intforder` (Number)
-- `io` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--interfaces--io))
+- `io` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--io))
 - `ipaddr` (String)
 - `macaddr` (String)
 - `netinstid` (String)
@@ -16861,18 +16889,18 @@ Read-Only:
 - `netname` (String)
 - `privateip` (Boolean)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--interfaces--acls"></a>
-### Nested Schema for `module_policy.module_policy.apps.interfaces.acls`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--acls"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.acls`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--interfaces--acls--actions))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--acls--actions))
 - `id` (Number)
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--interfaces--acls--matches))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--acls--matches))
 - `name` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--interfaces--acls--actions"></a>
-### Nested Schema for `module_policy.module_policy.apps.interfaces.acls.actions`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--acls--actions"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.acls.name`
 
 Read-Only:
 
@@ -16881,11 +16909,11 @@ Read-Only:
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
-- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--interfaces--acls--actions--mapparams))
+- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--acls--name--mapparams))
 - `portmap` (Boolean)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--interfaces--acls--actions--mapparams"></a>
-### Nested Schema for `module_policy.module_policy.apps.interfaces.acls.actions.mapparams`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--acls--name--mapparams"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.acls.name.portmap`
 
 Read-Only:
 
@@ -16893,8 +16921,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--interfaces--acls--matches"></a>
-### Nested Schema for `module_policy.module_policy.apps.interfaces.acls.matches`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--acls--matches"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.acls.name`
 
 Read-Only:
 
@@ -16903,8 +16931,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--interfaces--eidregister"></a>
-### Nested Schema for `module_policy.module_policy.apps.interfaces.eidregister`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--eidregister"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.eidregister`
 
 Read-Only:
 
@@ -16915,12 +16943,12 @@ Read-Only:
 - `e_id` (String)
 - `e_id_hash_len` (Number)
 - `lisp_instance` (Number)
-- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--interfaces--eidregister--lisp_map_servers))
+- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--eidregister--lisp_map_servers))
 - `lisp_signature` (String)
 - `uuid` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--interfaces--eidregister--lisp_map_servers"></a>
-### Nested Schema for `module_policy.module_policy.apps.interfaces.eidregister.lisp_map_servers`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--eidregister--lisp_map_servers"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.eidregister.uuid`
 
 Read-Only:
 
@@ -16929,8 +16957,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--interfaces--io"></a>
-### Nested Schema for `module_policy.module_policy.apps.interfaces.io`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--io"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.io`
 
 Read-Only:
 
@@ -16941,39 +16969,39 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--module_policy--apps--manifest_json"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json`
+### Nested Schema for `module_policy.module_policy.apps.title`
 
 Read-Only:
 
 - `ac_kind` (String)
 - `ac_version` (String)
 - `app_type` (String)
-- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration))
-- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--container_detail))
+- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--configuration))
+- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--container_detail))
 - `cpu_pinning_enabled` (Boolean)
 - `deployment_type` (String)
-- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--desc))
+- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--desc))
 - `description` (String)
 - `display_name` (String)
 - `enablevnc` (Boolean)
-- `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--images))
-- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces))
-- `module` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--module))
+- `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--images))
+- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--interfaces))
+- `module` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--module))
 - `name` (String)
-- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--owner))
-- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--permissions))
-- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--resources))
+- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--owner))
+- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--permissions))
+- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--resources))
 - `vmmode` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.configuration`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--configuration"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.configuration`
 
 Read-Only:
 
-- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config))
+- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config))
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.configuration.custom_config`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.configuration.custom_config`
 
 Read-Only:
 
@@ -16983,20 +17011,20 @@ Read-Only:
 - `name` (String)
 - `override` (Boolean)
 - `template` (String)
-- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups))
+- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config--variable_groups))
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.configuration.custom_config.variable_groups`
 
 Read-Only:
 
-- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition))
+- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config--variable_groups--condition))
 - `name` (String)
 - `required` (Boolean)
-- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables))
+- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config--variable_groups--variables))
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.condition`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -17005,8 +17033,8 @@ Read-Only:
 - `value` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -17016,14 +17044,14 @@ Read-Only:
 - `label` (String)
 - `max_length` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config--variable_groups--variables--options))
 - `process_input` (String)
 - `required` (Boolean)
 - `type` (String)
 - `value` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables.options`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.configuration.custom_config.variable_groups.variables.options`
 
 Read-Only:
 
@@ -17035,16 +17063,16 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--container_detail"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.container_detail`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--container_detail"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.container_detail`
 
 Read-Only:
 
 - `container_create_option` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--desc"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.desc`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--desc"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.desc`
 
 Read-Only:
 
@@ -17058,8 +17086,8 @@ Read-Only:
 - `support` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--images"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.images`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--images"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.images`
 
 Read-Only:
 
@@ -17071,14 +17099,14 @@ Read-Only:
 - `imagename` (String)
 - `maxsize` (String)
 - `mountpath` (String)
-- `params` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--images--params))
+- `params` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--images--params))
 - `preserve` (Boolean)
 - `readonly` (Boolean)
 - `target` (String)
 - `volumelabel` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--images--params"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.images.params`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--images--params"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.images.volumelabel`
 
 Read-Only:
 
@@ -17087,43 +17115,43 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.interfaces`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--interfaces"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.interfaces`
 
 Read-Only:
 
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--interfaces--acls))
 - `directattach` (Boolean)
 - `name` (String)
 - `optional` (Boolean)
 - `privateip` (Boolean)
 - `type` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.interfaces.acls`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--interfaces--acls"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.interfaces.type`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls--actions))
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls--matches))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--interfaces--type--actions))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--interfaces--type--matches))
 - `name` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls--actions"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.interfaces.acls.actions`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--interfaces--type--actions"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.interfaces.type.name`
 
 Read-Only:
 
 - `drop` (Boolean)
 - `limit` (Boolean)
-- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls--actions--limit_value))
+- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--interfaces--type--name--limit_value))
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
 - `portmap` (Boolean)
-- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls--actions--portmapto))
+- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--title--interfaces--type--name--portmapto))
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls--actions--limit_value"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.interfaces.acls.actions.limit_value`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--interfaces--type--name--limit_value"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -17132,8 +17160,8 @@ Read-Only:
 - `limitunit` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls--actions--portmapto"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.interfaces.acls.actions.portmapto`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--interfaces--type--name--portmapto"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -17141,8 +17169,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces--acls--matches"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.interfaces.acls.matches`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--interfaces--type--matches"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.interfaces.type.name`
 
 Read-Only:
 
@@ -17152,8 +17180,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--module"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.module`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--module"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.module`
 
 Read-Only:
 
@@ -17163,8 +17191,8 @@ Read-Only:
 - `twin_detail` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--owner"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.owner`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--owner"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.owner`
 
 Read-Only:
 
@@ -17175,15 +17203,15 @@ Read-Only:
 - `website` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--permissions"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.permissions`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--permissions"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.permissions`
 
 Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--apps--manifest_json--resources"></a>
-### Nested Schema for `module_policy.module_policy.apps.manifest_json.resources`
+<a id="nestedobjatt--module_policy--module_policy--apps--title--resources"></a>
+### Nested Schema for `module_policy.module_policy.apps.title.resources`
 
 Read-Only:
 
@@ -17193,7 +17221,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--module_policy--apps--parent_detail"></a>
-### Nested Schema for `module_policy.module_policy.apps.parent_detail`
+### Nested Schema for `module_policy.module_policy.apps.title`
 
 Read-Only:
 
@@ -17231,18 +17259,18 @@ Read-Only:
 - `title` (String)
 
 <a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.interfaces`
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title`
 
 Read-Only:
 
 - `access_vlan_id` (Number)
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--acls))
 - `default_net_instance` (Boolean)
 - `directattach` (Boolean)
-- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--eidregister))
+- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--eidregister))
 - `intfname` (String)
 - `intforder` (Number)
-- `io` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--io))
+- `io` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--io))
 - `ipaddr` (String)
 - `macaddr` (String)
 - `netinstid` (String)
@@ -17251,18 +17279,18 @@ Read-Only:
 - `netname` (String)
 - `privateip` (Boolean)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--acls"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.interfaces.acls`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--acls"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.acls`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--acls--actions))
 - `id` (Number)
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--acls--matches))
 - `name` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--acls--actions"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.interfaces.acls.actions`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--acls--actions"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.acls.name`
 
 Read-Only:
 
@@ -17271,11 +17299,11 @@ Read-Only:
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
-- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
+- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--acls--name--mapparams))
 - `portmap` (Boolean)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.interfaces.acls.actions.mapparams`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--acls--name--mapparams"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.acls.name.portmap`
 
 Read-Only:
 
@@ -17283,8 +17311,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--acls--matches"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.interfaces.acls.matches`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--acls--matches"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.acls.name`
 
 Read-Only:
 
@@ -17293,8 +17321,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--eidregister"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.interfaces.eidregister`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--eidregister"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.eidregister`
 
 Read-Only:
 
@@ -17305,12 +17333,12 @@ Read-Only:
 - `e_id` (String)
 - `e_id_hash_len` (Number)
 - `lisp_instance` (Number)
-- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--eidregister--lisp_map_servers))
+- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--eidregister--lisp_map_servers))
 - `lisp_signature` (String)
 - `uuid` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--eidregister--lisp_map_servers"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.interfaces.eidregister.lisp_map_servers`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--eidregister--lisp_map_servers"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.eidregister.uuid`
 
 Read-Only:
 
@@ -17319,8 +17347,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--interfaces--io"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.interfaces.io`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--io"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.io`
 
 Read-Only:
 
@@ -17331,39 +17359,39 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json`
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title`
 
 Read-Only:
 
 - `ac_kind` (String)
 - `ac_version` (String)
 - `app_type` (String)
-- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration))
-- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--container_detail))
+- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration))
+- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--container_detail))
 - `cpu_pinning_enabled` (Boolean)
 - `deployment_type` (String)
-- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--desc))
+- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--desc))
 - `description` (String)
 - `display_name` (String)
 - `enablevnc` (Boolean)
-- `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--images))
-- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
-- `module` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--module))
+- `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--images))
+- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces))
+- `module` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--module))
 - `name` (String)
-- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--owner))
-- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--permissions))
-- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--resources))
+- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--owner))
+- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--permissions))
+- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--resources))
 - `vmmode` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.configuration`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.configuration`
 
 Read-Only:
 
-- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config))
+- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config))
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.configuration.custom_config`
 
 Read-Only:
 
@@ -17373,20 +17401,20 @@ Read-Only:
 - `name` (String)
 - `override` (Boolean)
 - `template` (String)
-- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups))
+- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups))
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.configuration.custom_config.variable_groups`
 
 Read-Only:
 
-- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--condition))
+- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--condition))
 - `name` (String)
 - `required` (Boolean)
-- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables))
+- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--variables))
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--condition"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.condition`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -17395,8 +17423,8 @@ Read-Only:
 - `value` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.variables`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -17406,14 +17434,14 @@ Read-Only:
 - `label` (String)
 - `max_length` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--variables--options))
 - `process_input` (String)
 - `required` (Boolean)
 - `type` (String)
 - `value` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.variables.options`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.configuration.custom_config.variable_groups.variables.options`
 
 Read-Only:
 
@@ -17425,16 +17453,16 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--container_detail"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.container_detail`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--container_detail"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.container_detail`
 
 Read-Only:
 
 - `container_create_option` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--desc"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.desc`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--desc"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.desc`
 
 Read-Only:
 
@@ -17448,8 +17476,8 @@ Read-Only:
 - `support` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.images`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--images"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.images`
 
 Read-Only:
 
@@ -17461,14 +17489,14 @@ Read-Only:
 - `imagename` (String)
 - `maxsize` (String)
 - `mountpath` (String)
-- `params` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--images--params))
+- `params` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--images--params))
 - `preserve` (Boolean)
 - `readonly` (Boolean)
 - `target` (String)
 - `volumelabel` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--images--params"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.images.params`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--images--params"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.images.volumelabel`
 
 Read-Only:
 
@@ -17477,43 +17505,43 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.interfaces`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.interfaces`
 
 Read-Only:
 
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--acls))
 - `directattach` (Boolean)
 - `name` (String)
 - `optional` (Boolean)
 - `privateip` (Boolean)
 - `type` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--acls"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.interfaces.type`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions))
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--matches))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--type--actions))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--type--matches))
 - `name` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--type--actions"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.interfaces.type.name`
 
 Read-Only:
 
 - `drop` (Boolean)
 - `limit` (Boolean)
-- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--limit_value))
+- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--type--name--limit_value))
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
 - `portmap` (Boolean)
-- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--portmapto))
+- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--type--name--portmapto))
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--limit_value"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions.limit_value`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--type--name--limit_value"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -17522,8 +17550,8 @@ Read-Only:
 - `limitunit` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--portmapto"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions.portmapto`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--type--name--portmapto"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -17531,8 +17559,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--matches"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.matches`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--interfaces--type--matches"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.interfaces.type.name`
 
 Read-Only:
 
@@ -17542,8 +17570,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--module"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.module`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--module"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.module`
 
 Read-Only:
 
@@ -17553,8 +17581,8 @@ Read-Only:
 - `twin_detail` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--owner"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.owner`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--owner"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.owner`
 
 Read-Only:
 
@@ -17565,15 +17593,15 @@ Read-Only:
 - `website` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--permissions"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.permissions`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--permissions"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.permissions`
 
 Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--resources"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.manifest_json.resources`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--title--resources"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title.resources`
 
 Read-Only:
 
@@ -17583,7 +17611,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--module_policy--azure_edge_agent--parent_detail"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_agent.parent_detail`
+### Nested Schema for `module_policy.module_policy.azure_edge_agent.title`
 
 Read-Only:
 
@@ -17621,18 +17649,18 @@ Read-Only:
 - `title` (String)
 
 <a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.interfaces`
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title`
 
 Read-Only:
 
 - `access_vlan_id` (Number)
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--acls))
 - `default_net_instance` (Boolean)
 - `directattach` (Boolean)
-- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--eidregister))
+- `eidregister` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--eidregister))
 - `intfname` (String)
 - `intforder` (Number)
-- `io` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--io))
+- `io` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--io))
 - `ipaddr` (String)
 - `macaddr` (String)
 - `netinstid` (String)
@@ -17641,18 +17669,18 @@ Read-Only:
 - `netname` (String)
 - `privateip` (Boolean)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--acls"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.interfaces.acls`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--acls"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.acls`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--acls--actions))
 - `id` (Number)
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--acls--matches))
 - `name` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--acls--actions"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.interfaces.acls.actions`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--acls--actions"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.acls.name`
 
 Read-Only:
 
@@ -17661,11 +17689,11 @@ Read-Only:
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
-- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
+- `mapparams` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--acls--name--mapparams))
 - `portmap` (Boolean)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.interfaces.acls.actions.mapparams`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--acls--name--mapparams"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.acls.name.portmap`
 
 Read-Only:
 
@@ -17673,8 +17701,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--acls--matches"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.interfaces.acls.matches`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--acls--matches"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.acls.name`
 
 Read-Only:
 
@@ -17683,8 +17711,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--eidregister"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.interfaces.eidregister`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--eidregister"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.eidregister`
 
 Read-Only:
 
@@ -17695,12 +17723,12 @@ Read-Only:
 - `e_id` (String)
 - `e_id_hash_len` (Number)
 - `lisp_instance` (Number)
-- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--eidregister--lisp_map_servers))
+- `lisp_map_servers` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--eidregister--lisp_map_servers))
 - `lisp_signature` (String)
 - `uuid` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--eidregister--lisp_map_servers"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.interfaces.eidregister.lisp_map_servers`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--eidregister--lisp_map_servers"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.eidregister.uuid`
 
 Read-Only:
 
@@ -17709,8 +17737,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--interfaces--io"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.interfaces.io`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--io"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.io`
 
 Read-Only:
 
@@ -17721,39 +17749,39 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json`
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title`
 
 Read-Only:
 
 - `ac_kind` (String)
 - `ac_version` (String)
 - `app_type` (String)
-- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration))
-- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--container_detail))
+- `configuration` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration))
+- `container_detail` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--container_detail))
 - `cpu_pinning_enabled` (Boolean)
 - `deployment_type` (String)
-- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--desc))
+- `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--desc))
 - `description` (String)
 - `display_name` (String)
 - `enablevnc` (Boolean)
-- `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--images))
-- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
-- `module` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--module))
+- `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--images))
+- `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces))
+- `module` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--module))
 - `name` (String)
-- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--owner))
-- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--permissions))
-- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--resources))
+- `owner` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--owner))
+- `permissions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--permissions))
+- `resources` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--resources))
 - `vmmode` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.configuration`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.configuration`
 
 Read-Only:
 
-- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config))
+- `custom_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config))
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.configuration.custom_config`
 
 Read-Only:
 
@@ -17763,20 +17791,20 @@ Read-Only:
 - `name` (String)
 - `override` (Boolean)
 - `template` (String)
-- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups))
+- `variable_groups` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups))
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.configuration.custom_config.variable_groups`
 
 Read-Only:
 
-- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--condition))
+- `condition` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--condition))
 - `name` (String)
 - `required` (Boolean)
-- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables))
+- `variables` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--variables))
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--condition"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.condition`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -17785,8 +17813,8 @@ Read-Only:
 - `value` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.variables`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.configuration.custom_config.variable_groups.variables`
 
 Read-Only:
 
@@ -17796,14 +17824,14 @@ Read-Only:
 - `label` (String)
 - `max_length` (String)
 - `name` (String)
-- `options` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `options` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--variables--options))
 - `process_input` (String)
 - `required` (Boolean)
 - `type` (String)
 - `value` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.variables.options`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.configuration.custom_config.variable_groups.variables.options`
 
 Read-Only:
 
@@ -17815,16 +17843,16 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--container_detail"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.container_detail`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--container_detail"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.container_detail`
 
 Read-Only:
 
 - `container_create_option` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--desc"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.desc`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--desc"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.desc`
 
 Read-Only:
 
@@ -17838,8 +17866,8 @@ Read-Only:
 - `support` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.images`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--images"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.images`
 
 Read-Only:
 
@@ -17851,14 +17879,14 @@ Read-Only:
 - `imagename` (String)
 - `maxsize` (String)
 - `mountpath` (String)
-- `params` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--images--params))
+- `params` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--images--params))
 - `preserve` (Boolean)
 - `readonly` (Boolean)
 - `target` (String)
 - `volumelabel` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--images--params"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.images.params`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--images--params"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.images.volumelabel`
 
 Read-Only:
 
@@ -17867,43 +17895,43 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.interfaces`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.interfaces`
 
 Read-Only:
 
-- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls))
+- `acls` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--acls))
 - `directattach` (Boolean)
 - `name` (String)
 - `optional` (Boolean)
 - `privateip` (Boolean)
 - `type` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--acls"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.interfaces.type`
 
 Read-Only:
 
-- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions))
-- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--matches))
+- `actions` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--type--actions))
+- `matches` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--type--matches))
 - `name` (String)
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--type--actions"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.interfaces.type.name`
 
 Read-Only:
 
 - `drop` (Boolean)
 - `limit` (Boolean)
-- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--limit_value))
+- `limit_value` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--type--name--limit_value))
 - `limitburst` (Number)
 - `limitrate` (Number)
 - `limitunit` (String)
 - `portmap` (Boolean)
-- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--portmapto))
+- `portmapto` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--type--name--portmapto))
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--limit_value"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions.limit_value`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--type--name--limit_value"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -17912,8 +17940,8 @@ Read-Only:
 - `limitunit` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--portmapto"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions.portmapto`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--type--name--portmapto"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.interfaces.type.name.portmapto`
 
 Read-Only:
 
@@ -17921,8 +17949,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--matches"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.matches`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--interfaces--type--matches"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.interfaces.type.name`
 
 Read-Only:
 
@@ -17932,8 +17960,8 @@ Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--module"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.module`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--module"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.module`
 
 Read-Only:
 
@@ -17943,8 +17971,8 @@ Read-Only:
 - `twin_detail` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--owner"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.owner`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--owner"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.owner`
 
 Read-Only:
 
@@ -17955,15 +17983,15 @@ Read-Only:
 - `website` (String)
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--permissions"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.permissions`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--permissions"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.permissions`
 
 Read-Only:
 
 
 
-<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--resources"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.manifest_json.resources`
+<a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--title--resources"></a>
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title.resources`
 
 Read-Only:
 
@@ -17973,7 +18001,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--module_policy--azure_edge_hub--parent_detail"></a>
-### Nested Schema for `module_policy.module_policy.azure_edge_hub.parent_detail`
+### Nested Schema for `module_policy.module_policy.azure_edge_hub.title`
 
 Read-Only:
 
@@ -18012,6 +18040,7 @@ Read-Only:
 - `device_id` (String)
 - `dhcp` (Boolean)
 - `dns_list` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--edge_node_cluster))
 - `id` (String)
 - `ip` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--ip))
 - `kind` (String)
@@ -18032,7 +18061,7 @@ Read-Only:
 - `type` (String)
 
 <a id="nestedobjatt--module_policy--network_policy--net_instance_config--dns_list"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.dns_list`
+### Nested Schema for `module_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
@@ -18040,12 +18069,21 @@ Read-Only:
 - `hostname` (String)
 
 
-<a id="nestedobjatt--module_policy--network_policy--net_instance_config--ip"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.ip`
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
-- `dhcp_range` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--ip--dhcp_range))
+- `designated_node_id` (String)
+- `id` (String)
+
+
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--ip"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.type`
+
+Read-Only:
+
+- `dhcp_range` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--type--dhcp_range))
 - `dns` (List of String)
 - `domain` (String)
 - `gateway` (String)
@@ -18053,8 +18091,8 @@ Read-Only:
 - `ntp` (String)
 - `subnet` (String)
 
-<a id="nestedobjatt--module_policy--network_policy--net_instance_config--ip--dhcp_range"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.ip.dhcp_range`
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--type--dhcp_range"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.type.dhcp_range`
 
 Read-Only:
 
@@ -18064,7 +18102,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--network_policy--net_instance_config--lisp"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.lisp`
+### Nested Schema for `module_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
@@ -18073,10 +18111,10 @@ Read-Only:
 - `allocationprefixlen` (Number)
 - `exportprivate` (Boolean)
 - `lispiid` (Number)
-- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--lisp--sp))
+- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--type--sp))
 
-<a id="nestedobjatt--module_policy--network_policy--net_instance_config--lisp--sp"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.lisp.sp`
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--type--sp"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.type.sp`
 
 Read-Only:
 
@@ -18087,16 +18125,16 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--network_policy--net_instance_config--opaque"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.opaque`
+### Nested Schema for `module_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
-- `lisp` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--opaque--lisp))
+- `lisp` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--type--lisp))
 - `oconfig` (String)
 - `type` (String)
 
-<a id="nestedobjatt--module_policy--network_policy--net_instance_config--opaque--lisp"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.opaque.lisp`
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--type--lisp"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.type.lisp`
 
 Read-Only:
 
@@ -18105,10 +18143,10 @@ Read-Only:
 - `allocationprefixlen` (Number)
 - `exportprivate` (Boolean)
 - `lispiid` (Number)
-- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--opaque--lisp--sp))
+- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--type--lisp--sp))
 
-<a id="nestedobjatt--module_policy--network_policy--net_instance_config--opaque--lisp--sp"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.opaque.lisp.sp`
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--type--lisp--sp"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.type.lisp.sp`
 
 Read-Only:
 
@@ -18120,7 +18158,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--network_policy--net_instance_config--revision"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.revision`
+### Nested Schema for `module_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 
@@ -18133,7 +18171,7 @@ Read-Only:
 
 
 <a id="nestedobjatt--module_policy--network_policy--net_instance_config--static_routes"></a>
-### Nested Schema for `module_policy.network_policy.net_instance_config.static_routes`
+### Nested Schema for `module_policy.network_policy.net_instance_config.type`
 
 Read-Only:
 

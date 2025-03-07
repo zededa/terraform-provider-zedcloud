@@ -17,7 +17,6 @@ description: |-
 
 ### Required
 
-- `device_id` (String) ID of the device on which network instance is created
 - `kind` (String) Kind of Network Instance:
 NETWORK_INSTANCE_KIND_UNSPECIFIED
 NETWORK_INSTANCE_KIND_TRANSPARENT
@@ -34,8 +33,10 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `cluster_id` (String) ID of the Cluster in which the network instance is configured
 - `description` (String) Detailed description of the network instance
 - `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `device_id` (String) ID of the device on which network instance is created
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--dns_list))
+- `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--edge_node_cluster))
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -67,6 +68,18 @@ Optional:
 
 - `addrs` (List of String) Addresses
 - `hostname` (String) Host name
+
+
+<a id="nestedblock--edge_node_cluster"></a>
+### Nested Schema for `edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the Edge Node Cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated Edge Node
 
 
 <a id="nestedblock--ip"></a>
