@@ -51,7 +51,7 @@ func NetInstEdgeNodeClusterSchema() map[string]*schema.Schema {
 		"id": {
 			Description: `Id of the Edge Node Cluster`,
 			Type:        schema.TypeString,
-			Computed:    true,
+			Required:     true,
 		},
 	}
 }

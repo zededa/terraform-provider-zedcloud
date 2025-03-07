@@ -404,9 +404,9 @@ func NetworkInstance() map[string]*schema.Schema {
 		},
 
 		"device_id": {
-			Description: `ID of the device on which network instance is created`,
-			Type:        schema.TypeString,
-			Required:    true,
+			Description: 	`ID of the device on which network instance is created`,
+			Type:        	schema.TypeString,
+			Optional:    	true,
 		},
 
 		"dhcp": {
