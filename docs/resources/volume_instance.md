@@ -17,7 +17,6 @@ description: |-
 
 ### Required
 
-- `device_id` (String) id of the device on which volume instance is created
 - `name` (String) User defined name of the volume instance, unique across the enterprise. Once object is created, name can’t be changed.
 - `title` (String) User defined title of the volume instance. Title can be changed at any time.
 - `type` (String) type of Volume Instance
@@ -28,6 +27,8 @@ description: |-
 - `cleartext` (Boolean) flag to keep the contents of the volume unencrypted (in clear text)
 - `content_tree_id` (String) content tree ID
 - `description` (String) Detailed description of the volume instance.
+- `device_id` (String) id of the device on which volume instance is created
+- `edge_node_cluster` (Block List) edge node cluster associated with the volume instance (see [below for nested schema](#nestedblock--edge_node_cluster))
 - `image` (String) name of the image
 - `implicit` (Boolean) flag to create implicit volumes
 - `label` (String) label
@@ -40,6 +41,18 @@ description: |-
 
 - `id` (String) System defined universally unique Id of the volume instance.
 - `revision` (List of Object) system defined Revision info of the object (see [below for nested schema](#nestedatt--revision))
+
+<a id="nestedblock--edge_node_cluster"></a>
+### Nested Schema for `edge_node_cluster`
+
+Required:
+
+- `id` (String) edge node cluster ID
+
+Optional:
+
+- `designated_node_id` (String) designated node ID
+
 
 <a id="nestedatt--revision"></a>
 ### Nested Schema for `revision`

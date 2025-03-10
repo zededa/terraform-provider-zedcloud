@@ -330,10 +330,6 @@ Optional:
 <a id="nestedblock--app_inst_policies--app_inst_config--manifest_json--images"></a>
 ### Nested Schema for `app_inst_policies.app_inst_config.manifest_json.images`
 
-Required:
-
-- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
-
 Optional:
 
 - `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
@@ -342,6 +338,7 @@ Optional:
 - `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
 - `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
 - `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
 - `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
 - `params` (Block List) (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--images--params))
 - `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
@@ -530,12 +527,12 @@ Read-Only:
 
 Optional:
 
-- `id` (String)
 - `name` (String)
 - `title` (String)
 
 Read-Only:
 
+- `id` (String) The ID of this resource.
 - `revision` (Block List) (see [below for nested schema](#nestedblock--cluster_policy--revision))
 
 <a id="nestedblock--cluster_policy--revision"></a>
@@ -617,25 +614,14 @@ Optional:
 <a id="nestedblock--edgeview_policy--edgeviewcfg"></a>
 ### Nested Schema for `edgeview_policy.edgeviewcfg`
 
-Required:
-
-- `ext_policy` (Block List, Min: 1) (see [below for nested schema](#nestedblock--edgeview_policy--edgeviewcfg--ext_policy))
-
 Optional:
 
 - `app_policy` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--edgeviewcfg--app_policy))
 - `dev_policy` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--edgeviewcfg--dev_policy))
+- `ext_policy` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--edgeviewcfg--ext_policy))
 - `generation_id` (Number)
 - `jwt_info` (Block List) (see [below for nested schema](#nestedblock--edgeview_policy--edgeviewcfg--jwt_info))
 - `token` (String)
-
-<a id="nestedblock--edgeview_policy--edgeviewcfg--ext_policy"></a>
-### Nested Schema for `edgeview_policy.edgeviewcfg.ext_policy`
-
-Optional:
-
-- `allow_ext` (Boolean)
-
 
 <a id="nestedblock--edgeview_policy--edgeviewcfg--app_policy"></a>
 ### Nested Schema for `edgeview_policy.edgeviewcfg.app_policy`
@@ -651,6 +637,14 @@ Optional:
 Optional:
 
 - `allow_dev` (Boolean)
+
+
+<a id="nestedblock--edgeview_policy--edgeviewcfg--ext_policy"></a>
+### Nested Schema for `edgeview_policy.edgeviewcfg.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
 
 
 <a id="nestedblock--edgeview_policy--edgeviewcfg--jwt_info"></a>
@@ -701,12 +695,12 @@ Read-Only:
 
 Optional:
 
-- `id` (String)
 - `name` (String)
 - `title` (String)
 
 Read-Only:
 
+- `id` (String) The ID of this resource.
 - `revision` (Block List) (see [below for nested schema](#nestedblock--integration_policy--revision))
 
 <a id="nestedblock--integration_policy--revision"></a>

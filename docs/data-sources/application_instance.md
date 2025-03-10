@@ -18,7 +18,6 @@ description: |-
 ### Required
 
 - `app_id` (String) User defined name of the edge app, unique across the enterprise. Once app name is created, name can’t be changed
-- `device_id` (String) User defined name of the device name, unique across the enterprise. Once device name is defined, name can’t be changed
 - `name` (String) User defined name of the app instance, unique across the enterprise. Once app instance is created, name can’t be changed
 - `title` (String) User defined title of the app instance. Title can be changed at any time
 
@@ -32,7 +31,9 @@ description: |-
 - `crypto_key` (String, Sensitive) Crypto Key for decrypting user secret information
 - `custom_config` (Block List) Application initialization script template in cloud-config format and user specified values (see [below for nested schema](#nestedblock--custom_config))
 - `description` (String) Detailed description of the app instance
+- `device_id` (String) User defined name of the device name, unique across the enterprise. Once device name is defined, name can’t be changed
 - `drives` (Block List) drive details (see [below for nested schema](#nestedblock--drives))
+- `edge_node_cluster` (Block List) edge node cluster (see [below for nested schema](#nestedblock--edge_node_cluster))
 - `encrypted_secrets` (Map of String, Sensitive) user encrypted secrets map
 - `interfaces` (Block List) application interfaces (see [below for nested schema](#nestedblock--interfaces))
 - `is_secret_updated` (Boolean) This field tells whether user secrets has updated or not, especially the cusotom config
@@ -141,6 +142,18 @@ Optional:
 - `mountpath` (String) Mount Path for the drive in the App Instance
 - `mvolname` (String) mutable Volume for this drive. Only one of imvolname and mvolname must be specified.
 - `volumelabel` (String) User defined volume to use for this drive
+
+
+<a id="nestedblock--edge_node_cluster"></a>
+### Nested Schema for `edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the edge node cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated node
 
 
 <a id="nestedblock--interfaces"></a>
