@@ -274,7 +274,7 @@ func ProfileNetworkConfigSchema() map[string]*schema.Schema {
 			Description: `Dhcp Server Configuration`,
 			Type:        schema.TypeList, //GoType: DhcpServerConfig
 			Elem: &schema.Resource{
-				Schema: DhcpServerConfigSchema(),
+				Schema: DhcpServerConfig(),
 			},
 			Optional: true,
 		},

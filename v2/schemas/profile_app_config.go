@@ -283,7 +283,7 @@ func ProfileAppConfigSchema() map[string]*schema.Schema {
 			Description: `application interfaces`,
 			Type:        schema.TypeList, //GoType: []*AppInterface
 			Elem: &schema.Resource{
-				Schema: AppInterfaceSchema(),
+				Schema: AppInterface(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
@@ -302,7 +302,7 @@ func ProfileAppConfigSchema() map[string]*schema.Schema {
 			Description: `user defined manifest in JSON format`,
 			Type:        schema.TypeList, //GoType: VMManifest
 			Elem: &schema.Resource{
-				Schema: VMManifestSchema(),
+				Schema: VMManifest(),
 			},
 			Optional: true,
 		},

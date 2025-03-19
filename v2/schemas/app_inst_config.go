@@ -324,7 +324,7 @@ func AppInstConfig() map[string]*schema.Schema {
 			Description: `App Instance logs`,
 			Type:        schema.TypeList, //GoType: AppInstanceLogs
 			Elem: &schema.Resource{
-				Schema: AppInstanceLogs(),
+				Schema: AppInstanceLogsSchema(),
 			},
 			Optional: true,
 		},
