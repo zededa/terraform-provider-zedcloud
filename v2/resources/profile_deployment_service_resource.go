@@ -18,7 +18,7 @@ import (
 ProfileDeploymentService profile deployment service API
 */
 
-func ProfileDeploymentService() *schema.Resource {
+func ProfileDeploymentResource() *schema.Resource {
 	return &schema.Resource{
 
 		CreateContext: CreateProfileDeployment,

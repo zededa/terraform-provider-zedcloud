@@ -18,7 +18,7 @@ import (
 AssetGroupService asset group service API
 */
 
-func AssetGroupService() *schema.Resource {
+func AssetGroupResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateAssetGroup,
 		DeleteContext: DeleteAssetGroup,

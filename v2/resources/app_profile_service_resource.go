@@ -18,7 +18,7 @@ import (
 AppProfileService app profile service API
 */
 
-func AppProfileService() *schema.Resource {
+func AppProfileResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateAppProfile,
 		DeleteContext: DeleteAppProfile,
