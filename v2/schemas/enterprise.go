@@ -99,6 +99,12 @@ func EnterpriseModel(d *schema.ResourceData) *models.Enterprise {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewEnterpriseType(models.EnterpriseType(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet {
+		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
+		revision = ObjectRevisionModelFromMap(revisionMap)
+	}
 	return &models.Enterprise{
 		HubspotID:               hubspotID,
 		SfdcID:                  sfdcID,
@@ -119,6 +125,7 @@ func EnterpriseModel(d *schema.ResourceData) *models.Enterprise {
 		Title:                   &title, // string
 		TotpSettings:            totpSettings,
 		Type:                    typeVar,
+		Revision: 				 revision,
 	}
 }
 
@@ -218,6 +225,14 @@ func EnterpriseModelFromMap(m map[string]interface{}) *models.Enterprise {
 		typeModel := typeInterface.(string)
 		typeVar = models.NewEnterpriseType(models.EnterpriseType(typeModel))
 	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := m["revision"]
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.Enterprise{
 		HubspotID:               hubspotID,
 		SfdcID:                  sfdcID,
@@ -238,6 +253,7 @@ func EnterpriseModelFromMap(m map[string]interface{}) *models.Enterprise {
 		Title:                   &title,
 		TotpSettings:            totpSettings,
 		Type:                    typeVar,
+		Revision: 				 revision,
 	}
 }
 
@@ -402,6 +418,7 @@ func EnterpriseSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ObjectRevision(),
 			},
+			Optional: true,
 			Computed: true,
 		},
 
