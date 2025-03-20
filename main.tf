@@ -19,8 +19,8 @@ resource "zedcloud_project" "test_tf_provider" {
   # optional
   type = "TAG_TYPE_PROJECT"
   tag_level_settings {
-    flow_log_transmission =  "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED"
-    interface_ordering = "INTERFACE_ORDERING_DISABLED"
+    flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED"
+    interface_ordering    = "INTERFACE_ORDERING_DISABLED"
   }
   # attestation_policy {
   #   # required
@@ -157,16 +157,16 @@ resource "zedcloud_image" "alpine_image" {
 }
 
 resource "zedcloud_image" "silverpeak_cloudinit_azure_ds" {
-  datastore_id = zedcloud_datastore.alpha_ds.id
-  image_type = "IMAGE_TYPE_APPLICATION"
-  image_arch = "AMD64"
-  image_format = "ISO"
-  image_sha256 = "290b2df3264618f8760fe115fc36b6e480ee9125699d4781867090e25eb65865"
-  image_size_bytes =  1319
-  name = "norfolk-cloudinit.iso"
-  title = "norfolk-cloudinit.iso"
+  datastore_id        = zedcloud_datastore.alpha_ds.id
+  image_type          = "IMAGE_TYPE_APPLICATION"
+  image_arch          = "AMD64"
+  image_format        = "ISO"
+  image_sha256        = "290b2df3264618f8760fe115fc36b6e480ee9125699d4781867090e25eb65865"
+  image_size_bytes    = 1319
+  name                = "norfolk-cloudinit.iso"
+  title               = "norfolk-cloudinit.iso"
   project_access_list = [zedcloud_project.test_tf_provider.id]
-  image_rel_url = "norfolk-cloudinit.iso"
+  image_rel_url       = "norfolk-cloudinit.iso"
 }
 
 # data "zedcloud_image" "alpine_image" {
@@ -244,8 +244,8 @@ resource "zedcloud_application" "alpine_vm_app" {
   name                 = "alpine_vm_app"
   title                = "alpine_vm_app"
   user_defined_version = "24.0.4"
-  depends_on = [ zedcloud_image.alpine_image ]
-  project_access_list = [zedcloud_project.test_tf_provider.id]
+  depends_on           = [zedcloud_image.alpine_image]
+  project_access_list  = [zedcloud_project.test_tf_provider.id]
   manifest {
     ac_kind             = "VMManifest"
     ac_version          = "1.2.0"
