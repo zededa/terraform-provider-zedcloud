@@ -593,10 +593,10 @@ Optional:
 <a id="nestedblock--volume_policies"></a>
 ### Nested Schema for `volume_policies`
 
-Optional:
+Required:
 
-- `meta_data` (Block List) all the required metadata for a policy like id, name, different types of tags (see [below for nested schema](#nestedblock--volume_policies--meta_data))
-- `volume_config` (Block List) volume instance config details (see [below for nested schema](#nestedblock--volume_policies--volume_config))
+- `meta_data` (Block List, Min: 1) all the required metadata for a policy like id, name, different types of tags (see [below for nested schema](#nestedblock--volume_policies--meta_data))
+- `volume_config` (Block List, Min: 1) volume instance config details (see [below for nested schema](#nestedblock--volume_policies--volume_config))
 
 <a id="nestedblock--volume_policies--meta_data"></a>
 ### Nested Schema for `volume_policies.meta_data`

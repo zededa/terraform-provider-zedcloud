@@ -35,18 +35,15 @@ description: |-
 <a id="nestedblock--app_profile_info"></a>
 ### Nested Schema for `app_profile_info`
 
-Optional:
+Required:
 
-- `version` (Number)
-
-Read-Only:
-
-- `app_profile_id` (String) Unique ID of the asset group.
+- `app_profile_id` (String) Unique ID of the app profile.
+- `version` (Number) Version of the app profile
 
 
 <a id="nestedblock--target_asset_group"></a>
 ### Nested Schema for `target_asset_group`
 
-Read-Only:
+Required:
 
 - `group_id` (String) unique Id of the asset group.
