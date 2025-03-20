@@ -128,6 +128,7 @@ func GetAssetGroupByID(ctx context.Context, d *schema.ResourceData, m interface{
 
 	respModel := resp.GetPayload()
 	zschema.SetAssetGroupReadResourceData(d, respModel)
+	d.SetId(respModel.ID)
 
 	return diags
 }
@@ -166,6 +167,7 @@ func GetAssetGroupByName(ctx context.Context, d *schema.ResourceData, m interfac
 
 	respModel := resp.GetPayload()
 	zschema.SetAssetGroupReadResourceData(d, respModel)
+	d.SetId(respModel.ID)
 
 	return diags
 }

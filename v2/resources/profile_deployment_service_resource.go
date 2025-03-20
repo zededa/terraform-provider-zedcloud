@@ -81,6 +81,7 @@ func GetProfileDeploymentByID(ctx context.Context, d *schema.ResourceData, m int
 
 	respModel := resp.GetPayload()
 	zschema.SetProfileDeploymentResourceData(d, respModel)
+	d.SetId(respModel.ID)
 	return diags
 }
 
@@ -118,6 +119,7 @@ func GetProfileDeploymentByName(ctx context.Context, d *schema.ResourceData, m i
 
 	respModel := resp.GetPayload()
 	zschema.SetProfileDeploymentResourceData(d, respModel)
+	d.SetId(respModel.ID)
 
 	return diags
 }

@@ -78,7 +78,7 @@ func ProfileVolumePolicySchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ProfilePolicyCommonSchema(),
 			},
-			Optional: true,
+			Required: true,
 		},
 
 		"volume_config": {
@@ -87,7 +87,7 @@ func ProfileVolumePolicySchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ProfileVolumeConfigSchema(),
 			},
-			Optional: true,
+			Required: true,
 		},
 	}
 }

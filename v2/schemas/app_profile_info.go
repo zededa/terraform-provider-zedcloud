@@ -8,15 +8,19 @@ import (
 func AppProfileInfoModel(d *schema.ResourceData) *models.AppProfileInfo {
 	versionInt, _ := d.Get("version").(int)
 	version := int64(versionInt)
+	appProfileID, _ := d.Get("app_profile_id").(string)
 	return &models.AppProfileInfo{
-		Version: version,
+		Version:      version,
+		AppProfileID: appProfileID,
 	}
 }
 
 func AppProfileInfoModelFromMap(m map[string]interface{}) *models.AppProfileInfo {
+	appProfileID := m["app_profile_id"].(string)
 	version := int64(m["version"].(int)) // int64
 	return &models.AppProfileInfo{
-		Version: version,
+		AppProfileID: appProfileID,
+		Version:      version,
 	}
 }
 
@@ -40,21 +44,22 @@ func SetAppProfileInfoSubResourceData(m []*models.AppProfileInfo) (d []*map[stri
 func AppProfileInfoSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_profile_id": {
-			Description: `Unique ID of the asset group.`,
+			Description: `Unique ID of the app profile.`,
 			Type:        schema.TypeString,
-			Computed:    true,
+			Required:    true,
 		},
 
 		"version": {
-			Description: ``,
+			Description: `Version of the app profile`,
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }
 
 func GetAppProfileInfoPropertyFields() (t []string) {
 	return []string{
+		"app_profile_id",
 		"version",
 	}
 }

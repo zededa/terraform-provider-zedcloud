@@ -6,11 +6,17 @@ import (
 )
 
 func TargetAssetGroupModel(d *schema.ResourceData) *models.TargetAssetGroup {
-	return &models.TargetAssetGroup{}
+	groupID, _ := d.Get("group_id").(string)
+	return &models.TargetAssetGroup{
+		GroupID: groupID,
+	}
 }
 
 func TargetAssetGroupModelFromMap(m map[string]interface{}) *models.TargetAssetGroup {
-	return &models.TargetAssetGroup{}
+	groupID := m["group_id"].(string)
+	return &models.TargetAssetGroup{
+		GroupID: groupID,
+	}
 }
 
 func SetTargetAssetGroupResourceData(d *schema.ResourceData, m *models.TargetAssetGroup) {
@@ -33,11 +39,13 @@ func TargetAssetGroupSchema() map[string]*schema.Schema {
 		"group_id": {
 			Description: `unique Id of the asset group.`,
 			Type:        schema.TypeString,
-			Computed:    true,
+			Required:    true,
 		},
 	}
 }
 
 func GetTargetAssetGroupPropertyFields() (t []string) {
-	return []string{}
+	return []string{
+		"group_id",
+	}
 }

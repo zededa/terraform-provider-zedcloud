@@ -1,6 +1,8 @@
 package schemas
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
@@ -49,7 +51,7 @@ func ProfileVolumeConfigModel(d *schema.ResourceData) *models.ProfileVolumeConfi
 			purge = ZedCloudOpsCmdModelFromMap(purgeMap[0].(map[string]interface{}))
 		}
 	}
-	sizeBytes, _ := d.Get("size_bytes").(uint64)
+	sizeBytes, _ := d.Get("size_bytes").(string)
 	var typeVar *models.VolumeInstanceType // VolumeInstanceType
 	typeInterface, typeIsSet := d.GetOk("type")
 	if typeIsSet {
@@ -116,7 +118,8 @@ func ProfileVolumeConfigModelFromMap(m map[string]interface{}) *models.ProfileVo
 		}
 	}
 	//
-	sizeBytes := m["size_bytes"].(uint64)
+	sizeBytesInt := m["size_bytes"].(int)
+	sizeBytes := fmt.Sprintf("%d", sizeBytesInt)
 	var typeVar *models.VolumeInstanceType // VolumeInstanceType
 	typeInterface, typeIsSet := m["type"]
 	if typeIsSet {

@@ -1,12 +1,16 @@
 package schemas
 
 import (
+	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 func ProfilePolicyCommonModel(d *schema.ResourceData) *models.ProfilePolicyCommon {
 	id, _ := d.Get("id").(string)
+	if id == "" {
+		id, _ = uuid.GenerateUUID()
+	}
 	name, _ := d.Get("name").(string)
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := d.GetOk("tags")
@@ -31,6 +35,9 @@ func ProfilePolicyCommonModel(d *schema.ResourceData) *models.ProfilePolicyCommo
 
 func ProfilePolicyCommonModelFromMap(m map[string]interface{}) *models.ProfilePolicyCommon {
 	id := m["id"].(string)
+	if id == "" {
+		id, _ = uuid.GenerateUUID()
+	}
 	name := m["name"].(string)
 	tags := map[string]string{}
 	tagsInterface, tagsIsSet := m["tags"]
