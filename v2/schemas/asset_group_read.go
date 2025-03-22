@@ -1,6 +1,8 @@
 package schemas
 
 import (
+	"log"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
@@ -42,8 +44,11 @@ func AssetGroupReadModel(d *schema.ResourceData) *models.AssetGroupRead {
 }
 
 func AssetGroupReadModelFromMap(m map[string]interface{}) *models.AssetGroupRead {
-	assetCount := int64(m["asset_count"].(int)) // int64
-	var assetIds *models.AssetIDs               // AssetIDs
+	assetCount := int64(0)
+	if m["asset_count"] != nil {
+		assetCount = int64(m["asset_count"].(int))
+	}
+	var assetIds *models.AssetIDs // AssetIDs
 	assetIdsInterface, assetIdsIsSet := m["asset_ids"]
 	if assetIdsIsSet && assetIdsInterface != nil {
 		assetIdsMap := assetIdsInterface.([]interface{})
@@ -79,9 +84,21 @@ func AssetGroupReadModelFromMap(m map[string]interface{}) *models.AssetGroupRead
 }
 
 func SetAssetGroupReadResourceData(d *schema.ResourceData, m *models.AssetGroupRead) {
-	d.Set("asset_count", m.AssetCount)
-	d.Set("asset_ids", SetAssetIDsSubResourceData([]*models.AssetIDs{m.AssetIds}))
-	d.Set("asset_tags", SetAssetTagsSubResourceData([]*models.AssetTags{m.AssetTags}))
+	if m.AssetCount != 0 { // Ensure AssetCount is valid before setting
+		if err := d.Set("asset_count", m.AssetCount); err != nil {
+			log.Printf("[ERROR] Failed to set asset_count: %s", err)
+		}
+	}
+	if m.AssetIds != nil {
+		if err := d.Set("asset_ids", SetAssetIDsSubResourceData([]*models.AssetIDs{m.AssetIds})); err != nil {
+			log.Printf("[ERROR] Failed to set asset_ids: %s", err)
+		}
+	}
+	if m.AssetTags != nil {
+		if err := d.Set("asset_tags", SetAssetTagsSubResourceData([]*models.AssetTags{m.AssetTags})); err != nil {
+			log.Printf("[ERROR] Failed to set asset_tags: %s", err)
+		}
+	}
 	d.Set("description", m.Description)
 	d.Set("id", m.ID)
 	d.Set("name", m.Name)
@@ -110,9 +127,9 @@ func SetAssetGroupReadSubResourceData(m []*models.AssetGroupRead) (d []*map[stri
 func AssetGroupReadSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"asset_count": {
-			Description: ``,
+			Description: `Number of assets in the group`,
 			Type:        schema.TypeInt,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"asset_ids": {

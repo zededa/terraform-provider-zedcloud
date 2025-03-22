@@ -24,7 +24,7 @@ func AssetGroupResource() *schema.Resource {
 		DeleteContext: DeleteAssetGroup,
 		ReadContext:   ReadAssetGroup,
 		UpdateContext: UpdateAssetGroup,
-		Schema:        zschema.AssetGroupSchema(),
+		Schema:        zschema.AssetGroupReadSchema(),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
