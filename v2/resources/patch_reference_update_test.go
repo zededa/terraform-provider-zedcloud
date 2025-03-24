@@ -97,6 +97,7 @@ func testPatchEnvelopeReferenceUpdateAttributes(t *testing.T, got, expected *mod
 			"ID",
 			"BinaryArtifact",
 			"Base64Artifact",
+			"Format",
 		}
 		opts = cmpopts.IgnoreFields(models.BinaryArtifact{}, ignoredFields...)
 		if diff := cmp.Diff(*got.Artifacts[0], *expected.Artifacts[0], opts); len(diff) != 0 {

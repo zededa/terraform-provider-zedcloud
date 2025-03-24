@@ -99,9 +99,6 @@ func testAssetGroupExists(resourceName string, assetGroupModel *models.AssetGrou
 // testAssetGroupAttributes verifies attributes are set correctly by Terraform
 func testAssetGroupAttributes(t *testing.T, got, expected *models.AssetGroupRead) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		t.Log("Checking Asset Group attributes...")
-		t.Logf("Got: %+v", got)
-		t.Logf("Expected: %+v", expected)
 		gotAssetIds := got.AssetIds
 		expectedAssetIds := expected.AssetIds
 		if gotAssetIds != nil && expectedAssetIds != nil {
@@ -136,7 +133,7 @@ func testAssetGroupDestroy(s *terraform.State) error {
 	// retrieve the client established in Provider configuration
 	client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
-	// loop through the resources in state, verifying each Project is destroyed
+	// loop through the resources in state, verifying each assetgroup is destroyed
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "zedcloud_asset_group" {
 			continue

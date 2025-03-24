@@ -24,7 +24,7 @@ func AppProfileResource() *schema.Resource {
 		DeleteContext: DeleteAppProfile,
 		ReadContext:   ReadAppProfile,
 		UpdateContext: UpdateAppProfile,
-		Schema:        zschema.AppProfileSchema(),
+		Schema:        zschema.AppProfileReadSchema(),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
