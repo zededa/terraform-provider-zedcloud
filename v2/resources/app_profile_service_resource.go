@@ -33,7 +33,7 @@ func AppProfileResource() *schema.Resource {
 
 func AppProfileDataResource() *schema.Resource {
 	return &schema.Resource{
-		Schema:      zschema.AppProfileSchema(),
+		Schema:      zschema.AppProfileReadSchema(),
 		ReadContext: ReadAppProfile,
 	}
 }

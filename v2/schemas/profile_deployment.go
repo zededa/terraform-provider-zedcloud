@@ -1,6 +1,7 @@
 package schemas
 
 import (
+	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
@@ -16,6 +17,9 @@ func ProfileDeploymentModel(d *schema.ResourceData) *models.ProfileDeployment {
 	}
 	description, _ := d.Get("description").(string)
 	id, _ := d.Get("id").(string)
+	if id == "" {
+		id, _ = uuid.GenerateUUID()
+	}
 	name, _ := d.Get("name").(string)
 	projectID, _ := d.Get("project_id").(string)
 	status, _ := d.Get("status").(string)
@@ -25,7 +29,7 @@ func ProfileDeploymentModel(d *schema.ResourceData) *models.ProfileDeployment {
 		targetAssetGroupMap := targetAssetGroupInterface.([]interface{})
 		if len(targetAssetGroupMap) > 0 {
 			targetAssetGroup = TargetAssetGroupModelFromMap(targetAssetGroupMap[0].(map[string]interface{}))
-		}
+			v2/resources/asset_group_service_resource.go		}
 	}
 	title, _ := d.Get("title").(string)
 	return &models.ProfileDeployment{

@@ -33,7 +33,7 @@ func AssetGroupResource() *schema.Resource {
 
 func AssetGroupDataResource() *schema.Resource {
 	return &schema.Resource{
-		Schema:      zschema.AssetGroupSchema(),
+		Schema:      zschema.AssetGroupReadSchema(),
 		ReadContext: ReadAssetGroup,
 	}
 }
