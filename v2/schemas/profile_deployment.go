@@ -29,7 +29,7 @@ func ProfileDeploymentModel(d *schema.ResourceData) *models.ProfileDeployment {
 		targetAssetGroupMap := targetAssetGroupInterface.([]interface{})
 		if len(targetAssetGroupMap) > 0 {
 			targetAssetGroup = TargetAssetGroupModelFromMap(targetAssetGroupMap[0].(map[string]interface{}))
-			v2/resources/asset_group_service_resource.go		}
+		}
 	}
 	title, _ := d.Get("title").(string)
 	return &models.ProfileDeployment{
