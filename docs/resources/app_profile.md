@@ -18,8 +18,10 @@ description: |-
 ### Optional
 
 - `app_policies` (Block List) list of app instance policies (see [below for nested schema](#nestedblock--app_policies))
+- `latest_version` (Number) latest version of app profile
 - `name` (String) user defined name for the App profile
 - `network_policies` (Block List) list of network instance policies (see [below for nested schema](#nestedblock--network_policies))
+- `status` (String) status of the app profile
 - `title` (String) user defined title for the app profile
 - `volume_policies` (Block List) list of volume instance policies (see [below for nested schema](#nestedblock--volume_policies))
 
