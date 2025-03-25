@@ -38,16 +38,6 @@ func TestProfileDeployment_Create(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 				Check: resource.ComposeTestCheckFunc(
 					testProfileDeploymentExists("zedcloud_profile_deployment.test_tf_provider", &got),
-					// resource.TestMatchResourceAttr(
-					// 	"zedcloud_profile_deployment.test_tf_provider",
-					// 	"id",
-					// 	regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					// ),
-					// resource.TestMatchResourceAttr(
-					// 	"zedcloud_profile_deployment.test_tf_provider",
-					// 	"project_id",
-					// 	regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-					// ),
 					testProfileDeploymentAttributes(t, &got, &expected),
 				),
 			},
@@ -97,6 +87,7 @@ func testProfileDeploymentExists(name string, p *models.ProfileDeployment) resou
 func testProfileDeploymentAttributes(t *testing.T, got, expected *models.ProfileDeployment) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		ignoredFields := []string{
+			"Status",
 			"ID",
 			"ProjectID",
 			"TargetAssetGroup",
@@ -106,6 +97,12 @@ func testProfileDeploymentAttributes(t *testing.T, got, expected *models.Profile
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
+		if len(expected.Status) == 0 && len(got.Status) == 0 {
+			return fmt.Errorf("ProfileDeployment.Status is not set")
+		}
+		if got.Status == "" {
+			return fmt.Errorf("ProfileDeployment.Status is not set")
+		}
 		return nil
 	}
 }
@@ -114,7 +111,6 @@ func testProfileDeploymentAttributes(t *testing.T, got, expected *models.Profile
 func testProfileDeploymentDestroy(s *terraform.State) error {
 	// retrieve the client established in Provider configuration
 	client := testProvider.Meta().(*api_client.ZedcloudAPI)
-
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "zedcloud_profile_deployment" {
 			continue

@@ -122,7 +122,7 @@ data "zedcloud_edgenode" "test_tf_provider" {
 }
 
 resource "zedcloud_asset_group" "test_tf_provider" {
-  name        = "alphagroup13"
+  name        = "test_tf_provider_assetgroup"
   description = "This is an example asset group"
   project_id  = data.zedcloud_project.test_tf_provider.id
   asset_ids {
@@ -164,8 +164,8 @@ resource "zedcloud_app_profile" "test_tf_provider_app_profile" {
 
   app_policies {
     meta_data {
-      name = "default-app-policy"
-      title = "default-app-policy"
+      name = "test_tf_provider_default-app-policy"
+      title = "test_tf_provider_default-app-policy"
     }
 
     app_config {
@@ -175,7 +175,7 @@ resource "zedcloud_app_profile" "test_tf_provider_app_profile" {
       manifest_json {
         ac_kind             = "VMManifest"
         ac_version          = "1.2.0"
-        name                = "test_tf_provider"
+        name                = "test_tf_provider_default-app-policy"
         vmmode              = "HV_HVM"
         enablevnc           = false
         app_type            = "APP_TYPE_VM"
@@ -198,8 +198,8 @@ resource "zedcloud_app_profile" "test_tf_provider_app_profile" {
 
   network_policies {
     meta_data {
-      name = "default-network-policy"
-      title = "default-network-policy"
+      name = "test_tf_provider_default-network-policy"
+      title = "test_tf_provider_default-network-policy"
     }
 
     network_config {
@@ -212,8 +212,8 @@ resource "zedcloud_app_profile" "test_tf_provider_app_profile" {
 
 
 data "zedcloud_asset_group" "test_tf_provider" {
-  name     = "alphagroup13"
-  title    = "alphagroup13"
+  name     = "test_tf_provider_assetgroup"
+  title    = "test_tf_provider_assetgroup"
   depends_on = [
     zedcloud_asset_group.test_tf_provider
   ]
