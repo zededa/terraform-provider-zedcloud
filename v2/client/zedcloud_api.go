@@ -8,8 +8,11 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/go-retryablehttp"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/app_profile_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/asset_group_service"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/datastore"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/deployment"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/hardware_model"
@@ -18,8 +21,8 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/network"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/network_instance"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/node"
-	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/patch_envelope"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/profile_deployment_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/volume_instance"
 )
@@ -82,6 +85,9 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.PatchEnvelope = patch_envelope.New(transport, formats)
 	cli.Deployment = deployment.New(transport, formats)
 	cli.Cluster = cluster.New(transport, formats)
+	cli.AppProfile = app_profile_service.New(transport, formats)
+	cli.AssetGroup = asset_group_service.New(transport, formats)
+	cli.ProfileDeployment = profile_deployment_service.New(transport, formats)
 	return cli
 }
 
@@ -153,8 +159,14 @@ type ZedcloudAPI struct {
 	PatchEnvelope patch_envelope.ClientService
 
 	Deployment deployment.ClientService
-	
+
 	Cluster cluster.ClientService
+
+	AppProfile app_profile_service.ClientService
+
+	AssetGroup asset_group_service.ClientService
+
+	ProfileDeployment profile_deployment_service.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
@@ -176,4 +188,10 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.PatchEnvelope.SetTransport(transport)
 
 	c.Deployment.SetTransport(transport)
+
+	c.AppProfile.SetTransport(transport)
+
+	c.AssetGroup.SetTransport(transport)
+
+	c.ProfileDeployment.SetTransport(transport)
 }

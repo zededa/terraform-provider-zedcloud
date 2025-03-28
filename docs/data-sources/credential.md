@@ -39,7 +39,7 @@ Optional:
 
 Read-Only:
 
-- `id` (String) The ID of this resource.
+- `id` (String)
 
 
 <a id="nestedblock--next"></a>

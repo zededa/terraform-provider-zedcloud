@@ -1,0 +1,8 @@
+name: alphagroup13
+title: alphagroup13
+description: This is an example asset group
+projectId: bd8a66ed-0383-4c65-bb90-77189699d984
+assetIds:
+  ids:
+  - 60fb59c2-00d1-49b5-ba0e-83b5838dd6b4
+assetCount: 1

@@ -593,7 +593,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: AppInstEdgeNodeClusterSchema(),
 			},
-			Optional: true,
+			Optional:         true,
 			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("edge_node_cluster", "id"),
 		},
 
@@ -635,7 +635,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `App Instance logs`,
 			Type:        schema.TypeList, //GoType: AppInstanceLogs
 			Elem: &schema.Resource{
-				Schema: AppInstanceLogs(),
+				Schema: AppInstanceLogsSchema(),
 			},
 			Optional: true,
 		},

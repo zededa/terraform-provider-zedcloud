@@ -1,0 +1,85 @@
+id: 54f9bd51-43d2-4b5a-a502-85d628946b2
+name: test_tf_provider
+title: test_tf_provider
+appPolicies:
+- metaData:
+    id: d977f629-0a39-8683-e3ca-2d5d5198833b
+    name: default-app-policy
+    title: default-app-policy
+    tags: {}
+  appConfig:
+    networks: 0
+    drives: 0
+    cpus: 2
+    memory: 0
+    manifestJSON:
+      acKind: VMManifest
+      acVersion: 1.2.0
+      name: test_tf_provider
+      displayName: ''
+      description: ""
+      owner: null
+      desc: null
+      images:
+      - imagename: openalpine
+        imageid: 6c2609a1-7c0d-4115-ba99-5f16eb634f27
+        imageformat: CONTAINER
+        maxsize: '102400000'
+        preserve: false
+        target: Disk
+        drvtype: HDD
+        params: []
+        readonly: false
+        volumelabel: ''
+        ignorepurge: true
+        cleartext: false
+        mountpath: ''
+      interfaces: []
+      permissions: []
+      vmmode: HV_HVM
+      enablevnc: false
+      resources: []
+      configuration: null
+      containerDetail: null
+      module: null
+      appType: APP_TYPE_VM
+      deploymentType: DEPLOYMENT_TYPE_STAND_ALONE
+      cpuPinningEnabled: false
+      runtimeVersion: RuntimeVersion_Unknown
+      runtimeProtocolVersion: RuntimeProtocolVersion_Unknown
+      PersistentRuntimeSizeBytes: '0'
+      dockerComposeYamlText: ''
+      dockerComposeTarImageName: ''
+    storage: 0
+    nameProjectPart: ''
+    nameAppPart: ''
+    interfaces: []
+    startDelayInSeconds: 0
+    tags: {}
+    logs: null
+    vminfo: null
+    remoteConsole: false
+    bundleVersion: 0
+    newBundleVersionAvailable: false
+    netInstTags: {}
+    netInstName:
+networkPolicies:
+- metaData:
+    id: 30ef4ffc-88ea-808b-a132-04d853b181b
+    name: default-network-policy
+    title: default-network-policy
+    tags: {}
+  networkConfig:
+    tags: {}
+    port: '1234'
+    portTags: {}
+    kind: NETWORK_INSTANCE_KIND_LOCAL
+    type: NETWORK_INSTANCE_DHCP_TYPE_V4
+    ip: null
+    dnsList: []
+    opaque: null
+    deviceDefault: false
+    propagateConnectedRoutes: false
+    staticRoutes: []
+latestVersion: 1
+status: APP_PROFILE_STATUS_TYPE_INACTIVE

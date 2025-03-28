@@ -1,0 +1,11 @@
+id: e2a28a73-0933-4f99-a0fa-0029da76a664
+name: test_tf_provider
+title: test_tf_provider
+description: ''
+projectId: a223ddf6-bfbd-4032-a194-a3ef8cf1ca1f
+appProfileInfo:
+    appProfileId: 1510cac9-aa4f-404e-9760-cc27ad08cba7
+    version: 1
+targetAssetGroup:
+    groupId: e4aac923-c87f-481e-816f-5585003b2b12
+status: OPERATIONAL

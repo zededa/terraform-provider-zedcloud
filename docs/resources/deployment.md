@@ -527,12 +527,12 @@ Read-Only:
 
 Optional:
 
+- `id` (String)
 - `name` (String)
 - `title` (String)
 
 Read-Only:
 
-- `id` (String) The ID of this resource.
 - `revision` (Block List) (see [below for nested schema](#nestedblock--cluster_policy--revision))
 
 <a id="nestedblock--cluster_policy--revision"></a>
@@ -695,12 +695,12 @@ Read-Only:
 
 Optional:
 
+- `id` (String)
 - `name` (String)
 - `title` (String)
 
 Read-Only:
 
-- `id` (String) The ID of this resource.
 - `revision` (Block List) (see [below for nested schema](#nestedblock--integration_policy--revision))
 
 <a id="nestedblock--integration_policy--revision"></a>
