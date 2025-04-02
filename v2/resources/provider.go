@@ -11,6 +11,7 @@ import (
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/hashicorp/go-retryablehttp"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -140,7 +141,8 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if strings.HasPrefix(zedCloudURL, "https://") {
 		zedCloudURL = strings.TrimPrefix(zedCloudURL, "https://")
 	}
-	transport := httptransport.New(zedCloudURL, "/api", []string{"https"})
+	retryClient := getRetryClient()
+	transport := httptransport.NewWithClient(zedCloudURL, "/api", []string{"https"}, retryClient.StandardClient())
 	httpSessionDebugEnabled := envVarIsEnabled("TF_HTTP_SESSION_DEBUG")
 	if httpSessionDebugEnabled {
 		transport.SetDebug(true)
@@ -158,4 +160,15 @@ func BearerToken(token string) runtime.ClientAuthInfoWriter {
 		r.SetHeaderParam("Authorization", "Bearer "+token)
 		return nil
 	})
+}
+
+func getRetryClient() *retryablehttp.Client {
+	retryClient := retryablehttp.NewClient()
+	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
+		if resp.StatusCode == http.StatusNotFound {
+			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
+		}
+		return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
+	}
+	return retryClient
 }
