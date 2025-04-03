@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -147,6 +148,12 @@ func testAssetGroupDestroy(s *terraform.State) error {
 			if assetGroupResp := response.GetPayload(); assetGroupResp != nil && assetGroupResp.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, Asset Group (%s) still exists", assetGroupResp.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries,
+		// it overrrides AssetGroupServiceGetAssetGroupNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 

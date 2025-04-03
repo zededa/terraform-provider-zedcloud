@@ -3,13 +3,14 @@ package resources
 import (
 	"errors"
 	"fmt"
-	"regexp"
-	"testing"
 	"os"
+	"regexp"
+	"strings"
+	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -22,7 +23,7 @@ func TestEnterprise_Create(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping enterprise test for CI environment")
 	}
-	
+
 	var got models.Enterprise
 	var expected models.Enterprise
 
@@ -128,6 +129,12 @@ func testEnterpriseDestroy(s *terraform.State) error {
 			if enterprise := response.GetPayload(); enterprise != nil && enterprise.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, Enterprise (%s) still exists", enterprise.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries,
+		// it overrrides IdentityAccessManagementGetEnterpriseNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 

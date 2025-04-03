@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -195,6 +196,12 @@ func testDeploymentDestroy(s *terraform.State) error {
 			if deviceConfig := response.GetPayload(); deviceConfig != nil && deviceConfig.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, Project (%s) still exists", deviceConfig.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries,
+		// it overrrides GetByIDNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 

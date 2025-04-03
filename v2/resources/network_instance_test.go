@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -176,6 +177,12 @@ func testNetworkInstanceDestroy(s *terraform.State) error {
 			if network := response.GetPayload(); network != nil && network.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, Network Instance (%s) still exists", network.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries,
+		// it overrrides GetEdgeNetworkInstanceNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 

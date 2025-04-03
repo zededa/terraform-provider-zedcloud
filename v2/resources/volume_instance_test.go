@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -130,10 +131,16 @@ func testVolumeInstanceDestroy(s *terraform.State) error {
 			return nil
 		}
 
+		// if we use an http client with retries,
+		// it overrrides GetByIDNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
+			return nil
+		}
+
 		// if the error is equivalent to 404 not found, the VolumeInstance is destroyed
 		_, ok := err.(*config.GetByIDNotFound)
 		if !ok {
-			return fmt.Errorf("destroy failed, expect status code 404 for VolumeInstance (%s)", params.ID)
+			return fmt.Errorf("destroy failed: %v, %T", err, err)
 		}
 	}
 	return nil
