@@ -3,6 +3,7 @@ package resources
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -208,6 +209,12 @@ func testAppProfileDestroy(s *terraform.State) error {
 			if appProfileResp := resp.GetPayload(); appProfileResp != nil && appProfileResp.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, AppProfile with ID %s still exists", appProfileResp.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries,
+		// it overrrides AppProfileServiceGetAppProfileNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 

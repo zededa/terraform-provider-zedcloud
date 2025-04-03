@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -121,6 +122,12 @@ func testImageDestroy(s *terraform.State) error {
 			if image := response.GetPayload(); image != nil && image.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, Image (%s) still exists", image.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries,
+		// it overrrides GetImageNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -153,6 +154,12 @@ func testApplicationDestroy(s *terraform.State) error {
 			if application := response.GetPayload(); application != nil && application.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, Application (%s) still exists", application.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries,
+		// it overrrides GetApplicationNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 

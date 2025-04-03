@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -150,6 +151,12 @@ func testPatchEnvelopeDestroy(s *terraform.State) error {
 			if patchEnv := response.GetPayload(); patchEnv != nil && patchEnv.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, PatchEnvelope (%s) still exists", patchEnv.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries,
+		// it overrrides PatchEnvelopeConfigurationGetPatchEnvelopeByIDNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 

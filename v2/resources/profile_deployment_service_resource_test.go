@@ -2,6 +2,7 @@ package resources
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -124,6 +125,11 @@ func testProfileDeploymentDestroy(s *terraform.State) error {
 			if profileDeploymentResp := response.GetPayload(); profileDeploymentResp != nil && profileDeploymentResp.ID == rs.Primary.ID {
 				return fmt.Errorf("destroy failed, ProfileDeployment(%s) still exists", rs.Primary.ID)
 			}
+			return nil
+		}
+
+		// if we use an http client with retries, it overrrides ProfileDeploymentServiceGetProfileDeploymentNotFound error
+		if strings.Contains(err.Error(), "unexpected HTTP status 404 Not Found") {
 			return nil
 		}
 
