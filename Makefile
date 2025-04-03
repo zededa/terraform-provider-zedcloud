@@ -46,14 +46,14 @@ build:
 .PHONY: test
 test:
 	cd v2 && \
-	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v ./... && \
+	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v -timeout 20m ./... && \
 	cd -
 
 .PHONY: test-run
 test-run:
 	cd v2 && \
 	go vet ./... && \
-	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v ./... -run $(case) && \
+	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v -timeout 20m ./... -run $(case) && \
 	cd -
 
 .PHONY: udpatedeps
