@@ -666,6 +666,8 @@ func Node() map[string]*schema.Schema {
 			Elem:        systemInterfaceElem(),
 			Optional:    true,
 			Set:         schema.HashResource(systemInterfaceElem()),
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChangesV2("interfaces",
+				[]string{"netname", "intfname", "ipaddr", "macaddr"}),
 		},
 
 		"location": {
