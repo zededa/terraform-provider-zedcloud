@@ -119,6 +119,7 @@ data "zedcloud_edgenode" "test_tf_provider" {
   depends_on = [
     zedcloud_edgenode.test_tf_provider
   ]
+  interfaces {}
 }
 
 resource "zedcloud_asset_group" "test_tf_provider" {

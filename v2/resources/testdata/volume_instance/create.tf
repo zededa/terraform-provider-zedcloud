@@ -69,6 +69,12 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     zedcloud_model.test_tf_provider,
     zedcloud_project.test_tf_provider
   ]
+  interfaces {
+    cost = 0
+    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    intfname = "ethernet0"
+    tags = {}
+  }
 }
 
 resource "zedcloud_volume_instance"  "test_volume_instance" {

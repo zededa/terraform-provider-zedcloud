@@ -103,6 +103,12 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 
   admin_state = "ADMIN_STATE_ACTIVE"
   asset_id = "asset_id"
+  interfaces {
+    cost = 0
+    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    intfname = "ethernet0"
+    tags = {}
+  }
   config_item {
     bool_value = true
     float_value = 1.0
@@ -145,6 +151,7 @@ data "zedcloud_edgenode" "test_tf_provider" {
   depends_on = [
     zedcloud_edgenode.test_tf_provider
   ]
+  interfaces {}
 }
 
 resource "zedcloud_application" "test_tf_provider" {
