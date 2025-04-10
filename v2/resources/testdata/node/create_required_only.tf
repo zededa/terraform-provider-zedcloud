@@ -104,4 +104,10 @@ resource "zedcloud_edgenode" "required_only" {
 		model_id = zedcloud_model.test_tf_provider.id
 		project_id = zedcloud_project.test_tf_provider.id
 		title = "required_only-title"
+	interfaces {
+		cost = 0
+		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+		intfname = "ethernet0"
+		tags = {}
+	}
 }

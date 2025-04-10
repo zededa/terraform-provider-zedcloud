@@ -662,13 +662,10 @@ func Node() map[string]*schema.Schema {
 
 		"interfaces": {
 			Description: `System Interface list`,
-			Type:        schema.TypeList, //GoType: []*SysInterface
-			Elem: &schema.Resource{
-				Schema: SystemInterface(),
-			},
-			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:         true,
-			DiffSuppressFunc: diffSuppressSystemInterfaceListOrder("interfaces"),
+			Type:        schema.TypeSet, //GoType: []*SysInterface
+			Elem:        systemInterfaceElem(),
+			Required:    true,
+			Set:         schema.HashResource(systemInterfaceElem()),
 		},
 
 		"location": {
@@ -859,5 +856,11 @@ func GetEdgeNodePropertyFields() (t []string) {
 		"title",
 		"token",
 		"utype",
+	}
+}
+
+func systemInterfaceElem() *schema.Resource {
+	return &schema.Resource{
+		Schema: SystemInterface(),
 	}
 }
