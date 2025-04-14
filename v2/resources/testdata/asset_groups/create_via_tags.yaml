@@ -1,0 +1,10 @@
+name: alphagroup13_for_tags
+title: alphagroup13_for_tags
+description: This is an example asset group
+projectId: bd8a66ed-0383-4c65-bb90-77189699d984
+assetTags:
+  assetTag:
+  - tag:
+      key: tag-for-tags
+      value: value-for-tags
+assetCount: 1

@@ -158,3 +158,45 @@ func testAssetGroupDestroy(s *terraform.State) error {
 	}
 	return nil
 }
+
+
+func TestAssetGroupViaTags_Create(t *testing.T) {
+	var got, expected models.AssetGroupRead
+
+	// input config
+	createPath := "asset_groups/create_via_tags.tf"
+	input := testhelper.MustGetTestInput(t, createPath)
+
+	// expected output
+	createPath = "asset_groups/create_via_tags.yaml"
+	testhelper.MustGetExpectedOutput(t, createPath, &expected)
+
+	// terraform acceptance testcase
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testhelper.CheckEnv(t)
+		},
+		CheckDestroy: testAssetGroupDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:             input,
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeTestCheckFunc(
+					testAssetGroupExists("zedcloud_asset_group.test_tf_provider_for_tags", &got),
+					resource.TestMatchResourceAttr(
+						"zedcloud_asset_group.test_tf_provider_for_tags",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_asset_group.test_tf_provider_for_tags",
+						"project_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					testAssetGroupAttributes(t, &got, &expected),
+				),
+			},
+		},
+	})
+}

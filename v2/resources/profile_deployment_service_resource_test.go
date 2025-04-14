@@ -45,6 +45,37 @@ func TestProfileDeployment_Create(t *testing.T) {
 	})
 }
 
+func TestProfileDeployment_CreateViaTags(t *testing.T) {
+	var got, expected models.ProfileDeployment
+
+	// input config
+	createPath := "profile_deployments/create_via_tags.tf"
+	input := testhelper.MustGetTestInput(t, createPath)
+
+	// expected output
+	createPath = "profile_deployments/create_via_tags.yaml"
+	testhelper.MustGetExpectedOutput(t, createPath, &expected)
+
+	// terraform acceptance testcase
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testhelper.CheckEnv(t)
+		},
+		CheckDestroy: testProfileDeploymentDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:             input,
+				ExpectNonEmptyPlan: true,
+				Check: resource.ComposeTestCheckFunc(
+					testProfileDeploymentExists("zedcloud_profile_deployment.test_tf_provider_deploy_via_tags", &got),
+					testProfileDeploymentAttributes(t, &got, &expected),
+				),
+			},
+		},
+	})
+}
+
 // testProfileDeploymentExists retrieves the Profile Deployment and stores it in the provided *models.ProfileDeployment.
 func testProfileDeploymentExists(name string, p *models.ProfileDeployment) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
