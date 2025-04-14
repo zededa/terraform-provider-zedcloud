@@ -329,6 +329,7 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
     cpus = 2
     mode = "HV_HVM"
     vnc = false
+    enable_oem_win_license_key = false
   }
   tags = {
     "tag-key-1" = "tag-value-1"

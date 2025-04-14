@@ -4,7 +4,7 @@ drives: 1
 id: 5ff2ba22-827c-427f-92b9-93673569eeab
 isimported: false
 projectaccesslist:
-  - 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
+- 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 manifest:
   ackind: VMManifest
   acversion: 1.2.0
@@ -18,15 +18,16 @@ manifest:
       override: false
       template: dGVzdA==
       variablegroups:
-        - condition:
-            name: condition
-            operator: CONDITION_OPERATOR_EQUALTO
-            value: val
-          name: var_group
-          required: false
-          variables: []
+      - condition:
+          name: condition
+          operator: CONDITION_OPERATOR_EQUALTO
+          value: val
+        name: var_group
+        required: false
+        variables: []
   containerdetail: null
   cpupinningenabled: false
+  enableOemWinLicenseKey: false
   deploymenttype: DEPLOYMENT_TYPE_K3S
   desc:
     agreementlist: {}
@@ -41,49 +42,49 @@ manifest:
   displayname: display_name
   enablevnc: false
   images:
-    - cleartext: false
-      drvtype: HDD
-      ignorepurge: false
-      imageformat: ISO
-      imageid: ""
-      imagename: test-xenial-amd64
-      maxsize: "1200000"
-      mountpath: ""
-      params:
-        - name: bootparam
-          value: +k/sre
-      preserve: true
-      readonly: false
-      target: Disk
-      volumelabel: vol_1
+  - cleartext: false
+    drvtype: HDD
+    ignorepurge: false
+    imageformat: ISO
+    imageid: ""
+    imagename: test-xenial-amd64
+    maxsize: "1200000"
+    mountpath: ""
+    params:
+    - name: bootparam
+      value: +k/sre
+    preserve: true
+    readonly: false
+    target: Disk
+    volumelabel: vol_1
   interfaces:
-    - acls:
-        - actions:
-            - drop: false
-              limit: false
-              limitvalue: null
-              limitburst: 0
-              limitrate: 0
-              limitunit: ""
-              portmap: true
-              portmapto:
-                appport: 22
-          matches:
-            - type: protocol
-              value: tcp
-            - type: lport
-              value: "8022"
-          name: ""
-        - actions: []
-          matches:
-            - type: host
-              value: ""
-          name: ""
-      directattach: false
-      name: indirect
-      optional: false
-      privateip: false
-      type: ""
+  - acls:
+    - actions:
+      - drop: false
+        limit: false
+        limitvalue: null
+        limitburst: 0
+        limitrate: 0
+        limitunit: ""
+        portmap: true
+        portmapto:
+          appport: 22
+      matches:
+      - type: protocol
+        value: tcp
+      - type: lport
+        value: "8022"
+      name: ""
+    - actions: []
+      matches:
+      - type: host
+        value: ""
+      name: ""
+    directattach: false
+    name: indirect
+    optional: false
+    privateip: false
+    type: ""
   module: null
   name: xenial-amd64-docker-20180725
   owner:
@@ -94,10 +95,10 @@ manifest:
     website: http://www.zededa.com
   permissions: []
   resources:
-    - name: cpus
-      value: "2"
-    - name: memory
-      value: "1024000"
+  - name: cpus
+    value: "2"
+  - name: memory
+    value: "1024000"
   vmmode: HV_HVM
 memory: 1024000
 name: test_tf_provider-ubuntu-all-ip

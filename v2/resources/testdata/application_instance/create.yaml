@@ -20,12 +20,12 @@ deviceid: 7495a52f-a531-431d-9ba6-9e5ec021089f
 encryptedsecrets: {}
 id: f238a504-29f3-41d7-b393-cf8cc05ed9b5
 drives:
-    - drvtype: "UNSPECIFIED"
-      imagename: "test_tf_provider-create_edgenode"
-      maxsize: "0"
-      preserve: false
-      readonly: false
-      target: "Disk"
+  - drvtype: "UNSPECIFIED"
+    imagename: "test_tf_provider-create_edgenode"
+    maxsize: "0"
+    preserve: false
+    readonly: false
+    target: "Disk"
 issecretupdated: false
 logs:
     access: false
@@ -67,3 +67,4 @@ vminfo:
     mode: HV_HVM
     vnc: false
     vncdisplay: 0
+    enableOemWinLicenseKey: false
