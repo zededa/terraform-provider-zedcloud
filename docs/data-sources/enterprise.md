@@ -42,7 +42,7 @@ description: |-
 ### Read-Only
 
 - `id` (String) Unique system defined enterprise ID
-- `revision` (List of Object) system defined info (see [below for nested schema](#nestedatt--revision))
+- `revision` (Block List) system defined info (see [below for nested schema](#nestedblock--revision))
 
 <a id="nestedblock--child_enterprises"></a>
 ### Nested Schema for `child_enterprises`
@@ -95,14 +95,14 @@ Optional:
 - `enforced_by_parent` (Boolean)
 
 
-<a id="nestedatt--revision"></a>
+<a id="nestedblock--revision"></a>
 ### Nested Schema for `revision`
 
 Read-Only:
 
-- `created_at` (String)
-- `created_by` (String)
-- `curr` (String)
-- `prev` (String)
-- `updated_at` (String)
-- `updated_by` (String)
+- `created_at` (String) The time, in milliseconds since the epoch, when the record was created.
+- `created_by` (String) User data: Created By
+- `curr` (String) Current Database version of the record
+- `prev` (String) Previous
+- `updated_at` (String) The time, in milliseconds since the epoch, when the record was last updated.
+- `updated_by` (String) User data: Updated By

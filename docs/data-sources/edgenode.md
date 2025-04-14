@@ -17,6 +17,7 @@ description: |-
 
 ### Required
 
+- `interfaces` (Block Set, Min: 1) System Interface list (see [below for nested schema](#nestedblock--interfaces))
 - `model_id` (String) device model
 - `name` (String) user specified device name
 - `title` (String) user specified title
@@ -41,7 +42,6 @@ description: |-
 - `edgeviewconfig` (Block List) edgeview configuration for device (see [below for nested schema](#nestedblock--edgeviewconfig))
 - `generate_soft_serial` (Boolean) indicates whether a soft serial should be generated; it will work ONLY when device is created
 - `identity` (String) Device identity
-- `interfaces` (Block List) System Interface list (see [below for nested schema](#nestedblock--interfaces))
 - `location` (String) Device location: deprecated
 - `memory` (Number) Device memory in MBs
 - `onboarding_key` (String) Object key
@@ -63,6 +63,20 @@ description: |-
 - `debug_knob` (List of Object, Sensitive) debug knob details for the device (see [below for nested schema](#nestedatt--debug_knob))
 - `id` (String) system generated unique id for a device
 - `revision` (Block List) Object revision details (see [below for nested schema](#nestedblock--revision))
+
+<a id="nestedblock--interfaces"></a>
+### Nested Schema for `interfaces`
+
+Optional:
+
+- `cost` (Number) cost of using this interface. Default is 0.
+- `intf_usage` (String) Adapter Udage
+- `intfname` (String) name of interface in the manifest to which this network or adapter maps to
+- `ipaddr` (String) IP address: we will be needing this in cae of static network
+- `macaddr` (String) mac address needs to be over-written in some cases
+- `netname` (String) network name: if attaching a network use netname
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+
 
 <a id="nestedblock--base_image"></a>
 ### Nested Schema for `base_image`
@@ -363,20 +377,6 @@ Optional:
 - `expire_sec` (String)
 - `num_inst` (Number)
 
-
-
-<a id="nestedblock--interfaces"></a>
-### Nested Schema for `interfaces`
-
-Optional:
-
-- `cost` (Number) cost of using this interface. Default is 0.
-- `intf_usage` (String) Adapter Udage
-- `intfname` (String) name of interface in the manifest to which this network or adapter maps to
-- `ipaddr` (String) IP address: we will be needing this in cae of static network
-- `macaddr` (String) mac address needs to be over-written in some cases
-- `netname` (String) network name: if attaching a network use netname
-- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 
 
 <a id="nestedatt--debug_knob"></a>
