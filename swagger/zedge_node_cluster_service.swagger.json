@@ -1815,7 +1815,10 @@
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                 "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
                 "OBJECT_TYPE_DEV_PASSTHROUGH",
-                "OBJECT_TYPE_EDGE_NODE_CLUSTER"
+                "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                "OBJECT_TYPE_ASSET_GROUP",
+                "OBJECT_TYPE_APP_PROFILE",
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },

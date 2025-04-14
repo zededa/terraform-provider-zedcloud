@@ -103,18 +103,6 @@
                         "type": "string"
                     },
                     {
-                        "name": "Entpstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Userstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
                         "name": "project",
                         "in": "query",
                         "required": false,
@@ -720,18 +708,6 @@
                     },
                     {
                         "name": "HubspotId",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Entpstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Userstate",
                         "in": "query",
                         "required": false,
                         "type": "string"
@@ -1507,18 +1483,6 @@
                     },
                     {
                         "name": "HubspotId",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Entpstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Userstate",
                         "in": "query",
                         "required": false,
                         "type": "string"
@@ -2471,18 +2435,6 @@
                         "type": "string"
                     },
                     {
-                        "name": "Entpstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Userstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
                         "name": "project",
                         "in": "query",
                         "required": false,
@@ -3192,18 +3144,6 @@
                         "type": "string"
                     },
                     {
-                        "name": "Entpstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Userstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
                         "name": "project",
                         "in": "query",
                         "required": false,
@@ -3798,18 +3738,6 @@
                         "type": "string"
                     },
                     {
-                        "name": "Entpstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Userstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
                         "name": "project",
                         "in": "query",
                         "required": false,
@@ -4332,18 +4260,6 @@
                     },
                     {
                         "name": "HubspotId",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Entpstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Userstate",
                         "in": "query",
                         "required": false,
                         "type": "string"
@@ -5422,18 +5338,6 @@
                     },
                     {
                         "name": "HubspotId",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Entpstate",
-                        "in": "query",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "Userstate",
                         "in": "query",
                         "required": false,
                         "type": "string"
@@ -8412,7 +8316,11 @@
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                 "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                "OBJECT_TYPE_DEV_PASSTHROUGH"
+                "OBJECT_TYPE_DEV_PASSTHROUGH",
+                "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                "OBJECT_TYPE_ASSET_GROUP",
+                "OBJECT_TYPE_APP_PROFILE",
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },

@@ -40,16 +40,16 @@
         "application/json"
     ],
     "paths": {
-        "/v1/apps": {
+        "/beta/apps": {
             "get": {
                 "summary": "Query edge application bundles",
                 "description": "Query the edge application bundle records.",
-                "operationId": "EdgeApplicationConfiguration_QueryEdgeApplicationBundles",
+                "operationId": "EdgeApplicationConfiguration_QueryBetaEdgeApplicationBundles",
                 "responses": {
                     "200": {
                         "description": "A successful response.",
                         "schema": {
-                            "$ref": "#/definitions/Apps"
+                            "$ref": "#/definitions/AppPublicApps"
                         }
                     },
                     "400": {
@@ -99,17 +99,11 @@
                     },
                     {
                         "name": "originType",
-                        "description": "origin of bundle\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+                        "description": "origin of bundle",
                         "in": "query",
                         "required": false,
-                        "type": "string",
-                        "enum": [
-                            "ORIGIN_UNSPECIFIED",
-                            "ORIGIN_IMPORTED",
-                            "ORIGIN_LOCAL",
-                            "ORIGIN_GLOBAL"
-                        ],
-                        "default": "ORIGIN_UNSPECIFIED"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "name": "category",
@@ -136,7 +130,8 @@
                             "APP_TYPE_VM",
                             "APP_TYPE_VM_RUNTIME",
                             "APP_TYPE_CONTAINER",
-                            "APP_TYPE_MODULE"
+                            "APP_TYPE_MODULE",
+                            "APP_TYPE_DOCKER_COMPOSE"
                         ],
                         "default": "APP_TYPE_UNSPECIFIED"
                     },
@@ -155,7 +150,8 @@
                             "DEPLOYMENT_TYPE_K3S_AZURE",
                             "DEPLOYMENT_TYPE_K3S_AWS",
                             "DEPLOYMENT_TYPE_VMWARE_VCE",
-                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
+                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH",
+                            "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
                         ],
                         "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
                     },
@@ -223,6 +219,217 @@
                         "required": false,
                         "type": "number",
                         "format": "int64"
+                    },
+                    {
+                        "name": "titlePattern",
+                        "description": "query param : \"title-pattern\" . Search * titlePattern * in name field to filter records",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeApplicationConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-apps"
+                }
+            }
+        },
+        "/v1/apps": {
+            "get": {
+                "summary": "Query edge application bundles",
+                "description": "Query the edge application bundle records.",
+                "operationId": "EdgeApplicationConfiguration_QueryEdgeApplicationBundles",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/Apps"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namePattern",
+                        "description": "query param : \"name-pattern\" . Search * namePattern * in name field to filter records",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "originType",
+                        "description": "origin of bundle",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "category",
+                        "description": "category type of the bundle",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "summary",
+                        "description": "Only summary of the records required",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "appType",
+                        "description": "app type, eg: vm, container, module",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "APP_TYPE_UNSPECIFIED",
+                            "APP_TYPE_VM",
+                            "APP_TYPE_VM_RUNTIME",
+                            "APP_TYPE_CONTAINER",
+                            "APP_TYPE_MODULE",
+                            "APP_TYPE_DOCKER_COMPOSE"
+                        ],
+                        "default": "APP_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "deploymentType",
+                        "description": "type of deployment for the app, eg: azure, k3s, standalone",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "DEPLOYMENT_TYPE_UNSPECIFIED",
+                            "DEPLOYMENT_TYPE_STAND_ALONE",
+                            "DEPLOYMENT_TYPE_AZURE",
+                            "DEPLOYMENT_TYPE_K3S",
+                            "DEPLOYMENT_TYPE_AWS",
+                            "DEPLOYMENT_TYPE_K3S_AZURE",
+                            "DEPLOYMENT_TYPE_K3S_AWS",
+                            "DEPLOYMENT_TYPE_VMWARE_VCE",
+                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH",
+                            "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
+                        ],
+                        "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "appCategory",
+                        "description": "category types of the bundle\n\n - APP_CATEGORY_UNSPECIFIED: Invalid Edge Application Category\n - APP_CATEGORY_OPERATING_SYSTEM: Edge operating systems\n - APP_CATEGORY_INDUSTRIAL: Connectity solution for industrial protocols\n - APP_CATEGORY_EDGE_APPLICATION: Edge application framework featuring composite functions for data ingestion, buffering, analytics and export\n - APP_CATEGORY_NETWORKING: Edge networking services (e.g. SD-WAN, NFV)\n - APP_CATEGORY_SECURITY: Edge security services (e.g. protocol inspection, firewall)\n - APP_CATEGORY_DATA_ANALYTICS: Edge analytics (e.g. AI/ML) and data management (e.g. database, connectors) services\n - APP_CATEGORY_CLOUD_APPLICATION: Edge application runtimes, cloud connectivity and general application enablement\n - APP_CATEGORY_DEVOPS: Tools for Edge Application CI/CD and performance optimization\n - APP_CATEGORY_OTHERS: Miscellaneous functionality",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "APP_CATEGORY_UNSPECIFIED",
+                                "APP_CATEGORY_OPERATING_SYSTEM",
+                                "APP_CATEGORY_INDUSTRIAL",
+                                "APP_CATEGORY_EDGE_APPLICATION",
+                                "APP_CATEGORY_NETWORKING",
+                                "APP_CATEGORY_SECURITY",
+                                "APP_CATEGORY_DATA_ANALYTICS",
+                                "APP_CATEGORY_CLOUD_APPLICATION",
+                                "APP_CATEGORY_DEVOPS",
+                                "APP_CATEGORY_OTHERS"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "titlePattern",
+                        "description": "query param : \"title-pattern\" . Search * titlePattern * in name field to filter records",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
                     },
                     {
                         "name": "X-Request-Id",
@@ -379,17 +586,11 @@
                     },
                     {
                         "name": "originType",
-                        "description": "origin of bundle\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+                        "description": "origin of bundle",
                         "in": "query",
                         "required": false,
-                        "type": "string",
-                        "enum": [
-                            "ORIGIN_UNSPECIFIED",
-                            "ORIGIN_IMPORTED",
-                            "ORIGIN_LOCAL",
-                            "ORIGIN_GLOBAL"
-                        ],
-                        "default": "ORIGIN_UNSPECIFIED"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "name": "category",
@@ -416,7 +617,8 @@
                             "APP_TYPE_VM",
                             "APP_TYPE_VM_RUNTIME",
                             "APP_TYPE_CONTAINER",
-                            "APP_TYPE_MODULE"
+                            "APP_TYPE_MODULE",
+                            "APP_TYPE_DOCKER_COMPOSE"
                         ],
                         "default": "APP_TYPE_UNSPECIFIED"
                     },
@@ -435,7 +637,8 @@
                             "DEPLOYMENT_TYPE_K3S_AZURE",
                             "DEPLOYMENT_TYPE_K3S_AWS",
                             "DEPLOYMENT_TYPE_VMWARE_VCE",
-                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
+                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH",
+                            "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
                         ],
                         "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
                     },
@@ -503,6 +706,13 @@
                         "required": false,
                         "type": "number",
                         "format": "int64"
+                    },
+                    {
+                        "name": "titlePattern",
+                        "description": "query param : \"title-pattern\" . Search * titlePattern * in name field to filter records",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
                     },
                     {
                         "name": "X-Request-Id",
@@ -877,7 +1087,6 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "description": "System defined universally unique Id of the edge application",
                         "in": "path",
                         "required": true,
                         "type": "string"
@@ -887,98 +1096,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "User defined name of the edge application, unique across the enterprise. Once object is created, name can\u2019t be changed",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "description": "User defined title of the edge application. Title can be changed at any time",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
-                                },
-                                "description": {
-                                    "type": "string",
-                                    "description": "Detailed description of the edge application",
-                                    "maxLength": 256
-                                },
-                                "revision": {
-                                    "$ref": "#/definitions/ObjectRevision",
-                                    "description": "system defined info"
-                                },
-                                "networks": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "user defined network options"
-                                },
-                                "drives": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "user defined drives",
-                                    "readOnly": true
-                                },
-                                "cpus": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "user defined cpus for bundle"
-                                },
-                                "memory": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "user defined memory for bundle"
-                                },
-                                "manifestJSON": {
-                                    "$ref": "#/definitions/VMManifest",
-                                    "description": "user defined manifest in JSON format"
-                                },
-                                "parentDetail": {
-                                    "$ref": "#/definitions/ObjectParentDetail",
-                                    "description": "origin and parent related details"
-                                },
-                                "originType": {
-                                    "$ref": "#/definitions/Origin",
-                                    "description": "origin of object"
-                                },
-                                "storage": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "user defined storage for bundle"
-                                },
-                                "userDefinedVersion": {
-                                    "type": "string",
-                                    "description": "User defined version for the given edge-app"
-                                },
-                                "projectAccessList": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    },
-                                    "description": "project access list of the app bundle"
-                                },
-                                "isImported": {
-                                    "type": "boolean",
-                                    "description": "Flag to represent where app bundle is already imported"
-                                },
-                                "appInstCount": {
-                                    "type": "integer",
-                                    "format": "int32",
-                                    "description": "App instance count"
-                                }
-                            },
-                            "description": "Edge application gets installed/uninstalled to/from edge node(s) and perform specific edge computing tasks. Lifecycle of Edge application (upgrade/restart) on Edge node can be managed and monitored by ZEDEDA Cloud controller through this detailed configuration.",
-                            "title": "Edge application detailed configuration",
-                            "required": [
-                                "name",
-                                "title",
-                                "originType"
-                            ]
+                            "$ref": "#/definitions/App_HttpRequest"
                         }
                     },
                     {
@@ -1215,7 +1333,8 @@
                             "DEPLOYMENT_TYPE_K3S_AZURE",
                             "DEPLOYMENT_TYPE_K3S_AWS",
                             "DEPLOYMENT_TYPE_VMWARE_VCE",
-                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
+                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH",
+                            "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
                         ],
                         "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
                     },
@@ -1731,7 +1850,6 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "description": "System defined universally unique Id of the app instance",
                         "in": "path",
                         "required": true,
                         "type": "string"
@@ -1741,209 +1859,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "User defined name of the app instance, unique across the enterprise. Once app instance is created, name can\u2019t be changed",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "description": "User defined title of the app instance. Title can be changed at any time",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
-                                },
-                                "description": {
-                                    "type": "string",
-                                    "description": "Detailed description of the app instance",
-                                    "maxLength": 256
-                                },
-                                "revision": {
-                                    "$ref": "#/definitions/ObjectRevision",
-                                    "description": "app instance object revision details"
-                                },
-                                "projectId": {
-                                    "type": "string",
-                                    "description": "project name which the given app instance belong to"
-                                },
-                                "tags": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    },
-                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
-                                    "maxLength": 32,
-                                    "pattern": "^[^<%&?/\\>]+$"
-                                },
-                                "clusterID": {
-                                    "type": "string",
-                                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "appId": {
-                                    "type": "string",
-                                    "description": "User defined name of the edge app, unique across the enterprise. Once app name is created, name can\u2019t be changed",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "deviceId": {
-                                    "type": "string",
-                                    "description": "User defined name of the device name, unique across the enterprise. Once device name is defined, name can\u2019t be changed",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "activate": {
-                                    "type": "string",
-                                    "description": "app instance activation flag"
-                                },
-                                "vminfo": {
-                                    "$ref": "#/definitions/vm",
-                                    "description": "virtual machine info"
-                                },
-                                "drives": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/drive"
-                                    },
-                                    "description": "drive details"
-                                },
-                                "interfaces": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/appInterface"
-                                    },
-                                    "description": "application interfaces"
-                                },
-                                "userData": {
-                                    "type": "string",
-                                    "description": "Deprecated: Application initiazation script in cloud-config format to be used by cloud-init"
-                                },
-                                "customConfig": {
-                                    "$ref": "#/definitions/CustomConfig",
-                                    "description": "Application initialization script template in cloud-config format and user specified values"
-                                },
-                                "collectStatsIPAddr": {
-                                    "type": "string",
-                                    "description": "holds the static Ip of the app instance"
-                                },
-                                "bundleversion": {
-                                    "type": "string",
-                                    "description": "version of bundle app is referring to"
-                                },
-                                "logs": {
-                                    "$ref": "#/definitions/AppInstanceLogs",
-                                    "description": "App Instance logs"
-                                },
-                                "restart": {
-                                    "$ref": "#/definitions/ZedCloudOpsCmd",
-                                    "description": "Restart counter: ZedCloudOpsCmd"
-                                },
-                                "refresh": {
-                                    "$ref": "#/definitions/ZedCloudOpsCmd",
-                                    "description": "Refresh counter: ZedCloudOpsCmd"
-                                },
-                                "purge": {
-                                    "$ref": "#/definitions/ZedCloudOpsCmd",
-                                    "description": "Purge counter: ZedCloudOpsCmd"
-                                },
-                                "remoteConsole": {
-                                    "type": "boolean",
-                                    "description": "Remote console flag"
-                                },
-                                "encryptedSecrets": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    },
-                                    "description": "user encrypted secrets map"
-                                },
-                                "cryptoKey": {
-                                    "type": "string",
-                                    "description": "Crypto Key for decrypting user secret information"
-                                },
-                                "manifestInfo": {
-                                    "$ref": "#/definitions/ManifestInfo",
-                                    "description": "app manifest Info"
-                                },
-                                "appType": {
-                                    "$ref": "#/definitions/AppType",
-                                    "description": "type of bundle"
-                                },
-                                "isSecretUpdated": {
-                                    "type": "boolean",
-                                    "description": "This field tells whether user secrets has updated or not, especially the cusotom config"
-                                },
-                                "appPolicyId": {
-                                    "type": "string",
-                                    "description": "app policy id"
-                                },
-                                "deploymentType": {
-                                    "$ref": "#/definitions/DeploymentType",
-                                    "description": "type of deployment for the app, eg: azure, k3s, standalone"
-                                },
-                                "userDefinedVersion": {
-                                    "type": "string",
-                                    "description": "Instance version tells which edge app does this instance is running"
-                                },
-                                "startDelayInSeconds": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "start delay is the time in seconds EVE should wait after boot before starting the application instance"
-                                },
-                                "cloudInitVersion": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "Cloud-init version that indicates whether it necessary or not for cloud-init tool to restart in a guest"
-                                },
-                                "allowSnapshots": {
-                                    "type": "boolean",
-                                    "description": "Flag to determine if a snapshot creation is allowed"
-                                },
-                                "maxSnapshots": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "Maximum number of snapshots allowed to be created"
-                                },
-                                "availableSnapshots": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/AppInstanceSnapshot"
-                                    },
-                                    "description": "The list of available snapshots of the application instance"
-                                },
-                                "patchEnvelopeId": {
-                                    "type": "string",
-                                    "description": "patch envelope id"
-                                },
-                                "patchEnvelopeName": {
-                                    "type": "string",
-                                    "description": "patch envelope name"
-                                }
-                            },
-                            "description": "App Instance detail",
-                            "title": "App Instance detail",
-                            "required": [
-                                "name",
-                                "title",
-                                "projectId",
-                                "appId",
-                                "deviceId",
-                                "activate",
-                                "drives",
-                                "interfaces"
-                            ]
+                            "$ref": "#/definitions/AppInstanceUpdate_HttpRequest"
                         }
                     },
                     {
@@ -4532,28 +4448,10 @@
                     },
                     {
                         "name": "tags",
+                        "description": "json stringified key value pairs",
                         "in": "query",
                         "required": false,
                         "type": "string"
-                    },
-                    {
-                        "name": "deploymentType",
-                        "description": "type of deployment for the app, eg: azure, k3s, standalone",
-                        "in": "query",
-                        "required": false,
-                        "type": "string",
-                        "enum": [
-                            "DEPLOYMENT_TYPE_UNSPECIFIED",
-                            "DEPLOYMENT_TYPE_STAND_ALONE",
-                            "DEPLOYMENT_TYPE_AZURE",
-                            "DEPLOYMENT_TYPE_K3S",
-                            "DEPLOYMENT_TYPE_AWS",
-                            "DEPLOYMENT_TYPE_K3S_AZURE",
-                            "DEPLOYMENT_TYPE_K3S_AWS",
-                            "DEPLOYMENT_TYPE_VMWARE_VCE",
-                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
-                        ],
-                        "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
                     },
                     {
                         "name": "projectNamePattern",
@@ -4630,17 +4528,17 @@
                         "type": "string"
                     },
                     {
-                        "name": "appInstPatchEnvelopeCheck",
+                        "name": "patchEnvelopeReference",
                         "description": "app instance patch envelope reference check",
                         "in": "query",
                         "required": false,
                         "type": "string",
                         "enum": [
-                            "CHECK_UNSPECIFIED",
-                            "CHECK_REFERENCING_PATCH",
-                            "CHECK_NOT_REFERENCING_PATCH"
+                            "UNSPECIFIED",
+                            "REFERENCING_PATCH",
+                            "NOT_REFERENCING_PATCH"
                         ],
-                        "default": "CHECK_UNSPECIFIED"
+                        "default": "UNSPECIFIED"
                     },
                     {
                         "name": "X-Request-Id",
@@ -4789,28 +4687,10 @@
                     },
                     {
                         "name": "tags",
+                        "description": "json stringified key value pairs",
                         "in": "query",
                         "required": false,
                         "type": "string"
-                    },
-                    {
-                        "name": "deploymentType",
-                        "description": "type of deployment for the app, eg: azure, k3s, standalone",
-                        "in": "query",
-                        "required": false,
-                        "type": "string",
-                        "enum": [
-                            "DEPLOYMENT_TYPE_UNSPECIFIED",
-                            "DEPLOYMENT_TYPE_STAND_ALONE",
-                            "DEPLOYMENT_TYPE_AZURE",
-                            "DEPLOYMENT_TYPE_K3S",
-                            "DEPLOYMENT_TYPE_AWS",
-                            "DEPLOYMENT_TYPE_K3S_AZURE",
-                            "DEPLOYMENT_TYPE_K3S_AWS",
-                            "DEPLOYMENT_TYPE_VMWARE_VCE",
-                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
-                        ],
-                        "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
                     },
                     {
                         "name": "projectNamePattern",
@@ -4887,17 +4767,17 @@
                         "type": "string"
                     },
                     {
-                        "name": "appInstPatchEnvelopeCheck",
+                        "name": "patchEnvelopeReference",
                         "description": "app instance patch envelope reference check",
                         "in": "query",
                         "required": false,
                         "type": "string",
                         "enum": [
-                            "CHECK_UNSPECIFIED",
-                            "CHECK_REFERENCING_PATCH",
-                            "CHECK_NOT_REFERENCING_PATCH"
+                            "UNSPECIFIED",
+                            "REFERENCING_PATCH",
+                            "NOT_REFERENCING_PATCH"
                         ],
-                        "default": "CHECK_UNSPECIFIED"
+                        "default": "UNSPECIFIED"
                     },
                     {
                         "name": "X-Request-Id",
@@ -5847,7 +5727,8 @@
                             "DEPLOYMENT_TYPE_K3S_AZURE",
                             "DEPLOYMENT_TYPE_K3S_AWS",
                             "DEPLOYMENT_TYPE_VMWARE_VCE",
-                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
+                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH",
+                            "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
                         ],
                         "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
                     },
@@ -6261,7 +6142,7 @@
                                     "uniqueItems": true
                                 },
                                 "activate": {
-                                    "type": "string",
+                                    "type": "boolean",
                                     "description": "app instance activation flag"
                                 },
                                 "vminfo": {
@@ -6386,6 +6267,36 @@
                                 "patchEnvelopeName": {
                                     "type": "string",
                                     "description": "patch envelope name"
+                                },
+                                "edgeNodeCluster": {
+                                    "$ref": "#/definitions/AppInstEdgeNodeCluster",
+                                    "description": "edge node cluster"
+                                },
+                                "dockerComposeYamlText": {
+                                    "type": "string",
+                                    "description": "Docker compose base64 encoded plain text",
+                                    "title": "internal field",
+                                    "readOnly": true
+                                },
+                                "dockerComposeTarImageName": {
+                                    "type": "string",
+                                    "description": "Docker compose tar image name",
+                                    "title": "internal field",
+                                    "readOnly": true
+                                },
+                                "datastoreIdList": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "List of datastore ids containing private registry credentials",
+                                    "title": "internal field",
+                                    "readOnly": true
+                                },
+                                "PersistentRuntimeSizeBytes": {
+                                    "type": "string",
+                                    "format": "uint64",
+                                    "description": "Persistent runtime size in bytes"
                                 }
                             },
                             "description": "App Instance detail",
@@ -6396,9 +6307,7 @@
                                 "projectId",
                                 "appId",
                                 "deviceId",
-                                "activate",
-                                "drives",
-                                "interfaces"
+                                "activate"
                             ]
                         }
                     },
@@ -8646,28 +8555,10 @@
                     },
                     {
                         "name": "tags",
+                        "description": "json stringified key value pairs",
                         "in": "query",
                         "required": false,
                         "type": "string"
-                    },
-                    {
-                        "name": "deploymentType",
-                        "description": "type of deployment for the app, eg: azure, k3s, standalone",
-                        "in": "query",
-                        "required": false,
-                        "type": "string",
-                        "enum": [
-                            "DEPLOYMENT_TYPE_UNSPECIFIED",
-                            "DEPLOYMENT_TYPE_STAND_ALONE",
-                            "DEPLOYMENT_TYPE_AZURE",
-                            "DEPLOYMENT_TYPE_K3S",
-                            "DEPLOYMENT_TYPE_AWS",
-                            "DEPLOYMENT_TYPE_K3S_AZURE",
-                            "DEPLOYMENT_TYPE_K3S_AWS",
-                            "DEPLOYMENT_TYPE_VMWARE_VCE",
-                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
-                        ],
-                        "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
                     },
                     {
                         "name": "projectNamePattern",
@@ -8744,17 +8635,17 @@
                         "type": "string"
                     },
                     {
-                        "name": "appInstPatchEnvelopeCheck",
+                        "name": "patchEnvelopeReference",
                         "description": "app instance patch envelope reference check",
                         "in": "query",
                         "required": false,
                         "type": "string",
                         "enum": [
-                            "CHECK_UNSPECIFIED",
-                            "CHECK_REFERENCING_PATCH",
-                            "CHECK_NOT_REFERENCING_PATCH"
+                            "UNSPECIFIED",
+                            "REFERENCING_PATCH",
+                            "NOT_REFERENCING_PATCH"
                         ],
-                        "default": "CHECK_UNSPECIFIED"
+                        "default": "UNSPECIFIED"
                     },
                     {
                         "name": "X-Request-Id",
@@ -8897,28 +8788,10 @@
                     },
                     {
                         "name": "tags",
+                        "description": "json stringified key value pairs",
                         "in": "query",
                         "required": false,
                         "type": "string"
-                    },
-                    {
-                        "name": "deploymentType",
-                        "description": "type of deployment for the app, eg: azure, k3s, standalone",
-                        "in": "query",
-                        "required": false,
-                        "type": "string",
-                        "enum": [
-                            "DEPLOYMENT_TYPE_UNSPECIFIED",
-                            "DEPLOYMENT_TYPE_STAND_ALONE",
-                            "DEPLOYMENT_TYPE_AZURE",
-                            "DEPLOYMENT_TYPE_K3S",
-                            "DEPLOYMENT_TYPE_AWS",
-                            "DEPLOYMENT_TYPE_K3S_AZURE",
-                            "DEPLOYMENT_TYPE_K3S_AWS",
-                            "DEPLOYMENT_TYPE_VMWARE_VCE",
-                            "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
-                        ],
-                        "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
                     },
                     {
                         "name": "projectNamePattern",
@@ -8995,17 +8868,17 @@
                         "type": "string"
                     },
                     {
-                        "name": "appInstPatchEnvelopeCheck",
+                        "name": "patchEnvelopeReference",
                         "description": "app instance patch envelope reference check",
                         "in": "query",
                         "required": false,
                         "type": "string",
                         "enum": [
-                            "CHECK_UNSPECIFIED",
-                            "CHECK_REFERENCING_PATCH",
-                            "CHECK_NOT_REFERENCING_PATCH"
+                            "UNSPECIFIED",
+                            "REFERENCING_PATCH",
+                            "NOT_REFERENCING_PATCH"
                         ],
-                        "default": "CHECK_UNSPECIFIED"
+                        "default": "UNSPECIFIED"
                     },
                     {
                         "name": "X-Request-Id",
@@ -9122,7 +8995,7 @@
             ],
             "default": "ADMIN_STATE_UNSPECIFIED",
             "description": "- ADMIN_STATE_CREATED: Entity Created in the controller\n - ADMIN_STATE_DELETED: Entity Deleted in the controller\n - ADMIN_STATE_ACTIVE: Entity Activated in the controller\n - ADMIN_STATE_INACTIVE: Entity Deactivated in the controller\n - ADMIN_STATE_REGISTERED: Specific to Edge-node - Edge-node Registered with the controller\n - ADMIN_STATE_ARCHIVED: Entity Archived in the controller",
-            "title": "Configured state of an object"
+            "title": "AdminState - On update, please update AdminState_HttpRequest as well"
         },
         "App": {
             "type": "object",
@@ -9215,6 +9088,13 @@
                     "type": "integer",
                     "format": "int32",
                     "description": "App instance count"
+                },
+                "datastoreIdList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of datastore ids containing private registry credential"
                 }
             },
             "description": "Edge application gets installed/uninstalled to/from edge node(s) and perform specific edge computing tasks. Lifecycle of Edge application (upgrade/restart) on Edge node can be managed and monitored by ZEDEDA Cloud controller through this detailed configuration.",
@@ -9278,6 +9158,21 @@
             "description": "AppInstConfigStatusList is used for listing the app instance statuses",
             "title": "App instance config status list"
         },
+        "AppInstEdgeNodeCluster": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Id of the edge node cluster",
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "designatedNodeID": {
+                    "type": "string",
+                    "description": "Id of the designated node",
+                    "pattern": "[0-9A-Za-z-]+"
+                }
+            }
+        },
         "AppInstMemorySummary": {
             "type": "object",
             "properties": {
@@ -9301,14 +9196,15 @@
             "description": "Memory Information for the App Instance.",
             "title": "App Instance Memory Summary"
         },
-        "AppInstPatchEnvelope": {
+        "AppInstPatchEnvelopeConfig_HttpRequestAppInstPatchEnvelope_HttpRequest": {
             "type": "string",
             "enum": [
-                "CHECK_UNSPECIFIED",
-                "CHECK_REFERENCING_PATCH",
-                "CHECK_NOT_REFERENCING_PATCH"
+                "UNSPECIFIED",
+                "REFERENCING_PATCH",
+                "NOT_REFERENCING_PATCH"
             ],
-            "default": "CHECK_UNSPECIFIED"
+            "default": "UNSPECIFIED",
+            "title": "AppInstPatchEnvelope_HttpRequest - Only for swagger documentation"
         },
         "AppInstSnapshotsList": {
             "type": "object",
@@ -9518,6 +9414,17 @@
                         "$ref": "#/definitions/PatchEnvelopeUsageInfo"
                     },
                     "description": "patch envelope usage info"
+                },
+                "containerStatusList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ComposeContainerStatus"
+                    },
+                    "description": "docker-compose container status"
+                },
+                "runtimePlatformVersions": {
+                    "$ref": "#/definitions/RuntimePlatformVersions",
+                    "description": "Runtime platform versions"
                 }
             },
             "description": "AppInstanceStatusMsg encapsulates the status of an app instance",
@@ -9732,7 +9639,7 @@
                     "uniqueItems": true
                 },
                 "activate": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "app instance activation flag"
                 },
                 "vminfo": {
@@ -9857,6 +9764,36 @@
                 "patchEnvelopeName": {
                     "type": "string",
                     "description": "patch envelope name"
+                },
+                "edgeNodeCluster": {
+                    "$ref": "#/definitions/AppInstEdgeNodeCluster",
+                    "description": "edge node cluster"
+                },
+                "dockerComposeYamlText": {
+                    "type": "string",
+                    "description": "Docker compose base64 encoded plain text",
+                    "title": "internal field",
+                    "readOnly": true
+                },
+                "dockerComposeTarImageName": {
+                    "type": "string",
+                    "description": "Docker compose tar image name",
+                    "title": "internal field",
+                    "readOnly": true
+                },
+                "datastoreIdList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of datastore ids containing private registry credentials",
+                    "title": "internal field",
+                    "readOnly": true
+                },
+                "PersistentRuntimeSizeBytes": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "Persistent runtime size in bytes"
                 }
             },
             "description": "App Instance detail",
@@ -9867,16 +9804,14 @@
                 "projectId",
                 "appId",
                 "deviceId",
-                "activate",
-                "drives",
-                "interfaces"
+                "activate"
             ]
         },
         "AppInstanceLogs": {
             "type": "object",
             "properties": {
                 "access": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Flags to enable / disable sending of logs generated by app instance to zedcloud"
                 }
             },
@@ -9966,6 +9901,10 @@
                 "activate": {
                     "type": "boolean",
                     "description": "Indicates whether the snapshot should be activated"
+                },
+                "immediate": {
+                    "type": "boolean",
+                    "description": "Indicates that the snapshot should be taken immediately"
                 }
             },
             "description": "App instance snapshot",
@@ -9985,6 +9924,219 @@
                     "format": "date-time"
                 }
             }
+        },
+        "AppInstanceUpdate_HttpRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the app instance",
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the app instance, unique across the enterprise. Once app instance is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the app instance. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the app instance",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "app instance object revision details"
+                },
+                "projectId": {
+                    "type": "string",
+                    "description": "project name which the given app instance belong to"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "clusterID": {
+                    "type": "string",
+                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "appId": {
+                    "type": "string",
+                    "description": "User defined name of the edge app, unique across the enterprise. Once app name is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string",
+                    "description": "User defined name of the device name, unique across the enterprise. Once device name is defined, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "activate": {
+                    "type": "boolean",
+                    "description": "app instance activation flag"
+                },
+                "vminfo": {
+                    "$ref": "#/definitions/vm",
+                    "description": "virtual machine info"
+                },
+                "drives": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/drive"
+                    },
+                    "description": "drive details"
+                },
+                "interfaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/appInterface"
+                    },
+                    "description": "application interfaces"
+                },
+                "userData": {
+                    "type": "string",
+                    "description": "Deprecated: Application initiazation script in cloud-config format to be used by cloud-init"
+                },
+                "customConfig": {
+                    "$ref": "#/definitions/CustomConfig",
+                    "description": "Application initialization script template in cloud-config format and user specified values"
+                },
+                "collectStatsIPAddr": {
+                    "type": "string",
+                    "description": "holds the static Ip of the app instance"
+                },
+                "bundleversion": {
+                    "type": "string",
+                    "description": "version of bundle app is referring to"
+                },
+                "logs": {
+                    "$ref": "#/definitions/AppInstanceLogs",
+                    "description": "App Instance logs"
+                },
+                "restart": {
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Restart counter: ZedCloudOpsCmd"
+                },
+                "refresh": {
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Refresh counter: ZedCloudOpsCmd"
+                },
+                "purge": {
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Purge counter: ZedCloudOpsCmd"
+                },
+                "remoteConsole": {
+                    "type": "boolean",
+                    "description": "Remote console flag"
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "user encrypted secrets map"
+                },
+                "cryptoKey": {
+                    "type": "string",
+                    "description": "Crypto Key for decrypting user secret information"
+                },
+                "manifestInfo": {
+                    "$ref": "#/definitions/ManifestInfo",
+                    "description": "app manifest Info"
+                },
+                "appType": {
+                    "$ref": "#/definitions/AppType",
+                    "description": "type of bundle"
+                },
+                "isSecretUpdated": {
+                    "type": "boolean",
+                    "description": "This field tells whether user secrets has updated or not, especially the cusotom config"
+                },
+                "appPolicyId": {
+                    "type": "string",
+                    "description": "app policy id"
+                },
+                "deploymentType": {
+                    "$ref": "#/definitions/DeploymentType",
+                    "description": "type of deployment for the app, eg: azure, k3s, standalone"
+                },
+                "userDefinedVersion": {
+                    "type": "string",
+                    "description": "Instance version tells which edge app does this instance is running"
+                },
+                "startDelayInSeconds": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "start delay is the time in seconds EVE should wait after boot before starting the application instance"
+                },
+                "cloudInitVersion": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Cloud-init version that indicates whether it necessary or not for cloud-init tool to restart in a guest"
+                },
+                "allowSnapshots": {
+                    "type": "boolean",
+                    "description": "Flag to determine if a snapshot creation is allowed"
+                },
+                "maxSnapshots": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum number of snapshots allowed to be created"
+                },
+                "availableSnapshots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AppInstanceSnapshot"
+                    },
+                    "description": "The list of available snapshots of the application instance"
+                },
+                "patchEnvelopeId": {
+                    "type": "string",
+                    "description": "patch envelope id"
+                },
+                "patchEnvelopeName": {
+                    "type": "string",
+                    "description": "patch envelope name"
+                },
+                "edgeNodeCluster": {
+                    "$ref": "#/definitions/AppInstEdgeNodeCluster",
+                    "description": "edge node cluster"
+                }
+            },
+            "description": "App Instance detail",
+            "title": "App Instance detail",
+            "required": [
+                "name",
+                "title",
+                "projectId",
+                "appId",
+                "deviceId",
+                "activate"
+            ]
         },
         "AppInstances": {
             "type": "object",
@@ -10024,6 +10176,133 @@
                 "next": {
                     "$ref": "#/definitions/Cursor",
                     "description": "Responded page details of filtered records"
+                }
+            }
+        },
+        "AppPublicAppSummary": {
+            "type": "object",
+            "example": {
+                "id": "d85a545f-6510-4327-b03d-c02eef119e99",
+                "name": "sample-app"
+            },
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the edge application",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the edge application, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the edge application. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the edge application",
+                    "maxLength": 256
+                },
+                "manifestJSON": {
+                    "$ref": "#/definitions/VMManifestSummary"
+                },
+                "parentDetail": {
+                    "$ref": "#/definitions/ObjectParentDetail",
+                    "description": "origin and parent related details"
+                },
+                "originType": {
+                    "type": "object",
+                    "$ref": "#/definitions/Origin",
+                    "description": "origin of object",
+                    "required": [
+                        "true"
+                    ]
+                },
+                "networks": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined network options"
+                },
+                "drives": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined drives",
+                    "readOnly": true
+                },
+                "cpus": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined cpus for bundle"
+                },
+                "memory": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined memory for bundle"
+                },
+                "storage": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined storage for bundle"
+                },
+                "userDefinedVersion": {
+                    "type": "string",
+                    "description": "User defined version for the given edge-app"
+                },
+                "appInstCount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "AppCommon.App instance count"
+                },
+                "isImported": {
+                    "type": "boolean",
+                    "description": "Flag to represent where app bundle is already imported"
+                }
+            },
+            "description": "Edge application summary",
+            "title": "Bundle summary",
+            "required": [
+                "originType"
+            ]
+        },
+        "AppPublicApps": {
+            "type": "object",
+            "properties": {
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "cursor next"
+                },
+                "summaryByCategory": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "edge applications by category"
+                },
+                "summaryByOrigin": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "edge applications by origin"
+                },
+                "summaryByAppType": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "edge applications by appType"
+                },
+                "summaryByAppInstanceDistribution": {
+                    "$ref": "#/definitions/Summary",
+                    "description": "app distribution summary"
+                },
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AppPublicAppSummary"
+                    },
+                    "description": "edge application summary list"
                 }
             }
         },
@@ -10155,10 +10434,119 @@
                 "APP_TYPE_VM",
                 "APP_TYPE_VM_RUNTIME",
                 "APP_TYPE_CONTAINER",
-                "APP_TYPE_MODULE"
+                "APP_TYPE_MODULE",
+                "APP_TYPE_DOCKER_COMPOSE"
             ],
             "default": "APP_TYPE_UNSPECIFIED",
             "description": "type of app bundle."
+        },
+        "App_HttpRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the edge application",
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the edge application, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the edge application. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the edge application",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info"
+                },
+                "networks": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined network options"
+                },
+                "drives": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined drives",
+                    "readOnly": true
+                },
+                "cpus": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined cpus for bundle"
+                },
+                "memory": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined memory for bundle"
+                },
+                "manifestJSON": {
+                    "$ref": "#/definitions/VMManifest",
+                    "description": "user defined manifest in JSON format"
+                },
+                "parentDetail": {
+                    "$ref": "#/definitions/ObjectParentDetail",
+                    "description": "origin and parent related details"
+                },
+                "originType": {
+                    "$ref": "#/definitions/Origin",
+                    "description": "origin of object"
+                },
+                "storage": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "user defined storage for bundle"
+                },
+                "userDefinedVersion": {
+                    "type": "string",
+                    "description": "User defined version for the given edge-app"
+                },
+                "projectAccessList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "project access list of the app bundle"
+                },
+                "isImported": {
+                    "type": "boolean",
+                    "description": "Flag to represent where app bundle is already imported"
+                },
+                "appInstCount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "App instance count"
+                },
+                "datastoreIdList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of datastore ids containing private registry credential"
+                }
+            },
+            "description": "Edge application gets installed/uninstalled to/from edge node(s) and perform specific edge computing tasks. Lifecycle of Edge application (upgrade/restart) on Edge node can be managed and monitored by ZEDEDA Cloud controller through this detailed configuration.",
+            "title": "Edge application detailed configuration",
+            "required": [
+                "id",
+                "name",
+                "title",
+                "originType"
+            ]
         },
         "Apps": {
             "type": "object",
@@ -10190,7 +10578,8 @@
                     },
                     "description": "edge application summary list"
                 }
-            }
+            },
+            "title": "@ZProtoType:Public"
         },
         "Author": {
             "type": "object",
@@ -10350,6 +10739,48 @@
                 }
             }
         },
+        "ComposeContainerStatus": {
+            "type": "object",
+            "properties": {
+                "containerName": {
+                    "type": "string",
+                    "description": "container name"
+                },
+                "containerImage": {
+                    "type": "string",
+                    "description": "container image"
+                },
+                "containerEntryPoint": {
+                    "type": "string",
+                    "description": "container entry point"
+                },
+                "createTimeUTC": {
+                    "type": "string",
+                    "description": "container creation time - UTC"
+                },
+                "portMaps": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ContainerPortMap"
+                    },
+                    "description": "ports mapped to container"
+                },
+                "containerState": {
+                    "type": "string",
+                    "description": "running status of container (running, stopped, exited)"
+                },
+                "uptime": {
+                    "type": "number",
+                    "format": "uint64",
+                    "description": "container up-time in seconds from start"
+                },
+                "errInfo": {
+                    "type": "number",
+                    "$ref": "#/definitions/DeviceError",
+                    "description": "container error information"
+                }
+            }
+        },
         "ContainerDetail": {
             "type": "object",
             "properties": {
@@ -10360,6 +10791,33 @@
                 }
             },
             "description": "common container detail."
+        },
+        "ContainerPortMap": {
+            "type": "object",
+            "properties": {
+                "ip": {
+                    "type": "string",
+                    "description": "container ip"
+                },
+                "privatePort": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "container private port"
+                },
+                "publicPort": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "container public port"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "port type (tcp, udp)"
+                },
+                "runtimeIp": {
+                    "type": "string",
+                    "description": "IP address that can be used for connecting to port mapped containers inside runtime"
+                }
+            }
         },
         "ControllerType": {
             "type": "string",
@@ -10519,7 +10977,8 @@
                 "DEPLOYMENT_TYPE_K3S_AZURE",
                 "DEPLOYMENT_TYPE_K3S_AWS",
                 "DEPLOYMENT_TYPE_VMWARE_VCE",
-                "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
+                "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH",
+                "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
             ],
             "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
         },
@@ -10640,6 +11099,22 @@
                 "timestamp",
                 "entities"
             ]
+        },
+        "DockerRuntimeProtocolVersion": {
+            "type": "string",
+            "enum": [
+                "RuntimeProtocolVersion_Unknown",
+                "RuntimeProtocolVersion_V1"
+            ],
+            "default": "RuntimeProtocolVersion_Unknown"
+        },
+        "DockerRuntimeVersion": {
+            "type": "string",
+            "enum": [
+                "RuntimeVersion_Unknown",
+                "RuntimeVersion_V1"
+            ],
+            "default": "RuntimeVersion_Unknown"
         },
         "EIDRegister": {
             "type": "object",
@@ -11254,7 +11729,7 @@
                 "type": {
                     "type": "string",
                     "description": "Type of Match (Required)",
-                    "title": "enum: host, protocol, fport\nAt the device level it will pick right interface to apply this match"
+                    "title": "enum: host, protocol, adapter\nAt the device level it will pick right interface to apply this match"
                 },
                 "value": {
                     "type": "string",
@@ -11864,7 +12339,11 @@
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                 "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                "OBJECT_TYPE_DEV_PASSTHROUGH"
+                "OBJECT_TYPE_DEV_PASSTHROUGH",
+                "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                "OBJECT_TYPE_ASSET_GROUP",
+                "OBJECT_TYPE_APP_PROFILE",
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -11918,10 +12397,11 @@
                 "ORIGIN_UNSPECIFIED",
                 "ORIGIN_IMPORTED",
                 "ORIGIN_LOCAL",
-                "ORIGIN_GLOBAL"
+                "ORIGIN_GLOBAL",
+                "ORIGIN_APP_PROFILE_LOCAL"
             ],
             "default": "ORIGIN_UNSPECIFIED",
-            "description": "- ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+            "description": "- ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.\n - ORIGIN_APP_PROFILE_LOCAL: Object created via App profile",
             "title": "OriginType : enum specifies the Object orgigin type"
         },
         "Param": {
@@ -12273,6 +12753,31 @@
             "default": "UNSPECIFIED",
             "title": "RunState_HttpRequest - Only for swagger documentation"
         },
+        "RuntimePlatformVersions": {
+            "type": "object",
+            "properties": {
+                "agentVersion": {
+                    "type": "string",
+                    "description": "agent version"
+                },
+                "composeVersion": {
+                    "type": "string",
+                    "description": "compose version"
+                },
+                "containerRuntimeVersion": {
+                    "type": "string",
+                    "description": "container runtime platform version"
+                },
+                "kernelVersion": {
+                    "type": "string",
+                    "description": "kernel version"
+                },
+                "kubernetesVersion": {
+                    "type": "string",
+                    "description": "kubernetes version"
+                }
+            }
+        },
         "SIMCard": {
             "type": "object",
             "properties": {
@@ -12545,7 +13050,11 @@
                 "TRANS_CAUSE_DEVICE_CA_EXPIRING",
                 "TRANS_CAUSE_DEVICE_CA_EXPIRED",
                 "TRANS_CAUSE_IDENTITY_CA_EXPIRING",
-                "TRANS_CAUSE_IDENTITY_CA_EXPIRED"
+                "TRANS_CAUSE_IDENTITY_CA_EXPIRED",
+                "TRANS_CAUSE_APP_COMPOSE_TAR_IMAGE_CHANGED",
+                "TRANS_CAUSE_APP_COMPOSE_YAML_CHANGED",
+                "TRANS_CAUSE_APP_COMPOSE_DATASTORE_CHANGED",
+                "TRANS_CAUSE_APP_ENABLE_VM_CONFIG_CHANGED"
             ],
             "default": "TRANS_CAUSE_UNSPECIFIED"
         },
@@ -12822,6 +13331,33 @@
                 "cpuPinningEnabled": {
                     "type": "boolean",
                     "description": "Enable CpuPinning"
+                },
+                "runtimeVersion": {
+                    "$ref": "#/definitions/DockerRuntimeVersion",
+                    "description": "Indicates the version of container orchestration software",
+                    "title": "docker-compose runtime specific versions"
+                },
+                "runtimeProtocolVersion": {
+                    "$ref": "#/definitions/DockerRuntimeProtocolVersion",
+                    "description": "Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime"
+                },
+                "PersistentRuntimeSizeBytes": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "Size of persistent blank storage for runtime in bytes"
+                },
+                "dockerComposeYamlText": {
+                    "type": "string",
+                    "description": "Docker compose base64 encoded plain text"
+                },
+                "dockerComposeTarImageName": {
+                    "type": "string",
+                    "description": "Docker compose tar image name"
+                },
+                "enableOemWinLicenseKey": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "title": "Enable device to read the license info from APCI tables"
                 }
             }
         },
@@ -13485,6 +14021,10 @@
                 "patchEnvelopeName": {
                     "type": "string",
                     "description": "Patch envelope name"
+                },
+                "deploymentType": {
+                    "$ref": "#/definitions/DeploymentType",
+                    "description": "type of deployment for the app"
                 }
             },
             "description": "appInstConfigStatus stores the summary of the app instance config status",
@@ -13575,16 +14115,7 @@
             "description": "App Interface detail",
             "title": "App Interface detail",
             "required": [
-                "io",
-                "intforder",
-                "intfname",
-                "directattach",
-                "privateip",
-                "acls",
-                "ipaddr",
-                "macaddr",
-                "eidregister",
-                "netinstname"
+                "intfname"
             ]
         },
         "appMapParams": {
@@ -13670,6 +14201,11 @@
                 "mountpath": {
                     "type": "string",
                     "description": "Mount Path for the drive in the App Instance"
+                },
+                "runtimeInternal": {
+                    "type": "boolean",
+                    "description": "If set, the drive is internal to the runtime and not externally exposed with API",
+                    "readOnly": true
                 }
             },
             "description": "Drive configuration",
@@ -13797,6 +14333,10 @@
                 "bootloaderMode": {
                     "$ref": "#/definitions/VmBootloaderMode",
                     "description": "The bootloader mode that will be used for the VM. Default is VM_BOOTLOADER_MODE_LEGACY"
+                },
+                "enableOemWinLicenseKey": {
+                    "type": "boolean",
+                    "description": "Enable device which has VM to receive the Windows license embedded in the ACPI tables"
                 }
             },
             "description": "Virtual machine memory configuration",

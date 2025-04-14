@@ -479,7 +479,6 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "description": "System defined universally unique Id of the network instance",
                         "in": "path",
                         "required": true,
                         "type": "string"
@@ -489,143 +488,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "description": "User defined title of the network instance. Title can be changed at any time",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
-                                },
-                                "description": {
-                                    "type": "string",
-                                    "description": "Detailed description of the network instance",
-                                    "maxLength": 256
-                                },
-                                "revision": {
-                                    "$ref": "#/definitions/ObjectRevision",
-                                    "description": "system defined info for the object"
-                                },
-                                "projectId": {
-                                    "type": "string",
-                                    "description": "id of the project in which network instance is created"
-                                },
-                                "tags": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    },
-                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
-                                    "maxLength": 32,
-                                    "pattern": "^[^<%&?/\\>]+$"
-                                },
-                                "clusterID": {
-                                    "type": "string",
-                                    "description": "id of the Cluster in which the network instance is configured",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "deviceId": {
-                                    "type": "string",
-                                    "description": "id of the device on which network instance is created",
-                                    "title": "device on which this network is running"
-                                },
-                                "port": {
-                                    "type": "string",
-                                    "description": "name of port mapping in the model",
-                                    "title": "name of port mapping in the model"
-                                },
-                                "portTags": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    },
-                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
-                                    "maxLength": 32,
-                                    "pattern": "^[^<%&?/\\>]+$"
-                                },
-                                "kind": {
-                                    "$ref": "#/definitions/NetworkInstanceKind",
-                                    "description": "Kind of Network Instance ( Local, Switch etc )"
-                                },
-                                "dhcp": {
-                                    "type": "boolean",
-                                    "description": "Deprecated",
-                                    "title": "dhcp - DEPRECATED"
-                                },
-                                "type": {
-                                    "$ref": "#/definitions/NetworkInstanceDhcpType",
-                                    "description": "Type of DHCP for this Network Instance"
-                                },
-                                "ip": {
-                                    "$ref": "#/definitions/DhcpServerConfig",
-                                    "description": "Dhcp Server Configuration"
-                                },
-                                "dnsList": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/StaticDNSList"
-                                    },
-                                    "description": "List of Static DNS entries"
-                                },
-                                "oconfig": {
-                                    "type": "string",
-                                    "title": "Deprecated"
-                                },
-                                "lisp": {
-                                    "$ref": "#/definitions/LispConfig",
-                                    "description": "Lisp Config : read only for now. Deprecated."
-                                },
-                                "opaque": {
-                                    "$ref": "#/definitions/NetInstOpaqueConfig",
-                                    "description": "Service specific Config"
-                                },
-                                "deviceDefault": {
-                                    "type": "boolean",
-                                    "description": "flag to indicate if this is the default network instance for the device",
-                                    "title": "flag to indicate if this is default network"
-                                },
-                                "networkPolicyId": {
-                                    "type": "string",
-                                    "description": "id of the network policy to be attached to this network instance"
-                                },
-                                "propagateConnectedRoutes": {
-                                    "type": "boolean",
-                                    "description": "Automatically propagate connected routes"
-                                },
-                                "staticRoutes": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/StaticIPRoute"
-                                    },
-                                    "description": "List of Static IP routes"
-                                },
-                                "mtu": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
-                                }
-                            },
-                            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
-                            "title": "Network instance detailed configuration",
-                            "required": [
-                                "name",
-                                "title",
-                                "deviceId",
-                                "port",
-                                "kind"
-                            ]
+                            "$ref": "#/definitions/NetInstConfigUpdate_HttpRequest"
                         }
                     },
                     {
@@ -1820,7 +1683,6 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "description": "System defined universally unique Id of the network",
                         "in": "path",
                         "required": true,
                         "type": "string"
@@ -1830,74 +1692,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "User defined name of the network, unique across the enterprise. Once object is created, name can\u2019t be changed",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "description": "User defined title of the network. Title can be changed at any time",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
-                                },
-                                "description": {
-                                    "type": "string",
-                                    "description": "Detailed description of the network",
-                                    "maxLength": 256
-                                },
-                                "revision": {
-                                    "$ref": "#/definitions/ObjectRevision",
-                                    "description": "system defined info"
-                                },
-                                "projectId": {
-                                    "type": "string"
-                                },
-                                "kind": {
-                                    "$ref": "#/definitions/NetworkKind"
-                                },
-                                "ip": {
-                                    "$ref": "#/definitions/IpSpec"
-                                },
-                                "dnsList": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/StaticDNSList"
-                                    }
-                                },
-                                "proxy": {
-                                    "$ref": "#/definitions/NetProxyConfig",
-                                    "title": "enterprise proxy"
-                                },
-                                "enterpriseDefault": {
-                                    "type": "boolean",
-                                    "title": "make this network default for device"
-                                },
-                                "mtu": {
-                                    "type": "integer",
-                                    "format": "int64",
-                                    "title": "Maximum transmission unit (MTU) to set on the associated network adapter(s)"
-                                },
-                                "wireless": {
-                                    "$ref": "#/definitions/NetWirelessConfig",
-                                    "title": "Wifi configuration"
-                                }
-                            },
-                            "description": "Network provides Edge nodes a variety of connectivity choices for all types of networks. This enables physical connectivity with Ethernet, WiFi, LTE to communicate with ZEDEDA Cloud controller and Data Centres.",
-                            "title": "Network detailed configuration",
-                            "required": [
-                                "name",
-                                "title",
-                                "projectId",
-                                "kind",
-                                "ip"
-                            ]
+                            "$ref": "#/definitions/NetConfigForUpdate_HttpRequest"
                         }
                     },
                     {
@@ -2173,7 +1968,8 @@
                 },
                 "ntp": {
                     "type": "string",
-                    "description": "IP Address of NTP Server"
+                    "description": "IP Address of NTP Server",
+                    "title": "ntp will be deprecated"
                 },
                 "dns": {
                     "type": "array",
@@ -2186,6 +1982,13 @@
                 "dhcpRange": {
                     "$ref": "#/definitions/dhcpIpRange",
                     "description": "Range of IP addresses to be used for DHCP"
+                },
+                "ntpServers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NtpServer"
+                    },
+                    "description": "NTP Servers"
                 }
             }
         },
@@ -2345,7 +2148,8 @@
                     "type": "string"
                 },
                 "ntp": {
-                    "type": "string"
+                    "type": "string",
+                    "title": "ntp will be deprecated"
                 },
                 "dns": {
                     "type": "array",
@@ -2356,6 +2160,15 @@
                 "dhcpRange": {
                     "$ref": "#/definitions/dhcpIpRange",
                     "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                },
+                "ntpServers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NtpServer"
+                    }
+                },
+                "ntpServerExclusively": {
+                    "type": "boolean"
                 }
             }
         },
@@ -2603,6 +2416,84 @@
                 "ip"
             ]
         },
+        "NetConfigForUpdate_HttpRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network",
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the network. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the network",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkKind"
+                },
+                "ip": {
+                    "$ref": "#/definitions/IpSpec"
+                },
+                "dnsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticDNSList"
+                    }
+                },
+                "proxy": {
+                    "$ref": "#/definitions/NetProxyConfig",
+                    "title": "enterprise proxy"
+                },
+                "enterpriseDefault": {
+                    "type": "boolean",
+                    "title": "make this network default for device"
+                },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "Maximum transmission unit (MTU) to set on the associated network adapter(s)"
+                },
+                "wireless": {
+                    "$ref": "#/definitions/NetWirelessConfig",
+                    "title": "Wifi configuration"
+                }
+            },
+            "description": "Network provides Edge nodes a variety of connectivity choices for all types of networks. This enables physical connectivity with Ethernet, WiFi, LTE to communicate with ZEDEDA Cloud controller and Data Centres.",
+            "title": "Network detailed configuration",
+            "required": [
+                "id",
+                "name",
+                "title",
+                "revision",
+                "projectId",
+                "kind",
+                "ip"
+            ]
+        },
         "NetConfigList": {
             "type": "object",
             "properties": {
@@ -2764,6 +2655,10 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
+                },
+                "edgeNodeCluster": {
+                    "$ref": "#/definitions/NetInstEdgeNodeCluster",
+                    "description": "Edge Node Cluster"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -2844,6 +2739,9 @@
                 },
                 "networkPolicyId": {
                     "type": "string"
+                },
+                "edgeNodeClusterID": {
+                    "type": "string"
                 }
             },
             "description": "NetInstConfigStatus stores the summary of the network instance config status.",
@@ -2868,6 +2766,171 @@
                 },
                 "next": {
                     "$ref": "#/definitions/Cursor"
+                }
+            }
+        },
+        "NetInstConfigUpdate_HttpRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network instance",
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network instance, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the network instance. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the network instance",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info for the object"
+                },
+                "projectId": {
+                    "type": "string",
+                    "description": "id of the project in which network instance is created"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "clusterID": {
+                    "type": "string",
+                    "description": "id of the Cluster in which the network instance is configured",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "deviceId": {
+                    "type": "string",
+                    "description": "id of the device on which network instance is created",
+                    "title": "device on which this network is running"
+                },
+                "port": {
+                    "type": "string",
+                    "description": "name of port mapping in the model",
+                    "title": "name of port mapping in the model"
+                },
+                "portTags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkInstanceKind",
+                    "description": "Kind of Network Instance ( Local, Switch etc )"
+                },
+                "dhcp": {
+                    "type": "boolean",
+                    "description": "Deprecated",
+                    "title": "dhcp - DEPRECATED"
+                },
+                "type": {
+                    "$ref": "#/definitions/NetworkInstanceDhcpType",
+                    "description": "Type of DHCP for this Network Instance"
+                },
+                "ip": {
+                    "$ref": "#/definitions/DhcpServerConfig",
+                    "description": "Dhcp Server Configuration"
+                },
+                "dnsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticDNSList"
+                    },
+                    "description": "List of Static DNS entries"
+                },
+                "oconfig": {
+                    "type": "string",
+                    "title": "Deprecated"
+                },
+                "lisp": {
+                    "$ref": "#/definitions/LispConfig",
+                    "description": "Lisp Config : read only for now. Deprecated."
+                },
+                "opaque": {
+                    "$ref": "#/definitions/NetInstOpaqueConfig",
+                    "description": "Service specific Config"
+                },
+                "deviceDefault": {
+                    "type": "boolean",
+                    "description": "flag to indicate if this is the default network instance for the device",
+                    "title": "flag to indicate if this is default network"
+                },
+                "networkPolicyId": {
+                    "type": "string",
+                    "description": "id of the network policy to be attached to this network instance"
+                },
+                "propagateConnectedRoutes": {
+                    "type": "boolean",
+                    "description": "Automatically propagate connected routes"
+                },
+                "staticRoutes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticIPRoute"
+                    },
+                    "description": "List of Static IP routes"
+                },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
+                },
+                "edgeNodeCluster": {
+                    "$ref": "#/definitions/NetInstEdgeNodeCluster",
+                    "description": "Edge Node Cluster"
+                }
+            },
+            "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
+            "title": "Network instance detailed configuration",
+            "required": [
+                "id",
+                "name",
+                "title",
+                "deviceId",
+                "port",
+                "kind"
+            ]
+        },
+        "NetInstEdgeNodeCluster": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Id of the Edge Node Cluster",
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "designatedNodeID": {
+                    "type": "string",
+                    "description": "Id of the designated Edge Node",
+                    "pattern": "[0-9A-Za-z-]+"
                 }
             }
         },
@@ -3091,6 +3154,20 @@
                     "format": "int64",
                     "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
                 },
+                "ipRoutes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/eveinfoIPRoute"
+                    },
+                    "description": "List of IP routes used by the network instance"
+                },
+                "ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of ports used by the network instance"
+                },
                 "errInfo": {
                     "type": "array",
                     "items": {
@@ -3169,6 +3246,9 @@
                     "type": "string"
                 },
                 "projectName": {
+                    "type": "string"
+                },
+                "edgeNodeClusterID": {
                     "type": "string"
                 }
             },
@@ -3410,6 +3490,17 @@
             ],
             "default": "NETWORK_WIRELESS_TYPE_UNSPECIFIED"
         },
+        "NtpServer": {
+            "type": "object",
+            "properties": {
+                "server": {
+                    "type": "string",
+                    "description": "NTP Server IP or FQDN"
+                }
+            },
+            "description": "NTP Server",
+            "title": "NTP Server"
+        },
         "ObjectRevision": {
             "type": "object",
             "properties": {
@@ -3524,7 +3615,11 @@
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                 "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                "OBJECT_TYPE_DEV_PASSTHROUGH"
+                "OBJECT_TYPE_DEV_PASSTHROUGH",
+                "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                "OBJECT_TYPE_ASSET_GROUP",
+                "OBJECT_TYPE_APP_PROFILE",
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -3536,6 +3631,35 @@
                 "OPAQUE_CONFIG_TYPE_LISP"
             ],
             "default": "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+        },
+        "ProbeConfig": {
+            "type": "object",
+            "properties": {
+                "enableGatewayPing": {
+                    "type": "boolean",
+                    "description": "Enable gateway ping"
+                },
+                "pingMaxCost": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Ping max cost"
+                },
+                "preferLowerCost": {
+                    "type": "boolean",
+                    "description": "Prefer lower cost"
+                },
+                "preferStrongerWwanSignal": {
+                    "type": "boolean",
+                    "description": "Prefer stronger WWAN signal"
+                },
+                "customProbeConfig": {
+                    "type": "object",
+                    "$ref": "#/definitions/configConnectivityProbe",
+                    "description": "Custom probe configuration"
+                }
+            },
+            "description": "Probing configuration",
+            "title": "Probing configuration"
         },
         "RunState": {
             "type": "string",
@@ -3673,6 +3797,15 @@
                 "gateway": {
                     "type": "string",
                     "description": "Gateway IP"
+                },
+                "outputPort": {
+                    "type": "string",
+                    "description": "Output Port"
+                },
+                "probeConfig": {
+                    "type": "object",
+                    "$ref": "#/definitions/ProbeConfig",
+                    "description": "Probe Configuration"
                 }
             },
             "description": "Static IP Routes",
@@ -3910,10 +4043,53 @@
                 },
                 "probeAddress": {
                     "type": "string",
-                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThe default probing behavior (i.e. without user-defined probing endpoint), is more complex\nthat just pinging a remote endpoint and the goal is to minimize generated traffic,\nprobing time and false negatives (that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the default remote endpoint \"8.8.8.8\" (Google public DNS)\nusing ICMP ping.\nIt is recommended to use custom probe_address only for private LTE networks where\npublic DNS servers are not allowed by the firewall (and hence ping would fail even with\nworking connectivity)."
+                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThis field is now deprecated and replaced with custom_probe (see below).\nTo maintain backward-compatibility, EVE will check both probe_address and custom_probe\nand will use whichever has non-zero value (if any), but preferring custom_probe."
+                },
+                "customProbe": {
+                    "$ref": "#/definitions/configConnectivityProbe",
+                    "description": "User-defined probe for cellular connectivity testing.\nOnly IP address is allowed as ConnectivityProbe.probe_address (and port if needed),\nnot hostname.\nThe probing algorithm is more complex that just testing reachability of a remote\nendpoint and the goal is to minimize generated traffic, probing time and false negatives\n(that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the remote endpoint. If custom_probe is not defined,\nEVE will try to ping \"8.8.8.8\" (Google public DNS).\nIt is recommended to use custom probe for private LTE networks where public DNS servers\nmight not be allowed by the firewall (and hence ping would fail even with a working\nconnectivity)."
                 }
             },
             "description": "CellularConnectivityProbe is used to periodically check the connectivity status of a cellular network\nby probing a remote endpoint.\nWhenever the probe fails, the cellular connection is automatically restarted. If the probe keeps failing\neven after the restart, the failure is reported in ZCellularStatus.probeError.\nThe connectivity probing interval is 5 minutes and currently it is not configurable."
+        },
+        "configConnectivityProbe": {
+            "type": "object",
+            "properties": {
+                "probeMethod": {
+                    "$ref": "#/definitions/configConnectivityProbeMethod",
+                    "description": "Method to use to determine the connectivity status."
+                },
+                "probeEndpoint": {
+                    "$ref": "#/definitions/configProbeEndpoint",
+                    "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
+                }
+            },
+            "description": "Configuration for user-defined connectivity-testing probe."
+        },
+        "configConnectivityProbeMethod": {
+            "type": "string",
+            "enum": [
+                "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
+                "CONNECTIVITY_PROBE_METHOD_ICMP",
+                "CONNECTIVITY_PROBE_METHOD_TCP"
+            ],
+            "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
+            "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
+        },
+        "configProbeEndpoint": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "IP address or FQDN."
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
+                }
+            },
+            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
         },
         "dhcpIpRange": {
             "type": "object",
@@ -3941,6 +4117,28 @@
             ],
             "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
             "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
+        },
+        "eveinfoIPRoute": {
+            "type": "object",
+            "properties": {
+                "destinationNetwork": {
+                    "type": "string",
+                    "title": "Destination network address in the CIDR format: <IP-address>/<prefix-length>"
+                },
+                "gateway": {
+                    "type": "string",
+                    "description": "Gateway IP address.\nEmpty for connected route."
+                },
+                "port": {
+                    "type": "string",
+                    "description": "Logical label of the output device port for the routed traffic.\nEmpty if the gateway is IP address of one of the applications. In that case,\n'gateway_app' is defined instead."
+                },
+                "gatewayApp": {
+                    "type": "string",
+                    "description": "UUID of the application used as the gateway for the route.\nEmpty if the gateway is external (not one of the apps but outside of the device)\nor this is a connected route for a port (thus gateway is empty).\nIn that case, 'port' is defined instead."
+                }
+            },
+            "description": "Information about an IP route configured for a network instance.\nThe next-hop for the IP route is specified by the \"gateway\" IP address\n(empty for a connected route) and the output \"port\". However, if the gateway\nis one of the applications running on the device, the port is actually a virtual\ninterface with an EVE-generated interface name and no user-assigned logical label.\nTherefore, in such cases, it is more useful to leave \"port\" empty and instead use\nthe \"gateway_app\" field to publish the UUID of the application used as the gateway."
         },
         "googlerpcStatus": {
             "type": "object",
