@@ -60,6 +60,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--manifest--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--manifest--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--manifest--interfaces))

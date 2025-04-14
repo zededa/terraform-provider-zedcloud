@@ -239,6 +239,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_policy--app_policy--apps--manifest_json--interfaces))
@@ -1057,6 +1058,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_policy--module_policy--apps--manifest_json--interfaces))
@@ -1474,6 +1476,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
@@ -1891,6 +1894,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
@@ -2546,6 +2550,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--attestation_policy--app_policy--apps--manifest_json--interfaces))
@@ -3364,6 +3369,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--apps--manifest_json--interfaces))
@@ -3781,6 +3787,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
@@ -4198,6 +4205,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--attestation_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
@@ -4853,6 +4861,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--configuration_lock_policy--app_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--configuration_lock_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--configuration_lock_policy--app_policy--apps--manifest_json--interfaces))
@@ -5671,6 +5680,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--apps--manifest_json--interfaces))
@@ -6088,6 +6098,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--azure_edge_agent--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
@@ -6505,6 +6516,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--azure_edge_hub--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
@@ -7160,6 +7172,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--edgeview_policy--app_policy--apps--manifest_json--interfaces))
@@ -7978,6 +7991,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--apps--manifest_json--interfaces))
@@ -8395,6 +8409,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
@@ -8812,6 +8827,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--edgeview_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
@@ -9467,6 +9483,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--local_operator_console_policy--app_policy--apps--manifest_json--interfaces))
@@ -10285,6 +10302,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--apps--manifest_json--interfaces))
@@ -10702,6 +10720,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
@@ -11119,6 +11138,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
@@ -11774,6 +11794,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--network_policy--app_policy--apps--manifest_json--interfaces))
@@ -12592,6 +12613,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--network_policy--module_policy--apps--manifest_json--interfaces))
@@ -13009,6 +13031,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
@@ -13426,6 +13449,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--network_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
@@ -14065,6 +14089,7 @@ Read-Only:
 - `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--desc))
 - `description` (String)
 - `display_name` (String)
+- `enable_oem_win_license_key` (Boolean)
 - `enablevnc` (Boolean)
 - `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--app_policy--apps--manifest_json--interfaces))
@@ -14832,6 +14857,7 @@ Read-Only:
 - `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--desc))
 - `description` (String)
 - `display_name` (String)
+- `enable_oem_win_license_key` (Boolean)
 - `enablevnc` (Boolean)
 - `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--apps--manifest_json--interfaces))
@@ -15222,6 +15248,7 @@ Read-Only:
 - `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--desc))
 - `description` (String)
 - `display_name` (String)
+- `enable_oem_win_license_key` (Boolean)
 - `enablevnc` (Boolean)
 - `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
@@ -15612,6 +15639,7 @@ Read-Only:
 - `desc` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--desc))
 - `description` (String)
 - `display_name` (String)
+- `enable_oem_win_license_key` (Boolean)
 - `enablevnc` (Boolean)
 - `images` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
@@ -16216,6 +16244,7 @@ Read-Only:
 - `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--desc))
 - `description` (String)
 - `display_name` (String)
+- `enable_oem_win_license_key` (Boolean)
 - `enablevnc` (Boolean)
 - `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--images))
 - `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--app_policy--apps--manifest_json--interfaces))
@@ -16983,6 +17012,7 @@ Read-Only:
 - `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--desc))
 - `description` (String)
 - `display_name` (String)
+- `enable_oem_win_license_key` (Boolean)
 - `enablevnc` (Boolean)
 - `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--images))
 - `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--apps--manifest_json--interfaces))
@@ -17373,6 +17403,7 @@ Read-Only:
 - `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--desc))
 - `description` (String)
 - `display_name` (String)
+- `enable_oem_win_license_key` (Boolean)
 - `enablevnc` (Boolean)
 - `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--images))
 - `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
@@ -17763,6 +17794,7 @@ Read-Only:
 - `desc` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--desc))
 - `description` (String)
 - `display_name` (String)
+- `enable_oem_win_license_key` (Boolean)
 - `enablevnc` (Boolean)
 - `images` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--images))
 - `interfaces` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy--azure_edge_hub--manifest_json--interfaces))

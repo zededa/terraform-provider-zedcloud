@@ -219,6 +219,7 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--images))
 - `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--interfaces))
@@ -482,6 +483,7 @@ Required:
 
 Optional:
 
+- `enable_oem_win_license_key` (Boolean) Enable device which has VM to receive the Windows license embedded in the ACPI tables
 - `mode` (String) Hardware Virtualization
 
 Read-Only:

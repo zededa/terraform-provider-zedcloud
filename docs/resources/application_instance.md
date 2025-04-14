@@ -347,6 +347,7 @@ Required:
 
 Optional:
 
+- `enable_oem_win_license_key` (Boolean) Enable device which has VM to receive the Windows license embedded in the ACPI tables
 - `mode` (String) Hardware Virtualization
 
 Read-Only:
