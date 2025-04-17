@@ -63,7 +63,7 @@ resource "zedcloud_model" "test_tf_provider" {
 
 resource "zedcloud_edgenode" "test_tf_provider" {
   onboarding_key = "" # placeholder
-  serialno       = "2293dbe8-29ce-420c-8264-962858efc46b"
+  serialno       = "4493dbe8-29ce-420c-8264-962858efc46b"
   # required
   name       = "test_tf_provider_newedgenode_100"
   model_id   = zedcloud_model.test_tf_provider.id
@@ -98,7 +98,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   tags = {
     "tag-key-1" = "tag-value-1"
   }
-  token = "token"
+  token = "token_100"
   interfaces {
     cost       = 255
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
