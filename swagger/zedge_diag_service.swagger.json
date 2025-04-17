@@ -70,7 +70,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 },
                 "parameters": [
                     {
@@ -135,7 +135,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -191,7 +191,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -246,7 +246,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             },
             "post": {
@@ -307,7 +307,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -368,7 +368,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             },
             "delete": {
@@ -427,7 +427,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -508,7 +508,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -548,7 +548,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 },
                 "parameters": [
                     {
@@ -637,7 +637,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             },
             "put": {
@@ -715,7 +715,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -801,7 +801,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -881,7 +881,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -961,7 +961,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -1041,7 +1041,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -1127,7 +1127,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -1207,7 +1207,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -1287,7 +1287,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -1409,7 +1409,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -1522,7 +1522,11 @@
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                             "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                            "OBJECT_TYPE_DEV_PASSTHROUGH"
+                            "OBJECT_TYPE_DEV_PASSTHROUGH",
+                            "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                            "OBJECT_TYPE_ASSET_GROUP",
+                            "OBJECT_TYPE_APP_PROFILE",
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -1578,7 +1582,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -1636,7 +1640,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 },
                 "parameters": [
                     {
@@ -1708,7 +1712,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         },
@@ -1821,7 +1825,11 @@
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                             "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                            "OBJECT_TYPE_DEV_PASSTHROUGH"
+                            "OBJECT_TYPE_DEV_PASSTHROUGH",
+                            "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                            "OBJECT_TYPE_ASSET_GROUP",
+                            "OBJECT_TYPE_APP_PROFILE",
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -1877,7 +1885,7 @@
                 ],
                 "externalDocs": {
                     "description": "ZEDEDA Product Documentation",
-                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+                    "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
                 }
             }
         }
@@ -2497,7 +2505,11 @@
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                 "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                "OBJECT_TYPE_DEV_PASSTHROUGH"
+                "OBJECT_TYPE_DEV_PASSTHROUGH",
+                "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                "OBJECT_TYPE_ASSET_GROUP",
+                "OBJECT_TYPE_APP_PROFILE",
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -2871,7 +2883,7 @@
                     "items": {
                         "$ref": "#/definitions/configACEMatch"
                     },
-                    "title": "multiple matches here is for various fields of 6 tuples\n for example\n    1) host=www.example.com & port=http\n    2) ip=8.8.8.8 & port=53 & proto=UDP"
+                    "title": "multiple matches here is for various fields of 6 tuples\n for example\n    1) host=www.example.com & port=http\n    2) ip=8.8.8.8 & port=53 & proto=UDP\n    3) adapter=uplink && port=8080 && proto=TCP"
                 },
                 "actions": {
                     "type": "array",
@@ -2937,7 +2949,7 @@
             "properties": {
                 "type": {
                     "type": "string",
-                    "title": "FIXME: We should convert this to enum"
+                    "description": "Supported ACE match types:\n  * \"ip\": value should be an IP address of a remote endpoint. The match is satisfied\n          for outbound and inbound flow if the destination and the source IP address\n          matches the given value, respectively. Can be combined with any other match\n          type to further narrow down the selection criteria.\n  * \"host\": value should be a domain name of a remote endpoint. It can be either a fully\n            qualified, or a partially qualified domain name (FQDN or PQDN). A packet is\n            matched if it is destined to or originated from an IP address that was obtained\n            by a DNS query for that exact domain or any of its subdomains. For example,\n            match of type \"host\" with value \"domain.com\" will also apply to the endpoint\n            \"subdomain.domain.com\". Can be combined with other match types except for \"eidset\".\n  * \"eidset\": special match type for the overlay network. Matches IPs of all applications\n              deployed in the same network as well as all IPs with statically configured\n              DNS entries (under the config field NetworkInstanceConfig.Dns). For this type,\n              value field is not used. Can be combined with other match types except for\n              \"host\".\n  * \"protocol\": value should specify the protocol to match. Protocol can be one of \"tcp\",\n                \"udp\", \"icmp\", or \"all\", or it can be a numeric value, representing one\n                of these protocols or a different one. A protocol name from /etc/protocols\n                is also allowed. Protocol match can be combined with any other match type\n                (often combined with port numbers).\n  * \"lport\": value should be an application local port number. For filtering actions,\n             this is the source port for outbound traffic and destination port for inbound\n             traffic. For PORTMAP action, this represents application port as exposed\n             to the external network (i.e., if <edge-node-ip>:2222 is mapped to <app-ip>:22,\n             lport refers to 2222). lport can be combined with any other match type.\n             It is actually required to combine \"lport\" and \"protocol\" inside the same ACE.\n             In other words, port without protocol is not valid.\n  * \"fport\": value should be a remote endpoint port number (foreign port). Used for filtering\n             actions, but not for PORTMAP (do not confuse with \"lport\", which is still used to\n             represent the forwarded port - the forwarded port is still considered as local).\n             \"fport\" can be combined with any other match type. It is actually required\n             to combine \"fport\" with \"protocol\" inside the same ACE. In other words, port\n             without protocol is not valid.\n * \"adapter\": value should be an adapter shared label (SystemAdapter.shared_labels).\n              It can be used for an inbound ACE to apply the rule only to packets arriving\n              via one of the matched network adapters. Typically used to activate a given\n              port-forwarding rule (PORTMAP) for only a subset of network adapters.\n              When not specified, the rule applies to every port attached to the network\n              instance (i.e. equivalent to setting \"adapter\" to the pre-defined shared\n              label \"all\").\n              Adapter label cannot be used for outbound ACE. This is because the EVE firewall\n              is applied before routing, and the output network adapter is not yet known."
                 },
                 "value": {
                     "type": "string"
@@ -2955,6 +2967,11 @@
                 },
                 "ethVf": {
                     "$ref": "#/definitions/configEthVF"
+                },
+                "interfaceOrder": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Define the network interface order relative to other directly assigned\nnetwork devices and virtual network adapters.\nOnly applies to (assignable) network adapters, i.e. types: \"PhyIoNetEth\", \"PhyIoNetWLAN\",\n\"PhyIoNetWWAN\" and \"PhyIoNetEthVF\".\nThe numbering is across both the \"Adapter\" (direct assignments) and the \"NetworkAdapter\"\n(virtual interfaces) lists for a given \"AppInstanceConfig\", thus every entry in these\nlists, excluding non-networking adapters, must have a unique order number\n(when the \"enforce_network_interface_order\" is enabled, see \"VmConfig\").\nInterface with a lower order value should appear inside the application before\ninterface with a higher order value.\nThe implementation of this ordering may depend on the hypervisor. For example,\nthe hypervisor might virtualize the PCI bus and assign lower PCI addresses to\ninterfaces with lower order values. But the actual outcome of interface ordering\ndepends on the application and EVE therefore cannot guarantee desired order.\nSince this field was introduced in later versions, older EVE versions do not support\nuser-defined interface ordering. For backward compatibility, the user-defined\norder is applied only if \"enforce_network_interface_order\" is enabled for the given\napplication (see \"VmConfig\", file \"vm.proto\")."
                 }
             },
             "description": "Adapter bundles corresponding to a subset of what is in ZioBundle\nWhen used by a NetworkInstanceConfig the name is the logicallabel\nfor the network adapter."
@@ -3085,9 +3102,26 @@
                 "designatedNodeId": {
                     "type": "string",
                     "title": "This edge-node UUID for the Designate Node for the Application"
+                },
+                "vmResolution": {
+                    "type": "string",
+                    "description": "Custom resolution applies to VM that is running in FML mode only."
+                },
+                "runtimeType": {
+                    "$ref": "#/definitions/configAppRuntimeType",
+                    "title": "AppRuntimeType - to indicate the types of Application Runtime Deployment"
                 }
             },
             "description": "The complete configuration for an Application Instance\nWhen changing key fields such as the drives/volumeRefs or the number\nof interfaces, the controller is required to issue a purge command i.e.,\nincrease the purge counter. Otherwise there will be an error (The controller\ncan also issue a purge command to re-construct the content of the first\ndrive/volumeRef without any changes.)\nSome changes such as ACL changes in the interfaces do not require a restart,\nbut all other changes (such as fixedresources and adapters) require a\nrestart command i.e., an increase to the restart counter. The restart counter\ncan also be increased to cause an application instance restart without\nany other change to the application instance."
+        },
+        "configAppRuntimeType": {
+            "type": "string",
+            "enum": [
+                "APP_RUNTIME_TYPE_UNSPECIFIED",
+                "APP_RUNTIME_TYPE_DOCKER"
+            ],
+            "default": "APP_RUNTIME_TYPE_UNSPECIFIED",
+            "description": "AppRuntimeType - to indicate the types of Application Deployment\nFor instance, the need to gather of docker container metrics and logs\nfrom the agent inside applications on EVE device."
         },
         "configArpMonitor": {
             "type": "object",
@@ -3293,7 +3327,11 @@
                 },
                 "probeAddress": {
                     "type": "string",
-                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThe default probing behavior (i.e. without user-defined probing endpoint), is more complex\nthat just pinging a remote endpoint and the goal is to minimize generated traffic,\nprobing time and false negatives (that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the default remote endpoint \"8.8.8.8\" (Google public DNS)\nusing ICMP ping.\nIt is recommended to use custom probe_address only for private LTE networks where\npublic DNS servers are not allowed by the firewall (and hence ping would fail even with\nworking connectivity)."
+                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThis field is now deprecated and replaced with custom_probe (see below).\nTo maintain backward-compatibility, EVE will check both probe_address and custom_probe\nand will use whichever has non-zero value (if any), but preferring custom_probe."
+                },
+                "customProbe": {
+                    "$ref": "#/definitions/configConnectivityProbe",
+                    "description": "User-defined probe for cellular connectivity testing.\nOnly IP address is allowed as ConnectivityProbe.probe_address (and port if needed),\nnot hostname.\nThe probing algorithm is more complex that just testing reachability of a remote\nendpoint and the goal is to minimize generated traffic, probing time and false negatives\n(that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the remote endpoint. If custom_probe is not defined,\nEVE will try to ping \"8.8.8.8\" (Google public DNS).\nIt is recommended to use custom probe for private LTE networks where public DNS servers\nmight not be allowed by the firewall (and hence ping would fail even with a working\nconnectivity)."
                 }
             },
             "description": "CellularConnectivityProbe is used to periodically check the connectivity status of a cellular network\nby probing a remote endpoint.\nWhenever the probe fails, the cellular connection is automatically restarted. If the probe keeps failing\neven after the restart, the failure is reported in ZCellularStatus.probeError.\nThe connectivity probing interval is 5 minutes and currently it is not configurable."
@@ -3309,6 +3347,30 @@
                 }
             },
             "description": "Timers and other per-device policy which relates to the interaction\nwith zedcloud. Note that the timers are randomized on the device\nto avoid synchronization with other devices. Random range is between\nbetween .5 and 1.5 of these nominal values. If not set (i.e. zero),\nit means the default value of 60 seconds."
+        },
+        "configConnectivityProbe": {
+            "type": "object",
+            "properties": {
+                "probeMethod": {
+                    "$ref": "#/definitions/configConnectivityProbeMethod",
+                    "description": "Method to use to determine the connectivity status."
+                },
+                "probeEndpoint": {
+                    "$ref": "#/definitions/configProbeEndpoint",
+                    "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
+                }
+            },
+            "description": "Configuration for user-defined connectivity-testing probe."
+        },
+        "configConnectivityProbeMethod": {
+            "type": "string",
+            "enum": [
+                "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
+                "CONNECTIVITY_PROBE_METHOD_ICMP",
+                "CONNECTIVITY_PROBE_METHOD_TCP"
+            ],
+            "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
+            "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
         },
         "configContentTree": {
             "type": "object",
@@ -3355,6 +3417,10 @@
                         "type": "string"
                     },
                     "description": "List of DatastoreConfig UUIDs, that must have the same content. In case of\nnetwork failure, the download process can fallback to the next datastore\nin the list."
+                },
+                "designatedNodeId": {
+                    "type": "string",
+                    "description": "To inform the edge-node if the device receiving this content tree is\nresponsible for content tree download or not."
                 }
             },
             "title": "ContentTree describes the top of some content tree. The controller needs\nto allocate a uuid for it, and that uuid will be sent by EVE in the\nZInfoContentTree message"
@@ -3439,6 +3505,16 @@
                 }
             },
             "description": "Device Operational Commands Semantic\nFor rebooting device,  command=Reset, counter = counter+delta, desiredState = on\nFor poweroff device,  command=Reset, counter = counter+delta, desiredState = off\nFor backup at midnight, command=Backup, counter = counter+delta, desiredState=n/a, opsTime = mm/dd/yy:hh:ss\nCurrent implementation does support only single command outstanding for each\ntype. In future can be extended to have more scheduled events."
+        },
+        "configDhcpOptionsIgnore": {
+            "type": "object",
+            "properties": {
+                "ntpServerExclusively": {
+                    "type": "boolean",
+                    "title": "use exclusively specified NTP servers\nif set to true and no NTP server is provided then no NTP servers should be used"
+                }
+            },
+            "title": "DhcpOptionsIgnore is used to ignore dhcp options like f.e. the NTP servers\n- currently no other options are supported, but DNS servers might be a\ngood candidate in the future\nthe options defined can be found here:\nDHCP: https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml\nDHCPv6: https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml"
         },
         "configDiskConfig": {
             "type": "object",
@@ -3751,44 +3827,11 @@
                     }
                 },
                 "cluster": {
-                    "$ref": "#/definitions/configEdgeNodeCluster",
+                    "$ref": "#/definitions/eveconfigEdgeNodeCluster",
                     "title": "cluster configuration"
                 }
             },
             "description": "This is the response to a GET /api/v1/edgeDevice/config\nThe EdgeDevConfig message carries all of the device's configuration from\nthe controller to the device.\nThe device will request these messages either periodically or as a result\nof some TBD notification.\nThe message is assumed to be protected by a TLS session bound to the\ndevice certificate."
-        },
-        "configEdgeNodeCluster": {
-            "type": "object",
-            "properties": {
-                "clusterName": {
-                    "type": "string",
-                    "title": "cluster name, in case it has multiple cluster on the same site"
-                },
-                "clusterId": {
-                    "type": "string",
-                    "title": "cluster UUID"
-                },
-                "clusterInterface": {
-                    "type": "string",
-                    "title": "Cluster-Interface, for example \"mgmt0\", this is the logicallabel of the physicalIO"
-                },
-                "clusterIpPrefix": {
-                    "type": "string",
-                    "title": "the 'cluster-prefix' IP address of the 'Cluster-Interface', 10.244.244.2/28"
-                },
-                "isWorkerNode": {
-                    "type": "boolean",
-                    "title": "This device is an 'Agent' node"
-                },
-                "joinServerIp": {
-                    "type": "string",
-                    "title": "Server IP address to join the cluster. E.g. 10.244.244.1"
-                },
-                "encryptedClusterToken": {
-                    "$ref": "#/definitions/commonCipherBlock",
-                    "title": "encrypted token string, use edge-node TPM to decrypt"
-                }
-            }
         },
         "configEdgeViewConfig": {
             "type": "object",
@@ -3824,6 +3867,24 @@
                 }
             }
         },
+        "configEncryptedExternalOpaqueBinaryBlob": {
+            "type": "object",
+            "properties": {
+                "cipherData": {
+                    "$ref": "#/definitions/commonCipherBlock",
+                    "title": "Encrypted serialized copy of ExternalOpaqueBinaryBlob"
+                }
+            }
+        },
+        "configEncryptedInlineOpaqueBase64Data": {
+            "type": "object",
+            "properties": {
+                "cipherData": {
+                    "$ref": "#/definitions/commonCipherBlock",
+                    "title": "Encrypted serialized copy of InlineOpaqueBase64Data"
+                }
+            }
+        },
         "configEthVF": {
             "type": "object",
             "properties": {
@@ -3854,8 +3915,20 @@
                 "volumeRef": {
                     "$ref": "#/definitions/eveconfigExternalOpaqueBinaryBlob"
                 },
+                "encryptedInline": {
+                    "$ref": "#/definitions/configEncryptedInlineOpaqueBase64Data",
+                    "description": "There is an intended skip in field IDs here\nto handle the existing artifactMetaData\nand metadata_cipher_data fields."
+                },
+                "encryptedVolumeref": {
+                    "$ref": "#/definitions/configEncryptedExternalOpaqueBinaryBlob"
+                },
                 "artifactMetaData": {
-                    "type": "string"
+                    "type": "string",
+                    "title": "If metadata_cipher_data is set then artifactMetaData can be ignored"
+                },
+                "metadataCipherData": {
+                    "$ref": "#/definitions/commonCipherBlock",
+                    "description": "Optional encryption for EveBinaryArtifact.artifactMetaData\nCipherBlock.cipherData should contain the encrypted serialized\ncopy of an EncryptionBlock structure with\nEncryptionBlock.user = ENCRYPTION_BLOCK_USER_BINARY_ARTIFACT_METADATA\nand EncryptionBlock.encrypted_data set to the EveBinaryArtifact.artifactMetaData text."
                 }
             }
         },
@@ -3924,19 +3997,6 @@
                 "PVC"
             ],
             "default": "FmtUnknown"
-        },
-        "configIPRoute": {
-            "type": "object",
-            "properties": {
-                "destinationNetwork": {
-                    "type": "string",
-                    "description": "Destination network address in the CIDR format: <IP-address>/<prefix-length>\nIt is allowed to submit default route with all-zeroes destination network address\n0.0.0.0/0 or ::/0."
-                },
-                "gateway": {
-                    "type": "string",
-                    "description": "Gateway IP address.\nThis must be a valid IP address and can not be all-zeroes."
-                }
-            }
         },
         "configInstanceOpsCmd": {
             "type": "object",
@@ -4050,6 +4110,11 @@
                 "allowToDiscover": {
                     "type": "boolean",
                     "title": "allow AppInstance to discover other AppInstances\nattached to this network instance. Default is false"
+                },
+                "interfaceOrder": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Define the network interface order relative to other virtual network adapters\nand directly assigned network devices.\nThe numbering is across both the \"Adapter\" (direct assignments) and the \"NetworkAdapter\"\n(virtual interfaces) lists for a given \"AppInstanceConfig\", thus every entry in these\nlists, excluding non-networking adapters, must have a unique order number\n(when the \"enforce_network_interface_order\" is enabled, see \"VmConfig\").\nInterface with a lower order value should appear inside the application before\ninterface with a higher order value.\nThe implementation of this ordering may depend on the hypervisor. For example,\nthe hypervisor might virtualize the PCI bus and assign lower PCI addresses to\ninterfaces with lower order values. But the actual outcome of interface ordering\ndepends on the application and EVE therefore cannot guarantee desired order.\nSince this field was introduced in later versions, older EVE versions do not support\nuser-defined interface ordering. For backward compatibility, the user-defined\norder is applied only if \"enforce_network_interface_order\" is enabled for the given\napplication (see \"VmConfig\", file \"vm.proto\")."
                 }
             }
         },
@@ -4106,7 +4171,11 @@
                 },
                 "port": {
                     "$ref": "#/definitions/configAdapter",
-                    "description": "port - Only a single port is supported.\n   This is used as the external connection for the network instance.\n   This can be a physical (eth0 ) or logical port (vlan 0).\n   The port name comes from DeviceConfig ( When it is supported in future).\n   If the user needs multiple physical ports, Device config should be\n   used to create a label for multiple physical ports."
+                    "description": "Port(s) providing external connectivity for the network instance.\nEither a single port referenced by its name (SystemAdapter.Name, aka logical label)\nor an adapter shared-label matching zero or more network ports (ports containing this\nlabel in SystemAdapter.shared_labels).\nNote that apart from the user-defined adapter labels, EVE automatically assigns shared\nlabel \"all\" to every port, \"uplink\" to every management port and \"freeuplink\" to every\nmanagement port with zero cost.\nBoth physical (e.g. eth0) and logical (e.g. vlan0) ports are allowed.\nHowever, EVE may filter out some of the matched ports which are not compatible\nwith the network instance type (e.g. wireless adapters cannot be used with switch NI\nand ports without IP addresses are not usable for local NIs).\nNetwork instance with no assigned port (empty port reference or label not matching\nany port) is air-gapped, i.e. completely isolated from external networks.\nWith multiple ports assigned, the behaviour depends on the network instance type.\nSwitch network instance will run Rapid Spanning Tree Protocol (RSTP) to avoid bridge\nloops and the broadcast storm that results from them.\nLocal network instance will apply IP routes configured for the matched ports (either\nstatically or via DHCP) to select the next hop and the output port for a given flow.\nTraffic not matching any connected, statically-configured, or DHCP-received route,\nwill be routed according to the default route. Unless user configures a static default\nroute with customized output port selection, EVE will pick one of the ports for\nthe default route by periodic connectivity probing, performed for every selected port\n(skipped if NI has 1 or 0 ports).\nFirst, NI ports are filtered down to those with a known gateway IP. Then probing\nis used to determine connectivity status. For NIs with EVE-provided \"uplink\" or\n\"freeuplink\" labels, i.e. matching only mgmt ports, EVE checks port gateway IP\nreachability using ICMP ping and controller reachability with TCP connect to\n<controller-IP>:443. For NIs with user-defined shared-labels, possibly also matching\napp-shared ports, only ICMP ping of the port gateway is performed. EVE then picks port\nwith a working connectivity, preferring the currently used one.\nAdd a static default route (see 'static_routes\" below) to customize the output port\nselection algorithm."
+                },
+                "stp": {
+                    "$ref": "#/definitions/configSpanningTreeProtocol",
+                    "description": "Configuration for the Spanning Tree Protocol (STP), which is run for switch network\ninstance when the port label matches multiple network ports."
                 },
                 "cfg": {
                     "$ref": "#/definitions/configNetworkInstanceOpaqueConfig",
@@ -4118,7 +4187,7 @@
                 },
                 "ip": {
                     "$ref": "#/definitions/configipspec",
-                    "description": "network ip specification\nNote that ip.gateway must be a valid IP address and can not be all-zeroes.\nTo suppress automatic propagation of the default route into apps, configure network\ninstance as air-gapped (without uplink) or mark the uplink as app-shared\n(not for management) and ensure that it will not get a default route\n(e.g. set ip.gateway of the attached NetworkConfig to all-zeroes IP)."
+                    "description": "network ip specification\nNote that ip.gateway must be a valid IP address and can not be all-zeroes.\nTo suppress automatic propagation of the default route into apps, configure network\ninstance as air-gapped (without port) or mark all NI ports as app-shared\n(not for management) and ensure that they will not get a default route\n(e.g. set ip.gateway of the attached NetworkConfig(s) to all-zeroes IP)."
                 },
                 "dns": {
                     "type": "array",
@@ -4129,19 +4198,30 @@
                 },
                 "propagateConnectedRoutes": {
                     "type": "boolean",
-                    "description": "Enable to use DHCP to automatically propagate routes for uplink subnets\ninto applications connected to them indirectly through local network instances.\nThis option is only valid for local network instances. For other types\nof network instances, it will be ignored."
+                    "description": "Enable to use DHCP to automatically propagate routes for port subnets\ninto applications connected to them indirectly through local network instances.\nThis option is only valid for local network instances. For other types\nof network instances, it will be ignored."
                 },
                 "staticRoutes": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/configIPRoute"
+                        "$ref": "#/definitions/eveconfigIPRoute"
                     },
-                    "description": "List of IP routes statically added to the network instance routing table.\nStatically routed subnets are also propagated to connected applications\nusing DHCP, with gateway set to the network instance bridge IP if it is\noutside of the network instance subnet.\n\nIP route gateway may point to an external endpoint (provided that network\ninstance is not air-gapped), or to an IP address of one of the applications\nconnected to the network instance.\n\nStatic routes are handled independently from connected routes. While connected\nroutes are propagated to applications only if enabled by propagate_connected_routes,\nstatic routes are always propagated. Both connected and statically configured\nroutes can be propagated at the same time, there are no restrictions for using both.\n\nNote that the default route (with the bridge IP as the gateway) is automatically\npropagated to connected applications, unless network instance is air-gapped\n(without uplink) or the uplink is app-shared (not management) and does not have\na default route of its own. In both cases, it is possible to enforce default\nroute propagation by configuring a static default route for the network instance.\n\nFor more info on static and connected routes please refer to:\nhttps://wiki.lfedge.org/display/EVE/Connected+and+Static+IP+Route\n\nThis option is only valid for local network instances. For other types\nof network instances, it will be ignored."
+                    "description": "List of IP routes statically added to the network instance routing table.\nStatically routed subnets are also propagated to connected applications\nusing DHCP, with gateway set to the network instance bridge IP if it is\noutside of the network instance subnet.\n\nIP route gateway may point to an external endpoint (provided that network\ninstance is not air-gapped), or to an IP address of one of the applications\nconnected to the network instance. For an external gateway, user may specify\noutput port label instead of the IP address. EVE will automatically determine\nthe gateway IP address (based on the port config statically configured or received\nvia DHCP).\n\nStatic routes are handled independently from connected routes. While connected\nroutes are propagated to applications only if enabled by propagate_connected_routes,\nstatic routes are always propagated. Both connected and statically configured\nroutes can be propagated at the same time, there are no restrictions for using both.\n\nNote that the default route (with the bridge IP as the gateway) is automatically\npropagated to connected applications, unless network instance is air-gapped\n(without port) or all NI ports are app-shared (not management) and neither\nof them has a default route. In both cases, it is possible to enforce default\nroute propagation by configuring a static default route for the network instance.\n\nFor more info on static and connected routes please refer to:\nhttps://wiki.lfedge.org/display/EVE/Connected+and+Static+IP+Route\n\nThis option is only valid for local network instances. For other types\nof network instances, it will be ignored."
                 },
                 "mtu": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "Maximum transmission unit (MTU) to set for the network instance and all application\ninterfaces connected to it.\nThis is the largest IP packet that the network instance is allowed to carry.\nThis does not include the L2 header size (e.g. Ethernet header or a VLAN tag size).\nThe value is a 16-byte unsigned integer, representing the MTU size in bytes.\nThe minimum accepted value for the MTU is 1280 (RFC 8200, \"IPv6 minimum link MTU\").\nIf not defined (zero value), EVE will set the MTU to the default value of 1500 bytes.\nOn the host side, MTU is set to interfaces by EVE. On the guest (app) side,\nthe responsibility to set the MTU lies either with EVE or with the user/app, depending on\nthe network instance, app type and the type of interfaces used (local or switch,\nVM or container, virtio or emulated).\nFor container applications running inside an EVE-created shim-VM, EVE initializes\nthe MTU of interfaces during shim-VM boot. Furthermore, interfaces connected\nto local network instances will have their MTUs automatically updated if there is\na change in MTU configuration. To update the MTU of interfaces connected to switch\nnetwork instances, the user may run an external DHCP server in the network and publish\nMTU changes via DHCP option 26 (the DHCP client run by EVE inside shim-VM will pick it up\nand apply it).\nIn the case of VM applications, it is mostly the responsibility of the app/user to set\nand keep the MTUs up-to-date.\nIf device provides HW-assisted virtualization capabilities, EVE will connect VM with\nnetwork instances using para-virtualized virtio interfaces, which allow to propagate MTU\nvalue from the host to the guest. If the virtio driver used by the app supports the MTU\npropagation (VIRTIO_NET_F_MTU feature flag is set), the initial MTU values will be set\nusing virtio (regardless of the network instance type).\nTo support MTU update for interfaces connected to local network instances, the app can\nrun a DHCP client and receive the latest MTU via DHCP option 26. For switch network\ninstances, the user can run his own external DHCP server in the network with the MTU\noption configured.\nPlease note that application traffic leaving or entering the device via a network\nadapter associated with the network instance is additionally limited by the MTU\nvalue of the adapter, configured within the NetworkConfig object (refer to netconfig.proto).\nIf the configured network instance MTU differs from the network adapter MTU, EVE will\nflag the network instance with an error and use the adapter's MTU for the network\ninstance instead (to prevent traffic from being dropped or fragmented inside EVE)."
+                    "description": "Maximum transmission unit (MTU) to set for the network instance and all application\ninterfaces connected to it.\nThis is the largest IP packet that the network instance is allowed to carry.\nThis does not include the L2 header size (e.g. Ethernet header or a VLAN tag size).\nThe value is a 16-byte unsigned integer, representing the MTU size in bytes.\nThe minimum accepted value for the MTU is 1280 (RFC 8200, \"IPv6 minimum link MTU\").\nIf not defined (zero value), EVE will set the MTU to the default value of 1500 bytes.\nOn the host side, MTU is set to interfaces by EVE. On the guest (app) side,\nthe responsibility to set the MTU lies either with EVE or with the user/app, depending on\nthe network instance, app type and the type of interfaces used (local or switch,\nVM or container, virtio or emulated).\nFor container applications running inside an EVE-created shim-VM, EVE initializes\nthe MTU of interfaces during shim-VM boot. Furthermore, interfaces connected\nto local network instances will have their MTUs automatically updated if there is\na change in MTU configuration. To update the MTU of interfaces connected to switch\nnetwork instances, the user may run an external DHCP server in the network and publish\nMTU changes via DHCP option 26 (the DHCP client run by EVE inside shim-VM will pick it up\nand apply it).\nIn the case of VM applications, it is mostly the responsibility of the app/user to set\nand keep the MTUs up-to-date.\nIf device provides HW-assisted virtualization capabilities, EVE will connect VM with\nnetwork instances using para-virtualized virtio interfaces, which allow to propagate MTU\nvalue from the host to the guest. If the virtio driver used by the app supports the MTU\npropagation (VIRTIO_NET_F_MTU feature flag is set), the initial MTU values will be set\nusing virtio (regardless of the network instance type).\nTo support MTU update for interfaces connected to local network instances, the app can\nrun a DHCP client and receive the latest MTU via DHCP option 26. For switch network\ninstances, the user can run his own external DHCP server in the network with the MTU\noption configured.\nPlease note that application traffic leaving or entering the device via a network\nadapter associated with the network instance is additionally limited by MTU values\nof NI ports, configured within their NetworkConfig objects (refer to netconfig.proto).\nIf the configured network instance MTU is higher than MTU of any of the NI ports,\nEVE will flag the network instance with an error and use the lowest MTU among\nall the NI ports for the network instance instead. This is to prevent apps from sending\npackets exceeding the path MTU. Packets entering NI via port with a higher MTU and with\nsize exceeding the NI MTU will get fragmented inside EVE (if allowed by IP header).\nBy default (if MTU is not configured by the user, i.e. 'mtu' is zero), EVE uses 1500\nas MTU for air-gapped network instances and the lowest MTU among NI ports for NIs with\nexternal connectivity."
+                },
+                "disableFlowlog": {
+                    "type": "boolean",
+                    "description": "Disable flow logging for this network instance.\nWhen flow logging is enabled, EVE periodically records all application TCP and UDP\nflows. A flow record includes the application UUID, VIF name, open/close timestamps,\nsource/destination IP/port/protocol 5-tuple, and packet and byte counters.\nAdditionally, EVE records every DNS request made by an application, including\nthe request time, the hostname being resolved, and the returned IP address(es).\nThe flow logging API can be found in proto/config/flowlog/flowlog.proto\nIf flow logging is not needed, it is recommended to disable this feature as it\ncan potentially generate a large amount of data, which is then uploaded to the controller.\nDepending on the implementation, it may also introduce additional packet processing\noverhead."
+                },
+                "vlanAccessPorts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/configVlanAccessPort"
+                    },
+                    "description": "VLAN access ports configured for a switch network instance.\nFor other types of network instances, this option is ignored.\nThis setting applies to physical network ports attached to the network instance.\nVLAN configuration for application interfaces is applied separately via AppInstanceConfig\n(see NetworkAdapter.access_vlan_id)."
                 }
             }
         },
@@ -4283,6 +4363,40 @@
             },
             "title": "PhysicalIO:\n   Absolute low level description of physical buses and ports that are\n   available on given platform.\n   Collection of these IOs, constitute what we would call as hardware\n   model. Each physical IO is manageable and visible to EVE software, and\n   it can be further configured to either provide IP connectivity or\n   directly be given to workloads"
         },
+        "configPortProbe": {
+            "type": "object",
+            "properties": {
+                "enableGwPing": {
+                    "type": "boolean",
+                    "description": "Use ICMP ping towards the port's gateway IP to determine connectivity status.\nThis probing is performed much more frequently than the custom_probe and provides\nfaster fail-over. On the other hand, it generates more traffic through the probed\nports. Use gw_ping_max_cost (see below) to limit which ports it is enabled for\nbased on the port cost.\nAvoid using this probe method if the gateway router is configured to drop/ignore\nICMP pings and therefore this probe method would return false negatives."
+                },
+                "gwPingMaxCost": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Ports exceeding this cost will have the gateway probing disabled to reduce\ntraffic generated by probing (only less-frequent custom_probe will be performed)."
+                },
+                "customProbe": {
+                    "$ref": "#/definitions/configConnectivityProbe",
+                    "description": "User-defined method to use to determine the port connectivity status.\nRun additionally to gateway pings (if enabled)."
+                }
+            },
+            "description": "Configuration for port connectivity probe."
+        },
+        "configProbeEndpoint": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "IP address or FQDN."
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
+                }
+            },
+            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
+        },
         "configProxyConfig": {
             "type": "object",
             "properties": {
@@ -4384,20 +4498,21 @@
                     "description": "id of the snapshot.\nThe format of the ID is a standard UUIDv4.\nShould be unique within the app instance. Generated by the Controller in\nthe case the snapshot creation is requested by the Controller, or by EVE\nin the case the snapshot creation is triggered locally.\nCorresponds to the ZInfoApp.snapshots[].id field (see the `info.proto`\nfile)."
                 },
                 "type": {
-                    "$ref": "#/definitions/configSnapshotType",
+                    "$ref": "#/definitions/eveconfigSnapshotType",
                     "description": "type of the snapshot creation trigger."
                 }
             },
             "title": "A descriptor of the snapshot instance"
         },
-        "configSnapshotType": {
-            "type": "string",
-            "enum": [
-                "SNAPSHOT_TYPE_UNSPECIFIED",
-                "SNAPSHOT_TYPE_APP_UPDATE"
-            ],
-            "default": "SNAPSHOT_TYPE_UNSPECIFIED",
-            "title": "Type of the snapshot creation trigger"
+        "configSpanningTreeProtocol": {
+            "type": "object",
+            "properties": {
+                "portsWithBpduGuard": {
+                    "type": "string",
+                    "description": "Ports matched by this adapter label (logical or shared) will have the BPDU guard enabled.\nIt makes sense to enable the guard on ports which are expected to be leafs\nand therefore not participate in STP, or where the downstream bridges are not fully\ntrusted."
+                }
+            },
+            "description": "Configuration for the Spanning Tree Protocol (STP), which is run for switch network\ninstance when the port label matches multiple network ports."
         },
         "configSystemAdapter": {
             "type": "object",
@@ -4433,7 +4548,14 @@
                 "cost": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "cost of using a port for EVE management traffic (which is determined\nfrom PhysicalIO.usage)\n0 is the lowest cost (free); 255 the highest.\nLoad spreading will apply when multiple adapters have the same cost.\nHigher cost adapters are only tried when none of the lower cost ones work."
+                    "description": "Cost of sending traffic over the port.\nUsed to prioritize ports and give preference to lower-cost ports (e.g. eth over wwan).\n0 is the lowest cost (free); 255 the highest.\nCan be set for management and app-shared ports.\nCost is used for EVE management traffic and for local network instances with multiple\nports. For any request towards the controller or for an image download, EVE tries ports\nin the order of increasing cost, starting with the free ports. Once it finds the lowest\ncost port with a working connectivity, it may spread the load if there are multiple\nconnected ports of the same cost.\nFor local networking instances with multiple ports, the cost may be used to decide\nwhich port to use for a particular destination network (incl. port selection for\nthe default route). Unlike the management traffic, load-balancing is currently\nnot supported for local network instances and the app traffic that is routed through\nthem."
+                },
+                "sharedLabels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "A set of user-defined \"shared\" labels attached to the adapter.\nThere are no restrictions on the format of an adapter label, it can be any\nnon-empty string.\nUnlike the logical label (aka port logical name), shared label is not a unique\nport identifier. Instead, the same shared label can be assigned to multiple ports.\nNote that EVE automatically assigns \"all\" label to every port, \"uplink\" label to every\nmanagement port and \"freeuplink\" label to every management port with zero cost.\n(\"automatically assigns\" is meant here in imaginary sense, these labels are not supposed\nto be explicitly added by the controller to SystemAdapters inside EdgeDevConfig).\nShared label can be used to:\n - designate a group of network adapters to be used by a network instances for external\n   connectivity\n - limit port-forwarding firewall rule to only a subset of network adapters\n - create a multi-path static IP route (with multiple ports providing access to the routed\n   destination network)"
                 }
             },
             "description": "systemAdapters are higher-level IP-ready network endpoints.\nsystemAdapters give all the required bits to turn the physical IOs\nand intermediate L2 objects into useful IP endpoints.\nThese endpoints can be further used to connect to controller or\ncan be shared between workload/services running on the node."
@@ -4477,6 +4599,21 @@
                     "title": "optional configuration for given Virtual Function (VF)"
                 }
             }
+        },
+        "configVlanAccessPort": {
+            "type": "object",
+            "properties": {
+                "vlanId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "VLAN ID from the range <1,4094>"
+                },
+                "accessPort": {
+                    "type": "string",
+                    "description": "Physical network adapter used as the access port for the given VLAN.\nEither a single NI port referenced by its name (SystemAdapter.Name, aka logical label)\nor an adapter shared-label matching zero or more NI ports."
+                }
+            },
+            "description": "VLAN Access Port config applied to physical port(s) attached to a Switch Network Instance."
         },
         "configVlanAdapter": {
             "type": "object",
@@ -4609,6 +4746,14 @@
                 "bootMode": {
                     "$ref": "#/definitions/configVmBootMode",
                     "title": "Boot mode: Legacy or UEFI"
+                },
+                "enforceNetworkInterfaceOrder": {
+                    "type": "boolean",
+                    "description": "Enables enforcement of user-defined ordering for network interfaces.\nThis applies to both virtual interfaces (specified in the \"AppInstanceConfig.interfaces\" list)\nand directly assigned network adapters (specified in the \"AppInstanceConfig.adapters\" list\nas items of type \"PhyIoNetEth\", \"PhyIoNetWLAN\", \"PhyIoNetWWAN\", and \"PhyIoNetEthVF\").\nNote: Older versions of EVE may not support enforcing the user-defined order\nof application network interfaces. The controller can check\n\"ZInfoDevice.api_capability\" to verify if the configured device supports the\nAPI capability \"API_CAPABILITY_ENFORCED_NET_INTERFACE_ORDER\".\nPlease beware that EVE's ability to influence the order of VM application interfaces\nis limited. Depending on the application's operating system, achieving the desired network\ninterface order might not be possible."
+                },
+                "enableOemWinLicenseKey": {
+                    "type": "boolean",
+                    "title": "The app should receive the Windows license embedded in ACPI tables"
                 }
             }
         },
@@ -4759,7 +4904,7 @@
             "type": "object",
             "properties": {
                 "type": {
-                    "$ref": "#/definitions/configWirelessType"
+                    "$ref": "#/definitions/eveconfigWirelessType"
                 },
                 "cellularCfg": {
                     "type": "array",
@@ -4774,15 +4919,6 @@
                     }
                 }
             }
-        },
-        "configWirelessType": {
-            "type": "string",
-            "enum": [
-                "TypeNOOP",
-                "WiFi",
-                "Cellular"
-            ],
-            "default": "TypeNOOP"
         },
         "configZNetworkInstType": {
             "type": "string",
@@ -4874,7 +5010,14 @@
                     "type": "string"
                 },
                 "ntp": {
-                    "type": "string"
+                    "type": "string",
+                    "title": "ntp and more_ntp are used as a union to specify several NTP servers\nvia IP address or FQDN\nthis is for historical reasons when we only allowed to specify one\nNTP server"
+                },
+                "moreNtp": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
                 "dns": {
                     "type": "array",
@@ -4885,6 +5028,10 @@
                 "dhcpRange": {
                     "$ref": "#/definitions/configipRange",
                     "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                },
+                "dhcpOptionsIgnore": {
+                    "$ref": "#/definitions/configDhcpOptionsIgnore",
+                    "title": "Even if DhcpType is Client, EVE still accepts static\nIP config and will merge it with the DHCP-provided one by default\nuse the following option to override this behavior"
                 }
             },
             "title": "Common for IPv4 and IPv6"
@@ -4927,6 +5074,39 @@
             "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
             "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
         },
+        "eveconfigEdgeNodeCluster": {
+            "type": "object",
+            "properties": {
+                "clusterName": {
+                    "type": "string",
+                    "title": "cluster name, in case it has multiple cluster on the same site"
+                },
+                "clusterId": {
+                    "type": "string",
+                    "title": "cluster UUID"
+                },
+                "clusterInterface": {
+                    "type": "string",
+                    "title": "Cluster-Interface, for example \"mgmt0\", this is the logicallabel of the physicalIO"
+                },
+                "clusterIpPrefix": {
+                    "type": "string",
+                    "title": "the 'cluster-prefix' IP address of the 'Cluster-Interface', 10.244.244.2/28"
+                },
+                "isWorkerNode": {
+                    "type": "boolean",
+                    "title": "This device is an 'Agent' node"
+                },
+                "joinServerIp": {
+                    "type": "string",
+                    "title": "Server IP address to join the cluster. E.g. 10.244.244.1"
+                },
+                "encryptedClusterToken": {
+                    "$ref": "#/definitions/commonCipherBlock",
+                    "title": "encrypted token string, use edge-node TPM to decrypt"
+                }
+            }
+        },
         "eveconfigExternalOpaqueBinaryBlob": {
             "type": "object",
             "properties": {
@@ -4945,6 +5125,35 @@
                 "imageId": {
                     "type": "string",
                     "title": "Target field of Volume set to AppCustom\nrefers to UUID of a volume"
+                }
+            }
+        },
+        "eveconfigIPRoute": {
+            "type": "object",
+            "properties": {
+                "destinationNetwork": {
+                    "type": "string",
+                    "description": "Destination network address in the CIDR format: <IP-address>/<prefix-length>\nIt is allowed to submit default route with all-zeroes destination network address\n0.0.0.0/0 or ::/0."
+                },
+                "gateway": {
+                    "type": "string",
+                    "description": "Gateway IP address.\nThis must be a valid IP address and can not be all-zeroes.\nAt least one of 'gateway' or 'port' (see below) must be defined (both can be set).\nThis can be an external gateway IP or an IP address of one of the app instances\nconnected to the network instance."
+                },
+                "port": {
+                    "type": "string",
+                    "description": "Output device port for the routed traffic.\nEither a single NI port referenced by its name (SystemAdapter.Name, aka logical label)\nor an adapter shared-label matching zero or more NI ports (multipath routing).\nCan be used additionally to or instead of `gateway` to determine the next hop\nand the output network interface for the destination network.\nAt least one of 'gateway' or 'port' must be defined.\nSince 'port' refers to one or more physical network adapters, it is not applicable\nto routes where gateway points to another application instance running on EVE.\nIf shared label is used, EVE will pick (at most) one of the matched ports to be used\nfor route at a given time. Port is selected based on connectivity status, port costs,\nwwan signal strength, etc. - see config options below.\nNote that load-balancing across multiple ports is not yet supported.\nAlso please note that if `gateway` is defined, only ports with subnets containing\nthe gateway IP will be considered."
+                },
+                "probe": {
+                    "$ref": "#/definitions/configPortProbe",
+                    "description": "Periodically probe remote endpoint to determine connectivity status of every port\nselected for the route (by the 'port' label, see above). One of the ports with\na working connectivity is then picked for the route. If there are multiple connected\nports, other port selection criteria are considered (port costs, wwan signal strength,\netc., see other options of IPRoute).\nProbing effectively provides automatic fail-over between ports.\nIf 'port' is not defined or references only a single port (e.g. directly by\nthe logical label), probing is skipped (nothing to fail-over to anyway).\nIf probing is not enabled, EVE picks the port based on other remaining criteria,\nsuch as cost, wwan network signal, etc. (and eventually possibly making a random\nchoice)."
+                },
+                "preferLowerCost": {
+                    "type": "boolean",
+                    "description": "When EVE is deciding which port to use for multipath route and multiple ports have\nworking connectivity (or probing is disabled), port can be selected based on the cost\n(see SystemAdapter.cost). If this option is enabled, EVE will prefer ports with lower\ncosts."
+                },
+                "preferStrongerWwanSignal": {
+                    "type": "boolean",
+                    "description": "When EVE is deciding which port to use for multipath route and there are multiple\ncandidates among cellular modems, it might make sense to consider the current cellular\nnetwork signal strength. If this option is enabled, EVE will prefer cellular ports\nwith better signal (only among cellular ports)."
                 }
             }
         },
@@ -4995,6 +5204,25 @@
                     "title": "any arbitraty metadata encoded to base64 string"
                 }
             }
+        },
+        "eveconfigSnapshotType": {
+            "type": "string",
+            "enum": [
+                "SNAPSHOT_TYPE_UNSPECIFIED",
+                "SNAPSHOT_TYPE_APP_UPDATE",
+                "SNAPSHOT_TYPE_IMMEDIATE"
+            ],
+            "default": "SNAPSHOT_TYPE_UNSPECIFIED",
+            "title": "Type of the snapshot creation trigger"
+        },
+        "eveconfigWirelessType": {
+            "type": "string",
+            "enum": [
+                "TypeNOOP",
+                "WiFi",
+                "Cellular"
+            ],
+            "default": "TypeNOOP"
         },
         "googlerpcStatus": {
             "type": "object",
@@ -5050,6 +5278,6 @@
     ],
     "externalDocs": {
         "description": "ZEDEDA Product Documentation",
-        "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/diagnostics"
+        "url": "https://help.zededa.com/hc/en-us/articles/30323173611931-ZEDEDA-API-Overview"
     }
 }

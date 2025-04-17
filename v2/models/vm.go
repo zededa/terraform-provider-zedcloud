@@ -28,6 +28,9 @@ type VM struct {
 	// Required: true
 	Cpus *int64 `json:"cpus"`
 
+	// Enable device which has VM to receive the Windows license embedded in the ACPI tables
+	EnableOemWinLicenseKey bool `json:"enableOemWinLicenseKey,omitempty"`
+
 	// Memory
 	// Required: true
 	Memory *int64 `json:"memory"`

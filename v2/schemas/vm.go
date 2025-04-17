@@ -18,12 +18,14 @@ func VMModel(d *schema.ResourceData) *models.VM {
 		mode = models.NewHvMode(models.HvMode(modeModel))
 	}
 	vnc, _ := d.Get("vnc").(bool)
+	enableOemWinLicenseKey, _ := d.Get("enable_oem_win_license_key").(bool)
 	return &models.VM{
-		CPUPinningEnabled: cPUPinningEnabled,
-		Cpus:              &cpus,   // int64 true false false
-		Memory:            &memory, // int64 true false false
-		Mode:              mode,
-		Vnc:               &vnc, // bool true false false
+		CPUPinningEnabled:      cPUPinningEnabled,
+		Cpus:                   &cpus,   // int64 true false false
+		Memory:                 &memory, // int64 true false false
+		Mode:                   mode,
+		Vnc:                    &vnc, // bool true false false
+		EnableOemWinLicenseKey: enableOemWinLicenseKey,
 	}
 }
 
@@ -38,12 +40,14 @@ func VMModelFromMap(m map[string]interface{}) *models.VM {
 		mode = models.NewHvMode(models.HvMode(modeModel))
 	}
 	vnc := m["vnc"].(bool)
+	enableOemWinLicenseKey := m["enable_oem_win_license_key"].(bool)
 	return &models.VM{
-		CPUPinningEnabled: cPUPinningEnabled,
-		Cpus:              &cpus,
-		Memory:            &memory,
-		Mode:              mode,
-		Vnc:               &vnc,
+		CPUPinningEnabled:      cPUPinningEnabled,
+		Cpus:                   &cpus,
+		Memory:                 &memory,
+		Mode:                   mode,
+		Vnc:                    &vnc,
+		EnableOemWinLicenseKey: enableOemWinLicenseKey,
 	}
 }
 
@@ -54,6 +58,7 @@ func SetVMResourceData(d *schema.ResourceData, m *models.VM) {
 	d.Set("mode", m.Mode)
 	d.Set("vnc", m.Vnc)
 	d.Set("vnc_display", m.VncDisplay)
+	d.Set("enable_oem_win_license_key", m.EnableOemWinLicenseKey)
 }
 
 func SetVMSubResourceData(m []*models.VM) (d []*map[string]interface{}) {
@@ -66,6 +71,7 @@ func SetVMSubResourceData(m []*models.VM) (d []*map[string]interface{}) {
 			properties["mode"] = VMModel.Mode
 			properties["vnc"] = VMModel.Vnc
 			properties["vnc_display"] = VMModel.VncDisplay
+			properties["enable_oem_win_license_key"] = VMModel.EnableOemWinLicenseKey
 			d = append(d, &properties)
 		}
 	}
@@ -110,6 +116,12 @@ func VMSchema() map[string]*schema.Schema {
 			Type:        schema.TypeInt,
 			Computed:    true,
 		},
+
+		"enable_oem_win_license_key": {
+			Description: `Enable device which has VM to receive the Windows license embedded in the ACPI tables`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
 	}
 }
 
@@ -121,5 +133,6 @@ func GetVMPropertyFields() (t []string) {
 		"memory",
 		"mode",
 		"vnc",
+		"enable_oem_win_license_key",
 	}
 }

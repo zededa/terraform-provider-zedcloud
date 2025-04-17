@@ -1388,7 +1388,11 @@
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                             "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                            "OBJECT_TYPE_DEV_PASSTHROUGH"
+                            "OBJECT_TYPE_DEV_PASSTHROUGH",
+                            "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                            "OBJECT_TYPE_ASSET_GROUP",
+                            "OBJECT_TYPE_APP_PROFILE",
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
                         ]
                     },
                     {
@@ -1516,7 +1520,11 @@
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                             "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                            "OBJECT_TYPE_DEV_PASSTHROUGH"
+                            "OBJECT_TYPE_DEV_PASSTHROUGH",
+                            "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                            "OBJECT_TYPE_ASSET_GROUP",
+                            "OBJECT_TYPE_APP_PROFILE",
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
                         ]
                     },
                     {
@@ -1727,7 +1735,11 @@
                             "OBJECT_TYPE_PATCH_ENVELOPE",
                             "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                             "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                            "OBJECT_TYPE_DEV_PASSTHROUGH"
+                            "OBJECT_TYPE_DEV_PASSTHROUGH",
+                            "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                            "OBJECT_TYPE_ASSET_GROUP",
+                            "OBJECT_TYPE_APP_PROFILE",
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
                         ]
                     },
                     {
@@ -1759,6 +1771,21 @@
                 "id": {
                     "type": "string",
                     "description": "Unique id of the type (e.g. projectId in case of project type)"
+                }
+            }
+        },
+        "AppInstEdgeNodeCluster": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Id of the edge node cluster",
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "designatedNodeID": {
+                    "type": "string",
+                    "description": "Id of the designated node",
+                    "pattern": "[0-9A-Za-z-]+"
                 }
             }
         },
@@ -1834,7 +1861,7 @@
                     "uniqueItems": true
                 },
                 "activate": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "app instance activation flag"
                 },
                 "vminfo": {
@@ -1959,6 +1986,36 @@
                 "patchEnvelopeName": {
                     "type": "string",
                     "description": "patch envelope name"
+                },
+                "edgeNodeCluster": {
+                    "$ref": "#/definitions/AppInstEdgeNodeCluster",
+                    "description": "edge node cluster"
+                },
+                "dockerComposeYamlText": {
+                    "type": "string",
+                    "description": "Docker compose base64 encoded plain text",
+                    "title": "internal field",
+                    "readOnly": true
+                },
+                "dockerComposeTarImageName": {
+                    "type": "string",
+                    "description": "Docker compose tar image name",
+                    "title": "internal field",
+                    "readOnly": true
+                },
+                "datastoreIdList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of datastore ids containing private registry credentials",
+                    "title": "internal field",
+                    "readOnly": true
+                },
+                "PersistentRuntimeSizeBytes": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "Persistent runtime size in bytes"
                 }
             },
             "description": "App Instance detail",
@@ -1969,9 +2026,7 @@
                 "projectId",
                 "appId",
                 "deviceId",
-                "activate",
-                "drives",
-                "interfaces"
+                "activate"
             ]
         },
         "AppInstanceDeploy": {
@@ -1990,7 +2045,7 @@
             "type": "object",
             "properties": {
                 "access": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Flags to enable / disable sending of logs generated by app instance to zedcloud"
                 }
             },
@@ -2033,6 +2088,10 @@
                 "activate": {
                     "type": "boolean",
                     "description": "Indicates whether the snapshot should be activated"
+                },
+                "immediate": {
+                    "type": "boolean",
+                    "description": "Indicates that the snapshot should be taken immediately"
                 }
             },
             "description": "App instance snapshot",
@@ -2048,7 +2107,8 @@
                 "APP_TYPE_VM",
                 "APP_TYPE_VM_RUNTIME",
                 "APP_TYPE_CONTAINER",
-                "APP_TYPE_MODULE"
+                "APP_TYPE_MODULE",
+                "APP_TYPE_DOCKER_COMPOSE"
             ],
             "default": "APP_TYPE_UNSPECIFIED",
             "description": "type of app bundle."
@@ -2325,7 +2385,8 @@
                 "DEPLOYMENT_TYPE_K3S_AZURE",
                 "DEPLOYMENT_TYPE_K3S_AWS",
                 "DEPLOYMENT_TYPE_VMWARE_VCE",
-                "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
+                "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH",
+                "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
             ],
             "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
         },
@@ -2381,7 +2442,8 @@
                 },
                 "ntp": {
                     "type": "string",
-                    "description": "IP Address of NTP Server"
+                    "description": "IP Address of NTP Server",
+                    "title": "ntp will be deprecated"
                 },
                 "dns": {
                     "type": "array",
@@ -2394,6 +2456,13 @@
                 "dhcpRange": {
                     "$ref": "#/definitions/dhcpIpRange",
                     "description": "Range of IP addresses to be used for DHCP"
+                },
+                "ntpServers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NtpServer"
+                    },
+                    "description": "NTP Servers"
                 }
             }
         },
@@ -2878,6 +2947,10 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it"
+                },
+                "edgeNodeCluster": {
+                    "$ref": "#/definitions/NetInstEdgeNodeCluster",
+                    "description": "Edge Node Cluster"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -2889,6 +2962,21 @@
                 "port",
                 "kind"
             ]
+        },
+        "NetInstEdgeNodeCluster": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Id of the Edge Node Cluster",
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "designatedNodeID": {
+                    "type": "string",
+                    "description": "Id of the designated Edge Node",
+                    "pattern": "[0-9A-Za-z-]+"
+                }
+            }
         },
         "NetInstOpaqueConfig": {
             "type": "object",
@@ -2947,6 +3035,17 @@
                 "NETWORK_INSTANCE_KIND_HONEYPOT"
             ],
             "default": "NETWORK_INSTANCE_KIND_UNSPECIFIED"
+        },
+        "NtpServer": {
+            "type": "object",
+            "properties": {
+                "server": {
+                    "type": "string",
+                    "description": "NTP Server IP or FQDN"
+                }
+            },
+            "description": "NTP Server",
+            "title": "NTP Server"
         },
         "ObjectRevision": {
             "type": "object",
@@ -3025,7 +3124,11 @@
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                 "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                "OBJECT_TYPE_DEV_PASSTHROUGH"
+                "OBJECT_TYPE_DEV_PASSTHROUGH",
+                "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                "OBJECT_TYPE_ASSET_GROUP",
+                "OBJECT_TYPE_APP_PROFILE",
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -3037,6 +3140,35 @@
                 "OPAQUE_CONFIG_TYPE_LISP"
             ],
             "default": "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+        },
+        "ProbeConfig": {
+            "type": "object",
+            "properties": {
+                "enableGatewayPing": {
+                    "type": "boolean",
+                    "description": "Enable gateway ping"
+                },
+                "pingMaxCost": {
+                    "type": "number",
+                    "format": "int64",
+                    "description": "Ping max cost"
+                },
+                "preferLowerCost": {
+                    "type": "boolean",
+                    "description": "Prefer lower cost"
+                },
+                "preferStrongerWwanSignal": {
+                    "type": "boolean",
+                    "description": "Prefer stronger WWAN signal"
+                },
+                "customProbeConfig": {
+                    "type": "object",
+                    "$ref": "#/definitions/configConnectivityProbe",
+                    "description": "Custom probe configuration"
+                }
+            },
+            "description": "Probing configuration",
+            "title": "Probing configuration"
         },
         "SelectionCriteria": {
             "type": "object",
@@ -3120,6 +3252,15 @@
                 "gateway": {
                     "type": "string",
                     "description": "Gateway IP"
+                },
+                "outputPort": {
+                    "type": "string",
+                    "description": "Output Port"
+                },
+                "probeConfig": {
+                    "type": "object",
+                    "$ref": "#/definitions/ProbeConfig",
+                    "description": "Probe Configuration"
                 }
             },
             "description": "Static IP Routes",
@@ -3202,7 +3343,11 @@
                 "TRANS_CAUSE_DEVICE_CA_EXPIRING",
                 "TRANS_CAUSE_DEVICE_CA_EXPIRED",
                 "TRANS_CAUSE_IDENTITY_CA_EXPIRING",
-                "TRANS_CAUSE_IDENTITY_CA_EXPIRED"
+                "TRANS_CAUSE_IDENTITY_CA_EXPIRED",
+                "TRANS_CAUSE_APP_COMPOSE_TAR_IMAGE_CHANGED",
+                "TRANS_CAUSE_APP_COMPOSE_YAML_CHANGED",
+                "TRANS_CAUSE_APP_COMPOSE_DATASTORE_CHANGED",
+                "TRANS_CAUSE_APP_ENABLE_VM_CONFIG_CHANGED"
             ],
             "default": "TRANS_CAUSE_UNSPECIFIED"
         },
@@ -3714,16 +3859,7 @@
             "description": "App Interface detail",
             "title": "App Interface detail",
             "required": [
-                "io",
-                "intforder",
-                "intfname",
-                "directattach",
-                "privateip",
-                "acls",
-                "ipaddr",
-                "macaddr",
-                "eidregister",
-                "netinstname"
+                "intfname"
             ]
         },
         "appMapParams": {
@@ -3740,6 +3876,45 @@
             "required": [
                 "port"
             ]
+        },
+        "configConnectivityProbe": {
+            "type": "object",
+            "properties": {
+                "probeMethod": {
+                    "$ref": "#/definitions/configConnectivityProbeMethod",
+                    "description": "Method to use to determine the connectivity status."
+                },
+                "probeEndpoint": {
+                    "$ref": "#/definitions/configProbeEndpoint",
+                    "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
+                }
+            },
+            "description": "Configuration for user-defined connectivity-testing probe."
+        },
+        "configConnectivityProbeMethod": {
+            "type": "string",
+            "enum": [
+                "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
+                "CONNECTIVITY_PROBE_METHOD_ICMP",
+                "CONNECTIVITY_PROBE_METHOD_TCP"
+            ],
+            "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
+            "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
+        },
+        "configProbeEndpoint": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "IP address or FQDN."
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
+                }
+            },
+            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
         },
         "dhcpIpRange": {
             "type": "object",
@@ -3807,6 +3982,11 @@
                 "mountpath": {
                     "type": "string",
                     "description": "Mount Path for the drive in the App Instance"
+                },
+                "runtimeInternal": {
+                    "type": "boolean",
+                    "description": "If set, the drive is internal to the runtime and not externally exposed with API",
+                    "readOnly": true
                 }
             },
             "description": "Drive configuration",
@@ -3936,6 +4116,10 @@
                 "bootloaderMode": {
                     "$ref": "#/definitions/VmBootloaderMode",
                     "description": "The bootloader mode that will be used for the VM. Default is VM_BOOTLOADER_MODE_LEGACY"
+                },
+                "enableOemWinLicenseKey": {
+                    "type": "boolean",
+                    "description": "Enable device which has VM to receive the Windows license embedded in the ACPI tables"
                 }
             },
             "description": "Virtual machine memory configuration",

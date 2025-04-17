@@ -109,7 +109,7 @@
                     },
                     {
                         "name": "originType",
-                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.\n - ORIGIN_APP_PROFILE_LOCAL: Object created via App profile",
                         "in": "query",
                         "required": false,
                         "type": "string",
@@ -117,7 +117,8 @@
                             "ORIGIN_UNSPECIFIED",
                             "ORIGIN_IMPORTED",
                             "ORIGIN_LOCAL",
-                            "ORIGIN_GLOBAL"
+                            "ORIGIN_GLOBAL",
+                            "ORIGIN_APP_PROFILE_LOCAL"
                         ],
                         "default": "ORIGIN_UNSPECIFIED"
                     },
@@ -325,7 +326,7 @@
                     },
                     {
                         "name": "originType",
-                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.\n - ORIGIN_APP_PROFILE_LOCAL: Object created via App profile",
                         "in": "query",
                         "required": false,
                         "type": "string",
@@ -333,7 +334,8 @@
                             "ORIGIN_UNSPECIFIED",
                             "ORIGIN_IMPORTED",
                             "ORIGIN_LOCAL",
-                            "ORIGIN_GLOBAL"
+                            "ORIGIN_GLOBAL",
+                            "ORIGIN_APP_PROFILE_LOCAL"
                         ],
                         "default": "ORIGIN_UNSPECIFIED"
                     },
@@ -1640,6 +1642,16 @@
                                 "baseOsForceUpgrade": {
                                     "type": "boolean",
                                     "description": "Force upgrade base OS"
+                                },
+                                "project": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ProjectInfo",
+                                    "description": "Project specific info"
+                                },
+                                "model": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ModelInfo",
+                                    "description": "Model specific info"
                                 }
                             },
                             "description": "Device Configuration request paylod holds the device properties",
@@ -7145,7 +7157,7 @@
                     },
                     {
                         "name": "originType",
-                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.\n - ORIGIN_APP_PROFILE_LOCAL: Object created via App profile",
                         "in": "query",
                         "required": false,
                         "type": "string",
@@ -7153,9 +7165,17 @@
                             "ORIGIN_UNSPECIFIED",
                             "ORIGIN_IMPORTED",
                             "ORIGIN_LOCAL",
-                            "ORIGIN_GLOBAL"
+                            "ORIGIN_GLOBAL",
+                            "ORIGIN_APP_PROFILE_LOCAL"
                         ],
                         "default": "ORIGIN_UNSPECIFIED"
+                    },
+                    {
+                        "name": "includeGlobal",
+                        "description": "Include global models that are not imported.",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
                     },
                     {
                         "name": "next.pageToken",
@@ -7372,7 +7392,7 @@
                     },
                     {
                         "name": "originType",
-                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+                        "description": "origin of object\n\n - ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.\n - ORIGIN_APP_PROFILE_LOCAL: Object created via App profile",
                         "in": "query",
                         "required": false,
                         "type": "string",
@@ -7380,9 +7400,17 @@
                             "ORIGIN_UNSPECIFIED",
                             "ORIGIN_IMPORTED",
                             "ORIGIN_LOCAL",
-                            "ORIGIN_GLOBAL"
+                            "ORIGIN_GLOBAL",
+                            "ORIGIN_APP_PROFILE_LOCAL"
                         ],
                         "default": "ORIGIN_UNSPECIFIED"
+                    },
+                    {
+                        "name": "includeGlobal",
+                        "description": "Include global models that are not imported.",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
                     },
                     {
                         "name": "next.pageToken",
@@ -7896,6 +7924,80 @@
                                 "originType"
                             ]
                         }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "HardwareModel"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
+        "/v1/sysmodels/id/{id}/import": {
+            "put": {
+                "summary": "Import hardware model to local enterprise if it is not already imported and return imported model information.",
+                "description": "Import hardware model to local enterprise if it is not already imported and return model information.",
+                "operationId": "HardwareModel_ImportHardwareModel",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/SysModel"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the  model",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
                     },
                     {
                         "name": "X-Request-Id",
@@ -8455,6 +8557,148 @@
                     "description": "ZEDEDA Product Documentation",
                     "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
                 }
+            },
+            "post": {
+                "summary": "Create deployment for a project",
+                "description": "v2 API to create a deployment for an existing project",
+                "operationId": "ResourceGroup_CreateDeployment",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "202": {
+                        "description": "Accepted. The API gateway accepted the request and will process it asynchronously.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "description": "project id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "description": "system generated unique id for an deployment"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "description": "user defined name for the deployment"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "user defined title for the deployment"
+                                },
+                                "appInstPolicies": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/AppInstPolicy"
+                                    },
+                                    "description": "list of app instance policies"
+                                },
+                                "networkInstPolicies": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/NetworkInstPolicy"
+                                    },
+                                    "description": "list of network instance policies"
+                                },
+                                "volumeInstPolicies": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/VolumeInstPolicy"
+                                    },
+                                    "description": "list of volume instamce policies"
+                                },
+                                "devicePolicies": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/DevicePolicy"
+                                    },
+                                    "description": "list of device policies"
+                                },
+                                "integrationPolicy": {
+                                    "$ref": "#/definitions/IntegrationPolicy",
+                                    "description": "integration policy details"
+                                },
+                                "clusterPolicy": {
+                                    "$ref": "#/definitions/ClusterInstPolicy",
+                                    "description": "cluster policy details"
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "object revision"
+                                },
+                                "deploymentTag": {
+                                    "type": "string",
+                                    "description": "user defined tag for the deployment, which is used while targeting set of devices"
+                                },
+                                "edgeviewPolicy": {
+                                    "$ref": "#/definitions/EdgeViewPolicy",
+                                    "description": "edge view policy details"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "ResourceGroup"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
             }
         },
         "/v2/projects/id/{projectId}/deployments/id/{id}": {
@@ -8819,10 +9063,11 @@
                 "ADAPTER_USAGE_MANAGEMENT",
                 "ADAPTER_USAGE_APP_DIRECT",
                 "ADAPTER_USAGE_APP_SHARED",
-                "ADAPTER_USAGE_DISABLED"
+                "ADAPTER_USAGE_DISABLED",
+                "ADAPTER_USAGE_VLANS_ONLY"
             ],
             "default": "ADAPTER_USAGE_UNSPECIFIED",
-            "description": "- ADAPTER_USAGE_UNSPECIFIED: Adapter unspecified\n - ADAPTER_USAGE_MANAGEMENT: Adapter can be used by EVE as well as other Edge applications\n - ADAPTER_USAGE_APP_DIRECT: Adapter is directly used by one edge application\n - ADAPTER_USAGE_APP_SHARED: Adapter can be shared by different network instances\n - ADAPTER_USAGE_DISABLED: Adapter disabled, for future use",
+            "description": "- ADAPTER_USAGE_UNSPECIFIED: Adapter unspecified\n - ADAPTER_USAGE_MANAGEMENT: Adapter can be used by EVE as well as other Edge applications\n - ADAPTER_USAGE_APP_DIRECT: Adapter is directly used by one edge application\n - ADAPTER_USAGE_APP_SHARED: Adapter can be shared by different network instances\n - ADAPTER_USAGE_DISABLED: Adapter disabled, for future use\n - ADAPTER_USAGE_VLANS_ONLY: Adapter is used exclusively for VLANs",
             "title": "Adapter Usage"
         },
         "AdminState": {
@@ -9166,7 +9411,7 @@
             "type": "object",
             "properties": {
                 "access": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Flags to enable / disable sending of logs generated by app instance to zedcloud"
                 }
             },
@@ -9224,7 +9469,8 @@
                 "APP_TYPE_VM",
                 "APP_TYPE_VM_RUNTIME",
                 "APP_TYPE_CONTAINER",
-                "APP_TYPE_MODULE"
+                "APP_TYPE_MODULE",
+                "APP_TYPE_DOCKER_COMPOSE"
             ],
             "default": "APP_TYPE_UNSPECIFIED",
             "description": "type of app bundle."
@@ -10122,7 +10368,8 @@
                 "DEPLOYMENT_TYPE_K3S_AZURE",
                 "DEPLOYMENT_TYPE_K3S_AWS",
                 "DEPLOYMENT_TYPE_VMWARE_VCE",
-                "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH"
+                "DEPLOYMENT_TYPE_VMWARE_TKG_ATTACH",
+                "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
             ],
             "default": "DEPLOYMENT_TYPE_UNSPECIFIED"
         },
@@ -10585,6 +10832,16 @@
                 "baseOsForceUpgrade": {
                     "type": "boolean",
                     "description": "Force upgrade base OS"
+                },
+                "project": {
+                    "type": "object",
+                    "$ref": "#/definitions/ProjectInfo",
+                    "description": "Project specific info"
+                },
+                "model": {
+                    "type": "object",
+                    "$ref": "#/definitions/ModelInfo",
+                    "description": "Model specific info"
                 }
             },
             "description": "Device Configuration request paylod holds the device properties",
@@ -11025,6 +11282,10 @@
                 "clusterNodeStatus": {
                     "$ref": "#/definitions/ClusterNodeStatus",
                     "description": "Cluster node status"
+                },
+                "apiCapability": {
+                    "$ref": "#/definitions/infoAPICapability",
+                    "title": "API Capabilities"
                 }
             }
         },
@@ -11694,6 +11955,22 @@
                     "type": "string"
                 }
             }
+        },
+        "DockerRuntimeProtocolVersion": {
+            "type": "string",
+            "enum": [
+                "RuntimeProtocolVersion_Unknown",
+                "RuntimeProtocolVersion_V1"
+            ],
+            "default": "RuntimeProtocolVersion_Unknown"
+        },
+        "DockerRuntimeVersion": {
+            "type": "string",
+            "enum": [
+                "RuntimeVersion_Unknown",
+                "RuntimeVersion_V1"
+            ],
+            "default": "RuntimeVersion_Unknown"
         },
         "ECDSA": {
             "type": "object",
@@ -12761,6 +13038,33 @@
             ],
             "default": "UNSPECIFIED"
         },
+        "ModelInfo": {
+            "type": "object",
+            "properties": {
+                "modelId": {
+                    "type": "string",
+                    "description": "system generated unique id for a model",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "modelName": {
+                    "type": "string",
+                    "description": "model name"
+                },
+                "brandId": {
+                    "type": "string",
+                    "description": "system generated unique id for a brand",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "brandName": {
+                    "type": "string",
+                    "description": "brand name"
+                }
+            },
+            "description": "Detailed model information including id, name",
+            "title": "Model details"
+        },
         "ModemDetail": {
             "type": "object",
             "properties": {
@@ -13791,7 +14095,10 @@
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                 "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
                 "OBJECT_TYPE_DEV_PASSTHROUGH",
-                "OBJECT_TYPE_EDGE_NODE_CLUSTER"
+                "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                "OBJECT_TYPE_ASSET_GROUP",
+                "OBJECT_TYPE_APP_PROFILE",
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -13819,10 +14126,11 @@
                 "ORIGIN_UNSPECIFIED",
                 "ORIGIN_IMPORTED",
                 "ORIGIN_LOCAL",
-                "ORIGIN_GLOBAL"
+                "ORIGIN_GLOBAL",
+                "ORIGIN_APP_PROFILE_LOCAL"
             ],
             "default": "ORIGIN_UNSPECIFIED",
-            "description": "- ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+            "description": "- ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.\n - ORIGIN_APP_PROFILE_LOCAL: Object created via App profile",
             "title": "OriginType : enum specifies the Object orgigin type"
         },
         "PCRTemplate": {
@@ -14233,6 +14541,27 @@
             },
             "description": "Probing configuration",
             "title": "Probing configuration"
+        },
+        "ProjectInfo": {
+            "type": "object",
+            "properties": {
+                "projectId": {
+                    "type": "string",
+                    "description": "system generated unique id for a project",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "project name"
+                },
+                "type": {
+                    "$ref": "#/definitions/TagType",
+                    "description": "Resource group type"
+                }
+            },
+            "description": "Detailed project information including id, name",
+            "title": "Project details"
         },
         "RSA": {
             "type": "object",
@@ -15476,6 +15805,33 @@
                 "cpuPinningEnabled": {
                     "type": "boolean",
                     "description": "Enable CpuPinning"
+                },
+                "runtimeVersion": {
+                    "$ref": "#/definitions/DockerRuntimeVersion",
+                    "description": "Indicates the version of container orchestration software",
+                    "title": "docker-compose runtime specific versions"
+                },
+                "runtimeProtocolVersion": {
+                    "$ref": "#/definitions/DockerRuntimeProtocolVersion",
+                    "description": "Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime"
+                },
+                "PersistentRuntimeSizeBytes": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "Size of persistent blank storage for runtime in bytes"
+                },
+                "dockerComposeYamlText": {
+                    "type": "string",
+                    "description": "Docker compose base64 encoded plain text"
+                },
+                "dockerComposeTarImageName": {
+                    "type": "string",
+                    "description": "Docker compose tar image name"
+                },
+                "enableOemWinLicenseKey": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "title": "Enable device to read the license info from APCI tables"
                 }
             }
         },
@@ -16234,16 +16590,7 @@
             "description": "App Interface detail",
             "title": "App Interface detail",
             "required": [
-                "io",
-                "intforder",
-                "intfname",
-                "directattach",
-                "privateip",
-                "acls",
-                "ipaddr",
-                "macaddr",
-                "eidregister",
-                "netinstname"
+                "intfname"
             ]
         },
         "appMapParams": {
@@ -16444,6 +16791,28 @@
             ],
             "default": "HV_PV",
             "description": "For now we need to tell the device which virtualization mode\nto use. Later we might use a single one for all VMs (on any particular\nISA). If we end up keeping this we should make the names be less\ntied to a particular hypervisor."
+        },
+        "infoAPICapability": {
+            "type": "string",
+            "enum": [
+                "API_CAPABILITY_UNSPECIFIED",
+                "API_CAPABILITY_RETRY_UPDATE",
+                "API_CAPABILITY_SHUTDOWN",
+                "API_CAPABILITY_START_DELAY_IN_SECONDS",
+                "API_CAPABILITY_EDGEVIEW",
+                "API_CAPABILITY_VOLUME_SNAPSHOTS",
+                "API_CAPABILITY_NETWORK_INSTANCE_ROUTING",
+                "API_CAPABILITY_BOOT_MODE",
+                "API_CAPABILITY_MTU",
+                "API_CAPABILITY_ADAPTER_USER_LABELS",
+                "API_CAPABILITY_ENFORCED_NET_INTERFACE_ORDER",
+                "API_CAPABILITY_NTPS_FQDN",
+                "API_CAPABILITY_WIN_LIC_PASSTHROUGH",
+                "API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE",
+                "API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE"
+            ],
+            "default": "API_CAPABILITY_UNSPECIFIED",
+            "description": "Capabilities indicates features in the EdgeDevConfig where there is\nno easy way to otherwise determine whether or not they are parsed and\nsupported by EVE-OS\nA larger number indicates all lower numbers are also supported thus\nthis works similar to a version field for the EdgeDevConfig support."
         },
         "ioMember": {
             "type": "object",
@@ -16772,6 +17141,10 @@
                 "bootloaderMode": {
                     "$ref": "#/definitions/VmBootloaderMode",
                     "description": "The bootloader mode that will be used for the VM. Default is VM_BOOTLOADER_MODE_LEGACY"
+                },
+                "enableOemWinLicenseKey": {
+                    "type": "boolean",
+                    "description": "Enable device which has VM to receive the Windows license embedded in the ACPI tables"
                 }
             },
             "description": "Virtual machine memory configuration",

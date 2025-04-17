@@ -102,7 +102,7 @@
                     },
                     {
                         "name": "imageType",
-                        "description": "Image type to ne matched.\n\n - IMAGE_TYPE_EVE: Base OS images for edge gateway\n - IMAGE_TYPE_APPLICATION: Edge application images\n - IMAGE_TYPE_EVEPRIVATE: Private Base OS images for edge gateway\n - IMAGE_TYPE_ARTIFACT: Image type to be used for configuration/patch service",
+                        "description": "Image type to ne matched.\n\n - IMAGE_TYPE_EVE: Base OS images for edge gateway\n - IMAGE_TYPE_APPLICATION: Edge application images\n - IMAGE_TYPE_EVEPRIVATE: Private Base OS images for edge gateway\n - IMAGE_TYPE_ARTIFACT: Image type to be used for configuration/patch service\n - IMAGE_TYPE_DOCKER_COMPOSE_TAR: Image type to be used for multi-file docker-compose projects\n - IMAGE_TYPE_DOCKER_RUNTIME: Image type to be used for Docker Compose runtime bundles\n - IMAGE_TYPE_ZKS_RUNTIME: Image type to be used for ZKS runtime bundles",
                         "in": "query",
                         "required": false,
                         "type": "string",
@@ -111,7 +111,10 @@
                             "IMAGE_TYPE_EVE",
                             "IMAGE_TYPE_APPLICATION",
                             "IMAGE_TYPE_EVEPRIVATE",
-                            "IMAGE_TYPE_ARTIFACT"
+                            "IMAGE_TYPE_ARTIFACT",
+                            "IMAGE_TYPE_DOCKER_COMPOSE_TAR",
+                            "IMAGE_TYPE_DOCKER_RUNTIME",
+                            "IMAGE_TYPE_ZKS_RUNTIME"
                         ],
                         "default": "IMAGE_TYPE_UNSPECIFIED"
                     },
@@ -359,13 +362,6 @@
                     }
                 },
                 "parameters": [
-                    {
-                        "name": "summary",
-                        "description": "Only summary of the records required",
-                        "in": "query",
-                        "required": false,
-                        "type": "boolean"
-                    },
                     {
                         "name": "namePattern",
                         "description": "Image Architecture pattern to be matched.",
@@ -3598,7 +3594,6 @@
                 "parameters": [
                     {
                         "name": "id",
-                        "description": "System defined universally unique Id of the volume instance.",
                         "in": "path",
                         "required": true,
                         "type": "string"
@@ -3608,98 +3603,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string",
-                                    "description": "User defined name of the volume instance, unique across the enterprise. Once object is created, name can\u2019t be changed.",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
-                                    "uniqueItems": true
-                                },
-                                "title": {
-                                    "type": "string",
-                                    "description": "User defined title of the volume instance. Title can be changed at any time.",
-                                    "maxLength": 256,
-                                    "minLength": 3,
-                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
-                                },
-                                "description": {
-                                    "type": "string",
-                                    "description": "Detailed description of the volume instance.",
-                                    "maxLength": 256
-                                },
-                                "revision": {
-                                    "$ref": "#/definitions/ObjectRevision",
-                                    "description": "system defined Revision info of the object",
-                                    "readOnly": true
-                                },
-                                "projectId": {
-                                    "type": "string",
-                                    "description": "id of the project in which the volume instance is created"
-                                },
-                                "type": {
-                                    "type": "string",
-                                    "$ref": "#/definitions/VolumeInstanceType",
-                                    "description": "type of Volume Instance"
-                                },
-                                "deviceId": {
-                                    "type": "string",
-                                    "description": "id of the device on which volume instance is created"
-                                },
-                                "multiattach": {
-                                    "type": "boolean",
-                                    "description": "flag to enable the volume to be attached to multiple app instances"
-                                },
-                                "cleartext": {
-                                    "type": "boolean",
-                                    "description": "flag to keep the contents of the volume unencrypted (in clear text)"
-                                },
-                                "accessmode": {
-                                    "type": "string",
-                                    "$ref": "#/definitions/VolumeInstanceAccessMode",
-                                    "description": "Access mode"
-                                },
-                                "sizeBytes": {
-                                    "type": "integer",
-                                    "format": "uint64",
-                                    "description": "size of volume"
-                                },
-                                "image": {
-                                    "type": "string",
-                                    "description": "name of the image"
-                                },
-                                "implicit": {
-                                    "type": "string",
-                                    "description": "flag to create implicit volumes"
-                                },
-                                "contentTreeId": {
-                                    "type": "string",
-                                    "description": "content tree ID"
-                                },
-                                "label": {
-                                    "type": "string",
-                                    "description": "label"
-                                },
-                                "purge": {
-                                    "$ref": "#/definitions/ZedCloudOpsCmd",
-                                    "description": "Purge Counter information"
-                                },
-                                "tags": {
-                                    "type": "object",
-                                    "additionalProperties": {
-                                        "type": "string"
-                                    },
-                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
-                                    "maxLength": 32,
-                                    "pattern": "^[^<%&?/\\>]+$"
-                                },
-                                "patchartifactvolume": {
-                                    "type": "string",
-                                    "description": "flag to indicate whether volume instance is created for patch envelope external artifact"
-                                }
-                            }
+                            "$ref": "#/definitions/VolInstConfigUpdate_HttpRequest"
                         }
                     },
                     {
@@ -4886,6 +4790,41 @@
                 }
             }
         },
+        "ClusterVolInstanceStatus": {
+            "type": "object",
+            "properties": {
+                "state": {
+                    "$ref": "#/definitions/infoStorageVolumeState"
+                },
+                "replicas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VolumeInstanceReplicaStatus"
+                    }
+                },
+                "attachmentState": {
+                    "$ref": "#/definitions/infoStorageVolumePVCStatus"
+                },
+                "creationTime": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "size": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "actualSize": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "robustness": {
+                    "$ref": "#/definitions/infoStorageVolumeRobustness"
+                },
+                "robustnessSubstate": {
+                    "$ref": "#/definitions/infoStorageHealthStatus"
+                }
+            }
+        },
         "Cursor": {
             "type": "object",
             "properties": {
@@ -5544,10 +5483,13 @@
                 "IMAGE_TYPE_EVE",
                 "IMAGE_TYPE_APPLICATION",
                 "IMAGE_TYPE_EVEPRIVATE",
-                "IMAGE_TYPE_ARTIFACT"
+                "IMAGE_TYPE_ARTIFACT",
+                "IMAGE_TYPE_DOCKER_COMPOSE_TAR",
+                "IMAGE_TYPE_DOCKER_RUNTIME",
+                "IMAGE_TYPE_ZKS_RUNTIME"
             ],
             "default": "IMAGE_TYPE_UNSPECIFIED",
-            "description": "- IMAGE_TYPE_EVE: Base OS images for edge gateway\n - IMAGE_TYPE_APPLICATION: Edge application images\n - IMAGE_TYPE_EVEPRIVATE: Private Base OS images for edge gateway\n - IMAGE_TYPE_ARTIFACT: Image type to be used for configuration/patch service",
+            "description": "- IMAGE_TYPE_EVE: Base OS images for edge gateway\n - IMAGE_TYPE_APPLICATION: Edge application images\n - IMAGE_TYPE_EVEPRIVATE: Private Base OS images for edge gateway\n - IMAGE_TYPE_ARTIFACT: Image type to be used for configuration/patch service\n - IMAGE_TYPE_DOCKER_COMPOSE_TAR: Image type to be used for multi-file docker-compose projects\n - IMAGE_TYPE_DOCKER_RUNTIME: Image type to be used for Docker Compose runtime bundles\n - IMAGE_TYPE_ZKS_RUNTIME: Image type to be used for ZKS runtime bundles",
             "title": "Image types"
         },
         "Images": {
@@ -5688,7 +5630,11 @@
                 "OBJECT_TYPE_PATCH_ENVELOPE",
                 "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
                 "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
-                "OBJECT_TYPE_DEV_PASSTHROUGH"
+                "OBJECT_TYPE_DEV_PASSTHROUGH",
+                "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+                "OBJECT_TYPE_ASSET_GROUP",
+                "OBJECT_TYPE_APP_PROFILE",
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -5698,10 +5644,11 @@
                 "ORIGIN_UNSPECIFIED",
                 "ORIGIN_IMPORTED",
                 "ORIGIN_LOCAL",
-                "ORIGIN_GLOBAL"
+                "ORIGIN_GLOBAL",
+                "ORIGIN_APP_PROFILE_LOCAL"
             ],
             "default": "ORIGIN_UNSPECIFIED",
-            "description": "- ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.",
+            "description": "- ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.\n - ORIGIN_APP_PROFILE_LOCAL: Object created via App profile",
             "title": "OriginType : enum specifies the Object orgigin type"
         },
         "RSA": {
@@ -6045,7 +5992,7 @@
                     "description": "name of the image"
                 },
                 "implicit": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "flag to create implicit volumes"
                 },
                 "contentTreeId": {
@@ -6072,6 +6019,131 @@
                 "patchartifactvolume": {
                     "type": "string",
                     "description": "flag to indicate whether volume instance is created for patch envelope external artifact"
+                },
+                "edgeNodeCluster": {
+                    "type": "string",
+                    "$ref": "#/definitions/VolInstEdgeNodeCluster",
+                    "description": "edge node cluster associated with the volume instance"
+                }
+            },
+            "title": "VolInstConfig - On update, please update VolInstConfigUpdate_HttpRequest as well"
+        },
+        "VolInstConfigUpdate_HttpRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the volume instance.",
+                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the volume instance, unique across the enterprise. Once object is created, name can\u2019t be changed.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the volume instance. Title can be changed at any time.",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the volume instance.",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined Revision info of the object",
+                    "readOnly": true
+                },
+                "projectId": {
+                    "type": "string",
+                    "description": "id of the project in which the volume instance is created"
+                },
+                "type": {
+                    "type": "string",
+                    "$ref": "#/definitions/VolumeInstanceType",
+                    "description": "type of Volume Instance"
+                },
+                "deviceId": {
+                    "type": "string",
+                    "description": "id of the device on which volume instance is created"
+                },
+                "multiattach": {
+                    "type": "boolean",
+                    "description": "flag to enable the volume to be attached to multiple app instances"
+                },
+                "cleartext": {
+                    "type": "boolean",
+                    "description": "flag to keep the contents of the volume unencrypted (in clear text)"
+                },
+                "accessmode": {
+                    "type": "string",
+                    "$ref": "#/definitions/VolumeInstanceAccessMode",
+                    "description": "Access mode"
+                },
+                "sizeBytes": {
+                    "type": "integer",
+                    "format": "uint64",
+                    "description": "size of volume"
+                },
+                "image": {
+                    "type": "string",
+                    "description": "name of the image"
+                },
+                "implicit": {
+                    "type": "boolean",
+                    "description": "flag to create implicit volumes"
+                },
+                "contentTreeId": {
+                    "type": "string",
+                    "description": "content tree ID"
+                },
+                "label": {
+                    "type": "string",
+                    "description": "label"
+                },
+                "purge": {
+                    "$ref": "#/definitions/ZedCloudOpsCmd",
+                    "description": "Purge Counter information"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "patchartifactvolume": {
+                    "type": "string",
+                    "description": "flag to indicate whether volume instance is created for patch envelope external artifact"
+                },
+                "edgeNodeCluster": {
+                    "type": "string",
+                    "$ref": "#/definitions/VolInstEdgeNodeCluster",
+                    "description": "edge node cluster associated with the volume instance"
+                }
+            },
+            "title": "VolInstConfigUpdate_HttpRequest - Only for swagger documentation"
+        },
+        "VolInstEdgeNodeCluster": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "edge node cluster ID"
+                },
+                "designatedNodeID": {
+                    "type": "string",
+                    "description": "designated node ID"
                 }
             }
         },
@@ -6207,6 +6279,9 @@
                 },
                 "rawStatus": {
                     "type": "string"
+                },
+                "clusterVolInstanceStatus": {
+                    "$ref": "#/definitions/ClusterVolInstanceStatus"
                 }
             }
         },
@@ -6247,6 +6322,12 @@
                 },
                 "projectName": {
                     "type": "string"
+                },
+                "edgeNodeClusterID": {
+                    "type": "string"
+                },
+                "clusterVolInstanceStatus": {
+                    "$ref": "#/definitions/ClusterVolInstanceStatus"
                 }
             }
         },
@@ -6274,6 +6355,21 @@
                 "CONTENT_TREE"
             ],
             "default": "UNSPECIFIED"
+        },
+        "VolumeInstanceReplicaStatus": {
+            "type": "object",
+            "properties": {
+                "nodeName": {
+                    "type": "string"
+                },
+                "rebuildProgressPercentage": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "status": {
+                    "$ref": "#/definitions/infoStorageVolumeReplicaStatus"
+                }
+            }
         },
         "VolumeInstanceType": {
             "type": "string",
@@ -6491,6 +6587,72 @@
                     }
                 }
             }
+        },
+        "infoStorageHealthStatus": {
+            "type": "string",
+            "enum": [
+                "STORAGE_HEALTH_STATUS_UNSPECIFIED",
+                "STORAGE_HEALTH_STATUS_HEALTHY",
+                "STORAGE_HEALTH_STATUS_DEGRADED_2_REPLICA_AVAILABLE_REPLICATING",
+                "STORAGE_HEALTH_STATUS_DEGRADED_2_REPLICA_AVAILABLE_NOT_REPLICATING",
+                "STORAGE_HEALTH_STATUS_DEGRADED_1_REPLICA_AVAILABLE_REPLICATING",
+                "STORAGE_HEALTH_STATUS_DEGRADED_1_REPLICA_AVAILABLE_NOT_REPLICATING",
+                "STORAGE_HEALTH_STATUS_FAILED"
+            ],
+            "default": "STORAGE_HEALTH_STATUS_UNSPECIFIED",
+            "description": "StorageHealthStatus is a higher level tracking status to show redundancy/failure-zone level\nand rebuild progress."
+        },
+        "infoStorageVolumePVCStatus": {
+            "type": "string",
+            "enum": [
+                "STORAGE_VOLUME_PVC_STATUS_UNSPECIFIED",
+                "STORAGE_VOLUME_PVC_STATUS_BOUND",
+                "STORAGE_VOLUME_PVC_STATUS_PENDING",
+                "STORAGE_VOLUME_PVC_STATUS_AVAILABLE",
+                "STORAGE_VOLUME_PVC_STATUS_RELEASED",
+                "STORAGE_VOLUME_PVC_STATUS_FAILED"
+            ],
+            "default": "STORAGE_VOLUME_PVC_STATUS_UNSPECIFIED",
+            "title": "StorageVolumePVCStatus is the kubernetes 'phase' of a PVC. Listed as status in cli.\n Refer to: https://kubernetes.io/docs/concepts/storage/persistent-volumes#phase"
+        },
+        "infoStorageVolumeReplicaStatus": {
+            "type": "string",
+            "enum": [
+                "STORAGE_VOLUME_REPLICA_STATUS_UNSPECIFIED",
+                "STORAGE_VOLUME_REPLICA_STATUS_REBUILDING",
+                "STORAGE_VOLUME_REPLICA_STATUS_ONLINE",
+                "STORAGE_VOLUME_REPLICA_STATUS_FAILED",
+                "STORAGE_VOLUME_REPLICA_STATUS_OFFLINE",
+                "STORAGE_VOLUME_REPLICA_STATUS_STARTING",
+                "STORAGE_VOLUME_REPLICA_STATUS_STOPPING"
+            ],
+            "default": "STORAGE_VOLUME_REPLICA_STATUS_UNSPECIFIED",
+            "description": "StorageVolumeReplicaStatus is a higher level status which combines replica and engine\n   status to show a simplified view of a replica rebuild state."
+        },
+        "infoStorageVolumeRobustness": {
+            "type": "string",
+            "enum": [
+                "STORAGE_VOLUME_ROBUSTNESS_UNSPECIFIED",
+                "STORAGE_VOLUME_ROBUSTNESS_HEALTHY",
+                "STORAGE_VOLUME_ROBUSTNESS_DEGRADED",
+                "STORAGE_VOLUME_ROBUSTNESS_FAULTED"
+            ],
+            "default": "STORAGE_VOLUME_ROBUSTNESS_UNSPECIFIED",
+            "title": "StorageVolumeRobustness is the 'robustness' of a replicated csi-driver volume.\n Refer to: https://github.com/longhorn/longhorn-manager/blob/v1.6.2/k8s/pkg/apis/longhorn/v1beta1/volume.go#L25"
+        },
+        "infoStorageVolumeState": {
+            "type": "string",
+            "enum": [
+                "STORAGE_VOLUME_STATE_UNSPECIFIED",
+                "STORAGE_VOLUME_STATE_CREATING",
+                "STORAGE_VOLUME_STATE_ATTACHED",
+                "STORAGE_VOLUME_STATE_DETACHED",
+                "STORAGE_VOLUME_STATE_ATTACHING",
+                "STORAGE_VOLUME_STATE_DETACHING",
+                "STORAGE_VOLUME_STATE_DELETING"
+            ],
+            "default": "STORAGE_VOLUME_STATE_UNSPECIFIED",
+            "title": "StorageVolumeState is the kubernetes 'state' field of a replicated csi-driver volume.\n Refer to: https://github.com/longhorn/longhorn-manager/blob/v1.6.2/k8s/pkg/apis/longhorn/v1beta1/volume.go#L14"
         },
         "protobufAny": {
             "type": "object",

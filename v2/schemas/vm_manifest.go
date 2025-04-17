@@ -47,6 +47,7 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	}
 	description, _ := d.Get("description").(string)
 	displayName, _ := d.Get("display_name").(string)
+	enableOemWinLicenseKey, _ := d.Get("enable_oem_win_license_key").(bool)
 	enablevnc, _ := d.Get("enablevnc").(bool)
 	var images []*models.VMManifestImage // []*VMManifestImage
 	imagesInterface, imagesIsSet := d.GetOk("images")
@@ -135,25 +136,26 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	}
 	vmmode, _ := d.Get("vmmode").(string)
 	return &models.VMManifest{
-		AcKind:            &acKind,    // string
-		AcVersion:         &acVersion, // string
-		AppType:           appType,
-		Configuration:     configuration,
-		ContainerDetail:   containerDetail,
-		CPUPinningEnabled: cPUPinningEnabled,
-		DeploymentType:    deploymentType,
-		Desc:              desc,
-		Description:       description,
-		DisplayName:       displayName,
-		Enablevnc:         enablevnc,
-		Images:            images,
-		Interfaces:        interfaces,
-		Module:            module,
-		Name:              name,
-		Owner:             owner,
-		Permissions:       permissions,
-		Resources:         resources,
-		Vmmode:            &vmmode, // string
+		AcKind:                 &acKind,    // string
+		AcVersion:              &acVersion, // string
+		AppType:                appType,
+		Configuration:          configuration,
+		ContainerDetail:        containerDetail,
+		CPUPinningEnabled:      cPUPinningEnabled,
+		DeploymentType:         deploymentType,
+		Desc:                   desc,
+		Description:            description,
+		DisplayName:            displayName,
+		EnableOemWinLicenseKey: enableOemWinLicenseKey,
+		Enablevnc:              enablevnc,
+		Images:                 images,
+		Interfaces:             interfaces,
+		Module:                 module,
+		Name:                   name,
+		Owner:                  owner,
+		Permissions:            permissions,
+		Resources:              resources,
+		Vmmode:                 &vmmode, // string
 	}
 }
 
@@ -202,6 +204,7 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 	//
 	description := m["description"].(string)
 	displayName := m["display_name"].(string)
+	enableOemWinLicenseKey := m["enable_oem_win_license_key"].(bool)
 	enablevnc := m["enablevnc"].(bool)
 	var images []*models.VMManifestImage // []*VMManifestImage
 	imagesInterface, imagesIsSet := m["images"]
@@ -292,25 +295,26 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 	}
 	vmmode := m["vmmode"].(string)
 	return &models.VMManifest{
-		AcKind:            &acKind,
-		AcVersion:         &acVersion,
-		AppType:           appType,
-		Configuration:     configuration,
-		ContainerDetail:   containerDetail,
-		CPUPinningEnabled: cPUPinningEnabled,
-		DeploymentType:    deploymentType,
-		Desc:              desc,
-		Description:       description,
-		DisplayName:       displayName,
-		Enablevnc:         enablevnc,
-		Images:            images,
-		Interfaces:        interfaces,
-		Module:            module,
-		Name:              name,
-		Owner:             owner,
-		Permissions:       permissions,
-		Resources:         resources,
-		Vmmode:            &vmmode,
+		AcKind:                 &acKind,
+		AcVersion:              &acVersion,
+		AppType:                appType,
+		Configuration:          configuration,
+		ContainerDetail:        containerDetail,
+		CPUPinningEnabled:      cPUPinningEnabled,
+		DeploymentType:         deploymentType,
+		Desc:                   desc,
+		Description:            description,
+		DisplayName:            displayName,
+		EnableOemWinLicenseKey: enableOemWinLicenseKey,
+		Enablevnc:              enablevnc,
+		Images:                 images,
+		Interfaces:             interfaces,
+		Module:                 module,
+		Name:                   name,
+		Owner:                  owner,
+		Permissions:            permissions,
+		Resources:              resources,
+		Vmmode:                 &vmmode,
 	}
 }
 
@@ -350,6 +354,7 @@ func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]inter
 			properties["desc"] = SetDetailsSubResourceData([]*models.Details{VMManifestModel.Desc})
 			properties["description"] = VMManifestModel.Description
 			properties["display_name"] = VMManifestModel.DisplayName
+			properties["enable_oem_win_license_key"] = VMManifestModel.EnableOemWinLicenseKey
 			properties["enablevnc"] = VMManifestModel.Enablevnc
 			properties["images"] = SetVMManifestImageSubResourceData(VMManifestModel.Images)
 			properties["interfaces"] = SetInterfaceSubResourceData(VMManifestModel.Interfaces)
@@ -382,10 +387,10 @@ func VMManifest() map[string]*schema.Schema {
 		},
 
 		"app_type": {
-			Description: `App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM",`+
+			Description: `App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM",` +
 				`"APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE".`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"configuration": {
@@ -413,12 +418,12 @@ func VMManifest() map[string]*schema.Schema {
 		},
 
 		"deployment_type": {
-			Description: `Deployment type for the app. The correct values are: `+
-				`"DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE",`+
-				`"DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS",`+
+			Description: `Deployment type for the app. The correct values are: ` +
+				`"DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE",` +
+				`"DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS",` +
 				`"DEPLOYMENT_TYPE_VMWARE_VCE".`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"desc": {
@@ -440,6 +445,12 @@ func VMManifest() map[string]*schema.Schema {
 		"display_name": {
 			Description: `UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field`,
 			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"enable_oem_win_license_key": {
+			Description: `UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field`,
+			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
@@ -533,6 +544,7 @@ func GetVMManifestPropertyFields() (t []string) {
 		"desc",
 		"description",
 		"display_name",
+		"enable_oem_win_license_key",
 		"enablevnc",
 		"images",
 		"interfaces",

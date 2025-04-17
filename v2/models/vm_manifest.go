@@ -64,6 +64,11 @@ type VMManifest struct {
 	// UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
 	DisplayName string `json:"displayName,omitempty"`
 
+	// Enable device to read the license info from APCI tables
+	//
+	// UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
+	EnableOemWinLicenseKey bool `json:"enableOemWinLicenseKey,omitempty"`
+
 	// Enable VNC for the app
 	//
 	// UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
