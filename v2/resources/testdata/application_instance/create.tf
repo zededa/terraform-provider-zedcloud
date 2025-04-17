@@ -137,7 +137,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   tags = {
     "tag-key-1" = "tag-value-1"
   }
-  token = "token"
+  token = "token_appinst"
   depends_on = [
     zedcloud_model.test_tf_provider,
     zedcloud_project.test_tf_provider

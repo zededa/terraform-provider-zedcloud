@@ -109,7 +109,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 	deployment_tag = "depl_tag"
 	description = "description"
 	generate_soft_serial = false
-	token = "token"
+	token = "token_all"
 	site_pictures = []
 	interfaces {
 		cost = 255
