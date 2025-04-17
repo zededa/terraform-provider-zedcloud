@@ -1,7 +1,7 @@
 
 resource "zedcloud_project" "test_tf_provider" {
   # required
-  name  = "test_tf_provider_newproject"
+  name  = "test_tf_provider_newproject_100"
   title = "title"
 
   # optional
@@ -13,7 +13,7 @@ resource "zedcloud_project" "test_tf_provider" {
 }
 
 data "zedcloud_project" "test_tf_provider" {
-  name  = "test_tf_provider_newproject"
+  name  = "test_tf_provider_newproject_100"
   title = "title"
   type = "TAG_TYPE_PROJECT"
   depends_on = [
@@ -22,7 +22,7 @@ data "zedcloud_project" "test_tf_provider" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-  name        = "qemu100"
+  name        = "qemu100_100"
   title       = "QEMU100"
   description = "qemu100"
   origin_type = "ORIGIN_LOCAL"
@@ -30,7 +30,7 @@ resource "zedcloud_brand" "test_tf_provider" {
 
 resource "zedcloud_model" "test_tf_provider" {
   brand_id    = zedcloud_brand.test_tf_provider.id
-  name        = "test_tf_provider-create_edgenode100"
+  name        = "test_tf_provider-create_edgenode100_100"
   title       = "test_tf_provider-create_edgenode100"
   type        = "AMD64"
   origin_type = "ORIGIN_LOCAL"
@@ -65,7 +65,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   onboarding_key = "" # placeholder
   serialno       = "2293dbe8-29ce-420c-8264-962858efc46b"
   # required
-  name       = "test_tf_provider_newedgenode"
+  name       = "test_tf_provider_newedgenode_100"
   model_id   = zedcloud_model.test_tf_provider.id
   project_id = zedcloud_project.test_tf_provider.id
   title      = "test_tf_provider-create_edgenode-title"
@@ -113,7 +113,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 }
 
 data "zedcloud_edgenode" "test_tf_provider" {
-  name     = "test_tf_provider_newedgenode"
+  name     = "test_tf_provider_newedgenode_100"
   title    = "test_tf_provider-create_edgenode-title"
   model_id = zedcloud_model.test_tf_provider.id
   depends_on = [
@@ -135,7 +135,7 @@ resource "zedcloud_datastore" "open_ds_provider" {
   ds_fqdn             = "http://147.75.33.217"
   ds_path             = "images"
   ds_type             = "DATASTORE_TYPE_HTTP"
-  name                = "open_ds_provider"
+  name                = "open_ds_provider_100"
   title               = "open_ds_provider"
   description         = "open_ds_provider"
   region              = "eu"
