@@ -14,7 +14,7 @@ resource "zedcloud_image" "open_alpine_image" {
   depends_on = [
     zedcloud_datastore.open_ds
   ]
-  name                = "openalpine"
+  name                = "openalpine_appprofile"
   datastore_id        = zedcloud_datastore.open_ds.id
   image_arch          = "ARM64"
   image_format        = "CONTAINER"

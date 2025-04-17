@@ -22,7 +22,7 @@ data "zedcloud_project" "test_tf_provider_for_tags" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-  name        = "qemu100"
+  name        = "qemu100_assetgroup_tags"
   title       = "QEMU100"
   description = "qemu100"
   origin_type = "ORIGIN_LOCAL"
@@ -30,7 +30,7 @@ resource "zedcloud_brand" "test_tf_provider" {
 
 resource "zedcloud_model" "test_tf_provider" {
   brand_id    = zedcloud_brand.test_tf_provider.id
-  name        = "test_tf_provider-create_edgenode100"
+  name        = "test_tf_provider-create_edgenode100_assetgroup_tags"
   title       = "test_tf_provider-create_edgenode100"
   type        = "AMD64"
   origin_type = "ORIGIN_LOCAL"
@@ -63,7 +63,7 @@ resource "zedcloud_model" "test_tf_provider" {
 
 resource "zedcloud_edgenode" "test_tf_provider_for_tags" {
   onboarding_key = "" # placeholder
-  serialno       = "2293dbe8-29ce-420c-8364-962858efc46b"
+  serialno       = "2393dbe8-29ce-420c-8364-962858efc46b"
   # required
   name       = "test_tf_provider_newedgenode_for_tags"
   model_id   = zedcloud_model.test_tf_provider.id
@@ -98,7 +98,7 @@ resource "zedcloud_edgenode" "test_tf_provider_for_tags" {
   tags = {
     "tag-for-tags" = "value-for-tags"
   }
-  token = "token"
+  token = "token_assetgroup_tags"
   interfaces {
     cost       = 255
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
@@ -106,8 +106,8 @@ resource "zedcloud_edgenode" "test_tf_provider_for_tags" {
     ipaddr     = "127.0.0.1"
     # macaddr = "00:00:00:00:00:00"
     tags = {
-      "system_interface_1_key" = "system_interface_1_value"
-      "system_interface_2_key" = "system_interface_2_value"
+      "system_interface_1_key_tags" = "system_interface_1_value"
+      "system_interface_2_key_tags" = "system_interface_2_value"
     }
   }
 }
@@ -118,6 +118,17 @@ data "zedcloud_edgenode" "test_tf_provider_for_tags" {
   model_id = zedcloud_model.test_tf_provider.id
   tags = {
     "tag-key-1" = "tag-value-1"
+  }
+  interfaces {
+    cost       = 255
+    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    intfname   = "defaultIPv4"
+    ipaddr     = "127.0.0.1"
+    # macaddr = "00:00:00:00:00:00"
+    tags = {
+      "system_interface_1_key" = "system_interface_1_value"
+      "system_interface_2_key" = "system_interface_2_value"
+    }
   }
   depends_on = [
     zedcloud_edgenode.test_tf_provider_for_tags
