@@ -48,8 +48,8 @@ func DeviceAttestationPolicy() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"type": {
 			Description: `Attestation policy type. Type values: 
-			- DEVICE_ATTEST_POLICY_TYPE_ACCEPT: Do not enforce attestation. All devices are marked as successfully attested.
-			- DEVICE_ATTEST_POLICY_TYPE_ENFORCE: Enforce attestation. Devices failing attestation are marked accordingly.`,
+	- DEVICE_ATTEST_POLICY_TYPE_ACCEPT: Do not enforce attestation. All devices are marked as successfully attested.
+	- DEVICE_ATTEST_POLICY_TYPE_ENFORCE: Enforce attestation. Devices failing attestation are marked accordingly.`,
 			Type:     schema.TypeString,
 			Required: true,
 		},
