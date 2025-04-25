@@ -565,7 +565,9 @@ Optional:
 
 Required:
 
-- `type` (String) Attestation policy type
+- `type` (String) Attestation policy type. Type values: 
+			- DEVICE_ATTEST_POLICY_TYPE_ACCEPT: Do not enforce attestation. All devices are marked as successfully attested.
+			- DEVICE_ATTEST_POLICY_TYPE_ENFORCE: Enforce attestation. Devices failing attestation are marked accordingly.
 
 
 <a id="nestedblock--device_policies--meta_data"></a>
