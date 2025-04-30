@@ -3,6 +3,7 @@ package resources
 import (
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 	"testing"
@@ -62,51 +63,55 @@ func TestApplicationInstance_Create(t *testing.T) {
 }
 
 // TestApplicationInstance_CreateCompose is a test case for creating an ApplicationInstance using a Docker Compose file.
-// It commented out until we decide how to provide a real device for testing.
+// It's skipped until we decide how to provide a real device for testing.
 
-//func TestApplicationInstance_CreateCompose(t *testing.T) {
-//	var got models.AppInstance
-//	var expected models.AppInstance
-//
-//	// input config
-//	inputPath := "application_instance/create_compose.tf"
-//	input := testhelper.MustGetTestInput(t, inputPath)
-//
-//	// expected output
-//	expectedPath := "application_instance/create_compose.yaml"
-//	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
-//
-//	// terraform acceptance test case
-//	resource.Test(t, resource.TestCase{
-//		PreCheck:     func() { testhelper.CheckEnv(t) },
-//		CheckDestroy: testApplicationInstanceDestroy,
-//		Providers:    testAccProviders,
-//		Steps: []resource.TestStep{
-//			{
-//				Config: input,
-//				Check: resource.ComposeTestCheckFunc(
-//					testApplicationInstanceExists("zedcloud_application_instance.test_tf_appinst_compose", &got),
-//					resource.TestMatchResourceAttr(
-//						"zedcloud_application_instance.test_tf_appinst_compose",
-//						"id",
-//						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-//					),
-//					resource.TestMatchResourceAttr(
-//						"zedcloud_application_instance.test_tf_appinst_compose",
-//						"app_id",
-//						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-//					),
-//					resource.TestMatchResourceAttr(
-//						"zedcloud_application_instance.test_tf_appinst_compose",
-//						"device_id",
-//						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
-//					),
-//					testApplicationInstanceAttributes(t, &got, &expected),
-//				),
-//			},
-//		},
-//	})
-//}
+func TestApplicationInstance_CreateCompose(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping docker compose test for CI environment")
+	}
+
+	var got models.AppInstance
+	var expected models.AppInstance
+
+	// input config
+	inputPath := "application_instance/create_compose.tf"
+	input := testhelper.MustGetTestInput(t, inputPath)
+
+	// expected output
+	expectedPath := "application_instance/create_compose.yaml"
+	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
+
+	// terraform acceptance test case
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testhelper.CheckEnv(t) },
+		CheckDestroy: testApplicationInstanceDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: input,
+				Check: resource.ComposeTestCheckFunc(
+					testApplicationInstanceExists("zedcloud_application_instance.test_tf_appinst_compose", &got),
+					resource.TestMatchResourceAttr(
+						"zedcloud_application_instance.test_tf_appinst_compose",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_application_instance.test_tf_appinst_compose",
+						"app_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					resource.TestMatchResourceAttr(
+						"zedcloud_application_instance.test_tf_appinst_compose",
+						"device_id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					testApplicationInstanceAttributes(t, &got, &expected),
+				),
+			},
+		},
+	})
+}
 
 // testApplicationInstanceExists retrieves the ApplicationInstance and stores it in the provided *models.DeviceConfig.
 func testApplicationInstanceExists(resourceName string, applicationModel *models.AppInstance) resource.TestCheckFunc {
