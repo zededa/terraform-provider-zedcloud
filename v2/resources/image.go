@@ -37,6 +37,22 @@ func ImageDataSource() *schema.Resource {
 func CreateImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	if imageType, ok := d.GetOk("image_type"); ok {
+		if !ok {
+			diags = append(diags, diag.Errorf("'image_type' field has to be specified")...)
+			return diags
+		}
+		imageArch, imageArchIsSet := d.GetOk("image_arch")
+		if imageType != "IMAGE_TYPE_DOCKER_COMPOSE_TAR" && (!imageArchIsSet || imageArch == "") {
+			diags = append(diags, diag.Errorf("'image_arch' field has to be specified")...)
+			return diags
+		}
+		if imageType == "IMAGE_TYPE_DOCKER_COMPOSE_TAR" && imageArchIsSet && imageArch != "" {
+			diags = append(diags, diag.Errorf("'image_arch' field should not be specified for the IMAGE_TYPE_DOCKER_COMPOSE_TAR image type ")...)
+			return diags
+		}
+	}
+
 	model := zschema.ImageModel(d)
 	params := config.CreateImageParams()
 	params.SetBody(model)

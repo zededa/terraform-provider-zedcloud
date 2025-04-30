@@ -68,6 +68,24 @@ func ApplicationModel(d *schema.ResourceData) *models.Application {
 	storage := int64(storageInt)
 	title, _ := d.Get("title").(string)
 	userDefinedVersion, _ := d.Get("user_defined_version").(string)
+	appInstCountInt, _ := d.Get("app_inst_count").(int)
+	appInstCount := int32(appInstCountInt)
+	var datastoreIDList []string
+	datastoreIDListInterface, datastoreIDListIsSet := d.GetOk("datastore_id_list")
+	if datastoreIDListIsSet {
+		var items []interface{}
+		if listItems, isList := datastoreIDListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = datastoreIDListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			datastoreIDList = append(datastoreIDList, v.(string))
+		}
+	}
 	return &models.Application{
 		Cpus:               cpus,
 		Description:        description,
@@ -84,6 +102,8 @@ func ApplicationModel(d *schema.ResourceData) *models.Application {
 		Storage:            storage,
 		Title:              &title, // string true false false
 		UserDefinedVersion: userDefinedVersion,
+		AppInstCount:       appInstCount,
+		DatastoreIDList:    datastoreIDList,
 	}
 }
 
@@ -147,6 +167,23 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 	storage := int64(m["storage"].(int)) // int64
 	title := m["title"].(string)
 	userDefinedVersion := m["user_defined_version"].(string)
+	appInstCount := int32(m["app_inst_count"].(int)) // int32
+	var datastoreIDList []string
+	datastoreIDListInterface, datastoreIDListIsSet := m["datastore_id_list"]
+	if datastoreIDListIsSet {
+		var items []interface{}
+		if listItems, isList := datastoreIDListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = datastoreIDListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			datastoreIDList = append(datastoreIDList, v.(string))
+		}
+	}
 	return &models.Application{
 		Cpus:               cpus,
 		Description:        description,
@@ -163,6 +200,8 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 		Storage:            storage,
 		Title:              &title,
 		UserDefinedVersion: userDefinedVersion,
+		AppInstCount:       appInstCount,
+		DatastoreIDList:    datastoreIDList,
 	}
 }
 
@@ -183,6 +222,8 @@ func SetApplicationResourceData(d *schema.ResourceData, m *models.Application) {
 	d.Set("storage", m.Storage)
 	d.Set("title", m.Title)
 	d.Set("user_defined_version", m.UserDefinedVersion)
+	d.Set("app_inst_count", m.AppInstCount)
+	d.Set("datastore_id_list", m.DatastoreIDList)
 }
 
 func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]interface{}) {
@@ -205,6 +246,8 @@ func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]int
 			properties["storage"] = AppModel.Storage
 			properties["title"] = AppModel.Title
 			properties["user_defined_version"] = AppModel.UserDefinedVersion
+			properties["app_inst_count"] = AppModel.AppInstCount
+			properties["datastore_id_list"] = AppModel.DatastoreIDList
 			d = append(d, &properties)
 		}
 	}
@@ -341,6 +384,22 @@ func Application() map[string]*schema.Schema {
 			Optional:    true,
 			Computed:    true,
 		},
+
+		"app_inst_count": {
+			Description:      `App instance count`,
+			Type:             schema.TypeInt,
+			Optional:         true,
+			DiffSuppressFunc: diffSupressStringNonConfigChanges("app_inst_count"),
+		},
+
+		"datastore_id_list": {
+			Description: `List of datastore ids containing private registry credential`,
+			Type:        schema.TypeList, //GoType: []string
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
+		},
 	}
 }
 
@@ -362,5 +421,7 @@ func GetApplicationPropertyFields() (t []string) {
 		"storage",
 		"title",
 		"user_defined_version",
+		"app_inst_count",
+		"datastore_id_list",
 	}
 }

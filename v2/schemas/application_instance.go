@@ -172,40 +172,42 @@ func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 			vminfo = VMModelFromMap(vminfoMap[0].(map[string]interface{}))
 		}
 	}
+	persistentRuntimeSizeBytes, _ := d.Get("persistent_runtime_size_bytes").(string)
 	return &models.AppInstance{
-		Activate:            &activate, // string true false false
-		AppID:               &appID,    // string true false false
-		AppPolicyID:         appPolicyID,
-		AppType:             appType,
-		Bundleversion:       bundleversion,
-		ClusterID:           clusterID,
-		CollectStatsIPAddr:  collectStatsIPAddr,
-		CryptoKey:           cryptoKey,
-		CustomConfig:        customConfig,
-		DeploymentType:      deploymentType,
-		Description:         description,
-		DeviceID:            &deviceID, // string true false false
-		Drives:              drives,
-		EdgeNodeCluster:     edgeNodeCluster,
-		EncryptedSecrets:    encryptedSecrets,
-		ID:                  id,
-		Interfaces:          interfaces,
-		IsSecretUpdated:     isSecretUpdated,
-		Logs:                logs,
-		ManifestInfo:        manifestInfo,
-		Name:                &name,      // string true false false
-		ProjectID:           &projectID, // string true false false
-		Purge:               purge,
-		Refresh:             refresh,
-		RemoteConsole:       remoteConsole,
-		Restart:             restart,
-		Revision:            revision,
-		StartDelayInSeconds: startDelayInSeconds,
-		Tags:                tags,
-		Title:               &title, // string true false false
-		UserData:            userData,
-		UserDefinedVersion:  userDefinedVersion,
-		Vminfo:              vminfo,
+		Activate:                   &activate, // string true false false
+		AppID:                      &appID,    // string true false false
+		AppPolicyID:                appPolicyID,
+		AppType:                    appType,
+		Bundleversion:              bundleversion,
+		ClusterID:                  clusterID,
+		CollectStatsIPAddr:         collectStatsIPAddr,
+		CryptoKey:                  cryptoKey,
+		CustomConfig:               customConfig,
+		DeploymentType:             deploymentType,
+		Description:                description,
+		DeviceID:                   &deviceID, // string true false false
+		Drives:                     drives,
+		EdgeNodeCluster:            edgeNodeCluster,
+		EncryptedSecrets:           encryptedSecrets,
+		ID:                         id,
+		Interfaces:                 interfaces,
+		IsSecretUpdated:            isSecretUpdated,
+		Logs:                       logs,
+		ManifestInfo:               manifestInfo,
+		Name:                       &name,      // string true false false
+		ProjectID:                  &projectID, // string true false false
+		Purge:                      purge,
+		Refresh:                    refresh,
+		RemoteConsole:              remoteConsole,
+		Restart:                    restart,
+		Revision:                   revision,
+		StartDelayInSeconds:        startDelayInSeconds,
+		Tags:                       tags,
+		Title:                      &title, // string true false false
+		UserData:                   userData,
+		UserDefinedVersion:         userDefinedVersion,
+		Vminfo:                     vminfo,
+		PersistentRuntimeSizeBytes: persistentRuntimeSizeBytes,
 	}
 }
 
@@ -380,41 +382,43 @@ func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstan
 			vminfo = VMModelFromMap(vminfoMap[0].(map[string]interface{}))
 		}
 	}
+	persistentRuntimeSizeBytes := m["persistent_runtime_size_bytes"].(string)
 	//
 	return &models.AppInstance{
-		Activate:            &activate,
-		AppID:               &appID,
-		AppPolicyID:         appPolicyID,
-		AppType:             appType,
-		Bundleversion:       bundleversion,
-		ClusterID:           clusterID,
-		CollectStatsIPAddr:  collectStatsIPAddr,
-		CryptoKey:           cryptoKey,
-		CustomConfig:        customConfig,
-		DeploymentType:      deploymentType,
-		Description:         description,
-		DeviceID:            &deviceID,
-		Drives:              drives,
-		EdgeNodeCluster:     edgeNodeCluster,
-		EncryptedSecrets:    encryptedSecrets,
-		ID:                  id,
-		Interfaces:          interfaces,
-		IsSecretUpdated:     isSecretUpdated,
-		Logs:                logs,
-		ManifestInfo:        manifestInfo,
-		Name:                &name,
-		ProjectID:           &projectID,
-		Purge:               purge,
-		Refresh:             refresh,
-		RemoteConsole:       remoteConsole,
-		Restart:             restart,
-		Revision:            revision,
-		StartDelayInSeconds: startDelayInSeconds,
-		Tags:                tags,
-		Title:               &title,
-		UserData:            userData,
-		UserDefinedVersion:  userDefinedVersion,
-		Vminfo:              vminfo,
+		Activate:                   &activate,
+		AppID:                      &appID,
+		AppPolicyID:                appPolicyID,
+		AppType:                    appType,
+		Bundleversion:              bundleversion,
+		ClusterID:                  clusterID,
+		CollectStatsIPAddr:         collectStatsIPAddr,
+		CryptoKey:                  cryptoKey,
+		CustomConfig:               customConfig,
+		DeploymentType:             deploymentType,
+		Description:                description,
+		DeviceID:                   &deviceID,
+		Drives:                     drives,
+		EdgeNodeCluster:            edgeNodeCluster,
+		EncryptedSecrets:           encryptedSecrets,
+		ID:                         id,
+		Interfaces:                 interfaces,
+		IsSecretUpdated:            isSecretUpdated,
+		Logs:                       logs,
+		ManifestInfo:               manifestInfo,
+		Name:                       &name,
+		ProjectID:                  &projectID,
+		Purge:                      purge,
+		Refresh:                    refresh,
+		RemoteConsole:              remoteConsole,
+		Restart:                    restart,
+		Revision:                   revision,
+		StartDelayInSeconds:        startDelayInSeconds,
+		Tags:                       tags,
+		Title:                      &title,
+		UserData:                   userData,
+		UserDefinedVersion:         userDefinedVersion,
+		Vminfo:                     vminfo,
+		PersistentRuntimeSizeBytes: persistentRuntimeSizeBytes,
 	}
 }
 
@@ -452,6 +456,9 @@ func SetApplicationInstanceResourceData(d *schema.ResourceData, m *models.AppIns
 	d.Set("user_data", m.UserData)
 	d.Set("user_defined_version", m.UserDefinedVersion)
 	d.Set("vminfo", SetVMSubResourceData([]*models.VM{m.Vminfo}))
+	d.Set("docker_compose_tar_image_name", m.DockerComposeTarImageName)
+	d.Set("docker_compose_yaml_text", m.DockerComposeYamlText)
+	d.Set("persistent_runtime_size_bytes", m.PersistentRuntimeSizeBytes)
 }
 
 func SetApplicationInstanceSubResourceData(m []*models.AppInstance) (d []*map[string]interface{}) {
@@ -491,6 +498,9 @@ func SetApplicationInstanceSubResourceData(m []*models.AppInstance) (d []*map[st
 			properties["user_data"] = AppInstanceModel.UserData
 			properties["user_defined_version"] = AppInstanceModel.UserDefinedVersion
 			properties["vminfo"] = SetVMSubResourceData([]*models.VM{AppInstanceModel.Vminfo})
+			properties["docker_compose_tar_image_name"] = AppInstanceModel.DockerComposeTarImageName
+			properties["docker_compose_yaml_text"] = AppInstanceModel.DockerComposeYamlText
+			properties["persistent_runtime_size_bytes"] = AppInstanceModel.PersistentRuntimeSizeBytes
 			d = append(d, &properties)
 		}
 	}
@@ -557,6 +567,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: CustomConfig(),
 			},
 			Optional: true,
+			Computed: true,
 		},
 
 		"deployment_type": {
@@ -585,6 +596,8 @@ func ApplicationInstance() map[string]*schema.Schema {
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
+			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChangesV2("drives",
+				[]string{"target", "readonly", "preserve", "maxsize", "imagename", "drvtype"}),
 		},
 
 		"edge_node_cluster": {
@@ -748,7 +761,27 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: VMSchema(),
 			},
-			Optional: true,
+			Optional:         true,
+			DiffSuppressFunc: diffSuppressIfFieldValueEqual("app_type", "APP_TYPE_DOCKER_COMPOSE"),
+		},
+
+		"docker_compose_tar_image_name": {
+			Description: `Docker compose tar image name`,
+			Type:        schema.TypeString,
+			Computed:    true,
+		},
+
+		"docker_compose_yaml_text": {
+			Description: `Docker compose base64 encoded plain text`,
+			Type:        schema.TypeString,
+			Computed:    true,
+		},
+
+		"persistent_runtime_size_bytes": {
+			Description: `Persistent runtime size in bytes`,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     "0",
 		},
 	}
 }
@@ -789,5 +822,6 @@ func GetApplicationInstancePropertyFields() (t []string) {
 		"user_data",
 		"user_defined_version",
 		"vminfo",
+		"persistent_runtime_size_bytes",
 	}
 }

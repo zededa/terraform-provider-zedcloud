@@ -44,6 +44,9 @@ const (
 
 	// AppTypeAPPTYPEMODULE captures enum value "APP_TYPE_MODULE"
 	AppTypeAPPTYPEMODULE AppType = "APP_TYPE_MODULE"
+
+	// AppTypeAPPTYPEDOCKERCOMPOSE captures enum value "APP_TYPE_DOCKER_COMPOSE"
+	AppTypeAPPTYPEDOCKERCOMPOSE AppType = "APP_TYPE_DOCKER_COMPOSE"
 )
 
 // for schema
@@ -51,7 +54,7 @@ var appTypeEnum []interface{}
 
 func init() {
 	var res []AppType
-	if err := json.Unmarshal([]byte(`["APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE", "APP_TYPE_DOCKER_COMPOSE"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

@@ -64,6 +64,12 @@ type VMManifest struct {
 	// UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
 	DisplayName string `json:"displayName,omitempty"`
 
+	// Docker compose tar image name
+	DockerComposeTarImageName string `json:"dockerComposeTarImageName,omitempty"`
+
+	// Docker compose base64 encoded plain text
+	DockerComposeYamlText string `json:"dockerComposeYamlText,omitempty"`
+
 	// Enable device to read the license info from APCI tables
 	//
 	// UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
@@ -105,10 +111,21 @@ type VMManifest struct {
 	// UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane
 	Resources []*Resource `json:"resources"`
 
+	// Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime
+	RuntimeProtocolVersion *DockerRuntimeProtocolVersion `json:"runtimeProtocolVersion,omitempty"`
+
+	// docker-compose runtime specific versions
+	//
+	// Indicates the version of container orchestration software
+	RuntimeVersion *DockerRuntimeVersion `json:"runtimeVersion,omitempty"`
+
 	// VM mode for VM-based app
 	//
 	// UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field
 	Vmmode *string `json:"vmmode,omitempty"`
+
+	// Size of persistent blank storage for runtime in bytes
+	PersistentRuntimeSizeBytes string `json:"PersistentRuntimeSizeBytes,omitempty"`
 }
 
 // Validate validates this VM manifest
@@ -156,6 +173,14 @@ func (m *VMManifest) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateResources(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRuntimeProtocolVersion(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateRuntimeVersion(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -388,6 +413,44 @@ func (m *VMManifest) validateResources(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *VMManifest) validateRuntimeProtocolVersion(formats strfmt.Registry) error {
+	if swag.IsZero(m.RuntimeProtocolVersion) { // not required
+		return nil
+	}
+
+	if m.RuntimeProtocolVersion != nil {
+		if err := m.RuntimeProtocolVersion.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtimeProtocolVersion")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtimeProtocolVersion")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *VMManifest) validateRuntimeVersion(formats strfmt.Registry) error {
+	if swag.IsZero(m.RuntimeVersion) { // not required
+		return nil
+	}
+
+	if m.RuntimeVersion != nil {
+		if err := m.RuntimeVersion.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtimeVersion")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtimeVersion")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this VM manifest based on the context it is used
 func (m *VMManifest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -429,6 +492,14 @@ func (m *VMManifest) ContextValidate(ctx context.Context, formats strfmt.Registr
 	}
 
 	if err := m.contextValidateResources(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRuntimeProtocolVersion(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateRuntimeVersion(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -605,6 +676,48 @@ func (m *VMManifest) contextValidateResources(ctx context.Context, formats strfm
 			}
 		}
 
+	}
+
+	return nil
+}
+
+func (m *VMManifest) contextValidateRuntimeProtocolVersion(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.RuntimeProtocolVersion != nil {
+
+		if swag.IsZero(m.RuntimeProtocolVersion) { // not required
+			return nil
+		}
+
+		if err := m.RuntimeProtocolVersion.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtimeProtocolVersion")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtimeProtocolVersion")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *VMManifest) contextValidateRuntimeVersion(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.RuntimeVersion != nil {
+
+		if swag.IsZero(m.RuntimeVersion) { // not required
+			return nil
+		}
+
+		if err := m.RuntimeVersion.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("runtimeVersion")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("runtimeVersion")
+			}
+			return err
+		}
 	}
 
 	return nil

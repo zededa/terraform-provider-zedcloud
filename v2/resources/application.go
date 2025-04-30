@@ -58,10 +58,10 @@ func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 	if model.Manifest != nil {
 		appType := getAppType(model.Manifest.AppType)
 		model.Manifest.AppType = &appType
-		
+
 		deploymentType := getDeploymentType(model.Manifest.DeploymentType)
 		model.Manifest.DeploymentType = &deploymentType
-		
+
 		acKind, err := getAcKind(model.Manifest.AppType)
 		if err != nil {
 			diags = append(diags, diag.FromErr(err)...)
@@ -72,7 +72,7 @@ func CreateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 		diags = append(diags, diag.Errorf("missing client parameter: manifest or manifest_file")...)
 		return diags
 	}
-			
+
 	params := config.CreateParams()
 	params.SetBody(model)
 
@@ -350,6 +350,9 @@ func getAcKind(appType *models.AppType) (*string, error) {
 		return &acKind, nil
 	case models.AppTypeAPPTYPEMODULE:
 		acKind := "ModuleManifest"
+		return &acKind, nil
+	case models.AppTypeAPPTYPEDOCKERCOMPOSE:
+		acKind := "ComposeManifest"
 		return &acKind, nil
 	default:
 		return nil, fmt.Errorf("could not determine ac_kind, unsupported app_type (%s)", *appType)

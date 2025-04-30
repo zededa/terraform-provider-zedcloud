@@ -2,8 +2,8 @@ package schemas
 
 import (
 	"fmt"
-	"strings"
 	"slices"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
@@ -325,7 +325,7 @@ func diffSupressMapInterfaceNonConfigChanges(field string, mapKey string) schema
 		}
 
 		id, _ := gotNew[mapKey].(string)
-		if  id == "" {
+		if id == "" {
 			return true
 		} else if id == idOld {
 			return true
@@ -359,7 +359,7 @@ func diffSupressMapInterfaceNonConfigChangesV2(field string, mapKeys []string) s
 		if !ok || len(newDataList) == 0 {
 			return true
 		}
-		
+
 		for _, newData := range newDataList {
 			gotNew, okNew := newData.(map[string]interface{})
 			if !okNew {
@@ -371,7 +371,10 @@ func diffSupressMapInterfaceNonConfigChangesV2(field string, mapKeys []string) s
 			for _, mapKey := range mapKeys {
 				val, _ := gotNew[mapKey].(string)
 				if val == "" {
-					return true
+					// Maybe the mapKey is not a string, but a bool
+					if _, ok := gotNew[mapKey].(bool); !ok {
+						return true
+					}
 				} else if val != oldValues[mapKey] {
 					allEqual = false
 					break
@@ -401,6 +404,24 @@ func diffSupressStringNonConfigChanges(field string) schema.SchemaDiffSuppressFu
 		}
 
 		return old == new
+	}
+}
+
+func diffSuppressIfFieldValueEqual(field, value string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		_, newData := d.GetChange(field)
+		if newData == nil {
+			return false
+		}
+		newVal, okNew := newData.(string)
+		if !okNew || newVal == "" {
+			return false
+		}
+		if newVal == value {
+			return true
+		}
+
+		return false
 	}
 }
 

@@ -1,0 +1,51 @@
+activate: false
+apppolicyid: ""
+apptype: APP_TYPE_DOCKER_COMPOSE
+bundleversion: "1"
+clusterid: ""
+collectstatsipaddr: ""
+cryptokey: ""
+deploymenttype: DEPLOYMENT_TYPE_STAND_ALONE
+description: tf test
+encryptedsecrets: {}
+issecretupdated: false
+logs:
+  access: false
+manifestinfo:
+  bundleversion: "1"
+  details: null
+  nextbundleversion: "1"
+  params: {}
+  transitionaction: INSTANCE_TA_NONE
+name: test_tf_appinst_compose
+purge:
+  counter: 0
+  opstime: "0001-01-01T00:00:00Z"
+refresh:
+  counter: 0
+  opstime: "0001-01-01T00:00:00Z"
+remoteconsole: false
+restart:
+  counter: 0
+  opstime: "0001-01-01T00:00:00Z"
+revision:
+  createdat: "2023-02-16T17:08:12.992Z"
+  createdby: us.root@zededa.com
+  curr: "1"
+  prev: ""
+  updatedat: "2023-02-16T17:08:12.992Z"
+  updatedby: us.root@zededa.com
+startdelayinseconds: 0
+tags:
+  tag-key-1: tag-value-1
+title: tf test
+userdata: ""
+userdefinedversion: "1.1"
+vminfo:
+  cpupinningenabled: false
+  cpus: 0
+  memory: 0
+  mode: HV_PV
+  vnc: false
+  vncdisplay: 1
+  enableOemWinLicenseKey: false

@@ -166,7 +166,21 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   model_id = zedcloud_model.test_tf_provider.id
   project_id = data.zedcloud_project.test_tf_provider.id
   title = "test_tf_provider-create_edgenode-title"
-
+  interfaces {
+    cost = 255
+    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    intfname = "defaultIPv4"
+    ipaddr = "127.0.0.1"
+    macaddr = "00:00:00:00:00:00"
+    tags = {
+      "system_interface_1_key" = "system_interface_1_value"
+      "system_interface_2_key" = "system_interface_2_value"
+    }
+  }
+  interfaces {
+    intfname = "eth0"
+    intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+  }
   admin_state = "ADMIN_STATE_ACTIVE"
   asset_id = "asset_id"
   config_item {
@@ -201,15 +215,6 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   depends_on = [
     zedcloud_model.test_tf_provider,
     data.zedcloud_project.test_tf_provider
-  ]
-}
-
-data "zedcloud_edgenode" "test_tf_provider" {
-  name = "test_tf_provider"
-  title = zedcloud_edgenode.test_tf_provider.title
-  model_id = zedcloud_edgenode.test_tf_provider.model_id
-  depends_on = [
-    zedcloud_edgenode.test_tf_provider
   ]
 }
 
@@ -314,7 +319,7 @@ data "zedcloud_application" "test_tf_provider" {
 }
 
 resource "zedcloud_volume_instance"  "test_tf_provider" {
-  device_id = data.zedcloud_edgenode.test_tf_provider.id
+  device_id = zedcloud_edgenode.test_tf_provider.id
   name = "test_tf_provider"
   title = "test_title"
   description = "test_description"
@@ -334,9 +339,6 @@ resource "zedcloud_volume_instance"  "test_tf_provider" {
 #   edge_node_cluster {
 #     id = "<edge_node_cluster_id>"
 #   }
-  depends_on = [
-    data.zedcloud_edgenode.test_tf_provider
-  ]
 }
 
 data "zedcloud_volume_instance" "test_tf_provider" {
@@ -354,7 +356,7 @@ resource "zedcloud_network_instance" "test_tf_provider" {
     zedcloud_edgenode.test_tf_provider,
   ]
   # required
-  device_id = data.zedcloud_edgenode.test_tf_provider.id
+  device_id = zedcloud_edgenode.test_tf_provider.id
   name = "test_tf_provider"
   title = "title"
   kind = "NETWORK_INSTANCE_KIND_LOCAL"
@@ -405,13 +407,6 @@ data "zedcloud_network_instance" "test_tf_provider" {
 }
 
 resource "zedcloud_application_instance"  "test_tf_provider" {
-  depends_on = [
-    zedcloud_application.test_tf_provider,
-    zedcloud_edgenode.test_tf_provider,
-    zedcloud_network_instance.test_tf_provider
-  ]
-
-  # required
   name = "test_tf_provider"
   title = "tf test"
   description = "tf test"
@@ -451,7 +446,6 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
       }
     }
   }
-
 
   # optional
   remote_console = false
@@ -660,7 +654,7 @@ resource "zedcloud_deployment" "tf_deployment" {
 
   device_policies {
     meta_data {
-      name  = "test_tf_provider-edge-node-policy"
+      name  = "test_tf_provider-edge-node-policy-attestation"
       title = "test_tf_provider-edge-node-policy"
       policy_target_condition = {
         "depl" : "1234"
@@ -828,3 +822,338 @@ resource "zedcloud_deployment" "tf_deployment" {
   }
 }
 
+# DOCKER COMPOSE EXAMPLES
+
+resource "zedcloud_edgenode" "test_tf_runtime_node" {
+  onboarding_key = "" # placeholder
+  serialno = "2293dbe8-29ce-420c-8264-962857efc46c"
+  # required
+  name = "test_tf_runtime_node"
+  model_id = zedcloud_model.test_tf_provider.id
+  project_id = data.zedcloud_project.test_tf_provider.id
+  title = "test_tf_provider-create_edgenode-title"
+  interfaces {
+    cost = 255
+    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    intfname = "defaultIPv4"
+    ipaddr = "127.0.0.1"
+    macaddr = "00:00:00:00:00:00"
+    tags = {
+      "system_interface_1_key" = "system_interface_1_value"
+      "system_interface_2_key" = "system_interface_2_value"
+    }
+  }
+  interfaces {
+    intfname = "eth0"
+    intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+  }
+  admin_state = "ADMIN_STATE_ACTIVE"
+  asset_id = "asset_id"
+  config_item {
+    bool_value = true
+    float_value = 1.0
+    key = "key"
+    string_value = "string"
+    uint32_value = 32
+    uint64_value = 64
+    value_type = "value type"
+  }
+  # cpu = 2
+  deployment_tag = "depl_tag"
+  # deprecated = false
+  description = "description"
+  dev_location {
+    city = "berlin"
+    country = "germany"
+    freeloc = "freeloc"
+    hostname = "hostname"
+    loc = "52.520008, 13.404954"
+    org = "zededa"
+    postal = "10115"
+    region = "europe/west"
+    underlay_ip = ""
+  }
+  generate_soft_serial = false
+  tags = {
+    "tag-key-1" = "tag-value-1"
+  }
+  token = "token_runtime"
+}
+
+resource "zedcloud_datastore" "test_datastore_runtime" {
+  ds_fqdn             = "ftp:://fake-datastore.com"
+  ds_path             = ""
+  ds_type             = "DATASTORE_TYPE_SFTP"
+  name                = "test_tf_provider-ftp-runtime"
+  title               = "test_tf_provider-ftp-runtime"
+  description         = "test_tf_provider-ftp-runtime"
+  region              = "eu"
+}
+
+resource "zedcloud_datastore" "test_datastore_compose" {
+  ds_fqdn             = "docker://gcr.io"
+  ds_path             = ""
+  ds_type             = "DATASTORE_TYPE_CONTAINERREGISTRY"
+  name                = "test_tf_provider-docker-compose"
+  title               = "test_tf_provider-docker-compose"
+  description         = "test_tf_provider-docker-compose"
+  secret {
+    api_key = "test_api_key"
+    api_passwd = "test_api_passwd"
+  }
+}
+
+resource "zedcloud_image" "test_runtime_image" {
+  name                = "test_tf_provider-runtime-image"
+  datastore_id        = zedcloud_datastore.test_datastore_runtime.id
+  image_arch          = "AMD64"
+  image_format        = "QCOW2"
+  image_type          = "IMAGE_TYPE_DOCKER_RUNTIME"
+  image_rel_url       = "test_tf_provider-runtime-image"
+  image_size_bytes    = 0
+  title               = "tes_tf_runtime"
+}
+
+resource "zedcloud_image" "test_compose_image" {
+  name                = "test_tf_provider-compose-image"
+  datastore_id        = zedcloud_datastore.test_datastore_runtime.id
+#   image_arch          = "ARM64"
+  image_format        = "RAW"
+  image_type          = "IMAGE_TYPE_DOCKER_COMPOSE_TAR"
+  image_rel_url       = "test_tf_provider-compose-image"
+  image_size_bytes    = 0
+  title               = "tes_tf_compose"
+}
+
+resource "zedcloud_application" "test_tf_app_runtime" {
+  name                 = "test_tf_app_runtime"
+  title                = "runtime_app_bundle"
+  description          = "runtime app bundle"
+  user_defined_version = "1.1"
+  origin_type          = "ORIGIN_LOCAL"
+  manifest {
+    ac_kind = "VMManifest"
+    ac_version = "1.2.0"
+    app_type = "APP_TYPE_VM"
+    deployment_type = "DEPLOYMENT_TYPE_DOCKER_RUNTIME"
+    name = "docker_runtime_app_bundle"
+    owner {
+      user = "Test User"
+      email = "test@zededa.com"
+      website = "www.zededa.com"
+    }
+    images {
+      imagename = zedcloud_image.test_runtime_image.name
+      cleartext = false
+      ignorepurge = false
+      imageformat = zedcloud_image.test_runtime_image.image_format
+    }
+    interfaces {
+      name = "eth0"
+      directattach = false
+      acls  {
+        matches {
+          type = "ip"
+          value = "0.0.0.0/0"
+        }
+      }
+    }
+    interfaces {
+      name = "eth1"
+      directattach = false
+      acls {
+        matches {
+          type = "ip"
+          value = "0.0.0.0/0"
+        }
+      }
+    }
+    desc {
+      category = "APP_CATEGORY_OTHERS"
+      app_category = "APP_CATEGORY_OTHERS"
+      # logo": null,
+    }
+    vmmode = "HV_PV"
+    resources {
+      name = "resourceType"
+      value = "Tiny"
+    }
+    resources {
+      name = "cpus"
+      value = "1"
+    }
+    resources {
+      name = "memory"
+      value = "524288.00"
+    }
+    configuration {
+      custom_config {
+        add = false
+      }
+    }
+    runtime_version = "RuntimeVersion_V1"
+    runtime_protocol_version = "RuntimeProtocolVersion_V1"
+    persistent_runtime_size_bytes = 5368709120
+  }
+}
+
+resource "zedcloud_application" "test_tf_app_compose" {
+  name                 = "test_tf_app_compose"
+  title                = "compose_app_bundle"
+  description          = "compose app bundle"
+  user_defined_version = "1.1"
+  origin_type          = "ORIGIN_LOCAL"
+  datastore_id_list = [
+    zedcloud_datastore.test_datastore_compose.id
+  ]
+  manifest {
+    ac_kind         = "ComposeManifest"
+    ac_version      = "1.2.0"
+    app_type        = "APP_TYPE_DOCKER_COMPOSE"
+    deployment_type = "DEPLOYMENT_TYPE_STAND_ALONE"
+    name            = "docker_compose_app_bundle"
+    owner {
+      user    = "Test User"
+      email   = "test@zededa.com"
+      website = "www.zededa.com"
+    }
+    desc {
+      app_category = "APP_CATEGORY_INDUSTRIAL"
+      category = "APP_CATEGORY_INDUSTRIAL"
+      logo = {
+        "logo": "301dd8fd-1228-11eb-89dd-028e313eda78_logo"
+      }
+      license_list = {
+        "APACHE_LICENSE_V2": "https://choosealicense.com/licenses/apache-2.0/"
+      }
+    }
+    docker_compose_yaml_text = "IyBCYXNlIGltYWdlCkZST00gYWxwaW5lOmxhdGVzdAoKIyBEZWZpbmUgYnVpbGQgYXJndW1lbnRzIGZvciBhdXRoZW50aWNhdGlvbgpBUkcgUkVHSVNUUllfVVNFUgpBUkcgUkVHSVNUUllfUEFTUwoKIyBMb2cgaW4gdG8gdGhlIHByaXZhdGUgcmVnaXN0cnkKUlVOIGVjaG8gIiRSRUdJU1RSWV9QQVNTIiB8IGRvY2tlciBsb2dpbiBteS1wcml2YXRlLXJlZ2lzdHJ5LmNvbSAtdSAiJFJFR0lTVFJZX1VTRVIiIC0tcGFzc3dvcmQtc3RkaW4KCiMgUHVsbCB0aGUgcHJpdmF0ZSBpbWFnZQpSVU4gZG9ja2VyIHB1bGwgbXktcHJpdmF0ZS1yZWdpc3RyeS5jb20vbXktcHJpdmF0ZS1pbWFnZTpsYXRlc3QKCiMgU2V0IHdvcmtpbmcgZGlyZWN0b3J5CldPUktESVIgL2FwcAoKIyBDb3B5IG5lY2Vzc2FyeSBmaWxlcwpDT1BZIC4gLgoKIyBSdW4gdGhlIGFwcGxpY2F0aW9uCkNNRCBbIi4vbWFpbiJd"
+  }
+}
+
+resource "zedcloud_network_instance" "test_tf_netinst_runtime_1" {
+  device_id = zedcloud_edgenode.test_tf_runtime_node.id
+  name = "test_tf_netinst_runtime_1"
+  title = "title"
+  kind = "NETWORK_INSTANCE_KIND_SWITCH"
+  port = "eth0"
+
+  # optional
+  description = "switch_network_inst_eth0"
+  type = "NETWORK_INSTANCE_DHCP_TYPE_V4"
+  device_default = false
+  dhcp = false
+  dns_list {
+    addrs = [
+      "10.1.2.2",
+      "10.1.2.1"
+    ]
+    hostname = "wwww.ns2.example.com"
+  }
+  dns_list {
+    addrs = [
+      "10.1.1.1",
+      "10.1.1.2"
+    ]
+    hostname = "wwww.ns1.example.com"
+  }
+  opaque {
+    oconfig = "Test OConfig"
+    type = "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+  }
+  mtu = 1500
+}
+
+resource "zedcloud_network_instance" "test_tf_netinst_runtime_2" {
+  device_id = zedcloud_edgenode.test_tf_runtime_node.id
+  name = "test_tf_netinst_runtime_2"
+  title = "title"
+  kind = "NETWORK_INSTANCE_KIND_LOCAL"
+
+  # optional
+  description = "local_airgapped_network_inst"
+  type = "NETWORK_INSTANCE_DHCP_TYPE_V4"
+  device_default = false
+  dhcp = false
+  dns_list {
+    addrs = [
+      "10.1.2.2",
+      "10.1.2.1"
+    ]
+    hostname = "wwww.ns2.example.com"
+  }
+  dns_list {
+    addrs = [
+      "10.1.1.1",
+      "10.1.1.2"
+    ]
+    hostname = "wwww.ns1.example.com"
+  }
+  opaque {
+    oconfig = "Test OConfig"
+    type = "OPAQUE_CONFIG_TYPE_UNSPECIFIED"
+  }
+  mtu = 1500
+}
+
+resource "zedcloud_application_instance"  "test_tf_appinst_runtime" {
+  name        = "test_tf_appinst_runtime"
+  title       = "tf test"
+  description = "tf test"
+  app_id      = zedcloud_application.test_tf_app_runtime.id
+  device_id   = zedcloud_edgenode.test_tf_runtime_node.id
+  app_type    = "APP_TYPE_VM"
+  collect_stats_ip_addr = "10.1.255.254"
+  interfaces {
+    netinstname  = zedcloud_network_instance.test_tf_netinst_runtime_1.name
+    intfname     = "eth0"
+    intforder = 1
+    privateip = false
+  }
+  interfaces {
+    netinstname  = zedcloud_network_instance.test_tf_netinst_runtime_2.name
+    intfname     = "eth1"
+    intforder = 1
+    privateip = false
+  }
+  logs {
+    access = true
+  }
+  manifest_info {
+    transition_action = "INSTANCE_TA_NONE"
+  }
+  vminfo {
+    cpus = 1
+    mode = "HV_PV"
+    vnc = false
+  }
+  tags = {
+    "tag-key-1" = "tag-value-1"
+  }
+}
+
+resource "zedcloud_application_instance"  "test_tf_appinst_compose" {
+  depends_on = [
+      zedcloud_application_instance.test_tf_appinst_runtime,
+  ]
+  name        = "test_tf_appinst_compose"
+  title       = "tf test"
+  description = "tf test"
+  app_id      = zedcloud_application.test_tf_app_compose.id
+  device_id   = zedcloud_edgenode.test_tf_runtime_node.id
+  app_type    = "APP_TYPE_DOCKER_COMPOSE"
+  logs {
+    access = true
+  }
+  manifest_info {
+    transition_action = "INSTANCE_TA_NONE"
+  }
+  vminfo {
+    cpus = 0
+    mode = "HV_PV"
+    vnc = false
+  }
+  tags = {
+    "tag-key-1" = "tag-value-1"
+  }
+}

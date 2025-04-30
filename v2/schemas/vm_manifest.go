@@ -135,27 +135,47 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 		}
 	}
 	vmmode, _ := d.Get("vmmode").(string)
+	dockerComposeTarImageName, _ := d.Get("docker_compose_tar_image_name").(string)
+	dockerComposeYamlText, _ := d.Get("docker_compose_yaml_text").(string)
+	persistentRuntimeSizeBytes, _ := d.Get("persistent_runtime_size_bytes").(string)
+	var runtimeProtocolVersion *models.DockerRuntimeProtocolVersion // DockerRuntimeProtocolVersion
+	runtimeProtocolVersionInterface, runtimeProtocolVersionIsSet := d.GetOk("runtime_protocol_version")
+	if runtimeProtocolVersionIsSet {
+		runtimeProtocolVersionModel := runtimeProtocolVersionInterface.(string)
+		runtimeProtocolVersion = models.NewDockerRuntimeProtocolVersion(models.DockerRuntimeProtocolVersion(runtimeProtocolVersionModel))
+	}
+	var runtimeVersion *models.DockerRuntimeVersion // DockerRuntimeVersion
+	runtimeVersionInterface, runtimeVersionIsSet := d.GetOk("runtime_version")
+	if runtimeVersionIsSet {
+		runtimeVersionModel := runtimeVersionInterface.(string)
+		runtimeVersion = models.NewDockerRuntimeVersion(models.DockerRuntimeVersion(runtimeVersionModel))
+	}
 	return &models.VMManifest{
-		AcKind:                 &acKind,    // string
-		AcVersion:              &acVersion, // string
-		AppType:                appType,
-		Configuration:          configuration,
-		ContainerDetail:        containerDetail,
-		CPUPinningEnabled:      cPUPinningEnabled,
-		DeploymentType:         deploymentType,
-		Desc:                   desc,
-		Description:            description,
-		DisplayName:            displayName,
-		EnableOemWinLicenseKey: enableOemWinLicenseKey,
-		Enablevnc:              enablevnc,
-		Images:                 images,
-		Interfaces:             interfaces,
-		Module:                 module,
-		Name:                   name,
-		Owner:                  owner,
-		Permissions:            permissions,
-		Resources:              resources,
-		Vmmode:                 &vmmode, // string
+		AcKind:                     &acKind,    // string
+		AcVersion:                  &acVersion, // string
+		AppType:                    appType,
+		Configuration:              configuration,
+		ContainerDetail:            containerDetail,
+		CPUPinningEnabled:          cPUPinningEnabled,
+		DeploymentType:             deploymentType,
+		Desc:                       desc,
+		Description:                description,
+		DisplayName:                displayName,
+		EnableOemWinLicenseKey:     enableOemWinLicenseKey,
+		Enablevnc:                  enablevnc,
+		Images:                     images,
+		Interfaces:                 interfaces,
+		Module:                     module,
+		Name:                       name,
+		Owner:                      owner,
+		Permissions:                permissions,
+		Resources:                  resources,
+		Vmmode:                     &vmmode, // string
+		DockerComposeTarImageName:  dockerComposeTarImageName,
+		DockerComposeYamlText:      dockerComposeYamlText,
+		PersistentRuntimeSizeBytes: persistentRuntimeSizeBytes,
+		RuntimeProtocolVersion:     runtimeProtocolVersion,
+		RuntimeVersion:             runtimeVersion,
 	}
 }
 
@@ -294,27 +314,47 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 		}
 	}
 	vmmode := m["vmmode"].(string)
+	dockerComposeTarImageName := m["docker_compose_tar_image_name"].(string)
+	dockerComposeYamlText := m["docker_compose_yaml_text"].(string)
+	persistentRuntimeSizeBytes := m["persistent_runtime_size_bytes"].(string)
+	var runtimeProtocolVersion *models.DockerRuntimeProtocolVersion // DockerRuntimeProtocolVersion
+	runtimeProtocolVersionInterface, runtimeProtocolVersionIsSet := m["runtime_protocol_version"]
+	if runtimeProtocolVersionIsSet {
+		runtimeProtocolVersionModel := runtimeProtocolVersionInterface.(string)
+		runtimeProtocolVersion = models.NewDockerRuntimeProtocolVersion(models.DockerRuntimeProtocolVersion(runtimeProtocolVersionModel))
+	}
+	var runtimeVersion *models.DockerRuntimeVersion // DockerRuntimeVersion
+	runtimeVersionInterface, runtimeVersionIsSet := m["runtime_version"]
+	if runtimeVersionIsSet {
+		runtimeVersionModel := runtimeVersionInterface.(string)
+		runtimeVersion = models.NewDockerRuntimeVersion(models.DockerRuntimeVersion(runtimeVersionModel))
+	}
 	return &models.VMManifest{
-		AcKind:                 &acKind,
-		AcVersion:              &acVersion,
-		AppType:                appType,
-		Configuration:          configuration,
-		ContainerDetail:        containerDetail,
-		CPUPinningEnabled:      cPUPinningEnabled,
-		DeploymentType:         deploymentType,
-		Desc:                   desc,
-		Description:            description,
-		DisplayName:            displayName,
-		EnableOemWinLicenseKey: enableOemWinLicenseKey,
-		Enablevnc:              enablevnc,
-		Images:                 images,
-		Interfaces:             interfaces,
-		Module:                 module,
-		Name:                   name,
-		Owner:                  owner,
-		Permissions:            permissions,
-		Resources:              resources,
-		Vmmode:                 &vmmode,
+		AcKind:                     &acKind,
+		AcVersion:                  &acVersion,
+		AppType:                    appType,
+		Configuration:              configuration,
+		ContainerDetail:            containerDetail,
+		CPUPinningEnabled:          cPUPinningEnabled,
+		DeploymentType:             deploymentType,
+		Desc:                       desc,
+		Description:                description,
+		DisplayName:                displayName,
+		EnableOemWinLicenseKey:     enableOemWinLicenseKey,
+		Enablevnc:                  enablevnc,
+		Images:                     images,
+		Interfaces:                 interfaces,
+		Module:                     module,
+		Name:                       name,
+		Owner:                      owner,
+		Permissions:                permissions,
+		Resources:                  resources,
+		Vmmode:                     &vmmode,
+		DockerComposeTarImageName:  dockerComposeTarImageName,
+		DockerComposeYamlText:      dockerComposeYamlText,
+		PersistentRuntimeSizeBytes: persistentRuntimeSizeBytes,
+		RuntimeProtocolVersion:     runtimeProtocolVersion,
+		RuntimeVersion:             runtimeVersion,
 	}
 }
 
@@ -338,6 +378,11 @@ func SetVMManifestResourceData(d *schema.ResourceData, m *models.VMManifest) {
 	d.Set("permissions", m.Permissions)
 	d.Set("resources", SetResourceSubResourceData(m.Resources))
 	d.Set("vmmode", m.Vmmode)
+	d.Set("docker_compose_tar_image_name", m.DockerComposeTarImageName)
+	d.Set("docker_compose_yaml_text", m.DockerComposeYamlText)
+	d.Set("persistent_runtime_size_bytes", m.PersistentRuntimeSizeBytes)
+	d.Set("runtime_protocol_version", m.RuntimeProtocolVersion)
+	d.Set("runtime_version", m.RuntimeVersion)
 }
 
 func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]interface{}) {
@@ -364,6 +409,11 @@ func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]inter
 			properties["permissions"] = VMManifestModel.Permissions
 			properties["resources"] = SetResourceSubResourceData(VMManifestModel.Resources)
 			properties["vmmode"] = VMManifestModel.Vmmode
+			properties["docker_compose_tar_image_name"] = VMManifestModel.DockerComposeTarImageName
+			properties["docker_compose_yaml_text"] = VMManifestModel.DockerComposeYamlText
+			properties["persistent_runtime_size_bytes"] = VMManifestModel.PersistentRuntimeSizeBytes
+			properties["runtime_protocol_version"] = VMManifestModel.RuntimeProtocolVersion
+			properties["runtime_version"] = VMManifestModel.RuntimeVersion
 			d = append(d, &properties)
 		}
 	}
@@ -388,7 +438,7 @@ func VMManifest() map[string]*schema.Schema {
 
 		"app_type": {
 			Description: `App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM",` +
-				`"APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE".`,
+				`"APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE", "APP_TYPE_DOCKER_COMPOSE".`,
 			Type:     schema.TypeString,
 			Optional: true,
 		},
@@ -526,8 +576,41 @@ func VMManifest() map[string]*schema.Schema {
 		"vmmode": {
 			Description: `UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field`,
 			Type:        schema.TypeString,
-			Default:     "HV_HVM",
+			//Default:     "HV_HVM",
+			Optional: true,
+		},
+
+		"docker_compose_tar_image_name": {
+			Description: `Docker compose tar image name`,
+			Type:        schema.TypeString,
 			Optional:    true,
+		},
+
+		"docker_compose_yaml_text": {
+			Description: `Docker compose base64 encoded plain text`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"persistent_runtime_size_bytes": {
+			Description: `Size of persistent blank storage for runtime in bytes`,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     "0",
+		},
+
+		"runtime_protocol_version": {
+			Description: `Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime`,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     "RuntimeProtocolVersion_Unknown",
+		},
+
+		"runtime_version": {
+			Description: `Indicates the version of container orchestration software`,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     "RuntimeVersion_Unknown",
 		},
 	}
 }
@@ -554,5 +637,10 @@ func GetVMManifestPropertyFields() (t []string) {
 		"permissions",
 		"resources",
 		"vmmode",
+		"docker_compose_tar_image_name",
+		"docker_compose_yaml_text",
+		"persistent_runtime_size_bytes",
+		"runtime_protocol_version",
+		"runtime_version",
 	}
 }
