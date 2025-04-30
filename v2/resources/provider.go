@@ -168,6 +168,10 @@ func getRetryClient() *retryablehttp.Client {
 		if resp.StatusCode == http.StatusNotFound {
 			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
 		}
+		// We cannot retry on other methods rather than GET. Out API is not idempotent
+		if resp.Request.Method != http.MethodGet {
+			return false, nil
+		}
 		return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
 	}
 	return retryClient
