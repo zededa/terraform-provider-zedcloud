@@ -82,6 +82,12 @@ type Application struct {
 
 	// User defined version for the given edge-app
 	UserDefinedVersion string `json:"userDefinedVersion,omitempty"`
+
+	// App instance count
+	AppInstCount int32 `json:"appInstCount,omitempty"`
+
+	// List of datastore ids containing private registry credential
+	DatastoreIDList []string `json:"datastoreIdList"`
 }
 
 // Validate validates this app

@@ -211,7 +211,7 @@ Required:
 
 Optional:
 
-- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE".
+- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE", "APP_TYPE_DOCKER_COMPOSE".
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--container_detail))
 - `cpu_pinning_enabled` (Boolean) Enable CpuPinning
@@ -219,6 +219,8 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `docker_compose_tar_image_name` (String) Docker compose tar image name
+- `docker_compose_yaml_text` (String) Docker compose base64 encoded plain text
 - `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--images))
@@ -226,7 +228,10 @@ Optional:
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--module))
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--permissions))
+- `persistent_runtime_size_bytes` (String) Size of persistent blank storage for runtime in bytes
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--app_inst_policies--app_inst_config--manifest_json--resources))
+- `runtime_protocol_version` (String) Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime
+- `runtime_version` (String) Indicates the version of container orchestration software
 - `vmmode` (String) UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field
 
 <a id="nestedblock--app_inst_policies--app_inst_config--manifest_json--configuration"></a>
@@ -529,12 +534,12 @@ Read-Only:
 
 Optional:
 
-- `id` (String)
 - `name` (String)
 - `title` (String)
 
 Read-Only:
 
+- `id` (String) The ID of this resource.
 - `revision` (Block List) (see [below for nested schema](#nestedblock--cluster_policy--revision))
 
 <a id="nestedblock--cluster_policy--revision"></a>
@@ -699,12 +704,12 @@ Read-Only:
 
 Optional:
 
-- `id` (String)
 - `name` (String)
 - `title` (String)
 
 Read-Only:
 
+- `id` (String) The ID of this resource.
 - `revision` (Block List) (see [below for nested schema](#nestedblock--integration_policy--revision))
 
 <a id="nestedblock--integration_policy--revision"></a>

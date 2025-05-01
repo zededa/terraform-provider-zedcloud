@@ -39,6 +39,7 @@ description: |-
 - `is_secret_updated` (Boolean) This field tells whether user secrets has updated or not, especially the cusotom config
 - `logs` (Block List) App Instance logs (see [below for nested schema](#nestedblock--logs))
 - `manifest_info` (Block List) app manifest Info (see [below for nested schema](#nestedblock--manifest_info))
+- `persistent_runtime_size_bytes` (String) Persistent runtime size in bytes
 - `project_id` (String) project name which the given app instance belong to
 - `purge` (Block List) Purge counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--purge))
 - `refresh` (Block List) Refresh counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--refresh))
@@ -53,6 +54,8 @@ description: |-
 
 - `bundleversion` (String) version of bundle app is referring to
 - `deployment_type` (String) type of deployment for the app, eg: azure, k3s, standalone
+- `docker_compose_tar_image_name` (String) Docker compose tar image name
+- `docker_compose_yaml_text` (String) Docker compose base64 encoded plain text
 - `id` (String) System defined universally unique Id of the app instance
 - `revision` (Block List) app instance object revision details (see [below for nested schema](#nestedblock--revision))
 - `user_defined_version` (String) Instance version tells which edge app does this instance is running

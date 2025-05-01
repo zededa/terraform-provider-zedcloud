@@ -18,7 +18,6 @@ description: |-
 ### Required
 
 - `datastore_id` (String) Datastore Id where image binary is located.
-- `image_arch` (String) Image Architecture.
 - `image_format` (String) Image binary format.
 - `name` (String) User defined name of the image, unique across the enterprise. Once image is created, name can’t be changed.
 - `title` (String) User defined title of the image. Title can be changed at any time.
@@ -26,6 +25,7 @@ description: |-
 ### Optional
 
 - `description` (String) Detailed description of the image.
+- `image_arch` (String) Image Architecture. The field is required for the most of the image types except: IMAGE_TYPE_DOCKER_COMPOSE_TAR
 - `image_rel_url` (String) Image relative path w.r.t. Datastore
 - `image_sha256` (String) Image checksum in SHA256 format
 - `image_size_bytes` (String) Image size in KBytes.

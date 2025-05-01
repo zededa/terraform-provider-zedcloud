@@ -126,6 +126,8 @@ func testApplicationAttributes(t *testing.T, got, expected *models.Application) 
 			"Revision",
 			"Manifest",
 			"ProjectAccessList",
+			"AppInstCount",
+			"DatastoreIDList",
 		}
 		opts := cmpopts.IgnoreFields(models.Application{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {

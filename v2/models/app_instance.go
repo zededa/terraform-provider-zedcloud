@@ -71,13 +71,25 @@ type AppInstance struct {
 	// Pattern: [a-zA-Z0-9][a-zA-Z0-9_.-]+
 	DeviceID *string `json:"deviceId"`
 
+	// internal field
+	//
+	// Docker compose tar image name
+	// Read Only: true
+	DockerComposeTarImageName string `json:"dockerComposeTarImageName,omitempty"`
+
+	// internal field
+	//
+	// Docker compose base64 encoded plain text
+	// Read Only: true
+	DockerComposeYamlText string `json:"dockerComposeYamlText,omitempty"`
+
 	// drive details
 	// Required: true
 	Drives []*Drive `json:"drives"`
 
 	// edge node cluster
 	EdgeNodeCluster *AppInstEdgeNodeCluster `json:"edgeNodeCluster,omitempty"`
-	
+
 	// user encrypted secrets map
 	EncryptedSecrets map[string]string `json:"encryptedSecrets,omitempty"`
 
@@ -146,6 +158,9 @@ type AppInstance struct {
 
 	// virtual machine info
 	Vminfo *VM `json:"vminfo,omitempty"`
+
+	// Persistent runtime size in bytes
+	PersistentRuntimeSizeBytes string `json:"PersistentRuntimeSizeBytes,omitempty"`
 }
 
 // Validate validates this app instance
@@ -715,6 +730,14 @@ func (m *AppInstance) ContextValidate(ctx context.Context, formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateDockerComposeTarImageName(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateDockerComposeYamlText(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -946,6 +969,24 @@ func (m *AppInstance) contextValidateVminfo(ctx context.Context, formats strfmt.
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *AppInstance) contextValidateDockerComposeTarImageName(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "dockerComposeTarImageName", "body", string(m.DockerComposeTarImageName)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *AppInstance) contextValidateDockerComposeYamlText(ctx context.Context, formats strfmt.Registry) error {
+
+	if err := validate.ReadOnly(ctx, "dockerComposeYamlText", "body", string(m.DockerComposeYamlText)); err != nil {
+		return err
 	}
 
 	return nil

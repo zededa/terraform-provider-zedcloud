@@ -123,6 +123,9 @@ type AppInstStatusMsg struct {
 
 	// Last received counters for zvol metrics
 	ZpoolMetrics *StorageDeviceMetrics `json:"zpoolMetrics,omitempty"`
+
+	// docker-compose container status
+	ContainerStatusList []*ComposeContainerStatus `json:"containerStatusList"`
 }
 
 // Validate validates this app inst status msg
@@ -222,6 +225,10 @@ func (m *AppInstStatusMsg) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateZpoolMetrics(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateContainerStatusList(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -706,6 +713,32 @@ func (m *AppInstStatusMsg) validateZpoolMetrics(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *AppInstStatusMsg) validateContainerStatusList(formats strfmt.Registry) error {
+	if swag.IsZero(m.ContainerStatusList) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.ContainerStatusList); i++ {
+		if swag.IsZero(m.ContainerStatusList[i]) { // not required
+			continue
+		}
+
+		if m.ContainerStatusList[i] != nil {
+			if err := m.ContainerStatusList[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("containerStatusList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("containerStatusList" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // ContextValidate validate this app inst status msg based on the context it is used
 func (m *AppInstStatusMsg) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -771,6 +804,10 @@ func (m *AppInstStatusMsg) ContextValidate(ctx context.Context, formats strfmt.R
 	}
 
 	if err := m.contextValidateZpoolMetrics(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateContainerStatusList(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -1051,6 +1088,31 @@ func (m *AppInstStatusMsg) contextValidateZpoolMetrics(ctx context.Context, form
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *AppInstStatusMsg) contextValidateContainerStatusList(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.ContainerStatusList); i++ {
+
+		if m.ContainerStatusList[i] != nil {
+
+			if swag.IsZero(m.ContainerStatusList[i]) { // not required
+				return nil
+			}
+
+			if err := m.ContainerStatusList[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("containerStatusList" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("containerStatusList" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil

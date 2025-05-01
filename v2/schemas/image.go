@@ -198,9 +198,10 @@ func Image() map[string]*schema.Schema {
 		},
 
 		"image_arch": {
-			Description: `Image Architecture.`,
-			Type:        schema.TypeString,
-			Required:    true,
+			Description:      `Image Architecture. The field is required for the most of the image types except: IMAGE_TYPE_DOCKER_COMPOSE_TAR`,
+			Type:             schema.TypeString,
+			Optional:         true,
+			DiffSuppressFunc: diffSupressStringNonConfigChanges("image_arch"),
 		},
 
 		"image_error": {

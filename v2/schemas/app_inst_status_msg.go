@@ -72,6 +72,23 @@ func AppInstStatusMsgModel(d *schema.ResourceData) *models.AppInstStatusMsg {
 	}
 	bootTime, _ := d.Get("boot_time").(strfmt.DateTime)
 	clusterID, _ := d.Get("cluster_id").(string)
+	var containerStatusList []*models.ComposeContainerStatus // []*ComposeContainerStatus
+	containerStatusListInterface, containerStatusListIsSet := d.GetOk("container_status_list")
+	if containerStatusListIsSet {
+		var items []interface{}
+		if listItems, isList := containerStatusListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = containerStatusListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ComposeContainerStatusModelFromMap(v.(map[string]interface{}))
+			containerStatusList = append(containerStatusList, m)
+		}
+	}
 	var deploymentType *models.DeploymentType // DeploymentType
 	deploymentTypeInterface, deploymentTypeIsSet := d.GetOk("deployment_type")
 	if deploymentTypeIsSet {
@@ -220,6 +237,7 @@ func AppInstStatusMsgModel(d *schema.ResourceData) *models.AppInstStatusMsg {
 		AppType:                   appType,
 		BootTime:                  bootTime,
 		ClusterID:                 clusterID,
+		ContainerStatusList:       containerStatusList,
 		DeploymentType:            deploymentType,
 		DeviceID:                  deviceID,
 		ErrInfo:                   errInfo,
@@ -315,6 +333,23 @@ func AppInstStatusMsgModelFromMap(m map[string]interface{}) *models.AppInstStatu
 	if deploymentTypeIsSet {
 		deploymentTypeModel := deploymentTypeInterface.(string)
 		deploymentType = models.NewDeploymentType(models.DeploymentType(deploymentTypeModel))
+	}
+	var containerStatusList []*models.ComposeContainerStatus // []*ComposeContainerStatus
+	containerStatusListInterface, containerStatusListIsSet := m["container_status_list"]
+	if containerStatusListIsSet {
+		var items []interface{}
+		if listItems, isList := containerStatusListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = containerStatusListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := ComposeContainerStatusModelFromMap(v.(map[string]interface{}))
+			containerStatusList = append(containerStatusList, m)
+		}
 	}
 	deviceID := m["device_id"].(string)
 	var errInfo []*models.DeviceError // []*DeviceError
@@ -460,6 +495,7 @@ func AppInstStatusMsgModelFromMap(m map[string]interface{}) *models.AppInstStatu
 		AppType:                   appType,
 		BootTime:                  bootTime,
 		ClusterID:                 clusterID,
+		ContainerStatusList:       containerStatusList,
 		DeploymentType:            deploymentType,
 		DeviceID:                  deviceID,
 		ErrInfo:                   errInfo,
@@ -493,6 +529,7 @@ func SetAppInstStatusMsgResourceData(d *schema.ResourceData, m *models.AppInstSt
 	d.Set("app_type", m.AppType)
 	d.Set("boot_time", m.BootTime)
 	d.Set("cluster_id", m.ClusterID)
+	d.Set("container_status_list", SetComposeContainerStatusSubResourceData(m.ContainerStatusList))
 	d.Set("deployment_type", m.DeploymentType)
 	d.Set("device_id", m.DeviceID)
 	d.Set("err_info", SetDeviceErrorSubResourceData(m.ErrInfo))
@@ -528,6 +565,7 @@ func SetAppInstStatusMsgSubResourceData(m []*models.AppInstStatusMsg) (d []*map[
 			properties["app_type"] = AppInstStatusMsgModel.AppType
 			properties["boot_time"] = AppInstStatusMsgModel.BootTime.String()
 			properties["cluster_id"] = AppInstStatusMsgModel.ClusterID
+			properties["container_status_list"] = SetComposeContainerStatusSubResourceData(AppInstStatusMsgModel.ContainerStatusList)
 			properties["deployment_type"] = AppInstStatusMsgModel.DeploymentType
 			properties["device_id"] = AppInstStatusMsgModel.DeviceID
 			properties["err_info"] = SetDeviceErrorSubResourceData(AppInstStatusMsgModel.ErrInfo)
@@ -636,6 +674,16 @@ func AppInstStatusMsgSchema() map[string]*schema.Schema {
 			Description: `type of deployment for the app, eg: azure, k3s, standalone`,
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+
+		"container_status_list": {
+			Description: `docker-compose container status`,
+			Type:        schema.TypeList, //GoType: []*ComposeContainerStatus
+			Elem: &schema.Resource{
+				Schema: ComposeContainerStatusSchema(),
+			},
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"device_id": {
@@ -785,6 +833,7 @@ func GetAppInstStatusMsgPropertyFields() (t []string) {
 		"app_type",
 		"boot_time",
 		"cluster_id",
+		"container_status_list",
 		"deployment_type",
 		"device_id",
 		"err_info",

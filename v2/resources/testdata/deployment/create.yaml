@@ -107,6 +107,9 @@ appInstPolicies:
             fieldDelimiter: ""
             template: ""
             variableGroups: []
+        runtimeprotocolversion: "RuntimeProtocolVersion_Unknown"
+        runtimeversion: "RuntimeVersion_Unknown"
+        persistentruntimesizebytes: "0"
 
 volumeInstPolicies:
   - metaData:

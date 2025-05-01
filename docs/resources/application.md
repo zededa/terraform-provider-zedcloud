@@ -22,6 +22,8 @@ description: |-
 
 ### Optional
 
+- `app_inst_count` (Number) App instance count
+- `datastore_id_list` (List of String) List of datastore ids containing private registry credential
 - `description` (String) Detailed description of the edge application
 - `is_imported` (Boolean) Flag to represent where app bundle is already imported
 - `manifest` (Block List, Max: 1) user defined manifest in JSON format (see [below for nested schema](#nestedblock--manifest))
@@ -52,7 +54,7 @@ Required:
 
 Optional:
 
-- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE".
+- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE", "APP_TYPE_DOCKER_COMPOSE".
 - `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--manifest--configuration))
 - `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--manifest--container_detail))
 - `cpu_pinning_enabled` (Boolean) Enable CpuPinning
@@ -60,6 +62,8 @@ Optional:
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--manifest--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `docker_compose_tar_image_name` (String) Docker compose tar image name
+- `docker_compose_yaml_text` (String) Docker compose base64 encoded plain text
 - `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
 - `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
 - `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--manifest--images))
@@ -67,7 +71,10 @@ Optional:
 - `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--manifest--module))
 - `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--manifest--owner))
 - `permissions` (Block List) (see [below for nested schema](#nestedblock--manifest--permissions))
+- `persistent_runtime_size_bytes` (String) Size of persistent blank storage for runtime in bytes
 - `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--manifest--resources))
+- `runtime_protocol_version` (String) Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime
+- `runtime_version` (String) Indicates the version of container orchestration software
 - `vmmode` (String) UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field
 
 <a id="nestedblock--manifest--configuration"></a>
