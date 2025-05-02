@@ -2,7 +2,7 @@ package resources
 
 import (
 	"fmt"
-	"os"
+	// "os"
 	"strings"
 	"testing"
 
@@ -19,9 +19,9 @@ import (
 // Skip the test if running in CI environment. Need to investigate an issue related to
 // the test failing in CI but passing locally.
 func TestProfileDeployment_Create(t *testing.T) {
-	if os.Getenv("CI") != "" {
-		t.Skip("Skipping profile deployment test for CI environment")
-	}
+	// if os.Getenv("CI") != "" {
+	// 	t.Skip("Skipping profile deployment test for CI environment")
+	// }
 
 	var got, expected models.ProfileDeployment
 
