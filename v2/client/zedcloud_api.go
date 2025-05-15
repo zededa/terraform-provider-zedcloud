@@ -91,6 +91,19 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	return cli
 }
 
+func NewZServicesClient(transport runtime.ClientTransport, formats strfmt.Registry) *ZservicesAPI {
+	// ensure nullable parameters have default
+	if formats == nil {
+		formats = strfmt.Default
+	}
+
+	cli := new(ZservicesAPI)
+	cli.Transport = transport
+	cli.Project = projects.New(transport, formats)
+	cli.AssetGroup = asset_group_service.New(transport, formats)
+	return cli
+}
+
 // DefaultTransportConfig creates a TransportConfig with the
 // default settings taken from the meta section of the spec file.
 func DefaultTransportConfig() *TransportConfig {
@@ -167,6 +180,14 @@ type ZedcloudAPI struct {
 	AssetGroup asset_group_service.ClientService
 
 	ProfileDeployment profile_deployment_service.ClientService
+}
+
+type ZservicesAPI struct {
+	Project projects.ClientService
+
+	Transport runtime.ClientTransport
+
+	AssetGroup asset_group_service.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources

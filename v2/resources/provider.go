@@ -2,8 +2,10 @@ package resources
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -15,12 +17,18 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client"
+	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 )
 
 var (
 	version    string = "dev"
 	defaultURL string = "zedcontrol.local.zededa.net"
 )
+
+type ProviderClients struct {
+	ZedCloudClient  *api_client.ZedcloudAPI
+	ZServicesClient *api_client.ZservicesAPI
+}
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -122,6 +130,7 @@ func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
 
 func (h *HttpTransportWrapper) RoundTrip(req *http.Request) (*http.Response, error) {
 	version = fmt.Sprintf("zededa-terraform-provider/%s", h.providerVersion)
+	log.Printf("[INFO] Request URL>>>>>::::: %s", req.URL.String())
 	req.Header.Add("User-Agent", version)
 	req.Header.Add("X-Custom-User-Agent", version)
 	return h.RoundTripper.RoundTrip(req)
@@ -150,8 +159,33 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 	transport.DefaultAuthentication = BearerToken(token)
 	transport.Transport = NewHttpTransportWrapper(transport.Transport)
+	zedCloudClient := client.New(transport, strfmt.Default)
 
-	return client.New(transport, strfmt.Default), nil
+	// initialize zservices client
+	zservicesURL := "zservices.local.zededa.net"
+	// --- Add this block for insecure TLS for zservices ---
+	insecureHTTPClient := retryClient.StandardClient()
+	insecureHTTPClient.Transport = &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	zservicesTransport := httptransport.NewWithClient(zservicesURL, "/api", []string{"https"}, insecureHTTPClient)
+	// --- End block ---
+	if httpSessionDebugEnabled {
+		zservicesTransport.SetDebug(true)
+		zservicesTransport.SetLogger(HTLogger{})
+	}
+	zservicesTransport.DefaultAuthentication = BearerToken(token)
+	zservicesTransport.Transport = NewHttpTransportWrapper(zservicesTransport.Transport)
+
+	zservicesClient := client.NewZServicesClient(zservicesTransport, strfmt.Default)
+
+	// ProviderClients holds both ZedCloud and ZServices clients
+
+	// Return both clients in a struct
+	return &ProviderClients{
+		ZedCloudClient:  zedCloudClient,
+		ZServicesClient: zservicesClient,
+	}, nil
 }
 
 // BearerToken provides a header based oauth2 bearer access token auth info writer
@@ -165,11 +199,15 @@ func BearerToken(token string) runtime.ClientAuthInfoWriter {
 func getRetryClient() *retryablehttp.Client {
 	retryClient := retryablehttp.NewClient()
 	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
+		if resp == nil {
+			// No response, likely a network error, let default policy handle it
+			return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
+		}
 		if resp.StatusCode == http.StatusNotFound {
 			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
 		}
 		// We cannot retry on other methods rather than GET. Out API is not idempotent
-		if resp.Request.Method != http.MethodGet {
+		if resp.Request != nil && resp.Request.Method != http.MethodGet {
 			return false, nil
 		}
 		return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
