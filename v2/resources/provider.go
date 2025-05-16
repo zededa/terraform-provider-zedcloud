@@ -20,15 +20,16 @@ import (
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 )
 
-var (
-	version    string = "dev"
-	defaultURL string = "zedcontrol.local.zededa.net"
-)
-
+// ProviderClients holds both ZedCloud and ZServices clients
 type ProviderClients struct {
 	ZedCloudClient  *api_client.ZedcloudAPI
 	ZServicesClient *api_client.ZservicesAPI
 }
+
+var (
+	version    string = "dev"
+	defaultURL string = "zedcontrol.local.zededa.net"
+)
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -178,8 +179,6 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	zservicesTransport.Transport = NewHttpTransportWrapper(zservicesTransport.Transport)
 
 	zservicesClient := client.NewZServicesClient(zservicesTransport, strfmt.Default)
-
-	// ProviderClients holds both ZedCloud and ZServices clients
 
 	// Return both clients in a struct
 	return &ProviderClients{
