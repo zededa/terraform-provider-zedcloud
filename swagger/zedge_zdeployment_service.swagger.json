@@ -1,0 +1,1337 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "ZSERVICE DEPLOYMENT CONTROLLER SERVICE",
+    "description": "zservice deployment controller allow the customer to create and manage asset-groups and deployments",
+    "termsOfService": "https://www.zededa.com/terms",
+    "version": "1.0",
+    "contact": {
+      "name": "ZEDEDA API Support",
+      "url": "https://www.zededa.com/support",
+      "email": "support@zededa.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "ZAssetGroups"
+    },
+    {
+      "name": "ZDeployments"
+    }
+  ],
+  "basePath": "/api",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/asset-groups": {
+      "get": {
+        "summary": "list asset groups",
+        "description": " List all the asset groups ",
+        "operationId": "ZAssetGroups_ListAssetGroups",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceAssetGroupListResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ZAssetGroups"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      },
+      "post": {
+        "summary": "Create asset groups",
+        "description": "group assets based on id or tags",
+        "operationId": "ZAssetGroups_CreateAssetGroups",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceAssetGroupCreateResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "409": {
+            "description": "Conflict. The API gateway did not process the request because this asset group record will conflict with an already existing asset group record.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/zserviceAssetGroupConfig"
+            }
+          }
+        ],
+        "tags": [
+          "ZAssetGroups"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      }
+    },
+    "/v1/asset-groups/id/{id}": {
+      "get": {
+        "summary": "Get aseet group",
+        "description": " get asset group detail",
+        "operationId": "ZAssetGroups_GetAssetGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceAssetGroupReadRO"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ZAssetGroups"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      },
+      "delete": {
+        "summary": "Delete asset group",
+        "description": "Delete asset group.",
+        "operationId": "ZAssetGroups_DeleteAssetGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ZAssetGroups"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      },
+      "put": {
+        "summary": "Update asset group",
+        "description": "update asset group by adding or removing assets ",
+        "operationId": "ZAssetGroups_UpdateAssetGroup",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "409": {
+            "description": "Conflict.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "assetType": {
+                  "$ref": "#/definitions/zserviceAssetType"
+                },
+                "assetIds": {
+                  "$ref": "#/definitions/zserviceAssetIDs"
+                },
+                "assetTags": {
+                  "$ref": "#/definitions/zserviceAssetTags"
+                }
+              },
+              "title": "AssetGroupCreateRO - refers to the request object for creating an asset group"
+            }
+          }
+        ],
+        "tags": [
+          "ZAssetGroups"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      }
+    },
+    "/v1/deployments": {
+      "get": {
+        "summary": "list deployments",
+        "description": "list deployments",
+        "operationId": "ZDeployments_ListDeployments",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceDeploymentListResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request. The API gateway did not process the request because of invalid value of filter parameters.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ZDeployments"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/"
+        }
+      },
+      "post": {
+        "summary": "Create deployment",
+        "description": "Apply specified deployment on specfied assetgroup or target assets ",
+        "operationId": "ZDeployments_CreateDployment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceDeploymentCreateResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "409": {
+            "description": "Conflict. record with same deployment name already exist",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/zserviceDeploymentConfig"
+            }
+          }
+        ],
+        "tags": [
+          "ZDeployments"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      }
+    },
+    "/v1/deployments/id/{deploymentId}": {
+      "get": {
+        "summary": "Get deployment",
+        "description": "Get deployment details ",
+        "operationId": "ZDeployments_GetDeployment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceDeploymentReadRO"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "deploymentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ZDeployments"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      },
+      "delete": {
+        "summary": "Delete deployment",
+        "description": "Delete deployment",
+        "operationId": "ZDeployments_DeleteDeployment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "deploymentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ZDeployments"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      },
+      "put": {
+        "summary": "Update deployment",
+        "description": "Update deployment",
+        "operationId": "ZDeployments_UpdateDeployment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceDeploymentUpdateResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "deploymentId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "deploymentName": {
+                  "type": "string"
+                },
+                "chart": {
+                  "$ref": "#/definitions/zserviceChart"
+                },
+                "targetAsset": {
+                  "$ref": "#/definitions/zserviceAsset"
+                },
+                "overrideAssetValues": {
+                  "$ref": "#/definitions/zserviceAssetValues"
+                }
+              },
+              "title": "DeploymentCreateRO - refers to the request object for creating a deployment"
+            }
+          }
+        ],
+        "tags": [
+          "ZDeployments"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "AssetGroupAssetTagList": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zserviceAssetTag"
+          }
+        }
+      }
+    },
+    "AssetGroupValueList": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Cursor": {
+      "type": "object",
+      "properties": {
+        "pageToken": {
+          "type": "string",
+          "description": "Page Token"
+        },
+        "orderBy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "OrderBy helps in sorting the list response"
+        },
+        "pageNum": {
+          "type": "number",
+          "format": "int64",
+          "description": "Page Number"
+        },
+        "pageSize": {
+          "type": "number",
+          "format": "int64",
+          "description": "Defines the page size"
+        },
+        "totalPages": {
+          "type": "number",
+          "format": "int64",
+          "description": "Total number of pages to be fetched."
+        }
+      },
+      "description": "Cursor helps in filtering the various list response like edge-app bundle list, model list, bundle list etc. ",
+      "title": "Cursor is used as filter in list operation."
+    },
+    "ObjectType": {
+      "type": "string",
+      "enum": [
+        "OBJECT_TYPE_UNSPECIFIED",
+        "OBJECT_TYPE_USER",
+        "OBJECT_TYPE_EDGE_NODE",
+        "OBJECT_TYPE_EDGE_APP",
+        "OBJECT_TYPE_IMAGE",
+        "OBJECT_TYPE_EDGE_APP_INSTANCE",
+        "OBJECT_TYPE_PROJECT",
+        "OBJECT_TYPE_NETWORK",
+        "OBJECT_TYPE_DATASTORE",
+        "OBJECT_TYPE_SERVICE",
+        "OBJECT_TYPE_SERVICE_INSTANCE",
+        "OBJECT_TYPE_ENTERPRISE",
+        "OBJECT_TYPE_ROLE",
+        "OBJECT_TYPE_CREDENTIAL",
+        "OBJECT_TYPE_NETWORK_INSTANCE",
+        "OBJECT_TYPE_VOLUME_INSTANCE",
+        "OBJECT_TYPE_REALM",
+        "OBJECT_TYPE_AUTHPROFILE",
+        "OBJECT_TYPE_POLICY",
+        "OBJECT_TYPE_APP_POLICY",
+        "OBJECT_TYPE_CLUSTER_INSTANCE",
+        "OBJECT_TYPE_PLUGIN",
+        "OBJECT_TYPE_DOC_POLICY",
+        "OBJECT_TYPE_ORCHESTRATOR_CLUSTER",
+        "OBJECT_TYPE_TAGS",
+        "OBJECT_TYPE_EDGE_NODE_INTERFACE",
+        "OBJECT_TYPE_DEPLOYMENT",
+        "OBJECT_TYPE_ENTITLEMENTS",
+        "OBJECT_TYPE_DATA_STREAM",
+        "OBJECT_TYPE_API_USAGE",
+        "OBJECT_TYPE_APP_INSTANCE_SNAPSHOT",
+        "OBJECT_TYPE_PATCH_ENVELOPE",
+        "OBJECT_TYPE_RESOURCE_USAGE_TRACK",
+        "OBJECT_TYPE_PATCH_ENVELOPE_REFERENCE",
+        "OBJECT_TYPE_DEV_PASSTHROUGH",
+        "OBJECT_TYPE_EDGE_NODE_CLUSTER",
+        "OBJECT_TYPE_ASSET_GROUP",
+        "OBJECT_TYPE_APP_PROFILE",
+        "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+      ],
+      "default": "OBJECT_TYPE_UNSPECIFIED"
+    },
+    "ZcOpsStatus": {
+      "type": "string",
+      "enum": [
+        "OPS_STATUS_UNSPECIFIED",
+        "OPS_STATUS_PENDING",
+        "OPS_STATUS_ONGOING",
+        "OPS_STATUS_COMPLETE"
+      ],
+      "default": "OPS_STATUS_UNSPECIFIED",
+      "description": "- OPS_STATUS_PENDING: In rare cases, system may not start operation when it was requested. Client will be notified that operation is PENDING\n - OPS_STATUS_ONGOING: system will start the operation, but at the time response was generated, operation is still ONGOING.\n - OPS_STATUS_COMPLETE: Even if the result of the operations may result in failure, but the OpsStatus will marked COMPLETE for almost all cases.",
+      "title": "ZedCloud internal operation status"
+    },
+    "ZcOpsType": {
+      "type": "string",
+      "enum": [
+        "OPS_TYPE_UNSPECIFIED",
+        "OPS_TYPE_READ",
+        "OPS_TYPE_DELETE",
+        "OPS_TYPE_CREATE",
+        "OPS_TYPE_UPDATE",
+        "OPS_TYPE_LIST"
+      ],
+      "default": "OPS_TYPE_UNSPECIFIED",
+      "title": "ZedCloud internal operation type"
+    },
+    "ZsrvError": {
+      "type": "object",
+      "properties": {
+        "ec": {
+          "$ref": "#/definitions/ZsrvErrorCode",
+          "title": "Enumrated error code, describes more granular numerical\nvalue than just httpStatus"
+        },
+        "location": {
+          "type": "string",
+          "title": "Ignore: Internal field only"
+        },
+        "details": {
+          "type": "string",
+          "title": "Field captures string description of details"
+        }
+      }
+    },
+    "ZsrvErrorCode": {
+      "type": "string",
+      "enum": [
+        "zMsgErrorNone",
+        "zMsgSucess",
+        "NotFound",
+        "AlreadyExists",
+        "VersionMismatch",
+        "RangeError",
+        "LargeResult",
+        "IncompleteData",
+        "InvalidData",
+        "FunctionUnsupported",
+        "NoMemory",
+        "SendFailure",
+        "Timeout",
+        "BadReqBody",
+        "BadReqParam",
+        "InvalidFieldFormat",
+        "UrlNotFound",
+        "ApiVersionNotSupported",
+        "Unauthorized",
+        "Forbidden",
+        "Conflict",
+        "NotModified",
+        "DependencyConflict",
+        "JsonFmtError",
+        "ProtoFmtError",
+        "CertError",
+        "DataBaseConnection",
+        "DBError",
+        "zMsgAccepted",
+        "zMsgCreated",
+        "PreConditionFailed",
+        "InternalServerError"
+      ],
+      "default": "zMsgErrorNone",
+      "description": "- zMsgErrorNone: common validation errors\n - IncompleteData: message had fields that weren't filled in\n - InvalidData: message contained the field that wasn't expected\n - FunctionUnsupported: this feature unavailable on this version of device\n - InvalidFieldFormat: message contained the field that wasn't correctly formatted\n - JsonFmtError: Marshal / Unmarshal errors\n - DataBaseConnection: generic DB error",
+      "title": "ZedCould internal error code"
+    },
+    "ZsrvResponse": {
+      "type": "object",
+      "properties": {
+        "operationType": {
+          "$ref": "#/definitions/ZcOpsType",
+          "title": "Describes one of the operations type : possible values\n                        Read/Delete/Create/Update/List"
+        },
+        "operationStatus": {
+          "$ref": "#/definitions/ZcOpsStatus",
+          "title": "if this is log running job"
+        },
+        "objectKind": {
+          "type": "string",
+          "title": "zedcloud object kind on which the operation was performed"
+        },
+        "objectId": {
+          "type": "string",
+          "title": "Unique value identifies the object that was operated on"
+        },
+        "objectName": {
+          "type": "string",
+          "title": "name of the object"
+        },
+        "objectRevision": {
+          "type": "string",
+          "title": "object revision post the operation, note Read operation\ndoesn't change the revision"
+        },
+        "objectType": {
+          "$ref": "#/definitions/ObjectType"
+        },
+        "operationTime": {
+          "type": "string",
+          "title": "time of operation"
+        },
+        "startTime": {
+          "type": "string",
+          "title": "total time taken by operations"
+        },
+        "endTime": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string",
+          "title": "the operation is performed on behalf of this user"
+        },
+        "httpStatusCode": {
+          "type": "integer",
+          "format": "int32",
+          "title": "http response"
+        },
+        "httpStatusMsg": {
+          "type": "string",
+          "title": "summary of the error in text format"
+        },
+        "jobId": {
+          "type": "string",
+          "title": "for tracking asynchronous tasks"
+        },
+        "error": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ZsrvError"
+          },
+          "title": "one or more errors will be set if the operation failed\ni.e. httpStatusCode != 2xx"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "typeUrl": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "zserviceAsset": {
+      "type": "object",
+      "properties": {
+        "groupId": {
+          "type": "string"
+        },
+        "targetSelector": {
+          "$ref": "#/definitions/zserviceAssetGroup"
+        }
+      }
+    },
+    "zserviceAssetGroup": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "$ref": "#/definitions/AssetGroupValueList"
+        },
+        "assetIds": {
+          "$ref": "#/definitions/AssetGroupValueList"
+        },
+        "assetTags": {
+          "$ref": "#/definitions/AssetGroupAssetTagList"
+        }
+      }
+    },
+    "zserviceAssetGroupConfig": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "assetType": {
+          "$ref": "#/definitions/zserviceAssetType"
+        },
+        "assetIds": {
+          "$ref": "#/definitions/zserviceAssetIDs"
+        },
+        "assetTags": {
+          "$ref": "#/definitions/zserviceAssetTags"
+        }
+      },
+      "title": "AssetGroupCreateRO - refers to the request object for creating an asset group"
+    },
+    "zserviceAssetGroupCreateResponse": {
+      "type": "object",
+      "properties": {
+        "assetGroupId": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        }
+      },
+      "title": "AssetGroupCreateResponse - refers to response object for creating asset group"
+    },
+    "zserviceAssetGroupListResponse": {
+      "type": "object",
+      "properties": {
+        "assetGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zserviceAssetGroupReadRO"
+          }
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "next": {
+          "$ref": "#/definitions/Cursor"
+        }
+      },
+      "title": "AssetGroupListResponse - refers to the response object for listing asset groups"
+    },
+    "zserviceAssetGroupReadRO": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "assetType": {
+          "$ref": "#/definitions/zserviceAssetType"
+        },
+        "assetIds": {
+          "$ref": "#/definitions/zserviceAssetIDs"
+        },
+        "assetTags": {
+          "$ref": "#/definitions/zserviceAssetTags"
+        },
+        "assetCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "AssetGroupReadRO - refers to the response object for reading an asset group"
+    },
+    "zserviceAssetIDs": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "AssetIDs - represents a list of asset IDs"
+    },
+    "zserviceAssetTag": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "zserviceAssetTags": {
+      "type": "object",
+      "properties": {
+        "assetTag": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zserviceAssetTag"
+          }
+        }
+      }
+    },
+    "zserviceAssetType": {
+      "type": "string",
+      "enum": [
+        "EVE",
+        "K8S",
+        "K3S"
+      ],
+      "default": "EVE",
+      "title": "Enum for AssetType"
+    },
+    "zserviceAssetValues": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "datastoreId": {
+          "type": "string"
+        }
+      }
+    },
+    "zserviceChart": {
+      "type": "object",
+      "properties": {
+        "chartId": {
+          "type": "string"
+        },
+        "chartName": {
+          "type": "string"
+        },
+        "chartVersion": {
+          "type": "string"
+        },
+        "repositoryUrl": {
+          "type": "string"
+        },
+        "values": {
+          "type": "string"
+        }
+      }
+    },
+    "zserviceDeploymentConfig": {
+      "type": "object",
+      "properties": {
+        "deploymentName": {
+          "type": "string"
+        },
+        "deploymentId": {
+          "type": "string"
+        },
+        "chart": {
+          "$ref": "#/definitions/zserviceChart"
+        },
+        "targetAsset": {
+          "$ref": "#/definitions/zserviceAsset"
+        },
+        "overrideAssetValues": {
+          "$ref": "#/definitions/zserviceAssetValues"
+        }
+      },
+      "title": "DeploymentCreateRO - refers to the request object for creating a deployment"
+    },
+    "zserviceDeploymentCreateResponse": {
+      "type": "object",
+      "properties": {
+        "deploymentId": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "workflowInfo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zserviceWorkflowInfo"
+          }
+        }
+      },
+      "title": "DeploymentCreateResponse - refers to the response object for deployment create"
+    },
+    "zserviceDeploymentListResponse": {
+      "type": "object",
+      "properties": {
+        "deployments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zserviceDeploymentReadRO"
+          }
+        },
+        "totalCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "next": {
+          "type": "object",
+          "$ref": "#/definitions/Cursor",
+          "description": "Cursor"
+        }
+      },
+      "title": "DeploymentListResponse - refers to the response object for listing deployments"
+    },
+    "zserviceDeploymentReadRO": {
+      "type": "object",
+      "properties": {
+        "deploymentName": {
+          "type": "string"
+        },
+        "deploymentId": {
+          "type": "string"
+        },
+        "chart": {
+          "$ref": "#/definitions/zserviceChart"
+        },
+        "targetAsset": {
+          "$ref": "#/definitions/zserviceAsset"
+        },
+        "overrideAssetValues": {
+          "$ref": "#/definitions/zserviceAssetValues"
+        },
+        "latestRevision": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "DeploymentReadRO - refers to the object for reading a deployment"
+    },
+    "zserviceDeploymentUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "deploymentId": {
+          "type": "string"
+        },
+        "error": {
+          "type": "string"
+        },
+        "workflowInfo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/zserviceWorkflowInfo"
+          }
+        }
+      },
+      "title": "DeploymentUpdateResponse - refers to the response object for deplyment update"
+    },
+    "zserviceWorkflowInfo": {
+      "type": "object",
+      "properties": {
+        "workflowid": {
+          "type": "string"
+        },
+        "deviceid": {
+          "type": "string"
+        }
+      },
+      "title": "WorkflowInfo - referes to device id to workflow id mapping"
+    }
+  },
+  "securityDefinitions": {
+    "BearerToken": {
+      "type": "apiKey",
+      "description": "Bearer token for user session",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "BearerToken": []
+    }
+  ],
+  "externalDocs": {
+    "description": "ZEDEDA Product Documentation",
+    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+  }
+}

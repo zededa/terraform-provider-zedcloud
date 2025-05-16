@@ -64,7 +64,7 @@ ZDeploymentsCreateDploymentParams contains all the parameters to send to the API
 type ZDeploymentsCreateDploymentParams struct {
 
 	// Body.
-	Body *models.ZserviceDeploymentCreateRO
+	Body *models.ZserviceDeploymentConfig
 
 	timeout    time.Duration
 	Context    context.Context
@@ -120,13 +120,13 @@ func (o *ZDeploymentsCreateDploymentParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the z deployments create dployment params
-func (o *ZDeploymentsCreateDploymentParams) WithBody(body *models.ZserviceDeploymentCreateRO) *ZDeploymentsCreateDploymentParams {
+func (o *ZDeploymentsCreateDploymentParams) WithBody(body *models.ZserviceDeploymentConfig) *ZDeploymentsCreateDploymentParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the z deployments create dployment params
-func (o *ZDeploymentsCreateDploymentParams) SetBody(body *models.ZserviceDeploymentCreateRO) {
+func (o *ZDeploymentsCreateDploymentParams) SetBody(body *models.ZserviceDeploymentConfig) {
 	o.Body = body
 }
 

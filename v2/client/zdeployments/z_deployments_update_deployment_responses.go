@@ -570,7 +570,7 @@ func (o *ZDeploymentsUpdateDeploymentDefault) readResponse(response runtime.Clie
 }
 
 /*
-ZDeploymentsUpdateDeploymentBody z deployments update deployment body
+ZDeploymentsUpdateDeploymentBody DeploymentCreateRO - refers to the request object for creating a deployment
 swagger:model ZDeploymentsUpdateDeploymentBody
 */
 type ZDeploymentsUpdateDeploymentBody struct {

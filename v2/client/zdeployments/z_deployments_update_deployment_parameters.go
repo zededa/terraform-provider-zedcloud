@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 // NewZDeploymentsUpdateDeploymentParams creates a new ZDeploymentsUpdateDeploymentParams object,
@@ -62,7 +63,7 @@ ZDeploymentsUpdateDeploymentParams contains all the parameters to send to the AP
 type ZDeploymentsUpdateDeploymentParams struct {
 
 	// Body.
-	Body ZDeploymentsUpdateDeploymentBody
+	Body *models.ZserviceDeploymentConfig
 
 	// DeploymentID.
 	DeploymentID string
@@ -121,13 +122,13 @@ func (o *ZDeploymentsUpdateDeploymentParams) SetHTTPClient(client *http.Client) 
 }
 
 // WithBody adds the body to the z deployments update deployment params
-func (o *ZDeploymentsUpdateDeploymentParams) WithBody(body ZDeploymentsUpdateDeploymentBody) *ZDeploymentsUpdateDeploymentParams {
+func (o *ZDeploymentsUpdateDeploymentParams) WithBody(body *models.ZserviceDeploymentConfig) *ZDeploymentsUpdateDeploymentParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the z deployments update deployment params
-func (o *ZDeploymentsUpdateDeploymentParams) SetBody(body ZDeploymentsUpdateDeploymentBody) {
+func (o *ZDeploymentsUpdateDeploymentParams) SetBody(body *models.ZserviceDeploymentConfig) {
 	o.Body = body
 }
 
