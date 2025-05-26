@@ -14,7 +14,7 @@ func ScopeModel(d *schema.ResourceData) *models.Scope {
 	accessStorage, _ := d.Get("access_storage").(string)
 	accessUser, _ := d.Get("access_user").(string)
 	var enterpriseFilter []string
-	enterpriseFilterInterface, enterpriseFilterIsSet := d.GetOk("enterpriseFilter")
+	enterpriseFilterInterface, enterpriseFilterIsSet := d.GetOk("enterprise_filter")
 	if enterpriseFilterIsSet {
 		var items []interface{}
 		if listItems, isList := enterpriseFilterInterface.([]interface{}); isList {
@@ -30,7 +30,7 @@ func ScopeModel(d *schema.ResourceData) *models.Scope {
 		}
 	}
 	var projectFilter []string
-	projectFilterInterface, projectFilterIsSet := d.GetOk("projectFilter")
+	projectFilterInterface, projectFilterIsSet := d.GetOk("project_filter")
 	if projectFilterIsSet {
 		var items []interface{}
 		if listItems, isList := projectFilterInterface.([]interface{}); isList {
@@ -67,7 +67,7 @@ func ScopeModelFromMap(m map[string]interface{}) *models.Scope {
 	accessStorage := m["access_storage"].(string)
 	accessUser := m["access_user"].(string)
 	var enterpriseFilter []string
-	enterpriseFilterInterface, enterpriseFilterIsSet := m["enterpriseFilter"]
+	enterpriseFilterInterface, enterpriseFilterIsSet := m["enterprise_filter"]
 	if enterpriseFilterIsSet {
 		var items []interface{}
 		if listItems, isList := enterpriseFilterInterface.([]interface{}); isList {
@@ -83,7 +83,7 @@ func ScopeModelFromMap(m map[string]interface{}) *models.Scope {
 		}
 	}
 	var projectFilter []string
-	projectFilterInterface, projectFilterIsSet := m["projectFilter"]
+	projectFilterInterface, projectFilterIsSet := m["project_filter"]
 	if projectFilterIsSet {
 		var items []interface{}
 		if listItems, isList := projectFilterInterface.([]interface{}); isList {
