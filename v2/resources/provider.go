@@ -70,8 +70,8 @@ func Provider() *schema.Provider {
 			"zedcloud_app_profile":          AppProfileDataResource(),
 			"zedcloud_asset_group":          AssetGroupDataResource(),
 			"zedcloud_profile_deployment":   ProfileDeploymentDataResource(),
-			"zasset_groups":                 DataResourceZAssetGroups(),
-			"zdeployments":                  DataResourceZDeployments(),
+			"zedcloud_zasset_groups":        DataResourceZAssetGroups(),
+			"zedcloud_zdeployments":         DataResourceZDeployments(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":               NodeResource(),
@@ -97,8 +97,8 @@ func Provider() *schema.Provider {
 			"zedcloud_app_profile":            AppProfileResource(),
 			"zedcloud_asset_group":            AssetGroupResource(),
 			"zedcloud_profile_deployment":     ProfileDeploymentResource(),
-			"zasset_groups":                   ZAssetGroups(),
-			"zdeployments":                    ZDeployments(),
+			"zedcloud_zasset_groups":          ZAssetGroups(),
+			"zedcloud_zdeployments":           ZDeployments(),
 		},
 	}
 }

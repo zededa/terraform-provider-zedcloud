@@ -22,20 +22,20 @@ layout:
     #   target: "{{ joinFilePath .Target }}/tf_config/gen"
     #   file_name: "{{ camelize .Name }}_schema.tf"
   operations:
-#     - name: parameters
-#       source: asset:clientParameter
-#       target: "{{ joinFilePath .Target .ClientPackage .Package }}/gen"
-#       file_name: "{{ (snakize (pascalize .Name)) }}_parameters.go"
-#     - name: responses
-#       source: asset:clientResponse
-#       target: "{{ joinFilePath .Target .ClientPackage .Package }}/gen"
-#       file_name: "{{ (snakize (pascalize .Name)) }}_responses.go"
+    - name: parameters
+      source: asset:clientParameter
+      target: "{{ joinFilePath .Target .ClientPackage .Package }}/gen"
+      file_name: "{{ (snakize (pascalize .Name)) }}_parameters.go"
+    - name: responses
+      source: asset:clientResponse
+      target: "{{ joinFilePath .Target .ClientPackage .Package }}/gen"
+      file_name: "{{ (snakize (pascalize .Name)) }}_responses.go"
   operation_groups:
-#     - name: client
-#       source: asset:clientClient
-#       target: "{{ joinFilePath .Target .ClientPackage .Name }}/gen"
-#       file_name: "{{ (snakize (pascalize .Name)) }}_client.go"
-#     - name: resources
-#       source: "swagger/templates/resources.gtpl"
-#       target: "{{ joinFilePath .Target }}/resources/gen"
-#       file_name: "{{ camelize .Name }}_resource.go"
+    - name: client
+      source: asset:clientClient
+      target: "{{ joinFilePath .Target .ClientPackage .Name }}/gen"
+      file_name: "{{ (snakize (pascalize .Name)) }}_client.go"
+    - name: resources
+      source: "swagger/templates/resources.gtpl"
+      target: "{{ joinFilePath .Target }}/resources/gen"
+      file_name: "{{ camelize .Name }}_resource.go"

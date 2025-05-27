@@ -99,7 +99,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/zserviceAssetGroupCreateResponse"
+              "$ref": "#/definitions/ZsrvResponse"
             }
           },
           "400": {
@@ -1066,18 +1066,6 @@
         }
       },
       "title": "AssetGroupCreateRO - refers to the request object for creating an asset group"
-    },
-    "zserviceAssetGroupCreateResponse": {
-      "type": "object",
-      "properties": {
-        "assetGroupId": {
-          "type": "string"
-        },
-        "error": {
-          "type": "string"
-        }
-      },
-      "title": "AssetGroupCreateResponse - refers to response object for creating asset group"
     },
     "zserviceAssetGroupListResponse": {
       "type": "object",

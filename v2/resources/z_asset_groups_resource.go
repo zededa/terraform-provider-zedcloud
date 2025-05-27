@@ -24,14 +24,14 @@ func ZAssetGroups() *schema.Resource {
 		ReadContext:   ReadZAssetGroup,
 		UpdateContext: UpdateZAssetGroup,
 
-		Schema: zschema.ZserviceAssetGroupSchema(),
+		Schema: zschema.ZserviceAssetGroupConfigSchema(),
 	}
 }
 
 func DataResourceZAssetGroups() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: ReadZAssetGroup,
-		Schema:      zschema.ZserviceAssetGroupSchema(),
+		Schema:      zschema.ZserviceAssetGroupConfigSchema(),
 	}
 }
 

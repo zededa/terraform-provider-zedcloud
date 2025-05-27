@@ -9,7 +9,8 @@ SWAGGER_FILE_LIST := zedge_node_service.swagger.json \
 					 zedge_diag_service.swagger.json \
 					 zedge_app_service.swagger.json \
 					 zedge_network_service.swagger.json \
-					 zedge_app_profile_service.swagger.json
+					 zedge_app_profile_service.swagger.json \
+					 zedge_zdeployment_service.swagger.json
 
 NAME = terraform-provider-zedcloud
 VERSION = $(shell git describe --always --abbrev=0 --tags)
