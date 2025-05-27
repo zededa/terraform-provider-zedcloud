@@ -25,6 +25,8 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/profile_deployment_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/volume_instance"
+	zasset_groups "github.com/zededa/terraform-provider-zedcloud/v2/client/z_asset_groups"
+	zdeployments "github.com/zededa/terraform-provider-zedcloud/v2/client/z_deployments"
 )
 
 // Default zedcloudapi HTTP client.
@@ -88,6 +90,19 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.AppProfile = app_profile_service.New(transport, formats)
 	cli.AssetGroup = asset_group_service.New(transport, formats)
 	cli.ProfileDeployment = profile_deployment_service.New(transport, formats)
+	return cli
+}
+
+func NewZServicesClient(transport runtime.ClientTransport, formats strfmt.Registry) *ZservicesAPI {
+	// ensure nullable parameters have default
+	if formats == nil {
+		formats = strfmt.Default
+	}
+
+	cli := new(ZservicesAPI)
+	cli.Transport = transport
+	cli.ZassetGroup = zasset_groups.New(transport, formats)
+	cli.Zdeployments = zdeployments.New(transport, formats)
 	return cli
 }
 
@@ -167,6 +182,15 @@ type ZedcloudAPI struct {
 	AssetGroup asset_group_service.ClientService
 
 	ProfileDeployment profile_deployment_service.ClientService
+}
+
+type ZservicesAPI struct {
+	Project projects.ClientService
+
+	Transport runtime.ClientTransport
+
+	ZassetGroup  zasset_groups.ClientService
+	Zdeployments zdeployments.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
