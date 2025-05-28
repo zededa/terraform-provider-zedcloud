@@ -390,6 +390,72 @@
         }
       }
     },
+    "/v1/asset-groups/name/{name}": {
+      "get": {
+        "summary": "Get aseet group",
+        "description": " get asset group detail",
+        "operationId": "ZAssetGroups_GetAssetGroupByName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceAssetGroupReadRO"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ZAssetGroups"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      }
+    },
     "/v1/deployments": {
       "get": {
         "summary": "list deployments",
@@ -726,6 +792,72 @@
               },
               "title": "DeploymentCreateRO - refers to the request object for creating a deployment"
             }
+          }
+        ],
+        "tags": [
+          "ZDeployments"
+        ],
+        "externalDocs": {
+          "description": "ZEDEDA Product Documentation",
+          "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo"
+        }
+      }
+    },
+    "/v1/deployments/name/{deploymentName}": {
+      "get": {
+        "summary": "Get deployment",
+        "description": "Get deployment details ",
+        "operationId": "ZDeployments_GetDeploymentByName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/zserviceDeploymentReadRO"
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "403": {
+            "description": "Forbidden. The API gateway did not process the request because the requestor does not have application level access permission for the operation or does not have access scope to the project.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "404": {
+            "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "504": {
+            "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+            "schema": {
+              "$ref": "#/definitions/ZsrvResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "deploymentName",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "tags": [

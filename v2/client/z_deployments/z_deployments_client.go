@@ -60,6 +60,8 @@ type ClientService interface {
 
 	ZDeploymentsGetDeployment(params *ZDeploymentsGetDeploymentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZDeploymentsGetDeploymentOK, error)
 
+	ZDeploymentsGetDeploymentByName(params *ZDeploymentsGetDeploymentByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZDeploymentsGetDeploymentByNameOK, error)
+
 	ZDeploymentsListDeployments(params *ZDeploymentsListDeploymentsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZDeploymentsListDeploymentsOK, error)
 
 	ZDeploymentsUpdateDeployment(params *ZDeploymentsUpdateDeploymentParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZDeploymentsUpdateDeploymentOK, error)
@@ -184,6 +186,46 @@ func (a *Client) ZDeploymentsGetDeployment(params *ZDeploymentsGetDeploymentPara
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*ZDeploymentsGetDeploymentDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+ZDeploymentsGetDeploymentByName gets deployment
+
+Get deployment details
+*/
+func (a *Client) ZDeploymentsGetDeploymentByName(params *ZDeploymentsGetDeploymentByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZDeploymentsGetDeploymentByNameOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewZDeploymentsGetDeploymentByNameParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "ZDeployments_GetDeploymentByName",
+		Method:             "GET",
+		PathPattern:        "/v1/deployments/name/{deploymentName}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ZDeploymentsGetDeploymentByNameReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ZDeploymentsGetDeploymentByNameOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*ZDeploymentsGetDeploymentByNameDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

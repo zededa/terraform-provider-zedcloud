@@ -63,7 +63,7 @@ ZDeploymentsUpdateDeploymentParams contains all the parameters to send to the AP
 type ZDeploymentsUpdateDeploymentParams struct {
 
 	// Body.
-	Body *models.ZserviceDeploymentConfig
+	Body  *models.ZserviceDeploymentConfig
 
 	// DeploymentID.
 	DeploymentID string

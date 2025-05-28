@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -46,6 +45,12 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Description: "ZEDCloud API token",
 				DefaultFunc: schema.EnvDefaultFunc("TF_VAR_zedcloud_token", nil),
+			},
+			"zservices_url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "ZServices url. Ex: https://zservices.local.zededa.net",
+				DefaultFunc: schema.EnvDefaultFunc("TF_VAR_zservices_url", "zservices.local.zededa.net"),
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
@@ -135,7 +140,6 @@ func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
 
 func (h *HttpTransportWrapper) RoundTrip(req *http.Request) (*http.Response, error) {
 	version = fmt.Sprintf("zededa-terraform-provider/%s", h.providerVersion)
-	log.Printf("[INFO] Request URL>>>>>::::: %s", req.URL.String())
 	req.Header.Add("User-Agent", version)
 	req.Header.Add("X-Custom-User-Agent", version)
 	return h.RoundTripper.RoundTrip(req)
@@ -145,6 +149,11 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	zedCloudURL, urlIsSet := d.Get("zedcloud_url").(string)
 	if !urlIsSet || zedCloudURL == "" {
 		return nil, diag.FromErr(errors.New("zedcloud URL must be set"))
+	}
+
+	zservicesURL, urlIsSet := d.Get("zservices_url").(string)
+	if !urlIsSet || zservicesURL == "" {
+		return nil, diag.FromErr(errors.New("zservices URL must be set"))
 	}
 
 	token, tokenIsSet := d.Get("zedcloud_token").(string)
@@ -167,7 +176,6 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	zedCloudClient := client.New(transport, strfmt.Default)
 
 	// initialize zservices client
-	zservicesURL := "zservices.local.zededa.net"
 	// --- Add this block for insecure TLS for zservices ---
 	insecureHTTPClient := retryClient.StandardClient()
 	insecureHTTPClient.Transport = &http.Transport{

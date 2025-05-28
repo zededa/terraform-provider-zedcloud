@@ -60,6 +60,8 @@ type ClientService interface {
 
 	ZAssetGroupsGetAssetGroup(params *ZAssetGroupsGetAssetGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZAssetGroupsGetAssetGroupOK, error)
 
+	ZAssetGroupsGetAssetGroupByName(params *ZAssetGroupsGetAssetGroupByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZAssetGroupsGetAssetGroupByNameOK, error)
+
 	ZAssetGroupsListAssetGroups(params *ZAssetGroupsListAssetGroupsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZAssetGroupsListAssetGroupsOK, error)
 
 	ZAssetGroupsUpdateAssetGroup(params *ZAssetGroupsUpdateAssetGroupParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZAssetGroupsUpdateAssetGroupOK, error)
@@ -184,6 +186,46 @@ func (a *Client) ZAssetGroupsGetAssetGroup(params *ZAssetGroupsGetAssetGroupPara
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*ZAssetGroupsGetAssetGroupDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+ZAssetGroupsGetAssetGroupByName gets aseet group
+
+	get asset group detail
+*/
+func (a *Client) ZAssetGroupsGetAssetGroupByName(params *ZAssetGroupsGetAssetGroupByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ZAssetGroupsGetAssetGroupByNameOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewZAssetGroupsGetAssetGroupByNameParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "ZAssetGroups_GetAssetGroupByName",
+		Method:             "GET",
+		PathPattern:        "/v1/asset-groups/name/{name}",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ZAssetGroupsGetAssetGroupByNameReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*ZAssetGroupsGetAssetGroupByNameOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*ZAssetGroupsGetAssetGroupByNameDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

@@ -35,32 +35,66 @@ func DataResourceZAssetGroups() *schema.Resource {
 	}
 }
 
+// func ReadZAssetGroup(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+// 	var diags diag.Diagnostics
+
+// 	params := z_asset_groups.NewZAssetGroupsGetAssetGroupParams()
+
+// 	idVal, idIsSet := d.GetOk("id")
+// 	if idIsSet {
+// 		id, _ := idVal.(string)
+// 		params.ID = id
+// 	} else {
+// 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+// 		return diags
+// 	}
+
+// 	clients := m.(*ProviderClients)
+// 	client := clients.ZServicesClient
+
+// 	resp, err := client.ZassetGroup.ZAssetGroupsGetAssetGroup(params, nil)
+// 	if err != nil {
+// 		log.Printf("[TRACE] ZassetGroup.ZAssetGroupsGetAssetGroup error: %s", spew.Sdump(err))
+// 		if ds, ok := ZsrvResponderToDiags(err); ok {
+// 			diags = append(diags, ds...)
+// 			return diags
+// 		}
+
+// 		diags = append(diags, diag.Errorf("ZAssetGroups.ZAssetGroupsGetAssetGroup error: %s", err)...)
+// 		return diags
+// 	}
+
+// 	respModel := resp.GetPayload()
+// 	zschema.SetZserviceAssetGroupReadROResourceData(d, respModel)
+
+// 	return diags
+// }
+
 func ReadZAssetGroup(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := z_asset_groups.NewZAssetGroupsGetAssetGroupParams()
+	params := z_asset_groups.NewZAssetGroupsGetAssetGroupByNameParams()
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
+	nameVal, nameIsSet := d.GetOk("name")
+	if nameIsSet {
+		params.Name = nameVal.(string)
 	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+		diags = append(diags, diag.Errorf("missing client parameter: name")...)
 		return diags
 	}
 
 	clients := m.(*ProviderClients)
 	client := clients.ZServicesClient
 
-	resp, err := client.ZassetGroup.ZAssetGroupsGetAssetGroup(params, nil)
+	resp, err := client.ZassetGroup.ZAssetGroupsGetAssetGroupByName(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] ZassetGroup.ZAssetGroupsGetAssetGroup error: %s", spew.Sdump(err))
+		log.Printf("[TRACE] ZAssetGroups.ZAssetGroupsGetAssetGroupByName error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
 			return diags
 		}
 
-		diags = append(diags, diag.Errorf("ZAssetGroups.ZAssetGroupsGetAssetGroup error: %s", err)...)
+		diags = append(diags, diag.Errorf("ZAssetGroups.ZAssetGroupsGetAssetGroupByName error: %s", err)...)
 		return diags
 	}
 

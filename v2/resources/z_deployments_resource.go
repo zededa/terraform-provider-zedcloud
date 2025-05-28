@@ -32,31 +32,65 @@ func DataResourceZDeployments() *schema.Resource {
 	}
 }
 
+// func ReadZDeployment(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+// 	var diags diag.Diagnostics
+
+// 	params := z_deployments.NewZDeploymentsGetDeploymentParams()
+
+// 	deploymentIdVal, deploymentIdIsSet := d.GetOk("deployment_id")
+// 	if deploymentIdIsSet {
+// 		params.DeploymentID = deploymentIdVal.(string)
+// 	} else {
+// 		diags = append(diags, diag.Errorf("missing client parameter: deploymentId")...)
+// 		return diags
+// 	}
+
+// 	clients := m.(*ProviderClients)
+// 	client := clients.ZServicesClient
+
+// 	resp, err := client.Zdeployments.ZDeploymentsGetDeployment(params, nil)
+// 	if err != nil {
+// 		log.Printf("[TRACE] ZDeployments.ZDeploymentsGetDeployment error: %s", spew.Sdump(err))
+// 		if ds, ok := ZsrvResponderToDiags(err); ok {
+// 			diags = append(diags, ds...)
+// 			return diags
+// 		}
+
+// 		diags = append(diags, diag.Errorf("ZDeployments.ZDeploymentsGetDeployment error: %s", err)...)
+// 		return diags
+// 	}
+
+// 	respModel := resp.GetPayload()
+// 	zschema.SetZserviceDeploymentReadROResourceData(d, respModel)
+
+// 	return diags
+// }
+
 func ReadZDeployment(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	params := z_deployments.NewZDeploymentsGetDeploymentParams()
+	params := z_deployments.NewZDeploymentsGetDeploymentByNameParams()
 
-	deploymentIdVal, deploymentIdIsSet := d.GetOk("deployment_id")
-	if deploymentIdIsSet {
-		params.DeploymentID = deploymentIdVal.(string)
+	deploymentNameVal, deploymentNameIsSet := d.GetOk("deployment_name")
+	if deploymentNameIsSet {
+		params.DeploymentName = deploymentNameVal.(string)
 	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: deploymentId")...)
+		diags = append(diags, diag.Errorf("missing client parameter: deploymentName")...)
 		return diags
 	}
 
 	clients := m.(*ProviderClients)
 	client := clients.ZServicesClient
 
-	resp, err := client.Zdeployments.ZDeploymentsGetDeployment(params, nil)
+	resp, err := client.Zdeployments.ZDeploymentsGetDeploymentByName(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] ZDeployments.ZDeploymentsGetDeployment error: %s", spew.Sdump(err))
+		log.Printf("[TRACE] ZDeployments.ZDeploymentsGetDeploymentByName error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
 			return diags
 		}
 
-		diags = append(diags, diag.Errorf("ZDeployments.ZDeploymentsGetDeployment error: %s", err)...)
+		diags = append(diags, diag.Errorf("ZDeployments.ZDeploymentsGetDeploymentByName error: %s", err)...)
 		return diags
 	}
 
