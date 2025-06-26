@@ -513,6 +513,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `app instance activation flag`,
 			Type:        schema.TypeBool,
 			Optional:    true,
+			Default:     true,
 		},
 
 		"app_id": {
