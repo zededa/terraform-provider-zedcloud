@@ -49,7 +49,7 @@ The following environment variables are optional:
 export TF_HTTP_SESSION_DEBUG=true
 
 NOTE: Enabling this debug will cause each HTTP request & response to be dumped as TF log messages 
-      with "logging level" `DEBUG`. It's useful for troubleshooting why certaing TF configs are either 
+      with "logging level" `DEBUG`. It's useful for troubleshooting why certain TF configs are either 
       not accepted by Zedcloud or do not produce the expected results. 
       It will EXPOSE the authentication token!
 ```
