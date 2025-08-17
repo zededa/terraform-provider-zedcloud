@@ -202,6 +202,7 @@ Optional:
 - `deployment_type` (String) Deployment type for the app. The correct values are: "DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE","DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS","DEPLOYMENT_TYPE_VMWARE_VCE".
 - `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--app_policies--app_config--manifest_json--desc))
 - `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
+- `disable_v_t_p_m` (Boolean) UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field
 - `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
 - `docker_compose_tar_image_name` (String) Docker compose tar image name
 - `docker_compose_yaml_text` (String) Docker compose base64 encoded plain text
@@ -458,12 +459,13 @@ Required:
 
 Optional:
 
+- `cpu_pinning_enabled` (Boolean) Enable CpuPinning
+- `disable_v_t_p_m` (Boolean) Disable vTPM for virtual machines (VM)
 - `enable_oem_win_license_key` (Boolean) Enable device which has VM to receive the Windows license embedded in the ACPI tables
 - `mode` (String) Hardware Virtualization
 
 Read-Only:
 
-- `cpu_pinning_enabled` (Boolean) Enable CpuPinning
 - `memory` (Number) Memory
 - `vnc_display` (Number) VNC display
 

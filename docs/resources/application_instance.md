@@ -350,12 +350,13 @@ Required:
 
 Optional:
 
+- `cpu_pinning_enabled` (Boolean) Enable CpuPinning
+- `disable_v_t_p_m` (Boolean) Disable vTPM for virtual machines (VM)
 - `enable_oem_win_license_key` (Boolean) Enable device which has VM to receive the Windows license embedded in the ACPI tables
 - `mode` (String) Hardware Virtualization
 
 Read-Only:
 
-- `cpu_pinning_enabled` (Boolean) Enable CpuPinning
 - `memory` (Number) Memory
 - `vnc_display` (Number) VNC display
 
