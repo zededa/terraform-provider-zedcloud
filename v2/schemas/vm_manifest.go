@@ -47,6 +47,7 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 	}
 	description, _ := d.Get("description").(string)
 	displayName, _ := d.Get("display_name").(string)
+	disableVTPM := d.Get("disable_v_t_p_m").(bool)
 	enableOemWinLicenseKey, _ := d.Get("enable_oem_win_license_key").(bool)
 	enablevnc, _ := d.Get("enablevnc").(bool)
 	var images []*models.VMManifestImage // []*VMManifestImage
@@ -176,6 +177,7 @@ func VMManifestModel(d *schema.ResourceData) *models.VMManifest {
 		PersistentRuntimeSizeBytes: persistentRuntimeSizeBytes,
 		RuntimeProtocolVersion:     runtimeProtocolVersion,
 		RuntimeVersion:             runtimeVersion,
+		DisableVTPM:                disableVTPM,
 	}
 }
 
@@ -224,6 +226,7 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 	//
 	description := m["description"].(string)
 	displayName := m["display_name"].(string)
+	disableVTPM := m["disable_v_t_p_m"].(bool)
 	enableOemWinLicenseKey := m["enable_oem_win_license_key"].(bool)
 	enablevnc := m["enablevnc"].(bool)
 	var images []*models.VMManifestImage // []*VMManifestImage
@@ -340,6 +343,7 @@ func VMManifestModelFromMap(m map[string]interface{}) *models.VMManifest {
 		Desc:                       desc,
 		Description:                description,
 		DisplayName:                displayName,
+		DisableVTPM:                disableVTPM,
 		EnableOemWinLicenseKey:     enableOemWinLicenseKey,
 		Enablevnc:                  enablevnc,
 		Images:                     images,
@@ -399,6 +403,7 @@ func SetVMManifestSubResourceData(m []*models.VMManifest) (d []*map[string]inter
 			properties["desc"] = SetDetailsSubResourceData([]*models.Details{VMManifestModel.Desc})
 			properties["description"] = VMManifestModel.Description
 			properties["display_name"] = VMManifestModel.DisplayName
+			properties["disable_v_t_p_m"] = VMManifestModel.DisableVTPM
 			properties["enable_oem_win_license_key"] = VMManifestModel.EnableOemWinLicenseKey
 			properties["enablevnc"] = VMManifestModel.Enablevnc
 			properties["images"] = SetVMManifestImageSubResourceData(VMManifestModel.Images)
@@ -489,6 +494,12 @@ func VMManifest() map[string]*schema.Schema {
 		"description": {
 			Description: `UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField`,
 			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"disable_v_t_p_m": {
+			Description: `UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field`,
+			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
@@ -627,6 +638,7 @@ func GetVMManifestPropertyFields() (t []string) {
 		"desc",
 		"description",
 		"display_name",
+		"disable_v_t_p_m",
 		"enable_oem_win_license_key",
 		"enablevnc",
 		"images",

@@ -60,6 +60,7 @@ resource "zedcloud_application" "test_tf_provider" {
 			}
 		}
 		cpu_pinning_enabled = false
+		disable_v_t_p_m = false
 		enable_oem_win_license_key = false
 		deployment_type = "DEPLOYMENT_TYPE_K3S"
 		desc {

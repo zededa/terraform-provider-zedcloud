@@ -68,3 +68,4 @@ vminfo:
     vnc: false
     vncdisplay: 0
     enableOemWinLicenseKey: false
+    disableVTPM: false

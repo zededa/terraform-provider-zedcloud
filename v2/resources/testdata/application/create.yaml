@@ -27,6 +27,7 @@ manifest:
         variables: []
   containerdetail: null
   cpupinningenabled: false
+  disableVTPM: false
   enableOemWinLicenseKey: false
   deploymenttype: DEPLOYMENT_TYPE_K3S
   desc:
