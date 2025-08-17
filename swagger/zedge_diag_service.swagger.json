@@ -2754,6 +2754,17 @@
                 }
             }
         },
+        "commonCellularIPType": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_IP_TYPE_UNSPECIFIED",
+                "CELLULAR_IP_TYPE_IPV4",
+                "CELLULAR_IP_TYPE_IPV4_AND_IPV6",
+                "CELLULAR_IP_TYPE_IPV6"
+            ],
+            "default": "CELLULAR_IP_TYPE_UNSPECIFIED",
+            "description": "The IP addressing type to use for a given attach or default bearer.\n\n - CELLULAR_IP_TYPE_UNSPECIFIED: IP type is not specified.\nWhen unspecified, EVE will not enforce an IP type in the bearer configuration.\nThe modem will instead use its built-in profiles (see CellularProfile) to determine\nthe appropriate IP type for the network.\n - CELLULAR_IP_TYPE_IPV4: IPv4 only.\n - CELLULAR_IP_TYPE_IPV4_AND_IPV6: IPv4 and IPv6.\n - CELLULAR_IP_TYPE_IPV6: IPv6 only."
+        },
         "commonCipherBlock": {
             "type": "object",
             "properties": {
@@ -3247,15 +3258,15 @@
                 },
                 "apn": {
                     "type": "string",
-                    "description": "Access Point Network to connect into.\nBy default it is \"internet\"."
+                    "description": "Access Point Network to connect into.\nBy default it is \"internet\".\nApplies to the default bearer.\nTo modify the attach bearer APN, use attach_apn instead."
                 },
                 "authProtocol": {
-                    "$ref": "#/definitions/configCellularAuthProtocol",
-                    "description": "Authentication protocol used by the network."
+                    "$ref": "#/definitions/eveconfigCellularAuthProtocol",
+                    "description": "Authentication protocol used by the network.\nApplies to the default bearer.\nTo modify the authentication protocol for the attach bearer, use attach_auth_protocol instead."
                 },
                 "cipherData": {
                     "$ref": "#/definitions/commonCipherBlock",
-                    "description": "Cipher data may contain encrypted user credentials\n(inside cellNetUsername and cellNetPassword fields)."
+                    "description": "Cipher data may contain encrypted user credentials\n(inside cellular_net_* fields of EncryptionBlock).\nEncryptionBlock allows separate configuration of credentials for the attach\nand default bearers."
                 },
                 "preferredPlmns": {
                     "type": "array",
@@ -3274,20 +3285,25 @@
                         "$ref": "#/definitions/evecommonRadioAccessTechnology"
                     },
                     "description": "The list of preferred Radio Access Technologies (RATs) to use for connecting\nto the network.\nOrder matters, first is the most preferred, second is tried next, etc.\nNot listed technologies will not be tried.\nIf empty, then modem will select RAT automatically."
+                },
+                "ipType": {
+                    "$ref": "#/definitions/commonCellularIPType",
+                    "description": "The IP addressing type to use for the default bearer."
+                },
+                "attachApn": {
+                    "type": "string",
+                    "description": "Access Point Name (APN) for the attach (initial) bearer.\nThis field is optional. If not specified, EVE will not send any attach bearer\nconfiguration to the modem. Instead, the modem will use one of its pre-installed\nprofiles (see CellularProfile) to determine the configuration."
+                },
+                "attachIpType": {
+                    "$ref": "#/definitions/commonCellularIPType",
+                    "description": "The IP addressing type to use for the attach bearer.\nLeave undefined if attach_apn is not specified."
+                },
+                "attachAuthProtocol": {
+                    "$ref": "#/definitions/eveconfigCellularAuthProtocol",
+                    "description": "Authentication protocol used for the attach bearer.\nLeave undefined if attach_apn is not specified."
                 }
             },
             "description": "CellularAccessPoint contains config parameters for connecting to a cellular network."
-        },
-        "configCellularAuthProtocol": {
-            "type": "string",
-            "enum": [
-                "CELLULAR_AUTH_PROTOCOL_NONE",
-                "CELLULAR_AUTH_PROTOCOL_PAP",
-                "CELLULAR_AUTH_PROTOCOL_CHAP",
-                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
-            ],
-            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
-            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
         },
         "configCellularConfig": {
             "type": "object",
@@ -4016,6 +4032,14 @@
                 "locUrl": {
                     "type": "string",
                     "title": "If set indicates URL of the Local Operator Console (LOC)"
+                },
+                "datastoreCollectInfoId": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "several datastores can be specified, but at the current moment only one will be supported\nthis is done to be extensible to allow to specify the datastore or have alternatives in\ncase of failure",
+                    "title": "UUID of the datastore to upload the collect-info tarball to - only DsHttp and DsHttps is currently possible\nthe directory is specified by dpath in DatastoreConfig and the filename is the standard collect-info.sh\nfilename with the device uuid concatenated,\nf.e.: eve-info-v34-2025-05-13-08-53-52-5d0767ee-0547-4569-b530-387e526f8cb9.tar.gz"
                 }
             }
         },
@@ -4754,6 +4778,10 @@
                 "enableOemWinLicenseKey": {
                     "type": "boolean",
                     "title": "The app should receive the Windows license embedded in ACPI tables"
+                },
+                "disableVtpm": {
+                    "type": "boolean",
+                    "description": "Disable vTPM for the VM, this defaults to false according to the\nproto3 specification."
                 }
             }
         },
@@ -5073,6 +5101,17 @@
             ],
             "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
             "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
+        },
+        "eveconfigCellularAuthProtocol": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_AUTH_PROTOCOL_NONE",
+                "CELLULAR_AUTH_PROTOCOL_PAP",
+                "CELLULAR_AUTH_PROTOCOL_CHAP",
+                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
+            ],
+            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
+            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
         },
         "eveconfigEdgeNodeCluster": {
             "type": "object",

@@ -9123,6 +9123,21 @@
             "description": "- APP_CATEGORY_UNSPECIFIED: Invalid Edge Application Category\n - APP_CATEGORY_OPERATING_SYSTEM: Edge operating systems\n - APP_CATEGORY_INDUSTRIAL: Connectity solution for industrial protocols\n - APP_CATEGORY_EDGE_APPLICATION: Edge application framework featuring composite functions for data ingestion, buffering, analytics and export\n - APP_CATEGORY_NETWORKING: Edge networking services (e.g. SD-WAN, NFV)\n - APP_CATEGORY_SECURITY: Edge security services (e.g. protocol inspection, firewall)\n - APP_CATEGORY_DATA_ANALYTICS: Edge analytics (e.g. AI/ML) and data management (e.g. database, connectors) services\n - APP_CATEGORY_CLOUD_APPLICATION: Edge application runtimes, cloud connectivity and general application enablement\n - APP_CATEGORY_DEVOPS: Tools for Edge Application CI/CD and performance optimization\n - APP_CATEGORY_OTHERS: Miscellaneous functionality",
             "title": "Edge Application Category"
         },
+        "AppInfo": {
+            "type": "object",
+            "properties": {
+                "appId": {
+                    "type": "string",
+                    "description": "system generated unique id for the app bundle",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "appName": {
+                    "type": "string",
+                    "description": "app bundle name"
+                }
+            }
+        },
         "AppInstConfigStatusList": {
             "type": "object",
             "properties": {
@@ -9170,6 +9185,10 @@
                     "type": "string",
                     "description": "Id of the designated node",
                     "pattern": "[0-9A-Za-z-]+"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "edge node cluster name"
                 }
             }
         },
@@ -9425,6 +9444,14 @@
                 "runtimePlatformVersions": {
                     "$ref": "#/definitions/RuntimePlatformVersions",
                     "description": "Runtime platform versions"
+                },
+                "app": {
+                    "$ref": "#/definitions/AppInfo",
+                    "description": "App bundle specific info"
+                },
+                "device": {
+                    "$ref": "#/definitions/DevInfo",
+                    "description": "Device specific info"
                 }
             },
             "description": "AppInstanceStatusMsg encapsulates the status of an app instance",
@@ -9562,6 +9589,13 @@
                     "minLength": 3,
                     "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
                     "uniqueItems": true
+                },
+                "netStatusList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetworkStatus"
+                    },
+                    "description": "network status list"
                 }
             },
             "description": "AppInstStatusSummaryMsg stores the summary of the app instance status",
@@ -11048,6 +11082,25 @@
                 "appCategory"
             ]
         },
+        "DevInfo": {
+            "type": "object",
+            "properties": {
+                "deviceId": {
+                    "type": "string",
+                    "description": "system generated unique id for the device",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "deviceName": {
+                    "type": "string",
+                    "description": "device name"
+                },
+                "rawStatus": {
+                    "type": "string",
+                    "description": "device raw status"
+                }
+            }
+        },
         "DeviceEntity": {
             "type": "object",
             "properties": {
@@ -11444,6 +11497,19 @@
             "description": "Geographic location of an edge node determined by a variety of data collection mechanisms (e.g. network routing addresses or internal GPS devices).",
             "title": "Geographic location of an edge node"
         },
+        "ImageDatastore": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Datastore ID"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Datastore Name"
+                }
+            }
+        },
         "InlineOpaqueBase64Data": {
             "type": "object",
             "properties": {
@@ -11675,7 +11741,7 @@
                     "description": "lisp credential"
                 }
             },
-            "description": "LispServer request paylod",
+            "description": "LispServer request payload",
             "title": "LispServer payload detail",
             "required": [
                 "nameOrIp",
@@ -11708,6 +11774,10 @@
                 "details": {
                     "$ref": "#/definitions/TransDetails",
                     "description": "Details for recommended transition action"
+                },
+                "enablevnc": {
+                    "type": "boolean",
+                    "description": "Enable vnc for the app"
                 }
             },
             "description": "Details about transition parameters and indication for cause of the transition and recommendation for the transition action",
@@ -13358,6 +13428,11 @@
                     "type": "boolean",
                     "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
                     "title": "Enable device to read the license info from APCI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "title": "Disable vTPM for a virtual machine (VM)"
                 }
             }
         },
@@ -13421,6 +13496,18 @@
                 "mountpath": {
                     "type": "string",
                     "description": "UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field"
+                },
+                "imagestatus": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Image_Status_Field, AppDetailsPage:DrivesPane:Image_Status_Field",
+                    "title": "enum: UNSPECIFIED, CREATED, PENDING, UPLOADING, READY, INUSE, ARCHIVED, MAX, FAILED, UPLINKING"
+                },
+                "datastore": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ImageDatastore"
+                    },
+                    "description": "UI map: AppEditPage:DrivesPane:DataStore_Field, AppDetailsPage:DrivesPane:DataStore_Field"
                 }
             }
         },
@@ -14025,6 +14112,21 @@
                 "deploymentType": {
                     "$ref": "#/definitions/DeploymentType",
                     "description": "type of deployment for the app"
+                },
+                "netStatusList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetworkStatus"
+                    },
+                    "description": "network status list"
+                },
+                "vminfo": {
+                    "$ref": "#/definitions/vm",
+                    "description": "virtual machine info"
+                },
+                "remoteConsole": {
+                    "type": "boolean",
+                    "description": "Remote console flag"
                 }
             },
             "description": "appInstConfigStatus stores the summary of the app instance config status",
@@ -14337,6 +14439,10 @@
                 "enableOemWinLicenseKey": {
                     "type": "boolean",
                     "description": "Enable device which has VM to receive the Windows license embedded in the ACPI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "Disable vTPM for virtual machines (VM)"
                 }
             },
             "description": "Virtual machine memory configuration",

@@ -1786,6 +1786,10 @@
                     "type": "string",
                     "description": "Id of the designated node",
                     "pattern": "[0-9A-Za-z-]+"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "edge node cluster name"
                 }
             }
         },
@@ -2750,7 +2754,7 @@
                     "description": "lisp credential"
                 }
             },
-            "description": "LispServer request paylod",
+            "description": "LispServer request payload",
             "title": "LispServer payload detail",
             "required": [
                 "nameOrIp",
@@ -2783,6 +2787,10 @@
                 "details": {
                     "$ref": "#/definitions/TransDetails",
                     "description": "Details for recommended transition action"
+                },
+                "enablevnc": {
+                    "type": "boolean",
+                    "description": "Enable vnc for the app"
                 }
             },
             "description": "Details about transition parameters and indication for cause of the transition and recommendation for the transition action",
@@ -2951,6 +2959,10 @@
                 "edgeNodeCluster": {
                     "$ref": "#/definitions/NetInstEdgeNodeCluster",
                     "description": "Edge Node Cluster"
+                },
+                "forwardLldp": {
+                    "type": "boolean",
+                    "description": "Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this\nnetwork instance.\nLLDP is used by devices to advertise identity and capabilities to directly\nconnected neighbors, and is often required for topology discovery and network\nmanagement tools.\nWhen enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed\nby the forwarding plane."
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -4120,6 +4132,10 @@
                 "enableOemWinLicenseKey": {
                     "type": "boolean",
                     "description": "Enable device which has VM to receive the Windows license embedded in the ACPI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "Disable vTPM for virtual machines (VM)"
                 }
             },
             "description": "Virtual machine memory configuration",

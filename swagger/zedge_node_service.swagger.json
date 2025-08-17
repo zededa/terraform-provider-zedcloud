@@ -1618,7 +1618,8 @@
                                 },
                                 "localOperatorConsoleURL": {
                                     "type": "string",
-                                    "description": "local operator console url"
+                                    "description": "local operator console url",
+                                    "title": "will be deprecated 73"
                                 },
                                 "configLock": {
                                     "$ref": "#/definitions/DeviceConfigLock",
@@ -1652,9 +1653,14 @@
                                     "type": "object",
                                     "$ref": "#/definitions/ModelInfo",
                                     "description": "Model specific info"
+                                },
+                                "edgeSyncConfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeSyncConfig",
+                                    "description": "edge sync config"
                                 }
                             },
-                            "description": "Device Configuration request paylod holds the device properties",
+                            "description": "Device Configuration request payload holds the device properties",
                             "title": "Device Configuration payload detail",
                             "required": [
                                 "name",
@@ -3199,6 +3205,269 @@
                 }
             }
         },
+        "/v1/devices/id/{id}/suimage": {
+            "get": {
+                "summary": "Get edge node single-use EVE image details",
+                "description": "Get details of a single use EVE image for an edge node.",
+                "operationId": "EdgeNodeConfiguration_GetEdgeNodeSingleUseEVEImage",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/DeviceSingleUseImageResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNodeConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            },
+            "post": {
+                "summary": "Create edge node single-use EVE image",
+                "description": "Create a single use EVE image for an edge node.",
+                "operationId": "EdgeNodeConfiguration_CreateEdgeNodeSingleUseEVEImage",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this edge node record will conflict with an already existing edge node record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "unique id for a device",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "imageTag": {
+                                    "type": "string",
+                                    "description": "eve image tag to use",
+                                    "title": "EVE image tag (e.g. '12.2.1-kvm-amd64')"
+                                },
+                                "imageType": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceGenerateImageType",
+                                    "description": "image type",
+                                    "title": "Default: installer"
+                                }
+                            },
+                            "description": "Device Generate Single-use EVE Image config payload holds the device properties for generating a single-use EVE image",
+                            "title": "Device Generate Single-use EVE Image config",
+                            "required": [
+                                "imageTag",
+                                "imageType"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNodeConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
+        "/v1/devices/id/{id}/suimage/link": {
+            "get": {
+                "summary": "Get edge node single-use EVE image download link",
+                "description": "Get download link of a single use EVE image for an edge node.",
+                "operationId": "EdgeNodeConfiguration_GetEdgeNodeSingleUseEVEImageDownloadLink",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/DeviceSingleUseImageDownloadLinkResp"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "EdgeNodeConfiguration"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
         "/v1/devices/id/{id}/unpublish": {
             "put": {
                 "summary": "update EVE image on edge node",
@@ -4563,6 +4832,13 @@
                         "default": "SUPPORT_TYPE_UNSPECIFIED"
                     },
                     {
+                        "name": "includeInterfaces",
+                        "description": "flag to indicate whether to include network interface details in the response",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
                         "name": "X-Request-Id",
                         "in": "header",
                         "required": false,
@@ -4796,6 +5072,13 @@
                         "default": "SUPPORT_TYPE_UNSPECIFIED"
                     },
                     {
+                        "name": "includeInterfaces",
+                        "description": "flag to indicate whether to include network interface details in the response",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
                         "name": "X-Request-Id",
                         "in": "header",
                         "required": false,
@@ -5027,6 +5310,13 @@
                             "SUPPORT_TYPE_NON_LTS"
                         ],
                         "default": "SUPPORT_TYPE_UNSPECIFIED"
+                    },
+                    {
+                        "name": "includeInterfaces",
+                        "description": "flag to indicate whether to include network interface details in the response",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
                     },
                     {
                         "name": "X-Request-Id",
@@ -7878,6 +8168,10 @@
                                     "type": "string",
                                     "description": "Product URL"
                                 },
+                                "brandName": {
+                                    "type": "string",
+                                    "description": "Brand name."
+                                },
                                 "ioMemberList": {
                                     "type": "array",
                                     "items": {
@@ -9638,7 +9932,7 @@
                     "description": "dps service attached to cloud policy"
                 }
             },
-            "description": "Azure resource request paylod for cloud policy",
+            "description": "Azure resource request payload for cloud policy",
             "title": "Azure resource payload detail for cloud policy",
             "required": [
                 "resourceGroup",
@@ -10497,7 +10791,7 @@
                     "description": "EID"
                 }
             },
-            "description": "DevZedServer request paylod",
+            "description": "DevZedServer request payload",
             "title": "DevZedServer payload detail",
             "required": [
                 "hostName",
@@ -10808,7 +11102,8 @@
                 },
                 "localOperatorConsoleURL": {
                     "type": "string",
-                    "description": "local operator console url"
+                    "description": "local operator console url",
+                    "title": "will be deprecated 73"
                 },
                 "configLock": {
                     "$ref": "#/definitions/DeviceConfigLock",
@@ -10842,9 +11137,14 @@
                     "type": "object",
                     "$ref": "#/definitions/ModelInfo",
                     "description": "Model specific info"
+                },
+                "edgeSyncConfig": {
+                    "type": "object",
+                    "$ref": "#/definitions/EdgeSyncConfig",
+                    "description": "edge sync config"
                 }
             },
-            "description": "Device Configuration request paylod holds the device properties",
+            "description": "Device Configuration request payload holds the device properties",
             "title": "Device Configuration payload detail",
             "required": [
                 "name",
@@ -10879,7 +11179,7 @@
                     "description": "filter next"
                 }
             },
-            "description": "Device configuration request paylod",
+            "description": "Device configuration request payload",
             "title": "Device configuration payload detail",
             "required": [
                 "summaryByState",
@@ -10987,7 +11287,7 @@
                     "description": "A list of VLAN adapters"
                 }
             },
-            "description": "Device Configuration request paylod holds the device properties",
+            "description": "Device Configuration request payload holds the device properties",
             "title": "Device Configuration payload summary",
             "required": [
                 "name",
@@ -11058,6 +11358,14 @@
                 "entities"
             ]
         },
+        "DeviceGenerateImageType": {
+            "type": "string",
+            "enum": [
+                "Installer",
+                "Live"
+            ],
+            "default": "Installer"
+        },
         "DeviceHWSecurityModuleStatus": {
             "type": "string",
             "enum": [
@@ -11067,6 +11375,20 @@
                 "DEVICE_HW_SECURITY_MODULE_STATUS_ENABLED"
             ],
             "default": "DEVICE_HW_SECURITY_MODULE_STATUS_UNSPECIFIED"
+        },
+        "DeviceImageGenerateStatus": {
+            "type": "string",
+            "enum": [
+                "Unavailable",
+                "Starting",
+                "InProgress",
+                "DownloadingContainerImage",
+                "RunningContainer",
+                "UploadingImage",
+                "Successful",
+                "Failed"
+            ],
+            "default": "Unavailable"
         },
         "DeviceInfo": {
             "type": "object",
@@ -11286,6 +11608,15 @@
                 "apiCapability": {
                     "$ref": "#/definitions/infoAPICapability",
                     "title": "API Capabilities"
+                },
+                "memoryReport": {
+                    "$ref": "#/definitions/ECCMemoryReport"
+                },
+                "hardwareInfo": {
+                    "$ref": "#/definitions/HardwareInfo"
+                },
+                "memoryReportStatus": {
+                    "$ref": "#/definitions/ECCMemoryReportStatus"
                 }
             }
         },
@@ -11339,7 +11670,7 @@
                     "description": "TEMP : flag to indicate which version of LISP data plane should be running on the device"
                 }
             },
-            "description": "DeviceLisp request paylod",
+            "description": "DeviceLisp request payload",
             "title": "DeviceLisp payload detail",
             "required": [
                 "lispMapServers",
@@ -11540,6 +11871,43 @@
                 "DEVICE_SW_SUB_STATUS_UPDATE_DEFERRED"
             ],
             "default": "DEVICE_SW_SUB_STATUS_UNSPECIFIED"
+        },
+        "DeviceSingleUseImageDownloadLinkResp": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "system generated unique id for a device",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "link": {
+                    "type": "string",
+                    "description": "link to download the image"
+                }
+            }
+        },
+        "DeviceSingleUseImageResp": {
+            "type": "object",
+            "properties": {
+                "deviceId": {
+                    "type": "string",
+                    "description": "Device ID",
+                    "uniqueItems": true
+                },
+                "enterpriseId": {
+                    "type": "string",
+                    "description": "Enterprise ID",
+                    "uniqueItems": true
+                },
+                "generationstatus": {
+                    "type": "object",
+                    "$ref": "#/definitions/DeviceImageGenerateStatus",
+                    "description": "Single Use EVE image generation status"
+                }
+            },
+            "description": "Device  Single-Use Image info",
+            "title": "Device Single-Use Image info"
         },
         "DeviceStatusConfigList": {
             "type": "object",
@@ -11942,6 +12310,23 @@
                 }
             }
         },
+        "DimmRankInfo": {
+            "type": "object",
+            "properties": {
+                "rankName": {
+                    "type": "string"
+                },
+                "ceCount": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "ueCount": {
+                    "type": "string",
+                    "format": "int64"
+                }
+            },
+            "title": "Info per memory rank in the dimm"
+        },
         "DiskDescription": {
             "type": "object",
             "properties": {
@@ -11971,6 +12356,51 @@
                 "RuntimeVersion_V1"
             ],
             "default": "RuntimeVersion_Unknown"
+        },
+        "ECCMemoryControllerInfo": {
+            "type": "object",
+            "properties": {
+                "controllerName": {
+                    "type": "string"
+                },
+                "ceCount": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "ueCount": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "ranks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DimmRankInfo"
+                    }
+                }
+            },
+            "title": "Info per memory controller in the system"
+        },
+        "ECCMemoryReport": {
+            "type": "object",
+            "properties": {
+                "memoryControllers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ECCMemoryControllerInfo"
+                    }
+                }
+            },
+            "title": "A report for all memory controllers"
+        },
+        "ECCMemoryReportStatus": {
+            "type": "string",
+            "enum": [
+                "ECC_MEMORY_REPORT_STATUS_NOT_APPLICABLE",
+                "ECC_MEMORY_REPORT_STATUS_PASS",
+                "ECC_MEMORY_REPORT_STATUS_DEGRADED",
+                "ECC_MEMORY_REPORT_STATUS_FAILED"
+            ],
+            "default": "ECC_MEMORY_REPORT_STATUS_NOT_APPLICABLE"
         },
         "ECDSA": {
             "type": "object",
@@ -12016,7 +12446,7 @@
                     "description": "string value"
                 }
             },
-            "description": "ED Configuration Item request paylod",
+            "description": "ED Configuration Item request payload",
             "title": "EDConfigItem payload detail"
         },
         "EIDRegister": {
@@ -12133,6 +12563,22 @@
                 }
             }
         },
+        "EdgeSyncConfig": {
+            "type": "object",
+            "properties": {
+                "edgeSyncUrl": {
+                    "type": "string",
+                    "description": "edge sync url"
+                },
+                "datastoreId": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "upload datastore list"
+                }
+            }
+        },
         "EdgeViewPolicy": {
             "type": "object",
             "properties": {
@@ -12161,6 +12607,10 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Maximum instances allowed for Edgeview"
+                },
+                "requireControllerAuthen": {
+                    "type": "boolean",
+                    "description": "Whether controller authentication is required for Edgeview access"
                 }
             },
             "description": "Policy for device edgeview operation",
@@ -12190,6 +12640,9 @@
                 "generationId": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "requireControllerAuthen": {
+                    "type": "boolean"
                 }
             }
         },
@@ -12217,6 +12670,10 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Maximum instances allowed for Edgeview"
+                },
+                "requireControllerAuthen": {
+                    "type": "boolean",
+                    "description": "Whether controller authentication is required for Edgeview access"
                 }
             },
             "description": "Policy for device edgeview operation",
@@ -12300,6 +12757,15 @@
             "default": "ENTITY_UNSPECIFIED",
             "description": "- ENTITY_UNSPECIFIED: Invalid Device Entity\n - ENTITY_BASE_OS: Base OS entity\n - ENTITY_SYSTEM_ADAPTER: System Adapter Entity\n - ENTITY_VAULT: Vault Entity\n - ENTITY_ATTESTATION: Attestation Entity\n - ENTITY_APP_INSTANCE: App Instance Entity\n - ENTITY_PORT: Port Entity\n - ENTITY_NETWORK: Network Entity\n - ENTITY_NETWORK_INSTANCE: Network Instance Entity\n - ENTITY_CONTENT_TREE: ContentTree Entity\n - ENTITY_CONTENT_BLOB: Blob Entity\n - ENTITY_VOLUME: VOLUME Entity",
             "title": "Edge node components"
+        },
+        "EvAuthType": {
+            "type": "string",
+            "enum": [
+                "EvAuth_TYPE_UNSPECIFIED",
+                "EvAuth_TYPE_CONTROLER_CERT",
+                "EvAuth_TYPE_SSH_RSA_KEYS"
+            ],
+            "default": "EvAuth_TYPE_UNSPECIFIED"
         },
         "EveLtsSupportType": {
             "type": "string",
@@ -12537,6 +13003,31 @@
                 }
             }
         },
+        "HardwareInfo": {
+            "type": "object",
+            "properties": {
+                "disks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StorageDiskInfo"
+                    }
+                }
+            },
+            "title": "Information about the system that is sent once when the system boots"
+        },
+        "ImageDatastore": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Datastore ID"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Datastore Name"
+                }
+            }
+        },
         "IndividualCertificateEnrollment": {
             "type": "object",
             "title": "XXX TODO"
@@ -12735,6 +13226,9 @@
                 },
                 "encrypt": {
                     "type": "boolean"
+                },
+                "authen": {
+                    "$ref": "#/definitions/EvAuthType"
                 }
             }
         },
@@ -12845,7 +13339,7 @@
                     "description": "lisp credential"
                 }
             },
-            "description": "LispServer request paylod",
+            "description": "LispServer request payload",
             "title": "LispServer payload detail",
             "required": [
                 "nameOrIp",
@@ -12864,6 +13358,13 @@
                 "locURL": {
                     "type": "string",
                     "description": "Local operator console URL"
+                },
+                "datastoreId": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "upload datastore list"
                 }
             },
             "description": "Local operator console policy to enforce on all devices of the project",
@@ -13353,6 +13854,10 @@
                 "edgeNodeCluster": {
                     "$ref": "#/definitions/NetInstEdgeNodeCluster",
                     "description": "Edge Node Cluster"
+                },
+                "forwardLldp": {
+                    "type": "boolean",
+                    "description": "Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this\nnetwork instance.\nLLDP is used by devices to advertise identity and capabilities to directly\nconnected neighbors, and is often required for topology discovery and network\nmanagement tools.\nWhen enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed\nby the forwarding plane."
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -13609,6 +14114,10 @@
                     },
                     "description": "List of Static IP routes",
                     "title": "list of static IP routes"
+                },
+                "forwardLldp": {
+                    "type": "boolean",
+                    "description": "enable/disable lldp frame forward"
                 }
             }
         },
@@ -14307,6 +14816,9 @@
                 },
                 "status": {
                     "$ref": "#/definitions/PhysicalStorageStatus"
+                },
+                "smartStatus": {
+                    "type": "string"
                 }
             }
         },
@@ -14614,7 +15126,7 @@
                     "description": "azure subscription id to which resource group is attached"
                 }
             },
-            "description": "Resource group request paylod for cloud policy",
+            "description": "Resource group request payload for cloud policy",
             "title": "Resource group payload detail for cloud policy",
             "required": [
                 "name",
@@ -14846,6 +15358,40 @@
             ],
             "default": "SIMCARD_STATE_INVALID"
         },
+        "SmartAttr": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "worst": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "thresh": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "whenFailed": {
+                    "type": "string"
+                },
+                "rawValue": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "attributeName": {
+                    "type": "string"
+                }
+            }
+        },
         "StaticDNSList": {
             "type": "object",
             "properties": {
@@ -14915,6 +15461,32 @@
                     "type": "number",
                     "format": "int64",
                     "description": "write bytes counter"
+                }
+            }
+        },
+        "StorageDiskInfo": {
+            "type": "object",
+            "properties": {
+                "diskName": {
+                    "type": "string"
+                },
+                "wwn": {
+                    "type": "string"
+                },
+                "serialNumber": {
+                    "type": "string"
+                },
+                "model": {
+                    "type": "string"
+                },
+                "collectorErrors": {
+                    "type": "string"
+                },
+                "smartAttr": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SmartAttr"
+                    }
                 }
             }
         },
@@ -15202,6 +15774,10 @@
                 "productURL": {
                     "type": "string",
                     "description": "Product URL"
+                },
+                "brandName": {
+                    "type": "string",
+                    "description": "Brand name."
                 },
                 "ioMemberList": {
                     "type": "array",
@@ -15832,6 +16408,11 @@
                     "type": "boolean",
                     "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
                     "title": "Enable device to read the license info from APCI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "title": "Disable vTPM for a virtual machine (VM)"
                 }
             }
         },
@@ -15895,6 +16476,18 @@
                 "mountpath": {
                     "type": "string",
                     "description": "UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field"
+                },
+                "imagestatus": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Image_Status_Field, AppDetailsPage:DrivesPane:Image_Status_Field",
+                    "title": "enum: UNSPECIFIED, CREATED, PENDING, UPLOADING, READY, INUSE, ARCHIVED, MAX, FAILED, UPLINKING"
+                },
+                "datastore": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ImageDatastore"
+                    },
+                    "description": "UI map: AppEditPage:DrivesPane:DataStore_Field, AppDetailsPage:DrivesPane:DataStore_Field"
                 }
             }
         },
@@ -16737,6 +17330,17 @@
                 "clusterNodeStatus": {
                     "$ref": "#/definitions/ClusterNodeStatus",
                     "description": "Cluster node status"
+                },
+                "interfaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/sysInterface"
+                    },
+                    "description": "System Interface list"
+                },
+                "modelId": {
+                    "type": "string",
+                    "description": "device model"
                 }
             },
             "description": "Device status and config response details",
@@ -16809,7 +17413,11 @@
                 "API_CAPABILITY_NTPS_FQDN",
                 "API_CAPABILITY_WIN_LIC_PASSTHROUGH",
                 "API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE",
-                "API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE"
+                "API_CAPABILITY_ENCRYPTED_PATCH_ENVELOPE",
+                "API_CAPABILITY_SINGLE_STACK_IP_NETWORK",
+                "API_CAPABILITY_CELLULAR_ATTACH_CONFIG",
+                "API_CAPABILITY_EDGEVIEW_AUTHENTICATION",
+                "API_CAPABILITY_DISABLE_VTPM"
             ],
             "default": "API_CAPABILITY_UNSPECIFIED",
             "description": "Capabilities indicates features in the EdgeDevConfig where there is\nno easy way to otherwise determine whether or not they are parsed and\nsupported by EVE-OS\nA larger number indicates all lower numbers are also supported thus\nthis works similar to a version field for the EdgeDevConfig support."
@@ -16998,6 +17606,10 @@
                 "netDhcp": {
                     "$ref": "#/definitions/NetworkDHCPType",
                     "description": "Network DHCP type"
+                },
+                "ztype": {
+                    "type": "string",
+                    "description": "Z Type"
                 }
             },
             "description": "system interfaces that needs to be used by dom0",
@@ -17145,6 +17757,10 @@
                 "enableOemWinLicenseKey": {
                     "type": "boolean",
                     "description": "Enable device which has VM to receive the Windows license embedded in the ACPI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "Disable vTPM for virtual machines (VM)"
                 }
             },
             "description": "Virtual machine memory configuration",
