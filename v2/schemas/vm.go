@@ -9,6 +9,7 @@ func VMModel(d *schema.ResourceData) *models.VM {
 	cPUPinningEnabled, _ := d.Get("cpu_pinning_enabled").(bool)
 	cpusInt, _ := d.Get("cpus").(int)
 	cpus := int64(cpusInt)
+	disableVTPM, _ := d.Get("disable_v_t_p_m").(bool)
 	memoryInt, _ := d.Get("memory").(int)
 	memory := int64(memoryInt)
 	var mode *models.HvMode // HvMode
@@ -21,18 +22,20 @@ func VMModel(d *schema.ResourceData) *models.VM {
 	enableOemWinLicenseKey, _ := d.Get("enable_oem_win_license_key").(bool)
 	return &models.VM{
 		CPUPinningEnabled:      cPUPinningEnabled,
-		Cpus:                   &cpus,   // int64 true false false
-		Memory:                 &memory, // int64 true false false
-		Mode:                   mode,
-		Vnc:                    &vnc, // bool true false false
+		Cpus:                   &cpus, // int64
+		DisableVTPM:            disableVTPM,
 		EnableOemWinLicenseKey: enableOemWinLicenseKey,
+		Memory:                 &memory, // int64
+		Mode:                   mode,
+		Vnc:                    &vnc, // bool
 	}
 }
 
 func VMModelFromMap(m map[string]interface{}) *models.VM {
 	cPUPinningEnabled := m["cpu_pinning_enabled"].(bool)
-	cpus := int64(m["cpus"].(int))     // int64 true false false
-	memory := int64(m["memory"].(int)) // int64 true false false
+	cpus := int64(m["cpus"].(int)) // int64
+	disableVTPM := m["disable_v_t_p_m"].(bool)
+	memory := int64(m["memory"].(int)) // int64
 	var mode *models.HvMode            // HvMode
 	modeInterface, modeIsSet := m["mode"]
 	if modeIsSet {
@@ -44,16 +47,18 @@ func VMModelFromMap(m map[string]interface{}) *models.VM {
 	return &models.VM{
 		CPUPinningEnabled:      cPUPinningEnabled,
 		Cpus:                   &cpus,
+		DisableVTPM:            disableVTPM,
+		EnableOemWinLicenseKey: enableOemWinLicenseKey,
 		Memory:                 &memory,
 		Mode:                   mode,
 		Vnc:                    &vnc,
-		EnableOemWinLicenseKey: enableOemWinLicenseKey,
 	}
 }
 
 func SetVMResourceData(d *schema.ResourceData, m *models.VM) {
 	d.Set("cpu_pinning_enabled", m.CPUPinningEnabled)
 	d.Set("cpus", m.Cpus)
+	d.Set("disable_v_t_p_m", m.DisableVTPM)
 	d.Set("memory", m.Memory)
 	d.Set("mode", m.Mode)
 	d.Set("vnc", m.Vnc)
@@ -67,6 +72,7 @@ func SetVMSubResourceData(m []*models.VM) (d []*map[string]interface{}) {
 			properties := make(map[string]interface{})
 			properties["cpu_pinning_enabled"] = VMModel.CPUPinningEnabled
 			properties["cpus"] = VMModel.Cpus
+			properties["disable_v_t_p_m"] = VMModel.DisableVTPM
 			properties["memory"] = VMModel.Memory
 			properties["mode"] = VMModel.Mode
 			properties["vnc"] = VMModel.Vnc
@@ -83,7 +89,7 @@ func VMSchema() map[string]*schema.Schema {
 		"cpu_pinning_enabled": {
 			Description: `Enable CpuPinning`,
 			Type:        schema.TypeBool,
-			Computed:    true,
+			Optional:    true,
 		},
 
 		"cpus": {
@@ -91,6 +97,13 @@ func VMSchema() map[string]*schema.Schema {
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
+
+		"disable_v_t_p_m": {
+			Description: `Disable vTPM for virtual machines (VM)`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
 
 		"memory": {
 			Description: `Memory`,
@@ -125,11 +138,11 @@ func VMSchema() map[string]*schema.Schema {
 	}
 }
 
-// Retrieve property field names for updating the VM resource
 func GetVMPropertyFields() (t []string) {
 	return []string{
 		"cpu_pinning_enabled",
 		"cpus",
+		"disable_v_t_p_m",
 		"memory",
 		"mode",
 		"vnc",

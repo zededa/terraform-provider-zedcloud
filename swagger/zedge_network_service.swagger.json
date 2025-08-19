@@ -1344,6 +1344,12 @@
                         "type": "boolean"
                     },
                     {
+                        "name": "defaultNetwork",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
                         "name": "next.pageToken",
                         "description": "Page Token",
                         "in": "query",
@@ -1862,6 +1868,17 @@
         }
     },
     "definitions": {
+        "CellularAuthProtocol": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_AUTH_PROTOCOL_NONE",
+                "CELLULAR_AUTH_PROTOCOL_PAP",
+                "CELLULAR_AUTH_PROTOCOL_CHAP",
+                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
+            ],
+            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
+            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
+        },
         "Cursor": {
             "type": "object",
             "properties": {
@@ -2258,7 +2275,7 @@
                     "description": "Access Point Network to connect into.\nBy default it is \"internet\"."
                 },
                 "authProtocol": {
-                    "$ref": "#/definitions/configCellularAuthProtocol",
+                    "$ref": "#/definitions/eveconfigCellularAuthProtocol",
                     "description": "Authentication protocol used by the network."
                 },
                 "cipherData": {
@@ -2283,6 +2300,22 @@
                     },
                     "description": "The list of preferred Radio Access Technologies (RATs) to use for connecting\nto the network.\nOrder matters, first is the most preferred, second is tried next, etc.\nNot listed technologies will not be tried.\nIf empty, then modem will select RAT automatically."
                 },
+                "ipType": {
+                    "$ref": "#/definitions/commonCellularIPType",
+                    "description": "The IP addressing type to use for the default bearer."
+                },
+                "attachApn": {
+                    "type": "string",
+                    "description": "Access Point Name (APN) for the attach (initial) bearer.\nThis field is optional. If not specified, EVE will not send any attach bearer\nconfiguration to the modem. Instead, the modem will use one of its pre-installed\nprofiles (see CellularProfile) to determine the configuration."
+                },
+                "attachIpType": {
+                    "$ref": "#/definitions/commonCellularIPType",
+                    "description": "The IP addressing type to use for the attach bearer.\nLeave undefined if attach_apn is not specified."
+                },
+                "attachAuthProtocol": {
+                    "$ref": "#/definitions/CellularAuthProtocol",
+                    "description": "Authentication protocol used for the attach bearer.\nLeave undefined if attach_apn is not specified."
+                },
                 "secrets": {
                     "$ref": "#/definitions/NetCellularAccessPointSecrets"
                 },
@@ -2294,6 +2327,15 @@
                 },
                 "cryptoKey": {
                     "type": "string"
+                },
+                "attachSecrets": {
+                    "$ref": "#/definitions/NetCellularAccessPointSecrets"
+                },
+                "attachEncryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -2404,6 +2446,10 @@
                 "wireless": {
                     "$ref": "#/definitions/NetWirelessConfig",
                     "title": "Wifi configuration"
+                },
+                "project": {
+                    "$ref": "#/definitions/NetProjectInfo",
+                    "title": "project configuration"
                 }
             },
             "description": "Network provides Edge nodes a variety of connectivity choices for all types of networks. This enables physical connectivity with Ethernet, WiFi, LTE to communicate with ZEDEDA Cloud controller and Data Centres.",
@@ -2480,6 +2526,10 @@
                 "wireless": {
                     "$ref": "#/definitions/NetWirelessConfig",
                     "title": "Wifi configuration"
+                },
+                "project": {
+                    "$ref": "#/definitions/NetProjectInfo",
+                    "title": "project configuration"
                 }
             },
             "description": "Network provides Edge nodes a variety of connectivity choices for all types of networks. This enables physical connectivity with Ethernet, WiFi, LTE to communicate with ZEDEDA Cloud controller and Data Centres.",
@@ -2659,6 +2709,10 @@
                 "edgeNodeCluster": {
                     "$ref": "#/definitions/NetInstEdgeNodeCluster",
                     "description": "Edge Node Cluster"
+                },
+                "forwardLldp": {
+                    "type": "boolean",
+                    "description": "Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this\nnetwork instance.\nLLDP is used by devices to advertise identity and capabilities to directly\nconnected neighbors, and is often required for topology discovery and network\nmanagement tools.\nWhen enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed\nby the forwarding plane."
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -2906,6 +2960,10 @@
                 "edgeNodeCluster": {
                     "$ref": "#/definitions/NetInstEdgeNodeCluster",
                     "description": "Edge Node Cluster"
+                },
+                "forwardLldp": {
+                    "type": "boolean",
+                    "description": "enable/disable lldp frame forward"
                 }
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.",
@@ -3025,6 +3083,9 @@
                 },
                 "type": {
                     "$ref": "#/definitions/NetworkInstanceDhcpType"
+                },
+                "forwardLldp": {
+                    "type": "boolean"
                 },
                 "deviceDefault": {
                     "type": "boolean"
@@ -3254,6 +3315,21 @@
             },
             "description": "Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides summary status of a Network instance.",
             "title": "Network instance summary status"
+        },
+        "NetProjectInfo": {
+            "type": "object",
+            "properties": {
+                "projectId": {
+                    "type": "string",
+                    "description": "system generated unique id for a project",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "project name"
+                }
+            }
         },
         "NetProxyConfig": {
             "type": "object",
@@ -3998,6 +4074,17 @@
                 }
             }
         },
+        "commonCellularIPType": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_IP_TYPE_UNSPECIFIED",
+                "CELLULAR_IP_TYPE_IPV4",
+                "CELLULAR_IP_TYPE_IPV4_AND_IPV6",
+                "CELLULAR_IP_TYPE_IPV6"
+            ],
+            "default": "CELLULAR_IP_TYPE_UNSPECIFIED",
+            "description": "The IP addressing type to use for a given attach or default bearer.\n\n - CELLULAR_IP_TYPE_UNSPECIFIED: IP type is not specified.\nWhen unspecified, EVE will not enforce an IP type in the bearer configuration.\nThe modem will instead use its built-in profiles (see CellularProfile) to determine\nthe appropriate IP type for the network.\n - CELLULAR_IP_TYPE_IPV4: IPv4 only.\n - CELLULAR_IP_TYPE_IPV4_AND_IPV6: IPv4 and IPv6.\n - CELLULAR_IP_TYPE_IPV6: IPv6 only."
+        },
         "commonCipherBlock": {
             "type": "object",
             "properties": {
@@ -4022,17 +4109,6 @@
                 }
             },
             "title": "Encrypted sensitive data information"
-        },
-        "configCellularAuthProtocol": {
-            "type": "string",
-            "enum": [
-                "CELLULAR_AUTH_PROTOCOL_NONE",
-                "CELLULAR_AUTH_PROTOCOL_PAP",
-                "CELLULAR_AUTH_PROTOCOL_CHAP",
-                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
-            ],
-            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
-            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
         },
         "configCellularConnectivityProbe": {
             "type": "object",
@@ -4117,6 +4193,17 @@
             ],
             "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
             "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
+        },
+        "eveconfigCellularAuthProtocol": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_AUTH_PROTOCOL_NONE",
+                "CELLULAR_AUTH_PROTOCOL_PAP",
+                "CELLULAR_AUTH_PROTOCOL_CHAP",
+                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
+            ],
+            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
+            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
         },
         "eveinfoIPRoute": {
             "type": "object",

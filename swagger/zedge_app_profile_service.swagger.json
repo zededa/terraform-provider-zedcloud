@@ -410,7 +410,7 @@
             },
             "put": {
                 "summary": "Update app profile",
-                "description": "Update an app profile record. The usual pattern to update an app profile record is to retrieve the record and update with the modified values in a new body to update the app profile record.",
+                "description": "Update an app profile record. The usual pattern to update an app profile record is to retrieve the record and update with the modified values in a new body to update the app profile record. Updating the app profile automatically creates a new version of the original app profile.",
                 "operationId": "AppProfileService_UpdateAppProfile",
                 "responses": {
                     "200": {
@@ -977,7 +977,7 @@
             },
             "post": {
                 "summary": "Create asset group",
-                "description": "Create a asset group record.",
+                "description": "Create a asset group record. An assetGroup is a subset of entities in a project identified by assetIds",
                 "operationId": "AssetGroupService_CreateAssetGroup",
                 "responses": {
                     "200": {
@@ -1208,7 +1208,7 @@
             },
             "put": {
                 "summary": "Update asset group",
-                "description": "Update a asset group record. The usual pattern to update a asset group record is to retrieve the record and update with the modified values in a new body to update the asset group record.",
+                "description": "Update a asset group record. The usual pattern to update a asset group record is to retrieve the record and update with the modified values in a new body to update the asset group record. If the asset group has a profile deployment associated with it, the newly added assets will automatically be applied with the corresponding app profile. Similarly if the assets are removed from this asset group, corresponding policies will be removed from these assets.",
                 "operationId": "AssetGroupService_UpdateAssetGroup",
                 "responses": {
                     "200": {
@@ -1528,7 +1528,7 @@
             },
             "post": {
                 "summary": "Create profile deployment",
-                "description": "Create a profile deployment record.",
+                "description": "Create a profile deployment record. When an assetgroup is associated with the app profiles via profile deployments, the policies will be applied onto the assets present in that group.",
                 "operationId": "ProfileDeploymentService_CreateProfileDeployment",
                 "responses": {
                     "200": {
@@ -2936,6 +2936,19 @@
                 "LispMapServers"
             ]
         },
+        "ImageDatastore": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Datastore ID"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Datastore Name"
+                }
+            }
+        },
         "Interface": {
             "type": "object",
             "properties": {
@@ -3066,7 +3079,7 @@
                     "description": "lisp credential"
                 }
             },
-            "description": "LispServer request paylod",
+            "description": "LispServer request payload",
             "title": "LispServer payload detail",
             "required": [
                 "nameOrIp",
@@ -3499,6 +3512,25 @@
                 }
             }
         },
+        "ProfileDeploymentPerDeviceStatus": {
+            "type": "object",
+            "properties": {
+                "assetId": {
+                    "type": "string",
+                    "description": "Unique ID of the object.",
+                    "readOnly": true,
+                    "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
+                    "uniqueItems": true
+                },
+                "objectStatus": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ProfileDeploymentResourceObjectStatus"
+                    },
+                    "description": "list of status of objects created by deployment for the given asset id"
+                }
+            }
+        },
         "ProfileDeploymentResourceDetailedStatus": {
             "type": "object",
             "properties": {
@@ -3543,10 +3575,10 @@
                     "$ref": "#/definitions/TargetAssetGroup",
                     "description": "asset group info"
                 },
-                "objectStatus": {
+                "assetResourceStatus": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/ProfileDeploymentResourceObjectStatus"
+                        "$ref": "#/definitions/ProfileDeploymentPerDeviceStatus"
                     },
                     "description": "list of status of objects created by deployment"
                 }
@@ -4043,10 +4075,15 @@
                     "type": "string",
                     "description": "Docker compose tar image name"
                 },
-                "enableVmConfig": {
+                "enableOemWinLicenseKey": {
                     "type": "boolean",
                     "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
                     "title": "Enable device to read the license info from APCI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "title": "Disable vTPM for a virtual machine (VM)"
                 }
             }
         },
@@ -4110,6 +4147,18 @@
                 "mountpath": {
                     "type": "string",
                     "description": "UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field"
+                },
+                "imagestatus": {
+                    "type": "string",
+                    "description": "UI map: AppEditPage:DrivesPane:Image_Status_Field, AppDetailsPage:DrivesPane:Image_Status_Field",
+                    "title": "enum: UNSPECIFIED, CREATED, PENDING, UPLOADING, READY, INUSE, ARCHIVED, MAX, FAILED, UPLINKING"
+                },
+                "datastore": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ImageDatastore"
+                    },
+                    "description": "UI map: AppEditPage:DrivesPane:DataStore_Field, AppDetailsPage:DrivesPane:DataStore_Field"
                 }
             }
         },
@@ -4836,9 +4885,13 @@
                     "$ref": "#/definitions/VmBootloaderMode",
                     "description": "The bootloader mode that will be used for the VM. Default is VM_BOOTLOADER_MODE_LEGACY"
                 },
-                "enableVmConfig": {
+                "enableOemWinLicenseKey": {
                     "type": "boolean",
                     "description": "Enable device which has VM to receive the Windows license embedded in the ACPI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "Disable vTPM for virtual machines (VM)"
                 }
             },
             "description": "Virtual machine memory configuration",

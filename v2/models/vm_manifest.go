@@ -59,6 +59,11 @@ type VMManifest struct {
 	// Pattern: [0-9A-Za-z-]+
 	Description string `json:"description,omitempty"`
 
+	// Disable vTPM for a virtual machine (VM)
+	//
+	// UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
+	DisableVTPM bool `json:"disableVTPM,omitempty"`
+
 	// Display name or title of app manifest
 	//
 	// UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field

@@ -1574,6 +1574,10 @@
                     "type": "string",
                     "format": "date-time",
                     "description": "Last updated time of the cluster"
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "Project Name"
                 }
             },
             "description": "Cluster config summary",

@@ -5827,6 +5827,14 @@
                                     "type": "boolean",
                                     "description": "Is TOTP enrolment enabled",
                                     "readOnly": true
+                                },
+                                "allowedEntpProjectList": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/definitions/ProjectList"
+                                    },
+                                    "description": "Allowed enterprise project",
+                                    "title": "internal"
                                 }
                             },
                             "description": "User meta data",
@@ -6200,7 +6208,8 @@
                 "AAAFailureResponseLoginCausePasswordDecryptionFailed",
                 "AAAFailureResponseLoginCausePasswordExpired",
                 "TOTPError",
-                "TOTPInvalidCode"
+                "TOTPInvalidCode",
+                "AAAFailureResponseLoginCauseEmptySubject"
             ],
             "default": "__INVALID__",
             "title": "Reason why authentication failed, this is more detailed than should be passed on to external clients"
@@ -7665,6 +7674,14 @@
                     "type": "boolean",
                     "description": "Is TOTP enrolment enabled",
                     "readOnly": true
+                },
+                "allowedEntpProjectList": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/ProjectList"
+                    },
+                    "description": "Allowed enterprise project",
+                    "title": "internal"
                 }
             },
             "description": "User meta data",
@@ -8617,6 +8634,17 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/PolicyVersion"
+                    }
+                }
+            }
+        },
+        "ProjectList": {
+            "type": "object",
+            "properties": {
+                "project": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             }
