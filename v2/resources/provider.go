@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"net/http"
@@ -164,6 +165,14 @@ func BearerToken(token string) runtime.ClientAuthInfoWriter {
 
 func getRetryClient() *retryablehttp.Client {
 	retryClient := retryablehttp.NewClient()
+	skipTlsVerification := envVarIsEnabled("TF_INSECURE_SKIP_TLS_VERIFY")
+	if skipTlsVerification {
+		insecureTransport := retryClient.HTTPClient.Transport.(*http.Transport).Clone()
+		insecureTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+		retryClient.HTTPClient = &http.Client{
+			Transport: insecureTransport,
+		}
+	}
 	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
 		if resp.StatusCode == http.StatusNotFound {
 			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)

@@ -52,6 +52,12 @@ NOTE: Enabling this debug will cause each HTTP request & response to be dumped a
       with "logging level" `DEBUG`. It's useful for troubleshooting why certaing TF configs are either 
       not accepted by Zedcloud or do not produce the expected results. 
       It will EXPOSE the authentication token!
+
+export TF_INSECURE_SKIP_TLS_VERIFY=true
+
+NOTE: This option disables TLS certificate verification. Only use this when you are connecting to a 
+      Zededa Cloud instance that uses a self-signed certificate, such as a development or on-premise 
+      deployment. Setting this to `true` is insecure and should NOT be used in production environments.
 ```
 
 ## Documentation
