@@ -165,12 +165,14 @@ func BearerToken(token string) runtime.ClientAuthInfoWriter {
 func getRetryClient() *retryablehttp.Client {
 	retryClient := retryablehttp.NewClient()
 	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
-		if resp.StatusCode == http.StatusNotFound {
-			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
-		}
-		// We cannot retry on other methods rather than GET. Out API is not idempotent
-		if resp.Request.Method != http.MethodGet {
-			return false, nil
+		if err == nil {
+			if resp.StatusCode == http.StatusNotFound {
+				return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
+			}
+			// We cannot retry on other methods rather than GET. Out API is not idempotent
+			if resp.Request.Method != http.MethodGet {
+				return false, nil
+			}
 		}
 		return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
 	}
