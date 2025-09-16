@@ -138,18 +138,16 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		return nil, diag.FromErr(errors.New("zedcloud API key must be set"))
 	}
 
-	if strings.HasPrefix(zedCloudURL, "https://") {
-		zedCloudURL = strings.TrimPrefix(zedCloudURL, "https://")
-	}
-	retryClient := getRetryClient()
-	transport := httptransport.NewWithClient(zedCloudURL, "/api", []string{"https"}, retryClient.StandardClient())
+	zedCloudURL = strings.TrimPrefix(zedCloudURL, "https://")
+	stdRetryClient := getRetryClient().StandardClient()
+	stdRetryClient.Transport = NewHttpTransportWrapper(stdRetryClient.Transport)
+	transport := httptransport.NewWithClient(zedCloudURL, "/api", []string{"https"}, stdRetryClient)
 	httpSessionDebugEnabled := envVarIsEnabled("TF_HTTP_SESSION_DEBUG")
 	if httpSessionDebugEnabled {
 		transport.SetDebug(true)
 		transport.SetLogger(HTLogger{})
 	}
 	transport.DefaultAuthentication = BearerToken(token)
-	transport.Transport = NewHttpTransportWrapper(transport.Transport)
 
 	return client.New(transport, strfmt.Default), nil
 }
@@ -165,13 +163,26 @@ func BearerToken(token string) runtime.ClientAuthInfoWriter {
 func getRetryClient() *retryablehttp.Client {
 	retryClient := retryablehttp.NewClient()
 	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
+		// If response is nil (e.g., network error), let the default policy decide based on err
+		if resp == nil {
+			return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
+		}
+
+		// If we have a response, check for 404 specifically and retry
 		if resp.StatusCode == http.StatusNotFound {
 			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
 		}
-		// We cannot retry on other methods rather than GET. Out API is not idempotent
+
+		// We cannot retry on other methods rather than GET. Our API is not idempotent.
+		if resp.Request == nil {
+			// Be conservative: defer to default policy if request is missing
+			return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
+		}
+
 		if resp.Request.Method != http.MethodGet {
 			return false, nil
 		}
+
 		return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
 	}
 	return retryClient
