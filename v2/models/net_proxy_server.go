@@ -13,25 +13,25 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// Server Net Proxy Server
+// NetProxyServer Net Proxy Server
 //
 // # Net Proxy Server
 //
-// swagger:model Server
-type Server struct {
+// swagger:model NetProxyServer
+type NetProxyServer struct {
 
 	// Net Proxy Port
 	Port int64 `json:"port,omitempty"`
 
 	// Net Proxy proto
-	Proto *Proto `json:"proto,omitempty"`
+	Proto *NetworkProxyProto `json:"proto,omitempty"`
 
 	// Net Proxy Server
 	Server string `json:"server,omitempty"`
 }
 
 // Validate validates this net proxy server
-func (m *Server) Validate(formats strfmt.Registry) error {
+func (m *NetProxyServer) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateProto(formats); err != nil {
@@ -44,7 +44,7 @@ func (m *Server) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Server) validateProto(formats strfmt.Registry) error {
+func (m *NetProxyServer) validateProto(formats strfmt.Registry) error {
 	if swag.IsZero(m.Proto) { // not required
 		return nil
 	}
@@ -64,7 +64,7 @@ func (m *Server) validateProto(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this net proxy server based on the context it is used
-func (m *Server) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetProxyServer) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateProto(ctx, formats); err != nil {
@@ -77,7 +77,7 @@ func (m *Server) ContextValidate(ctx context.Context, formats strfmt.Registry) e
 	return nil
 }
 
-func (m *Server) contextValidateProto(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetProxyServer) contextValidateProto(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Proto != nil {
 		if err := m.Proto.ContextValidate(ctx, formats); err != nil {
@@ -94,7 +94,7 @@ func (m *Server) contextValidateProto(ctx context.Context, formats strfmt.Regist
 }
 
 // MarshalBinary interface implementation
-func (m *Server) MarshalBinary() ([]byte, error) {
+func (m *NetProxyServer) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -102,8 +102,8 @@ func (m *Server) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Server) UnmarshalBinary(b []byte) error {
-	var res Server
+func (m *NetProxyServer) UnmarshalBinary(b []byte) error {
+	var res NetProxyServer
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

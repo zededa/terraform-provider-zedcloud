@@ -14,43 +14,43 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Proto network proxy proto
+// NetworkProxyProto network proxy proto
 //
-// swagger:model Proto
-type Proto string
+// swagger:model NetworkProxyProto
+type NetworkProxyProto string
 
-func NewNetworkProxyProto(value Proto) *Proto {
+func NewNetworkProxyProto(value NetworkProxyProto) *NetworkProxyProto {
 	return &value
 }
 
 // Pointer returns a pointer to a freshly-allocated NetworkProxyProto.
-func (m Proto) Pointer() *Proto {
+func (m NetworkProxyProto) Pointer() *NetworkProxyProto {
 	return &m
 }
 
 const (
 
 	// NetworkProxyProtoNETWORKPROXYPROTOHTTP captures enum value "NETWORK_PROXY_PROTO_HTTP"
-	NetworkProxyProtoNETWORKPROXYPROTOHTTP Proto = "NETWORK_PROXY_PROTO_HTTP"
+	NetworkProxyProtoNETWORKPROXYPROTOHTTP NetworkProxyProto = "NETWORK_PROXY_PROTO_HTTP"
 
 	// NetworkProxyProtoNETWORKPROXYPROTOHTTPS captures enum value "NETWORK_PROXY_PROTO_HTTPS"
-	NetworkProxyProtoNETWORKPROXYPROTOHTTPS Proto = "NETWORK_PROXY_PROTO_HTTPS"
+	NetworkProxyProtoNETWORKPROXYPROTOHTTPS NetworkProxyProto = "NETWORK_PROXY_PROTO_HTTPS"
 
 	// NetworkProxyProtoNETWORKPROXYPROTOSOCKS captures enum value "NETWORK_PROXY_PROTO_SOCKS"
-	NetworkProxyProtoNETWORKPROXYPROTOSOCKS Proto = "NETWORK_PROXY_PROTO_SOCKS"
+	NetworkProxyProtoNETWORKPROXYPROTOSOCKS NetworkProxyProto = "NETWORK_PROXY_PROTO_SOCKS"
 
 	// NetworkProxyProtoNETWORKPROXYPROTOFTP captures enum value "NETWORK_PROXY_PROTO_FTP"
-	NetworkProxyProtoNETWORKPROXYPROTOFTP Proto = "NETWORK_PROXY_PROTO_FTP"
+	NetworkProxyProtoNETWORKPROXYPROTOFTP NetworkProxyProto = "NETWORK_PROXY_PROTO_FTP"
 
 	// NetworkProxyProtoNETWORKPROXYPROTOOTHER captures enum value "NETWORK_PROXY_PROTO_OTHER"
-	NetworkProxyProtoNETWORKPROXYPROTOOTHER Proto = "NETWORK_PROXY_PROTO_OTHER"
+	NetworkProxyProtoNETWORKPROXYPROTOOTHER NetworkProxyProto = "NETWORK_PROXY_PROTO_OTHER"
 )
 
 // for schema
 var networkProxyProtoEnum []interface{}
 
 func init() {
-	var res []Proto
+	var res []NetworkProxyProto
 	if err := json.Unmarshal([]byte(`["NETWORK_PROXY_PROTO_HTTP","NETWORK_PROXY_PROTO_HTTPS","NETWORK_PROXY_PROTO_SOCKS","NETWORK_PROXY_PROTO_FTP","NETWORK_PROXY_PROTO_OTHER"]`), &res); err != nil {
 		panic(err)
 	}
@@ -59,7 +59,7 @@ func init() {
 	}
 }
 
-func (m Proto) validateNetworkProxyProtoEnum(path, location string, value Proto) error {
+func (m NetworkProxyProto) validateNetworkProxyProtoEnum(path, location string, value NetworkProxyProto) error {
 	if err := validate.EnumCase(path, location, value, networkProxyProtoEnum, true); err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (m Proto) validateNetworkProxyProtoEnum(path, location string, value Proto)
 }
 
 // Validate validates this network proxy proto
-func (m Proto) Validate(formats strfmt.Registry) error {
+func (m NetworkProxyProto) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	// value enum
@@ -82,6 +82,6 @@ func (m Proto) Validate(formats strfmt.Registry) error {
 }
 
 // ContextValidate validates this network proxy proto based on context it is used
-func (m Proto) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m NetworkProxyProto) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

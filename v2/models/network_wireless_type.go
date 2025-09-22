@@ -14,37 +14,37 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Type network wireless type
+// NetworkWirelessType network wireless type
 //
-// swagger:model Type
-type Type string
+// swagger:model NetworkWirelessType
+type NetworkWirelessType string
 
-func NewNetworkWirelessType(value Type) *Type {
+func NewNetworkWirelessType(value NetworkWirelessType) *NetworkWirelessType {
 	return &value
 }
 
 // Pointer returns a pointer to a freshly-allocated NetworkWirelessType.
-func (m Type) Pointer() *Type {
+func (m NetworkWirelessType) Pointer() *NetworkWirelessType {
 	return &m
 }
 
 const (
 
 	// NetworkWirelessTypeNETWORKWIRELESSTYPEUNSPECIFIED captures enum value "NETWORK_WIRELESS_TYPE_UNSPECIFIED"
-	NetworkWirelessTypeNETWORKWIRELESSTYPEUNSPECIFIED Type = "NETWORK_WIRELESS_TYPE_UNSPECIFIED"
+	NetworkWirelessTypeNETWORKWIRELESSTYPEUNSPECIFIED NetworkWirelessType = "NETWORK_WIRELESS_TYPE_UNSPECIFIED"
 
 	// NetworkWirelessTypeNETWORKWIRELESSTYPEWIFI captures enum value "NETWORK_WIRELESS_TYPE_WIFI"
-	NetworkWirelessTypeNETWORKWIRELESSTYPEWIFI Type = "NETWORK_WIRELESS_TYPE_WIFI"
+	NetworkWirelessTypeNETWORKWIRELESSTYPEWIFI NetworkWirelessType = "NETWORK_WIRELESS_TYPE_WIFI"
 
 	// NetworkWirelessTypeNETWORKWIRELESSTYPECELLULAR captures enum value "NETWORK_WIRELESS_TYPE_CELLULAR"
-	NetworkWirelessTypeNETWORKWIRELESSTYPECELLULAR Type = "NETWORK_WIRELESS_TYPE_CELLULAR"
+	NetworkWirelessTypeNETWORKWIRELESSTYPECELLULAR NetworkWirelessType = "NETWORK_WIRELESS_TYPE_CELLULAR"
 )
 
 // for schema
 var networkWirelessTypeEnum []interface{}
 
 func init() {
-	var res []Type
+	var res []NetworkWirelessType
 	if err := json.Unmarshal([]byte(`["NETWORK_WIRELESS_TYPE_UNSPECIFIED","NETWORK_WIRELESS_TYPE_WIFI","NETWORK_WIRELESS_TYPE_CELLULAR"]`), &res); err != nil {
 		panic(err)
 	}
@@ -53,7 +53,7 @@ func init() {
 	}
 }
 
-func (m Type) validateNetworkWirelessTypeEnum(path, location string, value Type) error {
+func (m NetworkWirelessType) validateNetworkWirelessTypeEnum(path, location string, value NetworkWirelessType) error {
 	if err := validate.EnumCase(path, location, value, networkWirelessTypeEnum, true); err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func (m Type) validateNetworkWirelessTypeEnum(path, location string, value Type)
 }
 
 // Validate validates this network wireless type
-func (m Type) Validate(formats strfmt.Registry) error {
+func (m NetworkWirelessType) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	// value enum
@@ -76,6 +76,6 @@ func (m Type) Validate(formats strfmt.Registry) error {
 }
 
 // ContextValidate validates this network wireless type based on context it is used
-func (m Type) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m NetworkWirelessType) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	return nil
 }

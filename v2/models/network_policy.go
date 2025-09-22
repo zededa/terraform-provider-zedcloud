@@ -24,7 +24,7 @@ type NetworkPolicy struct {
 
 	// list of network details that will be created on all the devices of the project to which this policy is attached
 	// Required: true
-	NetInstanceConfig []*NetworkInstance `json:"netInstanceConfig"`
+	NetInstanceConfig []*NetInstConfig `json:"netInstanceConfig"`
 }
 
 // Validate validates this network policy

@@ -15,12 +15,12 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// NetConfig Network detailed configuration
+// NetConfigForUpdateHTTPRequest Network detailed configuration
 //
 // Network provides Edge nodes a variety of connectivity choices for all types of networks. This enables physical connectivity with Ethernet, WiFi, LTE to communicate with ZEDEDA Cloud controller and Data Centres.
 //
-// swagger:model NetConfig
-type NetConfig struct {
+// swagger:model NetConfigForUpdate_HttpRequest
+type NetConfigForUpdateHTTPRequest struct {
 
 	// Detailed description of the network
 	// Max Length: 256
@@ -33,9 +33,9 @@ type NetConfig struct {
 	EnterpriseDefault bool `json:"enterpriseDefault,omitempty"`
 
 	// System defined universally unique Id of the network
-	// Read Only: true
+	// Required: true
 	// Pattern: [0-9A-Za-z-]+
-	ID string `json:"id,omitempty"`
+	ID *string `json:"id"`
 
 	// ip
 	// Required: true
@@ -66,7 +66,8 @@ type NetConfig struct {
 	Proxy *NetProxyConfig `json:"proxy,omitempty"`
 
 	// system defined info
-	Revision *ObjectRevision `json:"revision,omitempty"`
+	// Required: true
+	Revision *ObjectRevision `json:"revision"`
 
 	// User defined title of the network. Title can be changed at any time
 	// Required: true
@@ -79,8 +80,8 @@ type NetConfig struct {
 	Wireless *NetWirelessConfig `json:"wireless,omitempty"`
 }
 
-// Validate validates this net config
-func (m *NetConfig) Validate(formats strfmt.Registry) error {
+// Validate validates this net config for update Http request
+func (m *NetConfigForUpdateHTTPRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateDescription(formats); err != nil {
@@ -137,7 +138,7 @@ func (m *NetConfig) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateDescription(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateDescription(formats strfmt.Registry) error {
 	if swag.IsZero(m.Description) { // not required
 		return nil
 	}
@@ -149,7 +150,7 @@ func (m *NetConfig) validateDescription(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateDNSList(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateDNSList(formats strfmt.Registry) error {
 	if swag.IsZero(m.DNSList) { // not required
 		return nil
 	}
@@ -175,19 +176,20 @@ func (m *NetConfig) validateDNSList(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateID(formats strfmt.Registry) error {
-	if swag.IsZero(m.ID) { // not required
-		return nil
+func (m *NetConfigForUpdateHTTPRequest) validateID(formats strfmt.Registry) error {
+
+	if err := validate.Required("id", "body", m.ID); err != nil {
+		return err
 	}
 
-	if err := validate.Pattern("id", "body", m.ID, `[0-9A-Za-z-]+`); err != nil {
+	if err := validate.Pattern("id", "body", *m.ID, `[0-9A-Za-z-]+`); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (m *NetConfig) validateIP(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateIP(formats strfmt.Registry) error {
 
 	if err := validate.Required("ip", "body", m.IP); err != nil {
 		return err
@@ -207,7 +209,7 @@ func (m *NetConfig) validateIP(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateKind(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateKind(formats strfmt.Registry) error {
 
 	if err := validate.Required("kind", "body", m.Kind); err != nil {
 		return err
@@ -231,7 +233,7 @@ func (m *NetConfig) validateKind(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateName(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -252,7 +254,7 @@ func (m *NetConfig) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateProject(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateProject(formats strfmt.Registry) error {
 	if swag.IsZero(m.Project) { // not required
 		return nil
 	}
@@ -271,7 +273,7 @@ func (m *NetConfig) validateProject(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateProjectID(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateProjectID(formats strfmt.Registry) error {
 
 	if err := validate.Required("projectId", "body", m.ProjectID); err != nil {
 		return err
@@ -280,7 +282,7 @@ func (m *NetConfig) validateProjectID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateProxy(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateProxy(formats strfmt.Registry) error {
 	if swag.IsZero(m.Proxy) { // not required
 		return nil
 	}
@@ -299,9 +301,10 @@ func (m *NetConfig) validateProxy(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateRevision(formats strfmt.Registry) error {
-	if swag.IsZero(m.Revision) { // not required
-		return nil
+func (m *NetConfigForUpdateHTTPRequest) validateRevision(formats strfmt.Registry) error {
+
+	if err := validate.Required("revision", "body", m.Revision); err != nil {
+		return err
 	}
 
 	if m.Revision != nil {
@@ -318,7 +321,7 @@ func (m *NetConfig) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateTitle(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -339,7 +342,7 @@ func (m *NetConfig) validateTitle(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetConfig) validateWireless(formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) validateWireless(formats strfmt.Registry) error {
 	if swag.IsZero(m.Wireless) { // not required
 		return nil
 	}
@@ -358,15 +361,11 @@ func (m *NetConfig) validateWireless(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this net config based on the context it is used
-func (m *NetConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this net config for update Http request based on the context it is used
+func (m *NetConfigForUpdateHTTPRequest) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateDNSList(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateID(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -400,7 +399,7 @@ func (m *NetConfig) ContextValidate(ctx context.Context, formats strfmt.Registry
 	return nil
 }
 
-func (m *NetConfig) contextValidateDNSList(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) contextValidateDNSList(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.DNSList); i++ {
 
@@ -420,16 +419,7 @@ func (m *NetConfig) contextValidateDNSList(ctx context.Context, formats strfmt.R
 	return nil
 }
 
-func (m *NetConfig) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
-
-	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *NetConfig) contextValidateIP(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) contextValidateIP(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IP != nil {
 		if err := m.IP.ContextValidate(ctx, formats); err != nil {
@@ -445,7 +435,7 @@ func (m *NetConfig) contextValidateIP(ctx context.Context, formats strfmt.Regist
 	return nil
 }
 
-func (m *NetConfig) contextValidateKind(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) contextValidateKind(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Kind != nil {
 		if err := m.Kind.ContextValidate(ctx, formats); err != nil {
@@ -461,7 +451,7 @@ func (m *NetConfig) contextValidateKind(ctx context.Context, formats strfmt.Regi
 	return nil
 }
 
-func (m *NetConfig) contextValidateProject(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) contextValidateProject(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Project != nil {
 		if err := m.Project.ContextValidate(ctx, formats); err != nil {
@@ -477,7 +467,7 @@ func (m *NetConfig) contextValidateProject(ctx context.Context, formats strfmt.R
 	return nil
 }
 
-func (m *NetConfig) contextValidateProxy(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) contextValidateProxy(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Proxy != nil {
 		if err := m.Proxy.ContextValidate(ctx, formats); err != nil {
@@ -493,7 +483,7 @@ func (m *NetConfig) contextValidateProxy(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *NetConfig) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
 		if err := m.Revision.ContextValidate(ctx, formats); err != nil {
@@ -509,7 +499,7 @@ func (m *NetConfig) contextValidateRevision(ctx context.Context, formats strfmt.
 	return nil
 }
 
-func (m *NetConfig) contextValidateWireless(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetConfigForUpdateHTTPRequest) contextValidateWireless(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Wireless != nil {
 		if err := m.Wireless.ContextValidate(ctx, formats); err != nil {
@@ -526,7 +516,7 @@ func (m *NetConfig) contextValidateWireless(ctx context.Context, formats strfmt.
 }
 
 // MarshalBinary interface implementation
-func (m *NetConfig) MarshalBinary() ([]byte, error) {
+func (m *NetConfigForUpdateHTTPRequest) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -534,8 +524,8 @@ func (m *NetConfig) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *NetConfig) UnmarshalBinary(b []byte) error {
-	var res NetConfig
+func (m *NetConfigForUpdateHTTPRequest) UnmarshalBinary(b []byte) error {
+	var res NetConfigForUpdateHTTPRequest
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

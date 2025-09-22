@@ -27,6 +27,9 @@ type NetworkInstConfig struct {
 	// List of Static DNS entries
 	DNSList []*StaticDNSList `json:"dnsList"`
 
+	// enable/disable lldp frame forward
+	ForwardLldp bool `json:"forwardLldp,omitempty"`
+
 	// Dhcp Server Configuration
 	IP *DhcpServerConfig `json:"ip,omitempty"`
 

@@ -12947,6 +12947,31 @@
             "default": "SEVERITY_UNSPECIFIED",
             "title": "Severity tells the severity type"
         },
+        "SharedStorageSummary": {
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "string",
+                    "description": "Id"
+                },
+                "Name": {
+                    "type": "string",
+                    "description": "Name"
+                },
+                "AllocatedMB": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Allocated Storage in MBs"
+                },
+                "UsedMB": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "How much is used within the allocated total storage"
+                }
+            },
+            "description": "Shared Storage Summary",
+            "title": "Shared Storage Summary"
+        },
         "SimcardState": {
             "type": "string",
             "enum": [
@@ -13023,6 +13048,13 @@
                     "type": "number",
                     "format": "double",
                     "description": "Total reserved for running applications + temp. images etc"
+                },
+                "sharedStorageSummary": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SharedStorageSummary"
+                    },
+                    "description": "Shared storage summary"
                 }
             },
             "description": "Storage Summary",
@@ -13431,7 +13463,7 @@
                 },
                 "disableVTPM": {
                     "type": "boolean",
-                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "description": "UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field",
                     "title": "Disable vTPM for a virtual machine (VM)"
                 }
             }

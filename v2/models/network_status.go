@@ -245,11 +245,6 @@ func (m *NetworkStatus) ContextValidate(ctx context.Context, formats strfmt.Regi
 func (m *NetworkStatus) contextValidateCellular(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Cellular != nil {
-
-		if swag.IsZero(m.Cellular) { // not required
-			return nil
-		}
-
 		if err := m.Cellular.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("cellular")

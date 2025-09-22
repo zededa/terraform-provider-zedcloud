@@ -104,11 +104,6 @@ func (m *NetworkProvider) ContextValidate(ctx context.Context, formats strfmt.Re
 func (m *NetworkProvider) contextValidateRat(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Rat != nil {
-
-		if swag.IsZero(m.Rat) { // not required
-			return nil
-		}
-
 		if err := m.Rat.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("rat")

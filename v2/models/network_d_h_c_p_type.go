@@ -18,6 +18,7 @@ import (
 //   - NETWORK_DHCP_TYPE_PASSTHROUGH: used for adapter configured DHCP none, application will do DHCP
 //   - NETWORK_DHCP_TYPE_DEPRECATED: used for application simulation
 //   - NETWORK_DHCP_TYPE_CLIENT: used for adapter configured DHCP client
+//   - NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC: used to configure device adapter specific static networks
 //
 // swagger:model NetworkDHCPType
 type NetworkDHCPType string
@@ -47,6 +48,9 @@ const (
 
 	// NetworkDHCPTypeNETWORKDHCPTYPECLIENT captures enum value "NETWORK_DHCP_TYPE_CLIENT"
 	NetworkDHCPTypeNETWORKDHCPTYPECLIENT NetworkDHCPType = "NETWORK_DHCP_TYPE_CLIENT"
+
+	// NetworkDHCPTypeNETWORKDHCPTYPESTATICADAPTERSPECIFIC captures enum value "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+	NetworkDHCPTypeNETWORKDHCPTYPESTATICADAPTERSPECIFIC NetworkDHCPType = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
 )
 
 // for schema
@@ -54,7 +58,7 @@ var networkDHCPTypeEnum []interface{}
 
 func init() {
 	var res []NetworkDHCPType
-	if err := json.Unmarshal([]byte(`["NETWORK_DHCP_TYPE_UNSPECIFIED","NETWORK_DHCP_TYPE_STATIC","NETWORK_DHCP_TYPE_PASSTHROUGH","NETWORK_DHCP_TYPE_DEPRECATED","NETWORK_DHCP_TYPE_CLIENT"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["NETWORK_DHCP_TYPE_UNSPECIFIED","NETWORK_DHCP_TYPE_STATIC","NETWORK_DHCP_TYPE_PASSTHROUGH","NETWORK_DHCP_TYPE_DEPRECATED","NETWORK_DHCP_TYPE_CLIENT","NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

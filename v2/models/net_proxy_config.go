@@ -14,20 +14,23 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NetProxyStatus NetProxyStatus is used to store the proxy configurations
+// NetProxyConfig Net Proxy Configurations
 //
-// # NetProxyStatus is used to store the proxy configurations
+// # Net Proxy Configurations
 //
-// swagger:model NetProxyStatus
-type NetProxyStatus struct {
+// swagger:model NetProxyConfig
+type NetProxyConfig struct {
 
-	// exceptions
+	// Proxy exceptions
 	Exceptions string `json:"exceptions,omitempty"`
 
-	// Enable, the proxy configuration coming from network
-	//
-	// Use pacfile (Auto discover or manual upload)
+	// Network proxy
 	NetworkProxy bool `json:"networkProxy,omitempty"`
+
+	// Proxy Certificates
+	//
+	// Network Proxy Certificates
+	NetworkProxyCerts []strfmt.Base64 `json:"networkProxyCerts"`
 
 	// Direct URL for wpad.dat download
 	//
@@ -41,15 +44,12 @@ type NetProxyStatus struct {
 
 	// protocol level proxies
 	//
-	// protocol level proxies
+	// Net Proxy: protocol level proxies
 	Proxies []*NetProxyServer `json:"proxies"`
-
-	// WPAD Proxy URL
-	WpadProxyURL string `json:"wpadProxyURL,omitempty"`
 }
 
-// Validate validates this net proxy status
-func (m *NetProxyStatus) Validate(formats strfmt.Registry) error {
+// Validate validates this net proxy config
+func (m *NetProxyConfig) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateProxies(formats); err != nil {
@@ -62,7 +62,7 @@ func (m *NetProxyStatus) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetProxyStatus) validateProxies(formats strfmt.Registry) error {
+func (m *NetProxyConfig) validateProxies(formats strfmt.Registry) error {
 	if swag.IsZero(m.Proxies) { // not required
 		return nil
 	}
@@ -88,8 +88,8 @@ func (m *NetProxyStatus) validateProxies(formats strfmt.Registry) error {
 	return nil
 }
 
-// ContextValidate validate this net proxy status based on the context it is used
-func (m *NetProxyStatus) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+// ContextValidate validate this net proxy config based on the context it is used
+func (m *NetProxyConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateProxies(ctx, formats); err != nil {
@@ -102,7 +102,7 @@ func (m *NetProxyStatus) ContextValidate(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *NetProxyStatus) contextValidateProxies(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetProxyConfig) contextValidateProxies(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Proxies); i++ {
 
@@ -123,7 +123,7 @@ func (m *NetProxyStatus) contextValidateProxies(ctx context.Context, formats str
 }
 
 // MarshalBinary interface implementation
-func (m *NetProxyStatus) MarshalBinary() ([]byte, error) {
+func (m *NetProxyConfig) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -131,8 +131,8 @@ func (m *NetProxyStatus) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *NetProxyStatus) UnmarshalBinary(b []byte) error {
-	var res NetProxyStatus
+func (m *NetProxyConfig) UnmarshalBinary(b []byte) error {
+	var res NetProxyConfig
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

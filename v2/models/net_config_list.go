@@ -20,7 +20,7 @@ import (
 type NetConfigList struct {
 
 	// list
-	List []*Network `json:"list"`
+	List []*NetConfig `json:"list"`
 
 	// next
 	Next *Cursor `json:"next,omitempty"`
