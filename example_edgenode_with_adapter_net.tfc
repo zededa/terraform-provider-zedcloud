@@ -1,0 +1,227 @@
+# Example Terraform configuration for zedcloud_edgenode with adapter_specific_net
+
+# Create a project first
+resource "zedcloud_project" "example_project" {
+  name  = "example-project"
+  title = "Example Project for EdgeNode with Adapter Specific Network"
+  type  = "TAG_TYPE_PROJECT"
+  
+  attestation_policy {
+    title = "Default Attestation Policy"
+    type  = "POLICY_TYPE_ATTESTATION"
+    
+    attestation_policy {
+      type = "ATTEST_POLICY_TYPE_ACCEPT"
+    }
+  }
+}
+
+# Create a datastore
+resource "zedcloud_datastore" "example_datastore" {
+  depends_on = [zedcloud_project.example_project]
+  
+  name        = "example-datastore"
+  title       = "Example Datastore"
+  description = "Datastore for example images"
+  ds_fqdn     = "example-datastore.company.com"
+  ds_path     = "download/AMD64"
+  ds_type     = "DATASTORE_TYPE_HTTP"
+  region      = "us-west-2"
+  
+  project_access_list = [zedcloud_project.example_project.id]
+}
+
+# Create a brand for the device model
+resource "zedcloud_brand" "example_brand" {
+  name        = "example-brand"
+  title       = "Example Device Brand"
+  description = "Example brand for demonstration"
+  origin_type = "ORIGIN_LOCAL"
+}
+
+# Create a device model
+resource "zedcloud_model" "example_model" {
+  depends_on = [zedcloud_brand.example_brand]
+  
+  brand_id    = zedcloud_brand.example_brand.id
+  name        = "example-device-model"
+  title       = "Example Device Model"
+  type        = "AMD64"
+  origin_type = "ORIGIN_LOCAL"
+  state       = "SYS_MODEL_STATE_ACTIVE"
+  
+  attr = {
+    memory  = "8G"
+    storage = "100G"
+    Cpus    = "4"
+  }
+  
+  # Define the physical interface
+  io_member_list {
+    ztype       = "IO_TYPE_ETH"
+    phylabel    = "eth0"
+    usage       = "ADAPTER_USAGE_MANAGEMENT"
+    assigngrp   = "eth0"
+    
+    phyaddrs = {
+      Ifname  = "eth0"
+      PciLong = "0000:02:00.0"
+    }
+    
+    logicallabel = "ethernet0"
+    
+    usage_policy = {
+      FreeUplink = true
+    }
+    
+    cost = 0
+  }
+}
+
+# Create an adapter-specific network
+resource "zedcloud_network" "adapter_specific_network" {
+  depends_on = [zedcloud_project.example_project]
+  
+  name       = "adapter-specific-net"
+  title      = "Adapter Specific Network"
+  project_id = zedcloud_project.example_project.id
+  kind       = "NETWORK_KIND_V4"
+  
+  # Configure the network with static adapter-specific DHCP
+  ip {
+    dhcp    = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+    subnet  = "192.168.100.0/24"
+    gateway = "192.168.100.1"
+    dns     = ["8.8.8.8", "8.8.4.4"]
+  }
+  
+  description = "Network for adapter-specific configuration"
+}
+
+# Create the edgenode with adapter_specific_net configuration
+resource "zedcloud_edgenode" "example_edgenode" {
+  depends_on = [
+    zedcloud_project.example_project,
+    zedcloud_model.example_model,
+    zedcloud_network.adapter_specific_network
+  ]
+  
+  name       = "example-edgenode"
+  title      = "Example EdgeNode with Adapter Specific Network"
+  model_id   = zedcloud_model.example_model.id
+  project_id = zedcloud_project.example_project.id
+  
+  # Basic device configuration
+  admin_state            = "ADMIN_STATE_ACTIVE"
+  serialno              = "EXAMPLE-DEVICE-001"
+  generate_soft_serial  = false
+  description           = "Example EdgeNode demonstrating adapter_specific_net usage"
+  
+  # Configure the primary interface with adapter-specific network
+  interfaces {
+    cost       = 0
+    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    intfname   = "eth0"
+    netname    = zedcloud_network.adapter_specific_network.name
+    
+    # This is the adapter-specific network configuration
+    adapter_specific_net {
+      name        = zedcloud_network.adapter_specific_network.name
+      title       = zedcloud_network.adapter_specific_network.title
+      description = "Adapter-specific network configuration for eth0"
+      kind        = "NETWORK_KIND_V4"
+      
+      # IP configuration specific to this adapter
+      ip {
+        dhcp    = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+        subnet  = "192.168.100.0/24"
+        gateway = "192.168.100.1"
+        dns     = ["192.168.100.1", "8.8.8.8"]
+      }
+      
+      # Optional: MTU setting
+      mtu = 1500
+    }
+    
+    # Static IP assignment for this interface (optional)
+    ipaddr  = "192.168.100.10"
+    macaddr = "02:00:00:00:01:00"
+    
+    # Network DHCP type
+    net_dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+    
+    # Tags for the interface
+    tags = {
+      "interface_type" = "management"
+      "network_type"   = "adapter_specific"
+    }
+    
+    # Shared labels
+    shared_labels = ["management", "primary"]
+  }
+  
+  # Secondary interface example (without adapter-specific network)
+  interfaces {
+    cost       = 10
+    intf_usage = "ADAPTER_USAGE_APP_DIRECT"
+    intfname   = "eth1"
+    
+    tags = {
+      "interface_type" = "application"
+    }
+  }
+  
+  # Device location information
+  dev_location {
+    city        = "San Francisco"
+    country     = "USA"
+    region      = "us-west"
+    postal      = "94105"
+    loc         = "37.7749,-122.4194"
+    org         = "Example Organization"
+    hostname    = "example-edgenode-001"
+  }
+  
+  # Configuration items
+  config_item {
+    key          = "debug_mode"
+    bool_value   = true
+    value_type   = "boolean"
+  }
+  
+  config_item {
+    key          = "log_level"
+    string_value = "info"
+    value_type   = "string"
+  }
+  
+  config_item {
+    key          = "max_connections"
+    uint32_value = 100
+    value_type   = "uint32"
+  }
+  
+  # Device tags
+  tags = {
+    "environment"   = "development"
+    "location"      = "datacenter-1"
+    "device_type"   = "gateway"
+    "managed_by"    = "terraform"
+  }
+}
+
+# Output the edgenode information
+output "edgenode_id" {
+  description = "The ID of the created EdgeNode"
+  value       = zedcloud_edgenode.example_edgenode.id
+}
+
+output "edgenode_name" {
+  description = "The name of the created EdgeNode"
+  value       = zedcloud_edgenode.example_edgenode.name
+}
+
+output "adapter_network_id" {
+  description = "The ID of the adapter-specific network"
+  value       = zedcloud_network.adapter_specific_network.id
+}

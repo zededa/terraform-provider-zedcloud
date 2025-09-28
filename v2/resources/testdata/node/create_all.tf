@@ -193,8 +193,6 @@ resource "zedcloud_edgenode" "test_dev_adap_spec_net" {
 		intfname = "eth0"
 		netname = zedcloud_network.adapter_spec_network.name
 		adapter_specific_net {
-			name = zedcloud_network.adapter_spec_network.name
-			title = zedcloud_network.adapter_spec_network.title
 			kind = "NETWORK_KIND_V4"
 			ip {
 				dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
@@ -202,16 +200,7 @@ resource "zedcloud_edgenode" "test_dev_adap_spec_net" {
 				gateway = "10.1.1.1"
 			}
 		}
-		ipaddr = "127.0.0.1"
-		macaddr = "00:00:00:00:00:00"
-		tags = {
-			"system_interface_1_key" = "system_interface_1_value"
-			"system_interface_2_key" = "system_interface_2_value"
-		}
-	}
-	interfaces {
-		intfname = "eth0"
-		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		ipaddr = "10.1.1.3"
 	}
 
 	config_item {

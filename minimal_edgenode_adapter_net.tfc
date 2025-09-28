@@ -1,0 +1,76 @@
+# Minimal example: zedcloud_edgenode with adapter_specific_net
+
+# Prerequisite: Existing project
+variable "project_id" {
+  description = "ID of an existing project"
+  type        = string
+}
+
+# Prerequisite: Existing model
+variable "model_id" {
+  description = "ID of an existing device model"
+  type        = string
+}
+
+# Create adapter-specific network
+resource "zedcloud_network" "adapter_net" {
+  name       = "my-adapter-network"
+  title      = "My Adapter Specific Network"
+  project_id = var.project_id
+  
+  ip {
+    dhcp    = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+  }
+}
+
+# EdgeNode with adapter-specific network configuration
+resource "zedcloud_edgenode" "my_device" {
+  name       = "my-edgenode-with-adapter-net"
+  title      = "EdgeNode with Adapter Network"
+  model_id   = var.model_id
+  project_id = var.project_id
+  
+  # Required fields
+  admin_state = "ADMIN_STATE_ACTIVE"
+  
+  # Interface with adapter-specific network
+  interfaces {
+    # Basic interface configuration
+    intfname   = "eth0"
+    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    cost       = 0
+    
+    # Reference the adapter-specific network
+    netname = zedcloud_network.adapter_net.name
+    netid   = zedcloud_network.adapter_net.id
+    
+    # Adapter-specific network configuration
+    adapter_specific_net {
+      name  = zedcloud_network.adapter_net.name
+      title = zedcloud_network.adapter_net.title
+      kind  = "NETWORK_KIND_V4"
+      
+      # Network-specific IP configuration
+      ip {
+        dhcp    = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+        subnet  = "172.16.1.0/24"
+        gateway = "172.16.1.1"
+        dns     = ["172.16.1.1"]
+      }
+    }
+    
+    # Static IP for this interface
+    ipaddr = "172.16.1.100"
+    
+    # Network DHCP type
+    net_dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+    
+    # Optional: MAC address override
+    macaddr = "02:00:00:00:00:01"
+    
+    # Optional: Tags
+    tags = {
+      "network_type" = "adapter_specific"
+    }
+  }
+}
