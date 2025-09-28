@@ -15,13 +15,12 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// NetworkInstance Network instance detailed configuration
+// NetInstConfig Network instance detailed configuration
 //
 // Network instance provides Edge applications a variety of connectivity choices for all types of networks. This enables logical secure connectivity between Edge applications within a single Edge node and within a logical group of Edge nodes. This provides detailed configuration of a Network instance.
-// Example: {"id":"d85a545f-6510-4327-b03d-c02eef119e99","name":"sample-app"}
 //
-// swagger:model NetworkInstance
-type NetworkInstance struct {
+// swagger:model NetInstConfig
+type NetInstConfig struct {
 
 	// id of the Cluster in which the network instance is configured
 	// Max Length: 256
@@ -54,6 +53,15 @@ type NetworkInstance struct {
 
 	// Edge Node Cluster
 	EdgeNodeCluster *NetInstEdgeNodeCluster `json:"edgeNodeCluster,omitempty"`
+
+	// Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this
+	// network instance.
+	// LLDP is used by devices to advertise identity and capabilities to directly
+	// connected neighbors, and is often required for topology discovery and network
+	// management tools.
+	// When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed
+	// by the forwarding plane.
+	ForwardLldp bool `json:"forwardLldp,omitempty"`
 
 	// System defined universally unique Id of the network instance
 	// Read Only: true
@@ -125,7 +133,7 @@ type NetworkInstance struct {
 }
 
 // Validate validates this net inst config
-func (m *NetworkInstance) Validate(formats strfmt.Registry) error {
+func (m *NetInstConfig) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateClusterID(formats); err != nil {
@@ -198,7 +206,7 @@ func (m *NetworkInstance) Validate(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateClusterID(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateClusterID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ClusterID) { // not required
 		return nil
 	}
@@ -218,7 +226,7 @@ func (m *NetworkInstance) validateClusterID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateDescription(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateDescription(formats strfmt.Registry) error {
 	if swag.IsZero(m.Description) { // not required
 		return nil
 	}
@@ -230,7 +238,7 @@ func (m *NetworkInstance) validateDescription(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateDeviceID(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateDeviceID(formats strfmt.Registry) error {
 
 	if err := validate.Required("deviceId", "body", m.DeviceID); err != nil {
 		return err
@@ -239,7 +247,7 @@ func (m *NetworkInstance) validateDeviceID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateDNSList(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateDNSList(formats strfmt.Registry) error {
 	if swag.IsZero(m.DNSList) { // not required
 		return nil
 	}
@@ -265,7 +273,7 @@ func (m *NetworkInstance) validateDNSList(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateEdgeNodeCluster(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateEdgeNodeCluster(formats strfmt.Registry) error {
 	if swag.IsZero(m.EdgeNodeCluster) { // not required
 		return nil
 	}
@@ -284,7 +292,7 @@ func (m *NetworkInstance) validateEdgeNodeCluster(formats strfmt.Registry) error
 	return nil
 }
 
-func (m *NetworkInstance) validateID(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ID) { // not required
 		return nil
 	}
@@ -296,7 +304,7 @@ func (m *NetworkInstance) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateIP(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateIP(formats strfmt.Registry) error {
 	if swag.IsZero(m.IP) { // not required
 		return nil
 	}
@@ -315,7 +323,7 @@ func (m *NetworkInstance) validateIP(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateKind(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateKind(formats strfmt.Registry) error {
 
 	if err := validate.Required("kind", "body", m.Kind); err != nil {
 		return err
@@ -339,7 +347,7 @@ func (m *NetworkInstance) validateKind(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateLisp(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateLisp(formats strfmt.Registry) error {
 	if swag.IsZero(m.Lisp) { // not required
 		return nil
 	}
@@ -358,7 +366,7 @@ func (m *NetworkInstance) validateLisp(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateName(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -379,7 +387,7 @@ func (m *NetworkInstance) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateOpaque(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateOpaque(formats strfmt.Registry) error {
 	if swag.IsZero(m.Opaque) { // not required
 		return nil
 	}
@@ -398,7 +406,7 @@ func (m *NetworkInstance) validateOpaque(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validatePort(formats strfmt.Registry) error {
+func (m *NetInstConfig) validatePort(formats strfmt.Registry) error {
 
 	if err := validate.Required("port", "body", m.Port); err != nil {
 		return err
@@ -407,7 +415,7 @@ func (m *NetworkInstance) validatePort(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateRevision(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
 	}
@@ -426,7 +434,7 @@ func (m *NetworkInstance) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateStaticRoutes(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateStaticRoutes(formats strfmt.Registry) error {
 	if swag.IsZero(m.StaticRoutes) { // not required
 		return nil
 	}
@@ -452,7 +460,7 @@ func (m *NetworkInstance) validateStaticRoutes(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateTitle(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -473,7 +481,7 @@ func (m *NetworkInstance) validateTitle(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *NetworkInstance) validateType(formats strfmt.Registry) error {
+func (m *NetInstConfig) validateType(formats strfmt.Registry) error {
 	if swag.IsZero(m.Type) { // not required
 		return nil
 	}
@@ -493,7 +501,7 @@ func (m *NetworkInstance) validateType(formats strfmt.Registry) error {
 }
 
 // ContextValidate validate this net inst config based on the context it is used
-func (m *NetworkInstance) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateDNSList(ctx, formats); err != nil {
@@ -542,7 +550,7 @@ func (m *NetworkInstance) ContextValidate(ctx context.Context, formats strfmt.Re
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateDNSList(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateDNSList(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.DNSList); i++ {
 
@@ -562,14 +570,9 @@ func (m *NetworkInstance) contextValidateDNSList(ctx context.Context, formats st
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateEdgeNodeCluster(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateEdgeNodeCluster(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.EdgeNodeCluster != nil {
-
-		if swag.IsZero(m.EdgeNodeCluster) { // not required
-			return nil
-		}
-
 		if err := m.EdgeNodeCluster.ContextValidate(ctx, formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("edgeNodeCluster")
@@ -583,7 +586,7 @@ func (m *NetworkInstance) contextValidateEdgeNodeCluster(ctx context.Context, fo
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
 
 	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
 		return err
@@ -592,7 +595,7 @@ func (m *NetworkInstance) contextValidateID(ctx context.Context, formats strfmt.
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateIP(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateIP(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IP != nil {
 		if err := m.IP.ContextValidate(ctx, formats); err != nil {
@@ -608,7 +611,7 @@ func (m *NetworkInstance) contextValidateIP(ctx context.Context, formats strfmt.
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateKind(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateKind(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Kind != nil {
 		if err := m.Kind.ContextValidate(ctx, formats); err != nil {
@@ -624,7 +627,7 @@ func (m *NetworkInstance) contextValidateKind(ctx context.Context, formats strfm
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateLisp(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateLisp(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Lisp != nil {
 		if err := m.Lisp.ContextValidate(ctx, formats); err != nil {
@@ -640,7 +643,7 @@ func (m *NetworkInstance) contextValidateLisp(ctx context.Context, formats strfm
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateOpaque(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateOpaque(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Opaque != nil {
 		if err := m.Opaque.ContextValidate(ctx, formats); err != nil {
@@ -656,7 +659,7 @@ func (m *NetworkInstance) contextValidateOpaque(ctx context.Context, formats str
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
 		if err := m.Revision.ContextValidate(ctx, formats); err != nil {
@@ -672,16 +675,11 @@ func (m *NetworkInstance) contextValidateRevision(ctx context.Context, formats s
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateStaticRoutes(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateStaticRoutes(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.StaticRoutes); i++ {
 
 		if m.StaticRoutes[i] != nil {
-
-			if swag.IsZero(m.StaticRoutes[i]) { // not required
-				return nil
-			}
-
 			if err := m.StaticRoutes[i].ContextValidate(ctx, formats); err != nil {
 				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("staticRoutes" + "." + strconv.Itoa(i))
@@ -697,7 +695,7 @@ func (m *NetworkInstance) contextValidateStaticRoutes(ctx context.Context, forma
 	return nil
 }
 
-func (m *NetworkInstance) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
+func (m *NetInstConfig) contextValidateType(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Type != nil {
 		if err := m.Type.ContextValidate(ctx, formats); err != nil {
@@ -714,7 +712,7 @@ func (m *NetworkInstance) contextValidateType(ctx context.Context, formats strfm
 }
 
 // MarshalBinary interface implementation
-func (m *NetworkInstance) MarshalBinary() ([]byte, error) {
+func (m *NetInstConfig) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -722,8 +720,8 @@ func (m *NetworkInstance) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *NetworkInstance) UnmarshalBinary(b []byte) error {
-	var res NetworkInstance
+func (m *NetInstConfig) UnmarshalBinary(b []byte) error {
+	var res NetInstConfig
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -15,12 +15,12 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// Node Device Configuration payload detail
+// DeviceConfig Device Configuration payload detail
 //
-// # Device Configuration request paylod holds the device properties
+// # Device Configuration request payload holds the device properties
 //
-// swagger:model Node
-type Node struct {
+// swagger:model DeviceConfig
+type DeviceConfig struct {
 
 	// administrative state of device
 	AdminState *AdminState `json:"adminState,omitempty"`
@@ -30,6 +30,9 @@ type Node struct {
 
 	// base images
 	BaseImage []*BaseOSImage `json:"baseImage"`
+
+	// Force upgrade base OS
+	BaseOsForceUpgrade bool `json:"baseOsForceUpgrade,omitempty"`
 
 	// device baseos retry counter
 	BaseOsRetryCounter int64 `json:"baseOsRetryCounter,omitempty"`
@@ -46,8 +49,16 @@ type Node struct {
 	// Pattern: [a-zA-Z0-9][a-zA-Z0-9_.-]+
 	ClusterID string `json:"clusterID,omitempty"`
 
+	// The following two fields are related to the edge node cluster configuration
+	//
+	// Cluster Interface
+	ClusterInterface string `json:"clusterInterface,omitempty"`
+
 	// ED configurations
 	ConfigItem []*EDConfigItem `json:"configItem"`
+
+	// device configuration lock setting
+	ConfigLock *DeviceConfigLock `json:"configLock,omitempty"`
 
 	// CPU (configured values)
 	CPU int64 `json:"cpu,omitempty"`
@@ -56,7 +67,7 @@ type Node struct {
 	DebugKnob *DebugKnobDetail `json:"debugKnob,omitempty"`
 
 	// default network instance details
-	DefaultNetInst *NetworkInstance `json:"defaultNetInst,omitempty"`
+	DefaultNetInst *NetInstConfig `json:"defaultNetInst,omitempty"`
 
 	// user defined tag for the device, which is used while deploying policies.
 	DeploymentTag string `json:"deploymentTag,omitempty"`
@@ -72,6 +83,17 @@ type Node struct {
 
 	// device Lisp
 	Dlisp *DeviceLisp `json:"dlisp,omitempty"`
+
+	// Edge Node Cluster Configuration
+	EdgeNodeCluster *EdgeNodeClusterConfig `json:"edgeNodeCluster,omitempty"`
+
+	// edge sync config
+	EdgeSyncConfig *EdgeSyncConfig `json:"edgeSyncConfig,omitempty"`
+
+	// To support edge view policy in deployments, adding a new column in device table
+	//
+	// Allow device to enable Edgeview
+	EdgeviewAllow bool `json:"edgeviewAllow,omitempty"`
 
 	// edgeview configuration for device
 	Edgeviewconfig *EdgeviewCfg `json:"edgeviewconfig,omitempty"`
@@ -89,13 +111,21 @@ type Node struct {
 	Identity strfmt.Base64 `json:"identity,omitempty"`
 
 	// System Interface list
-	Interfaces []*SystemInterface `json:"interfaces"`
+	Interfaces []*SysInterface `json:"interfaces"`
+
+	// will be deprecated 73
+	//
+	// local operator console url
+	LocalOperatorConsoleURL string `json:"localOperatorConsoleURL,omitempty"`
 
 	// Device location: deprecated
 	Location string `json:"location,omitempty"`
 
 	// Device memory in MBs
 	Memory int64 `json:"memory,omitempty"`
+
+	// Model specific info
+	Model *ModelInfo `json:"model,omitempty"`
 
 	// device model
 	// Required: true
@@ -116,6 +146,9 @@ type Node struct {
 
 	// prepare poweroff time
 	PreparePowerOffTime string `json:"preparePowerOffTime,omitempty"`
+
+	// Project specific info
+	Project *ProjectInfo `json:"project,omitempty"`
 
 	// project name
 	// Required: true
@@ -154,10 +187,13 @@ type Node struct {
 
 	// device model arch type
 	Utype *ModelArchType `json:"utype,omitempty"`
+
+	// A list of VLAN sub-interfaces configured for EVE management traffic and for local network instances
+	VlanAdapters []*VlanAdapter `json:"vlanAdapters"`
 }
 
 // Validate validates this device config
-func (m *Node) Validate(formats strfmt.Registry) error {
+func (m *DeviceConfig) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAdminState(formats); err != nil {
@@ -173,6 +209,10 @@ func (m *Node) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateConfigItem(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateConfigLock(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -192,6 +232,14 @@ func (m *Node) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateEdgeNodeCluster(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateEdgeSyncConfig(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateEdgeviewconfig(formats); err != nil {
 		res = append(res, err)
 	}
@@ -204,6 +252,10 @@ func (m *Node) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateModel(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateModelID(formats); err != nil {
 		res = append(res, err)
 	}
@@ -213,6 +265,10 @@ func (m *Node) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateOnboarding(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateProject(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -232,13 +288,17 @@ func (m *Node) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateVlanAdapters(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
 }
 
-func (m *Node) validateAdminState(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateAdminState(formats strfmt.Registry) error {
 	if swag.IsZero(m.AdminState) { // not required
 		return nil
 	}
@@ -257,7 +317,7 @@ func (m *Node) validateAdminState(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateBaseImage(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateBaseImage(formats strfmt.Registry) error {
 	if swag.IsZero(m.BaseImage) { // not required
 		return nil
 	}
@@ -283,7 +343,7 @@ func (m *Node) validateBaseImage(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateClusterID(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateClusterID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ClusterID) { // not required
 		return nil
 	}
@@ -303,7 +363,7 @@ func (m *Node) validateClusterID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateConfigItem(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateConfigItem(formats strfmt.Registry) error {
 	if swag.IsZero(m.ConfigItem) { // not required
 		return nil
 	}
@@ -329,7 +389,26 @@ func (m *Node) validateConfigItem(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateDebugKnob(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateConfigLock(formats strfmt.Registry) error {
+	if swag.IsZero(m.ConfigLock) { // not required
+		return nil
+	}
+
+	if m.ConfigLock != nil {
+		if err := m.ConfigLock.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("configLock")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("configLock")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) validateDebugKnob(formats strfmt.Registry) error {
 	if swag.IsZero(m.DebugKnob) { // not required
 		return nil
 	}
@@ -348,7 +427,7 @@ func (m *Node) validateDebugKnob(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateDefaultNetInst(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateDefaultNetInst(formats strfmt.Registry) error {
 	if swag.IsZero(m.DefaultNetInst) { // not required
 		return nil
 	}
@@ -367,7 +446,7 @@ func (m *Node) validateDefaultNetInst(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateDevLocation(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateDevLocation(formats strfmt.Registry) error {
 	if swag.IsZero(m.DevLocation) { // not required
 		return nil
 	}
@@ -386,7 +465,7 @@ func (m *Node) validateDevLocation(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateDlisp(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateDlisp(formats strfmt.Registry) error {
 	if swag.IsZero(m.Dlisp) { // not required
 		return nil
 	}
@@ -405,7 +484,45 @@ func (m *Node) validateDlisp(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateEdgeviewconfig(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateEdgeNodeCluster(formats strfmt.Registry) error {
+	if swag.IsZero(m.EdgeNodeCluster) { // not required
+		return nil
+	}
+
+	if m.EdgeNodeCluster != nil {
+		if err := m.EdgeNodeCluster.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeNodeCluster")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeNodeCluster")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) validateEdgeSyncConfig(formats strfmt.Registry) error {
+	if swag.IsZero(m.EdgeSyncConfig) { // not required
+		return nil
+	}
+
+	if m.EdgeSyncConfig != nil {
+		if err := m.EdgeSyncConfig.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeSyncConfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeSyncConfig")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) validateEdgeviewconfig(formats strfmt.Registry) error {
 	if swag.IsZero(m.Edgeviewconfig) { // not required
 		return nil
 	}
@@ -424,7 +541,7 @@ func (m *Node) validateEdgeviewconfig(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateID(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateID(formats strfmt.Registry) error {
 	if swag.IsZero(m.ID) { // not required
 		return nil
 	}
@@ -436,7 +553,7 @@ func (m *Node) validateID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateInterfaces(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateInterfaces(formats strfmt.Registry) error {
 	if swag.IsZero(m.Interfaces) { // not required
 		return nil
 	}
@@ -462,7 +579,26 @@ func (m *Node) validateInterfaces(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateModelID(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateModel(formats strfmt.Registry) error {
+	if swag.IsZero(m.Model) { // not required
+		return nil
+	}
+
+	if m.Model != nil {
+		if err := m.Model.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("model")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("model")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) validateModelID(formats strfmt.Registry) error {
 
 	if err := validate.Required("modelId", "body", m.ModelID); err != nil {
 		return err
@@ -471,7 +607,7 @@ func (m *Node) validateModelID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateName(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateName(formats strfmt.Registry) error {
 
 	if err := validate.Required("name", "body", m.Name); err != nil {
 		return err
@@ -480,7 +616,7 @@ func (m *Node) validateName(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateOnboarding(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateOnboarding(formats strfmt.Registry) error {
 	if swag.IsZero(m.Onboarding) { // not required
 		return nil
 	}
@@ -499,7 +635,26 @@ func (m *Node) validateOnboarding(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateProjectID(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateProject(formats strfmt.Registry) error {
+	if swag.IsZero(m.Project) { // not required
+		return nil
+	}
+
+	if m.Project != nil {
+		if err := m.Project.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("project")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("project")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) validateProjectID(formats strfmt.Registry) error {
 
 	if err := validate.Required("projectId", "body", m.ProjectID); err != nil {
 		return err
@@ -508,7 +663,7 @@ func (m *Node) validateProjectID(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateRevision(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
 	}
@@ -527,7 +682,7 @@ func (m *Node) validateRevision(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateTitle(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateTitle(formats strfmt.Registry) error {
 
 	if err := validate.Required("title", "body", m.Title); err != nil {
 		return err
@@ -536,7 +691,7 @@ func (m *Node) validateTitle(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *Node) validateUtype(formats strfmt.Registry) error {
+func (m *DeviceConfig) validateUtype(formats strfmt.Registry) error {
 	if swag.IsZero(m.Utype) { // not required
 		return nil
 	}
@@ -555,8 +710,34 @@ func (m *Node) validateUtype(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *DeviceConfig) validateVlanAdapters(formats strfmt.Registry) error {
+	if swag.IsZero(m.VlanAdapters) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.VlanAdapters); i++ {
+		if swag.IsZero(m.VlanAdapters[i]) { // not required
+			continue
+		}
+
+		if m.VlanAdapters[i] != nil {
+			if err := m.VlanAdapters[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("vlanAdapters" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("vlanAdapters" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // ContextValidate validate this device config based on the context it is used
-func (m *Node) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.contextValidateAdminState(ctx, formats); err != nil {
@@ -568,6 +749,10 @@ func (m *Node) ContextValidate(ctx context.Context, formats strfmt.Registry) err
 	}
 
 	if err := m.contextValidateConfigItem(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateConfigLock(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -587,6 +772,14 @@ func (m *Node) ContextValidate(ctx context.Context, formats strfmt.Registry) err
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateEdgeNodeCluster(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateEdgeSyncConfig(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateEdgeviewconfig(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -599,7 +792,15 @@ func (m *Node) ContextValidate(ctx context.Context, formats strfmt.Registry) err
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateModel(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateOnboarding(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateProject(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -611,13 +812,17 @@ func (m *Node) ContextValidate(ctx context.Context, formats strfmt.Registry) err
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateVlanAdapters(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
 }
 
-func (m *Node) contextValidateAdminState(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateAdminState(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.AdminState != nil {
 		if err := m.AdminState.ContextValidate(ctx, formats); err != nil {
@@ -633,7 +838,7 @@ func (m *Node) contextValidateAdminState(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *Node) contextValidateBaseImage(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateBaseImage(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.BaseImage); i++ {
 
@@ -653,7 +858,7 @@ func (m *Node) contextValidateBaseImage(ctx context.Context, formats strfmt.Regi
 	return nil
 }
 
-func (m *Node) contextValidateConfigItem(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateConfigItem(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.ConfigItem); i++ {
 
@@ -673,7 +878,23 @@ func (m *Node) contextValidateConfigItem(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *Node) contextValidateDebugKnob(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateConfigLock(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ConfigLock != nil {
+		if err := m.ConfigLock.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("configLock")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("configLock")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) contextValidateDebugKnob(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DebugKnob != nil {
 		if err := m.DebugKnob.ContextValidate(ctx, formats); err != nil {
@@ -689,7 +910,7 @@ func (m *Node) contextValidateDebugKnob(ctx context.Context, formats strfmt.Regi
 	return nil
 }
 
-func (m *Node) contextValidateDefaultNetInst(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateDefaultNetInst(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DefaultNetInst != nil {
 		if err := m.DefaultNetInst.ContextValidate(ctx, formats); err != nil {
@@ -705,7 +926,7 @@ func (m *Node) contextValidateDefaultNetInst(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *Node) contextValidateDevLocation(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateDevLocation(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.DevLocation != nil {
 		if err := m.DevLocation.ContextValidate(ctx, formats); err != nil {
@@ -721,7 +942,7 @@ func (m *Node) contextValidateDevLocation(ctx context.Context, formats strfmt.Re
 	return nil
 }
 
-func (m *Node) contextValidateDlisp(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateDlisp(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Dlisp != nil {
 		if err := m.Dlisp.ContextValidate(ctx, formats); err != nil {
@@ -737,7 +958,39 @@ func (m *Node) contextValidateDlisp(ctx context.Context, formats strfmt.Registry
 	return nil
 }
 
-func (m *Node) contextValidateEdgeviewconfig(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateEdgeNodeCluster(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.EdgeNodeCluster != nil {
+		if err := m.EdgeNodeCluster.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeNodeCluster")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeNodeCluster")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) contextValidateEdgeSyncConfig(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.EdgeSyncConfig != nil {
+		if err := m.EdgeSyncConfig.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("edgeSyncConfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("edgeSyncConfig")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) contextValidateEdgeviewconfig(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Edgeviewconfig != nil {
 		if err := m.Edgeviewconfig.ContextValidate(ctx, formats); err != nil {
@@ -753,7 +1006,7 @@ func (m *Node) contextValidateEdgeviewconfig(ctx context.Context, formats strfmt
 	return nil
 }
 
-func (m *Node) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
 
 	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
 		return err
@@ -762,7 +1015,7 @@ func (m *Node) contextValidateID(ctx context.Context, formats strfmt.Registry) e
 	return nil
 }
 
-func (m *Node) contextValidateInterfaces(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateInterfaces(ctx context.Context, formats strfmt.Registry) error {
 
 	for i := 0; i < len(m.Interfaces); i++ {
 
@@ -782,7 +1035,23 @@ func (m *Node) contextValidateInterfaces(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *Node) contextValidateOnboarding(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateModel(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Model != nil {
+		if err := m.Model.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("model")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("model")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) contextValidateOnboarding(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Onboarding != nil {
 		if err := m.Onboarding.ContextValidate(ctx, formats); err != nil {
@@ -798,7 +1067,23 @@ func (m *Node) contextValidateOnboarding(ctx context.Context, formats strfmt.Reg
 	return nil
 }
 
-func (m *Node) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateProject(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Project != nil {
+		if err := m.Project.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("project")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("project")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfig) contextValidateRevision(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Revision != nil {
 		if err := m.Revision.ContextValidate(ctx, formats); err != nil {
@@ -814,7 +1099,7 @@ func (m *Node) contextValidateRevision(ctx context.Context, formats strfmt.Regis
 	return nil
 }
 
-func (m *Node) contextValidateUtype(ctx context.Context, formats strfmt.Registry) error {
+func (m *DeviceConfig) contextValidateUtype(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.Utype != nil {
 		if err := m.Utype.ContextValidate(ctx, formats); err != nil {
@@ -830,8 +1115,28 @@ func (m *Node) contextValidateUtype(ctx context.Context, formats strfmt.Registry
 	return nil
 }
 
+func (m *DeviceConfig) contextValidateVlanAdapters(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.VlanAdapters); i++ {
+
+		if m.VlanAdapters[i] != nil {
+			if err := m.VlanAdapters[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("vlanAdapters" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("vlanAdapters" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
-func (m *Node) MarshalBinary() ([]byte, error) {
+func (m *DeviceConfig) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -839,8 +1144,8 @@ func (m *Node) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *Node) UnmarshalBinary(b []byte) error {
-	var res Node
+func (m *DeviceConfig) UnmarshalBinary(b []byte) error {
+	var res DeviceConfig
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

@@ -17,7 +17,7 @@ import (
 
 // DeviceConfigSummary Device Configuration payload summary
 //
-// # Device Configuration request paylod holds the device properties
+// # Device Configuration request payload holds the device properties
 //
 // swagger:model DeviceConfigSummary
 type DeviceConfigSummary struct {
@@ -49,7 +49,7 @@ type DeviceConfigSummary struct {
 	ID string `json:"id,omitempty"`
 
 	// System Interface list
-	Interfaces []*SystemInterface `json:"interfaces"`
+	Interfaces []*SysInterface `json:"interfaces"`
 
 	// device model
 	// Required: true
@@ -75,6 +75,9 @@ type DeviceConfigSummary struct {
 
 	// device model arch type
 	Utype *ModelArchType `json:"utype,omitempty"`
+
+	// A list of VLAN adapters
+	VlanAdapters []*VlanAdapter `json:"vlanAdapters"`
 }
 
 // Validate validates this device config summary
@@ -122,6 +125,10 @@ func (m *DeviceConfigSummary) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateUtype(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateVlanAdapters(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -308,6 +315,32 @@ func (m *DeviceConfigSummary) validateUtype(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *DeviceConfigSummary) validateVlanAdapters(formats strfmt.Registry) error {
+	if swag.IsZero(m.VlanAdapters) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.VlanAdapters); i++ {
+		if swag.IsZero(m.VlanAdapters[i]) { // not required
+			continue
+		}
+
+		if m.VlanAdapters[i] != nil {
+			if err := m.VlanAdapters[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("vlanAdapters" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("vlanAdapters" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
+	return nil
+}
+
 // ContextValidate validate this device config summary based on the context it is used
 func (m *DeviceConfigSummary) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -333,6 +366,10 @@ func (m *DeviceConfigSummary) ContextValidate(ctx context.Context, formats strfm
 	}
 
 	if err := m.contextValidateUtype(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateVlanAdapters(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -434,6 +471,26 @@ func (m *DeviceConfigSummary) contextValidateUtype(ctx context.Context, formats 
 			}
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (m *DeviceConfigSummary) contextValidateVlanAdapters(ctx context.Context, formats strfmt.Registry) error {
+
+	for i := 0; i < len(m.VlanAdapters); i++ {
+
+		if m.VlanAdapters[i] != nil {
+			if err := m.VlanAdapters[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("vlanAdapters" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("vlanAdapters" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
 	}
 
 	return nil
