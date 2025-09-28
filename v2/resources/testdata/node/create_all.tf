@@ -154,3 +154,90 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		"tag-key-2" = "tag-value-2"
 	}
 }
+
+resource "zedcloud_network" "adapter_spec_network" {
+    depends_on = [
+        zedcloud_project.test_tf_provider
+    ]
+    name = "adapter specific network"
+    title = "adapter specific network"
+    project_id = zedcloud_project.test_tf_provider.id
+    ip {
+        dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+    }
+}
+
+resource "zedcloud_edgenode" "test_dev_adap_spec_net" {
+	depends_on = [
+		zedcloud_project.test_tf_provider,
+		zedcloud_model.test_tf_provider,
+		zedcloud_network.adapter_spec_network
+	]
+	name = "test_dev"
+	model_id = zedcloud_model.test_tf_provider.id
+	project_id = zedcloud_project.test_tf_provider.id
+	title = "test dev"
+	# optional
+	onboarding_key = ""
+	serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45c"
+	admin_state = "ADMIN_STATE_ACTIVE"
+	asset_id = "asset_id"
+	deployment_tag = "depl_tag"
+	description = "description"
+	generate_soft_serial = false
+	token = "token_all"
+	site_pictures = []
+	interfaces {
+		cost = 255
+		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+		intfname = "eth0"
+		netname = zedcloud_network.adapter_spec_network.name
+		adapter_specific_net {
+			name = zedcloud_network.adapter_spec_network.name
+			title = zedcloud_network.adapter_spec_network.title
+			kind = "NETWORK_KIND_V4"
+			ip {
+				dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+				subnet = "10.1.1.0/24"
+				gateway = "10.1.1.1"
+			}
+		}
+		ipaddr = "127.0.0.1"
+		macaddr = "00:00:00:00:00:00"
+		tags = {
+			"system_interface_1_key" = "system_interface_1_value"
+			"system_interface_2_key" = "system_interface_2_value"
+		}
+	}
+	interfaces {
+		intfname = "eth0"
+		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+	}
+
+	config_item {
+		bool_value = true
+		float_value = 1.0
+		key = "key"
+		string_value = "string"
+		uint32_value = 32
+		uint64_value = 64
+		value_type = "value type"
+	}
+
+	dev_location {
+		city = "berlin"
+		country = "germany"
+		freeloc = "freeloc"
+		hostname = "hostname"
+		loc = "52.520008, 13.404954"
+		org = "zededa"
+		postal = "10115"
+		region = "europe/west"
+		underlay_ip = ""
+	}
+
+	tags = {
+		"tag-key-1" = "tag-value-1"
+		"tag-key-2" = "tag-value-2"
+	}
+}

@@ -2822,6 +2822,63 @@
             },
             "title": "Cipher information to decrypt Sensitive Data"
         },
+        "commonConnectivityProbe": {
+            "type": "object",
+            "properties": {
+                "probeMethod": {
+                    "$ref": "#/definitions/commonConnectivityProbeMethod",
+                    "description": "Method to use to determine the connectivity status."
+                },
+                "probeEndpoint": {
+                    "$ref": "#/definitions/commonProbeEndpoint",
+                    "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
+                }
+            },
+            "description": "Configuration for user-defined connectivity-testing probe."
+        },
+        "commonConnectivityProbeMethod": {
+            "type": "string",
+            "enum": [
+                "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
+                "CONNECTIVITY_PROBE_METHOD_ICMP",
+                "CONNECTIVITY_PROBE_METHOD_TCP"
+            ],
+            "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
+            "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
+        },
+        "commonDHCPType": {
+            "type": "string",
+            "enum": [
+                "DHCPNoop",
+                "Static",
+                "DHCPNone",
+                "Client"
+            ],
+            "default": "DHCPNoop",
+            "title": "- Static: Statically configure the DHCP for port\n - DHCPNone: Don't run any DHCP, we are in passthrough mode for app\n - Client: Run the DHCP client on this port"
+        },
+        "commonDhcpOptionsIgnore": {
+            "type": "object",
+            "properties": {
+                "ntpServerExclusively": {
+                    "type": "boolean",
+                    "description": "When true, statically configured NTP servers are used exclusively,\nignoring any NTP servers provided by DHCP.\nIf true and no static NTP servers are set, no NTP servers will be used.\nFor DHCP (IPv4), this applies to option 42.\nFor DHCPv6 (IPv6), this applies to option 56."
+                },
+                "ipAddressesExclusively": {
+                    "type": "boolean",
+                    "description": "When true, statically configured IP addresses are used exclusively,\nignoring any IP addresses provided by DHCP.\nIf true and no static IP addresses are set, the interface will have no IP assigned."
+                },
+                "dnsConfigExclusive": {
+                    "type": "boolean",
+                    "description": "When true, statically configured DNS servers and domain name(s) are used\nexclusively, ignoring any DNS-related configuration provided by DHCP.\nIf true and no static DNS servers are set, no DNS servers will be used.\nSimilarly, if no static domain name(s) are set, no domain name(s) will be used.\nFor DHCP (IPv4), this applies to option 6 (DNS servers), option 15\n(single domain name), and option 119 (search domains).\nFor DHCPv6 (IPv6), this applies to option 23 (DNS servers) and option 24\n(domain search list)."
+                },
+                "gatewaysExclusively": {
+                    "type": "boolean",
+                    "description": "When true, statically configured gateway addresses are used exclusively,\nignoring any routers provided by DHCP.\nIf true and no static routers are set, no gateway will be used.\nFor DHCP (IPv4), this applies to option 3.\nFor DHCPv6 (IPv6), this applies to option 24."
+                }
+            },
+            "description": "DhcpOptionsIgnore specifies which DHCP-provided options\nshould be ignored by the device, allowing static configuration\nto override DHCP where applicable.\n\nCurrently supported options include:\n  - IP addresses\n  - NTP servers\n  - DNS servers and domains\n  - Router (gateway) addresses\n\nThis allows flexible merging or exclusive use of static config fields.\n\nFor full DHCP option references:\n  - DHCP: https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml\n  - DHCPv6: https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml"
+        },
         "commonEncryptionScheme": {
             "type": "string",
             "enum": [
@@ -2848,6 +2905,21 @@
             ],
             "default": "KEA_NONE",
             "title": "Security Key Exchange Method"
+        },
+        "commonNetworkType": {
+            "type": "string",
+            "enum": [
+                "NETWORKTYPENOOP",
+                "V4",
+                "V6",
+                "CryptoV4",
+                "CryptoV6",
+                "CryptoEID",
+                "V4Only",
+                "V6Only",
+                "DualV4V6"
+            ],
+            "default": "NETWORKTYPENOOP"
         },
         "commonPhyIoMemberUsage": {
             "type": "string",
@@ -2885,6 +2957,161 @@
                 "PhyIoOther"
             ],
             "default": "PhyIoNoop"
+        },
+        "commonProbeEndpoint": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "IP address or FQDN."
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
+                }
+            },
+            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
+        },
+        "commonProxyConfig": {
+            "type": "object",
+            "properties": {
+                "networkProxyEnable": {
+                    "type": "boolean",
+                    "title": "enable network level proxy in the form of WPAD"
+                },
+                "proxies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/commonProxyServer"
+                    },
+                    "title": "dedicated per protocol information"
+                },
+                "exceptions": {
+                    "type": "string",
+                    "title": "exceptions separated by commas"
+                },
+                "pacfile": {
+                    "type": "string",
+                    "title": "or pacfile can be in place of others\nbase64 encoded"
+                },
+                "networkProxyURL": {
+                    "type": "string",
+                    "title": "Direct URL for wpad.dat download"
+                },
+                "proxyCertPEM": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "title": "Uploaded proxy certificate or certificate chain for MITM\nthis may be needed either in explicit (has ProxyServer items), automatic\n(networkProxyEnable) or transparent (network layer not aware of proxy)"
+                }
+            }
+        },
+        "commonProxyServer": {
+            "type": "object",
+            "properties": {
+                "proto": {
+                    "$ref": "#/definitions/commonproxyProto"
+                },
+                "server": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "commonWiFiKeyScheme": {
+            "type": "string",
+            "enum": [
+                "SchemeNOOP",
+                "WPAPSK",
+                "WPAEAP"
+            ],
+            "default": "SchemeNOOP"
+        },
+        "commonZnetStaticDNSEntry": {
+            "type": "object",
+            "properties": {
+                "HostName": {
+                    "type": "string"
+                },
+                "Address": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "title": "These are list of static mapping that can be added to network"
+        },
+        "commonipRange": {
+            "type": "object",
+            "properties": {
+                "start": {
+                    "type": "string"
+                },
+                "end": {
+                    "type": "string"
+                }
+            }
+        },
+        "commonipspec": {
+            "type": "object",
+            "properties": {
+                "dhcp": {
+                    "$ref": "#/definitions/commonDHCPType"
+                },
+                "subnet": {
+                    "type": "string",
+                    "title": "subnet is CIDR format...x.y.z.l/nn"
+                },
+                "gateway": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "ntp": {
+                    "type": "string",
+                    "title": "ntp and more_ntp are used as a union to specify several NTP servers\nvia IP address or FQDN\nthis is for historical reasons when we only allowed to specify one\nNTP server"
+                },
+                "moreNtp": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dhcpRange": {
+                    "$ref": "#/definitions/commonipRange",
+                    "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                },
+                "dhcpOptionsIgnore": {
+                    "$ref": "#/definitions/commonDhcpOptionsIgnore",
+                    "title": "Even if DhcpType is Client, EVE still accepts static\nIP config and will merge it with the DHCP-provided one by default\nuse the following option to override this behavior"
+                }
+            },
+            "title": "Common for IPv4 and IPv6"
+        },
+        "commonproxyProto": {
+            "type": "string",
+            "enum": [
+                "PROXY_HTTP",
+                "PROXY_HTTPS",
+                "PROXY_SOCKS",
+                "PROXY_FTP",
+                "PROXY_OTHER"
+            ],
+            "default": "PROXY_HTTP"
         },
         "configACE": {
             "type": "object",
@@ -3261,7 +3488,7 @@
                     "description": "Access Point Network to connect into.\nBy default it is \"internet\".\nApplies to the default bearer.\nTo modify the attach bearer APN, use attach_apn instead."
                 },
                 "authProtocol": {
-                    "$ref": "#/definitions/eveconfigCellularAuthProtocol",
+                    "$ref": "#/definitions/evecommonCellularAuthProtocol",
                     "description": "Authentication protocol used by the network.\nApplies to the default bearer.\nTo modify the authentication protocol for the attach bearer, use attach_auth_protocol instead."
                 },
                 "cipherData": {
@@ -3299,7 +3526,7 @@
                     "description": "The IP addressing type to use for the attach bearer.\nLeave undefined if attach_apn is not specified."
                 },
                 "attachAuthProtocol": {
-                    "$ref": "#/definitions/eveconfigCellularAuthProtocol",
+                    "$ref": "#/definitions/evecommonCellularAuthProtocol",
                     "description": "Authentication protocol used for the attach bearer.\nLeave undefined if attach_apn is not specified."
                 }
             },
@@ -3346,7 +3573,7 @@
                     "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThis field is now deprecated and replaced with custom_probe (see below).\nTo maintain backward-compatibility, EVE will check both probe_address and custom_probe\nand will use whichever has non-zero value (if any), but preferring custom_probe."
                 },
                 "customProbe": {
-                    "$ref": "#/definitions/configConnectivityProbe",
+                    "$ref": "#/definitions/commonConnectivityProbe",
                     "description": "User-defined probe for cellular connectivity testing.\nOnly IP address is allowed as ConnectivityProbe.probe_address (and port if needed),\nnot hostname.\nThe probing algorithm is more complex that just testing reachability of a remote\nendpoint and the goal is to minimize generated traffic, probing time and false negatives\n(that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the remote endpoint. If custom_probe is not defined,\nEVE will try to ping \"8.8.8.8\" (Google public DNS).\nIt is recommended to use custom probe for private LTE networks where public DNS servers\nmight not be allowed by the firewall (and hence ping would fail even with a working\nconnectivity)."
                 }
             },
@@ -3363,30 +3590,6 @@
                 }
             },
             "description": "Timers and other per-device policy which relates to the interaction\nwith zedcloud. Note that the timers are randomized on the device\nto avoid synchronization with other devices. Random range is between\nbetween .5 and 1.5 of these nominal values. If not set (i.e. zero),\nit means the default value of 60 seconds."
-        },
-        "configConnectivityProbe": {
-            "type": "object",
-            "properties": {
-                "probeMethod": {
-                    "$ref": "#/definitions/configConnectivityProbeMethod",
-                    "description": "Method to use to determine the connectivity status."
-                },
-                "probeEndpoint": {
-                    "$ref": "#/definitions/configProbeEndpoint",
-                    "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
-                }
-            },
-            "description": "Configuration for user-defined connectivity-testing probe."
-        },
-        "configConnectivityProbeMethod": {
-            "type": "string",
-            "enum": [
-                "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
-                "CONNECTIVITY_PROBE_METHOD_ICMP",
-                "CONNECTIVITY_PROBE_METHOD_TCP"
-            ],
-            "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
-            "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
         },
         "configContentTree": {
             "type": "object",
@@ -3440,17 +3643,6 @@
                 }
             },
             "title": "ContentTree describes the top of some content tree. The controller needs\nto allocate a uuid for it, and that uuid will be sent by EVE in the\nZInfoContentTree message"
-        },
-        "configDHCPType": {
-            "type": "string",
-            "enum": [
-                "DHCPNoop",
-                "Static",
-                "DHCPNone",
-                "Client"
-            ],
-            "default": "DHCPNoop",
-            "title": "- Static: Statically configure the DHCP for port\n - DHCPNone: Don't run any DHCP, we are in passthrough mode for app\n - Client: Run the DHCP client on this port"
         },
         "configDatastoreConfig": {
             "type": "object",
@@ -3521,16 +3713,6 @@
                 }
             },
             "description": "Device Operational Commands Semantic\nFor rebooting device,  command=Reset, counter = counter+delta, desiredState = on\nFor poweroff device,  command=Reset, counter = counter+delta, desiredState = off\nFor backup at midnight, command=Backup, counter = counter+delta, desiredState=n/a, opsTime = mm/dd/yy:hh:ss\nCurrent implementation does support only single command outstanding for each\ntype. In future can be extended to have more scheduled events."
-        },
-        "configDhcpOptionsIgnore": {
-            "type": "object",
-            "properties": {
-                "ntpServerExclusively": {
-                    "type": "boolean",
-                    "title": "use exclusively specified NTP servers\nif set to true and no NTP server is provided then no NTP servers should be used"
-                }
-            },
-            "title": "DhcpOptionsIgnore is used to ignore dhcp options like f.e. the NTP servers\n- currently no other options are supported, but DNS servers might be a\ngood candidate in the future\nthe options defined can be found here:\nDHCP: https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml\nDHCPv6: https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml"
         },
         "configDiskConfig": {
             "type": "object",
@@ -4149,20 +4331,20 @@
                     "type": "string"
                 },
                 "type": {
-                    "$ref": "#/definitions/configNetworkType"
+                    "$ref": "#/definitions/commonNetworkType"
                 },
                 "ip": {
-                    "$ref": "#/definitions/configipspec",
+                    "$ref": "#/definitions/commonipspec",
                     "title": "network ip specification"
                 },
                 "dns": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/configZnetStaticDNSEntry"
+                        "$ref": "#/definitions/commonZnetStaticDNSEntry"
                     }
                 },
                 "entProxy": {
-                    "$ref": "#/definitions/configProxyConfig",
+                    "$ref": "#/definitions/commonProxyConfig",
                     "title": "enterprise proxy"
                 },
                 "wireless": {
@@ -4210,13 +4392,13 @@
                     "title": "type of ipSpec"
                 },
                 "ip": {
-                    "$ref": "#/definitions/configipspec",
+                    "$ref": "#/definitions/commonipspec",
                     "description": "network ip specification\nNote that ip.gateway must be a valid IP address and can not be all-zeroes.\nTo suppress automatic propagation of the default route into apps, configure network\ninstance as air-gapped (without port) or mark all NI ports as app-shared\n(not for management) and ensure that they will not get a default route\n(e.g. set ip.gateway of the attached NetworkConfig(s) to all-zeroes IP)."
                 },
                 "dns": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/configZnetStaticDNSEntry"
+                        "$ref": "#/definitions/commonZnetStaticDNSEntry"
                     },
                     "title": "static DNS entry, if we are running DNS/DHCP service"
                 },
@@ -4246,6 +4428,10 @@
                         "$ref": "#/definitions/configVlanAccessPort"
                     },
                     "description": "VLAN access ports configured for a switch network instance.\nFor other types of network instances, this option is ignored.\nThis setting applies to physical network ports attached to the network instance.\nVLAN configuration for application interfaces is applied separately via AppInstanceConfig\n(see NetworkAdapter.access_vlan_id)."
+                },
+                "forwardLldp": {
+                    "type": "boolean",
+                    "description": "Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this\nnetwork instance.\nLLDP is used by devices to advertise identity and capabilities to directly\nconnected neighbors, and is often required for topology discovery and network\nmanagement tools.\nWhen enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed\nby the forwarding plane."
                 }
             }
         },
@@ -4297,21 +4483,6 @@
                 }
             },
             "description": "Network Instance Opaque config. In future we might add more fields here\nbut idea is here. This is service specific configuration."
-        },
-        "configNetworkType": {
-            "type": "string",
-            "enum": [
-                "NETWORKTYPENOOP",
-                "V4",
-                "V6",
-                "CryptoV4",
-                "CryptoV6",
-                "CryptoEID",
-                "V4Only",
-                "V6Only",
-                "DualV4V6"
-            ],
-            "default": "NETWORKTYPENOOP"
         },
         "configPatchEnvelopeRef": {
             "type": "object",
@@ -4400,77 +4571,11 @@
                     "description": "Ports exceeding this cost will have the gateway probing disabled to reduce\ntraffic generated by probing (only less-frequent custom_probe will be performed)."
                 },
                 "customProbe": {
-                    "$ref": "#/definitions/configConnectivityProbe",
+                    "$ref": "#/definitions/commonConnectivityProbe",
                     "description": "User-defined method to use to determine the port connectivity status.\nRun additionally to gateway pings (if enabled)."
                 }
             },
             "description": "Configuration for port connectivity probe."
-        },
-        "configProbeEndpoint": {
-            "type": "object",
-            "properties": {
-                "host": {
-                    "type": "string",
-                    "description": "IP address or FQDN."
-                },
-                "port": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
-                }
-            },
-            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
-        },
-        "configProxyConfig": {
-            "type": "object",
-            "properties": {
-                "networkProxyEnable": {
-                    "type": "boolean",
-                    "title": "enable network level proxy in the form of WPAD"
-                },
-                "proxies": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/configProxyServer"
-                    },
-                    "title": "dedicated per protocol information"
-                },
-                "exceptions": {
-                    "type": "string",
-                    "title": "exceptions separated by commas"
-                },
-                "pacfile": {
-                    "type": "string",
-                    "title": "or pacfile can be in place of others\nbase64 encoded"
-                },
-                "networkProxyURL": {
-                    "type": "string",
-                    "title": "Direct URL for wpad.dat download"
-                },
-                "proxyCertPEM": {
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "format": "byte"
-                    },
-                    "title": "Uploaded proxy certificate or certificate chain for MITM\nthis may be needed either in explicit (has ProxyServer items), automatic\n(networkProxyEnable) or transparent (network layer not aware of proxy)"
-                }
-            }
-        },
-        "configProxyServer": {
-            "type": "object",
-            "properties": {
-                "proto": {
-                    "$ref": "#/definitions/configproxyProto"
-                },
-                "server": {
-                    "type": "string"
-                },
-                "port": {
-                    "type": "integer",
-                    "format": "int64"
-                }
-            }
         },
         "configSignatureInfo": {
             "type": "object",
@@ -4580,6 +4685,10 @@
                         "type": "string"
                     },
                     "title": "A set of user-defined \"shared\" labels attached to the adapter.\nThere are no restrictions on the format of an adapter label, it can be any\nnon-empty string.\nUnlike the logical label (aka port logical name), shared label is not a unique\nport identifier. Instead, the same shared label can be assigned to multiple ports.\nNote that EVE automatically assigns \"all\" label to every port, \"uplink\" label to every\nmanagement port and \"freeuplink\" label to every management port with zero cost.\n(\"automatically assigns\" is meant here in imaginary sense, these labels are not supposed\nto be explicitly added by the controller to SystemAdapters inside EdgeDevConfig).\nShared label can be used to:\n - designate a group of network adapters to be used by a network instances for external\n   connectivity\n - limit port-forwarding firewall rule to only a subset of network adapters\n - create a multi-path static IP route (with multiple ports providing access to the routed\n   destination network)"
+                },
+                "allowLocalModifications": {
+                    "type": "boolean",
+                    "description": "Allow the local operator to make (limited) configuration changes to this network adapter."
                 }
             },
             "description": "systemAdapters are higher-level IP-ready network endpoints.\nsystemAdapters give all the required bits to turn the physical IOs\nand intermediate L2 objects into useful IP endpoints.\nThese endpoints can be further used to connect to controller or\ncan be shared between workload/services running on the node."
@@ -4890,15 +4999,6 @@
             },
             "title": "Reference to a Volume specified separately in the API\nIf a volume is purged (re-created from scratch) it will either have a new\nUUID or a new generationCount"
         },
-        "configWiFiKeyScheme": {
-            "type": "string",
-            "enum": [
-                "SchemeNOOP",
-                "WPAPSK",
-                "WPAEAP"
-            ],
-            "default": "SchemeNOOP"
-        },
         "configWifiConfig": {
             "type": "object",
             "properties": {
@@ -4906,7 +5006,7 @@
                     "type": "string"
                 },
                 "keyScheme": {
-                    "$ref": "#/definitions/configWiFiKeyScheme"
+                    "$ref": "#/definitions/commonWiFiKeyScheme"
                 },
                 "identity": {
                     "type": "string",
@@ -4932,7 +5032,7 @@
             "type": "object",
             "properties": {
                 "type": {
-                    "$ref": "#/definitions/eveconfigWirelessType"
+                    "$ref": "#/definitions/evecommonWirelessType"
                 },
                 "cellularCfg": {
                     "type": "array",
@@ -4995,85 +5095,16 @@
             "default": "zcloudInvalidSrv",
             "title": "- mapServer: mapping service for zededa overlay service\n - supportServer: if device has support feature enabled, this is cloud service from\ndevice can be reached"
         },
-        "configZnetStaticDNSEntry": {
-            "type": "object",
-            "properties": {
-                "HostName": {
-                    "type": "string"
-                },
-                "Address": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "title": "These are list of static mapping that can be added to network"
-        },
-        "configipRange": {
-            "type": "object",
-            "properties": {
-                "start": {
-                    "type": "string"
-                },
-                "end": {
-                    "type": "string"
-                }
-            }
-        },
-        "configipspec": {
-            "type": "object",
-            "properties": {
-                "dhcp": {
-                    "$ref": "#/definitions/configDHCPType"
-                },
-                "subnet": {
-                    "type": "string",
-                    "title": "subnet is CIDR format...x.y.z.l/nn"
-                },
-                "gateway": {
-                    "type": "string"
-                },
-                "domain": {
-                    "type": "string"
-                },
-                "ntp": {
-                    "type": "string",
-                    "title": "ntp and more_ntp are used as a union to specify several NTP servers\nvia IP address or FQDN\nthis is for historical reasons when we only allowed to specify one\nNTP server"
-                },
-                "moreNtp": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "dns": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "dhcpRange": {
-                    "$ref": "#/definitions/configipRange",
-                    "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
-                },
-                "dhcpOptionsIgnore": {
-                    "$ref": "#/definitions/configDhcpOptionsIgnore",
-                    "title": "Even if DhcpType is Client, EVE still accepts static\nIP config and will merge it with the DHCP-provided one by default\nuse the following option to override this behavior"
-                }
-            },
-            "title": "Common for IPv4 and IPv6"
-        },
-        "configproxyProto": {
+        "evecommonCellularAuthProtocol": {
             "type": "string",
             "enum": [
-                "PROXY_HTTP",
-                "PROXY_HTTPS",
-                "PROXY_SOCKS",
-                "PROXY_FTP",
-                "PROXY_OTHER"
+                "CELLULAR_AUTH_PROTOCOL_NONE",
+                "CELLULAR_AUTH_PROTOCOL_PAP",
+                "CELLULAR_AUTH_PROTOCOL_CHAP",
+                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
             ],
-            "default": "PROXY_HTTP"
+            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
+            "description": "CellularAuthProtocol defines the authentication protocol used for cellular connection.\n\n - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
         },
         "evecommonDiskDescription": {
             "type": "object",
@@ -5102,16 +5133,14 @@
             "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
             "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
         },
-        "eveconfigCellularAuthProtocol": {
+        "evecommonWirelessType": {
             "type": "string",
             "enum": [
-                "CELLULAR_AUTH_PROTOCOL_NONE",
-                "CELLULAR_AUTH_PROTOCOL_PAP",
-                "CELLULAR_AUTH_PROTOCOL_CHAP",
-                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
+                "TypeNOOP",
+                "WiFi",
+                "Cellular"
             ],
-            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
-            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
+            "default": "TypeNOOP"
         },
         "eveconfigEdgeNodeCluster": {
             "type": "object",
@@ -5253,15 +5282,6 @@
             ],
             "default": "SNAPSHOT_TYPE_UNSPECIFIED",
             "title": "Type of the snapshot creation trigger"
-        },
-        "eveconfigWirelessType": {
-            "type": "string",
-            "enum": [
-                "TypeNOOP",
-                "WiFi",
-                "Cellular"
-            ],
-            "default": "TypeNOOP"
         },
         "googlerpcStatus": {
             "type": "object",

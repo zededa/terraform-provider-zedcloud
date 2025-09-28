@@ -3175,7 +3175,7 @@
                 },
                 "customProbeConfig": {
                     "type": "object",
-                    "$ref": "#/definitions/configConnectivityProbe",
+                    "$ref": "#/definitions/commonConnectivityProbe",
                     "description": "Custom probe configuration"
                 }
             },
@@ -3889,21 +3889,21 @@
                 "port"
             ]
         },
-        "configConnectivityProbe": {
+        "commonConnectivityProbe": {
             "type": "object",
             "properties": {
                 "probeMethod": {
-                    "$ref": "#/definitions/configConnectivityProbeMethod",
+                    "$ref": "#/definitions/commonConnectivityProbeMethod",
                     "description": "Method to use to determine the connectivity status."
                 },
                 "probeEndpoint": {
-                    "$ref": "#/definitions/configProbeEndpoint",
+                    "$ref": "#/definitions/commonProbeEndpoint",
                     "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
                 }
             },
             "description": "Configuration for user-defined connectivity-testing probe."
         },
-        "configConnectivityProbeMethod": {
+        "commonConnectivityProbeMethod": {
             "type": "string",
             "enum": [
                 "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
@@ -3913,7 +3913,7 @@
             "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
             "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
         },
-        "configProbeEndpoint": {
+        "commonProbeEndpoint": {
             "type": "object",
             "properties": {
                 "host": {

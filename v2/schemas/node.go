@@ -87,7 +87,7 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 	generateSoftSerial, _ := d.Get("generate_soft_serial").(bool)
 	id, _ := d.Get("id").(string)
 	identity, _ := d.Get("identity").(strfmt.Base64)
-	var interfaces []*models.SystemInterface // []*SysInterface
+	var interfaces []*models.SysInterface // []*SysInterface
 	interfacesInterface, interfacesIsSet := d.GetOk("interfaces")
 	if interfacesIsSet {
 		var items []interface{}
@@ -100,7 +100,7 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 			if v == nil {
 				continue
 			}
-			m := SystemInterfaceModelFromMap(v.(map[string]interface{}))
+			m := SysInterfaceModelFromMap(v.(map[string]interface{}))
 			interfaces = append(interfaces, m)
 		}
 	}
@@ -292,7 +292,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 	generateSoftSerial := m["generate_soft_serial"].(bool)
 	id := m["id"].(string)
 	identity := m["identity"].(strfmt.Base64)
-	var interfaces []*models.SystemInterface // []*SysInterface
+	var interfaces []*models.SysInterface // []*SysInterface
 	interfacesInterface, interfacesIsSet := m["interfaces"]
 	if interfacesIsSet {
 		var items []interface{}
@@ -305,7 +305,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			if v == nil {
 				continue
 			}
-			m := SystemInterfaceModelFromMap(v.(map[string]interface{}))
+			m := SysInterfaceModelFromMap(v.(map[string]interface{}))
 			interfaces = append(interfaces, m)
 		}
 	}
@@ -861,6 +861,6 @@ func GetEdgeNodePropertyFields() (t []string) {
 
 func systemInterfaceElem() *schema.Resource {
 	return &schema.Resource{
-		Schema: SystemInterface(),
+		Schema: SysInterfaceSchema(),
 	}
 }

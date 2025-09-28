@@ -132,13 +132,13 @@ func diffSuppressSystemInterfaceListOrder(mapKey string) schema.SchemaDiffSuppre
 			return false
 		}
 
-		oldMapList := make([]*models.SystemInterface, len(o))
+		oldMapList := make([]*models.SysInterface, len(o))
 		for i, m := range o {
-			oldMapList[i] = SystemInterfaceModelFromMap(m.(map[string]interface{}))
+			oldMapList[i] = SysInterfaceModelFromMap(m.(map[string]interface{}))
 		}
-		newMapList := make([]*models.SystemInterface, len(o))
+		newMapList := make([]*models.SysInterface, len(o))
 		for i, m := range o {
-			newMapList[i] = SystemInterfaceModelFromMap(m.(map[string]interface{}))
+			newMapList[i] = SysInterfaceModelFromMap(m.(map[string]interface{}))
 		}
 
 		return CompareSystemInterfaceList(oldMapList, newMapList)
