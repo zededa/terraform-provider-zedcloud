@@ -22,7 +22,9 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	intfUsageInterface, intfUsageIsSet := d.GetOk("intf_usage")
 	if intfUsageIsSet {
 		intfUsageModel := intfUsageInterface.(string)
-		intfUsage = models.NewAdapterUsage(models.AdapterUsage(intfUsageModel))
+		if intfUsageModel != "" {
+			intfUsage = models.NewAdapterUsage(models.AdapterUsage(intfUsageModel))
+		}
 	}
 	intfname, _ := d.Get("intfname").(string)
 	ipaddr, _ := d.Get("ipaddr").(string)
@@ -31,7 +33,9 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	netDhcpInterface, netDhcpIsSet := d.GetOk("net_dhcp")
 	if netDhcpIsSet {
 		netDhcpModel := netDhcpInterface.(string)
-		netDhcp = models.NewNetworkDHCPType(models.NetworkDHCPType(netDhcpModel))
+		if netDhcpModel != "" {
+			netDhcp = models.NewNetworkDHCPType(models.NetworkDHCPType(netDhcpModel))
+		}
 	}
 	netid, _ := d.Get("netid").(string)
 	netname, _ := d.Get("netname").(string)
@@ -95,7 +99,9 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	intfUsageInterface, intfUsageIsSet := m["intf_usage"]
 	if intfUsageIsSet {
 		intfUsageModel := intfUsageInterface.(string)
-		intfUsage = models.NewAdapterUsage(models.AdapterUsage(intfUsageModel))
+		if intfUsageModel != "" {
+			intfUsage = models.NewAdapterUsage(models.AdapterUsage(intfUsageModel))
+		}
 	}
 	intfname := m["intfname"].(string)
 	ipaddr := m["ipaddr"].(string)
@@ -104,7 +110,9 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	netDhcpInterface, netDhcpIsSet := m["net_dhcp"]
 	if netDhcpIsSet {
 		netDhcpModel := netDhcpInterface.(string)
-		netDhcp = models.NewNetworkDHCPType(models.NetworkDHCPType(netDhcpModel))
+		if netDhcpModel != "" {
+			netDhcp = models.NewNetworkDHCPType(models.NetworkDHCPType(netDhcpModel))
+		}
 	}
 	netid := m["netid"].(string)
 	netname := m["netname"].(string)

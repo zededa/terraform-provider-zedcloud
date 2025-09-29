@@ -159,7 +159,7 @@ resource "zedcloud_network" "adapter_spec_network" {
     depends_on = [
         zedcloud_project.test_tf_provider
     ]
-    name = "adapter specific network"
+    name = "adap-spec-net"
     title = "adapter specific network"
     project_id = zedcloud_project.test_tf_provider.id
     ip {
@@ -192,12 +192,14 @@ resource "zedcloud_edgenode" "test_dev_adap_spec_net" {
 		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
 		intfname = "eth0"
 		netname = zedcloud_network.adapter_spec_network.name
+		netid = zedcloud_network.adapter_spec_network.id
 		adapter_specific_net {
 			kind = "NETWORK_KIND_V4"
 			ip {
 				dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
 				subnet = "10.1.1.0/24"
 				gateway = "10.1.1.1"
+				dns = ["10.1.1.1", "8.8.8.8"]
 			}
 		}
 		ipaddr = "10.1.1.3"

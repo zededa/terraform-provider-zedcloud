@@ -225,9 +225,9 @@ func Network() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: StaticDNSList(),
 			},
-			DiffSuppressFunc: diffSuppressDNSListOrder("dns_list"),
-			Optional:         true,
-			Computed:         true,
+
+			Optional: true,
+			Computed: true,
 		},
 
 		"enterprise_default": {
@@ -292,9 +292,8 @@ NETWORK_KIND_V6`,
 				Schema: NetworkProxy(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:         true,
-			Computed:         true,
-			DiffSuppressFunc: diffSuppressProxyListOrder("proxy"),
+			Optional: true,
+			Computed: true,
 		},
 
 		"revision": {
