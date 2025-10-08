@@ -70,8 +70,8 @@ func diffSuppressDNSListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 		for i, m := range o {
 			oldMapList[i] = StaticDNSListModelFromMap(m.(map[string]interface{}))
 		}
-		newMapList := make([]*models.StaticDNSList, len(n))
-		for i, m := range n {
+		newMapList := make([]*models.StaticDNSList, len(o))
+		for i, m := range o {
 			newMapList[i] = StaticDNSListModelFromMap(m.(map[string]interface{}))
 		}
 
@@ -79,17 +79,37 @@ func diffSuppressDNSListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 	}
 }
 
-func diffSuppressProxyListOrder(k, old, new string, d *schema.ResourceData) bool {
-	// If both are empty, no diff
-	if old == "" && new == "" {
-		return true
+func diffSuppressProxyListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		if oldData == nil {
+			return false
+		}
+		if newData == nil {
+			return false
+		}
+
+		o := oldData.([]interface{})
+		n := newData.([]interface{})
+		if len(o) != len(n) {
+			return false
+		}
+
+		oldMapList := make([]*models.Proxy, len(o))
+		for i, m := range o {
+			oldMapList[i] = NetworkProxyModelFromMap(m.(map[string]interface{}))
+		}
+		newMapList := make([]*models.Proxy, len(o))
+		for i, m := range o {
+			newMapList[i] = NetworkProxyModelFromMap(m.(map[string]interface{}))
+		}
+
+		return CompareProxyLists(oldMapList, newMapList)
 	}
-	// If one is empty and the other isn't, there's a diff
-	if old == "" || new == "" {
-		return false
-	}
-	// For now, just suppress diff if both values are the same
-	return old == new
 }
 
 func diffSuppressSystemInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
