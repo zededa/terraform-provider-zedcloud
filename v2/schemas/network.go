@@ -77,7 +77,7 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 		ID:                id,
 		IP:                ip,
 		Kind:              kind,
-		Mtu:			   mtu,
+		Mtu:               mtu,
 		Name:              &name,
 		ProjectID:         &projectID,
 		Proxy:             proxy,
@@ -161,7 +161,7 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 		ID:                id,
 		IP:                ip,
 		Kind:              kind,
-		Mtu:			   mtu,
+		Mtu:               mtu,
 		Name:              &name,
 		ProjectID:         &projectID,
 		Proxy:             proxy,
@@ -225,9 +225,9 @@ func Network() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: StaticDNSList(),
 			},
-			DiffSuppressFunc: diffSuppressDNSListOrder("dns_list"),
-			Optional:         true,
-			Computed:         true,
+
+			Optional: true,
+			Computed: true,
 		},
 
 		"enterprise_default": {
@@ -256,7 +256,7 @@ func Network() map[string]*schema.Schema {
 NETWORK_KIND_V4
 NETWORK_KIND_V6`,
 			Type:     schema.TypeString,
-			Required: true,
+			Optional: true,
 		},
 
 		"mtu": {
@@ -268,14 +268,14 @@ NETWORK_KIND_V6`,
 		"name": {
 			Description: `User defined name of the network, unique across the enterprise. Once object is created, name can’t be changed`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 			ForceNew:    true,
 		},
 
 		"project_id": {
 			Description: ``,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"proxy": {
@@ -292,9 +292,8 @@ NETWORK_KIND_V6`,
 				Schema: NetworkProxy(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional:         true,
-			Computed:         true,
-			DiffSuppressFunc: diffSuppressProxyListOrder("proxy"),
+			Optional: true,
+			Computed: true,
 		},
 
 		"revision": {
@@ -310,7 +309,7 @@ NETWORK_KIND_V6`,
 		"title": {
 			Description: `User defined title of the network. Title can be changed at any time`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"wireless": {

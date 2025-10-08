@@ -89,7 +89,7 @@ type Node struct {
 	Identity strfmt.Base64 `json:"identity,omitempty"`
 
 	// System Interface list
-	Interfaces []*SystemInterface `json:"interfaces"`
+	Interfaces []*SysInterface `json:"interfaces"`
 
 	// Device location: deprecated
 	Location string `json:"location,omitempty"`

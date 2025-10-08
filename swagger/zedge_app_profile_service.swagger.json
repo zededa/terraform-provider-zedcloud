@@ -3304,7 +3304,7 @@
                 },
                 "customProbeConfig": {
                     "type": "object",
-                    "$ref": "#/definitions/configConnectivityProbe",
+                    "$ref": "#/definitions/commonConnectivityProbe",
                     "description": "Custom probe configuration"
                 }
             },
@@ -4082,7 +4082,7 @@
                 },
                 "disableVTPM": {
                     "type": "boolean",
-                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "description": "UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field",
                     "title": "Disable vTPM for a virtual machine (VM)"
                 }
             }
@@ -4697,21 +4697,21 @@
                 "port"
             ]
         },
-        "configConnectivityProbe": {
+        "commonConnectivityProbe": {
             "type": "object",
             "properties": {
                 "probeMethod": {
-                    "$ref": "#/definitions/configConnectivityProbeMethod",
+                    "$ref": "#/definitions/commonConnectivityProbeMethod",
                     "description": "Method to use to determine the connectivity status."
                 },
                 "probeEndpoint": {
-                    "$ref": "#/definitions/configProbeEndpoint",
+                    "$ref": "#/definitions/commonProbeEndpoint",
                     "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
                 }
             },
             "description": "Configuration for user-defined connectivity-testing probe."
         },
-        "configConnectivityProbeMethod": {
+        "commonConnectivityProbeMethod": {
             "type": "string",
             "enum": [
                 "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
@@ -4720,6 +4720,21 @@
             ],
             "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
             "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
+        },
+        "commonProbeEndpoint": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "IP address or FQDN."
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
+                }
+            },
+            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
         },
         "configFormat": {
             "type": "string",
@@ -4737,21 +4752,6 @@
                 "PVC"
             ],
             "default": "FmtUnknown"
-        },
-        "configProbeEndpoint": {
-            "type": "object",
-            "properties": {
-                "host": {
-                    "type": "string",
-                    "description": "IP address or FQDN."
-                },
-                "port": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
-                }
-            },
-            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
         },
         "dhcpIpRange": {
             "type": "object",

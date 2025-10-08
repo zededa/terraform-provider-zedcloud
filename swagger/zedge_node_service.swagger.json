@@ -1555,7 +1555,7 @@
                                 "interfaces": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/definitions/sysInterface"
+                                        "$ref": "#/definitions/SysInterface"
                                     },
                                     "description": "System Interface list"
                                 },
@@ -10005,6 +10005,17 @@
                 }
             }
         },
+        "CellularAuthProtocol": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_AUTH_PROTOCOL_NONE",
+                "CELLULAR_AUTH_PROTOCOL_PAP",
+                "CELLULAR_AUTH_PROTOCOL_CHAP",
+                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
+            ],
+            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
+            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
+        },
         "CellularMetrics": {
             "type": "object",
             "properties": {
@@ -11039,7 +11050,7 @@
                 "interfaces": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/sysInterface"
+                        "$ref": "#/definitions/SysInterface"
                     },
                     "description": "System Interface list"
                 },
@@ -11266,7 +11277,7 @@
                 "interfaces": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/sysInterface"
+                        "$ref": "#/definitions/SysInterface"
                     },
                     "description": "System Interface list"
                 },
@@ -13206,6 +13217,53 @@
                 }
             }
         },
+        "IpSpec": {
+            "type": "object",
+            "properties": {
+                "deprecatedDhcp": {
+                    "type": "boolean",
+                    "title": "deprecated"
+                },
+                "dhcp": {
+                    "$ref": "#/definitions/NetworkDHCPType"
+                },
+                "subnet": {
+                    "type": "string"
+                },
+                "mask": {
+                    "type": "string"
+                },
+                "gateway": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "ntp": {
+                    "type": "string",
+                    "title": "ntp will be deprecated"
+                },
+                "dns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "dhcpRange": {
+                    "$ref": "#/definitions/dhcpIpRange",
+                    "description": "for IPAM management when dhcp is turned on.\nIf none provided, system will default pool."
+                },
+                "ntpServers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NtpServer"
+                    }
+                },
+                "ntpServerExclusively": {
+                    "type": "boolean"
+                }
+            }
+        },
         "JWTInfo": {
             "type": "object",
             "properties": {
@@ -13716,6 +13774,206 @@
             "default": "MODULE_TYPE_UNSPECIFIED",
             "description": "module type."
         },
+        "NetCellularAccessPoint": {
+            "type": "object",
+            "properties": {
+                "simSlot": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "SIM card slot to which this configuration applies.\n0 - unspecified (apply to currently activated or the only available)\n1 - config for SIM card in the first slot\n2 - config for SIM card in the second slot\netc."
+                },
+                "apn": {
+                    "type": "string",
+                    "description": "Access Point Network to connect into.\nBy default it is \"internet\"."
+                },
+                "authProtocol": {
+                    "$ref": "#/definitions/evecommonCellularAuthProtocol",
+                    "description": "Authentication protocol used by the network."
+                },
+                "cipherData": {
+                    "$ref": "#/definitions/commonCipherBlock",
+                    "description": "Cipher data may contain encrypted user credentials\n(inside cellNetUsername and cellNetPassword fields)."
+                },
+                "preferredPlmns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "The set of cellular network operators that modem should preferably try to register\nand connect into.\nNetwork operator should be referenced by PLMN (Public Land Mobile Network) code,\nconsisting of 3-digits MCC (Mobile Country Code) and 2 or 3-digits MNC (Mobile Network Code),\nseparated by a dash, e.g. \"310-260\".\nIf empty, then modem will select the network automatically based on the SIM card config."
+                },
+                "forbidRoaming": {
+                    "type": "boolean",
+                    "description": "If true, then modem will avoid connecting to networks with roaming."
+                },
+                "preferredRats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/evecommonRadioAccessTechnology"
+                    },
+                    "description": "The list of preferred Radio Access Technologies (RATs) to use for connecting\nto the network.\nOrder matters, first is the most preferred, second is tried next, etc.\nNot listed technologies will not be tried.\nIf empty, then modem will select RAT automatically."
+                },
+                "ipType": {
+                    "$ref": "#/definitions/commonCellularIPType",
+                    "description": "The IP addressing type to use for the default bearer."
+                },
+                "attachApn": {
+                    "type": "string",
+                    "description": "Access Point Name (APN) for the attach (initial) bearer.\nThis field is optional. If not specified, EVE will not send any attach bearer\nconfiguration to the modem. Instead, the modem will use one of its pre-installed\nprofiles (see CellularProfile) to determine the configuration."
+                },
+                "attachIpType": {
+                    "$ref": "#/definitions/commonCellularIPType",
+                    "description": "The IP addressing type to use for the attach bearer.\nLeave undefined if attach_apn is not specified."
+                },
+                "attachAuthProtocol": {
+                    "$ref": "#/definitions/CellularAuthProtocol",
+                    "description": "Authentication protocol used for the attach bearer.\nLeave undefined if attach_apn is not specified."
+                },
+                "secrets": {
+                    "$ref": "#/definitions/NetCellularAccessPointSecrets"
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "cryptoKey": {
+                    "type": "string"
+                },
+                "attachSecrets": {
+                    "$ref": "#/definitions/NetCellularAccessPointSecrets"
+                },
+                "attachEncryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "NetCellularAccessPointSecrets": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string",
+                    "description": "Cellular Username"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "Cellular Password"
+                }
+            }
+        },
+        "NetCellularConfig": {
+            "type": "object",
+            "properties": {
+                "APN": {
+                    "type": "string",
+                    "description": "APN string - by default it is \"internet\".\nTO BE DEPRECATED: Fill connection arguments inside access_points instead.\nIf access_points is non-empty, then APN field is ignored."
+                },
+                "probe": {
+                    "$ref": "#/definitions/configCellularConnectivityProbe",
+                    "description": "Optional cellular connectivity probing.\nBy default it is enabled."
+                },
+                "locationTracking": {
+                    "type": "boolean",
+                    "description": "Some LTE modems have GNSS receiver integrated and can be used for device\nlocation tracking.\nEnable this option to have location info periodically obtained from this\nmodem and published to controller and to applications."
+                },
+                "accessPoints": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetCellularAccessPoint"
+                    },
+                    "description": "Parameters to apply for connecting to cellular networks.\nConfigured separately for every SIM card inserted into the modem."
+                },
+                "activatedSimSlot": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Select SIM card slot to activate.\nCurrently, EVE support only single-standby SIM card mode.\n0 - unspecified (leave the currently activated)\n1 - activate the first SIM slot\n2 - activate the second SIM slot\netc."
+                }
+            }
+        },
+        "NetConfig": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System defined universally unique Id of the network",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+",
+                    "uniqueItems": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User defined name of the network, unique across the enterprise. Once object is created, name can\u2019t be changed",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                    "uniqueItems": true
+                },
+                "title": {
+                    "type": "string",
+                    "description": "User defined title of the network. Title can be changed at any time",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "^[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+$"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the network",
+                    "maxLength": 256
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "system defined info"
+                },
+                "projectId": {
+                    "type": "string"
+                },
+                "kind": {
+                    "$ref": "#/definitions/NetworkKind"
+                },
+                "ip": {
+                    "$ref": "#/definitions/IpSpec"
+                },
+                "dnsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StaticDNSList"
+                    }
+                },
+                "proxy": {
+                    "$ref": "#/definitions/NetProxyConfig",
+                    "title": "enterprise proxy"
+                },
+                "enterpriseDefault": {
+                    "type": "boolean",
+                    "title": "make this network default for device"
+                },
+                "mtu": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "Maximum transmission unit (MTU) to set on the associated network adapter(s)"
+                },
+                "wireless": {
+                    "$ref": "#/definitions/NetWirelessConfig",
+                    "title": "Wifi configuration"
+                },
+                "project": {
+                    "$ref": "#/definitions/NetProjectInfo",
+                    "title": "project configuration"
+                }
+            },
+            "description": "Network provides Edge nodes a variety of connectivity choices for all types of networks. This enables physical connectivity with Ethernet, WiFi, LTE to communicate with ZEDEDA Cloud controller and Data Centres.",
+            "title": "Network detailed configuration",
+            "required": [
+                "name",
+                "title",
+                "projectId",
+                "kind",
+                "ip"
+            ]
+        },
         "NetInstConfig": {
             "type": "object",
             "properties": {
@@ -13906,6 +14164,63 @@
             },
             "description": "Network Instance Opaque config. This is service specific configuration."
         },
+        "NetProjectInfo": {
+            "type": "object",
+            "properties": {
+                "projectId": {
+                    "type": "string",
+                    "description": "system generated unique id for a project",
+                    "readOnly": true,
+                    "pattern": "[0-9A-Za-z-]+"
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "project name"
+                }
+            }
+        },
+        "NetProxyConfig": {
+            "type": "object",
+            "properties": {
+                "networkProxy": {
+                    "type": "boolean",
+                    "description": "Network proxy"
+                },
+                "proxies": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/NetProxyServer"
+                    },
+                    "description": "Net Proxy: protocol level proxies",
+                    "title": "protocol level proxies"
+                },
+                "exceptions": {
+                    "type": "string",
+                    "description": "Proxy exceptions"
+                },
+                "pacfile": {
+                    "type": "string",
+                    "description": "proxy configuration in a pacfile",
+                    "title": "proxy configuration in a pacfile"
+                },
+                "networkProxyURL": {
+                    "type": "string",
+                    "description": "Network Proxy URL",
+                    "title": "Direct URL for wpad.dat download"
+                },
+                "networkProxyCerts": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "description": "Network Proxy Certificates",
+                    "title": "Proxy Certificates"
+                }
+            },
+            "description": "Net Proxy Configurations",
+            "title": "Net Proxy Configurations"
+        },
         "NetProxyServer": {
             "type": "object",
             "properties": {
@@ -13964,6 +14279,73 @@
             },
             "description": "NetProxyStatus is used to store the proxy configurations",
             "title": "NetProxyStatus is used to store the proxy configurations"
+        },
+        "NetWifiConfig": {
+            "type": "object",
+            "properties": {
+                "wifiSSID": {
+                    "type": "string"
+                },
+                "keyScheme": {
+                    "$ref": "#/definitions/NetworkWiFiKeyScheme"
+                },
+                "identity": {
+                    "type": "string"
+                },
+                "secret": {
+                    "$ref": "#/definitions/NetWifiConfigSecrets"
+                },
+                "crypto": {
+                    "$ref": "#/definitions/NetWifiConfigNetcryptoblock"
+                },
+                "priority": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "cryptoKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "NetWifiConfigNetcryptoblock": {
+            "type": "object",
+            "properties": {
+                "identity": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "NetWifiConfigSecrets": {
+            "type": "object",
+            "properties": {
+                "WiFiPasswd": {
+                    "type": "string",
+                    "description": "Wifi Password"
+                }
+            }
+        },
+        "NetWirelessConfig": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/NetworkWirelessType"
+                },
+                "cellularCfg": {
+                    "$ref": "#/definitions/NetCellularConfig"
+                },
+                "wifiCfg": {
+                    "$ref": "#/definitions/NetWifiConfig"
+                }
+            }
         },
         "NetworkCounters": {
             "type": "object",
@@ -14043,10 +14425,11 @@
                 "NETWORK_DHCP_TYPE_STATIC",
                 "NETWORK_DHCP_TYPE_PASSTHROUGH",
                 "NETWORK_DHCP_TYPE_DEPRECATED",
-                "NETWORK_DHCP_TYPE_CLIENT"
+                "NETWORK_DHCP_TYPE_CLIENT",
+                "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
             ],
             "default": "NETWORK_DHCP_TYPE_UNSPECIFIED",
-            "title": "- NETWORK_DHCP_TYPE_STATIC: used for adapter configured DHCP static\n - NETWORK_DHCP_TYPE_PASSTHROUGH: used for adapter configured DHCP none, application will do DHCP\n - NETWORK_DHCP_TYPE_DEPRECATED: used for application simulation\n - NETWORK_DHCP_TYPE_CLIENT: used for adapter configured DHCP client"
+            "title": "- NETWORK_DHCP_TYPE_STATIC: used for adapter configured DHCP static\n - NETWORK_DHCP_TYPE_PASSTHROUGH: used for adapter configured DHCP none, application will do DHCP\n - NETWORK_DHCP_TYPE_DEPRECATED: used for application simulation\n - NETWORK_DHCP_TYPE_CLIENT: used for adapter configured DHCP client\n - NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC: used to configure device adapter specific static networks"
         },
         "NetworkInstConfig": {
             "type": "object",
@@ -14169,6 +14552,19 @@
                 "NETWORK_INSTANCE_KIND_HONEYPOT"
             ],
             "default": "NETWORK_INSTANCE_KIND_UNSPECIFIED"
+        },
+        "NetworkKind": {
+            "type": "string",
+            "enum": [
+                "NETWORK_KIND_UNSPECIFIED",
+                "NETWORK_KIND_V4",
+                "NETWORK_KIND_V6",
+                "NETWORK_KIND_V4_ONLY",
+                "NETWORK_KIND_V6_ONLY",
+                "NETWORK_KIND_DUAL_V4_V6"
+            ],
+            "default": "NETWORK_KIND_UNSPECIFIED",
+            "title": "NetworkKind: Used for the network configuration, this is\n only client mode"
         },
         "NetworkPolicy": {
             "type": "object",
@@ -14298,6 +14694,24 @@
             },
             "description": "NetworkStatus is used to store the Network status",
             "title": "NetworkStatus is used to store the Network Status"
+        },
+        "NetworkWiFiKeyScheme": {
+            "type": "string",
+            "enum": [
+                "NETWORK_WIFIKEY_SCHEME_UNSPECIFIED",
+                "NETWORK_WIFIKEY_SCHEME_WPAPSK",
+                "NETWORK_WIFIKEY_SCHEME_WPAEAP"
+            ],
+            "default": "NETWORK_WIFIKEY_SCHEME_UNSPECIFIED"
+        },
+        "NetworkWirelessType": {
+            "type": "string",
+            "enum": [
+                "NETWORK_WIRELESS_TYPE_UNSPECIFIED",
+                "NETWORK_WIRELESS_TYPE_WIFI",
+                "NETWORK_WIRELESS_TYPE_CELLULAR"
+            ],
+            "default": "NETWORK_WIRELESS_TYPE_UNSPECIFIED"
         },
         "NtpServer": {
             "type": "object",
@@ -15047,7 +15461,7 @@
                 },
                 "customProbeConfig": {
                     "type": "object",
-                    "$ref": "#/definitions/configConnectivityProbe",
+                    "$ref": "#/definitions/commonConnectivityProbe",
                     "description": "Custom probe configuration"
                 }
             },
@@ -15346,6 +15760,31 @@
             "default": "SEVERITY_UNSPECIFIED",
             "title": "Severity tells the severity type"
         },
+        "SharedStorageSummary": {
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "string",
+                    "description": "Id"
+                },
+                "Name": {
+                    "type": "string",
+                    "description": "Name"
+                },
+                "AllocatedMB": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "Allocated Storage in MBs"
+                },
+                "UsedMB": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "How much is used within the allocated total storage"
+                }
+            },
+            "description": "Shared Storage Summary",
+            "title": "Shared Storage Summary"
+        },
         "SimcardState": {
             "type": "string",
             "enum": [
@@ -15522,6 +15961,13 @@
                     "type": "number",
                     "format": "double",
                     "description": "Total reserved for running applications + temp. images etc"
+                },
+                "sharedStorageSummary": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SharedStorageSummary"
+                    },
+                    "description": "Shared storage summary"
                 }
             },
             "description": "Storage Summary",
@@ -15711,6 +16157,74 @@
             },
             "description": "SysBrands used when listing the available brands, if  consists of various brand attributes like terse, model list and next filter.",
             "title": "SysBrands  payload details"
+        },
+        "SysInterface": {
+            "type": "object",
+            "properties": {
+                "netname": {
+                    "type": "string",
+                    "description": "network name: if attaching a network use netname"
+                },
+                "adapterSpecificNet": {
+                    "type": "string",
+                    "$ref": "#/definitions/NetConfig",
+                    "description": "device adapter specific network configuration",
+                    "title": "adapterSpecificNet is relevant only when the network selected for the adapter is of type NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+                },
+                "ipaddr": {
+                    "type": "string",
+                    "description": "IP address: we will be needing this in cae of static network"
+                },
+                "intfname": {
+                    "type": "string",
+                    "description": "name of interface in the manifest to which this network or adapter maps to"
+                },
+                "intfUsage": {
+                    "type": "object",
+                    "$ref": "#/definitions/AdapterUsage",
+                    "description": "Adapter Udage"
+                },
+                "tags": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                    "maxLength": 32,
+                    "pattern": "^[^<%&?/\\>]+$"
+                },
+                "macaddr": {
+                    "type": "string",
+                    "description": "mac address needs to be over-written in some cases"
+                },
+                "cost": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "cost of using this interface. Default is 0.",
+                    "maximum": 255
+                },
+                "netid": {
+                    "type": "string",
+                    "description": "network identifier has to have value if the netname is not empty"
+                },
+                "sharedLabels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "A set of user-defined shared labels attached to the adapter"
+                },
+                "netDhcp": {
+                    "$ref": "#/definitions/NetworkDHCPType",
+                    "description": "Network DHCP type"
+                },
+                "ztype": {
+                    "type": "string",
+                    "description": "Z Type"
+                }
+            },
+            "description": "system interfaces that needs to be used by dom0",
+            "title": "sysInterface payload detail"
         },
         "SysModel": {
             "type": "object",
@@ -16411,7 +16925,7 @@
                 },
                 "disableVTPM": {
                     "type": "boolean",
-                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "description": "UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field",
                     "title": "Disable vTPM for a virtual machine (VM)"
                 }
             }
@@ -17201,21 +17715,57 @@
                 "port"
             ]
         },
-        "configConnectivityProbe": {
+        "commonCellularIPType": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_IP_TYPE_UNSPECIFIED",
+                "CELLULAR_IP_TYPE_IPV4",
+                "CELLULAR_IP_TYPE_IPV4_AND_IPV6",
+                "CELLULAR_IP_TYPE_IPV6"
+            ],
+            "default": "CELLULAR_IP_TYPE_UNSPECIFIED",
+            "description": "The IP addressing type to use for a given attach or default bearer.\n\n - CELLULAR_IP_TYPE_UNSPECIFIED: IP type is not specified.\nWhen unspecified, EVE will not enforce an IP type in the bearer configuration.\nThe modem will instead use its built-in profiles (see CellularProfile) to determine\nthe appropriate IP type for the network.\n - CELLULAR_IP_TYPE_IPV4: IPv4 only.\n - CELLULAR_IP_TYPE_IPV4_AND_IPV6: IPv4 and IPv6.\n - CELLULAR_IP_TYPE_IPV6: IPv6 only."
+        },
+        "commonCipherBlock": {
+            "type": "object",
+            "properties": {
+                "cipherContextId": {
+                    "type": "string",
+                    "title": "cipher context id"
+                },
+                "initialValue": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "Initial Value for Symmetric Key derivation"
+                },
+                "cipherData": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "encrypted sensitive data"
+                },
+                "clearTextSha256": {
+                    "type": "string",
+                    "format": "byte",
+                    "title": "sha256 of the plaintext sensitive data"
+                }
+            },
+            "title": "Encrypted sensitive data information"
+        },
+        "commonConnectivityProbe": {
             "type": "object",
             "properties": {
                 "probeMethod": {
-                    "$ref": "#/definitions/configConnectivityProbeMethod",
+                    "$ref": "#/definitions/commonConnectivityProbeMethod",
                     "description": "Method to use to determine the connectivity status."
                 },
                 "probeEndpoint": {
-                    "$ref": "#/definitions/configProbeEndpoint",
+                    "$ref": "#/definitions/commonProbeEndpoint",
                     "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
                 }
             },
             "description": "Configuration for user-defined connectivity-testing probe."
         },
-        "configConnectivityProbeMethod": {
+        "commonConnectivityProbeMethod": {
             "type": "string",
             "enum": [
                 "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
@@ -17224,6 +17774,39 @@
             ],
             "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
             "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
+        },
+        "commonProbeEndpoint": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string",
+                    "description": "IP address or FQDN."
+                },
+                "port": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
+                }
+            },
+            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
+        },
+        "configCellularConnectivityProbe": {
+            "type": "object",
+            "properties": {
+                "disable": {
+                    "type": "boolean",
+                    "description": "If true, then probing is disabled."
+                },
+                "probeAddress": {
+                    "type": "string",
+                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThis field is now deprecated and replaced with custom_probe (see below).\nTo maintain backward-compatibility, EVE will check both probe_address and custom_probe\nand will use whichever has non-zero value (if any), but preferring custom_probe."
+                },
+                "customProbe": {
+                    "$ref": "#/definitions/commonConnectivityProbe",
+                    "description": "User-defined probe for cellular connectivity testing.\nOnly IP address is allowed as ConnectivityProbe.probe_address (and port if needed),\nnot hostname.\nThe probing algorithm is more complex that just testing reachability of a remote\nendpoint and the goal is to minimize generated traffic, probing time and false negatives\n(that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the remote endpoint. If custom_probe is not defined,\nEVE will try to ping \"8.8.8.8\" (Google public DNS).\nIt is recommended to use custom probe for private LTE networks where public DNS servers\nmight not be allowed by the firewall (and hence ping would fail even with a working\nconnectivity)."
+                }
+            },
+            "description": "CellularConnectivityProbe is used to periodically check the connectivity status of a cellular network\nby probing a remote endpoint.\nWhenever the probe fails, the cellular connection is automatically restarted. If the probe keeps failing\neven after the restart, the failure is reported in ZCellularStatus.probeError.\nThe connectivity probing interval is 5 minutes and currently it is not configurable."
         },
         "configFormat": {
             "type": "string",
@@ -17241,21 +17824,6 @@
                 "PVC"
             ],
             "default": "FmtUnknown"
-        },
-        "configProbeEndpoint": {
-            "type": "object",
-            "properties": {
-                "host": {
-                    "type": "string",
-                    "description": "IP address or FQDN."
-                },
-                "port": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.\nLeave empty for CONNECTIVITY_PROBE_METHOD_ICMP."
-                }
-            },
-            "description": "Address of a remote endpoint to probe in order to determine connectivity status."
         },
         "deviceStatusConfig": {
             "type": "object",
@@ -17334,7 +17902,7 @@
                 "interfaces": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/sysInterface"
+                        "$ref": "#/definitions/SysInterface"
                     },
                     "description": "System Interface list"
                 },
@@ -17365,6 +17933,29 @@
             },
             "description": "DHCP IP range",
             "title": "DHCP IP range"
+        },
+        "evecommonCellularAuthProtocol": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_AUTH_PROTOCOL_NONE",
+                "CELLULAR_AUTH_PROTOCOL_PAP",
+                "CELLULAR_AUTH_PROTOCOL_CHAP",
+                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
+            ],
+            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
+            "description": "CellularAuthProtocol defines the authentication protocol used for cellular connection.\n\n - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
+        },
+        "evecommonRadioAccessTechnology": {
+            "type": "string",
+            "enum": [
+                "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+                "RADIO_ACCESS_TECHNOLOGY_GSM",
+                "RADIO_ACCESS_TECHNOLOGY_UMTS",
+                "RADIO_ACCESS_TECHNOLOGY_LTE",
+                "RADIO_ACCESS_TECHNOLOGY_5GNR"
+            ],
+            "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
+            "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
         },
         "googlerpcStatus": {
             "type": "object",
@@ -17417,7 +18008,9 @@
                 "API_CAPABILITY_SINGLE_STACK_IP_NETWORK",
                 "API_CAPABILITY_CELLULAR_ATTACH_CONFIG",
                 "API_CAPABILITY_EDGEVIEW_AUTHENTICATION",
-                "API_CAPABILITY_DISABLE_VTPM"
+                "API_CAPABILITY_DISABLE_VTPM",
+                "API_CAPABILITY_LOC_REBOOT_COLLECT_INFO",
+                "API_CAPABILITY_SMART_REPORT"
             ],
             "default": "API_CAPABILITY_UNSPECIFIED",
             "description": "Capabilities indicates features in the EdgeDevConfig where there is\nno easy way to otherwise determine whether or not they are parsed and\nsupported by EVE-OS\nA larger number indicates all lower numbers are also supported thus\nthis works similar to a version field for the EdgeDevConfig support."
@@ -17553,68 +18146,6 @@
             "default": "SPTYPE_INVALIDSRV",
             "description": "clone of types defined in API repo.\n\n - SPTYPE_MAPSERVER: mapping service for zededa overlay service\n - SPTYPE_SUPPORTSERVER: if device has support feature enabled, this ia cloud service\nwhich device can be reached."
         },
-        "sysInterface": {
-            "type": "object",
-            "properties": {
-                "netname": {
-                    "type": "string",
-                    "description": "network name: if attaching a network use netname"
-                },
-                "ipaddr": {
-                    "type": "string",
-                    "description": "IP address: we will be needing this in cae of static network"
-                },
-                "intfname": {
-                    "type": "string",
-                    "description": "name of interface in the manifest to which this network or adapter maps to"
-                },
-                "intfUsage": {
-                    "type": "object",
-                    "$ref": "#/definitions/AdapterUsage",
-                    "description": "Adapter Udage"
-                },
-                "tags": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "string"
-                    },
-                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
-                    "maxLength": 32,
-                    "pattern": "^[^<%&?/\\>]+$"
-                },
-                "macaddr": {
-                    "type": "string",
-                    "description": "mac address needs to be over-written in some cases"
-                },
-                "cost": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "cost of using this interface. Default is 0.",
-                    "maximum": 255
-                },
-                "netid": {
-                    "type": "string",
-                    "description": "network identifier has to have value if the netname is not empty"
-                },
-                "sharedLabels": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    },
-                    "description": "A set of user-defined shared labels attached to the adapter"
-                },
-                "netDhcp": {
-                    "$ref": "#/definitions/NetworkDHCPType",
-                    "description": "Network DHCP type"
-                },
-                "ztype": {
-                    "type": "string",
-                    "description": "Z Type"
-                }
-            },
-            "description": "system interfaces that needs to be used by dom0",
-            "title": "sysInterface payload detail"
-        },
         "tagConfigStatus": {
             "type": "object",
             "properties": {
@@ -17707,7 +18238,7 @@
                     "description": "Valid values are from 1 to 4094"
                 },
                 "interface": {
-                    "$ref": "#/definitions/sysInterface",
+                    "$ref": "#/definitions/SysInterface",
                     "description": "System Sub-Interface"
                 }
             },
