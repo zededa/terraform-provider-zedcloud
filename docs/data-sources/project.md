@@ -2322,7 +2322,41 @@ Optional:
 Optional:
 
 - `gateway` (String) Gateway IP
+- `output_port` (String) Output Port
 - `prefix` (String) IP Prefix
+- `probe_config` (Block List) Probe Configuration (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedblock--app_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `app_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Optional:
+
+- `custom_probe_config` (Block List) Custom probe configuration (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean) Enable gateway ping
+- `ping_max_cost` (Number) Ping max cost
+- `prefer_lower_cost` (Boolean) Prefer lower cost
+- `prefer_stronger_wwan_signal` (Boolean) Prefer stronger WWAN signal
+
+<a id="nestedblock--app_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `app_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Optional:
+
+- `probe_endpoint` (Block List) Endpoint to probe using the selected probing mechanism to determine
+the connectivity status. (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String) Method to use to determine the connectivity status.
+
+<a id="nestedblock--app_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `app_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Optional:
+
+- `host` (String) IP address or FQDN.
+- `port` (Number) TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.
+Leave empty for CONNECTIVITY_PROBE_METHOD_ICMP.
+
+
+
 
 
 <a id="nestedatt--app_policy--network_policy--net_instance_config--lisp"></a>
@@ -4657,7 +4691,41 @@ Optional:
 Optional:
 
 - `gateway` (String) Gateway IP
+- `output_port` (String) Output Port
 - `prefix` (String) IP Prefix
+- `probe_config` (Block List) Probe Configuration (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedblock--attestation_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `attestation_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Optional:
+
+- `custom_probe_config` (Block List) Custom probe configuration (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean) Enable gateway ping
+- `ping_max_cost` (Number) Ping max cost
+- `prefer_lower_cost` (Boolean) Prefer lower cost
+- `prefer_stronger_wwan_signal` (Boolean) Prefer stronger WWAN signal
+
+<a id="nestedblock--attestation_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `attestation_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Optional:
+
+- `probe_endpoint` (Block List) Endpoint to probe using the selected probing mechanism to determine
+the connectivity status. (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String) Method to use to determine the connectivity status.
+
+<a id="nestedblock--attestation_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `attestation_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Optional:
+
+- `host` (String) IP address or FQDN.
+- `port` (Number) TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.
+Leave empty for CONNECTIVITY_PROBE_METHOD_ICMP.
+
+
+
 
 
 <a id="nestedatt--attestation_policy--network_policy--net_instance_config--lisp"></a>
@@ -6992,7 +7060,41 @@ Optional:
 Optional:
 
 - `gateway` (String) Gateway IP
+- `output_port` (String) Output Port
 - `prefix` (String) IP Prefix
+- `probe_config` (Block List) Probe Configuration (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedblock--configuration_lock_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `configuration_lock_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Optional:
+
+- `custom_probe_config` (Block List) Custom probe configuration (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean) Enable gateway ping
+- `ping_max_cost` (Number) Ping max cost
+- `prefer_lower_cost` (Boolean) Prefer lower cost
+- `prefer_stronger_wwan_signal` (Boolean) Prefer stronger WWAN signal
+
+<a id="nestedblock--configuration_lock_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `configuration_lock_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Optional:
+
+- `probe_endpoint` (Block List) Endpoint to probe using the selected probing mechanism to determine
+the connectivity status. (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String) Method to use to determine the connectivity status.
+
+<a id="nestedblock--configuration_lock_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `configuration_lock_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Optional:
+
+- `host` (String) IP address or FQDN.
+- `port` (Number) TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.
+Leave empty for CONNECTIVITY_PROBE_METHOD_ICMP.
+
+
+
 
 
 <a id="nestedatt--configuration_lock_policy--network_policy--net_instance_config--lisp"></a>
@@ -9327,7 +9429,41 @@ Optional:
 Optional:
 
 - `gateway` (String) Gateway IP
+- `output_port` (String) Output Port
 - `prefix` (String) IP Prefix
+- `probe_config` (Block List) Probe Configuration (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedblock--edgeview_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `edgeview_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Optional:
+
+- `custom_probe_config` (Block List) Custom probe configuration (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean) Enable gateway ping
+- `ping_max_cost` (Number) Ping max cost
+- `prefer_lower_cost` (Boolean) Prefer lower cost
+- `prefer_stronger_wwan_signal` (Boolean) Prefer stronger WWAN signal
+
+<a id="nestedblock--edgeview_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `edgeview_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Optional:
+
+- `probe_endpoint` (Block List) Endpoint to probe using the selected probing mechanism to determine
+the connectivity status. (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String) Method to use to determine the connectivity status.
+
+<a id="nestedblock--edgeview_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `edgeview_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Optional:
+
+- `host` (String) IP address or FQDN.
+- `port` (Number) TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.
+Leave empty for CONNECTIVITY_PROBE_METHOD_ICMP.
+
+
+
 
 
 <a id="nestedatt--edgeview_policy--network_policy--net_instance_config--lisp"></a>
@@ -11662,7 +11798,41 @@ Optional:
 Optional:
 
 - `gateway` (String) Gateway IP
+- `output_port` (String) Output Port
 - `prefix` (String) IP Prefix
+- `probe_config` (Block List) Probe Configuration (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedblock--local_operator_console_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `local_operator_console_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Optional:
+
+- `custom_probe_config` (Block List) Custom probe configuration (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean) Enable gateway ping
+- `ping_max_cost` (Number) Ping max cost
+- `prefer_lower_cost` (Boolean) Prefer lower cost
+- `prefer_stronger_wwan_signal` (Boolean) Prefer stronger WWAN signal
+
+<a id="nestedblock--local_operator_console_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `local_operator_console_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Optional:
+
+- `probe_endpoint` (Block List) Endpoint to probe using the selected probing mechanism to determine
+the connectivity status. (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String) Method to use to determine the connectivity status.
+
+<a id="nestedblock--local_operator_console_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `local_operator_console_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Optional:
+
+- `host` (String) IP address or FQDN.
+- `port` (Number) TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.
+Leave empty for CONNECTIVITY_PROBE_METHOD_ICMP.
+
+
+
 
 
 <a id="nestedatt--local_operator_console_policy--network_policy--net_instance_config--lisp"></a>
@@ -13997,7 +14167,41 @@ Optional:
 Optional:
 
 - `gateway` (String) Gateway IP
+- `output_port` (String) Output Port
 - `prefix` (String) IP Prefix
+- `probe_config` (Block List) Probe Configuration (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedblock--network_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `network_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Optional:
+
+- `custom_probe_config` (Block List) Custom probe configuration (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean) Enable gateway ping
+- `ping_max_cost` (Number) Ping max cost
+- `prefer_lower_cost` (Boolean) Prefer lower cost
+- `prefer_stronger_wwan_signal` (Boolean) Prefer stronger WWAN signal
+
+<a id="nestedblock--network_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `network_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Optional:
+
+- `probe_endpoint` (Block List) Endpoint to probe using the selected probing mechanism to determine
+the connectivity status. (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String) Method to use to determine the connectivity status.
+
+<a id="nestedblock--network_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `network_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Optional:
+
+- `host` (String) IP address or FQDN.
+- `port` (Number) TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.
+Leave empty for CONNECTIVITY_PROBE_METHOD_ICMP.
+
+
+
 
 
 <a id="nestedatt--network_policy--network_policy--net_instance_config--lisp"></a>
@@ -16221,7 +16425,39 @@ Read-Only:
 Read-Only:
 
 - `gateway` (String)
+- `output_port` (String)
 - `prefix` (String)
+- `probe_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Read-Only:
+
+- `custom_probe_config` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean)
+- `ping_max_cost` (Number)
+- `prefer_lower_cost` (Boolean)
+- `prefer_stronger_wwan_signal` (Boolean)
+
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Read-Only:
+
+- `probe_endpoint` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String)
+
+<a id="nestedobjatt--cloud_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `cloud_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Read-Only:
+
+- `host` (String)
+- `port` (Number)
+
+
+
 
 
 
@@ -18400,7 +18636,39 @@ Read-Only:
 Read-Only:
 
 - `gateway` (String)
+- `output_port` (String)
 - `prefix` (String)
+- `probe_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Read-Only:
+
+- `custom_probe_config` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean)
+- `ping_max_cost` (Number)
+- `prefer_lower_cost` (Boolean)
+- `prefer_stronger_wwan_signal` (Boolean)
+
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Read-Only:
+
+- `probe_endpoint` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String)
+
+<a id="nestedobjatt--module_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `module_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Read-Only:
+
+- `host` (String)
+- `port` (Number)
+
+
+
 
 
 
