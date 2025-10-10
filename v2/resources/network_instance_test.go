@@ -78,19 +78,19 @@ func TestNetworkInstance_Create_Complete(t *testing.T) {
 			{
 				Config: input,
 				Check: resource.ComposeTestCheckFunc(
-					testNetworkInstanceExists("zedcloud_network_instance.complete", &got),
+					testNetworkInstanceExists("zedcloud_network_instance.test_tf_netinst_complete", &got),
 					resource.TestMatchResourceAttr(
-						"zedcloud_network_instance.complete",
+						"zedcloud_network_instance.test_tf_netinst_complete",
 						"project_id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
 					resource.TestMatchResourceAttr(
-						"zedcloud_network_instance.complete",
+						"zedcloud_network_instance.test_tf_netinst_complete",
 						"id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
 					resource.TestMatchResourceAttr(
-						"zedcloud_network_instance.complete",
+						"zedcloud_network_instance.test_tf_netinst_complete",
 						"device_id",
 						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),

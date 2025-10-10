@@ -239,7 +239,41 @@ Optional:
 Optional:
 
 - `gateway` (String) Gateway IP
+- `output_port` (String) Output Port
 - `prefix` (String) IP Prefix
+- `probe_config` (Block List) Probe Configuration (see [below for nested schema](#nestedblock--default_net_inst--static_routes--probe_config))
+
+<a id="nestedblock--default_net_inst--static_routes--probe_config"></a>
+### Nested Schema for `default_net_inst.static_routes.probe_config`
+
+Optional:
+
+- `custom_probe_config` (Block List) Custom probe configuration (see [below for nested schema](#nestedblock--default_net_inst--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean) Enable gateway ping
+- `ping_max_cost` (Number) Ping max cost
+- `prefer_lower_cost` (Boolean) Prefer lower cost
+- `prefer_stronger_wwan_signal` (Boolean) Prefer stronger WWAN signal
+
+<a id="nestedblock--default_net_inst--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `default_net_inst.static_routes.probe_config.custom_probe_config`
+
+Optional:
+
+- `probe_endpoint` (Block List) Endpoint to probe using the selected probing mechanism to determine
+the connectivity status. (see [below for nested schema](#nestedblock--default_net_inst--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String) Method to use to determine the connectivity status.
+
+<a id="nestedblock--default_net_inst--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `default_net_inst.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Optional:
+
+- `host` (String) IP address or FQDN.
+- `port` (Number) TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.
+Leave empty for CONNECTIVITY_PROBE_METHOD_ICMP.
+
+
+
 
 
 <a id="nestedatt--default_net_inst--lisp"></a>

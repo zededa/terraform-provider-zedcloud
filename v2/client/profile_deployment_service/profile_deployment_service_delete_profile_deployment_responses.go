@@ -6,9 +6,13 @@ package profile_deployment_service
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
+
+	"errors"
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
@@ -489,10 +493,18 @@ func (o *ProfileDeploymentServiceDeleteProfileDeploymentInternalServerError) Get
 func (o *ProfileDeploymentServiceDeleteProfileDeploymentInternalServerError) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
-
-	// response payload
-	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+	var buf bytes.Buffer
+	_, err := io.Copy(&buf, response.Body())
+	if err != nil && err != io.EOF {
 		return err
+	}
+	payload := buf.String()
+	// response payload
+	if err := consumer.Consume(&buf, o.Payload); err != nil && err != io.EOF {
+		parsingErr := errors.New(payload)
+		o.Payload.HTTPStatusCode = http.StatusInternalServerError
+		o.Payload.Error = append(o.Payload.Error, &models.ZsrvError{Details: parsingErr.Error()})
+		return nil
 	}
 
 	return nil

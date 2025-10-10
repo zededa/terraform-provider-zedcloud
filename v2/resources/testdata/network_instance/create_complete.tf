@@ -105,15 +105,15 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     }
 }
 
-resource "zedcloud_network_instance" "complete" {
+resource "zedcloud_network_instance" "test_tf_netinst_complete" {
     depends_on = [
         zedcloud_edgenode.test_tf_provider
     ]
 
     # required
     device_id = zedcloud_edgenode.test_tf_provider.id
-    name = "complete"
-    title = "complete"
+    name = "test_tf_netinst_complete"
+    title = "test_tf_netinst_complete"
     kind = "NETWORK_INSTANCE_KIND_LOCAL"
     port = "eth1"
 
@@ -154,5 +154,20 @@ resource "zedcloud_network_instance" "complete" {
     tags = {
         "ni-tag1" = "ni-tag-value-1"
         "ni-tag2" = "ni-tag-value-2"
+    }
+    static_routes {
+      gateway = "10.0.20.1"
+      probe_config {
+          enable_gateway_ping = true
+          ping_max_cost = 50
+          prefer_lower_cost = true
+          custom_probe_config {
+            probe_method = "CONNECTIVITY_PROBE_METHOD_TCP"
+            probe_endpoint {
+                host = "example.com"
+                port = 8080
+            }
+          }
+      }
     }
 }
