@@ -4079,6 +4079,11 @@
                     "type": "boolean",
                     "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
                     "title": "Enable device to read the license info from APCI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field",
+                    "title": "Disable vTPM for a virtual machine (VM)"
                 }
             }
         },
@@ -4883,6 +4888,10 @@
                 "enableOemWinLicenseKey": {
                     "type": "boolean",
                     "description": "Enable device which has VM to receive the Windows license embedded in the ACPI tables"
+                },
+                "disableVTPM": {
+                    "type": "boolean",
+                    "description": "Disable vTPM for virtual machines (VM)"
                 }
             },
             "description": "Virtual machine memory configuration",
