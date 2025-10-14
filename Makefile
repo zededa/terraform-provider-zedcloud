@@ -22,7 +22,7 @@ download-specs:
 	test -n "$(SWAGGER_URL_BASE)"  # Make sure SWAGGER_URL_BASE is set
 	for f in $(SWAGGER_FILE_LIST); do \
 	 	echo "downloading file: $$f"; \
-		wget -O swagger/$$f $(SWAGGER_URL_BASE)/$$f; \
+		wget --no-check-certificate -O swagger/$$f $(SWAGGER_URL_BASE)/$$f; \
 	done
 
 .PHONY: gen

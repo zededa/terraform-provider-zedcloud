@@ -7,25 +7,50 @@ import (
 
 func StaticIPRouteModel(d *schema.ResourceData) *models.StaticIPRoute {
 	gateway, _ := d.Get("gateway").(string)
+	outputPort, _ := d.Get("output_port").(string)
 	prefix, _ := d.Get("prefix").(string)
+	var probeConfig *models.ProbeConfig // ProbeConfig
+	probeConfigInterface, probeConfigIsSet := d.GetOk("probe_config")
+	if probeConfigIsSet && probeConfigInterface != nil {
+		probeConfigMap := probeConfigInterface.([]interface{})
+		if len(probeConfigMap) > 0 {
+			probeConfig = ProbeConfigModelFromMap(probeConfigMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.StaticIPRoute{
-		Gateway: gateway,
-		Prefix:  prefix,
+		Gateway:     gateway,
+		OutputPort:  outputPort,
+		Prefix:      prefix,
+		ProbeConfig: probeConfig,
 	}
 }
 
 func StaticIPRouteModelFromMap(m map[string]interface{}) *models.StaticIPRoute {
 	gateway := m["gateway"].(string)
+	outputPort := m["output_port"].(string)
 	prefix := m["prefix"].(string)
+	var probeConfig *models.ProbeConfig // ProbeConfig
+	probeConfigInterface, probeConfigIsSet := m["probe_config"]
+	if probeConfigIsSet && probeConfigInterface != nil {
+		probeConfigMap := probeConfigInterface.([]interface{})
+		if len(probeConfigMap) > 0 {
+			probeConfig = ProbeConfigModelFromMap(probeConfigMap[0].(map[string]interface{}))
+		}
+	}
+	//
 	return &models.StaticIPRoute{
-		Gateway: gateway,
-		Prefix:  prefix,
+		Gateway:     gateway,
+		OutputPort:  outputPort,
+		Prefix:      prefix,
+		ProbeConfig: probeConfig,
 	}
 }
 
 func SetStaticIPRouteResourceData(d *schema.ResourceData, m *models.StaticIPRoute) {
 	d.Set("gateway", m.Gateway)
+	d.Set("output_port", m.OutputPort)
 	d.Set("prefix", m.Prefix)
+	d.Set("probe_config", SetProbeConfigSubResourceData([]*models.ProbeConfig{m.ProbeConfig}))
 }
 
 func SetStaticIPRouteSubResourceData(m []*models.StaticIPRoute) (d []*map[string]interface{}) {
@@ -33,7 +58,9 @@ func SetStaticIPRouteSubResourceData(m []*models.StaticIPRoute) (d []*map[string
 		if StaticIPRouteModel != nil {
 			properties := make(map[string]interface{})
 			properties["gateway"] = StaticIPRouteModel.Gateway
+			properties["output_port"] = StaticIPRouteModel.OutputPort
 			properties["prefix"] = StaticIPRouteModel.Prefix
+			properties["probe_config"] = SetProbeConfigSubResourceData([]*models.ProbeConfig{StaticIPRouteModel.ProbeConfig})
 			d = append(d, &properties)
 		}
 	}
@@ -48,10 +75,25 @@ func StaticIPRouteSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		"output_port": {
+			Description: `Output Port`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
 		"prefix": {
 			Description: `IP Prefix`,
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+
+		"probe_config": {
+			Description: `Probe Configuration`,
+			Type:        schema.TypeList, //GoType: ProbeConfig
+			Elem: &schema.Resource{
+				Schema: ProbeConfigSchema(),
+			},
+			Optional: true,
 		},
 	}
 }
@@ -59,6 +101,8 @@ func StaticIPRouteSchema() map[string]*schema.Schema {
 func GetStaticIPRoutePropertyFields() (t []string) {
 	return []string{
 		"gateway",
+		"output_port",
 		"prefix",
+		"probe_config",
 	}
 }

@@ -23,7 +23,7 @@ ip:
     ntp: "10.1.0.2"
 kind: NETWORK_INSTANCE_KIND_LOCAL
 lisp: null
-name: complete
+name: test_tf_netinst_complete
 networkpolicyid: ""
 oconfig: ""
 opaque:
@@ -36,5 +36,16 @@ projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 tags:
     ni-tag1: ni-tag-value-1
     ni-tag2: ni-tag-value-2
-title: complete
+title: test_tf_netinst_complete
 type: NETWORK_INSTANCE_DHCP_TYPE_V4
+static_routes:
+    - gateway: "10.0.20.1"
+      probe_config:
+        enable_gateway_ping: true
+        ping_max_cost: 50
+        prefer_lower_cost: true
+        custom_probe_config:
+            probe_method: "CONNECTIVITY_PROBE_METHOD_TCP"
+            probe_endpoint:
+                host: "example.com"
+                port: 8080
