@@ -291,6 +291,7 @@ NETWORK_KIND_V6`,
 			Elem: &schema.Resource{
 				Schema: NetworkProxy(),
 			},
+			DiffSuppressFunc: diffSuppressProxyListOrder("proxy"),
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
 			Computed: true,
