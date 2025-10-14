@@ -2,6 +2,8 @@ package schemas
 
 import (
 	"reflect"
+	"slices"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
@@ -242,6 +244,7 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 		"net_dhcp": {
 			Description: `Network DHCP type`,
 			Type:        schema.TypeString,
+			Default:     models.NetworkDHCPTypeNETWORKDHCPTYPEUNSPECIFIED,
 			Optional:    true,
 		},
 
@@ -304,87 +307,73 @@ func CompareSystemInterfaceList(a, b []*models.SysInterface) bool {
 	if len(a) != len(b) {
 		return false
 	}
-	// is each element of the new list in the old list?
-	for _, newList := range b {
-		if newList == nil {
-			continue
-		}
 
-		found := false
-		for _, oldList := range a {
-			if oldList == nil {
-				continue
-			}
-			if oldList.Cost != newList.Cost {
-				continue
-			}
-			if *oldList.IntfUsage != *newList.IntfUsage {
-				continue
-			}
-			if oldList.Intfname != newList.Intfname {
-				continue
-			}
-			if oldList.Ipaddr != newList.Ipaddr {
-				continue
-			}
-			if oldList.Macaddr != newList.Macaddr {
-				continue
-			}
-			if oldList.Netname != newList.Netname {
-				continue
-			}
-			if !reflect.DeepEqual(oldList.Tags, newList.Tags) {
-				continue
-			}
-			if !reflect.DeepEqual(oldList.AdapterSpecificNet, newList.AdapterSpecificNet) {
-				continue
-			}
-			found = true
-			break
+	slices.SortFunc(a, func(i, j *models.SysInterface) int {
+		if n := strings.Compare(strings.ToLower(i.Intfname), strings.ToLower(j.Intfname)); n != 0 {
+			return n
 		}
-		if !found {
+		return strings.Compare(strings.ToLower(string(*i.IntfUsage)), strings.ToLower(string(*j.IntfUsage)))
+	})
+
+	slices.SortFunc(b, func(i, j *models.SysInterface) int {
+		if n := strings.Compare(strings.ToLower(i.Intfname), strings.ToLower(j.Intfname)); n != 0 {
+			return n
+		}
+		return strings.Compare(strings.ToLower(string(*i.IntfUsage)), strings.ToLower(string(*j.IntfUsage)))
+	})
+
+	equal := slices.EqualFunc(a, b, func(x, y *models.SysInterface) bool {
+		if x.Cost != y.Cost {
 			return false
 		}
-	}
-
-	// is each element of the old list also in the new list?
-	for _, oldList := range a {
-		if oldList == nil {
-			continue
-		}
-
-		found := false
-		for _, newList := range b {
-			if newList == nil {
-				continue
+		if x.IntfUsage != nil && y.IntfUsage != nil {
+			if *x.IntfUsage != *y.IntfUsage {
+				return false
 			}
-			if oldList.Cost != newList.Cost {
-				continue
-			}
-			if *oldList.IntfUsage != *newList.IntfUsage {
-				continue
-			}
-			if oldList.Intfname != newList.Intfname {
-				continue
-			}
-			if oldList.Ipaddr != newList.Ipaddr {
-				continue
-			}
-			if oldList.Macaddr != newList.Macaddr {
-				continue
-			}
-			if oldList.Netname != newList.Netname {
-				continue
-			}
-			if !reflect.DeepEqual(oldList.Tags, newList.Tags) {
-				continue
-			}
-			found = true
-			break
-		}
-		if !found {
+		} else if x.IntfUsage != y.IntfUsage { // one of them is nil
 			return false
 		}
-	}
-	return true
+		if x.Intfname != y.Intfname {
+			return false
+		}
+		if x.Ipaddr != y.Ipaddr {
+			return false
+		}
+		if x.Macaddr != y.Macaddr {
+			return false
+		}
+		if x.Netname != y.Netname {
+			return false
+		}
+		if x.Netid != y.Netid {
+			return false
+		}
+		if x.NetDhcp != nil && y.NetDhcp != nil {
+			if *x.NetDhcp != *y.NetDhcp {
+				return false
+			}
+		} else if x.NetDhcp != y.NetDhcp { // one of them is nil
+			return false
+		}
+		if x.Ztype != y.Ztype {
+			return false
+		}
+		// Compare Tags
+		if (x.Tags == nil && len(y.Tags) == 0) || (y.Tags == nil && len(x.Tags) == 0) {
+			// treat nil and empty map as equal
+		} else if !reflect.DeepEqual(x.Tags, y.Tags) {
+			return false
+		}
+
+		if len(x.SharedLabels) != len(y.SharedLabels) {
+			return false
+		}
+		slices.Sort(x.SharedLabels)
+		slices.Sort(y.SharedLabels)
+		if !reflect.DeepEqual(x.SharedLabels, y.SharedLabels) {
+			return false
+		}
+		return true
+	})
+	return equal
 }
