@@ -8,6 +8,7 @@ package models
 import (
 	"context"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
 	"github.com/go-openapi/swag"
 )
@@ -22,17 +23,81 @@ type StaticIPRoute struct {
 	// Gateway IP
 	Gateway string `json:"gateway,omitempty"`
 
+	// Output Port
+	OutputPort string `json:"outputPort,omitempty"`
+
 	// IP Prefix
 	Prefix string `json:"prefix,omitempty"`
+
+	// Probe Configuration
+	ProbeConfig *ProbeConfig `json:"probeConfig,omitempty"`
 }
 
 // Validate validates this static IP route
 func (m *StaticIPRoute) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateProbeConfig(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
 	return nil
 }
 
-// ContextValidate validates this static IP route based on context it is used
+func (m *StaticIPRoute) validateProbeConfig(formats strfmt.Registry) error {
+	if swag.IsZero(m.ProbeConfig) { // not required
+		return nil
+	}
+
+	if m.ProbeConfig != nil {
+		if err := m.ProbeConfig.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("probeConfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("probeConfig")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ContextValidate validate this static IP route based on the context it is used
 func (m *StaticIPRoute) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.contextValidateProbeConfig(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *StaticIPRoute) contextValidateProbeConfig(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.ProbeConfig != nil {
+
+		if swag.IsZero(m.ProbeConfig) { // not required
+			return nil
+		}
+
+		if err := m.ProbeConfig.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("probeConfig")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("probeConfig")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 
