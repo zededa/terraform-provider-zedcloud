@@ -30,7 +30,7 @@ resource "zedcloud_datastore"  "test_tf_provider" {
 	ds_fqdn = "my-datastore.my-company.com"
 	ds_path = "download/AMD64"
 	ds_type = "DATASTORE_TYPE_AZUREBLOB"
-	name = "test"
+	name = "test_tf_provider-amd64"
 	title = "title"
 	description = "description"
 	region = "eu"
@@ -155,11 +155,11 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 	}
 }
 
-resource "zedcloud_network" "adapter_spec_network" {
+resource "zedcloud_network" "test_tf_adapter_spec_network" {
     depends_on = [
         zedcloud_project.test_tf_provider
     ]
-    name = "adap-spec-net"
+    name = "test_tf_adapter_spec_network"
     title = "adapter specific network"
     project_id = zedcloud_project.test_tf_provider.id
     ip {
@@ -167,16 +167,16 @@ resource "zedcloud_network" "adapter_spec_network" {
     }
 }
 
-resource "zedcloud_edgenode" "test_dev_adap_spec_net" {
+resource "zedcloud_edgenode" "test_tf_dev_adap_spec_net" {
 	depends_on = [
 		zedcloud_project.test_tf_provider,
 		zedcloud_model.test_tf_provider,
-		zedcloud_network.adapter_spec_network
+		zedcloud_network.test_tf_adapter_spec_network
 	]
-	name = "test_dev"
+	name = "test_tf_dev_adap_spec_net"
 	model_id = zedcloud_model.test_tf_provider.id
 	project_id = zedcloud_project.test_tf_provider.id
-	title = "test dev"
+	title = "test_tf_dev_adap_spec_net"
 	# optional
 	onboarding_key = ""
 	serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45c"
@@ -185,16 +185,18 @@ resource "zedcloud_edgenode" "test_dev_adap_spec_net" {
 	deployment_tag = "depl_tag"
 	description = "description"
 	generate_soft_serial = false
-	token = "token_all"
+	# token = "token_all"
 	site_pictures = []
 	interfaces {
 		cost = 255
 		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
 		intfname = "eth0"
-		netname = zedcloud_network.adapter_spec_network.name
-		netid = zedcloud_network.adapter_spec_network.id
+		netname = zedcloud_network.test_tf_adapter_spec_network.name
+		netid = zedcloud_network.test_tf_adapter_spec_network.id
 		adapter_specific_net {
 			kind = "NETWORK_KIND_V4"
+			dns_list {}
+			proxy {}
 			ip {
 				dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
 				subnet = "10.1.1.0/24"

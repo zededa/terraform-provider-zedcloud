@@ -118,7 +118,7 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	}
 	netid := m["netid"].(string)
 	netname := m["netname"].(string)
-	var sharedLabels []string
+	sharedLabels := []string{}
 	sharedLabelsInterface, sharedLabelsIsSet := m["sharedLabels"]
 	if sharedLabelsIsSet {
 		var items []interface{}

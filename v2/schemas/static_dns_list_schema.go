@@ -59,16 +59,17 @@ func SetStaticDNSListResourceData(d *schema.ResourceData, m *models.StaticDNSLis
 	d.Set("hostname", m.Hostname)
 }
 
-func SetStaticDNSListSubResourceData(m []*models.StaticDNSList) (d []*map[string]interface{}) {
+func SetStaticDNSListSubResourceData(m []*models.StaticDNSList) []*map[string]interface{} {
+	result := make([]*map[string]interface{}, 0, len(m))
 	for _, StaticDNSListModel := range m {
 		if StaticDNSListModel != nil {
 			properties := make(map[string]interface{})
 			properties["addrs"] = StaticDNSListModel.Addrs
 			properties["hostname"] = StaticDNSListModel.Hostname
-			d = append(d, &properties)
+			result = append(result, &properties)
 		}
 	}
-	return
+	return result
 }
 
 func StaticDNSList() map[string]*schema.Schema {
