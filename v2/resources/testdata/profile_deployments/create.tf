@@ -119,7 +119,9 @@ data "zedcloud_edgenode" "test_tf_provider" {
   depends_on = [
     zedcloud_edgenode.test_tf_provider
   ]
-  interfaces {}
+  interfaces {
+    intfname   = "defaultIPv4"
+  }
 }
 
 resource "zedcloud_asset_group" "test_tf_provider" {

@@ -151,7 +151,9 @@ data "zedcloud_edgenode" "test_tf_provider" {
   depends_on = [
     zedcloud_edgenode.test_tf_provider
   ]
-  interfaces {}
+  interfaces {
+    intfname = "ethernet0"
+  }
 }
 
 resource "zedcloud_application" "test_tf_provider" {
