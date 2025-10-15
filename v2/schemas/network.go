@@ -255,10 +255,10 @@ func Network() map[string]*schema.Schema {
 			Description: `Kind of network:
 NETWORK_KIND_V4
 NETWORK_KIND_V6`,
+			Default:  models.NetworkKindNETWORKKINDUNSPECIFIED,
 			Type:     schema.TypeString,
 			Optional: true,
 		},
-
 		"mtu": {
 			Description: `Maximum Transmission Unit (MTU) for the network`,
 			Type:        schema.TypeInt,

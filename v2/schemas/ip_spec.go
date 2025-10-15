@@ -64,7 +64,7 @@ func IPSpecModelFromMap(m map[string]interface{}) *models.IPSpec {
 		}
 	}
 	//
-	var dns []string
+	dns := []string{}
 	dnsInterface, dnsIsSet := m["dns"]
 	if dnsIsSet {
 		dnsSlice := dnsInterface.([]interface{})
