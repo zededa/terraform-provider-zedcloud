@@ -227,13 +227,13 @@ func Network() map[string]*schema.Schema {
 			},
 			DiffSuppressFunc: diffSuppressDNSListOrder("dns_list"),
 			Optional:         true,
-			Computed:         true,
 		},
 
 		"enterprise_default": {
 			Description: ``,
 			Type:        schema.TypeBool,
 			Optional:    true,
+			Default:     false,
 		},
 
 		"id": {
@@ -263,6 +263,7 @@ NETWORK_KIND_V6`,
 			Description: `Maximum Transmission Unit (MTU) for the network`,
 			Type:        schema.TypeInt,
 			Optional:    true,
+			Default:     0,
 		},
 
 		"name": {

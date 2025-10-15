@@ -226,7 +226,7 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 		"intfname": {
 			Description: `name of interface in the manifest to which this network or adapter maps to`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"ipaddr": {
@@ -252,6 +252,7 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 			Description: `network identifier has to have value if the netname is not empty`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"netname": {

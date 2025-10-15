@@ -62,6 +62,9 @@ func diffSuppressDNSListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 
 		o := oldData.([]interface{})
 		n := newData.([]interface{})
+		if len(o) == 0 && len(n) == 0 {
+			return true
+		}
 		if len(o) != len(n) {
 			return false
 		}
@@ -126,8 +129,8 @@ func diffSuppressSystemInterfaceListOrder(mapKey string) schema.SchemaDiffSuppre
 			return false
 		}
 
-		o := oldData.([]interface{})
-		n := newData.([]interface{})
+		o := oldData.(*schema.Set).List()
+		n := newData.(*schema.Set).List()
 		if len(o) != len(n) {
 			return false
 		}
