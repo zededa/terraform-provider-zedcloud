@@ -226,7 +226,7 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 		"intfname": {
 			Description: `name of interface in the manifest to which this network or adapter maps to`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"ipaddr": {
