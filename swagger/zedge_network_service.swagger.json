@@ -2275,7 +2275,7 @@
                     "description": "Access Point Network to connect into.\nBy default it is \"internet\"."
                 },
                 "authProtocol": {
-                    "$ref": "#/definitions/eveconfigCellularAuthProtocol",
+                    "$ref": "#/definitions/evecommonCellularAuthProtocol",
                     "description": "Authentication protocol used by the network."
                 },
                 "cipherData": {
@@ -3468,10 +3468,11 @@
                 "NETWORK_DHCP_TYPE_STATIC",
                 "NETWORK_DHCP_TYPE_PASSTHROUGH",
                 "NETWORK_DHCP_TYPE_DEPRECATED",
-                "NETWORK_DHCP_TYPE_CLIENT"
+                "NETWORK_DHCP_TYPE_CLIENT",
+                "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
             ],
             "default": "NETWORK_DHCP_TYPE_UNSPECIFIED",
-            "title": "- NETWORK_DHCP_TYPE_STATIC: used for adapter configured DHCP static\n - NETWORK_DHCP_TYPE_PASSTHROUGH: used for adapter configured DHCP none, application will do DHCP\n - NETWORK_DHCP_TYPE_DEPRECATED: used for application simulation\n - NETWORK_DHCP_TYPE_CLIENT: used for adapter configured DHCP client"
+            "title": "- NETWORK_DHCP_TYPE_STATIC: used for adapter configured DHCP static\n - NETWORK_DHCP_TYPE_PASSTHROUGH: used for adapter configured DHCP none, application will do DHCP\n - NETWORK_DHCP_TYPE_DEPRECATED: used for application simulation\n - NETWORK_DHCP_TYPE_CLIENT: used for adapter configured DHCP client\n - NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC: used to configure device adapter specific static networks"
         },
         "NetworkDeviceList": {
             "type": "object",
@@ -3730,7 +3731,7 @@
                 },
                 "customProbeConfig": {
                     "type": "object",
-                    "$ref": "#/definitions/configConnectivityProbe",
+                    "$ref": "#/definitions/commonConnectivityProbe",
                     "description": "Custom probe configuration"
                 }
             },
@@ -4110,39 +4111,21 @@
             },
             "title": "Encrypted sensitive data information"
         },
-        "configCellularConnectivityProbe": {
-            "type": "object",
-            "properties": {
-                "disable": {
-                    "type": "boolean",
-                    "description": "If true, then probing is disabled."
-                },
-                "probeAddress": {
-                    "type": "string",
-                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThis field is now deprecated and replaced with custom_probe (see below).\nTo maintain backward-compatibility, EVE will check both probe_address and custom_probe\nand will use whichever has non-zero value (if any), but preferring custom_probe."
-                },
-                "customProbe": {
-                    "$ref": "#/definitions/configConnectivityProbe",
-                    "description": "User-defined probe for cellular connectivity testing.\nOnly IP address is allowed as ConnectivityProbe.probe_address (and port if needed),\nnot hostname.\nThe probing algorithm is more complex that just testing reachability of a remote\nendpoint and the goal is to minimize generated traffic, probing time and false negatives\n(that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the remote endpoint. If custom_probe is not defined,\nEVE will try to ping \"8.8.8.8\" (Google public DNS).\nIt is recommended to use custom probe for private LTE networks where public DNS servers\nmight not be allowed by the firewall (and hence ping would fail even with a working\nconnectivity)."
-                }
-            },
-            "description": "CellularConnectivityProbe is used to periodically check the connectivity status of a cellular network\nby probing a remote endpoint.\nWhenever the probe fails, the cellular connection is automatically restarted. If the probe keeps failing\neven after the restart, the failure is reported in ZCellularStatus.probeError.\nThe connectivity probing interval is 5 minutes and currently it is not configurable."
-        },
-        "configConnectivityProbe": {
+        "commonConnectivityProbe": {
             "type": "object",
             "properties": {
                 "probeMethod": {
-                    "$ref": "#/definitions/configConnectivityProbeMethod",
+                    "$ref": "#/definitions/commonConnectivityProbeMethod",
                     "description": "Method to use to determine the connectivity status."
                 },
                 "probeEndpoint": {
-                    "$ref": "#/definitions/configProbeEndpoint",
+                    "$ref": "#/definitions/commonProbeEndpoint",
                     "description": "Endpoint to probe using the selected probing mechanism to determine\nthe connectivity status."
                 }
             },
             "description": "Configuration for user-defined connectivity-testing probe."
         },
-        "configConnectivityProbeMethod": {
+        "commonConnectivityProbeMethod": {
             "type": "string",
             "enum": [
                 "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
@@ -4152,7 +4135,7 @@
             "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
             "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
         },
-        "configProbeEndpoint": {
+        "commonProbeEndpoint": {
             "type": "object",
             "properties": {
                 "host": {
@@ -4166,6 +4149,24 @@
                 }
             },
             "description": "Address of a remote endpoint to probe in order to determine connectivity status."
+        },
+        "configCellularConnectivityProbe": {
+            "type": "object",
+            "properties": {
+                "disable": {
+                    "type": "boolean",
+                    "description": "If true, then probing is disabled."
+                },
+                "probeAddress": {
+                    "type": "string",
+                    "description": "IP/FQDN to periodically probe using 3 pings per iteration to determine connectivity status.\nThis field is now deprecated and replaced with custom_probe (see below).\nTo maintain backward-compatibility, EVE will check both probe_address and custom_probe\nand will use whichever has non-zero value (if any), but preferring custom_probe."
+                },
+                "customProbe": {
+                    "$ref": "#/definitions/commonConnectivityProbe",
+                    "description": "User-defined probe for cellular connectivity testing.\nOnly IP address is allowed as ConnectivityProbe.probe_address (and port if needed),\nnot hostname.\nThe probing algorithm is more complex that just testing reachability of a remote\nendpoint and the goal is to minimize generated traffic, probing time and false negatives\n(that would trigger undesired re-connect).\nEVE will periodically check the modem status, accessibility of DNS server(s) and potentially\nalso proxies in the local network, and only as the last resort (if connectivity state\nis still unclear) it will probe the remote endpoint. If custom_probe is not defined,\nEVE will try to ping \"8.8.8.8\" (Google public DNS).\nIt is recommended to use custom probe for private LTE networks where public DNS servers\nmight not be allowed by the firewall (and hence ping would fail even with a working\nconnectivity)."
+                }
+            },
+            "description": "CellularConnectivityProbe is used to periodically check the connectivity status of a cellular network\nby probing a remote endpoint.\nWhenever the probe fails, the cellular connection is automatically restarted. If the probe keeps failing\neven after the restart, the failure is reported in ZCellularStatus.probeError.\nThe connectivity probing interval is 5 minutes and currently it is not configurable."
         },
         "dhcpIpRange": {
             "type": "object",
@@ -4182,6 +4183,17 @@
             "description": "DHCP IP range",
             "title": "DHCP IP range"
         },
+        "evecommonCellularAuthProtocol": {
+            "type": "string",
+            "enum": [
+                "CELLULAR_AUTH_PROTOCOL_NONE",
+                "CELLULAR_AUTH_PROTOCOL_PAP",
+                "CELLULAR_AUTH_PROTOCOL_CHAP",
+                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
+            ],
+            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
+            "description": "CellularAuthProtocol defines the authentication protocol used for cellular connection.\n\n - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
+        },
         "evecommonRadioAccessTechnology": {
             "type": "string",
             "enum": [
@@ -4193,17 +4205,6 @@
             ],
             "default": "RADIO_ACCESS_TECHNOLOGY_UNSPECIFIED",
             "description": " - RADIO_ACCESS_TECHNOLOGY_GSM: Global System for Mobile Communications (2G).\n - RADIO_ACCESS_TECHNOLOGY_UMTS: Universal Mobile Telecommunications System (3G).\n - RADIO_ACCESS_TECHNOLOGY_LTE: Long Term Evolution (4G).\n - RADIO_ACCESS_TECHNOLOGY_5GNR: 5G New Radio."
-        },
-        "eveconfigCellularAuthProtocol": {
-            "type": "string",
-            "enum": [
-                "CELLULAR_AUTH_PROTOCOL_NONE",
-                "CELLULAR_AUTH_PROTOCOL_PAP",
-                "CELLULAR_AUTH_PROTOCOL_CHAP",
-                "CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP"
-            ],
-            "default": "CELLULAR_AUTH_PROTOCOL_NONE",
-            "description": " - CELLULAR_AUTH_PROTOCOL_NONE: No authentication.\n - CELLULAR_AUTH_PROTOCOL_PAP: Password Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_CHAP: Challenge-Handshake Authentication Protocol.\n - CELLULAR_AUTH_PROTOCOL_PAP_AND_CHAP: Both PAP and CHAP."
         },
         "eveinfoIPRoute": {
             "type": "object",

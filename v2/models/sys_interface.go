@@ -14,12 +14,17 @@ import (
 	"github.com/go-openapi/validate"
 )
 
-// SystemInterface sysInterface payload detail
+// SysInterface sysInterface payload detail
 //
 // system interfaces that needs to be used by dom0
 //
-// swagger:model sysInterface
-type SystemInterface struct {
+// swagger:model SysInterface
+type SysInterface struct {
+
+	// adapterSpecificNet is relevant only when the network selected for the adapter is of type NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC
+	//
+	// device adapter specific network configuration
+	AdapterSpecificNet *Network `json:"adapterSpecificNet,omitempty"`
 
 	// cost of using this interface. Default is 0.
 	// Maximum: 255
@@ -37,16 +42,32 @@ type SystemInterface struct {
 	// mac address needs to be over-written in some cases
 	Macaddr string `json:"macaddr,omitempty"`
 
+	// Network DHCP type
+	NetDhcp *NetworkDHCPType `json:"netDhcp,omitempty"`
+
+	// network identifier has to have value if the netname is not empty
+	Netid string `json:"netid,omitempty"`
+
 	// network name: if attaching a network use netname
 	Netname string `json:"netname,omitempty"`
 
+	// A set of user-defined shared labels attached to the adapter
+	SharedLabels []string `json:"sharedLabels"`
+
 	// Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 	Tags map[string]string `json:"tags,omitempty"`
+
+	// Z Type
+	Ztype string `json:"ztype,omitempty"`
 }
 
 // Validate validates this sys interface
-func (m *SystemInterface) Validate(formats strfmt.Registry) error {
+func (m *SysInterface) Validate(formats strfmt.Registry) error {
 	var res []error
+
+	if err := m.validateAdapterSpecificNet(formats); err != nil {
+		res = append(res, err)
+	}
 
 	if err := m.validateCost(formats); err != nil {
 		res = append(res, err)
@@ -56,13 +77,36 @@ func (m *SystemInterface) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateNetDhcp(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
 }
 
-func (m *SystemInterface) validateCost(formats strfmt.Registry) error {
+func (m *SysInterface) validateAdapterSpecificNet(formats strfmt.Registry) error {
+	if swag.IsZero(m.AdapterSpecificNet) { // not required
+		return nil
+	}
+
+	if m.AdapterSpecificNet != nil {
+		if err := m.AdapterSpecificNet.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("adapterSpecificNet")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("adapterSpecificNet")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SysInterface) validateCost(formats strfmt.Registry) error {
 	if swag.IsZero(m.Cost) { // not required
 		return nil
 	}
@@ -74,7 +118,7 @@ func (m *SystemInterface) validateCost(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *SystemInterface) validateIntfUsage(formats strfmt.Registry) error {
+func (m *SysInterface) validateIntfUsage(formats strfmt.Registry) error {
 	if swag.IsZero(m.IntfUsage) { // not required
 		return nil
 	}
@@ -93,11 +137,38 @@ func (m *SystemInterface) validateIntfUsage(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *SysInterface) validateNetDhcp(formats strfmt.Registry) error {
+	if swag.IsZero(m.NetDhcp) { // not required
+		return nil
+	}
+
+	if m.NetDhcp != nil {
+		if err := m.NetDhcp.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("netDhcp")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("netDhcp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this sys interface based on the context it is used
-func (m *SystemInterface) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+func (m *SysInterface) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.contextValidateAdapterSpecificNet(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateIntfUsage(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidateNetDhcp(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -107,7 +178,23 @@ func (m *SystemInterface) ContextValidate(ctx context.Context, formats strfmt.Re
 	return nil
 }
 
-func (m *SystemInterface) contextValidateIntfUsage(ctx context.Context, formats strfmt.Registry) error {
+func (m *SysInterface) contextValidateAdapterSpecificNet(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.AdapterSpecificNet != nil {
+		if err := m.AdapterSpecificNet.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("adapterSpecificNet")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("adapterSpecificNet")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *SysInterface) contextValidateIntfUsage(ctx context.Context, formats strfmt.Registry) error {
 
 	if m.IntfUsage != nil {
 		if err := m.IntfUsage.ContextValidate(ctx, formats); err != nil {
@@ -123,8 +210,24 @@ func (m *SystemInterface) contextValidateIntfUsage(ctx context.Context, formats 
 	return nil
 }
 
+func (m *SysInterface) contextValidateNetDhcp(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.NetDhcp != nil {
+		if err := m.NetDhcp.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("netDhcp")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("netDhcp")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // MarshalBinary interface implementation
-func (m *SystemInterface) MarshalBinary() ([]byte, error) {
+func (m *SysInterface) MarshalBinary() ([]byte, error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -132,8 +235,8 @@ func (m *SystemInterface) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary interface implementation
-func (m *SystemInterface) UnmarshalBinary(b []byte) error {
-	var res SystemInterface
+func (m *SysInterface) UnmarshalBinary(b []byte) error {
+	var res SysInterface
 	if err := swag.ReadJSON(b, &res); err != nil {
 		return err
 	}

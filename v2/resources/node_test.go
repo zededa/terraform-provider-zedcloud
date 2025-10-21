@@ -40,7 +40,7 @@ func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.required_only",
 						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
 				),
 			},
@@ -78,9 +78,10 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_provider",
 						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+						// Improved UUID regexp: matches any valid UUID (versions 1-5, RFC 4122)
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					testNodeAttributes(t, &gotCreated, &expectCreated),
+					testNodeAttributes(t, "create node", &gotCreated, &expectCreated),
 				),
 			},
 			{
@@ -92,9 +93,62 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_provider",
 						"id",
-						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
 					),
-					testNodeAttributes(t, &gotUpdated, &expectUpdated),
+					testNodeAttributes(t, "update node", &gotUpdated, &expectUpdated),
+				),
+			},
+		},
+	})
+}
+
+func TestNode_Create_WithAdapterSpecificNetwork(t *testing.T) {
+	var gotCreated, gotUpdated, expectCreated, expectUpdated models.Node
+
+	// input configs
+	createPath := "node/create_with_adap_spec_net.tf"
+	inputCreate := testhelper.MustGetTestInput(t, createPath)
+	updatePath := "node/update_with_adap_spec_net.tf"
+	inputUpdate := testhelper.MustGetTestInput(t, updatePath)
+
+	// expected output
+	createPath = "node/create_with_adap_spec_net.yaml"
+	testhelper.MustGetExpectedOutput(t, createPath, &expectCreated)
+	updatePath = "node/update_with_adap_spec_net.yaml"
+	testhelper.MustGetExpectedOutput(t, updatePath, &expectUpdated)
+
+	// terraform acceptance test case
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testhelper.CheckEnv(t) },
+		CheckDestroy: testNodeDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: inputCreate,
+				Check: resource.ComposeTestCheckFunc(
+					testNodeExists("zedcloud_edgenode.test_tf_dev_adap_spec_net", &gotCreated),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_dev_adap_spec_net"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", "test_tf_dev_adap_spec_net"),
+					resource.TestMatchResourceAttr(
+						"zedcloud_edgenode.test_tf_dev_adap_spec_net",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					testNodeAttributes(t, "create node", &gotCreated, &expectCreated),
+				),
+			},
+			{
+				Config: inputUpdate,
+				Check: resource.ComposeTestCheckFunc(
+					testNodeExists("zedcloud_edgenode.test_tf_dev_adap_spec_net", &gotUpdated),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_dev_adap_spec_net"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", "test_tf_dev_adap_spec_net"),
+					resource.TestMatchResourceAttr(
+						"zedcloud_edgenode.test_tf_dev_adap_spec_net",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					testNodeAttributes(t, "update node", &gotUpdated, &expectUpdated),
 				),
 			},
 		},
@@ -136,9 +190,10 @@ func testNodeExists(resourceName string, edgeNodeModel *models.Node) resource.Te
 }
 
 // testNodeAttributes verifies attributes are set correctly by Terraform
-func testNodeAttributes(t *testing.T, got, expected *models.Node) resource.TestCheckFunc {
+func testNodeAttributes(t *testing.T, testCase string, got, expected *models.Node) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		opts := cmpopts.IgnoreFields(
+		var opts []cmp.Option
+		opts = append(opts, cmpopts.IgnoreFields(
 			models.Node{},
 			"ID",
 			"ProjectID",
@@ -150,12 +205,14 @@ func testNodeAttributes(t *testing.T, got, expected *models.Node) resource.TestC
 			"Obkey",
 			"Interfaces",
 			"ModelID",
-		)
+		))
 		// API and YAML unmarshal might change order of list elements so we need to ignore order when comparing
-		if !schemas.CompareSystemInterfaceList(got.Interfaces, expected.Interfaces) {
-			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), cmp.Diff(got.Interfaces, expected.Interfaces))
+		interfacesEqual, reason := schemas.CompareSystemInterfaceList(got.Interfaces, expected.Interfaces)
+		if !interfacesEqual {
+			return fmt.Errorf("%s-%s:  sys interface mismatch: %s", t.Name(), testCase, reason)
 		}
-		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
+
+		if diff := cmp.Diff(*got, *expected, opts...); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
 		return nil

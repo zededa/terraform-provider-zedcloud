@@ -46,3 +46,15 @@ resource "zedcloud_network" "required_only" {
     }
     kind = "NETWORK_KIND_V4"
 }
+
+resource "zedcloud_network" "test_tf_adapter_spec_network" {
+    depends_on = [
+        zedcloud_project.test_tf_provider
+    ]
+    name = "test_tf_adapter_spec_network"
+    title = "adapter specific network"
+    project_id = zedcloud_project.test_tf_provider.id
+    ip {
+        dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+    }
+}

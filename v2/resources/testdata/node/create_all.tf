@@ -30,7 +30,7 @@ resource "zedcloud_datastore"  "test_tf_provider" {
 	ds_fqdn = "my-datastore.my-company.com"
 	ds_path = "download/AMD64"
 	ds_type = "DATASTORE_TYPE_AZUREBLOB"
-	name = "test"
+	name = "test_tf_provider-amd64"
 	title = "title"
 	description = "description"
 	region = "eu"
@@ -121,6 +121,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 			"system_interface_1_key" = "system_interface_1_value"
 			"system_interface_2_key" = "system_interface_2_value"
 		}
+		shared_labels = [ "label1", "label2" ]
 	}
 	interfaces {
 		intfname = "eth0"

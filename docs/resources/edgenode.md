@@ -69,13 +69,162 @@ description: |-
 
 Optional:
 
+- `adapter_specific_net` (Block List) device adapter specific network configuration (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net))
 - `cost` (Number) cost of using this interface. Default is 0.
 - `intf_usage` (String) Adapter Udage
 - `intfname` (String) name of interface in the manifest to which this network or adapter maps to
 - `ipaddr` (String) IP address: we will be needing this in cae of static network
 - `macaddr` (String) mac address needs to be over-written in some cases
+- `net_dhcp` (String) Network DHCP type
+- `netid` (String) network identifier has to have value if the netname is not empty
 - `netname` (String) network name: if attaching a network use netname
+- `shared_labels` (List of String) A set of user-defined shared labels attached to the adapter
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+- `ztype` (String) Z Type
+
+<a id="nestedblock--interfaces--adapter_specific_net"></a>
+### Nested Schema for `interfaces.adapter_specific_net`
+
+Optional:
+
+- `description` (String) Detailed description of the network
+- `dns_list` (Block List) (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--dns_list))
+- `enterprise_default` (Boolean)
+- `ip` (Block List) IP configuration for the network (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--ip))
+- `kind` (String) Kind of network:
+NETWORK_KIND_V4
+NETWORK_KIND_V6
+- `mtu` (Number) Maximum Transmission Unit (MTU) for the network
+- `name` (String) User defined name of the network, unique across the enterprise. Once object is created, name can’t be changed
+- `project_id` (String)
+- `proxy` (Block List) proxy block is used to configure network proxy settings. The following is a brief description of how to use the attributes in the block:
+1) If the proxy server requires certificates, set network_proxy_certs to carry the certificates
+2) To have the EdgeNode auto discover pacfile, set network_proxy to True
+3) To configure EdgeNode to download the pacfile from a specific URL:
+    a) set network_proxy = false
+	b) set network_proxy_url to the URL of the pac file
+4) To configure EdgeNode with the contents of the pacfile, set 'pacfile' to content of the pacfile.
+5) To configure Proxy setting manually instead of using a pacfile, use the 'proxy' and 'exceptions' blocks (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--proxy))
+- `title` (String) User defined title of the network. Title can be changed at any time
+- `wireless` (Block List) (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--wireless))
+
+Read-Only:
+
+- `id` (String) System defined universally unique Id of the network
+- `revision` (Block List) system defined info (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--revision))
+
+<a id="nestedblock--interfaces--adapter_specific_net--dns_list"></a>
+### Nested Schema for `interfaces.adapter_specific_net.dns_list`
+
+Optional:
+
+- `addrs` (List of String) Addresses
+- `hostname` (String) Host name
+
+
+<a id="nestedblock--interfaces--adapter_specific_net--ip"></a>
+### Nested Schema for `interfaces.adapter_specific_net.ip`
+
+Optional:
+
+- `deprecated_dhcp` (Boolean)
+- `dhcp` (String) DHCP type:
+NETWORK_DHCP_TYPE_STATIC
+NETWORK_DHCP_TYPE_PASSTHROUGH
+NETWORK_DHCP_TYPE_CLIENT
+- `dhcp_range` (Block List) Range of IP addresses to be used for DHCP for IPAM management when dhcp is turned on. If none provided, system will default pool. (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--ip--dhcp_range))
+- `dns` (List of String) List of IP Addresses of DNS servers
+- `domain` (String) Network domain
+- `gateway` (String) IP Address of Network Gateway
+- `mask` (String) Subnet Mask
+- `ntp` (String) IP Address of NTP Server
+- `subnet` (String) Subnet address
+
+<a id="nestedblock--interfaces--adapter_specific_net--ip--dhcp_range"></a>
+### Nested Schema for `interfaces.adapter_specific_net.ip.dhcp_range`
+
+Optional:
+
+- `end` (String) ending IP
+- `start` (String) starting IP
+
+
+
+<a id="nestedblock--interfaces--adapter_specific_net--proxy"></a>
+### Nested Schema for `interfaces.adapter_specific_net.proxy`
+
+Optional:
+
+- `exceptions` (String) Proxy exceptions
+- `network_proxy` (Boolean) Enable WPAD (Web Proxy Auto Discovery) protocol to discover and download PAC file.
+- `network_proxy_certs` (List of String) Network Proxy Certificates
+- `network_proxy_url` (String) URL for wpad.dat file to be downloaded. Used when network_proxy is set to False.
+- `pacfile` (String) Proxy configuration in a pacfile. Used when network_proxy is set to False.
+- `proxies` (Block List) Net Proxy: protocol level proxies. Used when network_proxy is set to False. (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--proxy--proxies))
+
+<a id="nestedblock--interfaces--adapter_specific_net--proxy--proxies"></a>
+### Nested Schema for `interfaces.adapter_specific_net.proxy.proxies`
+
+Optional:
+
+- `port` (Number) Net Proxy Port
+- `proto` (String) Net Proxy protocol:
+NETWORK_PROXY_PROTO_HTTP
+NETWORK_PROXY_PROTO_HTTPS
+NETWORK_PROXY_PROTO_SOCKS
+NETWORK_PROXY_PROTO_FTP
+NETWORK_PROXY_PROTO_OTHER
+- `server` (String) Net Proxy Server
+
+
+
+<a id="nestedblock--interfaces--adapter_specific_net--wireless"></a>
+### Nested Schema for `interfaces.adapter_specific_net.wireless`
+
+Optional:
+
+- `cellular` (Block List) Cellular configuration (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--wireless--cellular))
+- `type` (String) Type of Wireless Network:
+NETWORK_WIRELESS_TYPE_WIFI
+NETWORK_WIRELESS_TYPE_CELLULAR
+- `wifi` (Block List) Can be multiple APs on a single wlan, e.g. one for 2.5Ghz, other 5Ghz SSIDs (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net--wireless--wifi))
+
+<a id="nestedblock--interfaces--adapter_specific_net--wireless--cellular"></a>
+### Nested Schema for `interfaces.adapter_specific_net.wireless.cellular`
+
+Optional:
+
+- `apn` (String)
+- `location_tracking` (Boolean)
+
+
+<a id="nestedblock--interfaces--adapter_specific_net--wireless--wifi"></a>
+### Nested Schema for `interfaces.adapter_specific_net.wireless.wifi`
+
+Optional:
+
+- `identity` (String, Sensitive) WPA2 enterprise user identity/username. Use value from Vault.	This field will not be published by terraform import
+- `key_scheme` (String) Key management scheme:
+NETWORK_WIFIKEY_SCHEME_WPAPSK
+NETWORK_WIFIKEY_SCHEME_WPAEAPPSK
+- `priority` (Number) Priority of connection, default is 0
+- `wifi_ssid` (String, Sensitive)
+
+
+
+<a id="nestedblock--interfaces--adapter_specific_net--revision"></a>
+### Nested Schema for `interfaces.adapter_specific_net.revision`
+
+Read-Only:
+
+- `created_at` (String) The time, in milliseconds since the epoch, when the record was created.
+- `created_by` (String) User data: Created By
+- `curr` (String) Current Database version of the record
+- `prev` (String) Previous
+- `updated_at` (String) The time, in milliseconds since the epoch, when the record was last updated.
+- `updated_by` (String) User data: Updated By
+
+
 
 
 <a id="nestedblock--base_image"></a>

@@ -42,15 +42,19 @@ interfaces:
       ipaddr: 127.0.0.1
       macaddr: "00:00:00:00:00:00"
       netname: ""
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
+      sharedlabels: []
       tags:
         system_interface_1_key: system_interface_1_value
         system_interface_2_key: system_interface_2_value
     - cost: 0
       intfusage: ADAPTER_USAGE_UNSPECIFIED
       intfname: eth0
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
       ipaddr: ""
       macaddr: ""
       netname: ""
+      sharedlabels: []
       tags: {}
 location: ""
 memory: 0

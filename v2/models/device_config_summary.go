@@ -49,7 +49,7 @@ type DeviceConfigSummary struct {
 	ID string `json:"id,omitempty"`
 
 	// System Interface list
-	Interfaces []*SystemInterface `json:"interfaces"`
+	Interfaces []*SysInterface `json:"interfaces"`
 
 	// device model
 	// Required: true
