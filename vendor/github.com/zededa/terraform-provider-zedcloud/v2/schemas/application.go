@@ -1,0 +1,427 @@
+package schemas
+
+import (
+	"log"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
+)
+
+func ApplicationModel(d *schema.ResourceData) *models.Application {
+	cpusInt, _ := d.Get("cpus").(int)
+	cpus := int64(cpusInt)
+	description, _ := d.Get("description").(string)
+	id, _ := d.Get("id").(string)
+	isImported, _ := d.Get("is_imported").(bool)
+	var manifestJSON *models.VMManifest // VMManifest
+	manifestJSONInterface, manifestJSONIsSet := d.GetOk("manifest")
+	if manifestJSONIsSet && manifestJSONInterface != nil {
+		manifestJSONMap := manifestJSONInterface.([]interface{})
+		if len(manifestJSONMap) > 0 {
+			manifestJSON = VMManifestModelFromMap(manifestJSONMap[0].(map[string]interface{}))
+		}
+	}
+	memoryInt, _ := d.Get("memory").(int)
+	memory := int64(memoryInt)
+	name, _ := d.Get("name").(string)
+	networksInt, _ := d.Get("networks").(int)
+	networks := int64(networksInt)
+	var originType *models.Origin // Origin
+	originTypeInterface, originTypeIsSet := d.GetOk("origin_type")
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
+	}
+	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
+	parentDetailInterface, parentDetailIsSet := d.GetOk("parent_detail")
+	if parentDetailIsSet && parentDetailInterface != nil {
+		parentDetailMap := parentDetailInterface.([]interface{})
+		if len(parentDetailMap) > 0 {
+			parentDetail = ObjectParentDetailModelFromMap(parentDetailMap[0].(map[string]interface{}))
+		}
+	}
+	var projectAccessList []string
+	projectAccessListInterface, projectAccessListIsSet := d.GetOk("project_access_list")
+	if projectAccessListIsSet {
+		var items []interface{}
+		if listItems, isList := projectAccessListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = projectAccessListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			projectAccessList = append(projectAccessList, v.(string))
+		}
+	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := d.GetOk("revision")
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
+	storageInt, _ := d.Get("storage").(int)
+	storage := int64(storageInt)
+	title, _ := d.Get("title").(string)
+	userDefinedVersion, _ := d.Get("user_defined_version").(string)
+	appInstCountInt, _ := d.Get("app_inst_count").(int)
+	appInstCount := int32(appInstCountInt)
+	var datastoreIDList []string
+	datastoreIDListInterface, datastoreIDListIsSet := d.GetOk("datastore_id_list")
+	if datastoreIDListIsSet {
+		var items []interface{}
+		if listItems, isList := datastoreIDListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = datastoreIDListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			datastoreIDList = append(datastoreIDList, v.(string))
+		}
+	}
+	return &models.Application{
+		Cpus:               cpus,
+		Description:        description,
+		ID:                 id,
+		IsImported:         isImported,
+		Manifest:           manifestJSON,
+		Memory:             memory,
+		Name:               &name, // string true false false
+		Networks:           networks,
+		OriginType:         originType,
+		ParentDetail:       parentDetail,
+		ProjectAccessList:  projectAccessList,
+		Revision:           revision,
+		Storage:            storage,
+		Title:              &title, // string true false false
+		UserDefinedVersion: userDefinedVersion,
+		AppInstCount:       appInstCount,
+		DatastoreIDList:    datastoreIDList,
+	}
+}
+
+func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
+	cpus := int64(m["cpus"].(int)) // int64
+	description := m["description"].(string)
+	id := m["id"].(string)
+	isImported := m["is_imported"].(bool)
+	var manifestJSON *models.VMManifest // VMManifest
+	manifestJSONInterface, manifestJSONIsSet := m["manifest"]
+	if manifestJSONIsSet && manifestJSONInterface != nil {
+		manifestJSONMap := manifestJSONInterface.([]interface{})
+		if len(manifestJSONMap) > 0 {
+			manifestJSON = VMManifestModelFromMap(manifestJSONMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	memory := int64(m["memory"].(int)) // int64
+	name := m["name"].(string)
+	networks := int64(m["networks"].(int)) // int64
+	var originType *models.Origin          // Origin
+	originTypeInterface, originTypeIsSet := m["origin_type"]
+	if originTypeIsSet {
+		originTypeModel := originTypeInterface.(string)
+		originType = models.NewOrigin(models.Origin(originTypeModel))
+	}
+	var parentDetail *models.ObjectParentDetail // ObjectParentDetail
+	parentDetailInterface, parentDetailIsSet := m["parent_detail"]
+	if parentDetailIsSet && parentDetailInterface != nil {
+		parentDetailMap := parentDetailInterface.([]interface{})
+		if len(parentDetailMap) > 0 {
+			parentDetail = ObjectParentDetailModelFromMap(parentDetailMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	var projectAccessList []string
+	projectAccessListInterface, projectAccessListIsSet := m["project_access_list"]
+	if projectAccessListIsSet {
+		var items []interface{}
+		if listItems, isList := projectAccessListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = projectAccessListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			projectAccessList = append(projectAccessList, v.(string))
+		}
+	}
+	var revision *models.ObjectRevision // ObjectRevision
+	revisionInterface, revisionIsSet := m["revision"]
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	storage := int64(m["storage"].(int)) // int64
+	title := m["title"].(string)
+	userDefinedVersion := m["user_defined_version"].(string)
+	appInstCount := int32(m["app_inst_count"].(int)) // int32
+	var datastoreIDList []string
+	datastoreIDListInterface, datastoreIDListIsSet := m["datastore_id_list"]
+	if datastoreIDListIsSet {
+		var items []interface{}
+		if listItems, isList := datastoreIDListInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = datastoreIDListInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			datastoreIDList = append(datastoreIDList, v.(string))
+		}
+	}
+	return &models.Application{
+		Cpus:               cpus,
+		Description:        description,
+		ID:                 id,
+		IsImported:         isImported,
+		Manifest:           manifestJSON,
+		Memory:             memory,
+		Name:               &name,
+		Networks:           networks,
+		OriginType:         originType,
+		ParentDetail:       parentDetail,
+		ProjectAccessList:  projectAccessList,
+		Revision:           revision,
+		Storage:            storage,
+		Title:              &title,
+		UserDefinedVersion: userDefinedVersion,
+		AppInstCount:       appInstCount,
+		DatastoreIDList:    datastoreIDList,
+	}
+}
+
+func SetApplicationResourceData(d *schema.ResourceData, m *models.Application) {
+	d.Set("cpus", m.Cpus)
+	d.Set("description", m.Description)
+	d.Set("drives", m.Drives)
+	d.Set("id", m.ID)
+	d.Set("is_imported", m.IsImported)
+	d.Set("manifest", SetVMManifestSubResourceData([]*models.VMManifest{m.Manifest}))
+	d.Set("memory", m.Memory)
+	d.Set("name", m.Name)
+	d.Set("networks", m.Networks)
+	d.Set("origin_type", m.OriginType)
+	d.Set("parent_detail", SetObjectParentDetailSubResourceData([]*models.ObjectParentDetail{m.ParentDetail}))
+	d.Set("project_access_list", m.ProjectAccessList)
+	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
+	d.Set("storage", m.Storage)
+	d.Set("title", m.Title)
+	d.Set("user_defined_version", m.UserDefinedVersion)
+	d.Set("app_inst_count", m.AppInstCount)
+	d.Set("datastore_id_list", m.DatastoreIDList)
+}
+
+func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]interface{}) {
+	for _, AppModel := range m {
+		if AppModel != nil {
+			properties := make(map[string]interface{})
+			properties["cpus"] = AppModel.Cpus
+			properties["description"] = AppModel.Description
+			properties["drives"] = AppModel.Drives
+			properties["id"] = AppModel.ID
+			properties["is_imported"] = AppModel.IsImported
+			properties["manifest"] = SetVMManifestSubResourceData([]*models.VMManifest{AppModel.Manifest})
+			properties["memory"] = AppModel.Memory
+			properties["name"] = AppModel.Name
+			properties["networks"] = AppModel.Networks
+			properties["origin_type"] = AppModel.OriginType
+			properties["parent_detail"] = SetObjectParentDetailSubResourceData([]*models.ObjectParentDetail{AppModel.ParentDetail})
+			properties["project_access_list"] = AppModel.ProjectAccessList
+			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{AppModel.Revision})
+			properties["storage"] = AppModel.Storage
+			properties["title"] = AppModel.Title
+			properties["user_defined_version"] = AppModel.UserDefinedVersion
+			properties["app_inst_count"] = AppModel.AppInstCount
+			properties["datastore_id_list"] = AppModel.DatastoreIDList
+			d = append(d, &properties)
+		}
+	}
+	return
+}
+
+// Schema mapping representing the App resource defined in the Terraform configuration
+func Application() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"cpus": {
+			Description: `user defined cpus for bundle`,
+			Type:        schema.TypeInt,
+			Computed:    true,
+		},
+
+		"description": {
+			Description: `Detailed description of the edge application`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"drives": {
+			Description: `user defined drives`,
+			Type:        schema.TypeInt,
+			Computed:    true,
+		},
+
+		"id": {
+			Description: `System defined universally unique Id of the edge application`,
+			Type:        schema.TypeString,
+			Computed:    true,
+		},
+
+		"is_imported": {
+			Description: `Flag to represent where app bundle is already imported`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
+		"manifest_file": {
+			Description: `path to manifest.json`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
+		"manifest": {
+			Description: `user defined manifest in JSON format`,
+			Type:        schema.TypeList, //GoType: VMManifest
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: VMManifest(),
+			},
+			Optional: true,
+			DiffSuppressFunc: func(k, oldValue, newValue string, d *schema.ResourceData) bool {
+				if _, ok := d.GetOk("manifest_file"); ok {
+					log.Println("[WARN] diffs for manifest files are suppressed!")
+					return true
+				}
+				return false
+			},
+			ConflictsWith: []string{"manifest_file"},
+		},
+
+		"memory": {
+			Description: `user defined memory for bundle`,
+			Type:        schema.TypeInt,
+			Computed:    true,
+		},
+
+		"name": {
+			Description: `User defined name of the edge application, unique across the enterprise. Once object is created, name can’t be changed`,
+			Type:        schema.TypeString,
+			Required:    true,
+			ForceNew:    true,
+		},
+
+		"networks": {
+			Description: `user defined network options`,
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Computed:    true,
+		},
+
+		"origin_type": {
+			Description: `origin of object`,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Computed:    true,
+		},
+
+		"parent_detail": {
+			Description: `origin and parent related details`,
+			Type:        schema.TypeList, //GoType: ObjectParentDetail
+			Elem: &schema.Resource{
+				Schema: ObjectParentDetail(),
+			},
+			Optional: true,
+			Computed: true,
+		},
+
+		"project_access_list": {
+			Description: `project access list of the app bundle`,
+			Type:        schema.TypeList, //GoType: []string
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
+		},
+
+		"revision": {
+			Description: `system defined info`,
+			Type:        schema.TypeList, //GoType: ObjectRevision
+			Elem: &schema.Resource{
+				Schema: ObjectRevision(),
+			},
+			Computed: true,
+		},
+
+		"storage": {
+			Description: `user defined storage for bundle`,
+			Type:        schema.TypeInt,
+			Computed:    true,
+		},
+
+		"title": {
+			Description: `User defined title of the edge application. Title can be changed at any time`,
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+
+		"user_defined_version": {
+			Description: `User defined version for the given edge-app`,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Computed:    true,
+		},
+
+		"app_inst_count": {
+			Description:      `App instance count`,
+			Type:             schema.TypeInt,
+			Optional:         true,
+			DiffSuppressFunc: diffSupressStringNonConfigChanges("app_inst_count"),
+		},
+
+		"datastore_id_list": {
+			Description: `List of datastore ids containing private registry credential`,
+			Type:        schema.TypeList, //GoType: []string
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
+		},
+	}
+}
+
+// Retrieve property field names for updating the App resource
+func GetApplicationPropertyFields() (t []string) {
+	return []string{
+		"cpus",
+		"description",
+		"id",
+		"is_imported",
+		"manifest",
+		"memory",
+		"name",
+		"networks",
+		"origin_type",
+		"parent_detail",
+		"project_access_list",
+		"revision",
+		"storage",
+		"title",
+		"user_defined_version",
+		"app_inst_count",
+		"datastore_id_list",
+	}
+}
