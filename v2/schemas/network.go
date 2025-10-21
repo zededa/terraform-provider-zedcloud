@@ -1,9 +1,12 @@
 package schemas
 
 import (
+	"reflect"
+	"slices"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
-	"golang.org/x/exp/slices"
 )
 
 func NetworkModel(d *schema.ResourceData) *models.Network {
@@ -21,8 +24,10 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 			if v == nil {
 				continue
 			}
-			m := StaticDNSListModelFromMap(v.(map[string]interface{}))
-			dNSList = append(dNSList, m)
+			if dns, ok := v.(map[string]interface{}); ok {
+				m := StaticDNSListModelFromMap(dns)
+				dNSList = append(dNSList, m)
+			}
 		}
 	}
 	enterpriseDefault, _ := d.Get("enterprise_default").(bool)
@@ -49,8 +54,10 @@ func NetworkModel(d *schema.ResourceData) *models.Network {
 	proxyInterface, proxyIsSet := d.GetOk("proxy")
 	if proxyIsSet && proxyInterface != nil {
 		proxyMap := proxyInterface.([]interface{})
-		if len(proxyMap) > 0 {
-			proxy = NetworkProxyModelFromMap(proxyMap[0].(map[string]interface{}))
+		if len(proxyMap) > 0 && proxyMap[0] != nil {
+			if p, ok := proxyMap[0].(map[string]interface{}); ok {
+				proxy = NetworkProxyModelFromMap(p)
+			}
 		}
 	}
 	var revision *models.ObjectRevision // ObjectRevision
@@ -129,9 +136,11 @@ func NetworkModelFromMap(m map[string]interface{}) *models.Network {
 	var proxy *models.Proxy // NetProxyConfig
 	proxyInterface, proxyIsSet := m["proxy"]
 	if proxyIsSet && proxyInterface != nil {
-		proxyMap := proxyInterface.([]interface{})
-		if len(proxyMap) > 0 {
-			proxy = NetworkProxyModelFromMap(proxyMap[0].(map[string]interface{}))
+		proxyList := proxyInterface.([]interface{})
+		if len(proxyList) > 0 {
+			if proxyMap, ok := proxyList[0].(map[string]interface{}); ok {
+				proxy = NetworkProxyModelFromMap(proxyMap)
+			}
 		}
 	}
 	//
@@ -427,4 +436,168 @@ func CompareProxyLists(a, b []*models.Proxy) bool {
 		}
 	}
 	return true
+}
+
+func CompareIPSpecs(x, y *models.IPSpec) bool {
+	if x == nil && y == nil {
+		return true
+	}
+
+	if x == nil || y == nil {
+		return false
+	}
+
+	if x.Dhcp != nil && y.Dhcp != nil {
+		if *x.Dhcp != *y.Dhcp {
+			return false
+		}
+	} else if x.Dhcp != y.Dhcp {
+		return false
+	}
+
+	// Compare DNS slice
+	if len(x.DNS) != len(y.DNS) {
+		return false
+	}
+	xDNS := make([]string, len(x.DNS))
+	yDNS := make([]string, len(y.DNS))
+	copy(xDNS, x.DNS)
+	copy(yDNS, y.DNS)
+	slices.Sort(xDNS)
+	slices.Sort(yDNS)
+	if !Equal(xDNS, yDNS) {
+		return false
+	}
+
+	if x.Domain != y.Domain {
+		return false
+	}
+	if x.Gateway != y.Gateway {
+		return false
+	}
+	if x.Mask != y.Mask {
+		return false
+	}
+	if x.Ntp != y.Ntp {
+		return false
+	}
+	if x.Subnet != y.Subnet {
+		return false
+	}
+
+	return true
+}
+
+func CompareWirelessConfigs(x, y *models.Wireless) bool {
+	if x == nil && y == nil {
+		return true
+	}
+
+	if x == nil || y == nil {
+		return false
+	}
+
+	return reflect.DeepEqual(x, y)
+}
+
+func CompareNetworks(x, y *models.Network) bool {
+	if x == nil && y == nil {
+		return true
+	}
+
+	if x == nil || y == nil {
+		return false
+	}
+
+	// Compare simple fields
+	if x.Description != y.Description {
+		return false
+	}
+	// Compare DNSList
+	if !CompareDNSLists(x.DNSList, y.DNSList) {
+		return false
+	}
+
+	if x.EnterpriseDefault != y.EnterpriseDefault {
+		return false
+	}
+
+	if !CompareIPSpecs(x.IP, y.IP) {
+		return false
+	}
+
+	if x.Kind != nil && y.Kind != nil {
+		if *x.Kind != *y.Kind {
+			return false
+		}
+	} else if x.Kind != y.Kind {
+		return false
+	}
+
+	if x.Mtu != y.Mtu {
+		return false
+	}
+
+	// Compare pointer fields, treating nil and empty string as equal
+	if !compareStringPointers(x.Name, y.Name) {
+		return false
+	}
+
+	if !compareStringPointers(x.ProjectID, y.ProjectID) {
+		return false
+	}
+
+	// Compare Proxy
+	if x.Proxy != nil && y.Proxy != nil {
+		if !CompareProxyLists([]*models.Proxy{x.Proxy}, []*models.Proxy{y.Proxy}) {
+			return false
+		}
+	} else if x.Proxy != y.Proxy {
+		return false
+	}
+
+	// Compare Revision
+	if x.Revision != nil && y.Revision != nil {
+		if !reflect.DeepEqual(x.Revision, y.Revision) {
+			return false
+		}
+	}
+
+	if !compareStringPointers(x.Title, y.Title) {
+		return false
+	}
+
+	// Basic comparison - could be extended for deep wireless comparison
+	if !CompareWirelessConfigs(x.Wireless, y.Wireless) {
+		return false
+	}
+
+	return true
+}
+
+func CompareNetworksList(a, b []*models.Network) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	// Sort both slices by Name (which is required)
+	slices.SortFunc(a, func(i, j *models.Network) int {
+		if i.Name != nil && j.Name != nil {
+			return strings.Compare(strings.ToLower(*i.Name), strings.ToLower(*j.Name))
+		}
+		return 0
+	})
+
+	slices.SortFunc(b, func(i, j *models.Network) int {
+		if i.Name != nil && j.Name != nil {
+			return strings.Compare(strings.ToLower(*i.Name), strings.ToLower(*j.Name))
+		}
+		return 0
+	})
+
+	// Compare each network
+	equal := slices.EqualFunc(a, b, func(x, y *models.Network) bool {
+		return CompareNetworks(x, y)
+	})
+	return equal
 }

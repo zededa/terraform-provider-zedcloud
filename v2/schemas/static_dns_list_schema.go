@@ -1,9 +1,11 @@
 package schemas
 
 import (
+	"slices"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
-	"golang.org/x/exp/slices"
 )
 
 func StaticDNSListModel(d *schema.ResourceData) *models.StaticDNSList {
@@ -60,7 +62,7 @@ func SetStaticDNSListResourceData(d *schema.ResourceData, m *models.StaticDNSLis
 }
 
 func SetStaticDNSListSubResourceData(m []*models.StaticDNSList) []*map[string]interface{} {
-	result := make([]*map[string]interface{}, 0, len(m))
+	result := []*map[string]interface{}{}
 	for _, StaticDNSListModel := range m {
 		if StaticDNSListModel != nil {
 			properties := make(map[string]interface{})
@@ -98,59 +100,31 @@ func GetStaticDNSListPropertyFields() (t []string) {
 	}
 }
 
-func CompareDNSLists(a, b []*models.StaticDNSList) bool {
-	// is each element of the new list in the old list?
-	for _, newList := range b {
-		if newList == nil {
-			continue
-		}
-
-		found := false
-		for _, oldList := range a {
-			if oldList == nil {
-				continue
-			}
-
-			if oldList.Hostname != newList.Hostname {
-				continue
-			}
-			slices.Sort(oldList.Addrs)
-			slices.Sort(newList.Addrs)
-			if !Equal(oldList.Addrs, newList.Addrs) {
-				continue
-			}
-			found = true
-		}
-		if !found {
-			return false
-		}
+func CompareDNSLists(x, y []*models.StaticDNSList) bool {
+	if len(x) != len(y) {
+		return false
 	}
 
-	// is each element of the old list also in the new list?
-	for _, oldList := range a {
-		if oldList == nil {
-			continue
-		}
+	// Sort both slices by Name (which is required)
+	slices.SortFunc(x, func(i, j *models.StaticDNSList) int {
+		return strings.Compare(strings.ToLower(i.Hostname), strings.ToLower(j.Hostname))
+	})
 
-		found := false
-		for _, newList := range b {
-			if newList == nil {
-				continue
-			}
-			if oldList.Hostname != newList.Hostname {
-				continue
-			}
-			slices.Sort(oldList.Addrs)
-			slices.Sort(newList.Addrs)
-			if !Equal(oldList.Addrs, newList.Addrs) {
-				continue
-			}
-			found = true
-		}
-		if !found {
+	slices.SortFunc(y, func(i, j *models.StaticDNSList) int {
+		return strings.Compare(strings.ToLower(i.Hostname), strings.ToLower(j.Hostname))
+	})
+
+	// Compare each StaticDNSList
+	equal := slices.EqualFunc(x, y, func(a, b *models.StaticDNSList) bool {
+		if a.Hostname != b.Hostname {
 			return false
 		}
-	}
-
-	return true
+		slices.Sort(a.Addrs)
+		slices.Sort(b.Addrs)
+		if !Equal(a.Addrs, b.Addrs) {
+			return false
+		}
+		return true
+	})
+	return equal
 }

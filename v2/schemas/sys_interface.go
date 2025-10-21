@@ -1,6 +1,8 @@
 package schemas
 
 import (
+	"fmt"
+	"log"
 	"reflect"
 	"slices"
 	"strings"
@@ -42,7 +44,7 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	netid, _ := d.Get("netid").(string)
 	netname, _ := d.Get("netname").(string)
 	var sharedLabels []string
-	sharedLabelsInterface, sharedLabelsIsSet := d.GetOk("sharedLabels")
+	sharedLabelsInterface, sharedLabelsIsSet := d.GetOk("shared_labels")
 	if sharedLabelsIsSet {
 		var items []interface{}
 		if listItems, isList := sharedLabelsInterface.([]interface{}); isList {
@@ -92,6 +94,7 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	if adapterSpecificNetIsSet && adapterSpecificNetInterface != nil {
 		adapterSpecificNetMap := adapterSpecificNetInterface.([]interface{})
 		if len(adapterSpecificNetMap) > 0 {
+			log.Printf("adapter specific map: %+v", adapterSpecificNetMap)
 			adapterSpecificNet = NetworkModelFromMap(adapterSpecificNetMap[0].(map[string]interface{}))
 		}
 	}
@@ -113,13 +116,13 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	if netDhcpIsSet {
 		netDhcpModel := netDhcpInterface.(string)
 		if netDhcpModel != "" {
-			netDhcp = models.NewNetworkDHCPType(models.NetworkDHCPType(netDhcpModel))
+			netDhcp = models.NetworkDHCPType(netDhcpModel).Pointer()
 		}
 	}
 	netid := m["netid"].(string)
 	netname := m["netname"].(string)
-	sharedLabels := []string{}
-	sharedLabelsInterface, sharedLabelsIsSet := m["sharedLabels"]
+	var sharedLabels []string
+	sharedLabelsInterface, sharedLabelsIsSet := m["shared_labels"]
 	if sharedLabelsIsSet {
 		var items []interface{}
 		if listItems, isList := sharedLabelsInterface.([]interface{}); isList {
@@ -218,7 +221,7 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 		},
 
 		"intf_usage": {
-			Description: `Adapter Udage`,
+			Description: `Adapter Usage`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -304,9 +307,9 @@ func GetSysInterfacePropertyFields() (t []string) {
 	}
 }
 
-func CompareSystemInterfaceList(a, b []*models.SysInterface) bool {
+func CompareSystemInterfaceList(a, b []*models.SysInterface) (bool, string) {
 	if len(a) != len(b) {
-		return false
+		return false, fmt.Sprintf("interfaces length mismatch: %d vs %d", len(a), len(b))
 	}
 
 	slices.SortFunc(a, func(i, j *models.SysInterface) int {
@@ -323,58 +326,78 @@ func CompareSystemInterfaceList(a, b []*models.SysInterface) bool {
 		return strings.Compare(strings.ToLower(string(*i.IntfUsage)), strings.ToLower(string(*j.IntfUsage)))
 	})
 
+	reason := ""
 	equal := slices.EqualFunc(a, b, func(x, y *models.SysInterface) bool {
 		if x.Cost != y.Cost {
+			reason = fmt.Sprintf("Cost mismatch: %d vs %d", x.Cost, y.Cost)
 			return false
 		}
 		if x.IntfUsage != nil && y.IntfUsage != nil {
 			if *x.IntfUsage != *y.IntfUsage {
+				reason = fmt.Sprintf("IntfUsage mismatch: %s vs %s", *x.IntfUsage, *y.IntfUsage)
 				return false
 			}
 		} else if x.IntfUsage != y.IntfUsage { // one of them is nil
+			reason = fmt.Sprintf("IntfUsage mismatch: %v vs %v", x.IntfUsage, y.IntfUsage)
 			return false
 		}
 		if x.Intfname != y.Intfname {
+			reason = fmt.Sprintf("Intfname mismatch: %s vs %s", x.Intfname, y.Intfname)
 			return false
 		}
 		if x.Ipaddr != y.Ipaddr {
+			reason = fmt.Sprintf("Ipaddr mismatch: %s vs %s", x.Ipaddr, y.Ipaddr)
 			return false
 		}
 		if x.Macaddr != y.Macaddr {
+			reason = fmt.Sprintf("Macaddr mismatch: %s vs %s", x.Macaddr, y.Macaddr)
 			return false
 		}
 		if x.Netname != y.Netname {
+			reason = fmt.Sprintf("Netname mismatch: %s vs %s", x.Netname, y.Netname)
 			return false
 		}
-		if x.Netid != y.Netid {
-			return false
-		}
+
 		if x.NetDhcp != nil && y.NetDhcp != nil {
 			if *x.NetDhcp != *y.NetDhcp {
+				reason = fmt.Sprintf("NetDhcp mismatch: %s vs %s", *x.NetDhcp, *y.NetDhcp)
 				return false
 			}
 		} else if x.NetDhcp != y.NetDhcp { // one of them is nil
+			reason = fmt.Sprintf("NetDhcp mismatch: %v vs %v", x.NetDhcp, y.NetDhcp)
 			return false
 		}
+
 		if x.Ztype != y.Ztype {
+			reason = fmt.Sprintf("Ztype mismatch: %s vs %s", x.Ztype, y.Ztype)
 			return false
 		}
 		// Compare Tags
 		if (x.Tags == nil && len(y.Tags) == 0) || (y.Tags == nil && len(x.Tags) == 0) {
 			// treat nil and empty map as equal
 		} else if !reflect.DeepEqual(x.Tags, y.Tags) {
+			reason = fmt.Sprintf("Tags mismatch: %v vs %v", x.Tags, y.Tags)
 			return false
 		}
 
 		if len(x.SharedLabels) != len(y.SharedLabels) {
+			reason = fmt.Sprintf("SharedLabels length mismatch: %d vs %d", len(x.SharedLabels), len(y.SharedLabels))
 			return false
 		}
 		slices.Sort(x.SharedLabels)
 		slices.Sort(y.SharedLabels)
 		if !reflect.DeepEqual(x.SharedLabels, y.SharedLabels) {
+			reason = fmt.Sprintf("SharedLabels mismatch: %v vs %v", x.SharedLabels, y.SharedLabels)
 			return false
 		}
+
+		// Compare AdapterSpecificNet
+		if !CompareNetworks(x.AdapterSpecificNet, y.AdapterSpecificNet) {
+			reason = fmt.Sprintf("AdapterSpecificNet mismatch: %v vs %v", x.AdapterSpecificNet, y.AdapterSpecificNet)
+			return false
+		}
+
 		return true
 	})
-	return equal
+	return equal, reason
 }

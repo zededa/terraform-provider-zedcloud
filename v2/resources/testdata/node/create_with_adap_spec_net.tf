@@ -92,47 +92,69 @@ resource "zedcloud_model" "test_tf_provider" {
 	]
 }
 
-resource "zedcloud_edgenode" "test_tf_provider" {
+resource "zedcloud_network" "test_tf_adapter_spec_network" {
+    depends_on = [
+        zedcloud_project.test_tf_provider
+    ]
+    name = "test_tf_adapter_spec_network"
+    title = "adapter specific network"
+    project_id = zedcloud_project.test_tf_provider.id
+    ip {
+        dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+    }
+}
+
+resource "zedcloud_edgenode" "test_tf_dev_adap_spec_net" {
 	depends_on = [
 		zedcloud_project.test_tf_provider,
-		zedcloud_model.test_tf_provider
+		zedcloud_model.test_tf_provider,
+		zedcloud_network.test_tf_adapter_spec_network
 	]
-	name = "test_tf_provider"
+	name = "test_tf_dev_adap_spec_net"
 	model_id = zedcloud_model.test_tf_provider.id
 	project_id = zedcloud_project.test_tf_provider.id
-	title = "test_tf_provider-title"
-
+	title = "test_tf_dev_adap_spec_net"
 	# optional
 	onboarding_key = ""
-	serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b"
-	admin_state = "ADMIN_STATE_INACTIVE"
+	serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45c"
+	admin_state = "ADMIN_STATE_ACTIVE"
 	asset_id = "asset_id"
-	deployment_tag = "depl_tag_update"
-	description = "description_update"
+	deployment_tag = "depl_tag"
+	description = "description"
 	generate_soft_serial = false
-	token = "token_update"
+	token = "token_all"
 	site_pictures = []
 	interfaces {
 		cost = 255
 		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
-		intfname = "defaultIPv4"
-		ipaddr = "127.0.0.1"
-		macaddr = "00:00:00:00:00:00"
-		tags = {
-			"system_interface_1_key" = "system_interface_1_value"
-			"system_interface_2_key" = "system_interface_2_value"
-		}
-	}
-	interfaces {
 		intfname = "eth0"
-		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		netname = zedcloud_network.test_tf_adapter_spec_network.name
+		netid = zedcloud_network.test_tf_adapter_spec_network.id
+        net_dhcp = zedcloud_network.test_tf_adapter_spec_network.ip[0].dhcp
+		adapter_specific_net {
+			kind = "NETWORK_KIND_V4"
+			dns_list {}
+			proxy {}
+			ip {
+				dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
+				subnet = "10.1.1.0/24"
+				gateway = "10.1.1.1"
+				dns = ["10.1.1.1", "8.8.8.8"]
+			}
+		}
+		shared_labels = [ "label1", "label2" ]
+		ipaddr = "10.1.1.3"
+		tags = {
+		  "system_interface_1_key": "system_interface_1_value",
+          "system_interface_2_key": "system_interface_2_value"
+		}
 	}
 
 	config_item {
-		bool_value = false
+		bool_value = true
 		float_value = 1.0
 		key = "key"
-		string_value = "string_update"
+		string_value = "string"
 		uint32_value = 32
 		uint64_value = 64
 		value_type = "value type"
@@ -153,6 +175,5 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 	tags = {
 		"tag-key-1" = "tag-value-1"
 		"tag-key-2" = "tag-value-2"
-		"tag-key-2_update" = "tag-value-2_update"
 	}
 }

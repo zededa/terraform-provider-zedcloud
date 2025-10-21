@@ -661,11 +661,11 @@ func Node() map[string]*schema.Schema {
 		},
 
 		"interfaces": {
-			Description:      `System Interface list`,
-			Type:             schema.TypeSet, //GoType: []*SysInterface
-			Elem:             systemInterfaceElem(),
-			Required:         true,
-			Set:              schema.HashResource(systemInterfaceElem()),
+			Description: `System Interface list`,
+			Type:        schema.TypeList, //GoType: []*SysInterface
+			Elem:        systemInterfaceElem(),
+			Required:    true,
+			// Set:              schema.HashResource(systemInterfaceElem()),
 			DiffSuppressFunc: diffSuppressSystemInterfaceListOrder("interfaces"),
 		},
 

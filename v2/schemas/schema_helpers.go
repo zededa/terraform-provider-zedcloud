@@ -2,6 +2,7 @@ package schemas
 
 import (
 	"fmt"
+	"log"
 	"slices"
 	"strings"
 
@@ -69,13 +70,19 @@ func diffSuppressDNSListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 			return false
 		}
 
-		oldMapList := make([]*models.StaticDNSList, len(o))
-		for i, m := range o {
-			oldMapList[i] = StaticDNSListModelFromMap(m.(map[string]interface{}))
+		var oldMapList []*models.StaticDNSList
+		for _, m := range o {
+			if m == nil {
+				continue
+			}
+			oldMapList = append(oldMapList, StaticDNSListModelFromMap(m.(map[string]interface{})))
 		}
-		newMapList := make([]*models.StaticDNSList, len(o))
-		for i, m := range o {
-			newMapList[i] = StaticDNSListModelFromMap(m.(map[string]interface{}))
+		var newMapList []*models.StaticDNSList
+		for _, m := range n {
+			if m == nil {
+				continue
+			}
+			newMapList = append(newMapList, StaticDNSListModelFromMap(m.(map[string]interface{})))
 		}
 
 		return CompareDNSLists(oldMapList, newMapList)
@@ -96,19 +103,25 @@ func diffSuppressProxyListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 			return false
 		}
 
-		o := oldData.([]interface{})
-		n := newData.([]interface{})
-		if len(o) != len(n) {
+		old := oldData.([]interface{})
+		new := newData.([]interface{})
+		if len(old) != len(new) {
 			return false
 		}
 
-		oldMapList := make([]*models.Proxy, len(o))
-		for i, m := range o {
-			oldMapList[i] = NetworkProxyModelFromMap(m.(map[string]interface{}))
+		var oldMapList []*models.Proxy
+		for _, m := range old {
+			if m == nil {
+				continue
+			}
+			oldMapList = append(oldMapList, NetworkProxyModelFromMap(m.(map[string]interface{})))
 		}
-		newMapList := make([]*models.Proxy, len(o))
-		for i, m := range o {
-			newMapList[i] = NetworkProxyModelFromMap(m.(map[string]interface{}))
+		var newMapList []*models.Proxy
+		for _, m := range new {
+			if m == nil {
+				continue
+			}
+			newMapList = append(newMapList, NetworkProxyModelFromMap(m.(map[string]interface{})))
 		}
 
 		return CompareProxyLists(oldMapList, newMapList)
@@ -129,22 +142,36 @@ func diffSuppressSystemInterfaceListOrder(mapKey string) schema.SchemaDiffSuppre
 			return false
 		}
 
-		o := oldData.(*schema.Set).List()
-		n := newData.(*schema.Set).List()
-		if len(o) != len(n) {
+		old := oldData.([]interface{})
+		new := newData.([]interface{})
+		if len(old) != len(new) {
 			return false
 		}
 
-		oldMapList := make([]*models.SysInterface, len(o))
-		for i, m := range o {
-			oldMapList[i] = SysInterfaceModelFromMap(m.(map[string]interface{}))
+		var oldMapList []*models.SysInterface
+		for _, o := range old {
+			if o == nil {
+				continue
+			}
+			if oldElem, ok := o.(map[string]interface{}); ok {
+				oldMapList = append(oldMapList, SysInterfaceModelFromMap(oldElem))
+			}
 		}
-		newMapList := make([]*models.SysInterface, len(o))
-		for i, m := range o {
-			newMapList[i] = SysInterfaceModelFromMap(m.(map[string]interface{}))
+		var newMapList []*models.SysInterface
+		for _, n := range new {
+			if n == nil {
+				continue
+			}
+			if newElem, ok := n.(map[string]interface{}); ok {
+				newMapList = append(newMapList, SysInterfaceModelFromMap(newElem))
+			}
 		}
 
-		return CompareSystemInterfaceList(oldMapList, newMapList)
+		interfaceMissmatch, reason := CompareSystemInterfaceList(oldMapList, newMapList)
+		if interfaceMissmatch {
+			log.Printf("SystemInterface list mismatch: %s\n", reason)
+		}
+		return interfaceMissmatch
 	}
 }
 
@@ -440,4 +467,19 @@ func Equal(a, b []string) bool {
 		}
 	}
 	return true
+}
+
+// compareStringPointers compares two string pointers for equality.
+// if both are nil, they are equal.
+// if one is nil and the other is empty string, they are equal.
+// otherwise, compare the string values.
+func compareStringPointers(x, y *string) bool {
+	// normalize converts nil pointer to empty string
+	normalize := func(s *string) string {
+		if s == nil {
+			return ""
+		}
+		return *s
+	}
+	return normalize(x) == normalize(y)
 }

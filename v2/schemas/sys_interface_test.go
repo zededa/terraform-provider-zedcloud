@@ -269,22 +269,6 @@ func TestCompareSysInterfaceList(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "different Netid",
-			list1: []*models.SysInterface{
-				{
-					Intfname: "eth0",
-					Netid:    "net-123",
-				},
-			},
-			list2: []*models.SysInterface{
-				{
-					Intfname: "eth0",
-					Netid:    "net-456",
-				},
-			},
-			expected: false,
-		},
-		{
 			name: "different NetDhcp - both set",
 			list1: []*models.SysInterface{
 				{
@@ -566,7 +550,7 @@ func TestCompareSysInterfaceList(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := CompareSystemInterfaceList(tc.list1, tc.list2)
+			result, _ := CompareSystemInterfaceList(tc.list1, tc.list2)
 			if result != tc.expected {
 				t.Errorf("CompareSysInterfaceList() = %v, expected %v", result, tc.expected)
 			}

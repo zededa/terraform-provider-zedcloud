@@ -38,28 +38,30 @@ identity: ""
 interfaces:
     - cost: 255
       intfusage: ADAPTER_USAGE_MANAGEMENT
-      intfname: defaultIPv4
-      ipaddr: 127.0.0.1
-      macaddr: "00:00:00:00:00:00"
-      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
-      sharedlabels: [label1, label2]
-      netname: ""
+      intfname: eth0
+      ipaddr: 10.1.1.3
+      macaddr: ""
+      netdhcp: NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC
+      sharedlabels:
+        - label1
+      netname: "test_tf_adapter_spec_network"
       tags:
         system_interface_1_key: system_interface_1_value
         system_interface_2_key: system_interface_2_value
-    - cost: 0
-      intfusage: ADAPTER_USAGE_UNSPECIFIED
-      intfname: eth0
-      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
-      ipaddr: ""
-      macaddr: ""
-      netname: ""
-      tags: {}
-      sharedlabels: []
+      adapterspecificnet:
+        kind: NETWORK_KIND_V4
+        ip:
+          dhcp: NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC
+          subnet: 10.1.1.0/24
+          gateway: 10.1.1.1
+          dns:
+            - 10.1.1.1
+            - 8.8.8.8
+            - 7.7.7.7
 location: ""
 memory: 0
 modelid: 2f716b55-2639-486c-9a2f-55a2e94146a6
-name: test_tf_provider
+name: test_tf_dev_adap_spec_net
 obkey: ""
 onboarding: null
 preparepoweroffcounter: 0
@@ -68,13 +70,13 @@ projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 resetcounter: 0
 resettime: ""
 revision: null
-serialno: d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b
+serialno: d6aebfa5-56b6-4b66-9d8e-6552b0e2b45c
 sitepictures: []
 storage: 0
 tags:
     tag-key-1: tag-value-1
     tag-key-2: tag-value-2
 thread: 0
-title: test_tf_provider-title
+title: test_tf_dev_adap_spec_net
 token: token_all
 utype: null
