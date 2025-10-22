@@ -70,7 +70,7 @@ type ClientService interface {
 
 	UpdateBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOSOK, error)
 
-	PublishBaseOSParams(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS2OK, error)
+	PublishBaseOSParams(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOSOK, error)
 
 	EdgeNodeConfigurationUpdateEdgeNodeBaseOS3(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK, error)
 
