@@ -12,6 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 // PublishBaseOSParams creates a new EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params object,
@@ -64,6 +65,9 @@ type EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params struct {
 	   User-Agent specified id to track a request
 	*/
 	XRequestID *string
+
+	// Body.
+	Body *models.Node
 
 	/* ID.
 
@@ -135,6 +139,17 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params) SetXRequestID(xReques
 	o.XRequestID = xRequestID
 }
 
+// WithBody adds the body to the edge node configuration update edge node base o s2 params
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params) WithBody(body *models.Node) *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params {
+	o.SetBody(body)
+	return o
+}
+
+// SetBody adds the body to the edge node configuration update edge node base o s2 params
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params) SetBody(body *models.Node) {
+	o.Body = body
+}
+
 // WithID adds the id to the edge node configuration update edge node base o s2 params
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params) WithID(id string) *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params {
 	o.SetID(id)
@@ -160,6 +175,9 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params) WriteToRequest(r runt
 		if err := r.SetHeaderParam("X-Request-Id", *o.XRequestID); err != nil {
 			return err
 		}
+	}
+	if err := r.SetBodyParam(o.Body); err != nil {
+		return err
 	}
 
 	// path param id

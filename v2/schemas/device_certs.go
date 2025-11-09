@@ -19,8 +19,21 @@ func DeviceCertsModel(d *schema.ResourceData) *models.DeviceCerts {
 }
 
 func DeviceCertsModelFromMap(m map[string]interface{}) *models.DeviceCerts {
-	pemCert := m["pem_cert"].(strfmt.Base64)
-	pemKey := m["pem_key"].(strfmt.Base64)
+	var pemCert strfmt.Base64
+	switch m["pem_cert"].(type) {
+	case strfmt.Base64:
+		pemCert = m["pem_cert"].(strfmt.Base64)
+	default:
+		pemCert = strfmt.Base64(m["pem_cert"].(string))
+	}
+	var pemKey strfmt.Base64
+	switch m["pem_key"].(type) {
+	case strfmt.Base64:
+		pemKey = m["pem_key"].(strfmt.Base64)
+	default:
+		pemKey = strfmt.Base64(m["pem_key"].(string))
+	}
+
 	return &models.DeviceCerts{
 		PemCert: pemCert,
 		PemKey:  pemKey,

@@ -12,15 +12,16 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
-// NewEdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params creates a new EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params object,
+// UnpublishBaseOSParams creates a new EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params object,
 // with the default timeout for this client.
 //
 // Default values are not hydrated, since defaults are normally applied by the API server side.
 //
 // To enforce default values in parameter, use SetDefaults or WithDefaults.
-func NewEdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params() *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params {
+func UnpublishBaseOSParams() *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params {
 	return &EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params{
 		timeout: cr.DefaultTimeout,
 	}
@@ -64,6 +65,9 @@ type EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params struct {
 	   User-Agent specified id to track a request
 	*/
 	XRequestID *string
+
+	// Body.
+	Body *models.Node
 
 	/* ID.
 
@@ -135,6 +139,17 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params) SetXRequestID(xReques
 	o.XRequestID = xRequestID
 }
 
+// WithBody adds the body to the edge node configuration update edge node base o s3 params
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params) WithBody(body *models.Node) *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params {
+	o.SetBody(body)
+	return o
+}
+
+// SetBody adds the body to the edge node configuration update edge node base o s3 params
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params) SetBody(body *models.Node) {
+	o.Body = body
+}
+
 // WithID adds the id to the edge node configuration update edge node base o s3 params
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params) WithID(id string) *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params {
 	o.SetID(id)
@@ -160,6 +175,9 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params) WriteToRequest(r runt
 		if err := r.SetHeaderParam("X-Request-Id", *o.XRequestID); err != nil {
 			return err
 		}
+	}
+	if err := r.SetBodyParam(o.Body); err != nil {
+		return err
 	}
 
 	// path param id

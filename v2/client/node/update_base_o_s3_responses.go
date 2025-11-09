@@ -114,6 +114,11 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK) IsCode(code int) bool {
 	return code == 200
 }
 
+// Code gets the status code for the edge node configuration update edge node base o s3 o k response
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK) Code() int {
+	return 200
+}
+
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK) Error() string {
 	return fmt.Sprintf("[PUT /v1/devices/id/{id}/unpublish][%d] edgeNodeConfigurationUpdateEdgeNodeBaseOS3OK  %+v", 200, o.Payload)
 }
@@ -175,6 +180,11 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Unauthorized) IsServerError()
 // IsCode returns true when this edge node configuration update edge node base o s3 unauthorized response a status code equal to that given
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Unauthorized) IsCode(code int) bool {
 	return code == 401
+}
+
+// Code gets the status code for the edge node configuration update edge node base o s3 unauthorized response
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Unauthorized) Code() int {
+	return 401
 }
 
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Unauthorized) Error() string {
@@ -240,6 +250,11 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Forbidden) IsCode(code int) b
 	return code == 403
 }
 
+// Code gets the status code for the edge node configuration update edge node base o s3 forbidden response
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Forbidden) Code() int {
+	return 403
+}
+
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Forbidden) Error() string {
 	return fmt.Sprintf("[PUT /v1/devices/id/{id}/unpublish][%d] edgeNodeConfigurationUpdateEdgeNodeBaseOS3Forbidden  %+v", 403, o.Payload)
 }
@@ -301,6 +316,11 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3NotFound) IsServerError() boo
 // IsCode returns true when this edge node configuration update edge node base o s3 not found response a status code equal to that given
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3NotFound) IsCode(code int) bool {
 	return code == 404
+}
+
+// Code gets the status code for the edge node configuration update edge node base o s3 not found response
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3NotFound) Code() int {
+	return 404
 }
 
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3NotFound) Error() string {
@@ -366,6 +386,11 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Conflict) IsCode(code int) bo
 	return code == 409
 }
 
+// Code gets the status code for the edge node configuration update edge node base o s3 conflict response
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Conflict) Code() int {
+	return 409
+}
+
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Conflict) Error() string {
 	return fmt.Sprintf("[PUT /v1/devices/id/{id}/unpublish][%d] edgeNodeConfigurationUpdateEdgeNodeBaseOS3Conflict  %+v", 409, o.Payload)
 }
@@ -427,6 +452,11 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3InternalServerError) IsServer
 // IsCode returns true when this edge node configuration update edge node base o s3 internal server error response a status code equal to that given
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3InternalServerError) IsCode(code int) bool {
 	return code == 500
+}
+
+// Code gets the status code for the edge node configuration update edge node base o s3 internal server error response
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3InternalServerError) Code() int {
+	return 500
 }
 
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3InternalServerError) Error() string {
@@ -492,6 +522,11 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3GatewayTimeout) IsCode(code i
 	return code == 504
 }
 
+// Code gets the status code for the edge node configuration update edge node base o s3 gateway timeout response
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3GatewayTimeout) Code() int {
+	return 504
+}
+
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3GatewayTimeout) Error() string {
 	return fmt.Sprintf("[PUT /v1/devices/id/{id}/unpublish][%d] edgeNodeConfigurationUpdateEdgeNodeBaseOS3GatewayTimeout  %+v", 504, o.Payload)
 }
@@ -534,11 +569,6 @@ type EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Default struct {
 	Payload *models.GooglerpcStatus
 }
 
-// Code gets the status code for the edge node configuration update edge node base o s3 default response
-func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Default) Code() int {
-	return o._statusCode
-}
-
 // IsSuccess returns true when this edge node configuration update edge node base o s3 default response has a 2xx status code
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Default) IsSuccess() bool {
 	return o._statusCode/100 == 2
@@ -562,6 +592,11 @@ func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Default) IsServerError() bool
 // IsCode returns true when this edge node configuration update edge node base o s3 default response a status code equal to that given
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Default) IsCode(code int) bool {
 	return o._statusCode == code
+}
+
+// Code gets the status code for the edge node configuration update edge node base o s3 default response
+func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Default) Code() int {
+	return o._statusCode
 }
 
 func (o *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Default) Error() string {

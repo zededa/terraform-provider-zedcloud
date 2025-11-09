@@ -40,9 +40,9 @@ func NodeDataSource() *schema.Resource {
 func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	model := zschema.NodeModel(d)
+	newNode := zschema.NodeModel(d)
 	params := config.CreateParams()
-	params.SetBody(model)
+	params.SetBody(newNode)
 
 	client := m.(*api_client.ZedcloudAPI)
 
@@ -73,30 +73,41 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		}
 	}
 
-	// due to api design, we need to fetch the newly created edge-node/edgeNode-config
-	edgeNode, diags := readNodeByName(ctx, d, m)
+	// Fetch the newly created node
+	createdNode, diags := readNodeByName(ctx, d, m)
 	if diags.HasError() {
 		return diags
 	}
-	// publish the api response to local state and the d instance
-	zschema.SetNodeResourceData(d, edgeNode)
-	d.SetId(edgeNode.ID)
 
-	// to set base-image the api requires separate requests
-	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, edgeNode.BaseImage); diags.HasError() {
+	// Set ID so subsequent operations can use it
+	d.SetId(createdNode.ID)
+
+	// Check if base image needs to be published and applied
+	if len(newNode.BaseImage) > 0 {
+		// For creation, always publish and apply if base image is specified
+		if diags := publishBaseOS(ctx, d, client, newNode); len(diags) > 0 {
+			return diags
+		}
+		if diags := applyBaseOS(ctx, d, client, newNode); len(diags) > 0 {
+			return diags
+		}
+	}
+
+	// Check if admin state needs to be set
+	if newNode.AdminState != nil {
+		if diags := setAdminState(ctx, d, m, newNode.AdminState, createdNode.AdminState); len(diags) > 0 {
+			return diags
+		}
+	}
+
+	// Fetch latest node data and update state
+	finalNode, diags := readNodeByID(ctx, d, m)
+	if diags.HasError() {
 		return diags
 	}
 
-	// to set admin-state the api requires separate requests
-	if diags := setAdminState(ctx, d, m, params.Body.AdminState, edgeNode.AdminState); diags.HasError() {
-		return diags
-	}
-
-	// the zedcloud API does not return the partially updated object but a custom response.
-	// thus, we need to fetch the object and populate the state.
-	if diags := ReadNode(ctx, d, m); diags.HasError() {
-		return diags
-	}
+	zschema.SetNodeResourceData(d, finalNode)
+	d.SetId(finalNode.ID)
 
 	return diags
 }
@@ -124,6 +135,13 @@ func ReadNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.D
 func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	// Fetch existing node data
+	existingNode, diags := readNodeByID(ctx, d, m)
+	if diags.HasError() {
+		return diags
+	}
+
+	// Prepare update parameters
 	params := config.UpdateParams()
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -135,9 +153,10 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	} else {
 		return diag.Errorf("missing client parameter: id")
 	}
-	params.SetBody(zschema.NodeModel(d))
+	newNode := zschema.NodeModel(d)
+	params.SetBody(newNode)
 
-	// makes a bulk update for all properties that were changed
+	// Call node update
 	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Node.Update(params, nil)
 	if err != nil {
@@ -166,30 +185,57 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		}
 	}
 
-	// due to api design, we need to fetch the newly created edge-node/device-config
-	edgeNode, diags := readNodeByName(ctx, d, m)
+	// Check for base image changes
+	if len(newNode.BaseImage) > 0 {
+		hasBaseImageChange := false
+
+		if len(existingNode.BaseImage) == 0 {
+			hasBaseImageChange = true
+		} else if len(newNode.BaseImage) > 0 && len(existingNode.BaseImage) > 0 {
+			newVersion := newNode.BaseImage[0].Version
+			existingImageName := existingNode.BaseImage[0].ImageName
+			existingActivate := existingNode.BaseImage[0].Activate
+
+			if newVersion != nil && existingImageName != nil {
+				if *newVersion != *existingImageName {
+					hasBaseImageChange = true
+				} else if existingActivate != nil && !*existingActivate {
+					hasBaseImageChange = true
+				}
+			}
+		}
+
+		if hasBaseImageChange {
+			if diags := publishBaseOS(ctx, d, client, newNode); len(diags) > 0 {
+				return diags
+			}
+			if diags := applyBaseOS(ctx, d, client, newNode); len(diags) > 0 {
+				return diags
+			}
+		}
+	}
+
+	// Check for admin state changes
+	if newNode.AdminState != nil && existingNode.AdminState != nil {
+		if *newNode.AdminState != *existingNode.AdminState {
+			if diags := setAdminState(ctx, d, m, newNode.AdminState, existingNode.AdminState); len(diags) > 0 {
+				return diags
+			}
+		}
+	} else if newNode.AdminState != nil && existingNode.AdminState == nil {
+		if diags := setAdminState(ctx, d, m, newNode.AdminState, nil); len(diags) > 0 {
+			return diags
+		}
+	}
+
+	// Fetch latest node data and update state
+	updatedNode, diags := readNodeByID(ctx, d, m)
 	if diags.HasError() {
 		return diags
 	}
-	// publish the api response to local state and the d instance
-	zschema.SetNodeResourceData(d, edgeNode)
-	d.SetId(edgeNode.ID)
 
-	// to set base-image the api requires separate requests
-	if diags := setBaseImage(ctx, d, m, params.Body.BaseImage, edgeNode.BaseImage); len(diags) > 0 {
-		return diags
-	}
-
-	// to set admin-state the api requires separate requests
-	if diags := setAdminState(ctx, d, m, params.Body.AdminState, edgeNode.AdminState); len(diags) > 0 {
-		return diags
-	}
-
-	// the zedcloud API does not return the partially updated object but a custom response.
-	// thus, we need to fetch the object and populate the state.
-	if errs := ReadNode(ctx, d, m); err != nil {
-		return append(diags, errs...)
-	}
+	zschema.SetNodeResourceData(d, updatedNode)
+	d.SetId(updatedNode.ID)
 
 	return diags
 }
@@ -319,29 +365,18 @@ func deactivateNode(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	return diags
 }
 
-func applyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func applyBaseOS(ctx context.Context, d *schema.ResourceData, client *api_client.ZedcloudAPI, edgeNode *models.Node) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.UpdateBaseOSParams()
-
+	params.ID = edgeNode.ID
+	params.SetBody(edgeNode)
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-		return diags
-	}
-
-	// makes a bulk update for all properties that were changed
-	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Node.UpdateBaseOS(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
@@ -349,37 +384,36 @@ func applyBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		return diags
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	return diags
 }
 
-func publishBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func publishBaseOS(ctx context.Context,
+	d *schema.ResourceData,
+	client *api_client.ZedcloudAPI,
+	edgeNode *models.Node) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	params := config.PublishBaseOSParams()
-
+	params.ID = edgeNode.ID
+	params.SetBody(edgeNode)
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-		return diags
-	}
-
-	// makes a bulk update for all properties that were changed
-	client := m.(*api_client.ZedcloudAPI)
-	resp, err := client.Node.PublishBaseOSParams(params, nil)
-	log.Printf("[TRACE] response: %v", resp)
+	resp, err := client.Node.PublishBaseOS(params, nil)
 	if err != nil {
 		return append(diags, diag.Errorf("unexpected: %s", err)...)
 	}
@@ -387,9 +421,16 @@ func publishBaseOS(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	responseData := resp.GetPayload()
 	if responseData != nil && len(responseData.Error) > 0 {
 		for _, err := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
 			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
 		}
-		return diags
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	return diags
@@ -403,9 +444,10 @@ func setBaseImage(
 	ctx context.Context,
 	d *schema.ResourceData,
 	m interface{},
-	localImages, remoteImages []*models.BaseOSImage,
+	edgeNode *models.Node,
+	remoteImages []*models.BaseOSImage,
 ) diag.Diagnostics {
-
+	localImages := edgeNode.BaseImage
 	if len(localImages) == 0 {
 		return nil
 	}
@@ -440,10 +482,11 @@ func setBaseImage(
 		return nil
 	}
 
-	if diags := publishBaseOS(ctx, d, m); len(diags) != 0 {
+	client := m.(*api_client.ZedcloudAPI)
+	if diags := publishBaseOS(ctx, d, client, edgeNode); len(diags) != 0 {
 		return diags
 	}
-	if diags := applyBaseOS(ctx, d, m); len(diags) != 0 {
+	if diags := applyBaseOS(ctx, d, client, edgeNode); len(diags) != 0 {
 		return diags
 	}
 

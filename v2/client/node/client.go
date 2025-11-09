@@ -70,9 +70,9 @@ type ClientService interface {
 
 	UpdateBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOSOK, error)
 
-	PublishBaseOSParams(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOSOK, error)
+	PublishBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS2OK, error)
 
-	EdgeNodeConfigurationUpdateEdgeNodeBaseOS3(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK, error)
+	UnpublishBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -958,11 +958,11 @@ func (a *Client) UpdateBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOSP
 }
 
 /*
-PublishBaseOSParams updates e v e image on edge node
+PublishBaseOS updates e v e image on edge node
 
 Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.
 */
-func (a *Client) PublishBaseOSParams(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS2OK, error) {
+func (a *Client) PublishBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS2Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS2OK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
 		params = PublishBaseOSParams()
@@ -998,14 +998,14 @@ func (a *Client) PublishBaseOSParams(params *EdgeNodeConfigurationUpdateEdgeNode
 }
 
 /*
-EdgeNodeConfigurationUpdateEdgeNodeBaseOS3 updates e v e image on edge node
+UnpublishBaseOS updates e v e image on edge node
 
 Update EVE image on edge node, if edge node is already running the latest EVE image no action is taken.
 */
-func (a *Client) EdgeNodeConfigurationUpdateEdgeNodeBaseOS3(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK, error) {
+func (a *Client) UnpublishBaseOS(params *EdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*EdgeNodeConfigurationUpdateEdgeNodeBaseOS3OK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewEdgeNodeConfigurationUpdateEdgeNodeBaseOS3Params()
+		params = UnpublishBaseOSParams()
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "EdgeNodeConfiguration_UpdateEdgeNodeBaseOS3",
