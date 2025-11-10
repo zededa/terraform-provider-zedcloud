@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -48,6 +49,9 @@ type ClusterConfigSummary struct {
 
 	// Foreign key to the project
 	ProjectID string `json:"projectId,omitempty"`
+
+	// Project Name
+	ProjectName string `json:"projectName,omitempty"`
 
 	// Seed node id
 	SeedNodeID string `json:"seedNodeId,omitempty"`
@@ -103,11 +107,15 @@ func (m *ClusterConfigSummary) validateAdminState(formats strfmt.Registry) error
 
 	if m.AdminState != nil {
 		if err := m.AdminState.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("adminState")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("adminState")
 			}
+
 			return err
 		}
 	}
@@ -151,11 +159,15 @@ func (m *ClusterConfigSummary) validateNodes(formats strfmt.Registry) error {
 
 		if m.Nodes[i] != nil {
 			if err := m.Nodes[i].Validate(formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("nodes" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("nodes" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
@@ -208,11 +220,15 @@ func (m *ClusterConfigSummary) contextValidateAdminState(ctx context.Context, fo
 		}
 
 		if err := m.AdminState.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("adminState")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("adminState")
 			}
+
 			return err
 		}
 	}
@@ -222,7 +238,7 @@ func (m *ClusterConfigSummary) contextValidateAdminState(ctx context.Context, fo
 
 func (m *ClusterConfigSummary) contextValidateID(ctx context.Context, formats strfmt.Registry) error {
 
-	if err := validate.ReadOnly(ctx, "id", "body", string(m.ID)); err != nil {
+	if err := validate.ReadOnly(ctx, "id", "body", m.ID); err != nil {
 		return err
 	}
 
@@ -240,11 +256,15 @@ func (m *ClusterConfigSummary) contextValidateNodes(ctx context.Context, formats
 			}
 
 			if err := m.Nodes[i].ContextValidate(ctx, formats); err != nil {
-				if ve, ok := err.(*errors.Validation); ok {
+				ve := new(errors.Validation)
+				if stderrors.As(err, &ve) {
 					return ve.ValidateName("nodes" + "." + strconv.Itoa(i))
-				} else if ce, ok := err.(*errors.CompositeError); ok {
+				}
+				ce := new(errors.CompositeError)
+				if stderrors.As(err, &ce) {
 					return ce.ValidateName("nodes" + "." + strconv.Itoa(i))
 				}
+
 				return err
 			}
 		}
