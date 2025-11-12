@@ -1831,6 +1831,272 @@
                         "type": "string"
                     },
                     {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "user specified device name"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "user specified title"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "user specified description"
+                                },
+                                "revision": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "Object revision details"
+                                },
+                                "tags": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                                    "maxLength": 32,
+                                    "pattern": "^[^<%&?/\\>]+$"
+                                },
+                                "utype": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/ModelArchType",
+                                    "description": "device model arch type"
+                                },
+                                "projectId": {
+                                    "type": "string",
+                                    "description": "project name"
+                                },
+                                "serialno": {
+                                    "type": "string",
+                                    "description": "Device serial number"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "description": "Device location: deprecated"
+                                },
+                                "cpu": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "CPU (configured values)"
+                                },
+                                "thread": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Threads"
+                                },
+                                "memory": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device memory in MBs"
+                                },
+                                "storage": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device storage in GBs"
+                                },
+                                "onboarding": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceCerts",
+                                    "description": "Device level certificates used while onboarding"
+                                },
+                                "identity": {
+                                    "type": "string",
+                                    "format": "byte",
+                                    "description": "Device identity"
+                                },
+                                "obkey": {
+                                    "type": "string",
+                                    "description": "Object key"
+                                },
+                                "token": {
+                                    "type": "string",
+                                    "description": "Single use token"
+                                },
+                                "clientIp": {
+                                    "type": "string",
+                                    "description": "Client IP"
+                                },
+                                "dlisp": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceLisp",
+                                    "description": "device Lisp"
+                                },
+                                "clusterID": {
+                                    "type": "string",
+                                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "adminState": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/AdminState",
+                                    "description": "administrative state of device"
+                                },
+                                "resetCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "devicereset counter"
+                                },
+                                "resetTime": {
+                                    "type": "string",
+                                    "description": "device reset time"
+                                },
+                                "baseImage": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BaseOSImage"
+                                    },
+                                    "description": "base images"
+                                },
+                                "modelId": {
+                                    "type": "string",
+                                    "description": "device model"
+                                },
+                                "configItem": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EDConfigItem"
+                                    },
+                                    "description": "ED configurations"
+                                },
+                                "deprecated": {
+                                    "type": "string",
+                                    "description": "deprecated field"
+                                },
+                                "vlanAdapters": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/vlanAdapter"
+                                    },
+                                    "description": "A list of VLAN sub-interfaces configured for EVE management traffic and for local network instances"
+                                },
+                                "interfaces": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/SysInterface"
+                                    },
+                                    "description": "System Interface list"
+                                },
+                                "devLocation": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/GeoLocation",
+                                    "description": "User specified geo location"
+                                },
+                                "sitePictures": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Site captured pictures"
+                                },
+                                "assetId": {
+                                    "type": "string",
+                                    "description": "Device asset ID"
+                                },
+                                "baseOsRetryCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "device baseos retry counter"
+                                },
+                                "baseOsRetryTime": {
+                                    "type": "string",
+                                    "description": "device baseos retry time"
+                                },
+                                "debugKnob": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DebugKnobDetail",
+                                    "description": "debug knob details for the device"
+                                },
+                                "defaultNetInst": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/NetInstConfig",
+                                    "description": "default network instance details"
+                                },
+                                "preparePowerOffCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "prepare poweroff counter"
+                                },
+                                "preparePowerOffTime": {
+                                    "type": "string",
+                                    "description": "prepare poweroff time"
+                                },
+                                "edgeviewconfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeviewCfg",
+                                    "description": "edgeview configuration for device"
+                                },
+                                "generateSoftSerial": {
+                                    "type": "boolean",
+                                    "description": "indicates whether a soft serial should be generated; it will work ONLY when device is created"
+                                },
+                                "deploymentTag": {
+                                    "type": "string",
+                                    "description": "user defined tag for the device, which is used while deploying policies."
+                                },
+                                "localOperatorConsoleURL": {
+                                    "type": "string",
+                                    "description": "local operator console url",
+                                    "title": "will be deprecated 73"
+                                },
+                                "configLock": {
+                                    "$ref": "#/definitions/DeviceConfigLock",
+                                    "description": "device configuration lock setting"
+                                },
+                                "edgeviewAllow": {
+                                    "type": "boolean",
+                                    "description": "Allow device to enable Edgeview",
+                                    "title": "To support edge view policy in deployments, adding a new column in device table"
+                                },
+                                "clusterInterface": {
+                                    "type": "string",
+                                    "description": "Cluster Interface",
+                                    "title": "The following two fields are related to the edge node cluster configuration"
+                                },
+                                "edgeNodeCluster": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeNodeClusterConfig",
+                                    "description": "Edge Node Cluster Configuration"
+                                },
+                                "baseOsForceUpgrade": {
+                                    "type": "boolean",
+                                    "description": "Force upgrade base OS"
+                                },
+                                "project": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ProjectInfo",
+                                    "description": "Project specific info"
+                                },
+                                "model": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ModelInfo",
+                                    "description": "Model specific info"
+                                },
+                                "edgeSyncConfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeSyncConfig",
+                                    "description": "edge sync config"
+                                }
+                            },
+                            "description": "Device Configuration request payload holds the device properties",
+                            "title": "Device Configuration payload detail",
+                            "required": [
+                                "name",
+                                "title",
+                                "projectId",
+                                "modelId"
+                            ]
+                        }
+                    },
+                    {
                         "name": "X-Request-Id",
                         "in": "header",
                         "required": false,
@@ -2817,6 +3083,272 @@
                         "type": "string"
                     },
                     {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "user specified device name"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "user specified title"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "user specified description"
+                                },
+                                "revision": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "Object revision details"
+                                },
+                                "tags": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                                    "maxLength": 32,
+                                    "pattern": "^[^<%&?/\\>]+$"
+                                },
+                                "utype": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/ModelArchType",
+                                    "description": "device model arch type"
+                                },
+                                "projectId": {
+                                    "type": "string",
+                                    "description": "project name"
+                                },
+                                "serialno": {
+                                    "type": "string",
+                                    "description": "Device serial number"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "description": "Device location: deprecated"
+                                },
+                                "cpu": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "CPU (configured values)"
+                                },
+                                "thread": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Threads"
+                                },
+                                "memory": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device memory in MBs"
+                                },
+                                "storage": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device storage in GBs"
+                                },
+                                "onboarding": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceCerts",
+                                    "description": "Device level certificates used while onboarding"
+                                },
+                                "identity": {
+                                    "type": "string",
+                                    "format": "byte",
+                                    "description": "Device identity"
+                                },
+                                "obkey": {
+                                    "type": "string",
+                                    "description": "Object key"
+                                },
+                                "token": {
+                                    "type": "string",
+                                    "description": "Single use token"
+                                },
+                                "clientIp": {
+                                    "type": "string",
+                                    "description": "Client IP"
+                                },
+                                "dlisp": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceLisp",
+                                    "description": "device Lisp"
+                                },
+                                "clusterID": {
+                                    "type": "string",
+                                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "adminState": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/AdminState",
+                                    "description": "administrative state of device"
+                                },
+                                "resetCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "devicereset counter"
+                                },
+                                "resetTime": {
+                                    "type": "string",
+                                    "description": "device reset time"
+                                },
+                                "baseImage": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BaseOSImage"
+                                    },
+                                    "description": "base images"
+                                },
+                                "modelId": {
+                                    "type": "string",
+                                    "description": "device model"
+                                },
+                                "configItem": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EDConfigItem"
+                                    },
+                                    "description": "ED configurations"
+                                },
+                                "deprecated": {
+                                    "type": "string",
+                                    "description": "deprecated field"
+                                },
+                                "vlanAdapters": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/vlanAdapter"
+                                    },
+                                    "description": "A list of VLAN sub-interfaces configured for EVE management traffic and for local network instances"
+                                },
+                                "interfaces": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/SysInterface"
+                                    },
+                                    "description": "System Interface list"
+                                },
+                                "devLocation": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/GeoLocation",
+                                    "description": "User specified geo location"
+                                },
+                                "sitePictures": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Site captured pictures"
+                                },
+                                "assetId": {
+                                    "type": "string",
+                                    "description": "Device asset ID"
+                                },
+                                "baseOsRetryCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "device baseos retry counter"
+                                },
+                                "baseOsRetryTime": {
+                                    "type": "string",
+                                    "description": "device baseos retry time"
+                                },
+                                "debugKnob": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DebugKnobDetail",
+                                    "description": "debug knob details for the device"
+                                },
+                                "defaultNetInst": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/NetInstConfig",
+                                    "description": "default network instance details"
+                                },
+                                "preparePowerOffCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "prepare poweroff counter"
+                                },
+                                "preparePowerOffTime": {
+                                    "type": "string",
+                                    "description": "prepare poweroff time"
+                                },
+                                "edgeviewconfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeviewCfg",
+                                    "description": "edgeview configuration for device"
+                                },
+                                "generateSoftSerial": {
+                                    "type": "boolean",
+                                    "description": "indicates whether a soft serial should be generated; it will work ONLY when device is created"
+                                },
+                                "deploymentTag": {
+                                    "type": "string",
+                                    "description": "user defined tag for the device, which is used while deploying policies."
+                                },
+                                "localOperatorConsoleURL": {
+                                    "type": "string",
+                                    "description": "local operator console url",
+                                    "title": "will be deprecated 73"
+                                },
+                                "configLock": {
+                                    "$ref": "#/definitions/DeviceConfigLock",
+                                    "description": "device configuration lock setting"
+                                },
+                                "edgeviewAllow": {
+                                    "type": "boolean",
+                                    "description": "Allow device to enable Edgeview",
+                                    "title": "To support edge view policy in deployments, adding a new column in device table"
+                                },
+                                "clusterInterface": {
+                                    "type": "string",
+                                    "description": "Cluster Interface",
+                                    "title": "The following two fields are related to the edge node cluster configuration"
+                                },
+                                "edgeNodeCluster": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeNodeClusterConfig",
+                                    "description": "Edge Node Cluster Configuration"
+                                },
+                                "baseOsForceUpgrade": {
+                                    "type": "boolean",
+                                    "description": "Force upgrade base OS"
+                                },
+                                "project": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ProjectInfo",
+                                    "description": "Project specific info"
+                                },
+                                "model": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ModelInfo",
+                                    "description": "Model specific info"
+                                },
+                                "edgeSyncConfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeSyncConfig",
+                                    "description": "edge sync config"
+                                }
+                            },
+                            "description": "Device Configuration request payload holds the device properties",
+                            "title": "Device Configuration payload detail",
+                            "required": [
+                                "name",
+                                "title",
+                                "projectId",
+                                "modelId"
+                            ]
+                        }
+                    },
+                    {
                         "name": "X-Request-Id",
                         "in": "header",
                         "required": false,
@@ -3362,6 +3894,16 @@
                                     "$ref": "#/definitions/DeviceGenerateImageType",
                                     "description": "image type",
                                     "title": "Default: installer"
+                                },
+                                "installDisk": {
+                                    "type": "string",
+                                    "description": "set particular disk to install EVE (default: use any free disk found)",
+                                    "title": "EVE installation disk (e.g. 'sda')"
+                                },
+                                "persistDisk": {
+                                    "type": "string",
+                                    "description": "set particular disk to use for persistent data (volumes, logs, etc.).",
+                                    "title": "EVE persist disk (e.g. 'sdb')"
                                 }
                             },
                             "description": "Device Generate Single-use EVE Image config payload holds the device properties for generating a single-use EVE image",
@@ -3530,6 +4072,272 @@
                         "in": "path",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "user specified device name"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "user specified title"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "user specified description"
+                                },
+                                "revision": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "Object revision details"
+                                },
+                                "tags": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.",
+                                    "maxLength": 32,
+                                    "pattern": "^[^<%&?/\\>]+$"
+                                },
+                                "utype": {
+                                    "type": "string",
+                                    "$ref": "#/definitions/ModelArchType",
+                                    "description": "device model arch type"
+                                },
+                                "projectId": {
+                                    "type": "string",
+                                    "description": "project name"
+                                },
+                                "serialno": {
+                                    "type": "string",
+                                    "description": "Device serial number"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "description": "Device location: deprecated"
+                                },
+                                "cpu": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "CPU (configured values)"
+                                },
+                                "thread": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Threads"
+                                },
+                                "memory": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device memory in MBs"
+                                },
+                                "storage": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "Device storage in GBs"
+                                },
+                                "onboarding": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceCerts",
+                                    "description": "Device level certificates used while onboarding"
+                                },
+                                "identity": {
+                                    "type": "string",
+                                    "format": "byte",
+                                    "description": "Device identity"
+                                },
+                                "obkey": {
+                                    "type": "string",
+                                    "description": "Object key"
+                                },
+                                "token": {
+                                    "type": "string",
+                                    "description": "Single use token"
+                                },
+                                "clientIp": {
+                                    "type": "string",
+                                    "description": "Client IP"
+                                },
+                                "dlisp": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceLisp",
+                                    "description": "device Lisp"
+                                },
+                                "clusterID": {
+                                    "type": "string",
+                                    "description": "System defined universally unique clusterInstance ID, unique across the enterprise.",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+",
+                                    "uniqueItems": true
+                                },
+                                "adminState": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/AdminState",
+                                    "description": "administrative state of device"
+                                },
+                                "resetCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "devicereset counter"
+                                },
+                                "resetTime": {
+                                    "type": "string",
+                                    "description": "device reset time"
+                                },
+                                "baseImage": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BaseOSImage"
+                                    },
+                                    "description": "base images"
+                                },
+                                "modelId": {
+                                    "type": "string",
+                                    "description": "device model"
+                                },
+                                "configItem": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/EDConfigItem"
+                                    },
+                                    "description": "ED configurations"
+                                },
+                                "deprecated": {
+                                    "type": "string",
+                                    "description": "deprecated field"
+                                },
+                                "vlanAdapters": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/vlanAdapter"
+                                    },
+                                    "description": "A list of VLAN sub-interfaces configured for EVE management traffic and for local network instances"
+                                },
+                                "interfaces": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/SysInterface"
+                                    },
+                                    "description": "System Interface list"
+                                },
+                                "devLocation": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/GeoLocation",
+                                    "description": "User specified geo location"
+                                },
+                                "sitePictures": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Site captured pictures"
+                                },
+                                "assetId": {
+                                    "type": "string",
+                                    "description": "Device asset ID"
+                                },
+                                "baseOsRetryCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "device baseos retry counter"
+                                },
+                                "baseOsRetryTime": {
+                                    "type": "string",
+                                    "description": "device baseos retry time"
+                                },
+                                "debugKnob": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DebugKnobDetail",
+                                    "description": "debug knob details for the device"
+                                },
+                                "defaultNetInst": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/NetInstConfig",
+                                    "description": "default network instance details"
+                                },
+                                "preparePowerOffCounter": {
+                                    "type": "number",
+                                    "format": "int64",
+                                    "description": "prepare poweroff counter"
+                                },
+                                "preparePowerOffTime": {
+                                    "type": "string",
+                                    "description": "prepare poweroff time"
+                                },
+                                "edgeviewconfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeviewCfg",
+                                    "description": "edgeview configuration for device"
+                                },
+                                "generateSoftSerial": {
+                                    "type": "boolean",
+                                    "description": "indicates whether a soft serial should be generated; it will work ONLY when device is created"
+                                },
+                                "deploymentTag": {
+                                    "type": "string",
+                                    "description": "user defined tag for the device, which is used while deploying policies."
+                                },
+                                "localOperatorConsoleURL": {
+                                    "type": "string",
+                                    "description": "local operator console url",
+                                    "title": "will be deprecated 73"
+                                },
+                                "configLock": {
+                                    "$ref": "#/definitions/DeviceConfigLock",
+                                    "description": "device configuration lock setting"
+                                },
+                                "edgeviewAllow": {
+                                    "type": "boolean",
+                                    "description": "Allow device to enable Edgeview",
+                                    "title": "To support edge view policy in deployments, adding a new column in device table"
+                                },
+                                "clusterInterface": {
+                                    "type": "string",
+                                    "description": "Cluster Interface",
+                                    "title": "The following two fields are related to the edge node cluster configuration"
+                                },
+                                "edgeNodeCluster": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeNodeClusterConfig",
+                                    "description": "Edge Node Cluster Configuration"
+                                },
+                                "baseOsForceUpgrade": {
+                                    "type": "boolean",
+                                    "description": "Force upgrade base OS"
+                                },
+                                "project": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ProjectInfo",
+                                    "description": "Project specific info"
+                                },
+                                "model": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/ModelInfo",
+                                    "description": "Model specific info"
+                                },
+                                "edgeSyncConfig": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/EdgeSyncConfig",
+                                    "description": "edge sync config"
+                                }
+                            },
+                            "description": "Device Configuration request payload holds the device properties",
+                            "title": "Device Configuration payload detail",
+                            "required": [
+                                "name",
+                                "title",
+                                "projectId",
+                                "modelId"
+                            ]
+                        }
                     },
                     {
                         "name": "X-Request-Id",
@@ -12571,6 +13379,19 @@
                 "token": {
                     "type": "string",
                     "description": "Cluster token"
+                },
+                "isMaster": {
+                    "type": "boolean",
+                    "description": "Is it a master node?"
+                },
+                "manifest": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "ZKS instance manifest"
+                },
+                "tieBreakerNodeId": {
+                    "type": "string",
+                    "description": "Tiebreaker node id"
                 }
             }
         },
@@ -14690,6 +15511,10 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Network MTU"
+                },
+                "configSource": {
+                    "$ref": "#/definitions/commonPortConfigSource",
+                    "description": "Identifies the source of this network port configuration"
                 }
             },
             "description": "NetworkStatus is used to store the Network status",
@@ -15021,7 +15846,9 @@
                 "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                 "OBJECT_TYPE_ASSET_GROUP",
                 "OBJECT_TYPE_APP_PROFILE",
-                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                "OBJECT_TYPE_ZKS_INSTANCE",
+                "OBJECT_TYPE_CLUSTER_GROUP"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -15968,6 +16795,14 @@
                         "$ref": "#/definitions/SharedStorageSummary"
                     },
                     "description": "Shared storage summary"
+                },
+                "Id": {
+                    "type": "string",
+                    "description": "Id"
+                },
+                "Name": {
+                    "type": "string",
+                    "description": "Name"
                 }
             },
             "description": "Storage Summary",
@@ -16221,6 +17056,10 @@
                 "ztype": {
                     "type": "string",
                     "description": "Z Type"
+                },
+                "allowLocalModifications": {
+                    "type": "boolean",
+                    "description": "Allow the local operator to make (limited) configuration changes to this network adapter."
                 }
             },
             "description": "system interfaces that needs to be used by dom0",
@@ -17774,6 +18613,36 @@
             ],
             "default": "CONNECTIVITY_PROBE_METHOD_UNSPECIFIED",
             "description": "User-defined method to use to determine the connectivity status.\n\n - CONNECTIVITY_PROBE_METHOD_UNSPECIFIED: Connectivity probing method is not specified and therefore will not be used.\n - CONNECTIVITY_PROBE_METHOD_ICMP: Use ICMP ping against the probed endpoint to determine the connectivity status.\n - CONNECTIVITY_PROBE_METHOD_TCP: Try to establish TCP connection with the probed endpoint to determine the connectivity\nstatus."
+        },
+        "commonNetworkConfigOrigin": {
+            "type": "string",
+            "enum": [
+                "NETWORK_CONFIG_ORIGIN_UNSPECIFIED",
+                "NETWORK_CONFIG_ORIGIN_CONTROLLER",
+                "NETWORK_CONFIG_ORIGIN_BOOTSTRAP",
+                "NETWORK_CONFIG_ORIGIN_OVERRIDE",
+                "NETWORK_CONFIG_ORIGIN_LASTRESORT",
+                "NETWORK_CONFIG_ORIGIN_TUI",
+                "NETWORK_CONFIG_ORIGIN_LOC",
+                "NETWORK_CONFIG_ORIGIN_LPS"
+            ],
+            "default": "NETWORK_CONFIG_ORIGIN_UNSPECIFIED",
+            "description": "NetworkConfigOrigin enumerates all possible origins of a network port configuration.\n\n - NETWORK_CONFIG_ORIGIN_UNSPECIFIED: Unknown or unset origin.\n - NETWORK_CONFIG_ORIGIN_CONTROLLER: Config received from the controller.\n - NETWORK_CONFIG_ORIGIN_BOOTSTRAP: Initial device config embedded in the EVE installer, signed by the controller.\n - NETWORK_CONFIG_ORIGIN_OVERRIDE: Manually created JSON config injected into the installer.\n - NETWORK_CONFIG_ORIGIN_LASTRESORT: Fallback configuration automatically generated to enable DHCP on all Ethernet ports.\nUsed when no network config is available or when \"network.fallback.any.eth\" is enabled\nand none of the existing configs provide controller connectivity.\n - NETWORK_CONFIG_ORIGIN_TUI: Config entered via the terminal UI (TUI).\n - NETWORK_CONFIG_ORIGIN_LOC: Configuration signed by the controller and delivered through the\nLocal Operator Console (LOC) in an air-gapped environment.\n - NETWORK_CONFIG_ORIGIN_LPS: Config changes made locally through the Local Profile Server (LPS)."
+        },
+        "commonPortConfigSource": {
+            "type": "object",
+            "properties": {
+                "origin": {
+                    "$ref": "#/definitions/commonNetworkConfigOrigin",
+                    "description": "Indicates where EVE obtained the network config."
+                },
+                "submittedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when this port\u2019s configuration was originally submitted\nor created at its source.\n\nMeaning depends on the origin:\n- Controller, LOC, bootstrap: timestamp provided by the controller.\n- Local override.json: when the file was first loaded by EVE.\n- Last-resort: when EVE generated the fallback config.\n- LPS modifications: when the modified config was received.\n- TUI: when the user submitted the configuration.\n\nThis is different from DevicePortStatus.timePriority, which is used\nto compare and prioritize different sources of network configuration\n(and may be synthetic for some sources, e.g. year 2000 for override.json,\nepoch 0 for last-resort). By contrast, submitted_at represents when this\nport\u2019s configuration first came into existence, regardless of when or whether\nthe device applied it.\n\nNote: this is a per-port timestamp. The underlying network config may\ncover multiple ports, but only the portion relevant to this port is\nreflected here."
+                }
+            },
+            "description": "PortConfigSource describes the origin of the configuration used for a network port.\nIt helps distinguish between controller-provided, locally-modified, or initial configs."
         },
         "commonProbeEndpoint": {
             "type": "object",

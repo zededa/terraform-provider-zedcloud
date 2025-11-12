@@ -30,9 +30,9 @@ resource "zedcloud_datastore"  "test_tf_provider" {
   ds_fqdn = "my-datastore.my-company.com"
   ds_path = "download/AMD64"
   ds_type = "DATASTORE_TYPE_AZUREBLOB"
-  name = "test"
-  title = "title"
-  description = "description"
+  name = "test_tf_provider-test-datastore"
+  title = "test_tf_provider-test-datastore"
+  description = "test_tf_provider-test-datastore"
   region = "eu"
   project_access_list = [zedcloud_project.test_tf_provider.id]
 }
@@ -111,8 +111,8 @@ resource "zedcloud_network_instance" "required_only" {
     zedcloud_edgenode.test_tf_provider
   ]
 
-  name = "name"
-  title = "title"
+  name = "test_tf_provider-netinst"
+  title = "test_tf_provider-netinst"
   kind = "NETWORK_INSTANCE_KIND_SWITCH"
   port = "eth1"
   device_id = zedcloud_edgenode.test_tf_provider.id

@@ -33,9 +33,9 @@ resource "zedcloud_datastore"  "test_tf_provider" {
 	ds_fqdn = "my-datastore.my-company.com"
 	ds_path = "download/AMD64"
 	ds_type = "DATASTORE_TYPE_AZUREBLOB"
-	name = "test"
-	title = "title"
-	description = "description"
+	name = "test_tf_provider-test_datastore"
+	title = "test_tf_provider-test_datastore"
+	description = "test_tf_provider-test_datastore"
 	region = "eu"
 	project_access_list = [zedcloud_project.test_tf_provider.id]
 }
@@ -100,10 +100,10 @@ resource "zedcloud_edgenode" "required_only" {
 		zedcloud_project.test_tf_provider,
 		zedcloud_model.test_tf_provider
 	]
-		name = "required_only"
-		model_id = zedcloud_model.test_tf_provider.id
-		project_id = zedcloud_project.test_tf_provider.id
-		title = "required_only-title"
+	name = "test_tf_provider-required_only"
+	model_id = zedcloud_model.test_tf_provider.id
+	project_id = zedcloud_project.test_tf_provider.id
+	title = "required_only-title"
 	interfaces {
 		cost = 0
 		intf_usage = "ADAPTER_USAGE_MANAGEMENT"

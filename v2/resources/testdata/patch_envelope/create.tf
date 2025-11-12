@@ -30,7 +30,7 @@ resource "zedcloud_datastore"  "test_tf_provider" {
   ds_fqdn = "my-datastore.my-company.com"
   ds_path = "download/AMD64"
   ds_type = "DATASTORE_TYPE_AZUREBLOB"
-  name = "test"
+  name = "test_tf_provider-test_datastore"
   title = "title"
   description = "description"
   region = "eu"

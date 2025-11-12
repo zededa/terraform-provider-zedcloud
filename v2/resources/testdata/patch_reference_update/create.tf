@@ -30,7 +30,7 @@ resource "zedcloud_datastore"  "test_tf_provider" {
   ds_fqdn = "my-datastore.my-company.com"
   ds_path = "download/AMD64"
   ds_type = "DATASTORE_TYPE_AZUREBLOB"
-  name = "test"
+  name = "test_tf_provider-test_datastore"
   title = "title"
   description = "description"
   region = "eu"
@@ -338,14 +338,3 @@ resource "zedcloud_patch_envelope" "test_tf_provider" {
     ]
   }
 }
-#
-# resource "zedcloud_patch_reference_update" "test_tf_provider" {
-#   app_inst_id_list = [zedcloud_application_instance.test_tf_provider.id]
-#   patchenvelope_id = zedcloud_patch_envelope.test_tf_provider.id
-#   project_id = zedcloud_project.test_tf_provider.id
-#   depends_on = [
-#     zedcloud_patch_envelope.test_tf_provider,
-#     zedcloud_application_instance.test_tf_provider,
-#     zedcloud_project.test_tf_provider
-#   ]
-# }

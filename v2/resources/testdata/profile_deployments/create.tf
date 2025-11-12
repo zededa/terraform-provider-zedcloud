@@ -22,7 +22,7 @@ data "zedcloud_project" "test_tf_provider" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-  name        = "qemu100_100"
+  name        = "test_tf_provider-qemu100_100"
   title       = "QEMU100"
   description = "qemu100"
   origin_type = "ORIGIN_LOCAL"
@@ -112,24 +112,12 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   }
 }
 
-data "zedcloud_edgenode" "test_tf_provider" {
-  name     = "test_tf_provider_newedgenode_100"
-  title    = "test_tf_provider-create_edgenode-title"
-  model_id = zedcloud_model.test_tf_provider.id
-  depends_on = [
-    zedcloud_edgenode.test_tf_provider
-  ]
-  interfaces {
-    intfname   = "defaultIPv4"
-  }
-}
-
 resource "zedcloud_asset_group" "test_tf_provider" {
   name        = "test_tf_provider_assetgroup"
   description = "This is an example asset group"
-  project_id  = data.zedcloud_project.test_tf_provider.id
+  project_id  = resource.zedcloud_project.test_tf_provider.id
   asset_ids {
-    ids = [ data.zedcloud_edgenode.test_tf_provider.id ]
+    ids = [ resource.zedcloud_edgenode.test_tf_provider.id ]
   }
 }
 
@@ -138,7 +126,7 @@ resource "zedcloud_datastore" "open_ds_provider" {
   ds_fqdn             = "http://147.75.33.217"
   ds_path             = "images"
   ds_type             = "DATASTORE_TYPE_HTTP"
-  name                = "open_ds_provider_100"
+  name                = "test_tf_provider-open_ds_provider_100"
   title               = "open_ds_provider"
   description         = "open_ds_provider"
   region              = "eu"
@@ -149,7 +137,7 @@ resource "zedcloud_image" "open_alpine_image" {
   depends_on = [
     zedcloud_datastore.open_ds_provider
   ]
-  name                = "openalpine_image1"
+  name                = "test_tf_provider-openalpine_image1"
   datastore_id        = zedcloud_datastore.open_ds_provider.id
   image_arch          = "ARM64"
   image_format        = "CONTAINER"

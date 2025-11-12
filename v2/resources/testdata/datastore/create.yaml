@@ -2,9 +2,9 @@ dsfqdn: "my-datastore.my-company.com"
 dspath: "download/AMD64"
 dstype: "DATASTORE_TYPE_AZUREBLOB"
 dsstatus: "DATASTORE_STATUS_ACTIVE"
-name: "test"
-title: "title"
-description: "description"
+name: "test_tf_provider-test_datastore"
+title: "test_tf_provider-test_datastore"
+description: "test_tf_provider-test_datastore"
 need_clear_text: false
 region: "eu"
 encryptedsecrets: {}

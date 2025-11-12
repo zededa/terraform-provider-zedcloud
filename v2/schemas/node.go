@@ -19,7 +19,13 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 	var baseImage []*models.BaseOSImage // []*BaseOSImage
 	baseImageInterface, baseImageIsSet := d.GetOk("base_image")
 	if baseImageIsSet {
-		for _, v := range baseImageInterface.([]interface{}) {
+		var items []interface{}
+		if listItems, isList := baseImageInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = baseImageInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
 			if v == nil {
 				continue
 			}
@@ -27,11 +33,13 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 			baseImage = append(baseImage, m)
 		}
 	}
+	baseOsForceUpgrade, _ := d.Get("base_os_force_upgrade").(bool)
 	baseOsRetryCounterInt, _ := d.Get("base_os_retry_counter").(int)
 	baseOsRetryCounter := int64(baseOsRetryCounterInt)
 	baseOsRetryTime, _ := d.Get("base_os_retry_time").(string)
 	clientIP, _ := d.Get("client_ip").(string)
 	clusterID, _ := d.Get("cluster_id").(string)
+	clusterInterface, _ := d.Get("cluster_interface").(string)
 	var configItem []*models.EDConfigItem // []*EDConfigItem
 	configItemInterface, configItemIsSet := d.GetOk("config_item")
 	if configItemIsSet {
@@ -49,40 +57,65 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 			configItem = append(configItem, m)
 		}
 	}
+	var configLock *models.DeviceConfigLock // DeviceConfigLock
+	configLockInterface, configLockIsSet := d.GetOk("config_lock")
+	if configLockIsSet {
+		configLockModel := configLockInterface.(string)
+		configLock = models.NewDeviceConfigLock(models.DeviceConfigLock(configLockModel))
+	}
 	cpuInt, _ := d.Get("cpu").(int)
 	cpu := int64(cpuInt)
 	var debugKnob *models.DebugKnobDetail // DebugKnobDetail
 	debugKnobInterface, debugKnobIsSet := d.GetOk("debug_knob")
-	if debugKnobIsSet {
-		debugKnobMap := debugKnobInterface.([]interface{})[0].(map[string]interface{})
-		debugKnob = DebugKnobDetailModelFromMap(debugKnobMap)
+	if debugKnobIsSet && debugKnobInterface != nil {
+		debugKnobMap := debugKnobInterface.([]interface{})
+		if len(debugKnobMap) > 0 {
+			debugKnob = DebugKnobDetailModelFromMap(debugKnobMap[0].(map[string]interface{}))
+		}
 	}
 	var defaultNetInst *models.NetworkInstance // NetInstConfig
 	defaultNetInstInterface, defaultNetInstIsSet := d.GetOk("default_net_inst")
-	if defaultNetInstIsSet {
-		defaultNetInstMap := defaultNetInstInterface.([]interface{})[0].(map[string]interface{})
-		defaultNetInst = NetworkInstanceModelFromMap(defaultNetInstMap)
+	if defaultNetInstIsSet && defaultNetInstInterface != nil {
+		defaultNetInstMap := defaultNetInstInterface.([]interface{})
+		if len(defaultNetInstMap) > 0 {
+			defaultNetInst = NetworkInstanceModelFromMap(defaultNetInstMap[0].(map[string]interface{}))
+		}
 	}
 	deploymentTag, _ := d.Get("deployment_tag").(string)
 	deprecated, _ := d.Get("deprecated").(string)
 	description, _ := d.Get("description").(string)
 	var devLocation *models.GeoLocation // GeoLocation
 	devLocationInterface, devLocationIsSet := d.GetOk("dev_location")
-	if devLocationIsSet {
-		devLocationMap := devLocationInterface.([]interface{})[0].(map[string]interface{})
-		devLocation = GeoLocationModelFromMap(devLocationMap)
+	if devLocationIsSet && devLocationInterface != nil {
+		devLocationMap := devLocationInterface.([]interface{})
+		if len(devLocationMap) > 0 {
+			devLocation = GeoLocationModelFromMap(devLocationMap[0].(map[string]interface{}))
+		}
 	}
 	var dlisp *models.DeviceLisp // DeviceLisp
 	dlispInterface, dlispIsSet := d.GetOk("dlisp")
-	if dlispIsSet {
-		dlispMap := dlispInterface.([]interface{})[0].(map[string]interface{})
-		dlisp = DeviceLispModelFromMap(dlispMap)
+	if dlispIsSet && dlispInterface != nil {
+		dlispMap := dlispInterface.([]interface{})
+		if len(dlispMap) > 0 {
+			dlisp = DeviceLispModelFromMap(dlispMap[0].(map[string]interface{}))
+		}
 	}
+	var edgeNodeCluster *models.EdgeNodeClusterConfig // EdgeNodeClusterConfig
+	edgeNodeClusterInterface, edgeNodeClusterIsSet := d.GetOk("edge_node_cluster")
+	if edgeNodeClusterIsSet && edgeNodeClusterInterface != nil {
+		edgeNodeClusterMap := edgeNodeClusterInterface.([]interface{})
+		if len(edgeNodeClusterMap) > 0 {
+			edgeNodeCluster = EdgeNodeClusterConfigModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
+		}
+	}
+	edgeviewAllow, _ := d.Get("edgeview_allow").(bool)
 	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
 	edgeviewconfigInterface, edgeviewconfigIsSet := d.GetOk("edgeviewconfig")
-	if edgeviewconfigIsSet {
-		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})[0].(map[string]interface{})
-		edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap)
+	if edgeviewconfigIsSet && edgeviewconfigInterface != nil {
+		edgeviewconfigMap := edgeviewconfigInterface.([]interface{})
+		if len(edgeviewconfigMap) > 0 {
+			edgeviewconfig = EdgeviewCfgModelFromMap(edgeviewconfigMap[0].(map[string]interface{}))
+		}
 	}
 	generateSoftSerial, _ := d.Get("generate_soft_serial").(bool)
 	id, _ := d.Get("id").(string)
@@ -104,18 +137,13 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 			interfaces = append(interfaces, m)
 		}
 	}
+	localOperatorConsoleURL, _ := d.Get("local_operator_console_url").(string)
 	location, _ := d.Get("location").(string)
 	memoryInt, _ := d.Get("memory").(int)
 	memory := int64(memoryInt)
 	modelID, _ := d.Get("model_id").(string)
 	name, _ := d.Get("name").(string)
 	obkey, _ := d.Get("onboarding_key").(string)
-	var onboarding *models.DeviceCerts // DeviceCerts
-	onboardingInterface, onboardingIsSet := d.GetOk("onboarding")
-	if onboardingIsSet {
-		onboardingMap := onboardingInterface.([]interface{})[0].(map[string]interface{})
-		onboarding = DeviceCertsModelFromMap(onboardingMap)
-	}
 	preparePowerOffCounterInt, _ := d.Get("prepare_power_off_counter").(int)
 	preparePowerOffCounter := int64(preparePowerOffCounterInt)
 	preparePowerOffTime, _ := d.Get("prepare_power_off_time").(string)
@@ -125,12 +153,29 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 	resetTime, _ := d.Get("reset_time").(string)
 	var revision *models.ObjectRevision // ObjectRevision
 	revisionInterface, revisionIsSet := d.GetOk("revision")
-	if revisionIsSet {
-		revisionMap := revisionInterface.([]interface{})[0].(map[string]interface{})
-		revision = ObjectRevisionModelFromMap(revisionMap)
+	if revisionIsSet && revisionInterface != nil {
+		revisionMap := revisionInterface.([]interface{})
+		if len(revisionMap) > 0 {
+			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
+		}
 	}
 	serialno, _ := d.Get("serialno").(string)
-	sitePictures, _ := d.Get("site_pictures").([]string)
+	var sitePictures []string
+	sitePicturesInterface, sitePicturesIsSet := d.GetOk("sitePictures")
+	if sitePicturesIsSet {
+		var items []interface{}
+		if listItems, isList := sitePicturesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = sitePicturesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			sitePictures = append(sitePictures, v.(string))
+		}
+	}
 	storageInt, _ := d.Get("storage").(int)
 	storage := int64(storageInt)
 	tags := map[string]string{}
@@ -154,48 +199,71 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 		utypeModel := utypeInterface.(string)
 		utype = models.NewModelArchType(models.ModelArchType(utypeModel))
 	}
+	var vlanAdapters []*models.VlanAdapter // []*VlanAdapter
+	vlanAdaptersInterface, vlanAdaptersIsSet := d.GetOk("vlan_adapters")
+	if vlanAdaptersIsSet {
+		var items []interface{}
+		if listItems, isList := vlanAdaptersInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = vlanAdaptersInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VlanAdapterModelFromMap(v.(map[string]interface{}))
+			vlanAdapters = append(vlanAdapters, m)
+		}
+	}
 	return &models.Node{
-		AdminState:             adminState,
-		AssetID:                assetID,
-		BaseImage:              baseImage,
-		BaseOsRetryCounter:     baseOsRetryCounter,
-		BaseOsRetryTime:        baseOsRetryTime,
-		ClientIP:               clientIP,
-		ClusterID:              clusterID,
-		ConfigItem:             configItem,
-		CPU:                    cpu,
-		DebugKnob:              debugKnob,
-		DefaultNetInst:         defaultNetInst,
-		DeploymentTag:          deploymentTag,
-		Deprecated:             deprecated,
-		Description:            description,
-		DevLocation:            devLocation,
-		Dlisp:                  dlisp,
-		Edgeviewconfig:         edgeviewconfig,
-		GenerateSoftSerial:     generateSoftSerial,
-		ID:                     id,
-		Identity:               identity,
-		Interfaces:             interfaces,
-		Location:               location,
-		Memory:                 memory,
-		ModelID:                &modelID,
-		Name:                   &name,
-		Obkey:                  obkey,
-		Onboarding:             onboarding,
-		PreparePowerOffCounter: preparePowerOffCounter,
-		PreparePowerOffTime:    preparePowerOffTime,
-		ProjectID:              &projectID,
-		ResetCounter:           resetCounter,
-		ResetTime:              resetTime,
-		Revision:               revision,
-		Serialno:               serialno,
-		SitePictures:           sitePictures,
-		Storage:                storage,
-		Tags:                   tags,
-		Thread:                 thread,
-		Title:                  &title,
-		Token:                  token,
-		Utype:                  utype,
+		AdminState:              adminState,
+		AssetID:                 assetID,
+		BaseImage:               baseImage,
+		BaseOsForceUpgrade:      baseOsForceUpgrade,
+		BaseOsRetryCounter:      baseOsRetryCounter,
+		BaseOsRetryTime:         baseOsRetryTime,
+		ClientIP:                clientIP,
+		ClusterID:               clusterID,
+		ClusterInterface:        clusterInterface,
+		ConfigItem:              configItem,
+		ConfigLock:              configLock,
+		CPU:                     cpu,
+		DebugKnob:               debugKnob,
+		DefaultNetInst:          defaultNetInst,
+		DeploymentTag:           deploymentTag,
+		Deprecated:              deprecated,
+		Description:             description,
+		DevLocation:             devLocation,
+		Dlisp:                   dlisp,
+		EdgeNodeCluster:         edgeNodeCluster,
+		EdgeviewAllow:           edgeviewAllow,
+		Edgeviewconfig:          edgeviewconfig,
+		GenerateSoftSerial:      generateSoftSerial,
+		ID:                      id,
+		Identity:                identity,
+		Interfaces:              interfaces,
+		LocalOperatorConsoleURL: localOperatorConsoleURL,
+		Location:                location,
+		Memory:                  memory,
+		ModelID:                 &modelID, // string
+		Name:                    &name,    // string
+		Obkey:                   obkey,
+		PreparePowerOffCounter:  preparePowerOffCounter,
+		PreparePowerOffTime:     preparePowerOffTime,
+		ProjectID:               &projectID, // string
+		ResetCounter:            resetCounter,
+		ResetTime:               resetTime,
+		Revision:                revision,
+		Serialno:                serialno,
+		SitePictures:            sitePictures,
+		Storage:                 storage,
+		Tags:                    tags,
+		Thread:                  thread,
+		Title:                   &title, // string
+		Token:                   token,
+		Utype:                   utype,
+		VlanAdapters:            vlanAdapters,
 	}
 }
 
@@ -224,10 +292,12 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			baseImage = append(baseImage, m)
 		}
 	}
+	baseOsForceUpgrade := m["base_os_force_upgrade"].(bool)
 	baseOsRetryCounter := int64(m["base_os_retry_counter"].(int)) // int64
 	baseOsRetryTime := m["base_os_retry_time"].(string)
 	clientIP := m["client_ip"].(string)
 	clusterID := m["cluster_id"].(string)
+	clusterInterface := m["cluster_interface"].(string)
 	var configItem []*models.EDConfigItem // []*EDConfigItem
 	configItemInterface, configItemIsSet := m["config_item"]
 	if configItemIsSet {
@@ -244,6 +314,12 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			m := EDConfigItemModelFromMap(v.(map[string]interface{}))
 			configItem = append(configItem, m)
 		}
+	}
+	var configLock *models.DeviceConfigLock // DeviceConfigLock
+	configLockInterface, configLockIsSet := m["config_lock"]
+	if configLockIsSet {
+		configLockModel := configLockInterface.(string)
+		configLock = models.NewDeviceConfigLock(models.DeviceConfigLock(configLockModel))
 	}
 	cpu := int64(m["cpu"].(int))          // int64
 	var debugKnob *models.DebugKnobDetail // DebugKnobDetail
@@ -281,6 +357,16 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			dlisp = DeviceLispModelFromMap(dlispMap[0].(map[string]interface{}))
 		}
 	}
+	//
+	var edgeNodeCluster *models.EdgeNodeClusterConfig // EdgeNodeClusterConfig
+	edgeNodeClusterInterface, edgeNodeClusterIsSet := m["edge_node_cluster"]
+	if edgeNodeClusterIsSet && edgeNodeClusterInterface != nil {
+		edgeNodeClusterMap := edgeNodeClusterInterface.([]interface{})
+		if len(edgeNodeClusterMap) > 0 {
+			edgeNodeCluster = EdgeNodeClusterConfigModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
+		}
+	}
+	edgeviewAllow := m["edgeview_allow"].(bool)
 	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
 	edgeviewconfigInterface, edgeviewconfigIsSet := m["edgeviewconfig"]
 	if edgeviewconfigIsSet && edgeviewconfigInterface != nil {
@@ -309,19 +395,12 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			interfaces = append(interfaces, m)
 		}
 	}
+	localOperatorConsoleURL := m["local_operator_console_url"].(string)
 	location := m["location"].(string)
 	memory := int64(m["memory"].(int)) // int64
 	modelID := m["model_id"].(string)
 	name := m["name"].(string)
 	obkey := m["onboarding_key"].(string)
-	var onboarding *models.DeviceCerts // DeviceCerts
-	onboardingInterface, onboardingIsSet := m["onboarding"]
-	if onboardingIsSet && onboardingInterface != nil {
-		onboardingMap := onboardingInterface.([]interface{})
-		if len(onboardingMap) > 0 {
-			onboarding = DeviceCertsModelFromMap(onboardingMap[0].(map[string]interface{}))
-		}
-	}
 	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64
 	preparePowerOffTime := m["prepare_power_off_time"].(string)
 	projectID := m["project_id"].(string)
@@ -335,13 +414,22 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			revision = ObjectRevisionModelFromMap(revisionMap[0].(map[string]interface{}))
 		}
 	}
+	//
 	serialno := m["serialno"].(string)
 	var sitePictures []string
 	sitePicturesInterface, sitePicturesIsSet := m["sitePictures"]
 	if sitePicturesIsSet {
-		sitePicturesSlice := sitePicturesInterface.([]interface{})
-		for _, i := range sitePicturesSlice {
-			sitePicturesSlice = append(sitePicturesSlice, i.(string))
+		var items []interface{}
+		if listItems, isList := sitePicturesInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = sitePicturesInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			sitePictures = append(sitePictures, v.(string))
 		}
 	}
 	storage := int64(m["storage"].(int)) // int64
@@ -366,48 +454,71 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 		utypeModel := utypeInterface.(string)
 		utype = models.NewModelArchType(models.ModelArchType(utypeModel))
 	}
+	var vlanAdapters []*models.VlanAdapter // []*VlanAdapter
+	vlanAdaptersInterface, vlanAdaptersIsSet := m["vlan_adapters"]
+	if vlanAdaptersIsSet {
+		var items []interface{}
+		if listItems, isList := vlanAdaptersInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = vlanAdaptersInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := VlanAdapterModelFromMap(v.(map[string]interface{}))
+			vlanAdapters = append(vlanAdapters, m)
+		}
+	}
 	return &models.Node{
-		AdminState:             adminState,
-		AssetID:                assetID,
-		BaseImage:              baseImage,
-		BaseOsRetryCounter:     baseOsRetryCounter,
-		BaseOsRetryTime:        baseOsRetryTime,
-		ClientIP:               clientIP,
-		ClusterID:              clusterID,
-		ConfigItem:             configItem,
-		CPU:                    cpu,
-		DebugKnob:              debugKnob,
-		DefaultNetInst:         defaultNetInst,
-		DeploymentTag:          deploymentTag,
-		Deprecated:             deprecated,
-		Description:            description,
-		DevLocation:            devLocation,
-		Dlisp:                  dlisp,
-		Edgeviewconfig:         edgeviewconfig,
-		GenerateSoftSerial:     generateSoftSerial,
-		ID:                     id,
-		Identity:               identity,
-		Interfaces:             interfaces,
-		Location:               location,
-		Memory:                 memory,
-		ModelID:                &modelID,
-		Name:                   &name,
-		Obkey:                  obkey,
-		Onboarding:             onboarding,
-		PreparePowerOffCounter: preparePowerOffCounter,
-		PreparePowerOffTime:    preparePowerOffTime,
-		ProjectID:              &projectID,
-		ResetCounter:           resetCounter,
-		ResetTime:              resetTime,
-		Revision:               revision,
-		Serialno:               serialno,
-		SitePictures:           sitePictures,
-		Storage:                storage,
-		Tags:                   tags,
-		Thread:                 thread,
-		Title:                  &title,
-		Token:                  token,
-		Utype:                  utype,
+		AdminState:              adminState,
+		AssetID:                 assetID,
+		BaseImage:               baseImage,
+		BaseOsForceUpgrade:      baseOsForceUpgrade,
+		BaseOsRetryCounter:      baseOsRetryCounter,
+		BaseOsRetryTime:         baseOsRetryTime,
+		ClientIP:                clientIP,
+		ClusterID:               clusterID,
+		ClusterInterface:        clusterInterface,
+		ConfigItem:              configItem,
+		ConfigLock:              configLock,
+		CPU:                     cpu,
+		DebugKnob:               debugKnob,
+		DefaultNetInst:          defaultNetInst,
+		DeploymentTag:           deploymentTag,
+		Deprecated:              deprecated,
+		Description:             description,
+		DevLocation:             devLocation,
+		Dlisp:                   dlisp,
+		EdgeNodeCluster:         edgeNodeCluster,
+		EdgeviewAllow:           edgeviewAllow,
+		Edgeviewconfig:          edgeviewconfig,
+		GenerateSoftSerial:      generateSoftSerial,
+		ID:                      id,
+		Identity:                identity,
+		Interfaces:              interfaces,
+		LocalOperatorConsoleURL: localOperatorConsoleURL,
+		Location:                location,
+		Memory:                  memory,
+		ModelID:                 &modelID,
+		Name:                    &name,
+		Obkey:                   obkey,
+		PreparePowerOffCounter:  preparePowerOffCounter,
+		PreparePowerOffTime:     preparePowerOffTime,
+		ProjectID:               &projectID,
+		ResetCounter:            resetCounter,
+		ResetTime:               resetTime,
+		Revision:                revision,
+		Serialno:                serialno,
+		SitePictures:            sitePictures,
+		Storage:                 storage,
+		Tags:                    tags,
+		Thread:                  thread,
+		Title:                   &title,
+		Token:                   token,
+		Utype:                   utype,
+		VlanAdapters:            vlanAdapters,
 	}
 }
 
@@ -415,11 +526,14 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("admin_state", m.AdminState)
 	d.Set("asset_id", m.AssetID)
 	d.Set("base_image", SetBaseOSImageSubResourceData(m.BaseImage))
+	d.Set("base_os_force_upgrade", m.BaseOsForceUpgrade)
 	d.Set("base_os_retry_counter", m.BaseOsRetryCounter)
 	d.Set("base_os_retry_time", m.BaseOsRetryTime)
 	d.Set("client_ip", m.ClientIP)
 	d.Set("cluster_id", m.ClusterID)
+	d.Set("cluster_interface", m.ClusterInterface)
 	d.Set("config_item", SetEDConfigItemSubResourceData(m.ConfigItem))
+	d.Set("config_lock", m.ConfigLock)
 	d.Set("cpu", m.CPU)
 	d.Set("debug_knob", SetDebugKnobDetailSubResourceData([]*models.DebugKnobDetail{m.DebugKnob}))
 	d.Set("default_net_inst", SetNetworkInstanceSubResourceData([]*models.NetworkInstance{m.DefaultNetInst}))
@@ -428,11 +542,14 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("description", m.Description)
 	d.Set("dev_location", SetGeoLocationSubResourceData([]*models.GeoLocation{m.DevLocation}))
 	d.Set("dlisp", SetDeviceLispSubResourceData([]*models.DeviceLisp{m.Dlisp}))
+	d.Set("edge_node_cluster", SetEdgeNodeClusterConfigSubResourceData([]*models.EdgeNodeClusterConfig{m.EdgeNodeCluster}))
+	d.Set("edgeview_allow", m.EdgeviewAllow)
 	d.Set("edgeviewconfig", SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{m.Edgeviewconfig}))
 	d.Set("generate_soft_serial", m.GenerateSoftSerial)
 	d.Set("id", m.ID)
 	d.Set("identity", m.Identity.String())
 	d.Set("interfaces", SetSysInterfaceSubResourceData(m.Interfaces))
+	d.Set("local_operator_console_url", m.LocalOperatorConsoleURL)
 	d.Set("location", m.Location)
 	d.Set("memory", m.Memory)
 	d.Set("model_id", m.ModelID)
@@ -452,6 +569,7 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("title", m.Title)
 	d.Set("token", m.Token)
 	d.Set("utype", m.Utype)
+	d.Set("vlan_adapters", SetVlanAdapterSubResourceData(m.VlanAdapters))
 }
 
 func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) {
@@ -461,11 +579,14 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["admin_state"] = DeviceConfigModel.AdminState
 			properties["asset_id"] = DeviceConfigModel.AssetID
 			properties["base_image"] = SetBaseOSImageSubResourceData(DeviceConfigModel.BaseImage)
+			properties["base_os_force_upgrade"] = DeviceConfigModel.BaseOsForceUpgrade
 			properties["base_os_retry_counter"] = DeviceConfigModel.BaseOsRetryCounter
 			properties["base_os_retry_time"] = DeviceConfigModel.BaseOsRetryTime
 			properties["client_ip"] = DeviceConfigModel.ClientIP
 			properties["cluster_id"] = DeviceConfigModel.ClusterID
+			properties["cluster_interface"] = DeviceConfigModel.ClusterInterface
 			properties["config_item"] = SetEDConfigItemSubResourceData(DeviceConfigModel.ConfigItem)
+			properties["config_lock"] = DeviceConfigModel.ConfigLock
 			properties["cpu"] = DeviceConfigModel.CPU
 			properties["debug_knob"] = SetDebugKnobDetailSubResourceData([]*models.DebugKnobDetail{DeviceConfigModel.DebugKnob})
 			properties["default_net_inst"] = SetNetworkInstanceSubResourceData([]*models.NetworkInstance{DeviceConfigModel.DefaultNetInst})
@@ -474,11 +595,14 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["description"] = DeviceConfigModel.Description
 			properties["dev_location"] = SetGeoLocationSubResourceData([]*models.GeoLocation{DeviceConfigModel.DevLocation})
 			properties["dlisp"] = SetDeviceLispSubResourceData([]*models.DeviceLisp{DeviceConfigModel.Dlisp})
+			properties["edge_node_cluster"] = SetEdgeNodeClusterConfigSubResourceData([]*models.EdgeNodeClusterConfig{DeviceConfigModel.EdgeNodeCluster})
+			properties["edgeview_allow"] = DeviceConfigModel.EdgeviewAllow
 			properties["edgeviewconfig"] = SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{DeviceConfigModel.Edgeviewconfig})
 			properties["generate_soft_serial"] = DeviceConfigModel.GenerateSoftSerial
 			properties["id"] = DeviceConfigModel.ID
 			properties["identity"] = DeviceConfigModel.Identity.String()
 			properties["interfaces"] = SetSysInterfaceSubResourceData(DeviceConfigModel.Interfaces)
+			properties["local_operator_console_url"] = DeviceConfigModel.LocalOperatorConsoleURL
 			properties["location"] = DeviceConfigModel.Location
 			properties["memory"] = DeviceConfigModel.Memory
 			properties["model_id"] = DeviceConfigModel.ModelID
@@ -498,6 +622,7 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["title"] = DeviceConfigModel.Title
 			properties["token"] = DeviceConfigModel.Token
 			properties["utype"] = DeviceConfigModel.Utype
+			properties["vlan_adapters"] = SetVlanAdapterSubResourceData(DeviceConfigModel.VlanAdapters)
 			d = append(d, &properties)
 		}
 	}
@@ -537,6 +662,12 @@ func Node() map[string]*schema.Schema {
 			Optional: true,
 		},
 
+		"base_os_force_upgrade": {
+			Description: `Force upgrade base OS`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
 		"base_os_retry_counter": {
 			Description: `device baseos retry counter`,
 			Type:        schema.TypeInt,
@@ -561,6 +692,12 @@ func Node() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		"cluster_interface": {
+			Description: `Cluster Interface`,
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+
 		"config_item": {
 			Description: `ED configurations`,
 			Type:        schema.TypeList, //GoType: []*EDConfigItem
@@ -569,6 +706,13 @@ func Node() map[string]*schema.Schema {
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
 			Optional: true,
+		},
+
+		"config_lock": {
+			Description: `device configuration lock setting`,
+			Type:        schema.TypeString,
+			Optional:    true,
+			Default:     models.DeviceConfigLockDEVICECONFIGLOCKDISABLED,
 		},
 
 		"cpu": {
@@ -632,6 +776,21 @@ func Node() map[string]*schema.Schema {
 			Optional: true,
 		},
 
+		"edge_node_cluster": {
+			Description: `Edge Node Cluster Configuration`,
+			Type:        schema.TypeList, //GoType: EdgeNodeClusterConfig
+			Elem: &schema.Resource{
+				Schema: EdgeNodeClusterConfigSchema(),
+			},
+			Optional: true,
+		},
+
+		"edgeview_allow": {
+			Description: `Allow device to enable Edgeview`,
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+
 		"edgeviewconfig": {
 			Description: `edgeview configuration for device`,
 			Type:        schema.TypeList, //GoType: EdgeviewCfg
@@ -657,16 +816,20 @@ func Node() map[string]*schema.Schema {
 			Description: `Device identity`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Computed:    true,
 		},
 
 		"interfaces": {
-			Description: `System Interface list`,
-			Type:        schema.TypeList, //GoType: []*SysInterface
-			Elem:        systemInterfaceElem(),
-			Required:    true,
-			// Set:              schema.HashResource(systemInterfaceElem()),
+			Description:      `System Interface list`,
+			Type:             schema.TypeList, //GoType: []*SysInterface
+			Elem:             systemInterfaceElem(),
+			Required:         true,
 			DiffSuppressFunc: diffSuppressSystemInterfaceListOrder("interfaces"),
+		},
+
+		"local_operator_console_url": {
+			Description: `local operator console url`,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"location": {
@@ -729,7 +892,7 @@ func Node() map[string]*schema.Schema {
 		"project_id": {
 			Description: `project name`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 
 		"reset_counter": {
@@ -808,22 +971,34 @@ func Node() map[string]*schema.Schema {
 			Description: `device model arch type`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Computed:    true,
+			Default:     "AMD64",
+		},
+
+		"vlan_adapters": {
+			Description: `A list of VLAN sub-interfaces configured for EVE management traffic and for local network instances`,
+			Type:        schema.TypeList, //GoType: []*VlanAdapter
+			Elem: &schema.Resource{
+				Schema: VlanAdapterSchema(),
+			},
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 	}
 }
 
-// Retrieve property field names for updating the DeviceConfig resource
-func GetEdgeNodePropertyFields() (t []string) {
+func GetDeviceConfigPropertyFields() (t []string) {
 	return []string{
 		"admin_state",
 		"asset_id",
 		"base_image",
+		"base_os_force_upgrade",
 		"base_os_retry_counter",
 		"base_os_retry_time",
 		"client_ip",
 		"cluster_id",
+		"cluster_interface",
 		"config_item",
+		"config_lock",
 		"cpu",
 		"debug_knob",
 		"default_net_inst",
@@ -832,17 +1007,19 @@ func GetEdgeNodePropertyFields() (t []string) {
 		"description",
 		"dev_location",
 		"dlisp",
+		"edge_node_cluster",
+		"edgeview_allow",
 		"edgeviewconfig",
 		"generate_soft_serial",
 		"id",
 		"identity",
 		"interfaces",
+		"local_operator_console_url",
 		"location",
 		"memory",
 		"model_id",
 		"name",
 		"onboarding_key",
-		"onboarding",
 		"prepare_power_off_counter",
 		"prepare_power_off_time",
 		"project_id",
@@ -857,6 +1034,7 @@ func GetEdgeNodePropertyFields() (t []string) {
 		"title",
 		"token",
 		"utype",
+		"vlan_adapters",
 	}
 }
 

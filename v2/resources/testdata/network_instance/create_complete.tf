@@ -30,9 +30,9 @@ resource "zedcloud_datastore"  "test_tf_provider" {
     ds_fqdn = "my-datastore.my-company.com"
     ds_path = "download/AMD64"
     ds_type = "DATASTORE_TYPE_AZUREBLOB"
-    name = "test"
-    title = "title"
-    description = "description"
+    name = "test_tf_provider-test_datastore"
+    title = "test_tf_provider-test_datastore"
+    description = "test_tf_provider-test_datastore"
     region = "eu"
     project_access_list = [zedcloud_project.test_tf_provider.id]
 }
@@ -112,13 +112,13 @@ resource "zedcloud_network_instance" "test_tf_netinst_complete" {
 
     # required
     device_id = zedcloud_edgenode.test_tf_provider.id
-    name = "test_tf_netinst_complete"
-    title = "test_tf_netinst_complete"
+    name = "test_tf_provider-netinst_complete"
+    title = "test_tf_provider-netinst_complete"
     kind = "NETWORK_INSTANCE_KIND_LOCAL"
     port = "eth1"
 
     # optional
-    description = "zedcloud_network_instance-complete-description"
+    description = "test_tf_provider-netinst_complete"
     type = "NETWORK_INSTANCE_DHCP_TYPE_V4"
     device_default = false
     dhcp = false

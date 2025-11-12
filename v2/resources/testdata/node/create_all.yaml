@@ -13,6 +13,7 @@ configitem:
       uint32value: 32
       uint64value: "64"
       valuetype: value type
+configlock: DEVICE_CONFIG_LOCK_DISABLED
 cpu: 0
 debugknob: null
 defaultnetinst: null
@@ -77,4 +78,4 @@ tags:
 thread: 0
 title: test_tf_provider-title
 token: token_all
-utype: null
+utype: "AMD64"

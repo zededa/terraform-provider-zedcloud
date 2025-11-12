@@ -21,7 +21,7 @@ appPolicies:
       owner: null
       desc: null
       images:
-      - imagename: openalpine_appprofile
+      - imagename: test_tf_provider-open_alpine_image
         imageid: 6c2609a1-7c0d-4115-ba99-5f16eb634f27
         imageformat: CONTAINER
         maxsize: '102400000'
