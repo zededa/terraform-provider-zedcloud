@@ -116,6 +116,7 @@ data "zedcloud_edgenode" "test_tf_provider_for_tags" {
   name     = "test_tf_provider_newedgenode_for_tags"
   title    = "test_tf_provider-create_edgenode-title"
   model_id = zedcloud_model.test_tf_provider.id
+  project_id = data.zedcloud_project.test_tf_provider_for_tags.id
   tags = {
     "tag-key-1" = "tag-value-1"
   }

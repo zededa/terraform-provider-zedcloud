@@ -116,6 +116,7 @@ data "zedcloud_edgenode" "test_tf_provider" {
   name     = "test_tf_provider_newedgenode_100"
   title    = "test_tf_provider-create_edgenode-title"
   model_id = zedcloud_model.test_tf_provider.id
+  project_id = zedcloud_project.test_tf_provider.id
   depends_on = [
     zedcloud_edgenode.test_tf_provider
   ]

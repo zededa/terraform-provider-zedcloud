@@ -116,6 +116,7 @@ data "zedcloud_edgenode" "test_tf_provider_deploy_via_tags" {
   name     = "test_tf_provider_newedgenode_deploy_via_tags"
   title    = "test_tf_provider-create_edgenode-title"
   model_id = zedcloud_model.test_tf_provider_deploy_via_tags.id
+  project_id = zedcloud_project.test_tf_provider_deploy_via_tags.id
   tags = {
     "tag-key-100" = "tag-value-100"
   }
