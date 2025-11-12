@@ -108,14 +108,6 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 			edgeNodeCluster = EdgeNodeClusterConfigModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
 		}
 	}
-	var edgeSyncConfig *models.EdgeSyncConfig // EdgeSyncConfig
-	edgeSyncConfigInterface, edgeSyncConfigIsSet := d.GetOk("edge_sync_config")
-	if edgeSyncConfigIsSet && edgeSyncConfigInterface != nil {
-		edgeSyncConfigMap := edgeSyncConfigInterface.([]interface{})
-		if len(edgeSyncConfigMap) > 0 {
-			edgeSyncConfig = EdgeSyncConfigModelFromMap(edgeSyncConfigMap[0].(map[string]interface{}))
-		}
-	}
 	edgeviewAllow, _ := d.Get("edgeview_allow").(bool)
 	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
 	edgeviewconfigInterface, edgeviewconfigIsSet := d.GetOk("edgeviewconfig")
@@ -245,7 +237,6 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 		DevLocation:             devLocation,
 		Dlisp:                   dlisp,
 		EdgeNodeCluster:         edgeNodeCluster,
-		EdgeSyncConfig:          edgeSyncConfig,
 		EdgeviewAllow:           edgeviewAllow,
 		Edgeviewconfig:          edgeviewconfig,
 		GenerateSoftSerial:      generateSoftSerial,
@@ -375,16 +366,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			edgeNodeCluster = EdgeNodeClusterConfigModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
 		}
 	}
-	//
-	var edgeSyncConfig *models.EdgeSyncConfig // EdgeSyncConfig
-	edgeSyncConfigInterface, edgeSyncConfigIsSet := m["edge_sync_config"]
-	if edgeSyncConfigIsSet && edgeSyncConfigInterface != nil {
-		edgeSyncConfigMap := edgeSyncConfigInterface.([]interface{})
-		if len(edgeSyncConfigMap) > 0 {
-			edgeSyncConfig = EdgeSyncConfigModelFromMap(edgeSyncConfigMap[0].(map[string]interface{}))
-		}
-	}
-	//
 	edgeviewAllow := m["edgeview_allow"].(bool)
 	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
 	edgeviewconfigInterface, edgeviewconfigIsSet := m["edgeviewconfig"]
@@ -511,7 +492,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 		DevLocation:             devLocation,
 		Dlisp:                   dlisp,
 		EdgeNodeCluster:         edgeNodeCluster,
-		EdgeSyncConfig:          edgeSyncConfig,
 		EdgeviewAllow:           edgeviewAllow,
 		Edgeviewconfig:          edgeviewconfig,
 		GenerateSoftSerial:      generateSoftSerial,
@@ -563,7 +543,6 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("dev_location", SetGeoLocationSubResourceData([]*models.GeoLocation{m.DevLocation}))
 	d.Set("dlisp", SetDeviceLispSubResourceData([]*models.DeviceLisp{m.Dlisp}))
 	d.Set("edge_node_cluster", SetEdgeNodeClusterConfigSubResourceData([]*models.EdgeNodeClusterConfig{m.EdgeNodeCluster}))
-	d.Set("edge_sync_config", SetEdgeSyncConfigSubResourceData([]*models.EdgeSyncConfig{m.EdgeSyncConfig}))
 	d.Set("edgeview_allow", m.EdgeviewAllow)
 	d.Set("edgeviewconfig", SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{m.Edgeviewconfig}))
 	d.Set("generate_soft_serial", m.GenerateSoftSerial)
@@ -617,7 +596,6 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["dev_location"] = SetGeoLocationSubResourceData([]*models.GeoLocation{DeviceConfigModel.DevLocation})
 			properties["dlisp"] = SetDeviceLispSubResourceData([]*models.DeviceLisp{DeviceConfigModel.Dlisp})
 			properties["edge_node_cluster"] = SetEdgeNodeClusterConfigSubResourceData([]*models.EdgeNodeClusterConfig{DeviceConfigModel.EdgeNodeCluster})
-			properties["edge_sync_config"] = SetEdgeSyncConfigSubResourceData([]*models.EdgeSyncConfig{DeviceConfigModel.EdgeSyncConfig})
 			properties["edgeview_allow"] = DeviceConfigModel.EdgeviewAllow
 			properties["edgeviewconfig"] = SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{DeviceConfigModel.Edgeviewconfig})
 			properties["generate_soft_serial"] = DeviceConfigModel.GenerateSoftSerial
@@ -803,15 +781,6 @@ func Node() map[string]*schema.Schema {
 			Type:        schema.TypeList, //GoType: EdgeNodeClusterConfig
 			Elem: &schema.Resource{
 				Schema: EdgeNodeClusterConfigSchema(),
-			},
-			Optional: true,
-		},
-
-		"edge_sync_config": {
-			Description: `edge sync config`,
-			Type:        schema.TypeList, //GoType: EdgeSyncConfig
-			Elem: &schema.Resource{
-				Schema: EdgeSyncConfigSchema(),
 			},
 			Optional: true,
 		},
@@ -1039,7 +1008,6 @@ func GetDeviceConfigPropertyFields() (t []string) {
 		"dev_location",
 		"dlisp",
 		"edge_node_cluster",
-		"edge_sync_config",
 		"edgeview_allow",
 		"edgeviewconfig",
 		"generate_soft_serial",

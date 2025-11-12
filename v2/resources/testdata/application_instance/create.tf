@@ -108,6 +108,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
     intfname = "ethernet0"
     tags = {}
+    shared_labels = []
   }
   config_item {
     bool_value = true
