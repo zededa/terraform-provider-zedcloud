@@ -80,4 +80,4 @@ tags:
 thread: 0
 title: test_tf_dev_adap_spec_net
 token: token_all
-utype: null
+utype: "AMD64"
