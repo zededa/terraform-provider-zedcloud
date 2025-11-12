@@ -144,19 +144,6 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   ]
 }
 
-# data "zedcloud_edgenode" "test_tf_provider" {
-#   name = "test_tf_provider"
-#   model_id = zedcloud_edgenode.test_tf_provider.model_id
-#   title = zedcloud_edgenode.test_tf_provider.title
-#   project_id = zedcloud_project.test_tf_provider.id
-#   depends_on = [
-#     zedcloud_edgenode.test_tf_provider
-#   ]
-#   interfaces {
-#     intfname = "ethernet0"
-#   }
-# }
-
 resource "zedcloud_application" "test_tf_provider" {
   name = "test_tf_provider"
   title = "test_tf_provider-ubuntu-all-ip"

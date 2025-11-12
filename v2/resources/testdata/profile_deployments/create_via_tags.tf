@@ -112,30 +112,6 @@ resource "zedcloud_edgenode" "test_tf_provider_deploy_via_tags" {
   }
 }
 
-data "zedcloud_edgenode" "test_tf_provider_deploy_via_tags" {
-  name     = "test_tf_provider_newedgenode_deploy_via_tags"
-  title    = "test_tf_provider-create_edgenode-title"
-  model_id = zedcloud_model.test_tf_provider_deploy_via_tags.id
-  project_id = zedcloud_project.test_tf_provider_deploy_via_tags.id
-  tags = {
-    "tag-key-100" = "tag-value-100"
-  }
-  interfaces {
-    cost       = 255
-    intf_usage = "ADAPTER_USAGE_MANAGEMENT"
-    intfname   = "defaultIPv4"
-    ipaddr     = "127.0.0.1"
-    # macaddr = "00:00:00:00:00:00"
-    tags = {
-      "system_interface_1_key" = "system_interface_1_value"
-      "system_interface_2_key" = "system_interface_2_value"
-    }
-  }
-  depends_on = [
-    zedcloud_edgenode.test_tf_provider_deploy_via_tags
-  ]
-}
-
 resource "zedcloud_asset_group" "test_tf_provider_deploy_via_tags" {
   name        = "test_tf_provider_assetgroup_deploy_via_tags"
   description = "This is an example asset group"

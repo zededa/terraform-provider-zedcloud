@@ -112,25 +112,12 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   }
 }
 
-data "zedcloud_edgenode" "test_tf_provider" {
-  name     = "test_tf_provider_newedgenode_100"
-  title    = "test_tf_provider-create_edgenode-title"
-  model_id = zedcloud_model.test_tf_provider.id
-  project_id = zedcloud_project.test_tf_provider.id
-  depends_on = [
-    zedcloud_edgenode.test_tf_provider
-  ]
-  interfaces {
-    intfname   = "defaultIPv4"
-  }
-}
-
 resource "zedcloud_asset_group" "test_tf_provider" {
   name        = "test_tf_provider_assetgroup"
   description = "This is an example asset group"
-  project_id  = data.zedcloud_project.test_tf_provider.id
+  project_id  = resource.zedcloud_project.test_tf_provider.id
   asset_ids {
-    ids = [ data.zedcloud_edgenode.test_tf_provider.id ]
+    ids = [ resource.zedcloud_edgenode.test_tf_provider.id ]
   }
 }
 
