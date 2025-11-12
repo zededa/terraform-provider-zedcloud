@@ -144,18 +144,18 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   ]
 }
 
-data "zedcloud_edgenode" "test_tf_provider" {
-  name = "test_tf_provider"
-  model_id = zedcloud_edgenode.test_tf_provider.model_id
-  title = zedcloud_edgenode.test_tf_provider.title
-  project_id = zedcloud_project.test_tf_provider.id
-  depends_on = [
-    zedcloud_edgenode.test_tf_provider
-  ]
-  interfaces {
-    intfname = "ethernet0"
-  }
-}
+# data "zedcloud_edgenode" "test_tf_provider" {
+#   name = "test_tf_provider"
+#   model_id = zedcloud_edgenode.test_tf_provider.model_id
+#   title = zedcloud_edgenode.test_tf_provider.title
+#   project_id = zedcloud_project.test_tf_provider.id
+#   depends_on = [
+#     zedcloud_edgenode.test_tf_provider
+#   ]
+#   interfaces {
+#     intfname = "ethernet0"
+#   }
+# }
 
 resource "zedcloud_application" "test_tf_provider" {
   name = "test_tf_provider"
@@ -227,7 +227,7 @@ data "zedcloud_application" "test_tf_provider" {
 }
 
 resource "zedcloud_volume_instance"  "test_tf_provider" {
-  device_id = data.zedcloud_edgenode.test_tf_provider.id
+  device_id = resource.zedcloud_edgenode.test_tf_provider.id
   name = "test_tf_provider"
   title = "test_title"
   description = "test_description"
@@ -244,7 +244,7 @@ resource "zedcloud_volume_instance"  "test_tf_provider" {
     "tag-key-2" = "tag-value-2"
   }
   depends_on = [
-    data.zedcloud_edgenode.test_tf_provider
+    resource.zedcloud_edgenode.test_tf_provider
   ]
 }
 
@@ -253,7 +253,7 @@ resource "zedcloud_network_instance" "test_tf_provider" {
     zedcloud_edgenode.test_tf_provider,
   ]
   # required
-  device_id = data.zedcloud_edgenode.test_tf_provider.id
+  device_id = resource.zedcloud_edgenode.test_tf_provider.id
   name = "test_tf_provider"
   title = "title"
   kind = "NETWORK_INSTANCE_KIND_LOCAL"

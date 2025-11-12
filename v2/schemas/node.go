@@ -797,6 +797,7 @@ func Node() map[string]*schema.Schema {
 			Description: `device configuration lock setting`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     models.DeviceConfigLockDEVICECONFIGLOCKDISABLED,
 		},
 
 		"cpu": {
