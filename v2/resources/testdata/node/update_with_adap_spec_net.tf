@@ -96,7 +96,7 @@ resource "zedcloud_network" "test_tf_adapter_spec_network" {
     depends_on = [
         zedcloud_project.test_tf_provider
     ]
-    name = "test_tf_adapter_spec_network"
+    name = "test_tf_provider-adapter_spec_network"
     title = "adapter specific network"
     project_id = zedcloud_project.test_tf_provider.id
     ip {
@@ -110,7 +110,7 @@ resource "zedcloud_edgenode" "test_tf_dev_adap_spec_net" {
 		zedcloud_model.test_tf_provider,
 		zedcloud_network.test_tf_adapter_spec_network
 	]
-	name = "test_tf_dev_adap_spec_net"
+	name = "test_tf_provider-dev_adap_spec_net"
 	model_id = zedcloud_model.test_tf_provider.id
 	project_id = zedcloud_project.test_tf_provider.id
 	title = "test_tf_dev_adap_spec_net"

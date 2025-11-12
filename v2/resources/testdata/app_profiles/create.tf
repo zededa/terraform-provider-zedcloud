@@ -3,9 +3,9 @@ resource "zedcloud_datastore" "open_ds" {
   ds_fqdn             = "http://147.75.33.217"
   ds_path             = "images"
   ds_type             = "DATASTORE_TYPE_HTTP"
-  name                = "open_ds"
-  title               = "open_ds"
-  description         = "open_ds"
+  name                = "test_tf_provider-open_ds"
+  title               = "test_tf_provider-open_ds"
+  description         = "test_tf_provider-open_ds"
   region              = "eu"
   # project_access_list = [zedcloud_project.test_tf_provider.id]
 }
@@ -14,7 +14,7 @@ resource "zedcloud_image" "open_alpine_image" {
   depends_on = [
     zedcloud_datastore.open_ds
   ]
-  name                = "openalpine_appprofile"
+  name                = "test_tf_provider-open_alpine_image"
   datastore_id        = zedcloud_datastore.open_ds.id
   image_arch          = "ARM64"
   image_format        = "CONTAINER"

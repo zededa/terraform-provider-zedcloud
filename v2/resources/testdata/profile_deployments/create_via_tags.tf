@@ -22,7 +22,7 @@ data "zedcloud_project" "test_tf_provider_deploy_via_tags" {
 }
 
 resource "zedcloud_brand" "test_tf_provider_deploy_via_tags" {
-  name        = "qemu100_deploy_via_tags"
+  name        = "test_tf_provider-qemu100_deploy_via_tags"
   title       = "QEMU100"
   description = "qemu100"
   origin_type = "ORIGIN_LOCAL"
@@ -131,7 +131,7 @@ resource "zedcloud_datastore" "open_ds_provider_deploy_via_tags" {
   ds_fqdn             = "http://147.75.33.217"
   ds_path             = "images"
   ds_type             = "DATASTORE_TYPE_HTTP"
-  name                = "open_ds_provider_deploy_via_tags"
+  name                = "test_tf_provider-open_ds_provider_deploy_via_tags"
   title               = "open_ds_provider"
   description         = "open_ds_provider"
   region              = "eu"
@@ -142,7 +142,7 @@ resource "zedcloud_image" "open_alpine_image_deploy_via_tags" {
   depends_on = [
     zedcloud_datastore.open_ds_provider_deploy_via_tags
   ]
-  name                = "openalpine_deploy_via_tags"
+  name                = "test_tf_provider-open_alpine_image_deploy_via_tags"
   datastore_id        = zedcloud_datastore.open_ds_provider_deploy_via_tags.id
   image_arch          = "ARM64"
   image_format        = "CONTAINER"
