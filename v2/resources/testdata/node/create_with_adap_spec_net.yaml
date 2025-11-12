@@ -46,7 +46,7 @@ interfaces:
       sharedlabels:
         - label1
         - label2
-      netname: "test_tf_adapter_spec_network"
+      netname: "test_tf_provider-adapter_spec_network"
       tags:
         system_interface_1_key: system_interface_1_value
         system_interface_2_key: system_interface_2_value
@@ -62,7 +62,7 @@ interfaces:
 location: ""
 memory: 0
 modelid: 2f716b55-2639-486c-9a2f-55a2e94146a6
-name: test_tf_dev_adap_spec_net
+name: test_tf_provider-dev_adap_spec_net
 obkey: ""
 onboarding: null
 preparepoweroffcounter: 0
@@ -78,6 +78,6 @@ tags:
     tag-key-1: tag-value-1
     tag-key-2: tag-value-2
 thread: 0
-title: test_tf_dev_adap_spec_net
+title: test_tf_provider-dev_adap_spec_net
 token: token_all
 utype: "AMD64"
