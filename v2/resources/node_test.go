@@ -128,7 +128,7 @@ func TestNode_Create_WithAdapterSpecificNetwork(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_dev_adap_spec_net", &gotCreated),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_provider-dev_adap_spec_net"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", "test_tf_dev_adap_spec_net"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", "test_tf_provider-dev_adap_spec_net"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_dev_adap_spec_net",
 						"id",

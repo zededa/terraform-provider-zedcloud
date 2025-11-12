@@ -118,7 +118,7 @@ resource "zedcloud_network_instance" "test_tf_netinst_complete" {
     port = "eth1"
 
     # optional
-    description = "test_tf_provider-netinst_complete-description"
+    description = "test_tf_provider-netinst_complete"
     type = "NETWORK_INSTANCE_DHCP_TYPE_V4"
     device_default = false
     dhcp = false
