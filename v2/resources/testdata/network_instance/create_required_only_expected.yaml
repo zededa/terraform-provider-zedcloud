@@ -1,5 +1,5 @@
-name: "name"
-title: "title"
+name: "test_tf_provider-netinst"
+title: "test_tf_provider-netinst"
 kind: "NETWORK_INSTANCE_KIND_SWITCH"
 port: "eth1"
 type: "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED"

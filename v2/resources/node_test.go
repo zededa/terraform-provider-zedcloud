@@ -35,7 +35,7 @@ func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
 				Config: input,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.required_only", &got),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "required_only"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "test_tf_provider-required_only"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "title", "required_only-title"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.required_only",
@@ -127,7 +127,7 @@ func TestNode_Create_WithAdapterSpecificNetwork(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_dev_adap_spec_net", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_dev_adap_spec_net"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_provider-dev_adap_spec_net"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", "test_tf_dev_adap_spec_net"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_dev_adap_spec_net",
@@ -141,7 +141,7 @@ func TestNode_Create_WithAdapterSpecificNetwork(t *testing.T) {
 				Config: inputUpdate,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_dev_adap_spec_net", &gotUpdated),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_dev_adap_spec_net"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_provider-dev_adap_spec_net"),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", "test_tf_dev_adap_spec_net"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_dev_adap_spec_net",
