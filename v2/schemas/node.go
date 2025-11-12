@@ -149,36 +149,12 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 	location, _ := d.Get("location").(string)
 	memoryInt, _ := d.Get("memory").(int)
 	memory := int64(memoryInt)
-	var model *models.ModelInfo // ModelInfo
-	modelInterface, modelIsSet := d.GetOk("model")
-	if modelIsSet && modelInterface != nil {
-		modelMap := modelInterface.([]interface{})
-		if len(modelMap) > 0 {
-			model = ModelInfoModelFromMap(modelMap[0].(map[string]interface{}))
-		}
-	}
 	modelID, _ := d.Get("model_id").(string)
 	name, _ := d.Get("name").(string)
 	obkey, _ := d.Get("onboarding_key").(string)
-	var onboarding *models.DeviceCerts // DeviceCerts
-	onboardingInterface, onboardingIsSet := d.GetOk("onboarding")
-	if onboardingIsSet && onboardingInterface != nil {
-		onboardingMap := onboardingInterface.([]interface{})
-		if len(onboardingMap) > 0 {
-			onboarding = DeviceCertsModelFromMap(onboardingMap[0].(map[string]interface{}))
-		}
-	}
 	preparePowerOffCounterInt, _ := d.Get("prepare_power_off_counter").(int)
 	preparePowerOffCounter := int64(preparePowerOffCounterInt)
 	preparePowerOffTime, _ := d.Get("prepare_power_off_time").(string)
-	var project *models.ProjectInfo // ProjectInfo
-	projectInterface, projectIsSet := d.GetOk("project")
-	if projectIsSet && projectInterface != nil {
-		projectMap := projectInterface.([]interface{})
-		if len(projectMap) > 0 {
-			project = ProjectInfoModelFromMap(projectMap[0].(map[string]interface{}))
-		}
-	}
 	projectID, _ := d.Get("project_id").(string)
 	resetCounterInt, _ := d.Get("reset_counter").(int)
 	resetCounter := int64(resetCounterInt)
@@ -279,14 +255,11 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 		LocalOperatorConsoleURL: localOperatorConsoleURL,
 		Location:                location,
 		Memory:                  memory,
-		Model:                   model,
 		ModelID:                 &modelID, // string
 		Name:                    &name,    // string
 		Obkey:                   obkey,
-		Onboarding:              onboarding,
 		PreparePowerOffCounter:  preparePowerOffCounter,
 		PreparePowerOffTime:     preparePowerOffTime,
-		Project:                 project,
 		ProjectID:               &projectID, // string
 		ResetCounter:            resetCounter,
 		ResetTime:               resetTime,
@@ -444,38 +417,11 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 	localOperatorConsoleURL := m["local_operator_console_url"].(string)
 	location := m["location"].(string)
 	memory := int64(m["memory"].(int)) // int64
-	var model *models.ModelInfo        // ModelInfo
-	modelInterface, modelIsSet := m["model"]
-	if modelIsSet && modelInterface != nil {
-		modelMap := modelInterface.([]interface{})
-		if len(modelMap) > 0 {
-			model = ModelInfoModelFromMap(modelMap[0].(map[string]interface{}))
-		}
-	}
-	//
 	modelID := m["model_id"].(string)
 	name := m["name"].(string)
 	obkey := m["onboarding_key"].(string)
-	var onboarding *models.DeviceCerts // DeviceCerts
-	onboardingInterface, onboardingIsSet := m["onboarding"]
-	if onboardingIsSet && onboardingInterface != nil {
-		onboardingMap := onboardingInterface.([]interface{})
-		if len(onboardingMap) > 0 {
-			onboarding = DeviceCertsModelFromMap(onboardingMap[0].(map[string]interface{}))
-		}
-	}
-	//
 	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64
 	preparePowerOffTime := m["prepare_power_off_time"].(string)
-	var project *models.ProjectInfo // ProjectInfo
-	projectInterface, projectIsSet := m["project"]
-	if projectIsSet && projectInterface != nil {
-		projectMap := projectInterface.([]interface{})
-		if len(projectMap) > 0 {
-			project = ProjectInfoModelFromMap(projectMap[0].(map[string]interface{}))
-		}
-	}
-	//
 	projectID := m["project_id"].(string)
 	resetCounter := int64(m["reset_counter"].(int)) // int64
 	resetTime := m["reset_time"].(string)
@@ -575,14 +521,11 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 		LocalOperatorConsoleURL: localOperatorConsoleURL,
 		Location:                location,
 		Memory:                  memory,
-		Model:                   model,
 		ModelID:                 &modelID,
 		Name:                    &name,
 		Obkey:                   obkey,
-		Onboarding:              onboarding,
 		PreparePowerOffCounter:  preparePowerOffCounter,
 		PreparePowerOffTime:     preparePowerOffTime,
-		Project:                 project,
 		ProjectID:               &projectID,
 		ResetCounter:            resetCounter,
 		ResetTime:               resetTime,
@@ -630,14 +573,11 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("local_operator_console_url", m.LocalOperatorConsoleURL)
 	d.Set("location", m.Location)
 	d.Set("memory", m.Memory)
-	d.Set("model", SetModelInfoSubResourceData([]*models.ModelInfo{m.Model}))
 	d.Set("model_id", m.ModelID)
 	d.Set("name", m.Name)
 	d.Set("onboarding_key", m.Obkey)
-	d.Set("onboarding", SetDeviceCertsSubResourceData([]*models.DeviceCerts{m.Onboarding}))
 	d.Set("prepare_power_off_counter", m.PreparePowerOffCounter)
 	d.Set("prepare_power_off_time", m.PreparePowerOffTime)
-	d.Set("project", SetProjectInfoSubResourceData([]*models.ProjectInfo{m.Project}))
 	d.Set("project_id", m.ProjectID)
 	d.Set("reset_counter", m.ResetCounter)
 	d.Set("reset_time", m.ResetTime)
@@ -687,14 +627,11 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["local_operator_console_url"] = DeviceConfigModel.LocalOperatorConsoleURL
 			properties["location"] = DeviceConfigModel.Location
 			properties["memory"] = DeviceConfigModel.Memory
-			properties["model"] = SetModelInfoSubResourceData([]*models.ModelInfo{DeviceConfigModel.Model})
 			properties["model_id"] = DeviceConfigModel.ModelID
 			properties["name"] = DeviceConfigModel.Name
 			properties["onboarding_key"] = DeviceConfigModel.Obkey
-			properties["onboarding"] = SetDeviceCertsSubResourceData([]*models.DeviceCerts{DeviceConfigModel.Onboarding})
 			properties["prepare_power_off_counter"] = DeviceConfigModel.PreparePowerOffCounter
 			properties["prepare_power_off_time"] = DeviceConfigModel.PreparePowerOffTime
-			properties["project"] = SetProjectInfoSubResourceData([]*models.ProjectInfo{DeviceConfigModel.Project})
 			properties["project_id"] = DeviceConfigModel.ProjectID
 			properties["reset_counter"] = DeviceConfigModel.ResetCounter
 			properties["reset_time"] = DeviceConfigModel.ResetTime
@@ -938,15 +875,6 @@ func Node() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
-		"model": {
-			Description: `Model specific info`,
-			Type:        schema.TypeList, //GoType: ModelInfo
-			Elem: &schema.Resource{
-				Schema: ModelInfoSchema(),
-			},
-			Optional: true,
-		},
-
 		"model_id": {
 			Description: `device model`,
 			Type:        schema.TypeString,
@@ -980,15 +908,6 @@ func Node() map[string]*schema.Schema {
 			},
 		},
 
-		"onboarding": {
-			Description: `Device level certificates used while onboarding`,
-			Type:        schema.TypeList, //GoType: DeviceCerts
-			Elem: &schema.Resource{
-				Schema: DeviceCertsSchema(),
-			},
-			Optional: true,
-		},
-
 		"prepare_power_off_counter": {
 			Description: `prepare poweroff counter`,
 			Type:        schema.TypeInt,
@@ -999,15 +918,6 @@ func Node() map[string]*schema.Schema {
 			Description: `prepare poweroff time`,
 			Type:        schema.TypeString,
 			Optional:    true,
-		},
-
-		"project": {
-			Description: `Project specific info`,
-			Type:        schema.TypeList, //GoType: ProjectInfo
-			Elem: &schema.Resource{
-				Schema: ProjectInfoSchema(),
-			},
-			Optional: true,
 		},
 
 		"project_id": {
@@ -1092,6 +1002,7 @@ func Node() map[string]*schema.Schema {
 			Description: `device model arch type`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     "AMD64",
 		},
 
 		"vlan_adapters": {
@@ -1138,14 +1049,11 @@ func GetDeviceConfigPropertyFields() (t []string) {
 		"local_operator_console_url",
 		"location",
 		"memory",
-		"model",
 		"model_id",
 		"name",
 		"onboarding_key",
-		"onboarding",
 		"prepare_power_off_counter",
 		"prepare_power_off_time",
-		"project",
 		"project_id",
 		"reset_counter",
 		"reset_time",
