@@ -633,7 +633,7 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("model", SetModelInfoSubResourceData([]*models.ModelInfo{m.Model}))
 	d.Set("model_id", m.ModelID)
 	d.Set("name", m.Name)
-	d.Set("obkey", m.Obkey)
+	d.Set("onboarding_key", m.Obkey)
 	d.Set("onboarding", SetDeviceCertsSubResourceData([]*models.DeviceCerts{m.Onboarding}))
 	d.Set("prepare_power_off_counter", m.PreparePowerOffCounter)
 	d.Set("prepare_power_off_time", m.PreparePowerOffTime)
@@ -690,7 +690,7 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["model"] = SetModelInfoSubResourceData([]*models.ModelInfo{DeviceConfigModel.Model})
 			properties["model_id"] = DeviceConfigModel.ModelID
 			properties["name"] = DeviceConfigModel.Name
-			properties["obkey"] = DeviceConfigModel.Obkey
+			properties["onboarding_key"] = DeviceConfigModel.Obkey
 			properties["onboarding"] = SetDeviceCertsSubResourceData([]*models.DeviceCerts{DeviceConfigModel.Onboarding})
 			properties["prepare_power_off_counter"] = DeviceConfigModel.PreparePowerOffCounter
 			properties["prepare_power_off_time"] = DeviceConfigModel.PreparePowerOffTime
