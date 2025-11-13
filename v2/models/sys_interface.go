@@ -26,6 +26,9 @@ type SysInterface struct {
 	// device adapter specific network configuration
 	AdapterSpecificNet *Network `json:"adapterSpecificNet,omitempty"`
 
+	// Allow the local operator to make (limited) configuration changes to this network adapter.
+	AllowLocalModifications bool `json:"allowLocalModifications,omitempty"`
+
 	// cost of using this interface. Default is 0.
 	// Maximum: 255
 	Cost int64 `json:"cost,omitempty"`
