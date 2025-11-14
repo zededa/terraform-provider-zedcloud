@@ -81,7 +81,7 @@ resource "zedcloud_model" "test_tf_provider" {
 			Ifname = "eth0"
 			PciLong = "0000:02:00.0"
 		}
-		logicallabel = "ethernet0"
+		logicallabel = "eth0"
 		usage_policy = {
 			FreeUplink = true
 		}
