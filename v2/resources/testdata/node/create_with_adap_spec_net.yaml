@@ -39,6 +39,7 @@ identity: ""
 interfaces:
     - cost: 255
       intfusage: ADAPTER_USAGE_MANAGEMENT
+      allowlocalmodifications: true
       intfname: eth0
       ipaddr: 10.1.1.3
       macaddr: ""

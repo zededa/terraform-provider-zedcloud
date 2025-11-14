@@ -12245,6 +12245,10 @@
                     "type": "integer",
                     "format": "int64",
                     "description": "Network MTU"
+                },
+                "configSource": {
+                    "$ref": "#/definitions/commonPortConfigSource",
+                    "description": "Identifies the source of this network port configuration"
                 }
             },
             "description": "NetworkStatus is used to store the Network status",
@@ -12413,7 +12417,9 @@
                 "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                 "OBJECT_TYPE_ASSET_GROUP",
                 "OBJECT_TYPE_APP_PROFILE",
-                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                "OBJECT_TYPE_ZKS_INSTANCE",
+                "OBJECT_TYPE_CLUSTER_GROUP"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -13055,6 +13061,14 @@
                         "$ref": "#/definitions/SharedStorageSummary"
                     },
                     "description": "Shared storage summary"
+                },
+                "Id": {
+                    "type": "string",
+                    "description": "Id"
+                },
+                "Name": {
+                    "type": "string",
+                    "description": "Name"
                 }
             },
             "description": "Storage Summary",
@@ -14266,6 +14280,36 @@
             "required": [
                 "port"
             ]
+        },
+        "commonNetworkConfigOrigin": {
+            "type": "string",
+            "enum": [
+                "NETWORK_CONFIG_ORIGIN_UNSPECIFIED",
+                "NETWORK_CONFIG_ORIGIN_CONTROLLER",
+                "NETWORK_CONFIG_ORIGIN_BOOTSTRAP",
+                "NETWORK_CONFIG_ORIGIN_OVERRIDE",
+                "NETWORK_CONFIG_ORIGIN_LASTRESORT",
+                "NETWORK_CONFIG_ORIGIN_TUI",
+                "NETWORK_CONFIG_ORIGIN_LOC",
+                "NETWORK_CONFIG_ORIGIN_LPS"
+            ],
+            "default": "NETWORK_CONFIG_ORIGIN_UNSPECIFIED",
+            "description": "NetworkConfigOrigin enumerates all possible origins of a network port configuration.\n\n - NETWORK_CONFIG_ORIGIN_UNSPECIFIED: Unknown or unset origin.\n - NETWORK_CONFIG_ORIGIN_CONTROLLER: Config received from the controller.\n - NETWORK_CONFIG_ORIGIN_BOOTSTRAP: Initial device config embedded in the EVE installer, signed by the controller.\n - NETWORK_CONFIG_ORIGIN_OVERRIDE: Manually created JSON config injected into the installer.\n - NETWORK_CONFIG_ORIGIN_LASTRESORT: Fallback configuration automatically generated to enable DHCP on all Ethernet ports.\nUsed when no network config is available or when \"network.fallback.any.eth\" is enabled\nand none of the existing configs provide controller connectivity.\n - NETWORK_CONFIG_ORIGIN_TUI: Config entered via the terminal UI (TUI).\n - NETWORK_CONFIG_ORIGIN_LOC: Configuration signed by the controller and delivered through the\nLocal Operator Console (LOC) in an air-gapped environment.\n - NETWORK_CONFIG_ORIGIN_LPS: Config changes made locally through the Local Profile Server (LPS)."
+        },
+        "commonPortConfigSource": {
+            "type": "object",
+            "properties": {
+                "origin": {
+                    "$ref": "#/definitions/commonNetworkConfigOrigin",
+                    "description": "Indicates where EVE obtained the network config."
+                },
+                "submittedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp when this port\u2019s configuration was originally submitted\nor created at its source.\n\nMeaning depends on the origin:\n- Controller, LOC, bootstrap: timestamp provided by the controller.\n- Local override.json: when the file was first loaded by EVE.\n- Last-resort: when EVE generated the fallback config.\n- LPS modifications: when the modified config was received.\n- TUI: when the user submitted the configuration.\n\nThis is different from DevicePortStatus.timePriority, which is used\nto compare and prioritize different sources of network configuration\n(and may be synthetic for some sources, e.g. year 2000 for override.json,\nepoch 0 for last-resort). By contrast, submitted_at represents when this\nport\u2019s configuration first came into existence, regardless of when or whether\nthe device applied it.\n\nNote: this is a per-port timestamp. The underlying network config may\ncover multiple ports, but only the portion relevant to this port is\nreflected here."
+                }
+            },
+            "description": "PortConfigSource describes the origin of the configuration used for a network port.\nIt helps distinguish between controller-provided, locally-modified, or initial configs."
         },
         "configFormat": {
             "type": "string",

@@ -81,7 +81,7 @@ resource "zedcloud_model" "test_tf_provider" {
 			Ifname = "eth0"
 			PciLong = "0000:02:00.0"
 		}
-		logicallabel = "ethernet0"
+		logicallabel = "eth0"
 		usage_policy = {
 			FreeUplink = true
 		}
@@ -131,6 +131,7 @@ resource "zedcloud_edgenode" "test_tf_dev_adap_spec_net" {
 		netname = zedcloud_network.test_tf_adapter_spec_network.name
 		netid = zedcloud_network.test_tf_adapter_spec_network.id
         net_dhcp = zedcloud_network.test_tf_adapter_spec_network.ip[0].dhcp
+		allow_local_modifications = true
 		adapter_specific_net {
 			kind = "NETWORK_KIND_V4"
 			dns_list {}

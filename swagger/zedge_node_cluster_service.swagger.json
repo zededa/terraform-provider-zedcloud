@@ -124,6 +124,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "filter.includeZks",
+                        "description": "include zks clusters",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "next.pageToken",
                         "description": "Page Token",
                         "in": "query",
@@ -352,6 +359,13 @@
                     {
                         "name": "filter.namePattern",
                         "description": "cluster name pattern",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "filter.includeZks",
+                        "description": "include zks clusters",
                         "in": "query",
                         "required": false,
                         "type": "string"
@@ -707,6 +721,19 @@
                                         "$ref": "#/definitions/EdgeNodeClusterNode"
                                     },
                                     "description": "A list of nodes in the cluster"
+                                },
+                                "clusterType": {
+                                    "$ref": "#/definitions/EdgeNodeClusterType",
+                                    "description": "Type of the edge-node cluster"
+                                },
+                                "manifestUrl": {
+                                    "type": "string",
+                                    "description": "URL to the configuration manifest"
+                                },
+                                "manifest": {
+                                    "type": "string",
+                                    "format": "byte",
+                                    "description": "Configuration manifest in bytes"
                                 }
                             },
                             "description": "Cluster detail",
@@ -1497,6 +1524,19 @@
                         "$ref": "#/definitions/EdgeNodeClusterNode"
                     },
                     "description": "A list of nodes in the cluster"
+                },
+                "clusterType": {
+                    "$ref": "#/definitions/EdgeNodeClusterType",
+                    "description": "Type of the edge-node cluster"
+                },
+                "manifestUrl": {
+                    "type": "string",
+                    "description": "URL to the configuration manifest"
+                },
+                "manifest": {
+                    "type": "string",
+                    "format": "byte",
+                    "description": "Configuration manifest in bytes"
                 }
             },
             "description": "Cluster detail",
@@ -1598,6 +1638,10 @@
                 "namePattern": {
                     "type": "string",
                     "description": "cluster name pattern"
+                },
+                "includeZks": {
+                    "type": "string",
+                    "description": "include zks clusters"
                 }
             }
         },
@@ -1717,6 +1761,15 @@
                 }
             }
         },
+        "EdgeNodeClusterType": {
+            "type": "string",
+            "enum": [
+                "EDGE_NODE_CLUSTER_TYPE_STANDART",
+                "EDGE_NODE_CLUSTER_TYPE_ZKS"
+            ],
+            "default": "EDGE_NODE_CLUSTER_TYPE_STANDART",
+            "description": " - EDGE_NODE_CLUSTER_TYPE_STANDART: A standard cluster is a cluster that has exactly 3 nodes.\nThis is the default type, which does not support zks clusters.\n - EDGE_NODE_CLUSTER_TYPE_ZKS: A zks cluster is a cluster that can have 1, 3 or more nodes.\nIts role is to support zks clusters."
+        },
         "EdgeNodeClusterUpgradeStatus": {
             "type": "string",
             "enum": [
@@ -1822,7 +1875,9 @@
                 "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                 "OBJECT_TYPE_ASSET_GROUP",
                 "OBJECT_TYPE_APP_PROFILE",
-                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                "OBJECT_TYPE_ZKS_INSTANCE",
+                "OBJECT_TYPE_CLUSTER_GROUP"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },

@@ -1102,6 +1102,13 @@
                         "type": "string"
                     },
                     {
+                        "name": "createdByPattern",
+                        "description": "username pattern who created the device",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
                         "name": "X-Request-Id",
                         "in": "header",
                         "required": false,
@@ -12104,6 +12111,11 @@
                         "$ref": "#/definitions/vlanAdapter"
                     },
                     "description": "A list of VLAN adapters"
+                },
+                "revision": {
+                    "type": "object",
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "Object revision details"
                 }
             },
             "description": "Device Configuration request payload holds the device properties",

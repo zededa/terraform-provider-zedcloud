@@ -1526,7 +1526,9 @@
                             "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                             "OBJECT_TYPE_ASSET_GROUP",
                             "OBJECT_TYPE_APP_PROFILE",
-                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                            "OBJECT_TYPE_ZKS_INSTANCE",
+                            "OBJECT_TYPE_CLUSTER_GROUP"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -1829,7 +1831,9 @@
                             "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                             "OBJECT_TYPE_ASSET_GROUP",
                             "OBJECT_TYPE_APP_PROFILE",
-                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                            "OBJECT_TYPE_ZKS_INSTANCE",
+                            "OBJECT_TYPE_CLUSTER_GROUP"
                         ],
                         "default": "OBJECT_TYPE_UNSPECIFIED"
                     },
@@ -2509,7 +2513,9 @@
                 "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                 "OBJECT_TYPE_ASSET_GROUP",
                 "OBJECT_TYPE_APP_PROFILE",
-                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                "OBJECT_TYPE_ZKS_INSTANCE",
+                "OBJECT_TYPE_CLUSTER_GROUP"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -2868,7 +2874,7 @@
                     "type": "boolean",
                     "description": "When true, statically configured IP addresses are used exclusively,\nignoring any IP addresses provided by DHCP.\nIf true and no static IP addresses are set, the interface will have no IP assigned."
                 },
-                "dnsConfigExclusive": {
+                "dnsConfigExclusively": {
                     "type": "boolean",
                     "description": "When true, statically configured DNS servers and domain name(s) are used\nexclusively, ignoring any DNS-related configuration provided by DHCP.\nIf true and no static DNS servers are set, no DNS servers will be used.\nSimilarly, if no static domain name(s) are set, no domain name(s) will be used.\nFor DHCP (IPv4), this applies to option 6 (DNS servers), option 15\n(single domain name), and option 119 (search domains).\nFor DHCPv6 (IPv6), this applies to option 23 (DNS servers) and option 24\n(domain search list)."
                 },
@@ -5142,6 +5148,16 @@
             ],
             "default": "TypeNOOP"
         },
+        "eveconfigClusterType": {
+            "type": "string",
+            "enum": [
+                "CLUSTER_TYPE_UNSPECIFIED",
+                "CLUSTER_TYPE_K3S_BASE",
+                "CLUSTER_TYPE_REPLICATED_STORAGE",
+                "CLUSTER_TYPE_HA"
+            ],
+            "default": "CLUSTER_TYPE_UNSPECIFIED"
+        },
         "eveconfigEdgeNodeCluster": {
             "type": "object",
             "properties": {
@@ -5172,6 +5188,14 @@
                 "encryptedClusterToken": {
                     "$ref": "#/definitions/commonCipherBlock",
                     "title": "encrypted token string, use edge-node TPM to decrypt"
+                },
+                "clusterType": {
+                    "$ref": "#/definitions/eveconfigClusterType",
+                    "title": "Cluster Type for eve to determine component, app, and volume scheduling needs"
+                },
+                "tieBreakerNodeId": {
+                    "type": "string",
+                    "description": "Node Id for eve to disable all pod scheduling\nEVE-OS should use this to set kubernetes node labels identifying\nthe tie-breaker node to the kubernetes scheduler.\nNode labels are used in the node selector specification of\nkubernetes objects to direct pod scheduling away from a\nspecific node due to node limitations."
                 }
             }
         },

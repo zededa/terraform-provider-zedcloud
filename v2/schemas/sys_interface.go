@@ -20,6 +20,7 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 			adapterSpecificNet = NetworkModelFromMap(adapterSpecificNetMap[0].(map[string]interface{}))
 		}
 	}
+	allowLocalModifications, _ := d.Get("allow_local_modifications").(bool)
 	costInt, _ := d.Get("cost").(int)
 	cost := int64(costInt)
 	var intfUsage *models.AdapterUsage // AdapterUsage
@@ -73,18 +74,19 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 
 	ztype, _ := d.Get("ztype").(string)
 	return &models.SysInterface{
-		AdapterSpecificNet: adapterSpecificNet,
-		Cost:               cost,
-		IntfUsage:          intfUsage,
-		Intfname:           intfname,
-		Ipaddr:             ipaddr,
-		Macaddr:            macaddr,
-		NetDhcp:            netDhcp,
-		Netid:              netid,
-		Netname:            netname,
-		SharedLabels:       sharedLabels,
-		Tags:               tags,
-		Ztype:              ztype,
+		AdapterSpecificNet:      adapterSpecificNet,
+		AllowLocalModifications: allowLocalModifications,
+		Cost:                    cost,
+		IntfUsage:               intfUsage,
+		Intfname:                intfname,
+		Ipaddr:                  ipaddr,
+		Macaddr:                 macaddr,
+		NetDhcp:                 netDhcp,
+		Netid:                   netid,
+		Netname:                 netname,
+		SharedLabels:            sharedLabels,
+		Tags:                    tags,
+		Ztype:                   ztype,
 	}
 }
 
@@ -99,6 +101,7 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 		}
 	}
 	//
+	allowLocalModifications := m["allow_local_modifications"].(bool)
 	cost := int64(m["cost"].(int))     // int64
 	var intfUsage *models.AdapterUsage // AdapterUsage
 	intfUsageInterface, intfUsageIsSet := m["intf_usage"]
@@ -151,18 +154,19 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 
 	ztype := m["ztype"].(string)
 	return &models.SysInterface{
-		AdapterSpecificNet: adapterSpecificNet,
-		Cost:               cost,
-		IntfUsage:          intfUsage,
-		Intfname:           intfname,
-		Ipaddr:             ipaddr,
-		Macaddr:            macaddr,
-		NetDhcp:            netDhcp,
-		Netid:              netid,
-		Netname:            netname,
-		SharedLabels:       sharedLabels,
-		Tags:               tags,
-		Ztype:              ztype,
+		AdapterSpecificNet:      adapterSpecificNet,
+		AllowLocalModifications: allowLocalModifications,
+		Cost:                    cost,
+		IntfUsage:               intfUsage,
+		Intfname:                intfname,
+		Ipaddr:                  ipaddr,
+		Macaddr:                 macaddr,
+		NetDhcp:                 netDhcp,
+		Netid:                   netid,
+		Netname:                 netname,
+		SharedLabels:            sharedLabels,
+		Tags:                    tags,
+		Ztype:                   ztype,
 	}
 }
 
@@ -186,6 +190,7 @@ func SetSysInterfaceSubResourceData(m []*models.SysInterface) (d []*map[string]i
 		if SysInterfaceModel != nil {
 			properties := make(map[string]interface{})
 			properties["adapter_specific_net"] = SetNetworkSubResourceData([]*models.Network{SysInterfaceModel.AdapterSpecificNet})
+			properties["allow_local_modifications"] = SysInterfaceModel.AllowLocalModifications
 			properties["cost"] = SysInterfaceModel.Cost
 			properties["intf_usage"] = SysInterfaceModel.IntfUsage
 			properties["intfname"] = SysInterfaceModel.Intfname
@@ -212,6 +217,12 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 				Schema: Network(),
 			},
 			Optional: true,
+		},
+
+		"allow_local_modifications": {
+			Description: `Allow the local operator to make (limited) configuration changes to this network adapter.`,
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 
 		"cost": {
@@ -293,6 +304,7 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 func GetSysInterfacePropertyFields() (t []string) {
 	return []string{
 		"adapter_specific_net",
+		"allow_local_modifications",
 		"cost",
 		"intf_usage",
 		"intfname",
@@ -328,6 +340,10 @@ func CompareSystemInterfaceList(a, b []*models.SysInterface) (bool, string) {
 
 	reason := ""
 	equal := slices.EqualFunc(a, b, func(x, y *models.SysInterface) bool {
+		if x.AllowLocalModifications != y.AllowLocalModifications {
+			reason = fmt.Sprintf("AllowLocalModifications mismatch: %t vs %t", x.AllowLocalModifications, y.AllowLocalModifications)
+			return false
+		}
 		if x.Cost != y.Cost {
 			reason = fmt.Sprintf("Cost mismatch: %d vs %d", x.Cost, y.Cost)
 			return false

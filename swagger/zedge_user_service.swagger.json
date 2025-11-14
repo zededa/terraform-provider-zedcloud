@@ -5835,6 +5835,17 @@
                                     },
                                     "description": "Allowed enterprise project",
                                     "title": "internal"
+                                },
+                                "zksSyncStatus": {
+                                    "$ref": "#/definitions/ZksSyncStatus",
+                                    "description": "ZKS Servers Sync Status"
+                                },
+                                "tokenZksSyncStatus": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "$ref": "#/definitions/ZksSyncStatus"
+                                    },
+                                    "description": "User session token sync status"
                                 }
                             },
                             "description": "User meta data",
@@ -7682,6 +7693,17 @@
                     },
                     "description": "Allowed enterprise project",
                     "title": "internal"
+                },
+                "zksSyncStatus": {
+                    "$ref": "#/definitions/ZksSyncStatus",
+                    "description": "ZKS Servers Sync Status"
+                },
+                "tokenZksSyncStatus": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/ZksSyncStatus"
+                    },
+                    "description": "User session token sync status"
                 }
             },
             "description": "User meta data",
@@ -8195,7 +8217,8 @@
                 "ModelClazzTotalUserCount",
                 "ModelClazzLastLoggedInUserInfo",
                 "ModelClazzUserActivitySummary",
-                "ModelClazzUserUsagePerEnterprise"
+                "ModelClazzUserUsagePerEnterprise",
+                "ModelClazzEnterpriseGithubRepository"
             ],
             "default": "ModelClazzUnspecified",
             "title": "Global identifier of clazz types"
@@ -8337,7 +8360,9 @@
                 "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                 "OBJECT_TYPE_ASSET_GROUP",
                 "OBJECT_TYPE_APP_PROFILE",
-                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                "OBJECT_TYPE_ZKS_INSTANCE",
+                "OBJECT_TYPE_CLUSTER_GROUP"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
@@ -8962,6 +8987,20 @@
                 }
             }
         },
+        "ServerSyncStatus": {
+            "type": "object",
+            "properties": {
+                "serverName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
         "SessionDetails": {
             "type": "object",
             "properties": {
@@ -9199,6 +9238,30 @@
             ],
             "default": "OPS_TYPE_UNSPECIFIED",
             "title": "ZedCloud internal operation type"
+        },
+        "ZksSyncStatus": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "$ref": "#/definitions/ZksSyncStatusCode"
+                },
+                "serverStatuses": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ServerSyncStatus"
+                    }
+                }
+            }
+        },
+        "ZksSyncStatusCode": {
+            "type": "string",
+            "enum": [
+                "ZKS_SYNC_STATUS_CODE_UNSPECIFIED",
+                "ZKS_SYNC_STATUS_CODE_HEALTHY",
+                "ZKS_SYNC_STATUS_CODE_PARTIALLY_HEALTHY",
+                "ZKS_SYNC_STATUS_CODE_UNHEALTHY"
+            ],
+            "default": "ZKS_SYNC_STATUS_CODE_UNSPECIFIED"
         },
         "ZsrvError": {
             "type": "object",

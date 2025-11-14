@@ -1392,7 +1392,9 @@
                             "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                             "OBJECT_TYPE_ASSET_GROUP",
                             "OBJECT_TYPE_APP_PROFILE",
-                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                            "OBJECT_TYPE_ZKS_INSTANCE",
+                            "OBJECT_TYPE_CLUSTER_GROUP"
                         ]
                     },
                     {
@@ -1524,7 +1526,9 @@
                             "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                             "OBJECT_TYPE_ASSET_GROUP",
                             "OBJECT_TYPE_APP_PROFILE",
-                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                            "OBJECT_TYPE_ZKS_INSTANCE",
+                            "OBJECT_TYPE_CLUSTER_GROUP"
                         ]
                     },
                     {
@@ -1739,7 +1743,9 @@
                             "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                             "OBJECT_TYPE_ASSET_GROUP",
                             "OBJECT_TYPE_APP_PROFILE",
-                            "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                            "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                            "OBJECT_TYPE_ZKS_INSTANCE",
+                            "OBJECT_TYPE_CLUSTER_GROUP"
                         ]
                     },
                     {
@@ -3140,7 +3146,9 @@
                 "OBJECT_TYPE_EDGE_NODE_CLUSTER",
                 "OBJECT_TYPE_ASSET_GROUP",
                 "OBJECT_TYPE_APP_PROFILE",
-                "OBJECT_TYPE_PROFILE_DEPLOYMENT"
+                "OBJECT_TYPE_PROFILE_DEPLOYMENT",
+                "OBJECT_TYPE_ZKS_INSTANCE",
+                "OBJECT_TYPE_CLUSTER_GROUP"
             ],
             "default": "OBJECT_TYPE_UNSPECIFIED"
         },
