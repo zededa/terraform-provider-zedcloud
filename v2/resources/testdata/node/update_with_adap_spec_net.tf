@@ -127,7 +127,7 @@ resource "zedcloud_edgenode" "test_tf_dev_adap_spec_net" {
 	interfaces {
 		cost = 255
 		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
-		intfname = "ethernet0"
+		intfname = "eth0"
 		netname = zedcloud_network.test_tf_adapter_spec_network.name
 		netid = zedcloud_network.test_tf_adapter_spec_network.id
         net_dhcp = zedcloud_network.test_tf_adapter_spec_network.ip[0].dhcp
