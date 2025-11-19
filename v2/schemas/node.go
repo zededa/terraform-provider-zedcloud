@@ -981,7 +981,8 @@ func Node() map[string]*schema.Schema {
 				Schema: VlanAdapterSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional: true,
+			Optional:         true,
+			DiffSuppressFunc: diffSuppressVlanAdapterListOrder("vlan_adapters"),
 		},
 	}
 }

@@ -175,6 +175,53 @@ func diffSuppressSystemInterfaceListOrder(mapKey string) schema.SchemaDiffSuppre
 	}
 }
 
+func diffSuppressVlanAdapterListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+
+		if oldData == nil {
+			return false
+		}
+		if newData == nil {
+			return false
+		}
+
+		old := oldData.([]interface{})
+		new := newData.([]interface{})
+		if len(old) != len(new) {
+			return false
+		}
+
+		var oldMapList []*models.VlanAdapter
+		for _, o := range old {
+			if o == nil {
+				continue
+			}
+			if oldElem, ok := o.(map[string]interface{}); ok {
+				oldMapList = append(oldMapList, VlanAdapterModelFromMap(oldElem))
+			}
+		}
+		var newMapList []*models.VlanAdapter
+		for _, n := range new {
+			if n == nil {
+				continue
+			}
+			if newElem, ok := n.(map[string]interface{}); ok {
+				newMapList = append(newMapList, VlanAdapterModelFromMap(newElem))
+			}
+		}
+
+		adapterMismatch, reason := CompareVlanAdapterLists(oldMapList, newMapList)
+		if !adapterMismatch {
+			log.Printf("VlanAdapter list mismatch: %s\n", reason)
+		}
+		return adapterMismatch
+	}
+}
+
 func diffSuppressInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
 		oldData, newData := d.GetChange(mapKey)
