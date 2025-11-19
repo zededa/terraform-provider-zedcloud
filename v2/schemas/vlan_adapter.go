@@ -1,6 +1,10 @@
 package schemas
 
 import (
+	"fmt"
+	"slices"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
@@ -119,4 +123,55 @@ func GetVlanAdapterPropertyFields() (t []string) {
 		"lower_layer_name",
 		"vlan_id",
 	}
+}
+
+// CompareVlanAdapterLists compares two VlanAdapter lists for equality, ignoring order
+func CompareVlanAdapterLists(a, b []*models.VlanAdapter) (bool, string) {
+	if len(a) != len(b) {
+		return false, fmt.Sprintf("vlan_adapters length mismatch: %d vs %d", len(a), len(b))
+	}
+
+	// Sort both slices by LogicalLabel
+	slices.SortFunc(a, func(i, j *models.VlanAdapter) int {
+		return strings.Compare(strings.ToLower(i.LogicalLabel), strings.ToLower(j.LogicalLabel))
+	})
+
+	slices.SortFunc(b, func(i, j *models.VlanAdapter) int {
+		return strings.Compare(strings.ToLower(i.LogicalLabel), strings.ToLower(j.LogicalLabel))
+	})
+
+	reason := ""
+	equal := slices.EqualFunc(a, b, func(x, y *models.VlanAdapter) bool {
+		if x.InterfaceName != y.InterfaceName {
+			reason = fmt.Sprintf("InterfaceName mismatch: %s vs %s", x.InterfaceName, y.InterfaceName)
+			return false
+		}
+		if x.LogicalLabel != y.LogicalLabel {
+			reason = fmt.Sprintf("LogicalLabel mismatch: %s vs %s", x.LogicalLabel, y.LogicalLabel)
+			return false
+		}
+		if x.LowerLayerName != y.LowerLayerName {
+			reason = fmt.Sprintf("LowerLayerName mismatch: %s vs %s", x.LowerLayerName, y.LowerLayerName)
+			return false
+		}
+		if x.VlanID != y.VlanID {
+			reason = fmt.Sprintf("VlanID mismatch: %d vs %d", x.VlanID, y.VlanID)
+			return false
+		}
+
+		// Compare nested Interface (SysInterface)
+		if x.Interface != nil && y.Interface != nil {
+			interfaceMatch, interfaceReason := CompareSystemInterfaceList([]*models.SysInterface{x.Interface}, []*models.SysInterface{y.Interface})
+			if !interfaceMatch {
+				reason = fmt.Sprintf("Interface mismatch: %s", interfaceReason)
+				return false
+			}
+		} else if x.Interface != y.Interface {
+			reason = fmt.Sprintf("Interface mismatch: one is nil, other is not")
+			return false
+		}
+
+		return true
+	})
+	return equal, reason
 }
