@@ -136,6 +136,7 @@ func ClusterSchema() map[string]*schema.Schema {
 			Description: `A cluster prefix. The default is: 10.244.244.2/28`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Default:     "10.244.244.2/28",
 		},
 
 		"description": {
@@ -158,7 +159,7 @@ func ClusterSchema() map[string]*schema.Schema {
 
 		"nodes": {
 			Description: `A list of nodes in the cluster`,
-			Type:        schema.TypeList, //GoType: []*ClusterNode
+			Type:        schema.TypeSet, //GoType: []*ClusterNode
 			Elem: &schema.Resource{
 				Schema: ClusterNodeSchema(),
 			},

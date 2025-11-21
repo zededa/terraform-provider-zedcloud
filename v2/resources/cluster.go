@@ -10,8 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	cluster "github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
-	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
+	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
 
 /*
@@ -22,9 +22,9 @@ func ClusterResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateCluster,
 		UpdateContext: UpdateCluster,
-		ReadContext: GetCluster,
+		ReadContext:   GetCluster,
 		DeleteContext: DeleteCluster,
-		Schema: zschema.ClusterSchema(),
+		Schema:        zschema.ClusterSchema(),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -34,7 +34,7 @@ func ClusterResource() *schema.Resource {
 func ClusterDataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: GetCluster,
-		Schema: zschema.ClusterSchema(),
+		Schema:      zschema.ClusterSchema(),
 	}
 }
 
@@ -42,7 +42,7 @@ func GetCluster(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	if _, nameIsSet := d.GetOk("name"); nameIsSet {
 		return GetClusterByName(ctx, d, m)
 	}
-	
+
 	return GetClusterByID(ctx, d, m)
 }
 
@@ -180,8 +180,8 @@ func UpdateCluster(ctx context.Context, d *schema.ResourceData, m interface{}) d
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.ClusterModel(d))
-	// UpdateClusterBody
+	clusterModel := sanitizeClusterNodes(d)
+	params.SetBody(clusterModel)
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {
@@ -266,6 +266,33 @@ func DeleteCluster(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	}
 
 	d.SetId("")
-	
+
 	return diags
+}
+
+func sanitizeClusterNodes(d *schema.ResourceData) *models.Cluster {
+	clusterModel := zschema.ClusterModel(d)
+
+	if d.HasChange("nodes") {
+		oldRaw, _ := d.GetChange("nodes")
+
+		oldList, _ := oldRaw.([]interface{})
+
+		oldIDs := make(map[string]struct{})
+		for _, o := range oldList {
+			m, _ := o.(map[string]interface{})
+			if id, ok := m["id"].(string); ok && id != "" {
+				oldIDs[id] = struct{}{}
+			}
+		}
+
+		for _, n := range clusterModel.Nodes {
+			// If a node has no old ID (new replacement), clear its prefix
+			if _, existed := oldIDs[n.ID]; !existed {
+				n.ClusterPrefix = ""
+			}
+		}
+	}
+
+	return clusterModel
 }
