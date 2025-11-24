@@ -13,18 +13,25 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/asset_group_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster_group"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/datastore"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/deployment"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/hardware_model"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/helm_chart_management"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/identity_access_management"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/image"
+	kubernetes_deployment "github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_deployment"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_git_ops"
+	kubernetes_secrets "github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_secret"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/network"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/network_instance"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/node"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/patch_envelope"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/private_helm_repository"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/profile_deployment_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/volume_instance"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/z_k_s_cluster_instance"
 )
 
 // Default zedcloudapi HTTP client.
@@ -88,6 +95,13 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.AppProfile = app_profile_service.New(transport, formats)
 	cli.AssetGroup = asset_group_service.New(transport, formats)
 	cli.ProfileDeployment = profile_deployment_service.New(transport, formats)
+	cli.ZksClusterInstance = z_k_s_cluster_instance.New(transport, formats)
+	cli.ClusterGroup = cluster_group.New(transport, formats)
+	cli.KubernetesDeployment = kubernetes_deployment.New(transport, formats)
+	cli.PrivateHelmRepository = private_helm_repository.New(transport, formats)
+	cli.KubernetesGitOps = kubernetes_git_ops.New(transport, formats)
+	cli.KubernetesSecret = kubernetes_secrets.New(transport, formats)
+	cli.HelmChartManagement = helm_chart_management.New(transport, formats)
 	return cli
 }
 
@@ -167,6 +181,20 @@ type ZedcloudAPI struct {
 	AssetGroup asset_group_service.ClientService
 
 	ProfileDeployment profile_deployment_service.ClientService
+
+	ZksClusterInstance z_k_s_cluster_instance.ClientService
+
+	ClusterGroup cluster_group.ClientService
+
+	KubernetesDeployment kubernetes_deployment.ClientService
+
+	PrivateHelmRepository private_helm_repository.ClientService
+
+	KubernetesGitOps kubernetes_git_ops.ClientService
+
+	KubernetesSecret kubernetes_secrets.ClientService
+
+	HelmChartManagement helm_chart_management.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
@@ -194,4 +222,18 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.AssetGroup.SetTransport(transport)
 
 	c.ProfileDeployment.SetTransport(transport)
+
+	c.ZksClusterInstance.SetTransport(transport)
+
+	c.ClusterGroup.SetTransport(transport)
+
+	c.KubernetesDeployment.SetTransport(transport)
+
+	c.PrivateHelmRepository.SetTransport(transport)
+
+	c.KubernetesGitOps.SetTransport(transport)
+
+	c.KubernetesSecret.SetTransport(transport)
+
+	c.HelmChartManagement.SetTransport(transport)
 }
