@@ -74,12 +74,13 @@ func SetSecretRequestSubResourceData(m []*models.SecretRequest) (d []*map[string
 func SecretRequestSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"data": {
-			Description: `Secret data including credentials or keys. This field is required.`,
+			Description: `Secret data including credentials or keys. This field is required for creation but not returned by the API for security reasons.`,
 			Type:        schema.TypeList, //GoType: SecretData
 			Elem: &schema.Resource{
 				Schema: SecretDataSchema(),
 			},
-			Required: true,
+			Optional: true,
+			MaxItems: 1,
 		},
 
 		"metadata": {

@@ -7,10 +7,18 @@ import (
 )
 
 func MetadataModel(d *schema.ResourceData) *models.Metadata {
-	description, _ := d.Get("description").(string)
+	var description string
+	descriptionVal, descriptionIsSet := d.GetOk("description")
+	if descriptionIsSet {
+		description = descriptionVal.(string)
+	}
 	name, _ := d.Get("name").(string)
 	projectID, _ := d.Get("project_id").(string)
-	title, _ := d.Get("title").(string)
+	var title string
+	titleVal, titleIsSet := d.GetOk("title")
+	if titleIsSet {
+		title = titleVal.(string)
+	}
 	return &models.Metadata{
 		Description: description,
 		Name:        &name,      // string

@@ -98,13 +98,12 @@ func GetSecret(ctx context.Context, d *schema.ResourceData, m interface{}) diag.
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	secretIdVal, secretIdIsSet := d.GetOk("id")
-	if secretIdIsSet {
-		params.SecretID = secretIdVal.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+	secretId := d.Id()
+	if secretId == "" {
+		diags = append(diags, diag.Errorf("missing secret id")...)
 		return diags
 	}
+	params.SecretID = secretId
 
 	client := m.(*api_client.ZedcloudAPI)
 
@@ -121,7 +120,10 @@ func GetSecret(ctx context.Context, d *schema.ResourceData, m interface{}) diag.
 	}
 
 	respModel := resp.GetPayload()
-	zschema.SetSecretRequestResourceData(d, zschema.ConvertGetSecretResponseModelToSecretRequestModel(respModel))
+	// Only update metadata, preserve the data field since API doesn't return secret data
+	if respModel != nil && respModel.Metadata != nil {
+		d.Set("metadata", zschema.SetSecretMetadataSubResourceData([]*models.SecretMetadata{respModel.Metadata}))
+	}
 
 	return diags
 }

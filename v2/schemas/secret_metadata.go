@@ -89,7 +89,7 @@ func SecretMetadataSchema() map[string]*schema.Schema {
 		"creation_timestamp": {
 			Description: `Timestamp when the secret was created`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"name": {
@@ -110,7 +110,7 @@ func SecretMetadataSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: SecretStateSchema(),
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"type": {

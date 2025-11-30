@@ -160,13 +160,12 @@ func GetK3sDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	deploymentIdVal, deploymentIdIsSet := d.GetOk("id")
-	if deploymentIdIsSet {
-		params.DeploymentID = deploymentIdVal.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+	deploymentId := d.Id()
+	if deploymentId == "" {
+		diags = append(diags, diag.Errorf("missing deployment id")...)
 		return diags
 	}
+	params.DeploymentID = deploymentId
 
 	client := m.(*api_client.ZedcloudAPI)
 
@@ -199,13 +198,12 @@ func DeleteK3sDeployment(ctx context.Context, d *schema.ResourceData, m interfac
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	deploymentIdVal, deploymentIdIsSet := d.GetOk("id")
-	if deploymentIdIsSet {
-		params.DeploymentID = deploymentIdVal.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+	deploymentId := d.Id()
+	if deploymentId == "" {
+		diags = append(diags, diag.Errorf("missing deployment id")...)
 		return diags
 	}
+	params.DeploymentID = deploymentId
 
 	client := m.(*api_client.ZedcloudAPI)
 

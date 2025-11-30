@@ -1,13 +1,36 @@
 package schemas
 
 import (
+	"encoding/json"
+	"log"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
 func ChartModel(d *schema.ResourceData) *models.Chart {
-	customValues, _ := d.Get("custom_values").(any) // any
+	var customValues any
+	customValuesInterface, customValuesIsSet := d.GetOk("custom_values")
+	if customValuesIsSet && customValuesInterface != nil {
+		customValuesStr := customValuesInterface.(string)
+		log.Printf("[DEBUG] custom_values raw string: %q", customValuesStr)
+		if customValuesStr != "" && customValuesStr != "{}" {
+			// Parse the JSON string into a map
+			var parsedValues map[string]interface{}
+			if err := json.Unmarshal([]byte(customValuesStr), &parsedValues); err == nil {
+				customValues = parsedValues
+				log.Printf("[DEBUG] custom_values parsed to map: %v", parsedValues)
+			} else {
+				log.Printf("[DEBUG] custom_values parse error: %v", err)
+			}
+		} else if customValuesStr == "{}" {
+			// For empty object, use an empty map instead of string
+			customValues = map[string]interface{}{}
+			log.Printf("[DEBUG] custom_values set to empty map")
+		}
+	}
+	log.Printf("[DEBUG] custom_values final value: %v (type: %T)", customValues, customValues)
 
 	name, _ := d.Get("name").(string)
 	repoIdentifier, _ := d.Get("repo_identifier").(string)
@@ -21,7 +44,27 @@ func ChartModel(d *schema.ResourceData) *models.Chart {
 }
 
 func ChartModelFromMap(m map[string]interface{}) *models.Chart {
-	customValues := m["custom_values"].(any)
+	var customValues any
+	customValuesInterface, customValuesIsSet := m["custom_values"]
+	if customValuesIsSet && customValuesInterface != nil {
+		customValuesStr := customValuesInterface.(string)
+		log.Printf("[DEBUG] ChartModelFromMap: custom_values raw string: %q", customValuesStr)
+		if customValuesStr != "" && customValuesStr != "{}" {
+			// Parse the JSON string into a map
+			var parsedValues map[string]interface{}
+			if err := json.Unmarshal([]byte(customValuesStr), &parsedValues); err == nil {
+				customValues = parsedValues
+				log.Printf("[DEBUG] ChartModelFromMap: custom_values parsed to map: %v", parsedValues)
+			} else {
+				log.Printf("[DEBUG] ChartModelFromMap: custom_values parse error: %v", err)
+			}
+		} else if customValuesStr == "{}" {
+			// For empty object, use an empty map instead of string
+			customValues = map[string]interface{}{}
+			log.Printf("[DEBUG] ChartModelFromMap: custom_values set to empty map")
+		}
+	}
+	log.Printf("[DEBUG] ChartModelFromMap: custom_values final value: %v (type: %T)", customValues, customValues)
 
 	name := m["name"].(string)
 	repoIdentifier := m["repo_identifier"].(string)

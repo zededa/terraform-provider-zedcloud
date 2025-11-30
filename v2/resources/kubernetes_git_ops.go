@@ -108,13 +108,12 @@ func UpdateGitRepo(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	params.SetBody(body)
 	// KubernetesGitOpsUpdateGitRepoBody
 
-	gitrepoIdVal, gitrepoIdIsSet := d.GetOk("id")
-	if gitrepoIdIsSet {
-		params.GitrepoID = gitrepoIdVal.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+	gitrepoId := d.Id()
+	if gitrepoId == "" {
+		diags = append(diags, diag.Errorf("missing gitrepo id")...)
 		return diags
 	}
+	params.GitrepoID = gitrepoId
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
@@ -165,13 +164,12 @@ func GetGitRepo(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	gitrepoIdVal, gitrepoIdIsSet := d.GetOk("id")
-	if gitrepoIdIsSet {
-		params.GitrepoID = gitrepoIdVal.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+	gitrepoId := d.Id()
+	if gitrepoId == "" {
+		diags = append(diags, diag.Errorf("missing gitrepo id")...)
 		return diags
 	}
+	params.GitrepoID = gitrepoId
 
 	client := m.(*api_client.ZedcloudAPI)
 
@@ -203,13 +201,12 @@ func DeleteGitRepo(ctx context.Context, d *schema.ResourceData, m interface{}) d
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	gitrepoIdVal, gitrepoIdIsSet := d.GetOk("id")
-	if gitrepoIdIsSet {
-		params.GitrepoID = gitrepoIdVal.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
+	gitrepoId := d.Id()
+	if gitrepoId == "" {
+		diags = append(diags, diag.Errorf("missing gitrepo id")...)
 		return diags
 	}
+	params.GitrepoID = gitrepoId
 
 	client := m.(*api_client.ZedcloudAPI)
 
