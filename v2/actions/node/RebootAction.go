@@ -10,15 +10,19 @@ import (
 )
 
 type RebootAction struct {
-	client *node.Client
+	client node.ClientService
 }
 
-func NewRebootAction(client *node.Client) *RebootAction {
+func NewRebootAction(client node.ClientService) *RebootAction {
 	return &RebootAction{client: client}
 }
 
 type rebootInput struct {
 	ID string `tfsdk:"id"`
+}
+
+func (m *RebootAction) Metadata(ctx context.Context, req action.MetadataRequest, resp *action.MetadataResponse) {
+	resp.TypeName = req.ProviderTypeName + "_reboot_node"
 }
 
 func (m *RebootAction) Schema(ctx context.Context, req action.SchemaRequest, resp *action.SchemaResponse) {
