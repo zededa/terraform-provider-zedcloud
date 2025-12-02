@@ -2,6 +2,10 @@ package resources
 
 import (
 	"context"
+	"crypto/tls"
+	"net"
+	"net/http"
+	"strings"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
@@ -64,21 +68,34 @@ func (p *actionsProvider) Configure(ctx context.Context, req provider.ConfigureR
 	// here using the config values (config.Endpoint.ValueString()) and pass it.
 	// We'll pass a simple endpoint string for this example.
 	endpoint := config.Endpoint.ValueString()
-	if endpoint == "" {
-		endpoint = "https://zedcontrol.alpha.zededa.net"
-	}
+	//if endpoint == "" {
+	//	endpoint = "https://zedcontrol.alpha.zededa.net"
+	//}
 	token := config.Token.ValueString()
-	if token == "" {
+	if len(strings.TrimSpace(token)) == 0 {
 		diags.AddError("Configuration Error", "token must be provided")
 		return
 	}
+	//resp.Diagnostics.AddError(token, "Not Implemented")
+	//return
 	p.model = config
+
+	dialer := &net.Dialer{
+		Resolver: &net.Resolver{
+			PreferGo: false,
+		},
+	}
+	httpTransport := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		DialContext:     dialer.DialContext,
+	}
 	transport := httptransport.New(endpoint, "/api", []string{"https"})
 	transport.DefaultAuthentication = BearerToken(token)
+	transport.Transport = httpTransport
 	p.transport = transport
 
-	resp.ResourceData = endpoint // Passes this string to the Resource's client field
-	resp.DataSourceData = endpoint
+	//resp.ResourceData = endpoint // Passes this string to the Resource's client field
+	//resp.DataSourceData = endpoint
 }
 
 // Resources returns the list of resources implemented by the provider.

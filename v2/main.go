@@ -24,7 +24,7 @@ var (
 func main() {
 	err := providerserver.Serve(context.Background(), resources.NewActionsProvider, providerserver.ServeOpts{
 		// This address must match the source attribute in your Terraform configuration
-		Address: "hashicorp.com/edu/example",
+		Address: "registry.terraform.io/zededa/zedcloud",
 	})
 
 	if err != nil {

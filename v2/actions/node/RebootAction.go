@@ -5,9 +5,12 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/action/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/node"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
+
+//var _ action.Action = (*RebootAction)(nil)
 
 type RebootAction struct {
 	client node.ClientService
@@ -18,7 +21,7 @@ func NewRebootAction(client node.ClientService) *RebootAction {
 }
 
 type rebootInput struct {
-	ID string `tfsdk:"id"`
+	ID types.String `tfsdk:"node_id"`
 }
 
 func (m *RebootAction) Metadata(ctx context.Context, req action.MetadataRequest, resp *action.MetadataResponse) {
@@ -28,7 +31,7 @@ func (m *RebootAction) Metadata(ctx context.Context, req action.MetadataRequest,
 func (m *RebootAction) Schema(ctx context.Context, req action.SchemaRequest, resp *action.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
+			"node_id": schema.StringAttribute{
 				Required:    true,
 				Description: "The unique identifier of the edge node to reboot.",
 			},
@@ -44,13 +47,21 @@ func (m *RebootAction) Invoke(ctx context.Context, req action.InvokeRequest, res
 		return
 	}
 
-	params := node.EdgeNodeConfigurationRebootParams{
-		ID: input.ID,
-	}
+	params := node.NewEdgeNodeConfigurationRebootParams()
+	params.ID = input.ID.ValueString()
 
-	response, err := m.client.EdgeNodeConfigurationReboot(&params, nil)
+	//params := node.EdgeNodeConfigurationRebootParams{
+	//	ID: input.ID.String(),
+	//}
+
+	response, err := m.client.EdgeNodeConfigurationReboot(params, nil)
 	if err != nil {
-		diags.AddError("Error rebooting edge node", err.Error())
+		resp.Diagnostics.AddError("Error rebooting edge node", err.Error())
+		return
+	}
+	if response == nil {
+		resp.Diagnostics.AddError("Error rebooting edge node", "API response is nil")
+		return
 	}
 
 	responseData := response.GetPayload()

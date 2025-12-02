@@ -705,6 +705,7 @@ func (a *Client) EdgeNodeConfigurationReboot(params *EdgeNodeConfigurationReboot
 	}
 
 	result, err := a.transport.Submit(op)
+	//panic(fmt.Sprintf("ERROR: %+v\n", err))
 	if err != nil {
 		return nil, err
 	}
