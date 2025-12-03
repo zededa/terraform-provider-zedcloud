@@ -27,6 +27,9 @@ env:
 jobs:
   check-sync:
     name: Check Registry Synchronization
+    permissions:
+      contents: read
+      issues: write
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
