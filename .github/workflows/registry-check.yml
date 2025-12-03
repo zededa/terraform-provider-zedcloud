@@ -1,0 +1,245 @@
+name: Check Registry Synchronization
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to check (or "latest")'
+        required: false
+        default: 'latest'
+      platform:
+        description: 'Platform'
+        required: false
+        default: 'linux'
+      arch:
+        description: 'Architecture'
+        required: false
+        default: 'amd64'
+  schedule:
+    - cron: '0 9 * * *'
+  release:
+    types: [published]
+
+env:
+  PROVIDER: zededa/zedcloud
+  CURL_OPTS: "-sf --max-time 30 --retry 3 --retry-delay 2"
+
+jobs:
+  check-sync:
+    name: Check Registry Synchronization
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform & OpenTofu
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_wrapper: false
+
+      - name: Resolve Version & Platform
+        id: config
+        run: |
+          case "${{ github.event_name }}" in
+            release)
+              VERSION="${GITHUB_REF#refs/tags/v}"
+              PLATFORM="linux"; ARCH="amd64" ;;
+            workflow_dispatch)
+              VERSION="${{ inputs.version }}"
+              PLATFORM="${{ inputs.platform }}"; ARCH="${{ inputs.arch }}" ;;
+            *)
+              VERSION="latest"
+              PLATFORM="linux"; ARCH="amd64" ;;
+          esac
+          
+          # Resolve "latest" to actual version
+          if [ "$VERSION" = "latest" ]; then
+            VERSION=$(curl ${{ env.CURL_OPTS }} \
+              "https://registry.terraform.io/v1/providers/${{ env.PROVIDER }}/versions" \
+              | jq -r '.versions[0].version') || exit 1
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "platform=$PLATFORM" >> $GITHUB_OUTPUT
+          echo "arch=$ARCH" >> $GITHUB_OUTPUT
+          echo "📌 Provider: ${{ env.PROVIDER }} v${VERSION} (${PLATFORM}/${ARCH})"
+
+      - name: Fetch Registry Data
+        id: registries
+        run: |
+          VERSION="${{ steps.config.outputs.version }}"
+          PLATFORM="${{ steps.config.outputs.platform }}"
+          ARCH="${{ steps.config.outputs.arch }}"
+          PROVIDER_NAME=$(echo "${{ env.PROVIDER }}" | cut -d'/' -f2)
+          FILENAME="terraform-provider-${PROVIDER_NAME}_${VERSION}_${PLATFORM}_${ARCH}.zip"
+          
+          echo "🔍 Fetching registry data..."
+          
+          # GitHub SHA256SUMS
+          SHASUMS_URL="https://github.com/${{ env.PROVIDER }}/releases/download/v${VERSION}/terraform-provider-${PROVIDER_NAME}_${VERSION}_SHA256SUMS"
+          GITHUB_SHA=$(curl ${{ env.CURL_OPTS }}L "$SHASUMS_URL" | grep "$FILENAME" | awk '{print $1}')
+          echo "github_sha=$GITHUB_SHA" >> $GITHUB_OUTPUT
+          echo "✅ GitHub: $GITHUB_SHA"
+          
+          # Terraform Registry
+          TF_RESP=$(curl ${{ env.CURL_OPTS }} \
+            "https://registry.terraform.io/v1/providers/${{ env.PROVIDER }}/${VERSION}/download/${PLATFORM}/${ARCH}")
+          TF_SHA=$(echo "$TF_RESP" | jq -r '.shasum // "none"')
+          TF_KEYS=$(echo "$TF_RESP" | jq -r '.signing_keys.gpg_public_keys[].key_id' | paste -sd, -)
+          echo "terraform_sha=$TF_SHA" >> $GITHUB_OUTPUT
+          echo "terraform_keys=$TF_KEYS" >> $GITHUB_OUTPUT
+          echo "✅ Terraform: $TF_SHA [$TF_KEYS]"
+          
+          # OpenTofu Registry
+          TOFU_RESP=$(curl ${{ env.CURL_OPTS }} \
+            "https://registry.opentofu.org/v1/providers/${{ env.PROVIDER }}/${VERSION}/download/${PLATFORM}/${ARCH}")
+          TOFU_SHA=$(echo "$TOFU_RESP" | jq -r '.shasum // "none"')
+          TOFU_KEYS=$(echo "$TOFU_RESP" | jq -r '.signing_keys.gpg_public_keys[].key_id' | paste -sd, -)
+          echo "opentofu_sha=$TOFU_SHA" >> $GITHUB_OUTPUT
+          echo "opentofu_keys=$TOFU_KEYS" >> $GITHUB_OUTPUT
+          echo "✅ OpenTofu: $TOFU_SHA [$TOFU_KEYS]"
+
+      - name: Validate Checksums
+        id: validate
+        run: |
+          GH="${{ steps.registries.outputs.github_sha }}"
+          TF="${{ steps.registries.outputs.terraform_sha }}"
+          TOFU="${{ steps.registries.outputs.opentofu_sha }}"
+          
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          printf "%-12s %s\n" "GitHub:" "$GH" "Terraform:" "$TF" "OpenTofu:" "$TOFU"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          
+          VALID=true
+          [ "$GH" != "$TF" ] && echo "❌ Terraform SHA mismatch!" && VALID=false
+          [ "$GH" != "$TOFU" ] && echo "❌ OpenTofu SHA mismatch!" && VALID=false
+          [ "$VALID" = "true" ] && echo "✅ All checksums match!"
+          echo "sha_valid=$VALID" >> $GITHUB_OUTPUT
+
+      - name: Test Installations
+        id: test
+        run: |
+          VERSION="${{ steps.config.outputs.version }}"
+          
+          for tool in terraform:terraform opentofu:tofu; do
+            NAME=${tool%:*}; CMD=${tool#*:}
+            DIR=$(mktemp -d)
+            
+            cat > "$DIR/main.tf" <<EOF
+          terraform {
+            required_providers {
+              zedcloud = { source = "${{ env.PROVIDER }}", version = "$VERSION" }
+            }
+          }
+          EOF
+            
+            if (cd "$DIR" && $CMD init -input=false >/dev/null 2>&1); then
+              echo "✅ $NAME passed"; echo "${NAME}_result=success" >> $GITHUB_OUTPUT
+            else
+              echo "❌ $NAME failed"; echo "${NAME}_result=failure" >> $GITHUB_OUTPUT
+            fi
+            rm -rf "$DIR"
+          done
+
+      - name: Create Issue on Failure
+        if: |
+          (steps.validate.outputs.sha_valid == 'false' ||
+           steps.test.outputs.terraform_result == 'failure' ||
+           steps.test.outputs.opentofu_result == 'failure') &&
+          github.event_name != 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const v = '${{ steps.config.outputs.version }}';
+            const d = {
+              gh: '${{ steps.registries.outputs.github_sha }}',
+              tf: '${{ steps.registries.outputs.terraform_sha }}',
+              tofu: '${{ steps.registries.outputs.opentofu_sha }}',
+              tfKeys: '${{ steps.registries.outputs.terraform_keys }}',
+              tofuKeys: '${{ steps.registries.outputs.opentofu_keys }}',
+              tfOk: '${{ steps.test.outputs.terraform_result }}' === 'success',
+              tofuOk: '${{ steps.test.outputs.opentofu_result }}' === 'success',
+              shaOk: '${{ steps.validate.outputs.sha_valid }}' === 'true'
+            };
+            
+            const problems = [
+              !d.tfOk && 'Terraform installation failed',
+              !d.tofuOk && 'OpenTofu installation failed', 
+              !d.shaOk && 'SHA256 mismatch'
+            ].filter(Boolean);
+            
+            const title = `Registry Issue: ${{ env.PROVIDER }} v${v}`;
+            const m = ok => ok ? '✅' : '❌';
+            
+            const body = `## Registry Check Failed
+            
+            **Provider:** \`${{ env.PROVIDER }}\` | **Version:** \`${v}\`
+            
+            ### Problems
+            ${problems.map(p => `- ❌ ${p}`).join('\n')}
+            
+            | Source | SHA256 | ✓ |
+            |--------|--------|:-:|
+            | GitHub | \`${d.gh}\` | 🔒 |
+            | Terraform | \`${d.tf}\` | ${m(d.gh === d.tf)} |
+            | OpenTofu | \`${d.tofu}\` | ${m(d.gh === d.tofu)} |
+            
+            | Registry | Keys | Test |
+            |----------|------|:----:|
+            | Terraform | \`${d.tfKeys}\` | ${m(d.tfOk)} |
+            | OpenTofu | \`${d.tofuKeys}\` | ${m(d.tofuOk)} |`;
+            
+            const {data: issues} = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'registry-sync'
+            });
+            
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `**Update** ${new Date().toISOString()}\n${problems.map(p => `- ❌ ${p}`).join('\n')}`
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: ['registry-sync', 'bug']
+              });
+            }
+
+      - name: Summary
+        if: always()
+        run: |
+          GH="${{ steps.registries.outputs.github_sha }}"
+          TF="${{ steps.registries.outputs.terraform_sha }}"
+          TOFU="${{ steps.registries.outputs.opentofu_sha }}"
+          m() { [ "$1" = "$2" ] && echo "✅" || echo "❌"; }
+          t() { [ "$1" = "success" ] && echo "✅" || echo "❌"; }
+          
+          cat >> $GITHUB_STEP_SUMMARY <<EOF
+          ## 📊 Registry Sync: \`${{ env.PROVIDER }}\` v${{ steps.config.outputs.version }}
+          
+          | Source | SHA256 | ✓ |
+          |--------|--------|:-:|
+          | GitHub | \`$GH\` | 🔒 |
+          | Terraform | \`$TF\` | $(m "$GH" "$TF") |
+          | OpenTofu | \`$TOFU\` | $(m "$GH" "$TOFU") |
+          
+          | Tool | Keys | Test |
+          |------|------|:----:|
+          | Terraform | \`${{ steps.registries.outputs.terraform_keys }}\` | $(t "${{ steps.test.outputs.terraform_result }}") |
+          | OpenTofu | \`${{ steps.registries.outputs.opentofu_keys }}\` | $(t "${{ steps.test.outputs.opentofu_result }}") |
+          EOF
+
+      - name: Exit Status
+        if: |
+          steps.validate.outputs.sha_valid == 'false' ||
+          steps.test.outputs.terraform_result == 'failure' ||
+          steps.test.outputs.opentofu_result == 'failure'
+        run: exit 1
