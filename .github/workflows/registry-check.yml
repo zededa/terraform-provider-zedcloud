@@ -21,7 +21,9 @@ permissions:
 
 env:
   PROVIDER: zededa/zedcloud
+  GITHUB_REPO: zededa/terraform-provider-zedcloud
   CURL_OPTS: "-sf --max-time 30 --retry 3 --retry-delay 2"
+  CURL_OPTS_REDIRECT: "-sfL --max-time 30 --retry 3 --retry-delay 2"
 
 jobs:
   # First job: resolve version and get platform list
@@ -92,8 +94,8 @@ jobs:
           echo "🔍 Checking $PLATFORM/$ARCH..."
           
           # GitHub SHA256SUMS
-          SHASUMS_URL="https://github.com/${{ env.PROVIDER }}/releases/download/v${VERSION}/terraform-provider-${PROVIDER_NAME}_${VERSION}_SHA256SUMS"
-          GITHUB_SHA=$(curl ${{ env.CURL_OPTS }}L "$SHASUMS_URL" | grep "$FILENAME" | awk '{print $1}')
+          SHASUMS_URL="https://github.com/${{ env.GITHUB_REPO }}/releases/download/v${VERSION}/terraform-provider-${PROVIDER_NAME}_${VERSION}_SHA256SUMS"
+          GITHUB_SHA=$(curl ${{ env.CURL_OPTS_REDIRECT }} "$SHASUMS_URL" | grep "$FILENAME" | awk '{print $1}')
           echo "github_sha=$GITHUB_SHA" >> $GITHUB_OUTPUT
           
           # Terraform Registry
