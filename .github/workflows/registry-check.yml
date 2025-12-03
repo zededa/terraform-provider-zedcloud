@@ -1,0 +1,319 @@
+name: Check Registry Synchronization
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to check (or "latest")'
+        required: false
+        default: 'latest'
+      all_platforms:
+        description: 'Check all platforms'
+        type: boolean
+        default: true
+  schedule:
+    - cron: '0 9 * * *'
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+env:
+  PROVIDER: zededa/zedcloud
+  CURL_OPTS: "-sf --max-time 30 --retry 3 --retry-delay 2"
+
+jobs:
+  # First job: resolve version and get platform list
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      matrix: ${{ steps.platforms.outputs.matrix }}
+    steps:
+      - name: Resolve Version
+        id: resolve
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="latest"
+          fi
+          
+          if [ "$VERSION" = "latest" ]; then
+            VERSION=$(curl ${{ env.CURL_OPTS }} \
+              "https://registry.terraform.io/v1/providers/${{ env.PROVIDER }}/versions" \
+              | jq -r '.versions[0].version') || exit 1
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📌 Version: $VERSION"
+
+      - name: Get Platform Matrix
+        id: platforms
+        run: |
+          VERSION="${{ steps.resolve.outputs.version }}"
+          
+          # Get all available platforms from registry
+          PLATFORMS=$(curl ${{ env.CURL_OPTS }} \
+            "https://registry.terraform.io/v1/providers/${{ env.PROVIDER }}/versions" \
+            | jq -c '[.versions[0].platforms[] | {os: .os, arch: .arch}]')
+          
+          echo "matrix=$PLATFORMS" >> $GITHUB_OUTPUT
+          echo "📦 Platforms: $PLATFORMS"
+
+  # Matrix job: check each platform
+  check-platform:
+    name: ${{ matrix.os }}/${{ matrix.arch }}
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.matrix) }}
+    
+    steps:
+      - name: Fetch Registry Data
+        id: registries
+        run: |
+          VERSION="${{ needs.setup.outputs.version }}"
+          PLATFORM="${{ matrix.os }}"
+          ARCH="${{ matrix.arch }}"
+          PROVIDER_NAME=$(echo "${{ env.PROVIDER }}" | cut -d'/' -f2)
+          FILENAME="terraform-provider-${PROVIDER_NAME}_${VERSION}_${PLATFORM}_${ARCH}.zip"
+          
+          echo "🔍 Checking $PLATFORM/$ARCH..."
+          
+          # GitHub SHA256SUMS
+          SHASUMS_URL="https://github.com/${{ env.PROVIDER }}/releases/download/v${VERSION}/terraform-provider-${PROVIDER_NAME}_${VERSION}_SHA256SUMS"
+          GITHUB_SHA=$(curl ${{ env.CURL_OPTS }}L "$SHASUMS_URL" | grep "$FILENAME" | awk '{print $1}')
+          echo "github_sha=$GITHUB_SHA" >> $GITHUB_OUTPUT
+          
+          # Terraform Registry
+          TF_RESP=$(curl ${{ env.CURL_OPTS }} \
+            "https://registry.terraform.io/v1/providers/${{ env.PROVIDER }}/${VERSION}/download/${PLATFORM}/${ARCH}" 2>/dev/null || echo "{}")
+          TF_SHA=$(echo "$TF_RESP" | jq -r '.shasum // "none"')
+          TF_KEYS=$(echo "$TF_RESP" | jq -r '.signing_keys.gpg_public_keys[].key_id // empty' 2>/dev/null | paste -sd, - || echo "none")
+          echo "terraform_sha=$TF_SHA" >> $GITHUB_OUTPUT
+          echo "terraform_keys=$TF_KEYS" >> $GITHUB_OUTPUT
+          
+          # OpenTofu Registry
+          TOFU_RESP=$(curl ${{ env.CURL_OPTS }} \
+            "https://registry.opentofu.org/v1/providers/${{ env.PROVIDER }}/${VERSION}/download/${PLATFORM}/${ARCH}" 2>/dev/null || echo "{}")
+          TOFU_SHA=$(echo "$TOFU_RESP" | jq -r '.shasum // "none"')
+          TOFU_KEYS=$(echo "$TOFU_RESP" | jq -r '.signing_keys.gpg_public_keys[].key_id // empty' 2>/dev/null | paste -sd, - || echo "none")
+          echo "opentofu_sha=$TOFU_SHA" >> $GITHUB_OUTPUT
+          echo "opentofu_keys=$TOFU_KEYS" >> $GITHUB_OUTPUT
+          
+          echo "GitHub:    $GITHUB_SHA"
+          echo "Terraform: $TF_SHA"
+          echo "OpenTofu:  $TOFU_SHA"
+
+      - name: Validate Checksums
+        id: validate
+        run: |
+          GH="${{ steps.registries.outputs.github_sha }}"
+          TF="${{ steps.registries.outputs.terraform_sha }}"
+          TOFU="${{ steps.registries.outputs.opentofu_sha }}"
+          
+          VALID=true
+          [ "$GH" != "$TF" ] && echo "❌ Terraform SHA mismatch!" && VALID=false
+          [ "$GH" != "$TOFU" ] && echo "❌ OpenTofu SHA mismatch!" && VALID=false
+          [ "$VALID" = "true" ] && echo "✅ All checksums match!"
+          echo "sha_valid=$VALID" >> $GITHUB_OUTPUT
+
+      - name: Summary
+        if: always()
+        run: |
+          GH="${{ steps.registries.outputs.github_sha }}"
+          TF="${{ steps.registries.outputs.terraform_sha }}"
+          TOFU="${{ steps.registries.outputs.opentofu_sha }}"
+          
+          TF_MATCH=$( [ "$GH" = "$TF" ] && echo "✅" || echo "❌" )
+          TOFU_MATCH=$( [ "$GH" = "$TOFU" ] && echo "✅" || echo "❌" )
+          
+          cat >> $GITHUB_STEP_SUMMARY <<EOF
+          ### ${{ matrix.os }}/${{ matrix.arch }}
+          | Source | SHA256 | ✓ |
+          |--------|--------|:-:|
+          | GitHub | \`${GH:0:16}...\` | 🔒 |
+          | Terraform | \`${TF:0:16}...\` | $TF_MATCH |
+          | OpenTofu | \`${TOFU:0:16}...\` | $TOFU_MATCH |
+          EOF
+
+      - name: Check Result
+        if: steps.validate.outputs.sha_valid == 'false'
+        run: exit 1
+
+  # Installation tests (only on linux/amd64 - the runner's native platform)
+  test-install:
+    name: Installation Tests
+    needs: setup
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      terraform_result: ${{ steps.test.outputs.terraform_result }}
+      opentofu_result: ${{ steps.test.outputs.opentofu_result }}
+    
+    steps:
+      - name: Setup Terraform & OpenTofu
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_wrapper: false
+
+      - name: Test Installations
+        id: test
+        run: |
+          VERSION="${{ needs.setup.outputs.version }}"
+          
+          for tool in terraform:terraform opentofu:tofu; do
+            NAME=${tool%:*}; CMD=${tool#*:}
+            DIR=$(mktemp -d)
+            
+            cat > "$DIR/main.tf" <<EOF
+          terraform {
+            required_providers {
+              zedcloud = { source = "${{ env.PROVIDER }}", version = "$VERSION" }
+            }
+          }
+          EOF
+            
+            if (cd "$DIR" && $CMD init -input=false >/dev/null 2>&1); then
+              echo "✅ $NAME passed"
+              echo "${NAME}_result=success" >> $GITHUB_OUTPUT
+            else
+              echo "❌ $NAME failed"
+              echo "${NAME}_result=failure" >> $GITHUB_OUTPUT
+            fi
+            rm -rf "$DIR"
+          done
+
+      - name: Summary
+        if: always()
+        run: |
+          TF=$( [ "${{ steps.test.outputs.terraform_result }}" = "success" ] && echo "✅" || echo "❌" )
+          TOFU=$( [ "${{ steps.test.outputs.opentofu_result }}" = "success" ] && echo "✅" || echo "❌" )
+          
+          cat >> $GITHUB_STEP_SUMMARY <<EOF
+          ### Installation Tests (linux/amd64)
+          | Tool | Result |
+          |------|:------:|
+          | Terraform | $TF |
+          | OpenTofu | $TOFU |
+          EOF
+
+  # Final job: aggregate results and create issue if needed
+  report:
+    name: Report
+    needs: [setup, check-platform, test-install]
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    
+    steps:
+      - name: Check Results
+        id: results
+        run: |
+          PLATFORM_OK="${{ needs.check-platform.result }}"
+          TF_OK="${{ needs.test-install.outputs.terraform_result }}"
+          TOFU_OK="${{ needs.test-install.outputs.opentofu_result }}"
+          
+          echo "Platform checks: $PLATFORM_OK"
+          echo "Terraform test: $TF_OK"
+          echo "OpenTofu test: $TOFU_OK"
+          
+          if [ "$PLATFORM_OK" = "success" ] && [ "$TF_OK" = "success" ] && [ "$TOFU_OK" = "success" ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "✅ All checks passed!"
+          else
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "❌ Some checks failed!"
+          fi
+
+      - name: Create Issue on Failure
+        if: |
+          steps.results.outputs.status == 'failure' &&
+          github.event_name != 'workflow_dispatch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ needs.setup.outputs.version }}';
+            const platformResult = '${{ needs.check-platform.result }}';
+            const tfResult = '${{ needs.test-install.outputs.terraform_result }}';
+            const tofuResult = '${{ needs.test-install.outputs.opentofu_result }}';
+            
+            const problems = [
+              platformResult !== 'success' && 'SHA256 checksum mismatch on one or more platforms',
+              tfResult !== 'success' && 'Terraform installation test failed',
+              tofuResult !== 'success' && 'OpenTofu installation test failed'
+            ].filter(Boolean);
+            
+            const title = `Registry Issue: ${{ env.PROVIDER }} v${version}`;
+            const m = ok => ok === 'success' ? '✅' : '❌';
+            
+            const body = `## Registry Check Failed
+            
+            **Provider:** \`${{ env.PROVIDER }}\` | **Version:** \`${version}\`
+            
+            ### Problems
+            ${problems.map(p => `- ❌ ${p}`).join('\n')}
+            
+            ### Results
+            | Check | Status |
+            |-------|:------:|
+            | Platform SHA256 checks | ${m(platformResult)} |
+            | Terraform installation | ${m(tfResult)} |
+            | OpenTofu installation | ${m(tofuResult)} |
+            
+            See [workflow run](${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}) for details.`;
+            
+            const {data: issues} = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'registry-sync'
+            });
+            
+            const existing = issues.find(i => i.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.number,
+                body: `**Update** ${new Date().toISOString()}\n${problems.map(p => `- ❌ ${p}`).join('\n')}`
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: ['registry-sync', 'bug']
+              });
+            }
+
+      - name: Final Summary
+        if: always()
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY <<EOF
+          ## 📊 Registry Sync Summary
+          
+          **Provider:** \`${{ env.PROVIDER }}\` | **Version:** \`${{ needs.setup.outputs.version }}\`
+          
+          | Check | Status |
+          |-------|:------:|
+          | All platform SHA256 checks | $( [ "${{ needs.check-platform.result }}" = "success" ] && echo "✅" || echo "❌" ) |
+          | Terraform installation | $( [ "${{ needs.test-install.outputs.terraform_result }}" = "success" ] && echo "✅" || echo "❌" ) |
+          | OpenTofu installation | $( [ "${{ needs.test-install.outputs.opentofu_result }}" = "success" ] && echo "✅" || echo "❌" ) |
+          EOF
+
+      - name: Exit Status
+        if: steps.results.outputs.status == 'failure'
+        run: exit 1
