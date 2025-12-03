@@ -1,0 +1,202 @@
+// Copyright (c) 2018-2021 Zededa, Inc.
+// SPDX-License-Identifier: Apache-2.0
+//
+
+terraform {
+  required_providers {
+    zedcloud = {
+      source = "zededa/zedcloud"
+      //version = "0.0.7-alpha"
+    }
+  }
+}
+
+provider "zedcloud" {
+  endpoint = "zedcontrol.alpha.zededa.net"
+  token = "zgf9l4jf:zZuHGJNR_HAR5vllQYdD62aaU7giDXGRFalhxMyYOwCCZ0WyJE0yzZhEg0mryaRrc45-rA-jsxDyJQ6odoMO5PJ0hSMEihwdsuwYBCMJOELY7ilNPV2TnjBVMrkpEqhE-1LoO6OwNci_LL1baGuVgbn7OHYrlLB3GeRuwsh4MJI="
+}
+
+resource "zedcloud_application" "tf_app_1" {
+  name = "test_tf_provider"
+  title = "ubuntu-all-ip"
+  description = "ubuntu-all-ip"
+  user_defined_version = "1.1"
+  origin_type = "ORIGIN_LOCAL"
+  manifest {
+    # computed
+    ac_kind = "VMManifest"
+
+    # optional
+    name = "xenial-amd64-docker-20180725"
+    ac_version = "1.2.0"
+    app_type = "APP_TYPE_VM"
+    configuration {
+      custom_config {
+        add = false
+        allow_storage_resize = false
+        field_delimiter = ","
+        name = "custom_config_name"
+        override = false
+        template = "dGVzdA=="
+        variable_groups {
+          condition {
+            # optional
+            name = "condition"
+            operator = "CONDITION_OPERATOR_EQUALTO"
+            value = "val"
+          }
+          name = "var_group"
+          required = false
+        }
+      }
+    }
+    cpu_pinning_enabled = false
+    deployment_type = "DEPLOYMENT_TYPE_K3S"
+    desc {
+      category = "APP_CATEGORY_OTHERS"
+      os = "Zenix"
+      app_category = "APP_CATEGORY_OTHERS"
+      support = "support"
+    }
+    description = "description"
+    display_name = "display_name"
+    enablevnc = false
+    interfaces {
+      name = "indirect"
+      directattach = false
+      privateip = false
+      acls {
+        matches {
+          type = "protocol"
+          value = "tcp"
+        }
+        matches {
+          type = "lport"
+          value = "8022"
+        }
+        actions {
+          portmap = true
+          portmapto {
+            app_port = 22
+          }
+        }
+      }
+      acls {
+        matches {
+          type = "host"
+          value = ""
+        }
+      }
+    }
+    owner {
+      company = "Zededa Inc."
+      email = "test@zededa.com"
+      group = "testgroup"
+      user = "testuser"
+      website = "http://www.zededa.com"
+    }
+    resources {
+      name = "cpus"
+      value = "2"
+    }
+    resources {
+      name = "memory"
+      value = "1024000"
+    }
+    vmmode = "HV_HVM"
+  }
+}
+
+
+resource "zedcloud_application_instance"  "tf_app_inst_1" {
+  name = "test_tf_provider"
+  title = "tf test"
+  description = "tf test"
+  activate = "true"
+  app_id = zedcloud_application.test_tf_provider.id
+  device_id = zedcloud_edgenode.test_tf_provider.id
+  interfaces {
+    directattach = false
+    privateip = false
+    netinstname = zedcloud_network_instance.test_tf_provider.name
+    intfname = "indirect"
+    acls {
+      actions {
+        drop       = false
+        limit      = false
+        limitburst = 0
+        limitrate  = 0
+        portmap    = true
+
+        mapparams {
+          port = 22
+        }
+      }
+
+      matches {
+        type  = "protocol"
+        value = "tcp"
+      }
+      matches {
+        type  = "lport"
+        value = "8022"
+      }
+    }
+    acls {
+      matches {
+        type = "host"
+      }
+    }
+  }
+
+  # optional
+  remote_console = false
+  is_secret_updated = false
+  collect_stats_ip_addr = "true"
+  app_policy_id = ""
+  app_type = "APP_TYPE_VM"
+  cluster_id = ""
+  custom_config {
+    add = false
+    allow_storage_resize = false
+    override = false
+
+  }
+  logs {
+    access = false
+  }
+  manifest_info {
+
+    transition_action = "INSTANCE_TA_NONE"
+  }
+  start_delay_in_seconds = 120
+  user_data = ""
+  vminfo {
+    # required
+    cpus = 2
+    mode = "HV_HVM"
+    vnc = false
+
+  }
+
+  tags = {
+    "tag-key-1" = "tag-value-1"
+  }
+
+   lifecycle {
+      action_trigger {
+        events = [befor_update]
+        actions = [
+            action.zedcloud_make_snapshot.make_snap_1
+        ]
+      }
+    }
+}
+
+action "zedcloud_make_snapshot" "make_snap_1" {
+  config {
+    app_instance_id = zedcloud_application_instance.tf_app_inst_1.id
+  }
+}
+
+
