@@ -102,15 +102,24 @@ func GetPrivateRepoRequestPropertyFields() (t []string) {
 
 func ConvertPrivateRepoResponseModelToPrivateRepoRequestModel(m *models.PrivateRepoGetByIDResponse,
 ) *models.PrivateRepoRequest {
-	return &models.PrivateRepoRequest{
-		Metadata: m.Metadata,
-		Spec: &models.PrivateRepoSpec{
-			Auth: &models.PrivateRepoAuthConfig{
-				Secret: &models.PrivateRepoSecretConfig{
+	var spec *models.PrivateRepoSpec
+	if m.Spec != nil {
+		spec = &models.PrivateRepoSpec{
+			RepoDetails: m.Spec.RepoDetails,
+		}
+		if m.Spec.Auth != nil {
+			spec.Auth = &models.PrivateRepoAuthConfig{}
+			if m.Spec.Auth.Secret != nil {
+				spec.Auth.Secret = &models.PrivateRepoSecretConfig{
 					Name: m.Spec.Auth.Secret.Name,
 					Type: m.Spec.Auth.Secret.Type,
-				},
-			},
-		},
+				}
+			}
+		}
+	}
+
+	return &models.PrivateRepoRequest{
+		Metadata: m.Metadata,
+		Spec:     spec,
 	}
 }
