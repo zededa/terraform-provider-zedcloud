@@ -18,7 +18,7 @@ description: |-
 ### Required
 
 - `name` (String) User defined name of the cluster, unique across the enterprise. Once cluster is created, name can’t be changed
-- `nodes` (Block List, Min: 1) A list of nodes in the cluster (see [below for nested schema](#nestedblock--nodes))
+- `nodes` (Block Set, Min: 1) A list of nodes in the cluster (see [below for nested schema](#nestedblock--nodes))
 - `project_id` (String) Foreign key to the project
 
 ### Optional
