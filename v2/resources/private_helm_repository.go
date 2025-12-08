@@ -146,14 +146,12 @@ func UpdatePrivateRepo(ctx context.Context, d *schema.ResourceData, m interface{
 	params.SetBody(body)
 	// PrivateHelmRepositoriesUpdatePrivateRepoBody
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
-	} else {
+	privateRepoID := d.Id()
+	if privateRepoID == "" {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
 		return diags
 	}
+	params.ID = privateRepoID
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
@@ -205,13 +203,12 @@ func GetPrivateRepo(ctx context.Context, d *schema.ResourceData, m interface{}) 
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	privateRepoIdVal, privateRepoIdIsSet := d.GetOk("id")
-	if privateRepoIdIsSet {
-		params.PrivateRepoID = privateRepoIdVal.(string)
-	} else {
+	privateRepoID := d.Id()
+	if privateRepoID == "" {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
 		return diags
 	}
+	params.PrivateRepoID = privateRepoID
 
 	client := m.(*api_client.ZedcloudAPI)
 
@@ -244,13 +241,12 @@ func DeletePrivateRepo(ctx context.Context, d *schema.ResourceData, m interface{
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	privateRepoIdVal, privateRepoIdIsSet := d.GetOk("id")
-	if privateRepoIdIsSet {
-		params.PrivateRepoID = privateRepoIdVal.(string)
-	} else {
+	privateRepoID := d.Id()
+	if privateRepoID == "" {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
 		return diags
 	}
+	params.PrivateRepoID = privateRepoID
 
 	client := m.(*api_client.ZedcloudAPI)
 
