@@ -1157,3 +1157,233 @@ resource "zedcloud_application_instance"  "test_tf_appinst_compose" {
     "tag-key-1" = "tag-value-1"
   }
 }
+
+
+# ZKS EXAMPLES
+
+# ZKS CLUSTER
+resource "zedcloud_kubernetes_cluster" "test_zks_cluster" {
+  name = "test-zks-cluster"
+  title = "test-zks-cluster"
+  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+  nodes {
+    id = "765f281b-dcca-4860-909b-dc0c1c0ce8f5"
+    cluster_interface = "eth0"
+  }
+}
+
+# ZKS CLUSTER GROUP
+resource "zedcloud_kubernetes_cluster_group" "test_zks_cluster_group" {
+  name = "test-zks-cluster-group"
+  title = "test-zks-cluster-group"
+  project_id = "739a107d-10c3-4046-868d-3390975577d5"
+  manifest = {
+    yaml_content = "{\"type\":\"fleet.cattle.io.clustergroup\",\"metadata\":{\"namespace\":\"4422adc422c4ddf8-539a347b24432a54\",\"name\":\"test-zks-cluster-group\"},\"spec\":{\"selector\":{\"matchExpressions\":[],\"matchLabels\":{}}}}"
+  }
+}
+
+# HELM CHART MANAGEMENT
+resource "zedcloud_helm_chart_management" "test_helm_chart" {
+  name    = "my-test-chart"
+  file    = "${path.module}/my-test-chart-2.0.0.tgz"
+  version = "2.0.0"
+}
+
+# KUBERNETES DEPLOYMENT
+resource "zedcloud_kubernetes_deployment" "test_k8s_deployment" {
+  # Metadata
+  name        = "test-nginx-deployment"
+  title       = "Test Nginx Deployment"
+  description = "Testing kubernetes deployment CRUD operations"
+
+  # Deployment configuration
+  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+  
+  deployment_type = "DEPLOYMENT_TYPE_K3S"
+  
+  revision = {
+    cluster = "edgeai-zks-cluster"
+    data = {
+      chart = {
+        chart_name      = "my-test-chart"
+        custom_values   = jsonencode({})
+        repo_identifier = ""
+        version         = "2.0.0"
+      }
+    }
+  }
+
+  # Make sure helm chart is uploaded first
+  depends_on = [zedcloud_helm_chart_management.test_helm_chart]
+}
+
+# KUBERNETES SECRET
+resource "zedcloud_kubernetes_secret" "test_k8s_secret" {
+  # Metadata
+  name        = "test-basic-auth-secret"
+  title       = "Test Basic Auth Secret"
+  description = "Testing kubernetes secret CRUD operations"
+
+  # Secret configuration
+  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+  
+  cluster = "edgeai-zks-cluster"
+  
+  data = {
+    username = "admin"
+    password = "supersecret123"
+  }
+}
+
+# KUBERNETES GITOPS - PUBLIC REPOSITORY
+resource "zedcloud_kubernetes_gitops" "test_k8s_gitops_public" {
+  # Metadata
+  name        = "test-gitops-public-repo"
+  title       = "Test GitOps Public Repository"
+  description = "Testing kubernetes gitops with public repository"
+
+  # GitOps configuration
+  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+  
+  target_type = "GIT_REPO_TARGET_TYPE_CLUSTER"
+  
+  targets = ["edgeai-zks-cluster"]
+  
+  repo_url = "https://github.com/zededa/terraform-provider-zedcloud"
+  branch   = "main"
+  
+  # Public repository - no authentication needed
+  git_auth = {
+    secret = {
+      type = "SECRET_TYPE_NONE"
+    }
+  }
+  
+  helm_auth = {
+    secret = {
+      type = "SECRET_TYPE_NONE"
+    }
+  }
+}
+
+# KUBERNETES GITOPS - PRIVATE REPOSITORY (SSH)
+resource "zedcloud_kubernetes_gitops" "test_k8s_gitops_private_ssh" {
+  # Metadata
+  name        = "test-gitops-private-ssh"
+  title       = "Test GitOps Private Repository (SSH)"
+  description = "Testing kubernetes gitops with private repository using SSH key"
+
+  # GitOps configuration
+  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+  
+  target_type = "GIT_REPO_TARGET_TYPE_CLUSTER"
+  
+  targets = ["edgeai-zks-cluster"]
+  
+  # Private repository - SSH URL
+  repo_url = "git@github.com:your-org/private-repo.git"
+  branch   = "main"
+  
+  # SSH key authentication
+  git_auth = {
+    secret = {
+      type = "SECRET_TYPE_SSH_KEYPAIR"
+      name = "git-ssh-key-secret"  # Reference to existing secret containing SSH private key
+    }
+  }
+  
+  helm_auth = {
+    secret = {
+      type = "SECRET_TYPE_NONE"
+    }
+  }
+}
+
+# KUBERNETES GITOPS - PRIVATE REPOSITORY (HTTP with Token)
+resource "zedcloud_kubernetes_gitops" "test_k8s_gitops_private_http" {
+  # Metadata
+  name        = "test-gitops-private-http"
+  title       = "Test GitOps Private Repository (HTTP)"
+  description = "Testing kubernetes gitops with private repository using HTTP token"
+
+  # GitOps configuration
+  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+  
+  target_type = "GIT_REPO_TARGET_TYPE_CLUSTER"
+  
+  targets = ["edgeai-zks-cluster"]
+  
+  # Private repository - HTTPS URL
+  repo_url = "https://github.com/your-org/private-repo.git"
+  branch   = "main"
+  
+  # HTTP basic auth or token authentication
+  git_auth = {
+    secret = {
+      type = "SECRET_TYPE_HTTP_BASIC"
+      name = "git-http-token-secret"  # Reference to existing secret containing username/token
+    }
+  }
+  
+  helm_auth = {
+    secret = {
+      type = "SECRET_TYPE_NONE"
+    }
+  }
+}
+
+# KUBERNETES GITOPS - WITH HELM REPOSITORY AUTHENTICATION
+resource "zedcloud_kubernetes_gitops" "test_k8s_gitops_helm_auth" {
+  # Metadata
+  name        = "test-gitops-helm-auth"
+  title       = "Test GitOps with Helm Authentication"
+  description = "Testing kubernetes gitops with private Helm repository"
+
+  # GitOps configuration
+  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+  
+  target_type = "GIT_REPO_TARGET_TYPE_CLUSTER"
+  
+  targets = ["edgeai-zks-cluster"]
+  
+  # Public git repository
+  repo_url = "https://github.com/your-org/helm-charts.git"
+  branch   = "main"
+  
+  # No git auth needed
+  git_auth = {
+    secret = {
+      type = "SECRET_TYPE_NONE"
+    }
+  }
+  
+  # Private Helm repository authentication
+  helm_auth = {
+    secret = {
+      type = "SECRET_TYPE_HTTP_BASIC"
+      name = "helm-registry-secret"  # Reference to existing secret containing Helm registry credentials
+    }
+  }
+}
+
+# CREATE: Private Helm Repository with public Bitnami charts
+resource "zedcloud_private_helm_repository" "bitnami_charts" {
+  metadata {
+    name        = "bitnami-charts-tf-test"
+    title       = "Bitnami Charts Repository"
+    description = "Public Bitnami Helm charts repository for testing"
+  }
+
+  spec {
+    repo_details {
+      url  = "https://charts.bitnami.com/bitnami"
+      type = "PRIVATE_REPO_TYPE_HELM_INDEX"
+    }
+
+    auth {
+      secret {
+        type = "SECRET_TYPE_NONE"
+      }
+    }
+  }
+}
