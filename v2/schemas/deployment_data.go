@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -58,7 +57,7 @@ func DeploymentDataSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: HelmChartDataSchema(),
 			},
-			Optional: true,
+			Required: true,
 		},
 	}
 }

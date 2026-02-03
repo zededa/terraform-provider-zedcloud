@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -60,7 +59,7 @@ func PrivateRepoSecretConfigSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: `Type of secret for authentication`,
+			Description: `Type of secret for authentication (SECRET_TYPE_NONE, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_SSH, SECRET_TYPE_UNSPECIFIED)`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

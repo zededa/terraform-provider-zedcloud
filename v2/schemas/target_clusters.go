@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -16,7 +15,7 @@ func TargetClustersModel(d *schema.ResourceData) *models.TargetClusters {
 		}
 	}
 	clusterTags := map[string]string{}
-	clusterTagsInterface, clusterTagsIsSet := d.GetOk("clusterTags")
+	clusterTagsInterface, clusterTagsIsSet := d.GetOk("cluster_tags")
 	if clusterTagsIsSet {
 		clusterTagsMap := clusterTagsInterface.(map[string]interface{})
 		for k, v := range clusterTagsMap {
@@ -26,7 +25,6 @@ func TargetClustersModel(d *schema.ResourceData) *models.TargetClusters {
 			clusterTags[k] = v.(string)
 		}
 	}
-
 	isMultiCluster, _ := d.Get("is_multi_cluster").(bool)
 	return &models.TargetClusters{
 		ClusterMetadata: clusterMetadata,
@@ -56,7 +54,6 @@ func TargetClustersModelFromMap(m map[string]interface{}) *models.TargetClusters
 			clusterTags[k] = v.(string)
 		}
 	}
-
 	isMultiCluster := m["is_multi_cluster"].(bool)
 	return &models.TargetClusters{
 		ClusterMetadata: clusterMetadata,
@@ -92,11 +89,11 @@ func TargetClustersSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: ClusterMetadataSchema(),
 			},
-			Optional: true,
+			Required: true,
 		},
 
 		"cluster_tags": {
-			Description: `Tags for the clusters where the deployment will be applied. Example: {'environment': 'production', 'region': 'us-west-2'}`,
+			Description: `Tags for the clusters where the deployment will be applied. Example: {'environment': 'production', 'region': 'us-west-2'}. This field is reserved for future use and not currently implemented.`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,

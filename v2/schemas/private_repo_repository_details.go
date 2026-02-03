@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -66,7 +65,7 @@ func PrivateRepoRepositoryDetailsSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: `Type of the private repository (required)`,
+			Description: `Type of the private repository (PRIVATE_REPO_TYPE_HELM_INDEX, PRIVATE_REPO_TYPE_GIT, PRIVATE_REPO_TYPE_UNSPECIFIED). This is a required paramater`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},

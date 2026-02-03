@@ -7,7 +7,6 @@ package models
 
 import (
 	"context"
-	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -55,15 +54,11 @@ func (m *SecretListResponse) validateSecrets(formats strfmt.Registry) error {
 
 		if m.Secrets[i] != nil {
 			if err := m.Secrets[i].Validate(formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
+				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("secrets" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
+				} else if ce, ok := err.(*errors.CompositeError); ok {
 					return ce.ValidateName("secrets" + "." + strconv.Itoa(i))
 				}
-
 				return err
 			}
 		}
@@ -98,15 +93,11 @@ func (m *SecretListResponse) contextValidateSecrets(ctx context.Context, formats
 			}
 
 			if err := m.Secrets[i].ContextValidate(ctx, formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
+				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("secrets" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
+				} else if ce, ok := err.(*errors.CompositeError); ok {
 					return ce.ValidateName("secrets" + "." + strconv.Itoa(i))
 				}
-
 				return err
 			}
 		}

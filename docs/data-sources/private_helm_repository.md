@@ -54,7 +54,7 @@ Optional:
 
 Required:
 
-- `type` (String) Type of the private repository (required)
+- `type` (String) Type of the private repository (PRIVATE_REPO_TYPE_HELM_INDEX, PRIVATE_REPO_TYPE_GIT, PRIVATE_REPO_TYPE_UNSPECIFIED). This is a required paramater
 - `url` (String) Private repository URL (required)
 
 Optional:
@@ -75,4 +75,4 @@ Optional:
 Optional:
 
 - `name` (String) Name of the secret resource
-- `type` (String) Type of secret for authentication
+- `type` (String) Type of secret for authentication (SECRET_TYPE_NONE, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_SSH, SECRET_TYPE_UNSPECIFIED)
