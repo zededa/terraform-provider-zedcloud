@@ -7,7 +7,6 @@ package models
 
 import (
 	"context"
-	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -23,9 +22,10 @@ import (
 type TargetClusters struct {
 
 	// Metadata for the target cluster when is_multi_cluster is false
-	ClusterMetadata *ClusterMetadata `json:"clusterMetadata,omitempty"`
+	// Required: true
+	ClusterMetadata *ClusterMetadata `json:"clusterMetadata"`
 
-	// Tags for the clusters where the deployment will be applied. Example: {'environment': 'production', 'region': 'us-west-2'}
+	// Tags for the clusters where the deployment will be applied. Example: {'environment': 'production', 'region': 'us-west-2'}. This field is reserved for future use and not currently implemented.
 	ClusterTags map[string]string `json:"clusterTags,omitempty"`
 
 	// Indicates if the deployment is for multiple clusters. Example: false
@@ -52,21 +52,18 @@ func (m *TargetClusters) Validate(formats strfmt.Registry) error {
 }
 
 func (m *TargetClusters) validateClusterMetadata(formats strfmt.Registry) error {
-	if swag.IsZero(m.ClusterMetadata) { // not required
-		return nil
+
+	if err := validate.Required("clusterMetadata", "body", m.ClusterMetadata); err != nil {
+		return err
 	}
 
 	if m.ClusterMetadata != nil {
 		if err := m.ClusterMetadata.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("clusterMetadata")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("clusterMetadata")
 			}
-
 			return err
 		}
 	}
@@ -101,20 +98,12 @@ func (m *TargetClusters) contextValidateClusterMetadata(ctx context.Context, for
 
 	if m.ClusterMetadata != nil {
 
-		if swag.IsZero(m.ClusterMetadata) { // not required
-			return nil
-		}
-
 		if err := m.ClusterMetadata.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("clusterMetadata")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("clusterMetadata")
 			}
-
 			return err
 		}
 	}
