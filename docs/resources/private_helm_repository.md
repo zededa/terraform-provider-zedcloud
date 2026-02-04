@@ -54,7 +54,7 @@ Optional:
 
 Required:
 
-- `type` (String) Type of the private repository (PRIVATE_REPO_TYPE_HELM_INDEX, PRIVATE_REPO_TYPE_GIT, PRIVATE_REPO_TYPE_UNSPECIFIED). This is a required paramater
+- `type` (String) Type of the private repository (PRIVATE_REPO_TYPE_HELM_INDEX, PRIVATE_REPO_TYPE_GIT, PRIVATE_REPO_TYPE_UNSPECIFIED). This is a required parameter
 - `url` (String) Private repository URL (required)
 
 Optional:

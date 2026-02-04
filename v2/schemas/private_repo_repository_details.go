@@ -65,7 +65,7 @@ func PrivateRepoRepositoryDetailsSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: `Type of the private repository (PRIVATE_REPO_TYPE_HELM_INDEX, PRIVATE_REPO_TYPE_GIT, PRIVATE_REPO_TYPE_UNSPECIFIED). This is a required paramater`,
+			Description: `Type of the private repository (PRIVATE_REPO_TYPE_HELM_INDEX, PRIVATE_REPO_TYPE_GIT, PRIVATE_REPO_TYPE_UNSPECIFIED). This is a required parameter`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},
