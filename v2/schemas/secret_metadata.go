@@ -109,7 +109,7 @@ func SecretMetadataSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: SecretStateSchema(),
 			},
-			Optional: true,
+			Computed: true,
 		},
 
 		"type": {

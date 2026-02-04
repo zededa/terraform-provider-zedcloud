@@ -39,17 +39,20 @@ Optional:
 
 - `creation_timestamp` (String) Timestamp when the secret was created
 - `project_id` (String) Project identifier that owns this secret
-- `state` (Block List) Current state of the secret including error status and transition information (see [below for nested schema](#nestedblock--metadata--state))
 
-<a id="nestedblock--metadata--state"></a>
+Read-Only:
+
+- `state` (List of Object) Current state of the secret including error status and transition information (see [below for nested schema](#nestedatt--metadata--state))
+
+<a id="nestedatt--metadata--state"></a>
 ### Nested Schema for `metadata.state`
 
-Optional:
+Read-Only:
 
-- `error` (Boolean) Indicates if the secret is in an error state
-- `message` (String) Status message providing additional details about the secret state
-- `name` (String) Name of the secret in its current state
-- `transitioning` (Boolean) Indicates if the secret is currently undergoing state transition
+- `error` (Boolean)
+- `message` (String)
+- `name` (String)
+- `transitioning` (Boolean)
 
 
 
