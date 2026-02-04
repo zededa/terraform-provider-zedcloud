@@ -37,11 +37,11 @@ Required:
 
 Optional:
 
-- `creation_timestamp` (String) Timestamp when the secret was created
 - `project_id` (String) Project identifier that owns this secret
 
 Read-Only:
 
+- `creation_timestamp` (String) Timestamp when the secret was created
 - `state` (List of Object) Current state of the secret including error status and transition information (see [below for nested schema](#nestedatt--metadata--state))
 
 <a id="nestedatt--metadata--state"></a>
