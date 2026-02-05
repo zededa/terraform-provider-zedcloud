@@ -1173,12 +1173,17 @@ resource "zedcloud_kubernetes_cluster" "test_zks_cluster" {
 }
 
 # ZKS CLUSTER GROUP
+data "zedcloud_cluster_group_manifest" "test_manifest" {
+  name = "test-cluster-group"
+  project_name = "project_name"
+}
+
 resource "zedcloud_kubernetes_cluster_group" "test_zks_cluster_group" {
-  name = "test-zks-cluster-group"
-  title = "test-zks-cluster-group"
-  project_id = "739a107d-10c3-4046-868d-3390975577d5"
-  manifest = {
-    yaml_content = "{\"type\":\"fleet.cattle.io.clustergroup\",\"metadata\":{\"namespace\":\"4422adc422c4ddf8-539a347b24432a54\",\"name\":\"test-zks-cluster-group\"},\"spec\":{\"selector\":{\"matchExpressions\":[],\"matchLabels\":{}}}}"
+  name = data.zedcloud_cluster_group_manifest.test_manifest.name
+  tags = data.zedcloud_cluster_group_manifest.test_manifest.tags
+  project_id = "7994e42d-34f6-4922-8ce6-ecc2f9a04dee"
+  manifest {
+    yaml_content = data.zedcloud_cluster_group_manifest.test_manifest.yaml_content
   }
 }
 
