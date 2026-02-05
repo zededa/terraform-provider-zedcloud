@@ -7,7 +7,6 @@ package models
 
 import (
 	"context"
-	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -38,8 +37,9 @@ type SecretMetadata struct {
 	// Current state of the secret including error status and transition information
 	State *SecretState `json:"state,omitempty"`
 
-	// Type of the secret (SSH, Basic Auth, etc.)
-	Type *SecretType `json:"type,omitempty"`
+	// Type of the secret (SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). This field is required and must be a valid Kubernetes secret type.
+	// Required: true
+	Type *SecretType `json:"type"`
 }
 
 // Validate validates this secret metadata
@@ -92,15 +92,11 @@ func (m *SecretMetadata) validateState(formats strfmt.Registry) error {
 
 	if m.State != nil {
 		if err := m.State.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("state")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("state")
 			}
-
 			return err
 		}
 	}
@@ -109,21 +105,22 @@ func (m *SecretMetadata) validateState(formats strfmt.Registry) error {
 }
 
 func (m *SecretMetadata) validateType(formats strfmt.Registry) error {
-	if swag.IsZero(m.Type) { // not required
-		return nil
+
+	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
+	}
+
+	if err := validate.Required("type", "body", m.Type); err != nil {
+		return err
 	}
 
 	if m.Type != nil {
 		if err := m.Type.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("type")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("type")
 			}
-
 			return err
 		}
 	}
@@ -158,15 +155,11 @@ func (m *SecretMetadata) contextValidateState(ctx context.Context, formats strfm
 		}
 
 		if err := m.State.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("state")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("state")
 			}
-
 			return err
 		}
 	}
@@ -178,20 +171,12 @@ func (m *SecretMetadata) contextValidateType(ctx context.Context, formats strfmt
 
 	if m.Type != nil {
 
-		if swag.IsZero(m.Type) { // not required
-			return nil
-		}
-
 		if err := m.Type.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("type")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("type")
 			}
-
 			return err
 		}
 	}

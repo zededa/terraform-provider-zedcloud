@@ -19,16 +19,16 @@ import (
 // swagger:model SecretData
 type SecretData struct {
 
-	// Base64 encoded password for basic authentication
+	// Base64 encoded password for basic authentication, Required if Secret type is SECRET_TYPE_BASIC_AUTH
 	EncodedPassword string `json:"encodedPassword,omitempty"`
 
-	// Base64 encoded username for basic authentication
+	// Base64 encoded username for basic authentication, Required if Secret type is SECRET_TYPE_BASIC_AUTH
 	EncodedUsername string `json:"encodedUsername,omitempty"`
 
-	// SSH private key for SSH authentication
+	// Base64 encoded SSH private key for SSH authentication, Required if Secret type is SECRET_TYPE_SSH
 	SSHPrivateKey string `json:"sshPrivateKey,omitempty"`
 
-	// SSH public key for SSH authentication
+	// Base64 encoded SSH public key for SSH authentication, Required if Secret type is SECRET_TYPE_SSH
 	SSHPublicKey string `json:"sshPublicKey,omitempty"`
 }
 

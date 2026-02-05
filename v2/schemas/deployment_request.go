@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -108,7 +107,7 @@ func DeploymentRequestSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: `Type of deployment (required). Example: 'HELMCHART'`,
+			Description: `Type of deployment (required). Currently only 'HELMCHART' is supported.`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},

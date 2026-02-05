@@ -7,7 +7,6 @@ package models
 
 import (
 	"context"
-	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -24,7 +23,7 @@ type PrivateRepoSecretConfig struct {
 	// Name of the secret resource
 	Name string `json:"name,omitempty"`
 
-	// Type of secret for authentication
+	// Type of the secret (SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). This field is required and must be a valid Kubernetes secret type.
 	Type *SecretType `json:"type,omitempty"`
 }
 
@@ -49,15 +48,11 @@ func (m *PrivateRepoSecretConfig) validateType(formats strfmt.Registry) error {
 
 	if m.Type != nil {
 		if err := m.Type.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("type")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("type")
 			}
-
 			return err
 		}
 	}
@@ -88,15 +83,11 @@ func (m *PrivateRepoSecretConfig) contextValidateType(ctx context.Context, forma
 		}
 
 		if err := m.Type.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("type")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("type")
 			}
-
 			return err
 		}
 	}

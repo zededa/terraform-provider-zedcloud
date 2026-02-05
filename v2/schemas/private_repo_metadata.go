@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -20,7 +19,6 @@ func PrivateRepoMetadataModel(d *schema.ResourceData) *models.PrivateRepoMetadat
 			tags[k] = v.(string)
 		}
 	}
-
 	title, _ := d.Get("title").(string)
 	return &models.PrivateRepoMetadata{
 		Description: description,
@@ -44,7 +42,6 @@ func PrivateRepoMetadataModelFromMap(m map[string]interface{}) *models.PrivateRe
 			tags[k] = v.(string)
 		}
 	}
-
 	title := m["title"].(string)
 	return &models.PrivateRepoMetadata{
 		Description: description,

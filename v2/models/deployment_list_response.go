@@ -7,7 +7,6 @@ package models
 
 import (
 	"context"
-	stderrors "errors"
 	"strconv"
 
 	"github.com/go-openapi/errors"
@@ -62,15 +61,11 @@ func (m *DeploymentListResponse) validateDeployments(formats strfmt.Registry) er
 
 		if m.Deployments[i] != nil {
 			if err := m.Deployments[i].Validate(formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
+				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
+				} else if ce, ok := err.(*errors.CompositeError); ok {
 					return ce.ValidateName("deployments" + "." + strconv.Itoa(i))
 				}
-
 				return err
 			}
 		}
@@ -87,15 +82,11 @@ func (m *DeploymentListResponse) validateStateSummary(formats strfmt.Registry) e
 
 	if m.StateSummary != nil {
 		if err := m.StateSummary.Validate(formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("stateSummary")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("stateSummary")
 			}
-
 			return err
 		}
 	}
@@ -132,15 +123,11 @@ func (m *DeploymentListResponse) contextValidateDeployments(ctx context.Context,
 			}
 
 			if err := m.Deployments[i].ContextValidate(ctx, formats); err != nil {
-				ve := new(errors.Validation)
-				if stderrors.As(err, &ve) {
+				if ve, ok := err.(*errors.Validation); ok {
 					return ve.ValidateName("deployments" + "." + strconv.Itoa(i))
-				}
-				ce := new(errors.CompositeError)
-				if stderrors.As(err, &ce) {
+				} else if ce, ok := err.(*errors.CompositeError); ok {
 					return ce.ValidateName("deployments" + "." + strconv.Itoa(i))
 				}
-
 				return err
 			}
 		}
@@ -159,15 +146,11 @@ func (m *DeploymentListResponse) contextValidateStateSummary(ctx context.Context
 		}
 
 		if err := m.StateSummary.ContextValidate(ctx, formats); err != nil {
-			ve := new(errors.Validation)
-			if stderrors.As(err, &ve) {
+			if ve, ok := err.(*errors.Validation); ok {
 				return ve.ValidateName("stateSummary")
-			}
-			ce := new(errors.CompositeError)
-			if stderrors.As(err, &ce) {
+			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("stateSummary")
 			}
-
 			return err
 		}
 	}

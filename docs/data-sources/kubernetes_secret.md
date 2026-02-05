@@ -33,11 +33,11 @@ description: |-
 Required:
 
 - `name` (String) Name of the Kubernetes secret. This field is required and must be a valid Kubernetes secret name.
+- `type` (String) Type of the secret (SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). This field is required and must be a valid Kubernetes secret type.
 
 Optional:
 
 - `project_id` (String) Project identifier that owns this secret
-- `type` (String) Type of the secret (SSH, Basic Auth, etc.)
 
 Read-Only:
 
@@ -61,7 +61,7 @@ Read-Only:
 
 Optional:
 
-- `encoded_password` (String) Base64 encoded password for basic authentication
-- `encoded_username` (String) Base64 encoded username for basic authentication
-- `ssh_private_key` (String) SSH private key for SSH authentication
-- `ssh_public_key` (String) SSH public key for SSH authentication
+- `encoded_password` (String) Base64 encoded password for basic authentication, Required if Secret type is SECRET_TYPE_BASIC_AUTH
+- `encoded_username` (String) Base64 encoded username for basic authentication, Required if Secret type is SECRET_TYPE_BASIC_AUTH
+- `ssh_private_key` (String) Base64 encoded SSH private key for SSH authentication, Required if Secret type is SECRET_TYPE_SSH
+- `ssh_public_key` (String) Base64 encoded SSH public key for SSH authentication, Required if Secret type is SECRET_TYPE_SSH

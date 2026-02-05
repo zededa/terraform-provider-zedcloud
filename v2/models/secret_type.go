@@ -44,7 +44,7 @@ const (
 )
 
 // for schema
-var secretTypeEnum []any
+var secretTypeEnum []interface{}
 
 func init() {
 	var res []SecretType

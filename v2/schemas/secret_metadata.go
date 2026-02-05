@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -114,9 +113,9 @@ func SecretMetadataSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: `Type of the secret (SSH, Basic Auth, etc.)`,
+			Description: `Type of the secret (SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). This field is required and must be a valid Kubernetes secret type.`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }

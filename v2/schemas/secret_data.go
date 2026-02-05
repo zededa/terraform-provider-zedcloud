@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -56,25 +55,25 @@ func SetSecretDataSubResourceData(m []*models.SecretData) (d []*map[string]inter
 func SecretDataSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"encoded_password": {
-			Description: `Base64 encoded password for basic authentication`,
+			Description: `Base64 encoded password for basic authentication, Required if Secret type is SECRET_TYPE_BASIC_AUTH`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"encoded_username": {
-			Description: `Base64 encoded username for basic authentication`,
+			Description: `Base64 encoded username for basic authentication, Required if Secret type is SECRET_TYPE_BASIC_AUTH`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"ssh_private_key": {
-			Description: `SSH private key for SSH authentication`,
+			Description: `Base64 encoded SSH private key for SSH authentication, Required if Secret type is SECRET_TYPE_SSH`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 
 		"ssh_public_key": {
-			Description: `SSH public key for SSH authentication`,
+			Description: `Base64 encoded SSH public key for SSH authentication, Required if Secret type is SECRET_TYPE_SSH`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

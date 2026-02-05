@@ -1,10 +1,9 @@
 package schemas
 
 import (
+	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-
-	"github.com/go-openapi/strfmt"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -16,6 +15,11 @@ func DeploymentGetResponseModel(d *schema.ResourceData) *models.DeploymentGetRes
 	id, _ := d.Get("id").(string)
 	name, _ := d.Get("name").(string)
 	projectID, _ := d.Get("project_id").(string)
+	var resourceStatusMap []interface{}
+	resourceStatusMapInterface, resourceStatusMapIsSet := d.GetOk("resource_status_map")
+	if resourceStatusMapIsSet {
+		resourceStatusMap = resourceStatusMapInterface.([]interface{})
+	}
 	var spec *models.DeploymentData // DeploymentData
 	specInterface, specIsSet := d.GetOk("spec")
 	if specIsSet && specInterface != nil {
@@ -34,18 +38,19 @@ func DeploymentGetResponseModel(d *schema.ResourceData) *models.DeploymentGetRes
 	updatedAt, _ := d.Get("updated_at").(strfmt.DateTime)
 	updatedBy, _ := d.Get("updated_by").(string)
 	return &models.DeploymentGetResponse{
-		CreatedAt:        createdAt,
-		CreatedBy:        createdBy,
-		DeploymentStatus: deploymentStatus,
-		Description:      description,
-		ID:               id,
-		Name:             name,
-		ProjectID:        projectID,
-		Spec:             spec,
-		Title:            title,
-		Type:             typeVar,
-		UpdatedAt:        updatedAt,
-		UpdatedBy:        updatedBy,
+		CreatedAt:         createdAt,
+		CreatedBy:         createdBy,
+		DeploymentStatus:  deploymentStatus,
+		Description:       description,
+		ID:                id,
+		Name:              name,
+		ProjectID:         projectID,
+		ResourceStatusMap: resourceStatusMap,
+		Spec:              spec,
+		Title:             title,
+		Type:              typeVar,
+		UpdatedAt:         updatedAt,
+		UpdatedBy:         updatedBy,
 	}
 }
 
@@ -57,6 +62,11 @@ func DeploymentGetResponseModelFromMap(m map[string]interface{}) *models.Deploym
 	id := m["id"].(string)
 	name := m["name"].(string)
 	projectID := m["project_id"].(string)
+	var resourceStatusMap []interface{}
+	resourceStatusMapInterface, resourceStatusMapIsSet := m["resource_status_map"]
+	if resourceStatusMapIsSet {
+		resourceStatusMap = resourceStatusMapInterface.([]interface{})
+	}
 	var spec *models.DeploymentData // DeploymentData
 	specInterface, specIsSet := m["spec"]
 	if specIsSet && specInterface != nil {
@@ -76,18 +86,19 @@ func DeploymentGetResponseModelFromMap(m map[string]interface{}) *models.Deploym
 	updatedAt := m["updated_at"].(strfmt.DateTime)
 	updatedBy := m["updated_by"].(string)
 	return &models.DeploymentGetResponse{
-		CreatedAt:        createdAt,
-		CreatedBy:        createdBy,
-		DeploymentStatus: deploymentStatus,
-		Description:      description,
-		ID:               id,
-		Name:             name,
-		ProjectID:        projectID,
-		Spec:             spec,
-		Title:            title,
-		Type:             typeVar,
-		UpdatedAt:        updatedAt,
-		UpdatedBy:        updatedBy,
+		CreatedAt:         createdAt,
+		CreatedBy:         createdBy,
+		DeploymentStatus:  deploymentStatus,
+		Description:       description,
+		ID:                id,
+		Name:              name,
+		ProjectID:         projectID,
+		ResourceStatusMap: resourceStatusMap,
+		Spec:              spec,
+		Title:             title,
+		Type:              typeVar,
+		UpdatedAt:         updatedAt,
+		UpdatedBy:         updatedBy,
 	}
 }
 
@@ -173,6 +184,15 @@ func DeploymentGetResponseSchema() map[string]*schema.Schema {
 			Description: `Project ID associated with the deployment`,
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+
+		"resource_status_map": {
+			Description: `Map of resource status details`,
+			Type:        schema.TypeList, //GoType: []interface{}
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
 		},
 
 		"spec": {

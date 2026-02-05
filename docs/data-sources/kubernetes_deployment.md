@@ -19,7 +19,7 @@ description: |-
 
 - `data` (Block List, Min: 1) Data for the deployment (required) (see [below for nested schema](#nestedblock--data))
 - `metadata` (Block List, Min: 1) Metadata for the deployment (required) (see [below for nested schema](#nestedblock--metadata))
-- `type` (String) Type of deployment (required). Example: 'HELMCHART'
+- `type` (String) Type of deployment (required). Currently only 'HELMCHART' is supported.
 
 ### Read-Only
 
@@ -28,9 +28,9 @@ description: |-
 <a id="nestedblock--data"></a>
 ### Nested Schema for `data`
 
-Optional:
+Required:
 
-- `helm_chart_data` (Block List) Helm chart data for the deployment (see [below for nested schema](#nestedblock--data--helm_chart_data))
+- `helm_chart_data` (Block List, Min: 1) Helm chart data for the deployment (see [below for nested schema](#nestedblock--data--helm_chart_data))
 
 <a id="nestedblock--data--helm_chart_data"></a>
 ### Nested Schema for `data.helm_chart_data`
@@ -59,12 +59,12 @@ Optional:
 
 Required:
 
+- `cluster_metadata` (Block List, Min: 1) Metadata for the target cluster when is_multi_cluster is false (see [below for nested schema](#nestedblock--data--helm_chart_data--target_clusters--cluster_metadata))
 - `is_multi_cluster` (Boolean) Indicates if the deployment is for multiple clusters. Example: false
 
 Optional:
 
-- `cluster_metadata` (Block List) Metadata for the target cluster when is_multi_cluster is false (see [below for nested schema](#nestedblock--data--helm_chart_data--target_clusters--cluster_metadata))
-- `cluster_tags` (Map of String) Tags for the clusters where the deployment will be applied. Example: {'environment': 'production', 'region': 'us-west-2'}
+- `cluster_tags` (Map of String) Tags for the clusters where the deployment will be applied. Example: {'environment': 'production', 'region': 'us-west-2'}. This field is reserved for future use and not currently implemented.
 
 <a id="nestedblock--data--helm_chart_data--target_clusters--cluster_metadata"></a>
 ### Nested Schema for `data.helm_chart_data.target_clusters.cluster_metadata`
