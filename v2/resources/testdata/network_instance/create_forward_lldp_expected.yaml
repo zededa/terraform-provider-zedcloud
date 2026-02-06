@@ -17,4 +17,4 @@ propagateconnectedroutes: false
 tags:
     test-type: forward-lldp-test
 title: test_tf_provider-netinst_fwd_lldp_3
-type: ""
+type: NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED
