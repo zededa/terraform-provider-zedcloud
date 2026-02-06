@@ -1,0 +1,20 @@
+clusterid: ""
+description: Test network instance with LLDP forwarding enabled
+devicedefault: false
+dhcp: false
+dnslist: []
+forwardlldp: true
+ip: null
+kind: NETWORK_INSTANCE_KIND_SWITCH
+lisp: null
+name: test_tf_provider-netinst_forward_lldp
+networkpolicyid: ""
+oconfig: ""
+opaque: null
+port: eth1
+porttags: {}
+propagateconnectedroutes: false
+tags:
+    test-type: forward-lldp-test
+title: test_tf_provider-netinst_forward_lldp
+type: ""

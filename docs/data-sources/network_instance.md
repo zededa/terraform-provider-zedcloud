@@ -37,6 +37,7 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance

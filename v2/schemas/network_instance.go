@@ -36,6 +36,7 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetworkInstance {
 			edgeNodeCluster = NetInstEdgeNodeClusterModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
 		}
 	}
+	forwardLldp, _ := d.Get("forward_lldp").(bool)
 	id, _ := d.Get("id").(string)
 	var ip *models.DhcpServerConfig // DhcpServerConfig
 	ipInterface, ipIsSet := d.GetOk("ip")
@@ -133,31 +134,32 @@ func NetworkInstanceModel(d *schema.ResourceData) *models.NetworkInstance {
 		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
 	}
 	return &models.NetworkInstance{
-		ClusterID:       			clusterID,
-		Description:    			description,
-		DeviceDefault:   			deviceDefault,
-		DeviceID:        			&deviceID, // string true false false
-		Dhcp:            			dhcp,
-		DNSList:         			dNSList,
+		ClusterID:                clusterID,
+		Description:              description,
+		DeviceDefault:            deviceDefault,
+		DeviceID:                 &deviceID, // string true false false
+		Dhcp:                     dhcp,
+		DNSList:                  dNSList,
 		EdgeNodeCluster:          edgeNodeCluster,
-		ID:              			id,
-		IP:              			ip,
-		Kind:            			kind,
-		Lisp:            			lisp,
-		Mtu:            			mtu,
-		Name:            			&name, // string true false false
-		NetworkPolicyID: 			networkPolicyID,
-		Oconfig:         			oconfig,
-		Opaque:          			opaque,
-		Port:            			&port, // string true false false
-		PortTags:        			portTags,
-		ProjectID:       			projectID,
-		PropagateConnectedRoutes: 	propagateConnectedRoutes,
-		Revision:        			revision,
-		StaticRoutes:	 			staticRoutes,
-		Tags:            			tags,
-		Title:           			&title, // string true false false
-		Type:            			typeVar,
+		ForwardLldp:              forwardLldp,
+		ID:                       id,
+		IP:                       ip,
+		Kind:                     kind,
+		Lisp:                     lisp,
+		Mtu:                      mtu,
+		Name:                     &name, // string true false false
+		NetworkPolicyID:          networkPolicyID,
+		Oconfig:                  oconfig,
+		Opaque:                   opaque,
+		Port:                     &port, // string true false false
+		PortTags:                 portTags,
+		ProjectID:                projectID,
+		PropagateConnectedRoutes: propagateConnectedRoutes,
+		Revision:                 revision,
+		StaticRoutes:             staticRoutes,
+		Tags:                     tags,
+		Title:                    &title, // string true false false
+		Type:                     typeVar,
 	}
 }
 
@@ -192,6 +194,7 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetworkInstan
 			edgeNodeCluster = NetInstEdgeNodeClusterModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
 		}
 	}
+	forwardLldp := m["forward_lldp"].(bool)
 	id := m["id"].(string)
 	var ip *models.DhcpServerConfig // DhcpServerConfig
 	ipInterface, ipIsSet := m["ip"]
@@ -292,31 +295,32 @@ func NetworkInstanceModelFromMap(m map[string]interface{}) *models.NetworkInstan
 		typeVar = models.NewNetworkInstanceDhcpType(models.NetworkInstanceDhcpType(typeModel))
 	}
 	return &models.NetworkInstance{
-		ClusterID:       			clusterID,
-		Description:     			description,
-		DeviceDefault:   			deviceDefault,
-		DeviceID:        			&deviceID,
-		Dhcp:            			dhcp,
-		DNSList:         			dNSList,
+		ClusterID:                clusterID,
+		Description:              description,
+		DeviceDefault:            deviceDefault,
+		DeviceID:                 &deviceID,
+		Dhcp:                     dhcp,
+		DNSList:                  dNSList,
 		EdgeNodeCluster:          edgeNodeCluster,
-		ID:              			id,
-		IP:              			ip,
-		Kind:            			kind,
-		Lisp:            			lisp,
-		Mtu: 		   	 			mtu,
-		Name:            			&name,
-		NetworkPolicyID: 			networkPolicyID,
-		Oconfig:         			oconfig,
-		Opaque:          			opaque,
-		Port:            			&port,
-		PortTags:        			portTags,
-		ProjectID:       			projectID,
-		PropagateConnectedRoutes: 	propagateConnectedRoutes,
-		Revision:       		 	revision,
-		StaticRoutes:            	staticRoutes,
-		Tags:            			tags,
-		Title:        			   	&title,
-		Type:          				typeVar,
+		ForwardLldp:              forwardLldp,
+		ID:                       id,
+		IP:                       ip,
+		Kind:                     kind,
+		Lisp:                     lisp,
+		Mtu:                      mtu,
+		Name:                     &name,
+		NetworkPolicyID:          networkPolicyID,
+		Oconfig:                  oconfig,
+		Opaque:                   opaque,
+		Port:                     &port,
+		PortTags:                 portTags,
+		ProjectID:                projectID,
+		PropagateConnectedRoutes: propagateConnectedRoutes,
+		Revision:                 revision,
+		StaticRoutes:             staticRoutes,
+		Tags:                     tags,
+		Title:                    &title,
+		Type:                     typeVar,
 	}
 }
 
@@ -328,6 +332,7 @@ func SetNetworkInstanceResourceData(d *schema.ResourceData, m *models.NetworkIns
 	d.Set("dhcp", m.Dhcp)
 	d.Set("dns_list", SetStaticDNSListSubResourceData(m.DNSList))
 	d.Set("edge_node_cluster", SetNetInstEdgeNodeClusterSubResourceData([]*models.NetInstEdgeNodeCluster{m.EdgeNodeCluster}))
+	d.Set("forward_lldp", m.ForwardLldp)
 	d.Set("id", m.ID)
 	d.Set("ip", SetDHCPServerSubResourceData([]*models.DhcpServerConfig{m.IP}))
 	d.Set("kind", m.Kind)
@@ -359,6 +364,7 @@ func SetNetworkInstanceSubResourceData(m []*models.NetworkInstance) (d []*map[st
 			properties["dhcp"] = NetInstConfigModel.Dhcp
 			properties["dns_list"] = SetStaticDNSListSubResourceData(NetInstConfigModel.DNSList)
 			properties["edge_node_cluster"] = SetNetInstEdgeNodeClusterSubResourceData([]*models.NetInstEdgeNodeCluster{NetInstConfigModel.EdgeNodeCluster})
+			properties["forward_lldp"] = NetInstConfigModel.ForwardLldp
 			properties["id"] = NetInstConfigModel.ID
 			properties["ip"] = SetDHCPServerSubResourceData([]*models.DhcpServerConfig{NetInstConfigModel.IP})
 			properties["kind"] = NetInstConfigModel.Kind
@@ -404,9 +410,9 @@ func NetworkInstance() map[string]*schema.Schema {
 		},
 
 		"device_id": {
-			Description: 	`ID of the device on which network instance is created`,
-			Type:        	schema.TypeString,
-			Optional:    	true,
+			Description: `ID of the device on which network instance is created`,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 
 		"dhcp": {
@@ -432,8 +438,14 @@ func NetworkInstance() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: NetInstEdgeNodeClusterSchema(),
 			},
-			Optional: true,
+			Optional:         true,
 			DiffSuppressFunc: diffSupressMapInterfaceNonConfigChanges("edge_node_cluster", "id"),
+		},
+
+		"forward_lldp": {
+			Description: `Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.`,
+			Type:        schema.TypeBool,
+			Optional:    true,
 		},
 
 		"id": {
@@ -594,6 +606,7 @@ func GetNetworkInstancePropertyFields() (t []string) {
 		"dhcp",
 		"dns_list",
 		"edge_node_cluster",
+		"forward_lldp",
 		"id",
 		"ip",
 		"kind",
