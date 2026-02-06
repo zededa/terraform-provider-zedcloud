@@ -101,6 +101,103 @@ func TestNetworkInstance_Create_Complete(t *testing.T) {
 	})
 }
 
+func TestNetworkInstance_Create_ForwardLldp(t *testing.T) {
+	var got models.NetworkInstance
+	var expected models.NetworkInstance
+
+	// input config
+	inputPath := "network_instance/create_forward_lldp.tf"
+	input := testhelper.MustGetTestInput(t, inputPath)
+
+	// expected output
+	expectedPath := "network_instance/create_forward_lldp_expected.yaml"
+	testhelper.MustGetExpectedOutput(t, expectedPath, &expected)
+
+	// terraform acceptance test case
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testhelper.CheckEnv(t) },
+		CheckDestroy: testNetworkInstanceDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: input,
+				Check: resource.ComposeTestCheckFunc(
+					testNetworkInstanceExists("zedcloud_network_instance.test_tf_netinst_forward_lldp", &got),
+					resource.TestMatchResourceAttr(
+						"zedcloud_network_instance.test_tf_netinst_forward_lldp",
+						"id",
+						regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$"),
+					),
+					resource.TestCheckResourceAttr(
+						"zedcloud_network_instance.test_tf_netinst_forward_lldp",
+						"forward_lldp",
+						"true",
+					),
+					testNetworkInstanceAttributes(t, &got, &expected),
+				),
+			},
+		},
+	})
+}
+
+func TestNetworkInstance_Update_ForwardLldp(t *testing.T) {
+	var gotCreate models.NetworkInstance
+	var gotUpdate models.NetworkInstance
+	var expectedCreate models.NetworkInstance
+	var expectedUpdate models.NetworkInstance
+
+	// input config for create with forward_lldp = true
+	createInputPath := "network_instance/create_forward_lldp.tf"
+	createInput := testhelper.MustGetTestInput(t, createInputPath)
+
+	// expected output for create
+	createExpectedPath := "network_instance/create_forward_lldp_expected.yaml"
+	testhelper.MustGetExpectedOutput(t, createExpectedPath, &expectedCreate)
+
+	// input config for update with forward_lldp = false
+	updateInputPath := "network_instance/update_forward_lldp.tf"
+	updateInput := testhelper.MustGetTestInput(t, updateInputPath)
+
+	// expected output for update
+	updateExpectedPath := "network_instance/update_forward_lldp_expected.yaml"
+	testhelper.MustGetExpectedOutput(t, updateExpectedPath, &expectedUpdate)
+
+	// terraform acceptance test case
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testhelper.CheckEnv(t) },
+		CheckDestroy: testNetworkInstanceDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			// Step 1: Create with forward_lldp = true
+			{
+				Config: createInput,
+				Check: resource.ComposeTestCheckFunc(
+					testNetworkInstanceExists("zedcloud_network_instance.test_tf_netinst_forward_lldp", &gotCreate),
+					resource.TestCheckResourceAttr(
+						"zedcloud_network_instance.test_tf_netinst_forward_lldp",
+						"forward_lldp",
+						"true",
+					),
+					testNetworkInstanceAttributes(t, &gotCreate, &expectedCreate),
+				),
+			},
+			// Step 2: Update to forward_lldp = false
+			{
+				Config: updateInput,
+				Check: resource.ComposeTestCheckFunc(
+					testNetworkInstanceExists("zedcloud_network_instance.test_tf_netinst_forward_lldp_update", &gotUpdate),
+					resource.TestCheckResourceAttr(
+						"zedcloud_network_instance.test_tf_netinst_forward_lldp_update",
+						"forward_lldp",
+						"false",
+					),
+					testNetworkInstanceAttributes(t, &gotUpdate, &expectedUpdate),
+				),
+			},
+		},
+	})
+}
+
 func testNetworkInstanceExists(resourceName string, networkModel *models.NetworkInstance) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		// retrieve the resource by name from state
