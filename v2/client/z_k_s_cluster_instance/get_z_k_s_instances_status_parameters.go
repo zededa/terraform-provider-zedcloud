@@ -62,10 +62,14 @@ GetZKSInstancesStatusParams contains all the parameters to send to the API endpo
 type GetZKSInstancesStatusParams struct {
 
 	/* XRequestID.
-
 	   User-Agent specified id to track a request
 	*/
 	XRequestID *string
+
+	/* ZksID.
+	   Filter by ZKS instance ID
+	*/
+	ZksID *string
 
 	timeout    time.Duration
 	Context    context.Context
@@ -131,6 +135,17 @@ func (o *GetZKSInstancesStatusParams) SetXRequestID(xRequestID *string) {
 	o.XRequestID = xRequestID
 }
 
+// WithZksID adds the zksID to the z k s cluster instances get z k s instances status params
+func (o *GetZKSInstancesStatusParams) WithZksID(zksID *string) *GetZKSInstancesStatusParams {
+	o.SetZksID(zksID)
+	return o
+}
+
+// SetZksID adds the zksId to the z k s cluster instances get z k s instances status params
+func (o *GetZKSInstancesStatusParams) SetZksID(zksID *string) {
+	o.ZksID = zksID
+}
+
 // WriteToRequest writes these params to a swagger request
 func (o *GetZKSInstancesStatusParams) WriteToRequest(r runtime.ClientRequest, reg strfmt.Registry) error {
 
@@ -141,9 +156,25 @@ func (o *GetZKSInstancesStatusParams) WriteToRequest(r runtime.ClientRequest, re
 
 	if o.XRequestID != nil {
 
-		// header param X-Request-Id
 		if err := r.SetHeaderParam("X-Request-Id", *o.XRequestID); err != nil {
 			return err
+		}
+	}
+
+	if o.ZksID != nil {
+
+		// query param zksid
+		var qrZksID string
+
+		if o.ZksID != nil {
+			qrZksID = *o.ZksID
+		}
+		qZksID := qrZksID
+		if qZksID != "" {
+
+			if err := r.SetQueryParam("id", qZksID); err != nil {
+				return err
+			}
 		}
 	}
 

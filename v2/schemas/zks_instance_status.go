@@ -32,7 +32,6 @@ func ZksInstanceStatusModel(d *schema.ResourceData) *models.ZksInstanceStatus {
 	name, _ := d.Get("name").(string)
 	projectID, _ := d.Get("project_id").(string)
 	projectName, _ := d.Get("project_name").(string)
-	provider, _ := d.Get("provider").(string)
 	var runState *models.RunState // RunState
 	runStateInterface, runStateIsSet := d.GetOk("run_state")
 	if runStateIsSet {
@@ -73,7 +72,6 @@ func ZksInstanceStatusModel(d *schema.ResourceData) *models.ZksInstanceStatus {
 		Name:               name,
 		ProjectID:          projectID,
 		ProjectName:        projectName,
-		Provider:           provider,
 		RunState:           runState,
 		Tags:               tags,
 		Title:              title,
@@ -107,7 +105,6 @@ func ZksInstanceStatusModelFromMap(m map[string]interface{}) *models.ZksInstance
 	name := m["name"].(string)
 	projectID := m["project_id"].(string)
 	projectName := m["project_name"].(string)
-	provider := m["provider"].(string)
 	var runState *models.RunState // RunState
 	runStateInterface, runStateIsSet := m["run_state"]
 	if runStateIsSet {
@@ -146,7 +143,6 @@ func ZksInstanceStatusModelFromMap(m map[string]interface{}) *models.ZksInstance
 		Name:               name,
 		ProjectID:          projectID,
 		ProjectName:        projectName,
-		Provider:           provider,
 		RunState:           runState,
 		Tags:               tags,
 		Title:              title,
@@ -172,7 +168,6 @@ func SetZksInstanceStatusResourceData(d *schema.ResourceData, m *models.ZksInsta
 	d.Set("name", m.Name)
 	d.Set("project_id", m.ProjectID)
 	d.Set("project_name", m.ProjectName)
-	d.Set("provider", m.Provider)
 	d.Set("run_state", m.RunState)
 	d.Set("tags", m.Tags)
 	d.Set("title", m.Title)
@@ -200,7 +195,6 @@ func SetZksInstanceStatusSubResourceData(m []*models.ZksInstanceStatus) (d []*ma
 			properties["name"] = ZksInstanceStatusModel.Name
 			properties["project_id"] = ZksInstanceStatusModel.ProjectID
 			properties["project_name"] = ZksInstanceStatusModel.ProjectName
-			properties["provider"] = ZksInstanceStatusModel.Provider
 			properties["run_state"] = ZksInstanceStatusModel.RunState
 			properties["tags"] = ZksInstanceStatusModel.Tags
 			properties["title"] = ZksInstanceStatusModel.Title
@@ -265,6 +259,7 @@ func ZksInstanceStatusSchema() map[string]*schema.Schema {
 		"id": {
 			Description: `System defined universally unique Id of the zks instance`,
 			Type:        schema.TypeString,
+			Optional:    true,
 			Computed:    true,
 		},
 
@@ -300,12 +295,6 @@ func ZksInstanceStatusSchema() map[string]*schema.Schema {
 
 		"project_name": {
 			Description: `Name of the project to which the zks instance belongs`,
-			Type:        schema.TypeString,
-			Optional:    true,
-		},
-
-		"provider": {
-			Description: `Provider of the zks instance`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -373,7 +362,6 @@ func GetZksInstanceStatusPropertyFields() (t []string) {
 		"name",
 		"project_id",
 		"project_name",
-		"provider",
 		"run_state",
 		"tags",
 		"title",
