@@ -29,39 +29,10 @@ description: |-
 
 Required:
 
+- `auth` (Block List, Min: 1) Authentication configuration (see [below for nested schema](#nestedblock--data--auth))
 - `project_id` (String) Project ID where the GitRepo belongs (required)
 - `repo_details` (Block List, Min: 1) Repository details and configuration (required) (see [below for nested schema](#nestedblock--data--repo_details))
 - `target` (Block List, Min: 1) Target deployment configuration (required) (see [below for nested schema](#nestedblock--data--target))
-
-Optional:
-
-- `auth` (Block List) Authentication configuration (see [below for nested schema](#nestedblock--data--auth))
-
-<a id="nestedblock--data--repo_details"></a>
-### Nested Schema for `data.repo_details`
-
-Required:
-
-- `url` (String) Git repository URL (required)
-
-Optional:
-
-- `branch` (String) Git branch to track
-- `commit` (String) Specific git commit hash
-- `path_list` (List of String) List of paths within the repository to monitor
-
-
-<a id="nestedblock--data--target"></a>
-### Nested Schema for `data.target`
-
-Required:
-
-- `type` (String) Type of target for GitRepo deployment (required)
-
-Optional:
-
-- `value` (String) Target value (cluster ID, cluster group ID, etc.). Required when type is CLUSTER or CLUSTER_GROUP, not required for ALL_CLUSTER
-
 
 <a id="nestedblock--data--auth"></a>
 ### Nested Schema for `data.auth`
@@ -107,6 +78,32 @@ Optional:
 - `type` (String) Type of secret for authentication
 
 
+
+
+<a id="nestedblock--data--repo_details"></a>
+### Nested Schema for `data.repo_details`
+
+Required:
+
+- `url` (String) Git repository URL (required)
+
+Optional:
+
+- `branch` (String) Git branch to track
+- `commit` (String) Specific git commit hash
+- `path_list` (List of String) List of paths within the repository to monitor
+
+
+<a id="nestedblock--data--target"></a>
+### Nested Schema for `data.target`
+
+Required:
+
+- `type` (String) Type of target for GitRepo deployment (required)
+
+Optional:
+
+- `value` (String) Target value (cluster ID, cluster group ID, etc.). Required when type is CLUSTER or CLUSTER_GROUP, not required for ALL_CLUSTER
 
 
 

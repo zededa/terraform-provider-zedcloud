@@ -2,7 +2,6 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -106,7 +105,7 @@ func GitRepoDataSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: GitRepoAuthConfigSchema(),
 			},
-			Optional: true,
+			Required: true,
 		},
 
 		"project_id": {
