@@ -1195,6 +1195,10 @@ resource "zedcloud_helm_chart_management" "test_helm_chart" {
 }
 
 # KUBERNETES DEPLOYMENT
+data "zedcloud_kubernetes_cluster_status" "test_cluster_status" {
+  id = zedcloud_kubernetes_cluster.test_zks_cluster.id
+}
+
 resource "zedcloud_kubernetes_deployment" "test_k8s_deployment" {
   metadata {
     name        = "prometheus-deployment"
@@ -1216,8 +1220,8 @@ resource "zedcloud_kubernetes_deployment" "test_k8s_deployment" {
       target_clusters {
         is_multi_cluster = false
         cluster_metadata {
-          cluster_id              = "edgeai-zks-cluster-id"
-          orchestrator_cluster_id = "rancher-cluster-123"
+          cluster_id              = data.zedcloud_kubernetes_cluster_status.test_cluster_status.id
+          orchestrator_cluster_id = data.zedcloud_kubernetes_cluster_status.test_cluster_status.zks_cluster_id
           cluster_name            = "edgeai-zks-cluster"
           kube_version            = "v1.28.0"
         }
