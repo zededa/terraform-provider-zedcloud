@@ -14,6 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/go-openapi/swag"
 )
 
 // NewGetClusterGroupManifestParams creates a new GetClusterGroupManifestParams object,
@@ -60,6 +61,24 @@ GetClusterGroupManifestParams contains all the parameters to send to the API end
 	Typically these are written to a http.Request.
 */
 type GetClusterGroupManifestParams struct {
+
+	/* Name.
+
+	   Name of the cluster group
+	*/
+	Name *string
+
+	/* ProjectName.
+
+	   Name of the project
+	*/
+	ProjectName *string
+
+	/* Tags.
+
+	   Tags filter (JSON object)
+	*/
+	Tags interface{}
 
 	/* XRequestID.
 
@@ -120,6 +139,39 @@ func (o *GetClusterGroupManifestParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
+// WithName adds the name to the cluster groups get cluster group manifest params
+func (o *GetClusterGroupManifestParams) WithName(name *string) *GetClusterGroupManifestParams {
+	o.SetName(name)
+	return o
+}
+
+// SetName adds the name to the cluster groups get cluster group manifest params
+func (o *GetClusterGroupManifestParams) SetName(name *string) {
+	o.Name = name
+}
+
+// WithProjectName adds the projectName to the cluster groups get cluster group manifest params
+func (o *GetClusterGroupManifestParams) WithProjectName(projectName *string) *GetClusterGroupManifestParams {
+	o.SetProjectName(projectName)
+	return o
+}
+
+// SetProjectName adds the projectName to the cluster groups get cluster group manifest params
+func (o *GetClusterGroupManifestParams) SetProjectName(projectName *string) {
+	o.ProjectName = projectName
+}
+
+// WithTags adds the tags to the cluster groups get cluster group manifest params
+func (o *GetClusterGroupManifestParams) WithTags(tags interface{}) *GetClusterGroupManifestParams {
+	o.SetTags(tags)
+	return o
+}
+
+// SetTags adds the tags to the cluster groups get cluster group manifest params
+func (o *GetClusterGroupManifestParams) SetTags(tags interface{}) {
+	o.Tags = tags
+}
+
 // WithXRequestID adds the xRequestID to the cluster groups get cluster group manifest params
 func (o *GetClusterGroupManifestParams) WithXRequestID(xRequestID *string) *GetClusterGroupManifestParams {
 	o.SetXRequestID(xRequestID)
@@ -138,6 +190,61 @@ func (o *GetClusterGroupManifestParams) WriteToRequest(r runtime.ClientRequest, 
 		return err
 	}
 	var res []error
+
+	if o.Name != nil {
+
+		// query param name
+		var qrName string
+
+		if o.Name != nil {
+			qrName = *o.Name
+		}
+		qName := qrName
+		if qName != "" {
+
+			if err := r.SetQueryParam("name", qName); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.ProjectName != nil {
+
+		// query param projectName
+		var qrProjectName string
+
+		if o.ProjectName != nil {
+			qrProjectName = *o.ProjectName
+		}
+		qProjectName := qrProjectName
+		if qProjectName != "" {
+
+			if err := r.SetQueryParam("projectName", qProjectName); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.Tags != nil {
+
+		// query param tags
+		var qrTags string
+
+		if o.Tags != nil {
+			tagsJSON, err := swag.WriteJSON(o.Tags)
+			if err != nil {
+				return err
+			}
+			qrTags = string(tagsJSON)
+		}
+		qTags := qrTags
+		if qTags != "" {
+
+			if err := r.SetQueryParam("tags", qTags); err != nil {
+				return err
+			}
+		}
+	}
 
 	if o.XRequestID != nil {
 
