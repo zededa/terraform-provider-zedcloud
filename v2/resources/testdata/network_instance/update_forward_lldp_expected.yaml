@@ -7,7 +7,7 @@ forwardlldp: false
 ip: null
 kind: NETWORK_INSTANCE_KIND_SWITCH
 lisp: null
-name: test_tf_provider-netinst_fwd_lldp_upd_4
+name: test_tf_provider-netinst_fwd_lldp_3
 networkpolicyid: ""
 oconfig: ""
 opaque: null
@@ -15,6 +15,6 @@ port: eth1
 porttags: {}
 propagateconnectedroutes: false
 tags:
-    test-type: forward-lldp-update-test
-title: test_tf_provider-netinst_fwd_lldp_upd_4
+    test-type: forward-lldp-test
+title: test_tf_provider-netinst_fwd_lldp_3
 type: NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED

@@ -185,9 +185,9 @@ func TestNetworkInstance_Update_ForwardLldp(t *testing.T) {
 			{
 				Config: updateInput,
 				Check: resource.ComposeTestCheckFunc(
-					testNetworkInstanceExists("zedcloud_network_instance.test_tf_netinst_forward_lldp_update", &gotUpdate),
+					testNetworkInstanceExists("zedcloud_network_instance.test_tf_netinst_forward_lldp", &gotUpdate),
 					resource.TestCheckResourceAttr(
-						"zedcloud_network_instance.test_tf_netinst_forward_lldp_update",
+						"zedcloud_network_instance.test_tf_netinst_forward_lldp",
 						"forward_lldp",
 						"false",
 					),

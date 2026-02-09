@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
     # required
-    name = "test_tf_provider-netinst_fwd_lldp_upd_4"
+    name = "test_tf_provider-netinst_fwd_lldp_3"
     title = "title"
 
     # optional
@@ -30,9 +30,9 @@ resource "zedcloud_datastore"  "test_tf_provider" {
     ds_fqdn = "my-datastore.my-company.com"
     ds_path = "download/AMD64"
     ds_type = "DATASTORE_TYPE_AZUREBLOB"
-    name = "test_tf_provider-ds_fwd_lldp_upd_4"
-    title = "test_tf_provider-ds_fwd_lldp_upd_4"
-    description = "test_tf_provider-ds_fwd_lldp_upd_4"
+    name = "test_tf_provider-ds_fwd_lldp_3"
+    title = "test_tf_provider-ds_fwd_lldp_3"
+    description = "test_tf_provider-ds_fwd_lldp_3"
     region = "eu"
     project_access_list = [zedcloud_project.test_tf_provider.id]
 }
@@ -42,7 +42,7 @@ resource "zedcloud_image" "test_tf_provider" {
         zedcloud_datastore.test_tf_provider,
         zedcloud_project.test_tf_provider
     ]
-    name = "test_tf_provider-img_fwd_lldp_upd_4"
+    name = "test_tf_provider-img_fwd_lldp_3"
     datastore_id = zedcloud_datastore.test_tf_provider.id
     image_arch = "AMD64"
     image_format = "CONTAINER"
@@ -54,16 +54,16 @@ resource "zedcloud_image" "test_tf_provider" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-    name = "test_tf_provider-brand_fwd_lldp_upd_4"
-    title = "test_tf_provider-brand_fwd_lldp_upd_4"
+    name = "test_tf_provider-brand_fwd_lldp_3"
+    title = "test_tf_provider-brand_fwd_lldp_3"
     description = "description"
     origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider" {
     brand_id = zedcloud_brand.test_tf_provider.id
-    name = "test_tf_provider-model_fwd_lldp_upd_4"
-    title = "test_tf_provider-model_fwd_lldp_upd_4"
+    name = "test_tf_provider-model_fwd_lldp_3"
+    title = "test_tf_provider-model_fwd_lldp_3"
     type = "AMD64"
     origin_type = "ORIGIN_LOCAL"
     state = "SYS_MODEL_STATE_ACTIVE"
@@ -93,7 +93,7 @@ resource "zedcloud_model" "test_tf_provider" {
 }
 
 resource "zedcloud_edgenode" "test_tf_provider" {
-    name = "test_tf_provider-node_fwd_lldp_upd_4"
+    name = "test_tf_provider-node_fwd_lldp_3"
     model_id = zedcloud_model.test_tf_provider.id
     project_id = zedcloud_project.test_tf_provider.id
     title = "title"
@@ -105,16 +105,16 @@ resource "zedcloud_edgenode" "test_tf_provider" {
     }
 }
 
-# Test network instance with forward_lldp disabled (reset)
-resource "zedcloud_network_instance" "test_tf_netinst_forward_lldp_update" {
+# Test network instance with forward_lldp disabled (updated from true to false)
+resource "zedcloud_network_instance" "test_tf_netinst_forward_lldp" {
     depends_on = [
         zedcloud_edgenode.test_tf_provider
     ]
 
     # required
     device_id = zedcloud_edgenode.test_tf_provider.id
-    name = "test_tf_provider-netinst_fwd_lldp_upd_4"
-    title = "test_tf_provider-netinst_fwd_lldp_upd_4"
+    name = "test_tf_provider-netinst_fwd_lldp_3"
+    title = "test_tf_provider-netinst_fwd_lldp_3"
     kind = "NETWORK_INSTANCE_KIND_SWITCH"
     port = "eth1"
 
@@ -122,10 +122,10 @@ resource "zedcloud_network_instance" "test_tf_netinst_forward_lldp_update" {
     description = "Test network instance with LLDP forwarding disabled"
     device_default = false
     
-    # Test forward_lldp flag set to false (reset)
+    # Test forward_lldp flag set to false (reset/disabled)
     forward_lldp = false
 
     tags = {
-        "test-type" = "forward-lldp-update-test"
+        "test-type" = "forward-lldp-test"
     }
 }
