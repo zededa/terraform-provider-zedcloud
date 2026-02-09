@@ -41,6 +41,9 @@ func ZksInstanceDataSource() *schema.Resource {
 
 func CreateZKSInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
+	if _, ok := d.GetOk("nodes"); !ok {
+		return append(diags, diag.Errorf("nodes are required for ZKS instance creation")...)
+	}
 
 	model := zschema.ZksInstanceModel(d)
 	params := z_k_s_cluster_instance.NewCreateZKSInstanceParams()
