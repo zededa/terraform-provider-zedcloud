@@ -176,7 +176,7 @@ func ZksInstanceSchema() map[string]*schema.Schema {
 				Schema: ZksInstanceNodeSchema(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Required: true,
+			Optional: true,
 		},
 
 		"project_id": {

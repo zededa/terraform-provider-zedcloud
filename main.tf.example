@@ -1172,6 +1172,14 @@ resource "zedcloud_kubernetes_cluster" "test_zks_cluster" {
   }
 }
 
+# ZKS CLUSTER IMPORT
+# Don't need to provide nodes for imported clusters
+resource "zedcloud_kubernetes_cluster_import" "test_zks_cluster_import" {
+  name = "test-zks-cluster-import"
+  title = "test-zks-cluster-import"
+  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+}
+
 # ZKS CLUSTER GROUP
 data "zedcloud_cluster_group_manifest" "test_manifest" {
   name = "test-cluster-group"

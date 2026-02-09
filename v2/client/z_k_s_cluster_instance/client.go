@@ -56,6 +56,10 @@ type ClientOption func(*runtime.ClientOperation)
 type ClientService interface {
 	CreateZKSInstance(params *CreateZKSInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*CreateZKSInstanceOK, *CreateZKSInstanceCreated, error)
 
+	BulkUpdateZKSInstances(params *BulkUpdateZKSInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*BulkUpdateZKSInstancesOK, error)
+
+	BulkUpgradeK3s(params *BulkUpgradeK3sParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*BulkUpgradeK3sOK, error)
+
 	DeleteZKSInstance(params *DeleteZKSInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*DeleteZKSInstanceOK, error)
 
 	GetZKSInstance(params *GetZKSInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceOK, error)
@@ -64,7 +68,19 @@ type ClientService interface {
 
 	GetZKSInstancesStatus(params *GetZKSInstancesStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstancesStatusOK, error)
 
+	GetK3sVersions(params *GetK3sVersionsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetK3sVersionsOK, error)
+
+	GetZKSInstanceMetrics(params *GetZKSInstanceMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceMetricsOK, error)
+
+	GetZKSInstanceMetricsByName(params *GetZKSInstanceMetricsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceMetricsByNameOK, error)
+
+	GetZKSInstanceRegistrationCommands(params *GetZKSInstanceRegistrationCommandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceRegistrationCommandsOK, error)
+
+	GetZKSInstanceRegistrationCommandsByName(params *GetZKSInstanceRegistrationCommandsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceRegistrationCommandsByNameOK, error)
+
 	ListZKSInstances(params *ListZKSInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ListZKSInstancesOK, error)
+
+	ImportZKSInstance(params *ImportZKSInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImportZKSInstanceOK, *ImportZKSInstanceCreated, error)
 
 	UpdateZKSInstance(params *UpdateZKSInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateZKSInstanceOK, error)
 
@@ -176,6 +192,191 @@ func (a *Client) CreateZKSInstance(params *CreateZKSInstanceParams, authInfo run
 	// a default response is provided: fill this and return an error
 	unexpectedSuccess := result.(*CreateZKSInstanceDefault)
 	return nil, nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+	BulkUpdateZKSInstances bulks update z k s instances
+
+	Update multiple ZKS instances at once with new tags or other common properties. This operation is useful for applying changes to multiple clusters simultaneously.
+
+**Example Request:**
+```json
+
+	{
+	  "ids": [
+	    "zks-instance-abc123",
+	    "zks-instance-def456",
+	    "zks-instance-ghi789"
+	  ],
+	  "data": {
+	    "tags": {
+	      "environment": "production",
+	      "version": "v2",
+	      "managed-by": "platform-team"
+	    }
+	  }
+	}
+
+```
+
+**Example Response:**
+```json
+
+	{
+	  "operationType": "OPS_TYPE_UNSPECIFIED",
+	  "operationStatus": "OPS_STATUS_UNSPECIFIED",
+	  "objectKind": "",
+	  "objectId": "",
+	  "objectName": "",
+	  "objectRevision": "",
+	  "objectType": "OBJECT_TYPE_UNSPECIFIED",
+	  "operationTime": "",
+	  "startTime": "",
+	  "endTime": "",
+	  "user": "",
+	  "httpStatusCode": 200,
+	  "httpStatusMsg": "",
+	  "jobId": "",
+	  "error": [
+	    {
+	      "ec": "zMsgSucess",
+	      "location": "",
+	      "details": "Successfully updated 3 ZKS instances"
+	    }
+	  ]
+	}
+
+```
+*/
+func (a *Client) BulkUpdateZKSInstances(params *BulkUpdateZKSInstancesParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*BulkUpdateZKSInstancesOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewBulkUpdateZKSInstancesParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "_BulkUpdateZKSInstances",
+		Method:             "PUT",
+		PathPattern:        "/v1/zks/instances",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &BulkUpdateZKSInstancesReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*BulkUpdateZKSInstancesOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*BulkUpdateZKSInstancesDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+	BulkUpgradeK3s bulks upgrade k3s version
+
+	Upgrade K3s version for multiple ZKS instances simultaneously. This operation initiates a rolling upgrade across the specified clusters.
+
+**Example Request:**
+```json
+
+	{
+	  "ids": [
+	    "zks-instance-abc123",
+	    "zks-instance-def456"
+	  ],
+	  "data": {
+	    "version": "v1.28.5+k3s1"
+	  }
+	}
+
+```
+
+**Example Response:**
+```json
+
+	{
+	  "operationType": "OPS_TYPE_UNSPECIFIED",
+	  "operationStatus": "OPS_STATUS_UNSPECIFIED",
+	  "objectKind": "",
+	  "objectId": "",
+	  "objectName": "",
+	  "objectRevision": "",
+	  "objectType": "OBJECT_TYPE_UNSPECIFIED",
+	  "operationTime": "",
+	  "startTime": "",
+	  "endTime": "",
+	  "user": "",
+	  "httpStatusCode": 200,
+	  "httpStatusMsg": "",
+	  "jobId": "bulk-upgrade-job-123",
+	  "error": [
+	    {
+	      "ec": "zMsgSucess",
+	      "location": "",
+	      "details": "K3s upgrade initiated for 2 ZKS instances"
+	    }
+	  ]
+	}
+
+```
+
+**Note:** Upgrade operations are asynchronous and may take considerable time to complete.
+*/
+func (a *Client) BulkUpgradeK3s(params *BulkUpgradeK3sParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*BulkUpgradeK3sOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewBulkUpgradeK3sParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "_BulkUpgradeK3s",
+		Method:             "PUT",
+		PathPattern:        "/v1/zks/instances/k3s-upgrade",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &BulkUpgradeK3sReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*BulkUpgradeK3sOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*BulkUpgradeK3sDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
@@ -632,6 +833,404 @@ func (a *Client) GetZKSInstancesStatus(params *GetZKSInstancesStatusParams, auth
 }
 
 /*
+	GetK3sVersions gets available k3s versions
+
+	Retrieve a list of available K3s versions that can be used for cluster creation or upgrades.
+
+**Example Request:**
+```
+GET /v1/zks/instances/k3s-versions
+```
+
+**Example Response:**
+```json
+
+	{
+	  "list": [
+	    {
+	      "id": "v1.28.5+k3s1",
+	      "version": "v1.28.5+k3s1",
+	      "type": "release"
+	    },
+	    {
+	      "id": "v1.28.4+k3s2",
+	      "version": "v1.28.4+k3s2",
+	      "type": "release"
+	    },
+	    {
+	      "id": "v1.27.9+k3s1",
+	      "version": "v1.27.9+k3s1",
+	      "type": "release"
+	    },
+	    {
+	      "id": "v1.29.0+k3s1",
+	      "version": "v1.29.0+k3s1",
+	      "type": "beta"
+	    }
+	  ]
+	}
+
+```
+*/
+func (a *Client) GetK3sVersions(params *GetK3sVersionsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetK3sVersionsOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetK3sVersionsParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "_GetK3sVersions",
+		Method:             "GET",
+		PathPattern:        "/v1/zks/instances/k3s-versions",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetK3sVersionsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetK3sVersionsOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*GetK3sVersionsDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+	GetZKSInstanceMetrics gets z k s instance metrics by ID
+
+	Retrieve detailed metrics for a specific ZKS instance including resource utilization and capacity information.
+
+**Example Request:**
+```
+GET /v1/zks/instances/id/zks-instance-abc123/metrics
+```
+
+**Example Response:**
+```json
+
+	{
+	  "id": "zks-instance-abc123",
+	  "name": "production-cluster",
+	  "provider": "k3s",
+	  "kubeVersion": "v1.28.2+k3s1",
+	  "architecture": "amd64",
+	  "created": "2024-01-15T10:00:00Z",
+	  "totalResources": 100,
+	  "nOfNodes": 3,
+	  "deployments": 15,
+	  "capacity": {
+	    "pods": {
+	      "used": 25,
+	      "total": 110
+	    },
+	    "cpus": {
+	      "reserved": {
+	        "current": 2.5,
+	        "total": 8.0
+	      },
+	      "used": {
+	        "current": 1.8,
+	        "total": 8.0
+	      }
+	    },
+	    "memory": {
+	      "reserved": {
+	        "current": 4.0,
+	        "total": 16.0
+	      },
+	      "used": {
+	        "current": 3.2,
+	        "total": 16.0
+	      }
+	    }
+	  }
+	}
+
+```
+*/
+func (a *Client) GetZKSInstanceMetrics(params *GetZKSInstanceMetricsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceMetricsOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetZKSInstanceMetricsParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "_GetZKSInstanceMetrics",
+		Method:             "GET",
+		PathPattern:        "/v1/zks/instances/id/{zksId}/metrics",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetZKSInstanceMetricsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetZKSInstanceMetricsOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*GetZKSInstanceMetricsDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+	GetZKSInstanceMetricsByName gets z k s instance metrics by name
+
+	Retrieve detailed metrics for a specific ZKS instance by its name including resource utilization and capacity information.
+
+**Example Request:**
+```
+GET /v1/zks/instances/name/production-cluster/metrics
+```
+
+**Example Response:**
+```json
+
+	{
+	  "id": "zks-instance-abc123",
+	  "name": "production-cluster",
+	  "provider": "k3s",
+	  "kubeVersion": "v1.28.2+k3s1",
+	  "architecture": "amd64",
+	  "created": "2024-01-15T10:00:00Z",
+	  "totalResources": 100,
+	  "nOfNodes": 3,
+	  "deployments": 15,
+	  "capacity": {
+	    "pods": {
+	      "used": 25,
+	      "total": 110
+	    },
+	    "cpus": {
+	      "reserved": {
+	        "current": 2.5,
+	        "total": 8.0
+	      },
+	      "used": {
+	        "current": 1.8,
+	        "total": 8.0
+	      }
+	    },
+	    "memory": {
+	      "reserved": {
+	        "current": 4.0,
+	        "total": 16.0
+	      },
+	      "used": {
+	        "current": 3.2,
+	        "total": 16.0
+	      }
+	    }
+	  }
+	}
+
+```
+*/
+func (a *Client) GetZKSInstanceMetricsByName(params *GetZKSInstanceMetricsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceMetricsByNameOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetZKSInstanceMetricsByNameParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "_GetZKSInstanceMetricsByName",
+		Method:             "GET",
+		PathPattern:        "/v1/zks/instances/name/{zksName}/metrics",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetZKSInstanceMetricsByNameReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetZKSInstanceMetricsByNameOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*GetZKSInstanceMetricsByNameDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+	GetZKSInstanceRegistrationCommands gets registration commands by ID
+
+	Retrieve registration commands for adding nodes to a ZKS instance. These commands can be executed on edge devices to join them to the cluster.
+
+**Example Request:**
+```
+GET /v1/zks/instances/id/zks-instance-abc123/registration-commands
+```
+
+**Example Response:**
+```json
+
+	{
+	  "created": "2024-01-15T10:30:00Z",
+	  "manifestUrl": "https://api.zededa.com/manifests/zks-instance-abc123",
+	  "commands": {
+	    "command": "curl -sfL https://get.k3s.io | K3S_URL=https://cluster.example.com:6443 K3S_TOKEN=K1234567890abcdef::server:1234567890abcdef sh -",
+	    "insecureCommand": "curl -sfL https://get.k3s.io | K3S_URL=https://cluster.example.com:6443 K3S_TOKEN=K1234567890abcdef::server:1234567890abcdef INSTALL_K3S_SKIP_VERIFY=true sh -",
+	    "nodeCommand": "curl -sfL https://get.k3s.io | K3S_URL=https://cluster.example.com:6443 K3S_TOKEN=K1234567890abcdef::server:1234567890abcdef sh -s - agent",
+	    "windowsNodeCommand": "Invoke-WebRequest -Uri https://github.com/k3s-io/k3s/releases/download/v1.28.2%2Bk3s1/k3s-windows-amd64.exe -OutFile k3s.exe"
+	  }
+	}
+
+```
+*/
+func (a *Client) GetZKSInstanceRegistrationCommands(params *GetZKSInstanceRegistrationCommandsParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceRegistrationCommandsOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetZKSInstanceRegistrationCommandsParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "_GetZKSInstanceRegistrationCommands",
+		Method:             "GET",
+		PathPattern:        "/v1/zks/instances/id/{zksId}/registration-commands",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetZKSInstanceRegistrationCommandsReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetZKSInstanceRegistrationCommandsOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*GetZKSInstanceRegistrationCommandsDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+	GetZKSInstanceRegistrationCommandsByName gets registration commands by name
+
+	Retrieve registration commands for adding nodes to a ZKS instance by its name. These commands can be executed on edge devices to join them to the cluster.
+
+**Example Request:**
+```
+GET /v1/zks/instances/name/production-cluster/registration-commands
+```
+
+**Example Response:**
+```json
+
+	{
+	  "created": "2024-01-15T10:30:00Z",
+	  "manifestUrl": "https://api.zededa.com/manifests/production-cluster",
+	  "commands": {
+	    "command": "curl -sfL https://get.k3s.io | K3S_URL=https://cluster.example.com:6443 K3S_TOKEN=K1234567890abcdef::server:1234567890abcdef sh -",
+	    "insecureCommand": "curl -sfL https://get.k3s.io | K3S_URL=https://cluster.example.com:6443 K3S_TOKEN=K1234567890abcdef::server:1234567890abcdef INSTALL_K3S_SKIP_VERIFY=true sh -",
+	    "nodeCommand": "curl -sfL https://get.k3s.io | K3S_URL=https://cluster.example.com:6443 K3S_TOKEN=K1234567890abcdef::server:1234567890abcdef sh -s - agent",
+	    "windowsNodeCommand": "Invoke-WebRequest -Uri https://github.com/k3s-io/k3s/releases/download/v1.28.2%2Bk3s1/k3s-windows-amd64.exe -OutFile k3s.exe"
+	  }
+	}
+
+```
+*/
+func (a *Client) GetZKSInstanceRegistrationCommandsByName(params *GetZKSInstanceRegistrationCommandsByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetZKSInstanceRegistrationCommandsByNameOK, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewGetZKSInstanceRegistrationCommandsByNameParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "_GetZKSInstanceRegistrationCommandsByName",
+		Method:             "GET",
+		PathPattern:        "/v1/zks/instances/name/{zksName}/registration-commands",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &GetZKSInstanceRegistrationCommandsByNameReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+
+	// only one success response has to be checked
+	success, ok := result.(*GetZKSInstanceRegistrationCommandsByNameOK)
+	if ok {
+		return success, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*GetZKSInstanceRegistrationCommandsByNameDefault)
+
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
 	ListZKSInstances lists all z k s instances
 
 	Retrieve a list of all ZKS instances with their basic information and metadata.
@@ -719,6 +1318,104 @@ func (a *Client) ListZKSInstances(params *ListZKSInstancesParams, authInfo runti
 	unexpectedSuccess := result.(*ListZKSInstancesDefault)
 
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+	ImportZKSInstance imports an existing z k s instance
+
+	Import an existing Kubernetes cluster as a ZKS instance into the ZEDEDA platform. This allows managing externally created clusters through ZEDEDA.
+
+**Example Request:**
+```json
+
+	{
+	  "projectId": "project-123",
+	  "name": "imported-cluster",
+	  "title": "Imported Production Cluster",
+	  "description": "Externally created cluster imported into ZEDEDA",
+	  "tags": {
+	    "environment": "production",
+	    "source": "external"
+	  },
+	  "nodes": [
+	    {
+	      "id": "node-001",
+	      "clusterInterface": "eth0"
+	    }
+	  ],
+	  "isImported": true
+	}
+
+```
+
+**Example Response:**
+```json
+
+	{
+	  "operationType": "OPS_TYPE_UNSPECIFIED",
+	  "operationStatus": "OPS_STATUS_UNSPECIFIED",
+	  "objectKind": "",
+	  "objectId": "zks-instance-def456",
+	  "objectName": "imported-cluster",
+	  "objectRevision": "",
+	  "objectType": "OBJECT_TYPE_UNSPECIFIED",
+	  "operationTime": "",
+	  "startTime": "",
+	  "endTime": "",
+	  "user": "",
+	  "httpStatusCode": 201,
+	  "httpStatusMsg": "",
+	  "jobId": "",
+	  "error": [
+	    {
+	      "ec": "zMsgSucess",
+	      "location": "",
+	      "details": ""
+	    }
+	  ]
+	}
+
+```
+*/
+func (a *Client) ImportZKSInstance(params *ImportZKSInstanceParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*ImportZKSInstanceOK, *ImportZKSInstanceCreated, error) {
+	// NOTE: parameters are not validated before sending
+	if params == nil {
+		params = NewImportZKSInstanceParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "_ImportZKSInstance",
+		Method:             "POST",
+		PathPattern:        "/v1/zks/instances/import",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &ImportZKSInstanceReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// several success responses have to be checked
+	switch value := result.(type) {
+	case *ImportZKSInstanceOK:
+		return value, nil, nil
+	case *ImportZKSInstanceCreated:
+		return nil, value, nil
+	}
+
+	// unexpected success response.
+	//
+	// a default response is provided: fill this and return an error
+	unexpectedSuccess := result.(*ImportZKSInstanceDefault)
+	return nil, nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
 /*
