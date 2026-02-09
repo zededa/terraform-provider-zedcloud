@@ -55,6 +55,12 @@ type NetworkInstance struct {
 	// Edge Node Cluster
 	EdgeNodeCluster *NetInstEdgeNodeCluster `json:"edgeNodeCluster,omitempty"`
 
+	// Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance.
+	// LLDP is used by devices to advertise identity and capabilities to directly connected neighbors,
+	// and is often required for topology discovery and network management tools.
+	// When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
+	ForwardLldp bool `json:"forwardLldp,omitempty"`
+
 	// System defined universally unique Id of the network instance
 	// Read Only: true
 	// Pattern: [0-9A-Za-z-]+
