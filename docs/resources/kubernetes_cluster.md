@@ -18,7 +18,6 @@ description: |-
 ### Required
 
 - `name` (String) User defined name of the zks instance, unique across the enterprise. Once zks instance is created, name can’t be changed
-- `nodes` (Block Set, Min: 1) A list of nodes in the zks instance (see [below for nested schema](#nestedblock--nodes))
 - `project_id` (String) Foreign key to the project
 
 ### Optional
@@ -26,6 +25,7 @@ description: |-
 - `cluster_prefix` (String) Cluster prefix for the ZKS instance
 - `description` (String) Detailed description of the zks instance
 - `is_imported` (Boolean) Indicates if the ZKS instance is imported from an external source
+- `nodes` (Block Set) A list of nodes in the zks instance (see [below for nested schema](#nestedblock--nodes))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 - `title` (String) User defined title of the zks instance. Title can be changed at any time
 
