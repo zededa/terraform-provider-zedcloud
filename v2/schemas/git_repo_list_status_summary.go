@@ -31,17 +31,7 @@ func GitRepoListStatusSummaryModel(d *schema.ResourceData) *models.GitRepoListSt
 func GitRepoListStatusSummaryModelFromMap(m map[string]interface{}) *models.GitRepoListStatusSummary {
 	description := m["description"].(string)
 	total := int32(m["total"].(int)) // int32
-	values := map[string]int32{}
-	valuesInterface, valuesIsSet := m["values"]
-	if valuesIsSet {
-		valuesMap := valuesInterface.(map[string]interface{})
-		for k, v := range valuesMap {
-			if v == nil {
-				continue
-			}
-			values[k] = int32(v.(int))
-		}
-	}
+	values := m["values"].(map[string]int32)
 	return &models.GitRepoListStatusSummary{
 		Description: description,
 		Total:       total,
@@ -84,11 +74,8 @@ func GitRepoListStatusSummarySchema() map[string]*schema.Schema {
 
 		"values": {
 			Description: `Map of status values and their counts`,
-			Type:        schema.TypeMap, //GoType: map[string]int32
-			Elem: &schema.Schema{
-				Type: schema.TypeString,
-			},
-			Optional: true,
+			Type:        schema.TypeString,
+			Optional:    true,
 		},
 	}
 }

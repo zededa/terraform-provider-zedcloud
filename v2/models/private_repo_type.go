@@ -41,7 +41,7 @@ const (
 )
 
 // for schema
-var privateRepoTypeEnum []any
+var privateRepoTypeEnum []interface{}
 
 func init() {
 	var res []PrivateRepoType
