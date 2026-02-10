@@ -2,6 +2,7 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -73,7 +74,7 @@ func SetPrivateRepoSpecSubResourceData(m []*models.PrivateRepoSpec) (d []*map[st
 func PrivateRepoSpecSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"auth": {
-			Description: `Authentication configuration`,
+			Description: `Authentication configuration, required for private repositories`,
 			Type:        schema.TypeList, //GoType: PrivateRepoAuthConfig
 			Elem: &schema.Resource{
 				Schema: PrivateRepoAuthConfigSchema(),

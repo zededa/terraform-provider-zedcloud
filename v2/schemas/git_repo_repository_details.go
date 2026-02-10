@@ -10,7 +10,7 @@ func GitRepoRepositoryDetailsModel(d *schema.ResourceData) *models.GitRepoReposi
 	branch, _ := d.Get("branch").(string)
 	commit, _ := d.Get("commit").(string)
 	var pathList []string
-	pathListInterface, pathListIsSet := d.GetOk("path_list")
+	pathListInterface, pathListIsSet := d.GetOk("pathList")
 	if pathListIsSet {
 		var items []interface{}
 		if listItems, isList := pathListInterface.([]interface{}); isList {
@@ -38,7 +38,7 @@ func GitRepoRepositoryDetailsModelFromMap(m map[string]interface{}) *models.GitR
 	branch := m["branch"].(string)
 	commit := m["commit"].(string)
 	var pathList []string
-	pathListInterface, pathListIsSet := m["path_list"]
+	pathListInterface, pathListIsSet := m["pathList"]
 	if pathListIsSet {
 		var items []interface{}
 		if listItems, isList := pathListInterface.([]interface{}); isList {

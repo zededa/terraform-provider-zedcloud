@@ -47,7 +47,7 @@ Required:
 
 Optional:
 
-- `auth` (Block List) Authentication configuration (see [below for nested schema](#nestedblock--spec--auth))
+- `auth` (Block List) Authentication configuration, required for private repositories (see [below for nested schema](#nestedblock--spec--auth))
 
 <a id="nestedblock--spec--repo_details"></a>
 ### Nested Schema for `spec.repo_details`
@@ -75,4 +75,4 @@ Optional:
 Optional:
 
 - `name` (String) Name of the secret resource
-- `type` (String) Type of secret for authentication (SECRET_TYPE_NONE, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_SSH, SECRET_TYPE_UNSPECIFIED)
+- `type` (String) Type of the secret (SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). This field is required for private repositories and must be a valid Kubernetes secret type. For a public repository, set type as SECRET_TYPE_NONE

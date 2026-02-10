@@ -16,7 +16,7 @@ import (
 
 // GitRepoSecretConfig GitRepo secret configuration
 //
-// # Secret configuration for GitRepo authentication
+// # Secret configuration for GitRepo authentication, required for private repositories
 //
 // swagger:model GitRepoSecretConfig
 type GitRepoSecretConfig struct {
@@ -24,7 +24,7 @@ type GitRepoSecretConfig struct {
 	// Name of the secret
 	Name string `json:"name,omitempty"`
 
-	// Type of secret for authentication
+	// Type of secret for authentication(SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). For a Public Repository, set type as SECRET_TYPE_NONE
 	Type *SecretType `json:"type,omitempty"`
 }
 

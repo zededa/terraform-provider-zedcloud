@@ -2,6 +2,7 @@ package schemas
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -100,12 +101,12 @@ func SetGitRepoDataSubResourceData(m []*models.GitRepoData) (d []*map[string]int
 func GitRepoDataSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"auth": {
-			Description: `Authentication configuration`,
+			Description: `Authentication configuration, required for private repositories`,
 			Type:        schema.TypeList, //GoType: GitRepoAuthConfig
 			Elem: &schema.Resource{
 				Schema: GitRepoAuthConfigSchema(),
 			},
-			Required: true,
+			Optional: true,
 		},
 
 		"project_id": {

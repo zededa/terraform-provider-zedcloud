@@ -65,8 +65,7 @@ func GitRepoGetStatusModel(d *schema.ResourceData) *models.GitRepoGetStatus {
 			state = GitRepoStateModelFromMap(stateMap[0].(map[string]interface{}))
 		}
 	}
-	summary, _ := d.Get("summary").(any) // any
-
+	summary := d.Get("summary").(map[string]interface{})
 	return &models.GitRepoGetStatus{
 		Conditions:        conditions,
 		Display:           display,
@@ -139,8 +138,7 @@ func GitRepoGetStatusModelFromMap(m map[string]interface{}) *models.GitRepoGetSt
 		}
 	}
 	//
-	summary := m["summary"].(any)
-
+	summary := m["summary"].(map[string]interface{})
 	return &models.GitRepoGetStatus{
 		Conditions:        conditions,
 		Display:           display,

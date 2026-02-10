@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -21,7 +22,7 @@ import (
 // swagger:model PrivateRepoSpec
 type PrivateRepoSpec struct {
 
-	// Authentication configuration
+	// Authentication configuration, required for private repositories
 	Auth *PrivateRepoAuthConfig `json:"auth,omitempty"`
 
 	// Repository details and configuration (required)
@@ -54,11 +55,15 @@ func (m *PrivateRepoSpec) validateAuth(formats strfmt.Registry) error {
 
 	if m.Auth != nil {
 		if err := m.Auth.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("auth")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("auth")
 			}
+
 			return err
 		}
 	}
@@ -74,11 +79,15 @@ func (m *PrivateRepoSpec) validateRepoDetails(formats strfmt.Registry) error {
 
 	if m.RepoDetails != nil {
 		if err := m.RepoDetails.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("repoDetails")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("repoDetails")
 			}
+
 			return err
 		}
 	}
@@ -113,11 +122,15 @@ func (m *PrivateRepoSpec) contextValidateAuth(ctx context.Context, formats strfm
 		}
 
 		if err := m.Auth.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("auth")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("auth")
 			}
+
 			return err
 		}
 	}
@@ -130,11 +143,15 @@ func (m *PrivateRepoSpec) contextValidateRepoDetails(ctx context.Context, format
 	if m.RepoDetails != nil {
 
 		if err := m.RepoDetails.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("repoDetails")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("repoDetails")
 			}
+
 			return err
 		}
 	}

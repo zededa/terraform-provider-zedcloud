@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -21,9 +22,8 @@ import (
 // swagger:model GitRepoData
 type GitRepoData struct {
 
-	// Authentication configuration
-	// Required: true
-	Auth *GitRepoAuthConfig `json:"auth"`
+	// Authentication configuration, required for private repositories
+	Auth *GitRepoAuthConfig `json:"auth,omitempty"`
 
 	// Project ID where the GitRepo belongs (required)
 	// Required: true
@@ -65,18 +65,21 @@ func (m *GitRepoData) Validate(formats strfmt.Registry) error {
 }
 
 func (m *GitRepoData) validateAuth(formats strfmt.Registry) error {
-
-	if err := validate.Required("auth", "body", m.Auth); err != nil {
-		return err
+	if swag.IsZero(m.Auth) { // not required
+		return nil
 	}
 
 	if m.Auth != nil {
 		if err := m.Auth.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("auth")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("auth")
 			}
+
 			return err
 		}
 	}
@@ -101,11 +104,15 @@ func (m *GitRepoData) validateRepoDetails(formats strfmt.Registry) error {
 
 	if m.RepoDetails != nil {
 		if err := m.RepoDetails.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("repoDetails")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("repoDetails")
 			}
+
 			return err
 		}
 	}
@@ -121,11 +128,15 @@ func (m *GitRepoData) validateTarget(formats strfmt.Registry) error {
 
 	if m.Target != nil {
 		if err := m.Target.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("target")
 			}
+
 			return err
 		}
 	}
@@ -159,12 +170,20 @@ func (m *GitRepoData) contextValidateAuth(ctx context.Context, formats strfmt.Re
 
 	if m.Auth != nil {
 
+		if swag.IsZero(m.Auth) { // not required
+			return nil
+		}
+
 		if err := m.Auth.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("auth")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("auth")
 			}
+
 			return err
 		}
 	}
@@ -177,11 +196,15 @@ func (m *GitRepoData) contextValidateRepoDetails(ctx context.Context, formats st
 	if m.RepoDetails != nil {
 
 		if err := m.RepoDetails.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("repoDetails")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("repoDetails")
 			}
+
 			return err
 		}
 	}
@@ -194,11 +217,15 @@ func (m *GitRepoData) contextValidateTarget(ctx context.Context, formats strfmt.
 	if m.Target != nil {
 
 		if err := m.Target.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("target")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("target")
 			}
+
 			return err
 		}
 	}

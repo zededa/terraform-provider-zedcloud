@@ -29,56 +29,13 @@ description: |-
 
 Required:
 
-- `auth` (Block List, Min: 1) Authentication configuration (see [below for nested schema](#nestedblock--data--auth))
 - `project_id` (String) Project ID where the GitRepo belongs (required)
 - `repo_details` (Block List, Min: 1) Repository details and configuration (required) (see [below for nested schema](#nestedblock--data--repo_details))
 - `target` (Block List, Min: 1) Target deployment configuration (required) (see [below for nested schema](#nestedblock--data--target))
 
-<a id="nestedblock--data--auth"></a>
-### Nested Schema for `data.auth`
-
 Optional:
 
-- `encoded_certificates` (String) Base64 encoded certificates for TLS authentication
-- `git` (Block List) Git-specific authentication configuration (see [below for nested schema](#nestedblock--data--auth--git))
-- `helm` (Block List) Helm-specific authentication configuration (see [below for nested schema](#nestedblock--data--auth--helm))
-- `insecure_skip_tls_verify` (Boolean) Skip TLS certificate verification
-
-<a id="nestedblock--data--auth--git"></a>
-### Nested Schema for `data.auth.git`
-
-Optional:
-
-- `secret` (Block List) Secret configuration for Git authentication (see [below for nested schema](#nestedblock--data--auth--git--secret))
-
-<a id="nestedblock--data--auth--git--secret"></a>
-### Nested Schema for `data.auth.git.secret`
-
-Optional:
-
-- `name` (String) Name of the secret
-- `type` (String) Type of secret for authentication
-
-
-
-<a id="nestedblock--data--auth--helm"></a>
-### Nested Schema for `data.auth.helm`
-
-Optional:
-
-- `helm_repo_url_regex` (String) Regular expression pattern to match Helm repository URLs
-- `secret` (Block List) Secret configuration for Helm authentication (see [below for nested schema](#nestedblock--data--auth--helm--secret))
-
-<a id="nestedblock--data--auth--helm--secret"></a>
-### Nested Schema for `data.auth.helm.secret`
-
-Optional:
-
-- `name` (String) Name of the secret
-- `type` (String) Type of secret for authentication
-
-
-
+- `auth` (Block List) Authentication configuration, required for private repositories (see [below for nested schema](#nestedblock--data--auth))
 
 <a id="nestedblock--data--repo_details"></a>
 ### Nested Schema for `data.repo_details`
@@ -104,6 +61,52 @@ Required:
 Optional:
 
 - `value` (String) Target value (cluster ID, cluster group ID, etc.). Required when type is CLUSTER or CLUSTER_GROUP, not required for ALL_CLUSTER
+
+
+<a id="nestedblock--data--auth"></a>
+### Nested Schema for `data.auth`
+
+Optional:
+
+- `encoded_certificates` (String) Base64 encoded certificates for TLS authentication
+- `git` (Block List) Git-specific authentication configuration (see [below for nested schema](#nestedblock--data--auth--git))
+- `helm` (Block List) Helm-specific authentication configuration (see [below for nested schema](#nestedblock--data--auth--helm))
+- `insecure_skip_tls_verify` (Boolean) Skip TLS certificate verification
+
+<a id="nestedblock--data--auth--git"></a>
+### Nested Schema for `data.auth.git`
+
+Optional:
+
+- `secret` (Block List) Secret configuration for Git authentication (see [below for nested schema](#nestedblock--data--auth--git--secret))
+
+<a id="nestedblock--data--auth--git--secret"></a>
+### Nested Schema for `data.auth.git.secret`
+
+Optional:
+
+- `name` (String) Name of the secret
+- `type` (String) Type of secret for authentication(SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). For a Public Repository, set type as SECRET_TYPE_NONE
+
+
+
+<a id="nestedblock--data--auth--helm"></a>
+### Nested Schema for `data.auth.helm`
+
+Optional:
+
+- `helm_repo_url_regex` (String) Regular expression pattern to match Helm repository URLs
+- `secret` (Block List) Secret configuration for Helm authentication (see [below for nested schema](#nestedblock--data--auth--helm--secret))
+
+<a id="nestedblock--data--auth--helm--secret"></a>
+### Nested Schema for `data.auth.helm.secret`
+
+Optional:
+
+- `name` (String) Name of the secret
+- `type` (String) Type of secret for authentication(SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). For a Public Repository, set type as SECRET_TYPE_NONE
+
+
 
 
 
