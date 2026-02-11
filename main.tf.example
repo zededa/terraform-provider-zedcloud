@@ -1257,131 +1257,147 @@ resource "zedcloud_kubernetes_secret" "test_k8s_secret" {
 
 # KUBERNETES GITOPS - PUBLIC REPOSITORY
 resource "zedcloud_kubernetes_gitops" "test_k8s_gitops_public" {
-  # Metadata
-  name        = "test-gitops-public-repo"
-  title       = "Test GitOps Public Repository"
-  description = "Testing kubernetes gitops with public repository"
-
-  # GitOps configuration
-  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
-  
-  target_type = "GIT_REPO_TARGET_TYPE_CLUSTER"
-  
-  targets = ["edgeai-zks-cluster"]
-  
-  repo_url = "https://github.com/zededa/terraform-provider-zedcloud"
-  branch   = "main"
-  
-  # Public repository - no authentication needed
-  git_auth = {
-    secret = {
-      type = "SECRET_TYPE_NONE"
-    }
+  metadata {
+    name        = "test-gitops-public-repo"
+    title       = "Test GitOps Public Repository"
+    description = "Testing kubernetes gitops with public repository"
   }
-  
-  helm_auth = {
-    secret = {
-      type = "SECRET_TYPE_NONE"
+
+  data {
+    project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+
+    auth {
+      git {
+        secret {
+          type = "SECRET_TYPE_NONE"
+        }
+      }
+      helm {
+        secret {
+          type = "SECRET_TYPE_NONE"
+        }
+      }
+    }
+
+    repo_details {
+      url    = "https://github.com/zededa/terraform-provider-zedcloud"
+      branch = "main"
+    }
+
+    target {
+      type  = "GIT_REPO_TARGET_TYPE_CLUSTER"
+      value = "edgeai-zks-cluster"
     }
   }
 }
 
 # KUBERNETES GITOPS - PRIVATE REPOSITORY (SSH)
 resource "zedcloud_kubernetes_gitops" "test_k8s_gitops_private_ssh" {
-  # Metadata
-  name        = "test-gitops-private-ssh"
-  title       = "Test GitOps Private Repository (SSH)"
-  description = "Testing kubernetes gitops with private repository using SSH key"
-
-  # GitOps configuration
-  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
-  
-  target_type = "GIT_REPO_TARGET_TYPE_CLUSTER"
-  
-  targets = ["edgeai-zks-cluster"]
-  
-  # Private repository - SSH URL
-  repo_url = "git@github.com:your-org/private-repo.git"
-  branch   = "main"
-  
-  # SSH key authentication
-  git_auth = {
-    secret = {
-      type = "SECRET_TYPE_SSH_KEYPAIR"
-      name = "git-ssh-key-secret"  # Reference to existing secret containing SSH private key
-    }
+  metadata {
+    name        = "test-gitops-private-ssh"
+    title       = "Test GitOps Private Repository (SSH)"
+    description = "Testing kubernetes gitops with private repository using SSH key"
   }
-  
-  helm_auth = {
-    secret = {
-      type = "SECRET_TYPE_NONE"
+
+  data {
+    project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+
+    auth {
+      git {
+        secret {
+          type = "SECRET_TYPE_SSH_KEYPAIR"
+          name = "git-ssh-key-secret"  # Reference to existing secret containing SSH private key
+        }
+      }
+      helm {
+        secret {
+          type = "SECRET_TYPE_NONE"
+        }
+      }
+    }
+
+    repo_details {
+      url    = "git@github.com:your-org/private-repo.git"
+      branch = "main"
+    }
+
+    target {
+      type  = "GIT_REPO_TARGET_TYPE_CLUSTER"
+      value = "edgeai-zks-cluster"
     }
   }
 }
 
 # KUBERNETES GITOPS - PRIVATE REPOSITORY (HTTP with Token)
 resource "zedcloud_kubernetes_gitops" "test_k8s_gitops_private_http" {
-  # Metadata
-  name        = "test-gitops-private-http"
-  title       = "Test GitOps Private Repository (HTTP)"
-  description = "Testing kubernetes gitops with private repository using HTTP token"
-
-  # GitOps configuration
-  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
-  
-  target_type = "GIT_REPO_TARGET_TYPE_CLUSTER"
-  
-  targets = ["edgeai-zks-cluster"]
-  
-  # Private repository - HTTPS URL
-  repo_url = "https://github.com/your-org/private-repo.git"
-  branch   = "main"
-  
-  # HTTP basic auth or token authentication
-  git_auth = {
-    secret = {
-      type = "SECRET_TYPE_HTTP_BASIC"
-      name = "git-http-token-secret"  # Reference to existing secret containing username/token
-    }
+  metadata {
+    name        = "test-gitops-private-http"
+    title       = "Test GitOps Private Repository (HTTP)"
+    description = "Testing kubernetes gitops with private repository using HTTP token"
   }
-  
-  helm_auth = {
-    secret = {
-      type = "SECRET_TYPE_NONE"
+
+  data {
+    project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+
+    auth {
+      git {
+        secret {
+          type = "SECRET_TYPE_HTTP_BASIC"
+          name = "git-http-token-secret"  # Reference to existing secret containing username/token
+        }
+      }
+      helm {
+        secret {
+          type = "SECRET_TYPE_NONE"
+        }
+      }
+    }
+
+    repo_details {
+      url    = "https://github.com/your-org/private-repo.git"
+      branch = "main"
+    }
+
+    target {
+      type  = "GIT_REPO_TARGET_TYPE_CLUSTER"
+      value = "edgeai-zks-cluster"
     }
   }
 }
 
 # KUBERNETES GITOPS - WITH HELM REPOSITORY AUTHENTICATION
 resource "zedcloud_kubernetes_gitops" "test_k8s_gitops_helm_auth" {
-  # Metadata
-  name        = "test-gitops-helm-auth"
-  title       = "Test GitOps with Helm Authentication"
-  description = "Testing kubernetes gitops with private Helm repository"
-
-  # GitOps configuration
-  project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
-  
-  target_type = "GIT_REPO_TARGET_TYPE_CLUSTER"
-  
-  targets = ["edgeai-zks-cluster"]
-  
-  # Public git repository
-  repo_url = "https://github.com/your-org/helm-charts.git"
-  branch   = "main"
-  
-  # No git auth needed
-  git_auth = {
-    secret = {
-      type = "SECRET_TYPE_NONE"
-    }
+  metadata {
+    name        = "test-gitops-helm-auth"
+    title       = "Test GitOps with Helm Authentication"
+    description = "Testing kubernetes gitops with private Helm repository"
   }
-  
-  # Private Helm repository authentication
-  helm_auth = {
-    secret = {
-      type = "SECRET_TYPE_HTTP_BASIC"
-      name = "helm-registry-secret"  # Reference to existing secret containing Helm registry credentials
+
+  data {
+    project_id = "ec924342-4138-4022-96d5-e1a2455706c2"
+
+    auth {
+      git {
+        secret {
+          type = "SECRET_TYPE_NONE"
+        }
+      }
+      helm {
+        secret {
+          type = "SECRET_TYPE_HTTP_BASIC"
+          name = "helm-registry-secret"  # Reference to existing secret containing Helm registry credentials
+        }
+      }
+    }
+
+    repo_details {
+      url    = "https://github.com/your-org/helm-charts.git"
+      branch = "main"
+    }
+
+    target {
+      type  = "GIT_REPO_TARGET_TYPE_CLUSTER"
+      value = "edgeai-zks-cluster"
     }
   }
 }

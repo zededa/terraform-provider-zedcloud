@@ -7,6 +7,7 @@ package models
 
 import (
 	"context"
+	stderrors "errors"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/strfmt"
@@ -52,11 +53,15 @@ func (m *PrivateRepoSpecInfo) validateAuth(formats strfmt.Registry) error {
 
 	if m.Auth != nil {
 		if err := m.Auth.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("auth")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("auth")
 			}
+
 			return err
 		}
 	}
@@ -71,11 +76,15 @@ func (m *PrivateRepoSpecInfo) validateRepoDetails(formats strfmt.Registry) error
 
 	if m.RepoDetails != nil {
 		if err := m.RepoDetails.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("repoDetails")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("repoDetails")
 			}
+
 			return err
 		}
 	}
@@ -110,11 +119,15 @@ func (m *PrivateRepoSpecInfo) contextValidateAuth(ctx context.Context, formats s
 		}
 
 		if err := m.Auth.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("auth")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("auth")
 			}
+
 			return err
 		}
 	}
@@ -131,11 +144,15 @@ func (m *PrivateRepoSpecInfo) contextValidateRepoDetails(ctx context.Context, fo
 		}
 
 		if err := m.RepoDetails.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
+			ve := new(errors.Validation)
+			if stderrors.As(err, &ve) {
 				return ve.ValidateName("repoDetails")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
+			}
+			ce := new(errors.CompositeError)
+			if stderrors.As(err, &ce) {
 				return ce.ValidateName("repoDetails")
 			}
+
 			return err
 		}
 	}

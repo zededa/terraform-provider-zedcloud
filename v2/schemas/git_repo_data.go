@@ -101,7 +101,7 @@ func SetGitRepoDataSubResourceData(m []*models.GitRepoData) (d []*map[string]int
 func GitRepoDataSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"auth": {
-			Description: `Authentication configuration`,
+			Description: `Authentication configuration, required for private repositories`,
 			Type:        schema.TypeList, //GoType: GitRepoAuthConfig
 			Elem: &schema.Resource{
 				Schema: GitRepoAuthConfigSchema(),

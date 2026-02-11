@@ -35,7 +35,7 @@ Required:
 
 Optional:
 
-- `auth` (Block List) Authentication configuration (see [below for nested schema](#nestedblock--data--auth))
+- `auth` (Block List) Authentication configuration, required for private repositories (see [below for nested schema](#nestedblock--data--auth))
 
 <a id="nestedblock--data--repo_details"></a>
 ### Nested Schema for `data.repo_details`
@@ -86,7 +86,7 @@ Optional:
 Optional:
 
 - `name` (String) Name of the secret
-- `type` (String) Type of secret for authentication
+- `type` (String) Type of secret for authentication(SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). For a Public Repository, set type as SECRET_TYPE_NONE
 
 
 
@@ -104,7 +104,7 @@ Optional:
 Optional:
 
 - `name` (String) Name of the secret
-- `type` (String) Type of secret for authentication
+- `type` (String) Type of secret for authentication(SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). For a Public Repository, set type as SECRET_TYPE_NONE
 
 
 

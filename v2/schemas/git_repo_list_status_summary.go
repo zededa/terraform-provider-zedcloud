@@ -10,8 +10,7 @@ func GitRepoListStatusSummaryModel(d *schema.ResourceData) *models.GitRepoListSt
 	description, _ := d.Get("description").(string)
 	totalInt, _ := d.Get("total").(int)
 	total := int32(totalInt)
-	values, _ := d.Get("values").(map[string]int32) // map[string]int32
-
+	values, _ := d.Get("values").(map[string]int32)
 	return &models.GitRepoListStatusSummary{
 		Description: description,
 		Total:       total,

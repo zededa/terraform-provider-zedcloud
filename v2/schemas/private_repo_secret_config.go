@@ -59,7 +59,7 @@ func PrivateRepoSecretConfigSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: `Type of secret for authentication (SECRET_TYPE_NONE, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_SSH, SECRET_TYPE_UNSPECIFIED)`,
+			Description: `Type of the secret (SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). This field is required for private repositories and must be a valid Kubernetes secret type. For a public repository, set type as SECRET_TYPE_NONE`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

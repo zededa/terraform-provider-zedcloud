@@ -60,7 +60,7 @@ func GitRepoSecretConfigSchema() map[string]*schema.Schema {
 		},
 
 		"type": {
-			Description: `Type of secret for authentication`,
+			Description: `Type of secret for authentication(SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). For a Public Repository, set type as SECRET_TYPE_NONE`,
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

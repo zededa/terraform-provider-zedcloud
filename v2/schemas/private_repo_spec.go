@@ -73,7 +73,7 @@ func SetPrivateRepoSpecSubResourceData(m []*models.PrivateRepoSpec) (d []*map[st
 func PrivateRepoSpecSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"auth": {
-			Description: `Authentication configuration`,
+			Description: `Authentication configuration, required for private repositories`,
 			Type:        schema.TypeList, //GoType: PrivateRepoAuthConfig
 			Elem: &schema.Resource{
 				Schema: PrivateRepoAuthConfigSchema(),

@@ -22,7 +22,7 @@ import (
 // swagger:model GitRepoData
 type GitRepoData struct {
 
-	// Authentication configuration
+	// Authentication configuration, required for private repositories
 	Auth *GitRepoAuthConfig `json:"auth,omitempty"`
 
 	// Project ID where the GitRepo belongs (required)
