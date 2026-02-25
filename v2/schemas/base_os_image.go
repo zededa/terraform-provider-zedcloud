@@ -76,19 +76,19 @@ func BaseOSImage() map[string]*schema.Schema {
 		"imvol_id": {
 			Description: `immutable Volume for this base image`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"uuid": {
 			Description: `system generated unique id for an image`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"version": {
 			Description: `image version`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 	}
 }
