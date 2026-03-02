@@ -659,7 +659,8 @@ func Node() map[string]*schema.Schema {
 				Schema: BaseOSImage(),
 			},
 			// ConfigMode: schema.SchemaConfigModeAttr,
-			Optional: true,
+			Optional:         true,
+			DiffSuppressFunc: diffSuppressBaseImage("base_image"),
 		},
 
 		"base_os_force_upgrade": {
@@ -797,7 +798,8 @@ func Node() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: EdgeView(),
 			},
-			Optional: true,
+			Optional:         true,
+			DiffSuppressFunc: diffSuppressEdgeviewConfig("edgeviewconfig"),
 		},
 
 		"generate_soft_serial": {
@@ -815,7 +817,7 @@ func Node() map[string]*schema.Schema {
 		"identity": {
 			Description: `Device identity`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			Computed:    true,
 		},
 
 		"interfaces": {
