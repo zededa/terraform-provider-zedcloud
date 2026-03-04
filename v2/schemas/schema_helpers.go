@@ -3,6 +3,7 @@ package schemas
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"slices"
 	"strings"
 
@@ -499,6 +500,59 @@ func diffSuppressIfFieldValueEqual(field, value string) schema.SchemaDiffSuppres
 		}
 
 		return false
+	}
+}
+
+func isFieldDefinedInTerraformConfig(d *schema.ResourceData, field string) bool {
+	rawConfig := d.GetRawConfig()
+	if !rawConfig.IsKnown() || rawConfig.IsNull() {
+		return false
+	}
+
+	rawConfigMap := rawConfig.AsValueMap()
+	rawField, ok := rawConfigMap[field]
+	if !ok {
+		return false
+	}
+
+	return rawField.IsKnown() && !rawField.IsNull()
+}
+
+func diffSuppressBaseImage(field string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		if !isFieldDefinedInTerraformConfig(d, field) {
+			return true
+		}
+
+		oldData, newData := d.GetChange(field)
+		if oldData == nil && newData == nil {
+			return true
+		}
+
+		if oldData == nil || newData == nil {
+			return false
+		}
+
+		return reflect.DeepEqual(oldData, newData)
+	}
+}
+
+func diffSuppressEdgeviewConfig(field string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		if !isFieldDefinedInTerraformConfig(d, field) {
+			return true
+		}
+
+		oldData, newData := d.GetChange(field)
+		if oldData == nil && newData == nil {
+			return true
+		}
+
+		if oldData == nil || newData == nil {
+			return false
+		}
+
+		return reflect.DeepEqual(oldData, newData)
 	}
 }
 
