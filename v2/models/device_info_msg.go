@@ -145,6 +145,12 @@ type DeviceInfoMsg struct {
 
 	// Last received counters for zpool metrics.
 	ZpoolMetrics *StorageDeviceMetrics `json:"zpoolMetrics,omitempty"`
+
+	// enrolled certs
+	EnrolledCerts []*EnrolledCertInfo `json:"enrolledCerts"`
+
+	// pnac metrics
+	PnacMetrics []*PNACMetricInfo `json:"pnacMetrics"`
 }
 
 // Validate validates this device info msg
@@ -956,6 +962,14 @@ func (m *DeviceInfoMsg) ContextValidate(ctx context.Context, formats strfmt.Regi
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateEnrolledCerts(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePnacMetrics(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -1367,6 +1381,38 @@ func (m *DeviceInfoMsg) contextValidateZpoolMetrics(ctx context.Context, formats
 		}
 	}
 
+	return nil
+}
+
+func (m *DeviceInfoMsg) contextValidateEnrolledCerts(ctx context.Context, formats strfmt.Registry) error {
+	for i := 0; i < len(m.EnrolledCerts); i++ {
+		if m.EnrolledCerts[i] != nil {
+			if err := m.EnrolledCerts[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("enrolledCerts" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("enrolledCerts" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func (m *DeviceInfoMsg) contextValidatePnacMetrics(ctx context.Context, formats strfmt.Registry) error {
+	for i := 0; i < len(m.PnacMetrics); i++ {
+		if m.PnacMetrics[i] != nil {
+			if err := m.PnacMetrics[i].ContextValidate(ctx, formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("pnacMetrics" + "." + strconv.Itoa(i))
+				} else if ce, ok := err.(*errors.CompositeError); ok {
+					return ce.ValidateName("pnacMetrics" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+	}
 	return nil
 }
 

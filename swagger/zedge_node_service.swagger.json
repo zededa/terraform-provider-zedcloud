@@ -30,6 +30,9 @@
         },
         {
             "name": "HardwareModel"
+        },
+        {
+            "name": "CertificateEnrollmentProfileConfiguration"
         }
     ],
     "basePath": "/api",
@@ -939,6 +942,599 @@
                 }
             }
         },
+        "/v1/ceps": {
+            "get": {
+                "summary": "List certificate enrollment profiles",
+                "description": "List all certificate enrollment profiles with optional filtering and pagination.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_QueryCEPs",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/CEPCommonSCEPProfiles"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namePattern",
+                        "description": "query param : \"name-pattern\" . Search * namePattern * in name field to filter records",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "summary",
+                        "description": "Only summary of the records required",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "showProjectsList",
+                        "description": "If true, include the list of projects referencing each CEP profile",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            },
+            "post": {
+                "summary": "Create a certificate enrollment profile",
+                "description": "Create a certificate enrollment profile (CEP) for SCEP-based certificate provisioning on edge devices.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_CreateCEP",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this CEP record will conflict with an already existing CEP record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CEPCommonSCEPProfile"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            }
+        },
+        "/v1/ceps/id/{id}": {
+            "get": {
+                "summary": "Get certificate enrollment profile by ID",
+                "description": "Get the configuration of a certificate enrollment profile by its unique ID.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_GetCEPById",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/CEPCommonSCEPProfile"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the CEP profile",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "showProjectsList",
+                        "description": "If true, include the list of projects referencing this CEP profile",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            },
+            "delete": {
+                "summary": "Delete a certificate enrollment profile",
+                "description": "Delete a certificate enrollment profile by its unique ID.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_DeleteCEP",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the CEP profile",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "showProjectsList",
+                        "description": "If true, include the list of projects referencing this CEP profile",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            },
+            "put": {
+                "summary": "Update a certificate enrollment profile",
+                "description": "Update a certificate enrollment profile. Fields id, name, enterprise_id, and status are immutable and cannot be changed.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_UpdateCEP",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because of a version conflict with the current state of the resource.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System-generated unique identifier (UUID)",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "User-defined unique name for the profile",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "Human-readable display title",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the profile purpose",
+                                    "maxLength": 256
+                                },
+                                "scepUrl": {
+                                    "type": "string",
+                                    "description": "Full SCEP server URL including scheme, host, and path (e.g., https://ca.example.com/scep)"
+                                },
+                                "useControllerProxy": {
+                                    "type": "boolean",
+                                    "description": "If true, SCEP requests are routed through the controller proxy; if false, device connects directly to SCEP server"
+                                },
+                                "secret": {
+                                    "$ref": "#/definitions/CEPCommonSCEPProfileSecrets",
+                                    "description": "Write-only secret fields (challenge password). Not returned in GET responses."
+                                },
+                                "encryptedSecrets": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Encrypted secret data (set by server, do not modify)"
+                                },
+                                "cryptoKey": {
+                                    "type": "string",
+                                    "description": "Encryption key reference (set by server, do not modify)"
+                                },
+                                "caCertPem": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "format": "byte"
+                                    },
+                                    "description": "PEM-encoded trusted CA certificates for SCEP server validation (per RFC8894 section 2.2)"
+                                },
+                                "csrProfile": {
+                                    "$ref": "#/definitions/CEPCommonCSRProfile",
+                                    "description": "Certificate Signing Request configuration including subject DN, SANs, and key parameters"
+                                },
+                                "enterpriseId": {
+                                    "type": "string",
+                                    "description": "Enterprise ID owning this profile",
+                                    "readOnly": true
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "Object revision information",
+                                    "readOnly": true
+                                },
+                                "projectsList": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/CEPCommonProjectReference"
+                                    },
+                                    "description": "Projects referencing this CEP profile (populated only when showProjectsList=true)",
+                                    "readOnly": true
+                                }
+                            },
+                            "description": "SCEP Certificate Enrollment Profile for obtaining certificates from a SCEP server",
+                            "title": "SCEP Profile",
+                            "required": [
+                                "name",
+                                "scepUrl",
+                                "caCertPem",
+                                "csrProfile"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            }
+        },
+        "/v1/ceps/name/{name}": {
+            "get": {
+                "summary": "Get certificate enrollment profile by name",
+                "description": "Get the configuration of a certificate enrollment profile by its unique name.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_GetCEPByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/CEPCommonSCEPProfile"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "User defined name of the CEP profile",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            }
+        },
         "/v1/devices": {
             "get": {
                 "summary": "Query edge nodes",
@@ -1665,6 +2261,10 @@
                                     "type": "object",
                                     "$ref": "#/definitions/EdgeSyncConfig",
                                     "description": "edge sync config"
+                                },
+                                "pcrPolicy": {
+                                    "$ref": "#/definitions/PolicyConfig",
+                                    "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
                                 }
                             },
                             "description": "Device Configuration request payload holds the device properties",
@@ -2091,6 +2691,10 @@
                                     "type": "object",
                                     "$ref": "#/definitions/EdgeSyncConfig",
                                     "description": "edge sync config"
+                                },
+                                "pcrPolicy": {
+                                    "$ref": "#/definitions/PolicyConfig",
+                                    "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
                                 }
                             },
                             "description": "Device Configuration request payload holds the device properties",
@@ -3343,6 +3947,10 @@
                                     "type": "object",
                                     "$ref": "#/definitions/EdgeSyncConfig",
                                     "description": "edge sync config"
+                                },
+                                "pcrPolicy": {
+                                    "$ref": "#/definitions/PolicyConfig",
+                                    "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
                                 }
                             },
                             "description": "Device Configuration request payload holds the device properties",
@@ -3911,6 +4519,12 @@
                                     "type": "string",
                                     "description": "set particular disk to use for persistent data (volumes, logs, etc.).",
                                     "title": "EVE persist disk (e.g. 'sdb')"
+                                },
+                                "archVariant": {
+                                    "type": "object",
+                                    "$ref": "#/definitions/DeviceGenerateImageArchVariant",
+                                    "description": "default: Generic",
+                                    "title": "Architecture type fpr ARM images"
                                 }
                             },
                             "description": "Device Generate Single-use EVE Image config payload holds the device properties for generating a single-use EVE image",
@@ -4334,6 +4948,10 @@
                                     "type": "object",
                                     "$ref": "#/definitions/EdgeSyncConfig",
                                     "description": "edge sync config"
+                                },
+                                "pcrPolicy": {
+                                    "$ref": "#/definitions/PolicyConfig",
+                                    "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
                                 }
                             },
                             "description": "Device Configuration request payload holds the device properties",
@@ -10807,6 +11425,220 @@
                 }
             }
         },
+        "CEPCommonCSRProfile": {
+            "type": "object",
+            "properties": {
+                "commonName": {
+                    "type": "string",
+                    "description": "Common Name (CN) - typically the device identifier or hostname"
+                },
+                "organization": {
+                    "type": "string",
+                    "description": "Organization (O) - company or entity name"
+                },
+                "organizationalUnit": {
+                    "type": "string",
+                    "description": "Organizational Unit (OU) - department or division"
+                },
+                "country": {
+                    "type": "string",
+                    "description": "Country (C) - two-letter ISO country code"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "State or Province (ST)"
+                },
+                "locality": {
+                    "type": "string",
+                    "description": "Locality (L) - city name"
+                },
+                "sanUri": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "URIs for Subject Alternative Name extension"
+                },
+                "sanEmail": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Email addresses for Subject Alternative Name extension"
+                },
+                "renewPeriodPercent": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Percentage of certificate validity period after which renewal should be attempted (e.g., 80 means renew when 80% of validity has passed)"
+                },
+                "keyType": {
+                    "$ref": "#/definitions/CEPCommonKeyType",
+                    "description": "Key type and size for certificate key pair generation"
+                },
+                "hashAlgorithm": {
+                    "$ref": "#/definitions/CEPCommonHashAlgorithm",
+                    "description": "Hash algorithm used for signing the CSR and SCEP messages"
+                }
+            },
+            "description": "Certificate Signing Request configuration including subject DN, SANs, and key parameters",
+            "title": "CSR Profile",
+            "required": [
+                "commonName"
+            ]
+        },
+        "CEPCommonHashAlgorithm": {
+            "type": "string",
+            "enum": [
+                "HASH_ALGORITHM_UNSPECIFIED",
+                "HASH_ALGORITHM_SHA256",
+                "HASH_ALGORITHM_SHA384",
+                "HASH_ALGORITHM_SHA512"
+            ],
+            "default": "HASH_ALGORITHM_UNSPECIFIED",
+            "title": "Supported hash algorithms for signing"
+        },
+        "CEPCommonKeyType": {
+            "type": "string",
+            "enum": [
+                "KEY_TYPE_UNSPECIFIED",
+                "KEY_TYPE_RSA_2048",
+                "KEY_TYPE_RSA_3072",
+                "KEY_TYPE_RSA_4096"
+            ],
+            "default": "KEY_TYPE_UNSPECIFIED",
+            "title": "Supported key types (algorithm + parameters)"
+        },
+        "CEPCommonProjectReference": {
+            "type": "object",
+            "properties": {
+                "projectId": {
+                    "type": "string",
+                    "description": "Project unique identifier"
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "Project name"
+                }
+            },
+            "title": "ProjectReference represents a project that references a CEP profile"
+        },
+        "CEPCommonSCEPProfile": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System-generated unique identifier (UUID)",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User-defined unique name for the profile",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Human-readable display title",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the profile purpose",
+                    "maxLength": 256
+                },
+                "scepUrl": {
+                    "type": "string",
+                    "description": "Full SCEP server URL including scheme, host, and path (e.g., https://ca.example.com/scep)"
+                },
+                "useControllerProxy": {
+                    "type": "boolean",
+                    "description": "If true, SCEP requests are routed through the controller proxy; if false, device connects directly to SCEP server"
+                },
+                "secret": {
+                    "$ref": "#/definitions/CEPCommonSCEPProfileSecrets",
+                    "description": "Write-only secret fields (challenge password). Not returned in GET responses."
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Encrypted secret data (set by server, do not modify)"
+                },
+                "cryptoKey": {
+                    "type": "string",
+                    "description": "Encryption key reference (set by server, do not modify)"
+                },
+                "caCertPem": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "description": "PEM-encoded trusted CA certificates for SCEP server validation (per RFC8894 section 2.2)"
+                },
+                "csrProfile": {
+                    "$ref": "#/definitions/CEPCommonCSRProfile",
+                    "description": "Certificate Signing Request configuration including subject DN, SANs, and key parameters"
+                },
+                "enterpriseId": {
+                    "type": "string",
+                    "description": "Enterprise ID owning this profile",
+                    "readOnly": true
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "Object revision information",
+                    "readOnly": true
+                },
+                "projectsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CEPCommonProjectReference"
+                    },
+                    "description": "Projects referencing this CEP profile (populated only when showProjectsList=true)",
+                    "readOnly": true
+                }
+            },
+            "description": "SCEP Certificate Enrollment Profile for obtaining certificates from a SCEP server",
+            "title": "SCEP Profile",
+            "required": [
+                "name",
+                "scepUrl",
+                "caCertPem",
+                "csrProfile"
+            ]
+        },
+        "CEPCommonSCEPProfileSecrets": {
+            "type": "object",
+            "properties": {
+                "challengePassword": {
+                    "type": "string",
+                    "description": "SCEP challenge password for certificate enrollment authentication"
+                }
+            }
+        },
+        "CEPCommonSCEPProfiles": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CEPCommonSCEPProfile"
+                    },
+                    "description": "List of SCEP profiles"
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Pagination cursor for next page"
+                }
+            },
+            "description": "Paginated list of SCEP profiles",
+            "title": "SCEP Profiles List"
+        },
         "Capabilities": {
             "type": "object",
             "properties": {
@@ -10917,6 +11749,55 @@
             },
             "description": "CellularStatus contains status information for a single cellular network",
             "title": "CellularStatus contains status information for a single cellular network"
+        },
+        "CertDistinguishedName": {
+            "type": "object",
+            "properties": {
+                "commonName": {
+                    "type": "string",
+                    "description": "Common Name (CN)"
+                },
+                "serialNumber": {
+                    "type": "string",
+                    "description": "Serial Number (SERIALNUMBER)"
+                },
+                "organization": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Organization (O)"
+                },
+                "organizationalUnit": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Organizational Unit (OU)"
+                },
+                "country": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Country (C)"
+                },
+                "stateOrProvince": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "State or Province (ST)"
+                },
+                "locality": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Locality (L)"
+                }
+            },
+            "description": "CertDistinguishedName represents an X.509 distinguished name."
         },
         "Certificate": {
             "type": "object",
@@ -11072,8 +11953,21 @@
                 },
                 "conditions": {
                     "type": "string"
+                },
+                "nodeType": {
+                    "$ref": "#/definitions/ClusterNodeType"
                 }
             }
+        },
+        "ClusterNodeType": {
+            "type": "string",
+            "enum": [
+                "CLUSTER_NODE_TYPE_UNSPECIFIED",
+                "CLUSTER_NODE_TYPE_MASTER",
+                "CLUSTER_NODE_TYPE_WORKER",
+                "CLUSTER_NODE_TYPE_TIE_BREAKER"
+            ],
+            "default": "CLUSTER_NODE_TYPE_UNSPECIFIED"
         },
         "ClusterPolicy": {
             "type": "object",
@@ -11968,6 +12862,10 @@
                     "type": "object",
                     "$ref": "#/definitions/EdgeSyncConfig",
                     "description": "edge sync config"
+                },
+                "pcrPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
                 }
             },
             "description": "Device Configuration request payload holds the device properties",
@@ -12188,6 +13086,15 @@
                 "timestamp",
                 "entities"
             ]
+        },
+        "DeviceGenerateImageArchVariant": {
+            "type": "string",
+            "enum": [
+                "Generic",
+                "Fr201",
+                "Jetson"
+            ],
+            "default": "Generic"
         },
         "DeviceGenerateImageType": {
             "type": "string",
@@ -12448,6 +13355,22 @@
                 },
                 "memoryReportStatus": {
                     "$ref": "#/definitions/ECCMemoryReportStatus"
+                },
+                "enrolledCerts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/EnrolledCertInfo"
+                    },
+                    "description": "Certificates enrolled via SCEP on the device",
+                    "title": "Certificates enrolled via SCEP"
+                },
+                "pnacMetrics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PNACMetricInfo"
+                    },
+                    "description": "PNAC 802.1X authentication metrics per network port",
+                    "title": "PNAC (802.1X) authentication metrics per port"
                 }
             }
         },
@@ -12587,6 +13510,29 @@
             "description": "DeviceMemorySummary encapsulates the memory status of the device.",
             "title": "Device Memory Information message"
         },
+        "DevicePCRPolicy": {
+            "type": "object",
+            "properties": {
+                "pcrIndices": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "description": "list of PCR indices to include in the policy"
+                },
+                "policyVersion": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "policy version for audit purposes"
+                }
+            },
+            "description": "PCR policy to define which TPM PCR registers to use for volume key sealing",
+            "title": "PCR policy body detail",
+            "required": [
+                "pcrIndices"
+            ]
+        },
         "DevicePolicy": {
             "type": "object",
             "properties": {
@@ -12601,6 +13547,14 @@
                 "attestationPolicy": {
                     "$ref": "#/definitions/DeviceAttestationPolicy",
                     "description": "device attestation policy"
+                },
+                "pcrPolicy": {
+                    "$ref": "#/definitions/DevicePCRPolicy",
+                    "description": "PCR policy for TPM volume key sealing"
+                },
+                "portBasedNetworkAccessControlPolicy": {
+                    "$ref": "#/definitions/DevicePortBasedNetworkAccessControlPolicy",
+                    "description": "port based network access control (802.1X) policy for devices"
                 }
             }
         },
@@ -12608,9 +13562,36 @@
             "type": "string",
             "enum": [
                 "DEVICE_POLICY_TYPE_UNSPECIFIED",
-                "DEVICE_POLICY_TYPE_ATTESTATION"
+                "DEVICE_POLICY_TYPE_ATTESTATION",
+                "DEVICE_POLICY_TYPE_PCR",
+                "DEVICE_POLICY_TYPE_PORT_BASED_NETWORK_ACCESS_CONTROL"
             ],
             "default": "DEVICE_POLICY_TYPE_UNSPECIFIED"
+        },
+        "DevicePortBasedNetworkAccessControlPolicy": {
+            "type": "object",
+            "properties": {
+                "enablePortBasedNetworkAccessControl": {
+                    "type": "boolean",
+                    "description": "Enable or disable port based network access control (802.1X). When disabled, other fields are ignored."
+                },
+                "eapMethod": {
+                    "$ref": "#/definitions/EAPMethod",
+                    "description": "EAP method to use for port based network access control. Only EAP-TLS is supported currently."
+                },
+                "eapIdentity": {
+                    "type": "string",
+                    "description": "EAP identity string used for authentication",
+                    "title": "EAP identity string used for authentication"
+                },
+                "certificateEnrollmentId": {
+                    "type": "string",
+                    "description": "ID of the certificate enrollment object used for 802.1X authentication",
+                    "title": "Reference to the certificate enrollment object used for 802.1X authentication"
+                }
+            },
+            "description": "Port based network access control policy (802.1X) to enforce on devices of a project",
+            "title": "Port based network access control policy"
         },
         "DeviceRawMetrics": {
             "type": "object",
@@ -13093,6 +14074,10 @@
                 "clusterNodeStatus": {
                     "$ref": "#/definitions/ClusterNodeStatus",
                     "description": "Cluster node status"
+                },
+                "enrolledCertsStatus": {
+                    "$ref": "#/definitions/EnrolledCertStatus",
+                    "description": "Enrolled certificate status from the device"
                 }
             }
         },
@@ -13187,6 +14172,15 @@
                 "RuntimeVersion_V1"
             ],
             "default": "RuntimeVersion_Unknown"
+        },
+        "EAPMethod": {
+            "type": "string",
+            "enum": [
+                "EAP_METHOD_UNSPECIFIED",
+                "EAP_METHOD_TLS"
+            ],
+            "default": "EAP_METHOD_UNSPECIFIED",
+            "title": "Supported EAP methods for port based network access control (802.1X)"
         },
         "ECCMemoryControllerInfo": {
             "type": "object",
@@ -13404,6 +14398,11 @@
                 "tieBreakerNodeId": {
                     "type": "string",
                     "description": "Tiebreaker node id"
+                },
+                "clusterType": {
+                    "type": "number",
+                    "format": "int32",
+                    "description": "Cluster type"
                 }
             }
         },
@@ -13525,6 +14524,95 @@
             "required": [
                 "edgeviewAllow"
             ]
+        },
+        "EnrolledCertInfo": {
+            "type": "object",
+            "properties": {
+                "certEnrollmentProfileName": {
+                    "type": "string",
+                    "description": "Certificate enrollment profile name used to obtain this certificate"
+                },
+                "subject": {
+                    "$ref": "#/definitions/CertDistinguishedName",
+                    "description": "Subject distinguished name (DN) of the certificate."
+                },
+                "issuer": {
+                    "$ref": "#/definitions/CertDistinguishedName",
+                    "description": "Issuer distinguished name (DN) of the certificate."
+                },
+                "sanDns": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "DNS names from SAN"
+                },
+                "sanIp": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "IP addresses from SAN"
+                },
+                "sanUri": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "URIs from SAN"
+                },
+                "sanEmail": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Email addresses from SAN"
+                },
+                "issueTimestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Certificate validity period."
+                },
+                "expirationTimestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "renewPeriodPercent": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Percentage of validity period after which renewal begins"
+                },
+                "sha256Fingerprint": {
+                    "type": "string",
+                    "description": "SHA-256 fingerprint of the certificate"
+                },
+                "status": {
+                    "$ref": "#/definitions/EnrolledCertStatus",
+                    "description": "Current status of the certificate as observed by the device."
+                },
+                "err": {
+                    "type": "object",
+                    "$ref": "#/definitions/DeviceError",
+                    "description": "Error details for enrollment or renewal failures"
+                }
+            },
+            "description": "EnrolledCertInfo describes a certificate enrolled on the device via a\nnetwork enrollment protocol such as SCEP."
+        },
+        "EnrolledCertStatus": {
+            "type": "string",
+            "enum": [
+                "ENROLLED_CERT_STATUS_UNSPECIFIED",
+                "ENROLLED_CERT_STATUS_AVAILABLE",
+                "ENROLLED_CERT_STATUS_PENDING",
+                "ENROLLED_CERT_STATUS_RENEWAL_PENDING",
+                "ENROLLED_CERT_STATUS_EXPIRED",
+                "ENROLLED_CERT_STATUS_REVOKED",
+                "ENROLLED_CERT_STATUS_ENROLLMENT_FAILED",
+                "ENROLLED_CERT_STATUS_RENEWAL_FAILED",
+                "ENROLLED_CERT_STATUS_INVALID_CONFIG"
+            ],
+            "default": "ENROLLED_CERT_STATUS_UNSPECIFIED",
+            "description": "Certificate lifecycle and availability status as reported by the device.\n\n - ENROLLED_CERT_STATUS_AVAILABLE: Certificate is present, valid, and usable for authentication.\n - ENROLLED_CERT_STATUS_PENDING: Certificate enrollment is in progress and not yet complete.\n - ENROLLED_CERT_STATUS_RENEWAL_PENDING: Certificate is present and still valid, but a renewal request\nis in progress and not yet completed.\n - ENROLLED_CERT_STATUS_EXPIRED: Certificate has expired (the current time is past notAfter).\nRenewal may have failed; see err for related errors.\n - ENROLLED_CERT_STATUS_REVOKED: Certificate has been revoked or is otherwise considered invalid.\n - ENROLLED_CERT_STATUS_ENROLLMENT_FAILED: Certificate enrollment failed and no valid certificate is available.\n - ENROLLED_CERT_STATUS_RENEWAL_FAILED: A certificate is currently present but the most recent renewal attempt failed.\n - ENROLLED_CERT_STATUS_INVALID_CONFIG: Certificate configuration is invalid or malformed, preventing enrollment or renewal."
         },
         "EnrollmentDetail": {
             "type": "object",
@@ -15524,6 +16612,11 @@
                     "format": "int64",
                     "description": "Network MTU"
                 },
+                "pnacStatus": {
+                    "$ref": "#/definitions/PNACPortStatus",
+                    "description": "PNAC 802.1X authentication status for this port",
+                    "title": "PNAC (802.1X) authentication status for this port"
+                },
                 "configSource": {
                     "$ref": "#/definitions/commonPortConfigSource",
                     "description": "Identifies the source of this network port configuration"
@@ -15895,6 +16988,35 @@
             "description": "- ORIGIN_UNSPECIFIED: default options, which says no Operation/Invalid Operation\n - ORIGIN_IMPORTED: Object imported from global enterprise.\n - ORIGIN_LOCAL: Objectl created locally.\n - ORIGIN_GLOBAL: Object created in global store,\nto use this type user should have root previlage.\n - ORIGIN_APP_PROFILE_LOCAL: Object created via App profile",
             "title": "OriginType : enum specifies the Object orgigin type"
         },
+        "PCRPolicy": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "unique policy id",
+                    "readOnly": true,
+                    "pattern": "[0-9-a-z-]+"
+                },
+                "pcrIndices": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "description": "List of PCR indices for TPM key sealing"
+                },
+                "policyVersion": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Policy version for audit tracking"
+                }
+            },
+            "description": "PCR policy for TPM key sealing on devices",
+            "title": "PCR policy body detail",
+            "required": [
+                "pcrIndices"
+            ]
+        },
         "PCRTemplate": {
             "type": "object",
             "properties": {
@@ -16002,6 +17124,99 @@
                 "index",
                 "value"
             ]
+        },
+        "PNACMetricInfo": {
+            "type": "object",
+            "properties": {
+                "logicalLabel": {
+                    "type": "string",
+                    "description": "Logical label of the network port"
+                },
+                "eapolFramesRx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "Total EAPOL frames received"
+                },
+                "eapolFramesTx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "Total EAPOL frames transmitted"
+                },
+                "eapolStartFramesTx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "EAPOL-Start frames transmitted"
+                },
+                "eapolLogoffFramesTx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "EAPOL-Logoff frames transmitted"
+                },
+                "eapolRespFramesTx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "EAP-Response frames transmitted"
+                },
+                "eapolReqIdFramesRx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "EAP-Request Identity frames received"
+                },
+                "eapolReqFramesRx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "EAP-Request frames received"
+                },
+                "invalidEapolFramesRx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "Invalid EAPOL frames received"
+                },
+                "eapLengthErrorFramesRx": {
+                    "type": "string",
+                    "format": "uint64",
+                    "description": "EAPOL frames with length errors received"
+                }
+            },
+            "description": "PNACMetricInfo reports 802.1X EAPOL frame counters for a network port."
+        },
+        "PNACPortStatus": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Whether 802.1X authentication is enabled on this port"
+                },
+                "supplicantState": {
+                    "$ref": "#/definitions/PNACSupplicantState",
+                    "description": "802.1X supplicant state"
+                },
+                "lastAuthTimestamp": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Timestamp of the most recent successful 802.1X authentication."
+                },
+                "err": {
+                    "type": "object",
+                    "$ref": "#/definitions/DeviceError",
+                    "description": "Supplicant authentication error details"
+                }
+            },
+            "description": "PNACPortStatus reports the 802.1X authentication status of a network port."
+        },
+        "PNACSupplicantState": {
+            "type": "string",
+            "enum": [
+                "PNAC_SUPPLICANT_STATE_UNSPECIFIED",
+                "PNAC_SUPPLICANT_STATE_DISCONNECTED",
+                "PNAC_SUPPLICANT_STATE_CONNECTING",
+                "PNAC_SUPPLICANT_STATE_AUTHENTICATING",
+                "PNAC_SUPPLICANT_STATE_AUTHENTICATED",
+                "PNAC_SUPPLICANT_STATE_FAILED",
+                "PNAC_SUPPLICANT_STATE_HELD"
+            ],
+            "default": "PNAC_SUPPLICANT_STATE_UNSPECIFIED",
+            "description": "PNACSupplicantState describes the 802.1X supplicant state for PNAC.\n\n - PNAC_SUPPLICANT_STATE_DISCONNECTED: Supplicant is idle or link is down; no authentication in progress.\n - PNAC_SUPPLICANT_STATE_CONNECTING: Link is up and the supplicant is initiating authentication.\n - PNAC_SUPPLICANT_STATE_AUTHENTICATING: Active EAP authentication exchange is in progress.\n - PNAC_SUPPLICANT_STATE_AUTHENTICATED: Authentication completed successfully; port is authorized.\n - PNAC_SUPPLICANT_STATE_FAILED: Authentication failed and access was not granted.\n - PNAC_SUPPLICANT_STATE_HELD: Supplicant is in a held or backoff state following repeated failures."
         },
         "Param": {
             "type": "object",
@@ -16233,6 +17448,14 @@
                     "$ref": "#/definitions/ConfigurationLockPolicy",
                     "description": "configuration lock policy to enforce on all devices in this project"
                 },
+                "pcrPolicy": {
+                    "$ref": "#/definitions/PCRPolicy",
+                    "description": "PCR policy for TPM key sealing on devices in this project"
+                },
+                "portBasedNetworkAccessControlPolicy": {
+                    "$ref": "#/definitions/PortBasedNetworkAccessControlPolicy",
+                    "description": "port based network access control (802.1X) policy to enforce on all devices in this project"
+                },
                 "statusMessage": {
                     "type": "string",
                     "description": "Detailed status message of the policy",
@@ -16273,10 +17496,43 @@
                 "POLICY_TYPE_CLUSTER",
                 "POLICY_TYPE_EDGEVIEW",
                 "POLICY_TYPE_LOC",
-                "POLICY_TYPE_CONFIGURATION_LOCK"
+                "POLICY_TYPE_CONFIGURATION_LOCK",
+                "POLICY_TYPE_PCR",
+                "POLICY_TYPE_PORT_BASED_NETWORK_ACCESS_CONTROL"
             ],
             "default": "POLICY_TYPE_UNSPECIFIED",
             "description": "type of policy."
+        },
+        "PortBasedNetworkAccessControlPolicy": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "unique policy id",
+                    "readOnly": true,
+                    "pattern": "[0-9-a-z-]+"
+                },
+                "enablePortBasedNetworkAccessControl": {
+                    "type": "boolean",
+                    "description": "Enable or disable port based network access control (802.1X). When disabled, other fields are ignored."
+                },
+                "eapMethod": {
+                    "$ref": "#/definitions/EAPMethod",
+                    "description": "EAP method to use for port based network access control. Only EAP-TLS is supported currently."
+                },
+                "eapIdentity": {
+                    "type": "string",
+                    "description": "EAP identity string used for authentication",
+                    "title": "EAP identity string used for authentication"
+                },
+                "certificateEnrollmentId": {
+                    "type": "string",
+                    "description": "ID of the certificate enrollment object used for 802.1X authentication",
+                    "title": "Reference to the certificate enrollment object used for 802.1X authentication"
+                }
+            },
+            "description": "Port based network access control policy (802.1X) to enforce on all devices of the project",
+            "title": "Port based network access control policy body detail"
         },
         "ProbeConfig": {
             "type": "object",
@@ -16567,6 +17823,16 @@
             "default": "SW_STATE_UNSPECIFIED",
             "description": "- SW_STATE_RESOLVING_TAG: Prior to DOWNLOAD_STARTED we go through these:\nResolving an image tag\n - SW_STATE_RESOLVED_TAG: Tag has been resolved/failed\n - SW_STATE_CREATING_VOLUME: Prior to INSTALLED we go through these:\nVolume create in progress\n - SW_STATE_CREATED_VOLUME: Volume create done/failed\n - SW_STATE_VERIFYING: Verification in-progress\n - SW_STATE_LOADING: Loading blob in CAS\n - SW_STATE_LOADED: Loaded blob in CAS\n - SW_STATE_AWAITNETWORKINSTANCE: Wait for network instance",
             "title": "State of EVE/Edge Application software"
+        },
+        "SendDeviceMetrics": {
+            "type": "string",
+            "enum": [
+                "SEND_DEVICE_METRICS_DISABLED",
+                "SEND_DEVICE_METRICS_ENABLED"
+            ],
+            "default": "SEND_DEVICE_METRICS_DISABLED",
+            "description": "- SEND_DEVICE_METRICS_DISABLED: Default value. device metrics will not be sent\n - SEND_DEVICE_METRICS_ENABLED: device metrics sending is enabled. device metrics will be sent to the cloud",
+            "title": "this enum is used for enable and disable sending device metrics for devices in a project\nif the value is set to SEND_DEVICE_METRICS_ENABLED then device metrics will be sent to the cloud"
         },
         "ServicePoint": {
             "type": "object",
@@ -17072,6 +18338,10 @@
                 "allowLocalModifications": {
                     "type": "boolean",
                     "description": "Allow the local operator to make (limited) configuration changes to this network adapter."
+                },
+                "enablePortBasedNetworkAccessControl": {
+                    "type": "boolean",
+                    "description": "Enable port-based network access control (802.1X) on this interface. Only applicable for Ethernet interfaces that are not app-direct."
                 }
             },
             "description": "system interfaces that needs to be used by dom0",
@@ -17346,6 +18616,14 @@
                 "configurationLockPolicy": {
                     "$ref": "#/definitions/PolicyConfig",
                     "description": "Configuration lock prevents users to send unintentional misconfigurations"
+                },
+                "pcrPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "PCR policy for TPM key sealing on devices of this project"
+                },
+                "portBasedNetworkAccessControlPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Port based network access control (802.1X) policy to enforce on all devices of this project"
                 }
             },
             "description": "Resource group for edge gateway Base OS or for eedge applications.",
@@ -17366,6 +18644,10 @@
                 "interfaceOrdering": {
                     "$ref": "#/definitions/InterfaceOrdering",
                     "description": "interface ordering for app instances"
+                },
+                "sendDeviceMetrics": {
+                    "$ref": "#/definitions/SendDeviceMetrics",
+                    "description": "send device metrics for devices in the project"
                 }
             },
             "description": "TagLevelSettings defines settings at a specific tag level within a enterprise.\nIt includes configurations that control certain behaviors or features,\nsuch as the transmission of flow logs for monitoring and analysis purposes."
@@ -17568,6 +18850,10 @@
                 "configurationLockPolicy": {
                     "$ref": "#/definitions/PolicyConfig",
                     "description": "Configuration lock prevents users to send unintentional misconfigurations"
+                },
+                "portBasedNetworkAccessControlPolicy": {
+                    "$ref": "#/definitions/PolicyConfig",
+                    "description": "Port based network access control (802.1X) policy to enforce on all devices of this project"
                 }
             },
             "description": "Resource group for edge gateway Base OS or for eedge applications.",
@@ -18489,7 +19775,7 @@
                     "title": "comes from manifest during app create"
                 },
                 "privateip": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Private IP flag"
                 },
                 "acls": {
@@ -18790,6 +20076,10 @@
                 "modelId": {
                     "type": "string",
                     "description": "device model"
+                },
+                "enrolledCertsStatus": {
+                    "$ref": "#/definitions/EnrolledCertStatus",
+                    "description": "Enrolled certificate status from the device"
                 }
             },
             "description": "Device status and config response details",
@@ -18891,7 +20181,8 @@
                 "API_CAPABILITY_EDGEVIEW_AUTHENTICATION",
                 "API_CAPABILITY_DISABLE_VTPM",
                 "API_CAPABILITY_LOC_REBOOT_COLLECT_INFO",
-                "API_CAPABILITY_SMART_REPORT"
+                "API_CAPABILITY_SMART_REPORT",
+                "API_CAPABILITY_REPORT_TPM_EVENTLOG"
             ],
             "default": "API_CAPABILITY_UNSPECIFIED",
             "description": "Capabilities indicates features in the EdgeDevConfig where there is\nno easy way to otherwise determine whether or not they are parsed and\nsupported by EVE-OS\nA larger number indicates all lower numbers are also supported thus\nthis works similar to a version field for the EdgeDevConfig support."

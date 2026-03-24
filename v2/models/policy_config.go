@@ -67,6 +67,9 @@ type Policy struct {
 	// network policy to enforce on all devices in this project
 	NetworkPolicy *NetworkPolicy `json:"networkPolicy,omitempty"`
 
+	// port based network access control (802.1X) policy to enforce on all devices in this project
+	PortBasedNetworkAccessControlPolicy *PortBasedNetworkAccessControlPolicy `json:"portBasedNetworkAccessControlPolicy,omitempty"`
+
 	// system defined info
 	// Read Only: true
 	Revision *ObjectRevision `json:"revision,omitempty"`
@@ -140,6 +143,10 @@ func (m *Policy) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateNetworkPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePortBasedNetworkAccessControlPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -381,6 +388,25 @@ func (m *Policy) validateNetworkPolicy(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *Policy) validatePortBasedNetworkAccessControlPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.PortBasedNetworkAccessControlPolicy) { // not required
+		return nil
+	}
+
+	if m.PortBasedNetworkAccessControlPolicy != nil {
+		if err := m.PortBasedNetworkAccessControlPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("portBasedNetworkAccessControlPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("portBasedNetworkAccessControlPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *Policy) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
@@ -517,6 +543,10 @@ func (m *Policy) ContextValidate(ctx context.Context, formats strfmt.Registry) e
 	}
 
 	if err := m.contextValidateNetworkPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePortBasedNetworkAccessControlPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -683,6 +713,22 @@ func (m *Policy) contextValidateNetworkPolicy(ctx context.Context, formats strfm
 				return ve.ValidateName("networkPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("networkPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Policy) contextValidatePortBasedNetworkAccessControlPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.PortBasedNetworkAccessControlPolicy != nil {
+		if err := m.PortBasedNetworkAccessControlPolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("portBasedNetworkAccessControlPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("portBasedNetworkAccessControlPolicy")
 			}
 			return err
 		}

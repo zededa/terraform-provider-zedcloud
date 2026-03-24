@@ -21,6 +21,7 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 		}
 	}
 	allowLocalModifications, _ := d.Get("allow_local_modifications").(bool)
+	enablePortBasedNetworkAccessControl, _ := d.Get("enable_port_based_network_access_control").(bool)
 	costInt, _ := d.Get("cost").(int)
 	cost := int64(costInt)
 	var intfUsage *models.AdapterUsage // AdapterUsage
@@ -74,19 +75,20 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 
 	ztype, _ := d.Get("ztype").(string)
 	return &models.SysInterface{
-		AdapterSpecificNet:      adapterSpecificNet,
-		AllowLocalModifications: allowLocalModifications,
-		Cost:                    cost,
-		IntfUsage:               intfUsage,
-		Intfname:                intfname,
-		Ipaddr:                  ipaddr,
-		Macaddr:                 macaddr,
-		NetDhcp:                 netDhcp,
-		Netid:                   netid,
-		Netname:                 netname,
-		SharedLabels:            sharedLabels,
-		Tags:                    tags,
-		Ztype:                   ztype,
+		AdapterSpecificNet:                  adapterSpecificNet,
+		AllowLocalModifications:             allowLocalModifications,
+		Cost:                                cost,
+		EnablePortBasedNetworkAccessControl: enablePortBasedNetworkAccessControl,
+		IntfUsage:                           intfUsage,
+		Intfname:                            intfname,
+		Ipaddr:                              ipaddr,
+		Macaddr:                             macaddr,
+		NetDhcp:                             netDhcp,
+		Netid:                               netid,
+		Netname:                             netname,
+		SharedLabels:                        sharedLabels,
+		Tags:                                tags,
+		Ztype:                               ztype,
 	}
 }
 
@@ -102,6 +104,7 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	}
 	//
 	allowLocalModifications := m["allow_local_modifications"].(bool)
+	enablePortBasedNetworkAccessControl := m["enable_port_based_network_access_control"].(bool)
 	cost := int64(m["cost"].(int))     // int64
 	var intfUsage *models.AdapterUsage // AdapterUsage
 	intfUsageInterface, intfUsageIsSet := m["intf_usage"]
@@ -154,25 +157,27 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 
 	ztype := m["ztype"].(string)
 	return &models.SysInterface{
-		AdapterSpecificNet:      adapterSpecificNet,
-		AllowLocalModifications: allowLocalModifications,
-		Cost:                    cost,
-		IntfUsage:               intfUsage,
-		Intfname:                intfname,
-		Ipaddr:                  ipaddr,
-		Macaddr:                 macaddr,
-		NetDhcp:                 netDhcp,
-		Netid:                   netid,
-		Netname:                 netname,
-		SharedLabels:            sharedLabels,
-		Tags:                    tags,
-		Ztype:                   ztype,
+		AdapterSpecificNet:                  adapterSpecificNet,
+		AllowLocalModifications:             allowLocalModifications,
+		Cost:                                cost,
+		EnablePortBasedNetworkAccessControl: enablePortBasedNetworkAccessControl,
+		IntfUsage:                           intfUsage,
+		Intfname:                            intfname,
+		Ipaddr:                              ipaddr,
+		Macaddr:                             macaddr,
+		NetDhcp:                             netDhcp,
+		Netid:                               netid,
+		Netname:                             netname,
+		SharedLabels:                        sharedLabels,
+		Tags:                                tags,
+		Ztype:                               ztype,
 	}
 }
 
 func SetSysInterfaceResourceData(d *schema.ResourceData, m *models.SysInterface) {
 	d.Set("adapter_specific_net", SetNetworkSubResourceData([]*models.Network{m.AdapterSpecificNet}))
 	d.Set("cost", m.Cost)
+	d.Set("enable_port_based_network_access_control", m.EnablePortBasedNetworkAccessControl)
 	d.Set("intf_usage", m.IntfUsage)
 	d.Set("intfname", m.Intfname)
 	d.Set("ipaddr", m.Ipaddr)
@@ -192,6 +197,7 @@ func SetSysInterfaceSubResourceData(m []*models.SysInterface) (d []*map[string]i
 			properties["adapter_specific_net"] = SetNetworkSubResourceData([]*models.Network{SysInterfaceModel.AdapterSpecificNet})
 			properties["allow_local_modifications"] = SysInterfaceModel.AllowLocalModifications
 			properties["cost"] = SysInterfaceModel.Cost
+			properties["enable_port_based_network_access_control"] = SysInterfaceModel.EnablePortBasedNetworkAccessControl
 			properties["intf_usage"] = SysInterfaceModel.IntfUsage
 			properties["intfname"] = SysInterfaceModel.Intfname
 			properties["ipaddr"] = SysInterfaceModel.Ipaddr
@@ -228,6 +234,12 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 		"cost": {
 			Description: `cost of using this interface. Default is 0.`,
 			Type:        schema.TypeInt,
+			Optional:    true,
+		},
+
+		"enable_port_based_network_access_control": {
+			Description: `Enable port-based network access control (802.1X) on this interface. Only applicable for Ethernet interfaces that are not app-direct.`,
+			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 
@@ -306,6 +318,7 @@ func GetSysInterfacePropertyFields() (t []string) {
 		"adapter_specific_net",
 		"allow_local_modifications",
 		"cost",
+		"enable_port_based_network_access_control",
 		"intf_usage",
 		"intfname",
 		"ipaddr",
@@ -342,6 +355,10 @@ func CompareSystemInterfaceList(a, b []*models.SysInterface) (bool, string) {
 	equal := slices.EqualFunc(a, b, func(x, y *models.SysInterface) bool {
 		if x.AllowLocalModifications != y.AllowLocalModifications {
 			reason = fmt.Sprintf("AllowLocalModifications mismatch: %t vs %t", x.AllowLocalModifications, y.AllowLocalModifications)
+			return false
+		}
+		if x.EnablePortBasedNetworkAccessControl != y.EnablePortBasedNetworkAccessControl {
+			reason = fmt.Sprintf("EnablePortBasedNetworkAccessControl mismatch: %t vs %t", x.EnablePortBasedNetworkAccessControl, y.EnablePortBasedNetworkAccessControl)
 			return false
 		}
 		if x.Cost != y.Cost {

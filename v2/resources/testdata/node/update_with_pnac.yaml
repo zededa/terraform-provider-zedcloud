@@ -1,0 +1,50 @@
+adminstate: ADMIN_STATE_ACTIVE
+baseimage: []
+baseosretrycounter: 0
+baseosretrytime: ""
+clientip: ""
+clusterid: ""
+configitem: []
+configlock: DEVICE_CONFIG_LOCK_DISABLED
+cpu: 0
+debugknob: null
+defaultnetinst: null
+deploymenttag: ""
+deprecated: ""
+description: ""
+devlocation: null
+dlisp: null
+edgeviewconfig: null
+generatesoftserial: false
+id: ""
+identity: ""
+interfaces:
+    - cost: 0
+      intfusage: ADAPTER_USAGE_MANAGEMENT
+      intfname: eth0
+      enablePortBasedNetworkAccessControl: false
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
+      sharedlabels: []
+location: ""
+memory: 0
+name: test_tf_provider_node_pnac
+obkey: ""
+onboarding: null
+preparepoweroffcounter: 0
+preparepowerofftime: ""
+projectid: ""
+resetcounter: 0
+resettime: ""
+revision: null
+serialno: node-pnac-test-serial-001
+sitepictures: []
+storage: 0
+tags: {}
+thread: 0
+title: test_tf_provider_node_pnac
+token: ""
+utype: "AMD64"

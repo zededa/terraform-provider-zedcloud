@@ -29,6 +29,9 @@ type SysInterface struct {
 	// Allow the local operator to make (limited) configuration changes to this network adapter.
 	AllowLocalModifications bool `json:"allowLocalModifications,omitempty"`
 
+	// Enable port-based network access control (802.1X) on this interface. Only applicable for Ethernet interfaces that are not app-direct.
+	EnablePortBasedNetworkAccessControl bool `json:"enablePortBasedNetworkAccessControl,omitempty"`
+
 	// cost of using this interface. Default is 0.
 	// Maximum: 255
 	Cost int64 `json:"cost,omitempty"`
