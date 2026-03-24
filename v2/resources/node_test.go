@@ -13,7 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	cep_client "github.com/zededa/terraform-provider-zedcloud/v2/client/certificate_enrollment_profile"
+	hw_client "github.com/zededa/terraform-provider-zedcloud/v2/client/hardware_model"
 	config "github.com/zededa/terraform-provider-zedcloud/v2/client/node"
+	project_client "github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	"github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 	testhelper "github.com/zededa/terraform-provider-zedcloud/v2/testing"
@@ -349,7 +351,7 @@ func testNodePNACCEPProfileValid(resourceName string) resource.TestCheckFunc {
 	}
 }
 
-// testNodePNACDestroy verifies the node, project, and CEP profile are all destroyed.
+// testNodePNACDestroy verifies the node, project, CEP profile, brand, and model are all destroyed.
 func testNodePNACDestroy(s *terraform.State) error {
 	client := testProvider.Meta().(*api_client.ZedcloudAPI)
 
@@ -364,13 +366,40 @@ func testNodePNACDestroy(s *terraform.State) error {
 					return fmt.Errorf("destroy failed: node (%s) still exists", n.ID)
 				}
 			}
+		case "zedcloud_project":
+			params := project_client.GetByIDParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.Project.GetByID(params, nil)
+			if err == nil {
+				if p := resp.GetPayload(); p != nil && p.ID == rs.Primary.ID {
+					return fmt.Errorf("destroy failed: project (%s) still exists", p.ID)
+				}
+			}
 		case "zedcloud_cep_profile":
-			cepParams := cep_client.GetByIDParams()
-			cepParams.ID = rs.Primary.ID
-			resp, err := client.CertificateEnrollmentProfile.GetByID(cepParams, nil)
+			params := cep_client.GetByIDParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.CertificateEnrollmentProfile.GetByID(params, nil)
 			if err == nil {
 				if p := resp.GetPayload(); p != nil && p.ID == rs.Primary.ID {
 					return fmt.Errorf("destroy failed: CEP profile (%s) still exists", p.ID)
+				}
+			}
+		case "zedcloud_brand":
+			params := hw_client.NewHardwareModelGetHardwareBrandParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.HardwareModel.HardwareModelGetHardwareBrand(params, nil)
+			if err == nil {
+				if b := resp.GetPayload(); b != nil && b.ID == rs.Primary.ID {
+					return fmt.Errorf("destroy failed: brand (%s) still exists", b.ID)
+				}
+			}
+		case "zedcloud_model":
+			params := hw_client.NewHardwareModelGetHardwareModelParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.HardwareModel.HardwareModelGetHardwareModel(params, nil)
+			if err == nil {
+				if m := resp.GetPayload(); m != nil && m.ID == rs.Primary.ID {
+					return fmt.Errorf("destroy failed: model (%s) still exists", m.ID)
 				}
 			}
 		}

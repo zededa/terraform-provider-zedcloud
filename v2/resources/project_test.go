@@ -191,8 +191,10 @@ func TestProject_PNAC_V1_CRUD(t *testing.T) {
 }
 
 // testCEPDeleteRestrictedWhileReferenced calls the CEP profile delete API directly and
-// verifies that the API rejects the request because the profile is still in use.
-// It does NOT delete the profile — on a successful restriction the profile stays intact.
+// verifies that the API rejects the request with a DependencyConflict error because the
+// profile is still referenced by a PNAC policy. It does NOT delete the profile.
+// Unrelated errors (network issues, auth failures, server faults) are propagated as
+// test failures so they are not mistaken for the expected referential-integrity rejection.
 func testCEPDeleteRestrictedWhileReferenced(resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[resourceName]
@@ -209,10 +211,29 @@ func testCEPDeleteRestrictedWhileReferenced(resourceName string) resource.TestCh
 
 		_, err := client.CertificateEnrollmentProfile.Delete(params, nil)
 		if err == nil {
-			// Delete succeeded — that means the restriction is not enforced.
 			return fmt.Errorf("expected CEP profile delete to be restricted while referenced by PNAC policy, but it succeeded")
 		}
-		// Any error from the API means the delete was correctly blocked.
+
+		// The API encodes referential-integrity rejections as a non-2xx default response
+		// (*CEPDeleteDefault) carrying a GooglerpcStatus body. Any other error type
+		// (typed 401/403/500/504 responses or transport-level errors) is unexpected here.
+		apiErr, ok := err.(*cep_client.CEPDeleteDefault)
+		if !ok {
+			return fmt.Errorf("CEP profile delete failed with unexpected error type %T — expected API rejection due to active reference, got: %s", err, err)
+		}
+
+		// Server-side faults (5xx) are infrastructure problems, not reference restrictions.
+		if !apiErr.IsClientError() {
+			return fmt.Errorf("CEP profile delete failed with server error (HTTP %d), not a reference restriction: %s", apiErr.Code(), apiErr.Error())
+		}
+
+		// Confirm the rejection is specifically HTTP 409 Conflict, which the API uses to
+		// signal a dependency conflict (profile still in use). Other 4xx codes such as
+		// 401 Unauthorized or 404 Not Found would indicate a test setup problem.
+		if apiErr.Code() != 409 {
+			return fmt.Errorf("CEP profile delete was rejected with unexpected HTTP %d; expected 409 Conflict for dependency restriction: %s", apiErr.Code(), apiErr.Error())
+		}
+
 		return nil
 	}
 }

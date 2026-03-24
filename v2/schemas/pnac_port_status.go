@@ -1,6 +1,7 @@
 package schemas
 
 import (
+	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
@@ -17,7 +18,12 @@ func PNACPortStatusModelFromMap(m map[string]interface{}) *models.PNACPortStatus
 		}
 	}
 
-	lastAuthTimestamp := m["last_auth_timestamp"].(string)
+	var lastAuthTimestamp strfmt.DateTime
+	if s, _ := m["last_auth_timestamp"].(string); s != "" {
+		if t, err := strfmt.ParseDateTime(s); err == nil {
+			lastAuthTimestamp = t
+		}
+	}
 
 	var supplicantState *models.PNACSupplicantState
 	supplicantStateInterface, supplicantStateIsSet := m["supplicant_state"]
@@ -29,12 +35,11 @@ func PNACPortStatusModelFromMap(m map[string]interface{}) *models.PNACPortStatus
 		}
 	}
 
-	_ = lastAuthTimestamp // lastAuthTimestamp is a string representation, used for display only
-
 	return &models.PNACPortStatus{
-		Enabled:         enabled,
-		Err:             err,
-		SupplicantState: supplicantState,
+		Enabled:           enabled,
+		Err:               err,
+		LastAuthTimestamp: lastAuthTimestamp,
+		SupplicantState:   supplicantState,
 	}
 }
 
