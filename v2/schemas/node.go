@@ -125,14 +125,6 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 			edgeNodeCluster = EdgeNodeClusterConfigModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
 		}
 	}
-	var edgeSyncConfig *models.EdgeSyncConfig // EdgeSyncConfig
-	edgeSyncConfigInterface, edgeSyncConfigIsSet := d.GetOk("edge_sync_config")
-	if edgeSyncConfigIsSet && edgeSyncConfigInterface != nil {
-		edgeSyncConfigMap := edgeSyncConfigInterface.([]interface{})
-		if len(edgeSyncConfigMap) > 0 {
-			edgeSyncConfig = EdgeSyncConfigModelFromMap(edgeSyncConfigMap[0].(map[string]interface{}))
-		}
-	}
 	edgeviewAllow, _ := d.Get("edgeview_allow").(bool)
 	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
 	edgeviewconfigInterface, edgeviewconfigIsSet := d.GetOk("edgeviewconfig")
@@ -166,33 +158,9 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 	location, _ := d.Get("location").(string)
 	memoryInt, _ := d.Get("memory").(int)
 	memory := int64(memoryInt)
-	var model *models.ModelInfo // ModelInfo
-	modelInterface, modelIsSet := d.GetOk("model")
-	if modelIsSet && modelInterface != nil {
-		modelMap := modelInterface.([]interface{})
-		if len(modelMap) > 0 {
-			model = ModelInfoModelFromMap(modelMap[0].(map[string]interface{}))
-		}
-	}
 	modelID, _ := d.Get("model_id").(string)
 	name, _ := d.Get("name").(string)
 	obkey, _ := d.Get("onboarding_key").(string)
-	var onboarding *models.DeviceCerts // DeviceCerts
-	onboardingInterface, onboardingIsSet := d.GetOk("onboarding")
-	if onboardingIsSet && onboardingInterface != nil {
-		onboardingMap := onboardingInterface.([]interface{})
-		if len(onboardingMap) > 0 {
-			onboarding = DeviceCertsModelFromMap(onboardingMap[0].(map[string]interface{}))
-		}
-	}
-	var pcrPolicy *models.Policy // PolicyConfig
-	pcrPolicyInterface, pcrPolicyIsSet := d.GetOk("pcr_policy")
-	if pcrPolicyIsSet && pcrPolicyInterface != nil {
-		pcrPolicyMap := pcrPolicyInterface.([]interface{})
-		if len(pcrPolicyMap) > 0 {
-			pcrPolicy = PolicyConfigModelFromMap(pcrPolicyMap[0].(map[string]interface{}))
-		}
-	}
 	preparePowerOffCounterInt, _ := d.Get("prepare_power_off_counter").(int)
 	preparePowerOffCounter := int64(preparePowerOffCounterInt)
 	preparePowerOffTime, _ := d.Get("prepare_power_off_time").(string)
@@ -287,7 +255,6 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 		DevLocation:             devLocation,
 		Dlisp:                   dlisp,
 		EdgeNodeCluster:         edgeNodeCluster,
-		EdgeSyncConfig:          edgeSyncConfig,
 		EdgeviewAllow:           edgeviewAllow,
 		Edgeviewconfig:          edgeviewconfig,
 		GenerateSoftSerial:      generateSoftSerial,
@@ -297,12 +264,9 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 		LocalOperatorConsoleURL: localOperatorConsoleURL,
 		Location:                location,
 		Memory:                  memory,
-		Model:                   model,
 		ModelID:                 &modelID, // string
 		Name:                    &name,    // string
 		Obkey:                   obkey,
-		Onboarding:              onboarding,
-		PcrPolicy:               pcrPolicy,
 		PreparePowerOffCounter:  preparePowerOffCounter,
 		PreparePowerOffTime:     preparePowerOffTime,
 		ProjectID:               &projectID, // string
@@ -437,14 +401,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			edgeNodeCluster = EdgeNodeClusterConfigModelFromMap(edgeNodeClusterMap[0].(map[string]interface{}))
 		}
 	}
-	var edgeSyncConfig *models.EdgeSyncConfig // EdgeSyncConfig
-	edgeSyncConfigInterface, edgeSyncConfigIsSet := m["edge_sync_config"]
-	if edgeSyncConfigIsSet && edgeSyncConfigInterface != nil {
-		edgeSyncConfigMap := edgeSyncConfigInterface.([]interface{})
-		if len(edgeSyncConfigMap) > 0 {
-			edgeSyncConfig = EdgeSyncConfigModelFromMap(edgeSyncConfigMap[0].(map[string]interface{}))
-		}
-	}
 	edgeviewAllow := m["edgeview_allow"].(bool)
 	var edgeviewconfig *models.EdgeviewCfg // EdgeviewCfg
 	edgeviewconfigInterface, edgeviewconfigIsSet := m["edgeviewconfig"]
@@ -477,33 +433,9 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 	localOperatorConsoleURL := m["local_operator_console_url"].(string)
 	location := m["location"].(string)
 	memory := int64(m["memory"].(int)) // int64
-	var model *models.ModelInfo        // ModelInfo
-	modelInterface, modelIsSet := m["model"]
-	if modelIsSet && modelInterface != nil {
-		modelMap := modelInterface.([]interface{})
-		if len(modelMap) > 0 {
-			model = ModelInfoModelFromMap(modelMap[0].(map[string]interface{}))
-		}
-	}
 	modelID := m["model_id"].(string)
 	name := m["name"].(string)
 	obkey := m["onboarding_key"].(string)
-	var onboarding *models.DeviceCerts // DeviceCerts
-	onboardingInterface, onboardingIsSet := m["onboarding"]
-	if onboardingIsSet && onboardingInterface != nil {
-		onboardingMap := onboardingInterface.([]interface{})
-		if len(onboardingMap) > 0 {
-			onboarding = DeviceCertsModelFromMap(onboardingMap[0].(map[string]interface{}))
-		}
-	}
-	var pcrPolicy *models.Policy // PolicyConfig
-	pcrPolicyInterface, pcrPolicyIsSet := m["pcr_policy"]
-	if pcrPolicyIsSet && pcrPolicyInterface != nil {
-		pcrPolicyMap := pcrPolicyInterface.([]interface{})
-		if len(pcrPolicyMap) > 0 {
-			pcrPolicy = PolicyConfigModelFromMap(pcrPolicyMap[0].(map[string]interface{}))
-		}
-	}
 	preparePowerOffCounter := int64(m["prepare_power_off_counter"].(int)) // int64
 	preparePowerOffTime := m["prepare_power_off_time"].(string)
 	projectID := m["project_id"].(string)
@@ -596,7 +528,6 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 		DevLocation:             devLocation,
 		Dlisp:                   dlisp,
 		EdgeNodeCluster:         edgeNodeCluster,
-		EdgeSyncConfig:          edgeSyncConfig,
 		EdgeviewAllow:           edgeviewAllow,
 		Edgeviewconfig:          edgeviewconfig,
 		GenerateSoftSerial:      generateSoftSerial,
@@ -606,12 +537,9 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 		LocalOperatorConsoleURL: localOperatorConsoleURL,
 		Location:                location,
 		Memory:                  memory,
-		Model:                   model,
 		ModelID:                 &modelID,
 		Name:                    &name,
 		Obkey:                   obkey,
-		Onboarding:              onboarding,
-		PcrPolicy:               pcrPolicy,
 		PreparePowerOffCounter:  preparePowerOffCounter,
 		PreparePowerOffTime:     preparePowerOffTime,
 		ProjectID:               &projectID,
@@ -652,7 +580,6 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("dev_location", SetGeoLocationSubResourceData([]*models.GeoLocation{m.DevLocation}))
 	d.Set("dlisp", SetDeviceLispSubResourceData([]*models.DeviceLisp{m.Dlisp}))
 	d.Set("edge_node_cluster", SetEdgeNodeClusterConfigSubResourceData([]*models.EdgeNodeClusterConfig{m.EdgeNodeCluster}))
-	d.Set("edge_sync_config", SetEdgeSyncConfigSubResourceData([]*models.EdgeSyncConfig{m.EdgeSyncConfig}))
 	d.Set("edgeview_allow", m.EdgeviewAllow)
 	d.Set("edgeviewconfig", SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{m.Edgeviewconfig}))
 	d.Set("generate_soft_serial", m.GenerateSoftSerial)
@@ -662,12 +589,9 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("local_operator_console_url", m.LocalOperatorConsoleURL)
 	d.Set("location", m.Location)
 	d.Set("memory", m.Memory)
-	d.Set("model", SetModelInfoSubResourceData([]*models.ModelInfo{m.Model}))
 	d.Set("model_id", m.ModelID)
 	d.Set("name", m.Name)
 	d.Set("onboarding_key", m.Obkey)
-	d.Set("onboarding", SetDeviceCertsSubResourceData([]*models.DeviceCerts{m.Onboarding}))
-	d.Set("pcr_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.PcrPolicy}))
 	d.Set("prepare_power_off_counter", m.PreparePowerOffCounter)
 	d.Set("prepare_power_off_time", m.PreparePowerOffTime)
 	d.Set("project_id", m.ProjectID)
@@ -710,7 +634,6 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["dev_location"] = SetGeoLocationSubResourceData([]*models.GeoLocation{DeviceConfigModel.DevLocation})
 			properties["dlisp"] = SetDeviceLispSubResourceData([]*models.DeviceLisp{DeviceConfigModel.Dlisp})
 			properties["edge_node_cluster"] = SetEdgeNodeClusterConfigSubResourceData([]*models.EdgeNodeClusterConfig{DeviceConfigModel.EdgeNodeCluster})
-			properties["edge_sync_config"] = SetEdgeSyncConfigSubResourceData([]*models.EdgeSyncConfig{DeviceConfigModel.EdgeSyncConfig})
 			properties["edgeview_allow"] = DeviceConfigModel.EdgeviewAllow
 			properties["edgeviewconfig"] = SetEdgeviewCfgSubResourceData([]*models.EdgeviewCfg{DeviceConfigModel.Edgeviewconfig})
 			properties["generate_soft_serial"] = DeviceConfigModel.GenerateSoftSerial
@@ -720,12 +643,9 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["local_operator_console_url"] = DeviceConfigModel.LocalOperatorConsoleURL
 			properties["location"] = DeviceConfigModel.Location
 			properties["memory"] = DeviceConfigModel.Memory
-			properties["model"] = SetModelInfoSubResourceData([]*models.ModelInfo{DeviceConfigModel.Model})
 			properties["model_id"] = DeviceConfigModel.ModelID
 			properties["name"] = DeviceConfigModel.Name
 			properties["onboarding_key"] = DeviceConfigModel.Obkey
-			properties["onboarding"] = SetDeviceCertsSubResourceData([]*models.DeviceCerts{DeviceConfigModel.Onboarding})
-			properties["pcr_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{DeviceConfigModel.PcrPolicy})
 			properties["prepare_power_off_counter"] = DeviceConfigModel.PreparePowerOffCounter
 			properties["prepare_power_off_time"] = DeviceConfigModel.PreparePowerOffTime
 			properties["project_id"] = DeviceConfigModel.ProjectID
@@ -914,15 +834,6 @@ func Node() map[string]*schema.Schema {
 			Computed: true,
 		},
 
-		"edge_sync_config": {
-			Description: `edge sync config`,
-			Type:        schema.TypeList, //GoType: EdgeSyncConfig
-			Elem: &schema.Resource{
-				Schema: EdgeSyncConfigSchema(),
-			},
-			Optional: true,
-		},
-
 		"edgeview_allow": {
 			Description: `Allow device to enable Edgeview`,
 			Type:        schema.TypeBool,
@@ -983,15 +894,6 @@ func Node() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
-		"model": {
-			Description: `Model specific info`,
-			Type:        schema.TypeList, //GoType: ModelInfo
-			Elem: &schema.Resource{
-				Schema: ModelInfoSchema(),
-			},
-			Optional: true,
-		},
-
 		"model_id": {
 			Description: `device model`,
 			Type:        schema.TypeString,
@@ -1023,24 +925,6 @@ func Node() map[string]*schema.Schema {
 				}
 				return false
 			},
-		},
-
-		"onboarding": {
-			Description: `Device level certificates used while onboarding`,
-			Type:        schema.TypeList, //GoType: DeviceCerts
-			Elem: &schema.Resource{
-				Schema: DeviceCertsSchema(),
-			},
-			Optional: true,
-		},
-
-		"pcr_policy": {
-			Description: `PCR policy for TPM key sealing on this specific device (overrides project policy)`,
-			Type:        schema.TypeList, //GoType: PolicyConfig
-			Elem: &schema.Resource{
-				Schema: Policy(),
-			},
-			Optional: true,
 		},
 
 		"prepare_power_off_counter": {
@@ -1175,7 +1059,6 @@ func GetDeviceConfigPropertyFields() (t []string) {
 		"dev_location",
 		"dlisp",
 		"edge_node_cluster",
-		"edge_sync_config",
 		"edgeview_allow",
 		"edgeviewconfig",
 		"generate_soft_serial",
@@ -1185,12 +1068,9 @@ func GetDeviceConfigPropertyFields() (t []string) {
 		"local_operator_console_url",
 		"location",
 		"memory",
-		"model",
 		"model_id",
 		"name",
 		"onboarding_key",
-		"onboarding",
-		"pcr_policy",
 		"prepare_power_off_counter",
 		"prepare_power_off_time",
 		"project_id",
