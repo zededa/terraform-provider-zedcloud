@@ -213,11 +213,16 @@ func testNodeAttributes(t *testing.T, testCase string, got, expected *models.Nod
 			"Onboarding",
 			"Project",
 			"VlanAdapters",
+			"BondAdapter",
 		))
 		// API and YAML unmarshal might change order of list elements so we need to ignore order when comparing
 		interfacesEqual, reason := schemas.CompareSystemInterfaceList(got.Interfaces, expected.Interfaces)
 		if !interfacesEqual {
 			return fmt.Errorf("%s-%s:  sys interface mismatch: %s", t.Name(), testCase, reason)
+		}
+		bondAdaptersEqual, bondReason := schemas.CompareBondAdapterLists(got.BondAdapter, expected.BondAdapter)
+		if !bondAdaptersEqual {
+			return fmt.Errorf("%s-%s: bond_adapter mismatch: %s", t.Name(), testCase, bondReason)
 		}
 
 		if diff := cmp.Diff(*got, *expected, opts...); len(diff) != 0 {

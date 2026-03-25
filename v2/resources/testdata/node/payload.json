@@ -1,0 +1,36 @@
+ {
+   "bondAdapter": [
+       {
+           "logicalLabel": "bondTest",
+           "interfaceName": "",
+           "lowerLayerNames": ["ethernet2", "ethernet4"],
+           "bondMode": 5,
+           "lacpRate": 2,
+           "arp": {
+               "interval": 1
+           },
+           "interface": {
+               "netname": "mayajaal3",
+               "adapterSpecificNet": null,
+               "ipaddr": "",
+               "intfname": "",
+               "intfUsage": "ADAPTER_USAGE_APP_SHARED",
+               "tags": {},
+               "macaddr": "",
+               "cost": 0,
+               "netid": "f4c8ad8e-a05a-4074-981b-1698bb6fa54b",
+               "sharedLabels": [],
+               "netDhcp": "NETWORK_DHCP_TYPE_UNSPECIFIED",
+               "ztype": "",
+               "allowLocalModifications": false,
+               "enablePortBasedNetworkAccessControl": false
+           }
+       },
+       {
+           "logicalLabel": "bondTest2",
+           "interfaceName": "",
+           "lowerLayerNames": ["ethernet3"],
+           "bondMode": 2
+       }
+   ]
+}

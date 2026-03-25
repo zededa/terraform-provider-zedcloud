@@ -150,6 +150,21 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		underlay_ip = ""
 	}
 
+	bond_adapter {
+		logical_label     = "bondTest"
+		lower_layer_names = ["ethernet2", "ethernet4"]
+		bond_mode         = "BOND_MODE_802_3AD"
+		lacp_rate         = "LACP_RATE_FAST"
+		arp {
+			interval = 2
+		}
+	}
+	bond_adapter {
+		logical_label     = "bondTest2"
+		lower_layer_names = ["ethernet3"]
+		bond_mode         = "BOND_MODE_BALANCE_RR"
+	}
+
 	tags = {
 		"tag-key-1" = "tag-value-1"
 		"tag-key-2" = "tag-value-2"

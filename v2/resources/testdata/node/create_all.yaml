@@ -1,6 +1,19 @@
 adminstate: ADMIN_STATE_ACTIVE
 assetid: asset_id
 baseimage: []
+bondadapter:
+    - logicallabel: bondTest
+      lowerlayernames:
+          - ethernet2
+          - ethernet4
+      bondmode: BOND_MODE_802_3AD
+      lacprate: LACP_RATE_FAST
+      arp:
+          interval: 1
+    - logicallabel: bondTest2
+      lowerlayernames:
+          - ethernet3
+      bondmode: BOND_MODE_ACTIVE_BACKUP
 baseosretrycounter: 0
 baseosretrytime: ""
 clientip: ""
