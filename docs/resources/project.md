@@ -30,6 +30,7 @@ description: |-
 - `edgeview_policy` (Block List) Edgeview policy on devices of this project (see [below for nested schema](#nestedblock--edgeview_policy))
 - `local_operator_console_policy` (Block List) Local operator console policy on devices of this project (see [below for nested schema](#nestedblock--local_operator_console_policy))
 - `network_policy` (Block List) Network policy to enforce on all devices of this project (see [below for nested schema](#nestedblock--network_policy))
+- `port_based_network_access_control_policy` (Block List, Max: 1) Port based network access control (802.1X) policy to enforce on all devices of this project (see [below for nested schema](#nestedblock--port_based_network_access_control_policy))
 - `tag_level_settings` (Block List) tag level setting within a enterprise (see [below for nested schema](#nestedblock--tag_level_settings))
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
 
@@ -59,6 +60,7 @@ Optional:
 - `module_policy` (Block List) module policy, which is used in auto module deployment (see [below for nested schema](#nestedblock--app_policy--module_policy))
 - `name` (String) User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed
 - `network_policy` (Block List) network policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--app_policy--network_policy))
+- `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--app_policy--port_based_network_access_control_policy))
 - `title` (String) User defined title of the policy. Title can be changed at any time
 - `type` (String) type of policy
 
@@ -2215,6 +2217,7 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--app_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -2397,6 +2400,21 @@ Read-Only:
 
 
 
+<a id="nestedblock--app_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `app_policy.port_based_network_access_control_policy`
+
+Optional:
+
+- `certificate_enrollment_id` (String) ID of the certificate enrollment object used for 802.1X authentication
+- `eap_identity` (String) EAP identity string used for authentication
+- `eap_method` (String) EAP method to use for port based network access control. Only EAP-TLS is supported currently.
+- `enable_port_based_network_access_control` (Boolean) Enable or disable port based network access control (802.1X). When disabled, other fields are ignored.
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
 <a id="nestedatt--app_policy--revision"></a>
 ### Nested Schema for `app_policy.revision`
 
@@ -2428,6 +2446,7 @@ Optional:
 - `module_policy` (Block List) module policy, which is used in auto module deployment (see [below for nested schema](#nestedblock--attestation_policy--module_policy))
 - `name` (String) User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed
 - `network_policy` (Block List) network policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--attestation_policy--network_policy))
+- `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--attestation_policy--port_based_network_access_control_policy))
 - `title` (String) User defined title of the policy. Title can be changed at any time
 - `type` (String) type of policy
 
@@ -4584,6 +4603,7 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--attestation_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -4766,6 +4786,21 @@ Read-Only:
 
 
 
+<a id="nestedblock--attestation_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `attestation_policy.port_based_network_access_control_policy`
+
+Optional:
+
+- `certificate_enrollment_id` (String) ID of the certificate enrollment object used for 802.1X authentication
+- `eap_identity` (String) EAP identity string used for authentication
+- `eap_method` (String) EAP method to use for port based network access control. Only EAP-TLS is supported currently.
+- `enable_port_based_network_access_control` (Boolean) Enable or disable port based network access control (802.1X). When disabled, other fields are ignored.
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
 <a id="nestedatt--attestation_policy--revision"></a>
 ### Nested Schema for `attestation_policy.revision`
 
@@ -4797,6 +4832,7 @@ Optional:
 - `module_policy` (Block List) module policy, which is used in auto module deployment (see [below for nested schema](#nestedblock--configuration_lock_policy--module_policy))
 - `name` (String) User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed
 - `network_policy` (Block List) network policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy))
+- `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--configuration_lock_policy--port_based_network_access_control_policy))
 - `title` (String) User defined title of the policy. Title can be changed at any time
 - `type` (String) type of policy
 
@@ -6953,6 +6989,7 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--configuration_lock_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -7135,6 +7172,21 @@ Read-Only:
 
 
 
+<a id="nestedblock--configuration_lock_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `configuration_lock_policy.port_based_network_access_control_policy`
+
+Optional:
+
+- `certificate_enrollment_id` (String) ID of the certificate enrollment object used for 802.1X authentication
+- `eap_identity` (String) EAP identity string used for authentication
+- `eap_method` (String) EAP method to use for port based network access control. Only EAP-TLS is supported currently.
+- `enable_port_based_network_access_control` (Boolean) Enable or disable port based network access control (802.1X). When disabled, other fields are ignored.
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
 <a id="nestedatt--configuration_lock_policy--revision"></a>
 ### Nested Schema for `configuration_lock_policy.revision`
 
@@ -7166,6 +7218,7 @@ Optional:
 - `module_policy` (Block List) module policy, which is used in auto module deployment (see [below for nested schema](#nestedblock--edgeview_policy--module_policy))
 - `name` (String) User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed
 - `network_policy` (Block List) network policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--edgeview_policy--network_policy))
+- `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--edgeview_policy--port_based_network_access_control_policy))
 - `title` (String) User defined title of the policy. Title can be changed at any time
 - `type` (String) type of policy
 
@@ -9322,6 +9375,7 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--edgeview_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -9504,6 +9558,21 @@ Read-Only:
 
 
 
+<a id="nestedblock--edgeview_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `edgeview_policy.port_based_network_access_control_policy`
+
+Optional:
+
+- `certificate_enrollment_id` (String) ID of the certificate enrollment object used for 802.1X authentication
+- `eap_identity` (String) EAP identity string used for authentication
+- `eap_method` (String) EAP method to use for port based network access control. Only EAP-TLS is supported currently.
+- `enable_port_based_network_access_control` (Boolean) Enable or disable port based network access control (802.1X). When disabled, other fields are ignored.
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
 <a id="nestedatt--edgeview_policy--revision"></a>
 ### Nested Schema for `edgeview_policy.revision`
 
@@ -9535,6 +9604,7 @@ Optional:
 - `module_policy` (Block List) module policy, which is used in auto module deployment (see [below for nested schema](#nestedblock--local_operator_console_policy--module_policy))
 - `name` (String) User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed
 - `network_policy` (Block List) network policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy))
+- `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--local_operator_console_policy--port_based_network_access_control_policy))
 - `title` (String) User defined title of the policy. Title can be changed at any time
 - `type` (String) type of policy
 
@@ -11691,6 +11761,7 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--local_operator_console_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -11873,6 +11944,21 @@ Read-Only:
 
 
 
+<a id="nestedblock--local_operator_console_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `local_operator_console_policy.port_based_network_access_control_policy`
+
+Optional:
+
+- `certificate_enrollment_id` (String) ID of the certificate enrollment object used for 802.1X authentication
+- `eap_identity` (String) EAP identity string used for authentication
+- `eap_method` (String) EAP method to use for port based network access control. Only EAP-TLS is supported currently.
+- `enable_port_based_network_access_control` (Boolean) Enable or disable port based network access control (802.1X). When disabled, other fields are ignored.
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
 <a id="nestedatt--local_operator_console_policy--revision"></a>
 ### Nested Schema for `local_operator_console_policy.revision`
 
@@ -11904,6 +11990,7 @@ Optional:
 - `module_policy` (Block List) module policy, which is used in auto module deployment (see [below for nested schema](#nestedblock--network_policy--module_policy))
 - `name` (String) User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed
 - `network_policy` (Block List) network policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--network_policy--network_policy))
+- `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--network_policy--port_based_network_access_control_policy))
 - `title` (String) User defined title of the policy. Title can be changed at any time
 - `type` (String) type of policy
 
@@ -14060,6 +14147,7 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--network_policy--network_policy--net_instance_config--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -14242,8 +14330,2409 @@ Read-Only:
 
 
 
+<a id="nestedblock--network_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `network_policy.port_based_network_access_control_policy`
+
+Optional:
+
+- `certificate_enrollment_id` (String) ID of the certificate enrollment object used for 802.1X authentication
+- `eap_identity` (String) EAP identity string used for authentication
+- `eap_method` (String) EAP method to use for port based network access control. Only EAP-TLS is supported currently.
+- `enable_port_based_network_access_control` (Boolean) Enable or disable port based network access control (802.1X). When disabled, other fields are ignored.
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
 <a id="nestedatt--network_policy--revision"></a>
 ### Nested Schema for `network_policy.revision`
+
+Read-Only:
+
+- `created_at` (String)
+- `created_by` (String)
+- `curr` (String)
+- `prev` (String)
+- `updated_at` (String)
+- `updated_by` (String)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy`
+
+Optional:
+
+- `app_policy` (Block List) app policy, which is used in auto app instance deployment (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy))
+- `attestation_policy` (Block List) attestation policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--attestation_policy))
+- `attr` (Map of String) Mapping of policy  variable keys and policy variable values
+- `azure_policy` (Block List) azure policy, which is used in configuring azure iot-edge. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy))
+- `cluster_policy` (Block List) cluster policy to bring up cluster on devices in this project (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--cluster_policy))
+- `configuration_lock_policy` (Block List) configuration lock policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--configuration_lock_policy))
+- `description` (String) Detailed description of the policy
+- `edgeview_policy` (Block List) edgeview policy on devices of this project (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--edgeview_policy))
+- `local_operator_console_policy` (Block List) local operator console policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--local_operator_console_policy))
+- `module_policy` (Block List) module policy, which is used in auto module deployment (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy))
+- `name` (String) User defined name of the policy request, unique across the enterprise. Once object is created, name can’t be changed
+- `network_policy` (Block List) network policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy))
+- `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on all devices in this project (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--port_based_network_access_control_policy))
+- `title` (String) User defined title of the policy. Title can be changed at any time
+- `type` (String) type of policy
+
+Read-Only:
+
+- `id` (String) System defined universally unique Id of the policy request
+- `revision` (List of Object) system defined info (see [below for nested schema](#nestedatt--port_based_network_access_control_policy--revision))
+- `status` (String) status of the policy
+- `status_message` (String) Detailed status message of the policy
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy`
+
+Required:
+
+- `apps` (Block List, Min: 1) list of app details that will be provisioned on all the devices of the project to which this policy is attached (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps))
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps`
+
+Required:
+
+- `cpus` (Number) user defined cpus for bundle
+- `memory` (Number) user defined memory for bundle
+- `name` (String) User defined name of the edge application, unique across the enterprise. Once object is created, name can’t be changed
+- `networks` (Number) user defined network options
+- `origin_type` (String) origin of object
+- `title` (String) User defined title of the edge application. Title can be changed at any time
+
+Optional:
+
+- `app_id` (String) User defined name of the edge app, unique across the enterprise. Once app name is created, name can’t be changed
+- `app_version` (String) Current version of the attached bundle
+- `description` (String) Detailed description of the edge application
+- `interfaces` (Block List) application interfaces (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces))
+- `manifest_json` (Block List) Manifest data (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json))
+- `name_app_part` (String) User provided name part  for the auto deployed app
+- `name_project_part` (String) User provided name part  for the auto deployed app
+- `naming_scheme` (String) app naming scheme
+- `parent_detail` (Block List) origin and parent related details (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--parent_detail))
+- `start_delay_in_seconds` (Number) start delay is the time in seconds EVE should wait after boot before starting the application instance
+- `storage` (Number) user defined storage for bundle
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+
+Read-Only:
+
+- `drives` (Number) user defined drives
+- `id` (String) System defined universally unique Id of the edge application
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.interfaces`
+
+Required:
+
+- `intfname` (String) intf Name
+- `netinstname` (String) Network Instance name to be matched for interface assignment. Applicable only when "direct attach" flag is false
+- `privateip` (Boolean) Private IP flag
+
+Optional:
+
+- `access_vlan_id` (Number) access port VLAN ID, vlan id of zero will be treated as trunk port and vlan id 1 is implicitly used by linux bridges
+- `acls` (Block List) app Acls (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--acls))
+- `default_net_instance` (Boolean) default instance flag
+- `directattach` (Boolean) direct attach flag
+- `eidregister` (Block List) EID register details (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--eidregister))
+- `intforder` (Number) intforder
+- `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--io))
+- `ipaddr` (String) IP address
+- `macaddr` (String) MAC address
+- `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
+- `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--acls"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.interfaces.acls`
+
+Optional:
+
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--acls--matches))
+- `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
+
+Read-Only:
+
+- `id` (Number) app ACE id
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--acls--actions"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.interfaces.acls.actions`
+
+Optional:
+
+- `drop` (Boolean) ACE drop flag
+- `limit` (Boolean) ACE limit flag
+- `limitburst` (Number) ACE limit burst
+- `limitrate` (Number) ACE limit rate
+- `limitunit` (String) ACE limit unit
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--acls--actions--mapparams))
+- `portmap` (Boolean) application port map flag
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--acls--actions--mapparams"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.interfaces.acls.actions.mapparams`
+
+Optional:
+
+- `port` (Number) Application port
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--acls--matches"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.interfaces.acls.matches`
+
+Optional:
+
+- `type` (String) Type
+- `value` (String) Value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--eidregister"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.interfaces.eidregister`
+
+Required:
+
+- `display_name` (String) Display name
+- `e_id` (String) EID
+- `e_id_hash_len` (Number) EID hash length
+- `lisp_instance` (Number) Lisp Instance
+- `lisp_map_servers` (Block List, Min: 1) Lisp Map Server (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--eidregister--lisp_map_servers))
+- `lisp_signature` (String) Lisp Signature
+- `uuid` (String) UUID
+
+Read-Only:
+
+- `app_cert` (String) app certificate
+- `app_private_key` (String) App private key
+- `app_public_key` (String) App public key
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--eidregister--lisp_map_servers"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.interfaces.eidregister.lisp_map_servers`
+
+Required:
+
+- `credential` (String, Sensitive) lisp credential
+- `name_or_ip` (String) name/IP
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--interfaces--io"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.interfaces.io`
+
+Optional:
+
+- `name` (String) Physical Adapter name
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+- `type` (String) IoType specifies the type of the Input output of the device
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json`
+
+Required:
+
+- `ac_kind` (String) UI map: N/A - not exposed to users
+- `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
+- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE", "APP_TYPE_DOCKER_COMPOSE".
+- `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration))
+- `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--container_detail))
+- `cpu_pinning_enabled` (Boolean) Enable CpuPinning
+- `deployment_type` (String) Deployment type for the app. The correct values are: "DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE","DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS","DEPLOYMENT_TYPE_VMWARE_VCE".
+- `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--desc))
+- `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
+- `disable_v_t_p_m` (Boolean) UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field
+- `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `docker_compose_tar_image_name` (String) Docker compose tar image name
+- `docker_compose_yaml_text` (String) Docker compose base64 encoded plain text
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
+- `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
+- `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--images))
+- `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces))
+- `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--module))
+- `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--owner))
+- `permissions` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--permissions))
+- `persistent_runtime_size_bytes` (String) Size of persistent blank storage for runtime in bytes
+- `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--resources))
+- `runtime_protocol_version` (String) Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime
+- `runtime_version` (String) Indicates the version of container orchestration software
+- `vmmode` (String) UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.configuration`
+
+Optional:
+
+- `custom_config` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config))
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.configuration.custom_config`
+
+Optional:
+
+- `add` (Boolean) Add the Custom Config to App Instance (Optional. Default: False)
+- `allow_storage_resize` (Boolean) Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)
+- `field_delimiter` (String) Field delimiter used in specifying variables in template. (Required)
+- `name` (String) Name of CustomConfig (Required)
+- `override` (Boolean) Override existing custom config from App Bundle Manifest (Optional. Default: False)
+- `template` (String) base64 encrypted template string. (Optional)
+- `variable_groups` (Block List) List of Variable groups. (Required) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups))
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups`
+
+Optional:
+
+- `condition` (Block List) Condition to apply the variable group. (Optional. Default: None) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition))
+- `name` (String) Name of the Variable Group(Required)
+- `required` (Boolean) Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)
+- `variables` (Block List) List of variables(Required) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables))
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.condition`
+
+Optional:
+
+- `name` (String)
+- `operator` (String)
+- `value` (String)
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables`
+
+Required:
+
+- `format` (String) Format of the user variable. (Required)
+- `label` (String) Label for the variable (Required)
+- `name` (String) Name of the Variable (Required)
+- `required` (Boolean) This variable MUST be specified when creating an App Instance. (Optional. Default: False)
+
+Optional:
+
+- `default` (String) Default value of the variable. (Optional. Default: <Default value based on type>)
+- `encode` (String) Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE
+- `max_length` (String) Max length of the value of the variable(Optional. Default: 1024)
+- `options` (Block List) Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `process_input` (String)
+- `type` (String)
+- `value` (String) User-specified value of the variable.(Required if required is true. Optional otherwise)
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables.options`
+
+Optional:
+
+- `label` (String) Display label of the key in User-Agent
+- `value` (String) Value of the key to be used
+
+
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--container_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.container_detail`
+
+Optional:
+
+- `container_create_option` (String) Create options direct the creation of the Docker container
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--desc"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.desc`
+
+Required:
+
+- `app_category` (String)
+
+Optional:
+
+- `agreement_list` (Map of String) UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field
+- `category` (String) UI map: AppMarketplacePage:AppCard:DescriptionField, AppEditPage:IdentityPane:CategoryField, AppDetailsPage:IdentityPane:CategoryField
+- `license_list` (Map of String) UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License
+- `logo` (Map of String) UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo
+- `os` (String)
+- `screenshot_list` (Map of String) UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields
+- `support` (String) UI map: AppEditPage:DeveloperPane:Support_Description_Field, AppDetailsPage:DeveloperPane:Support_Description_Field
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--images"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.images`
+
+Optional:
+
+- `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
+- `drvtype` (String) UI map: AppEditPage:DrivesPane:Drive_Type_Field, AppDetailsPage:DrivesPane:Drive_Type_Field
+- `ignorepurge` (Boolean) UI map: AppEditPage:DrivesPane:Ignorepurge, AppDetailsPage:DrivesPane:Ignorepurgee_Field
+- `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
+- `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
+- `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
+- `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
+- `params` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--images--params))
+- `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
+- `readonly` (Boolean)
+- `target` (String) UI map: AppEditPage:DrivesPane:Target_Field, AppDetailsPage:DrivesPane:Target_Field
+- `volumelabel` (String) UI map: AppEditPage:DrivesPane:Volume_Label, AppDetailsPage:DrivesPane:Volume_Label
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--images--params"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.images.params`
+
+Optional:
+
+- `name` (String) Name of the Parameter (Required)
+- `value` (String) Value of the parameter (Required)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.interfaces`
+
+Optional:
+
+- `acls` (Block List) Traffic access control rules for this interface. Applicable only when "direct attach" flag is false. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls))
+- `directattach` (Boolean) If true, a physical adapter is assigned to the edge application directly. If false, a network instance is assigned to the edge application.
+- `name` (String) Interface name used by the edge application
+- `optional` (Boolean) Indicates if the interface is optional for edge application.
+- `privateip` (Boolean) If true, DHCP network can't be assigned and user needs to provide a static IP address.
+- `type` (String) Physical Adapter type for this interface. Applicable only when "direct attach" flag is true.
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.interfaces.acls`
+
+Optional:
+
+- `actions` (Block List) Chain of actions to be taken on matching network traffic (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls--actions))
+- `matches` (Block List) Network traffic matching criteria consistngs of one or more of source IP address, destination IP address, protocol, source port and destination port (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls--matches))
+- `name` (String) Name of the Access Control List
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls--actions"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.interfaces.acls.actions`
+
+Optional:
+
+- `drop` (Boolean) Drop the packet
+- `limit` (Boolean) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limit_value` (Block List) Value to be used for limit action (Required if limit is true) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls--actions--limit_value))
+- `limitburst` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitrate` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitunit` (String) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `portmap` (Boolean) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `portmapto` (Block List) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls--actions--portmapto))
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls--actions--limit_value"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.interfaces.acls.actions.limit_value`
+
+Optional:
+
+- `limitburst` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitrate` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitunit` (String) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls--actions--portmapto"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.interfaces.acls.actions.portmapto`
+
+Optional:
+
+- `app_port` (Number) Application Port value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--interfaces--acls--matches"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.interfaces.acls.matches`
+
+Optional:
+
+- `type` (String) Type of Match (Required)
+- `value` (String) Value of match (Required)
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--module"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.module`
+
+Optional:
+
+- `environment` (Map of String) Extra information to module to make configuration easier
+- `module_type` (String) Type of modules
+- `routes` (Map of String) Send messages between modules or send messages from modules to iot hub
+- `twin_detail` (String) Base64 encoded module twin details, desired properties of the module will be updated to reflect these values
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--owner"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.owner`
+
+Optional:
+
+- `company` (String) UI map: AppEditPage:IdentityPane:Category_Field, AppDetailsPage:IdentityPane:Category_Field
+- `email` (String) UI map: AppEditPage:DeveloperPane:Email_Field, AppDetailsPage:DeveloperPane:Email_Field
+- `group` (String)
+- `user` (String) UI map: AppEditPage:DeveloperPane:Name_Field, AppDetailsPage:DeveloperPane:Name_Field
+- `website` (String) UI map: AppEditPage:DeveloperPane:Website_Field, AppDetailsPage:DeveloperPane:Website_Field
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--permissions"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.permissions`
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--manifest_json--resources"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.manifest_json.resources`
+
+Optional:
+
+- `name` (String) Name of the Resource (Required)
+- `value` (String) Value of Resource (Required)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--app_policy--apps--parent_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.app_policy.apps.parent_detail`
+
+Optional:
+
+- `reference_exists` (Boolean) Relation with child and parent object exists or not
+- `update_available` (Boolean) Update required flag
+
+Read-Only:
+
+- `id_of_parent_object` (String) system defined unique id of parent object
+- `version_of_parent_object` (Number) version of object present in parent
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--attestation_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.attestation_policy`
+
+Required:
+
+- `type` (String) Attestation policy type
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy`
+
+Required:
+
+- `app_id` (String) app id for rbac
+- `app_password` (String) app password for rbac
+- `tenant_id` (String) tenant id for rbac
+
+Optional:
+
+- `azure_resource_and_services` (Block List) azure resource and service the policy will be interested in (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services))
+- `certificate` (Block List) Certificate object holds the details of certificate like encryption type, validity, subject etc (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--certificate))
+- `crypto_key` (String) key to decrypt AppPassword
+- `custom_deployment_managed` (Boolean)
+- `encrypted_secrets` (Map of String) encrypted AppPassword
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services`
+
+Required:
+
+- `dps_service` (Block List, Min: 1) dps service attached to cloud policy (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service))
+- `iot_hub_service` (Block List, Min: 1) list of iothubs attached to cloud policy (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--iot_hub_service))
+- `resource_group` (Block List, Min: 1) list of resource groups attached to cloud policy (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--resource_group))
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service`
+
+Optional:
+
+- `enrollment` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment))
+- `service_detail` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--service_detail))
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.enrollment`
+
+Optional:
+
+- `allocation_policy` (String)
+- `attached_iot_hubs_name` (List of String)
+- `certificate_enrollment` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment))
+- `enable_iot_edge_device` (Boolean)
+- `mechanism` (String)
+- `symmetric_key_enrollment` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment))
+- `tags` (Map of String)
+- `tpm_enrollment` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--tpm_enrollment))
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.certificate_enrollment`
+
+Optional:
+
+- `group_certificate_enrollment` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment--group_certificate_enrollment))
+- `individual_certificate_enrollment` (String)
+- `type` (String)
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--certificate_enrollment--group_certificate_enrollment"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.certificate_enrollment.group_certificate_enrollment`
+
+Optional:
+
+- `group_name` (String)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment`
+
+Optional:
+
+- `group_symmetric_key_enrollment` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--group_symmetric_key_enrollment))
+- `individual_symmetric_key_enrollment` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--individual_symmetric_key_enrollment))
+- `type` (String)
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--group_symmetric_key_enrollment"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment.group_symmetric_key_enrollment`
+
+Optional:
+
+- `group_name` (String)
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--symmetric_key_enrollment--individual_symmetric_key_enrollment"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.symmetric_key_enrollment.individual_symmetric_key_enrollment`
+
+Optional:
+
+- `registration_id` (String)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--enrollment--tpm_enrollment"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.enrollment.tpm_enrollment`
+
+Optional:
+
+- `type` (String)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--service_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.service_detail`
+
+Optional:
+
+- `create_by_default` (Boolean)
+- `name` (String)
+- `region` (String)
+- `resource_group_name` (String)
+- `s_k_u` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--service_detail--s_k_u))
+- `subscription_id` (String)
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--dps_service--service_detail--s_k_u"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.dps_service.service_detail.s_k_u`
+
+Optional:
+
+- `capacity` (String)
+- `name` (String)
+- `tier` (String)
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--iot_hub_service"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.iot_hub_service`
+
+Optional:
+
+- `service_detail` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail))
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.iot_hub_service.service_detail`
+
+Optional:
+
+- `create_by_default` (Boolean)
+- `name` (String)
+- `region` (String)
+- `resource_group_name` (String)
+- `s_k_u` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail--s_k_u))
+- `subscription_id` (String)
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--iot_hub_service--service_detail--s_k_u"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.iot_hub_service.service_detail.s_k_u`
+
+Optional:
+
+- `capacity` (String)
+- `name` (String)
+- `tier` (String)
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--azure_resource_and_services--resource_group"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.azure_resource_and_services.resource_group`
+
+Required:
+
+- `name` (String) resource group name
+- `subscription_id` (String) azure subscription id to which resource group is attached
+
+Optional:
+
+- `region` (String) resource group region
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--certificate"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.certificate`
+
+Optional:
+
+- `basic_contraints_valid` (Boolean) This fields tells the basic constraints like isCA are correct.
+- `cert` (String) base64 string of the parent certificate
+- `crypto_key` (String) Crypto Key for decrypting user secret information
+- `ecdsa_encryption` (Block List) ECDSA encryption algorithm of the certificate (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--certificate--ecdsa_encryption))
+- `encrypted_secrets` (Map of String) user encrypted secrets map
+- `exportable` (Boolean) Indicates if the private key can be exported.
+- `extended_key_usage` (List of String) Sequence of extended key usages.
+- `issuer` (Block List) Parameters for the issuer of the X509 component of a certificate. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--certificate--issuer))
+- `key_usage` (Number) Key usage extensions define the purpose of the public key contained in a certificate.
+- `pass_phrase` (String) pass phase for the pvt key, this has to be filled if pvt key is encrypted with a pass phrase
+- `public_key` (String) base63 string of the public key
+- `public_key_algorithm` (String) Public key algorithm.
+- `pvt_key` (String) base64 string of the parent pvt key
+- `reuse_key` (Boolean) Indicates if the same key pair will be used on certificate renewal.
+- `rsa_ecryption` (Block List) RSA encryption algorithm of the certificate (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--certificate--rsa_ecryption))
+- `san_values` (Block List) This holds the alternative name values like URIs, domain names IPs etc. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--certificate--san_values))
+- `serial_number` (String) Unique identifier for each Certificate generated by an Certificate Issuer.
+- `signature_algorithm` (String)
+- `subject` (Block List) Parameters for the subject of the X509 component of a certificate. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--azure_policy--certificate--subject))
+- `valid_from` (String) Certificate validatity start time
+- `valid_till` (String) Certificate validatity start time
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--certificate--ecdsa_encryption"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.certificate.ecdsa_encryption`
+
+Optional:
+
+- `curve` (String) ECDSA curve to be used while signing the certificate.
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--certificate--issuer"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.certificate.issuer`
+
+Optional:
+
+- `common_name` (String) Certificate common name.
+- `country` (List of String) List of countries.
+- `locality` (List of String) List of locallity.
+- `organization` (List of String) List of organization.
+- `organizational_unit` (List of String) List of Organizational Unit.
+- `postal_code` (List of String) List of Postal codes.
+- `province` (List of String) List of List of Prvince.
+- `serial_number` (String) Subject cerial number
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--certificate--rsa_ecryption"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.certificate.rsa_ecryption`
+
+Optional:
+
+- `rsa_bits` (String) RSA Encryption Key bit size.
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--certificate--san_values"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.certificate.san_values`
+
+Optional:
+
+- `dns` (List of String) List of permitted DNS names.
+- `emaild_ids` (List of String) List of permitted email addresses.
+- `hosts` (List of String) List of permitted hosts.
+- `ips` (List of String) List of permitted IP addresses.
+- `upns` (List of String) List of permitted User principal names.
+- `uris` (List of String) List of permitted URIs.
+
+
+<a id="nestedblock--port_based_network_access_control_policy--azure_policy--certificate--subject"></a>
+### Nested Schema for `port_based_network_access_control_policy.azure_policy.certificate.subject`
+
+Optional:
+
+- `common_name` (String) Certificate common name.
+- `country` (List of String) List of countries.
+- `locality` (List of String) List of locallity.
+- `organization` (List of String) List of organization.
+- `organizational_unit` (List of String) List of Organizational Unit.
+- `postal_code` (List of String) List of Postal codes.
+- `province` (List of String) List of List of Prvince.
+- `serial_number` (String) Subject cerial number
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--cluster_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.cluster_policy`
+
+Required:
+
+- `app_policy_id` (String) UUID of the app policy linked to this cluster policy
+- `network_policy_id` (String) UUID of the network policy linked to this cluster policy
+- `type` (String) Type of cluster
+
+Optional:
+
+- `cluster_config` (Block List) Cluster Policy Parameters (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--cluster_policy--cluster_config))
+
+<a id="nestedblock--port_based_network_access_control_policy--cluster_policy--cluster_config"></a>
+### Nested Schema for `port_based_network_access_control_policy.cluster_policy.cluster_config`
+
+Optional:
+
+- `min_nodes_required` (Number)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--configuration_lock_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.configuration_lock_policy`
+
+Required:
+
+- `config_lock` (String) configuration lock setting
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
+<a id="nestedblock--port_based_network_access_control_policy--edgeview_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.edgeview_policy`
+
+Optional:
+
+- `access_allow_change` (Boolean) Allow inherit instance to change access policy
+- `edgeview_allow` (Boolean) Allow device to enable Edgeview in this project
+- `edgeviewcfg` (Block List) Edgeview configuration and policies (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg))
+- `max_expire_sec` (Number) Maximum seconds allowed for Edgeview session
+- `max_inst` (Number) Maximum instances allowed for Edgeview
+
+<a id="nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg"></a>
+### Nested Schema for `port_based_network_access_control_policy.edgeview_policy.edgeviewcfg`
+
+Optional:
+
+- `app_policy` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg--app_policy))
+- `dev_policy` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg--dev_policy))
+- `ext_policy` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg--ext_policy))
+- `generation_id` (Number)
+- `jwt_info` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg--jwt_info))
+- `token` (String)
+
+<a id="nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg--app_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.edgeview_policy.edgeviewcfg.app_policy`
+
+Optional:
+
+- `allow_app` (Boolean)
+
+
+<a id="nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg--dev_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.edgeview_policy.edgeviewcfg.dev_policy`
+
+Optional:
+
+- `allow_dev` (Boolean)
+
+
+<a id="nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg--ext_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.edgeview_policy.edgeviewcfg.ext_policy`
+
+Optional:
+
+- `allow_ext` (Boolean)
+
+
+<a id="nestedblock--port_based_network_access_control_policy--edgeview_policy--edgeviewcfg--jwt_info"></a>
+### Nested Schema for `port_based_network_access_control_policy.edgeview_policy.edgeviewcfg.jwt_info`
+
+Optional:
+
+- `allow_sec` (Number)
+- `disp_url` (String)
+- `encrypt` (Boolean)
+- `expire_sec` (String)
+- `num_inst` (Number)
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--local_operator_console_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.local_operator_console_policy`
+
+Required:
+
+- `loc_url` (String) Local operator console URL
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy`
+
+Required:
+
+- `apps` (Block List, Min: 1) list of app details that will be provisioned on all the devices of the project to which this policy is attached (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps))
+- `priority` (Number) deployment priority of module manifest
+
+Optional:
+
+- `azure_edge_agent` (Block List) app that describes the azure edge agent to be deployed on the Azure runtime (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent))
+- `azure_edge_hub` (Block List) app that describes the azure edge hub to be deployed on the Azure runtime (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub))
+- `etag` (String) etag for deployment
+- `labels` (Map of String) Mapping of label variable keys and value
+- `metrics` (Block List) custom metrics for deployment (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--metrics))
+- `routes` (Map of String) Mapping of routes variable keys and value
+- `target_condition` (String) target condition for deployment that matches single device or group of devices
+- `target_condition_new` (Map of String) target condition for deployment that matches single device or group of devices
+
+Read-Only:
+
+- `id` (String) unique id for deployment
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps`
+
+Required:
+
+- `cpus` (Number) user defined cpus for bundle
+- `memory` (Number) user defined memory for bundle
+- `name` (String) User defined name of the edge application, unique across the enterprise. Once object is created, name can’t be changed
+- `networks` (Number) user defined network options
+- `origin_type` (String) origin of object
+- `title` (String) User defined title of the edge application. Title can be changed at any time
+
+Optional:
+
+- `app_id` (String) User defined name of the edge app, unique across the enterprise. Once app name is created, name can’t be changed
+- `app_version` (String) Current version of the attached bundle
+- `description` (String) Detailed description of the edge application
+- `interfaces` (Block List) application interfaces (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces))
+- `manifest_json` (Block List) Manifest data (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json))
+- `name_app_part` (String) User provided name part  for the auto deployed app
+- `name_project_part` (String) User provided name part  for the auto deployed app
+- `naming_scheme` (String) app naming scheme
+- `parent_detail` (Block List) origin and parent related details (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--parent_detail))
+- `start_delay_in_seconds` (Number) start delay is the time in seconds EVE should wait after boot before starting the application instance
+- `storage` (Number) user defined storage for bundle
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+
+Read-Only:
+
+- `drives` (Number) user defined drives
+- `id` (String) System defined universally unique Id of the edge application
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.interfaces`
+
+Required:
+
+- `intfname` (String) intf Name
+- `netinstname` (String) Network Instance name to be matched for interface assignment. Applicable only when "direct attach" flag is false
+- `privateip` (Boolean) Private IP flag
+
+Optional:
+
+- `access_vlan_id` (Number) access port VLAN ID, vlan id of zero will be treated as trunk port and vlan id 1 is implicitly used by linux bridges
+- `acls` (Block List) app Acls (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--acls))
+- `default_net_instance` (Boolean) default instance flag
+- `directattach` (Boolean) direct attach flag
+- `eidregister` (Block List) EID register details (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--eidregister))
+- `intforder` (Number) intforder
+- `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--io))
+- `ipaddr` (String) IP address
+- `macaddr` (String) MAC address
+- `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
+- `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--acls"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.interfaces.acls`
+
+Optional:
+
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--acls--matches))
+- `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
+
+Read-Only:
+
+- `id` (Number) app ACE id
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--acls--actions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.interfaces.acls.actions`
+
+Optional:
+
+- `drop` (Boolean) ACE drop flag
+- `limit` (Boolean) ACE limit flag
+- `limitburst` (Number) ACE limit burst
+- `limitrate` (Number) ACE limit rate
+- `limitunit` (String) ACE limit unit
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--acls--actions--mapparams))
+- `portmap` (Boolean) application port map flag
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--acls--actions--mapparams"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.interfaces.acls.actions.mapparams`
+
+Optional:
+
+- `port` (Number) Application port
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--acls--matches"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.interfaces.acls.matches`
+
+Optional:
+
+- `type` (String) Type
+- `value` (String) Value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--eidregister"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.interfaces.eidregister`
+
+Required:
+
+- `display_name` (String) Display name
+- `e_id` (String) EID
+- `e_id_hash_len` (Number) EID hash length
+- `lisp_instance` (Number) Lisp Instance
+- `lisp_map_servers` (Block List, Min: 1) Lisp Map Server (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--eidregister--lisp_map_servers))
+- `lisp_signature` (String) Lisp Signature
+- `uuid` (String) UUID
+
+Read-Only:
+
+- `app_cert` (String) app certificate
+- `app_private_key` (String) App private key
+- `app_public_key` (String) App public key
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--eidregister--lisp_map_servers"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.interfaces.eidregister.lisp_map_servers`
+
+Required:
+
+- `credential` (String, Sensitive) lisp credential
+- `name_or_ip` (String) name/IP
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--interfaces--io"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.interfaces.io`
+
+Optional:
+
+- `name` (String) Physical Adapter name
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+- `type` (String) IoType specifies the type of the Input output of the device
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json`
+
+Required:
+
+- `ac_kind` (String) UI map: N/A - not exposed to users
+- `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
+- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE", "APP_TYPE_DOCKER_COMPOSE".
+- `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration))
+- `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--container_detail))
+- `cpu_pinning_enabled` (Boolean) Enable CpuPinning
+- `deployment_type` (String) Deployment type for the app. The correct values are: "DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE","DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS","DEPLOYMENT_TYPE_VMWARE_VCE".
+- `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--desc))
+- `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
+- `disable_v_t_p_m` (Boolean) UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field
+- `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `docker_compose_tar_image_name` (String) Docker compose tar image name
+- `docker_compose_yaml_text` (String) Docker compose base64 encoded plain text
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
+- `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
+- `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--images))
+- `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces))
+- `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--module))
+- `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--owner))
+- `permissions` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--permissions))
+- `persistent_runtime_size_bytes` (String) Size of persistent blank storage for runtime in bytes
+- `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--resources))
+- `runtime_protocol_version` (String) Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime
+- `runtime_version` (String) Indicates the version of container orchestration software
+- `vmmode` (String) UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.configuration`
+
+Optional:
+
+- `custom_config` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.configuration.custom_config`
+
+Optional:
+
+- `add` (Boolean) Add the Custom Config to App Instance (Optional. Default: False)
+- `allow_storage_resize` (Boolean) Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)
+- `field_delimiter` (String) Field delimiter used in specifying variables in template. (Required)
+- `name` (String) Name of CustomConfig (Required)
+- `override` (Boolean) Override existing custom config from App Bundle Manifest (Optional. Default: False)
+- `template` (String) base64 encrypted template string. (Optional)
+- `variable_groups` (Block List) List of Variable groups. (Required) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups`
+
+Optional:
+
+- `condition` (Block List) Condition to apply the variable group. (Optional. Default: None) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition))
+- `name` (String) Name of the Variable Group(Required)
+- `required` (Boolean) Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)
+- `variables` (Block List) List of variables(Required) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.condition`
+
+Optional:
+
+- `name` (String)
+- `operator` (String)
+- `value` (String)
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables`
+
+Required:
+
+- `format` (String) Format of the user variable. (Required)
+- `label` (String) Label for the variable (Required)
+- `name` (String) Name of the Variable (Required)
+- `required` (Boolean) This variable MUST be specified when creating an App Instance. (Optional. Default: False)
+
+Optional:
+
+- `default` (String) Default value of the variable. (Optional. Default: <Default value based on type>)
+- `encode` (String) Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE
+- `max_length` (String) Max length of the value of the variable(Optional. Default: 1024)
+- `options` (Block List) Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `process_input` (String)
+- `type` (String)
+- `value` (String) User-specified value of the variable.(Required if required is true. Optional otherwise)
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.configuration.custom_config.variable_groups.variables.options`
+
+Optional:
+
+- `label` (String) Display label of the key in User-Agent
+- `value` (String) Value of the key to be used
+
+
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--container_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.container_detail`
+
+Optional:
+
+- `container_create_option` (String) Create options direct the creation of the Docker container
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--desc"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.desc`
+
+Required:
+
+- `app_category` (String)
+
+Optional:
+
+- `agreement_list` (Map of String) UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field
+- `category` (String) UI map: AppMarketplacePage:AppCard:DescriptionField, AppEditPage:IdentityPane:CategoryField, AppDetailsPage:IdentityPane:CategoryField
+- `license_list` (Map of String) UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License
+- `logo` (Map of String) UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo
+- `os` (String)
+- `screenshot_list` (Map of String) UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields
+- `support` (String) UI map: AppEditPage:DeveloperPane:Support_Description_Field, AppDetailsPage:DeveloperPane:Support_Description_Field
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--images"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.images`
+
+Optional:
+
+- `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
+- `drvtype` (String) UI map: AppEditPage:DrivesPane:Drive_Type_Field, AppDetailsPage:DrivesPane:Drive_Type_Field
+- `ignorepurge` (Boolean) UI map: AppEditPage:DrivesPane:Ignorepurge, AppDetailsPage:DrivesPane:Ignorepurgee_Field
+- `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
+- `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
+- `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
+- `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
+- `params` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--images--params))
+- `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
+- `readonly` (Boolean)
+- `target` (String) UI map: AppEditPage:DrivesPane:Target_Field, AppDetailsPage:DrivesPane:Target_Field
+- `volumelabel` (String) UI map: AppEditPage:DrivesPane:Volume_Label, AppDetailsPage:DrivesPane:Volume_Label
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--images--params"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.images.params`
+
+Optional:
+
+- `name` (String) Name of the Parameter (Required)
+- `value` (String) Value of the parameter (Required)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.interfaces`
+
+Optional:
+
+- `acls` (Block List) Traffic access control rules for this interface. Applicable only when "direct attach" flag is false. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls))
+- `directattach` (Boolean) If true, a physical adapter is assigned to the edge application directly. If false, a network instance is assigned to the edge application.
+- `name` (String) Interface name used by the edge application
+- `optional` (Boolean) Indicates if the interface is optional for edge application.
+- `privateip` (Boolean) If true, DHCP network can't be assigned and user needs to provide a static IP address.
+- `type` (String) Physical Adapter type for this interface. Applicable only when "direct attach" flag is true.
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.interfaces.acls`
+
+Optional:
+
+- `actions` (Block List) Chain of actions to be taken on matching network traffic (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls--actions))
+- `matches` (Block List) Network traffic matching criteria consistngs of one or more of source IP address, destination IP address, protocol, source port and destination port (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls--matches))
+- `name` (String) Name of the Access Control List
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls--actions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.interfaces.acls.actions`
+
+Optional:
+
+- `drop` (Boolean) Drop the packet
+- `limit` (Boolean) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limit_value` (Block List) Value to be used for limit action (Required if limit is true) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls--actions--limit_value))
+- `limitburst` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitrate` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitunit` (String) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `portmap` (Boolean) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `portmapto` (Block List) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls--actions--portmapto))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls--actions--limit_value"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.interfaces.acls.actions.limit_value`
+
+Optional:
+
+- `limitburst` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitrate` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitunit` (String) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls--actions--portmapto"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.interfaces.acls.actions.portmapto`
+
+Optional:
+
+- `app_port` (Number) Application Port value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--interfaces--acls--matches"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.interfaces.acls.matches`
+
+Optional:
+
+- `type` (String) Type of Match (Required)
+- `value` (String) Value of match (Required)
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--module"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.module`
+
+Optional:
+
+- `environment` (Map of String) Extra information to module to make configuration easier
+- `module_type` (String) Type of modules
+- `routes` (Map of String) Send messages between modules or send messages from modules to iot hub
+- `twin_detail` (String) Base64 encoded module twin details, desired properties of the module will be updated to reflect these values
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--owner"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.owner`
+
+Optional:
+
+- `company` (String) UI map: AppEditPage:IdentityPane:Category_Field, AppDetailsPage:IdentityPane:Category_Field
+- `email` (String) UI map: AppEditPage:DeveloperPane:Email_Field, AppDetailsPage:DeveloperPane:Email_Field
+- `group` (String)
+- `user` (String) UI map: AppEditPage:DeveloperPane:Name_Field, AppDetailsPage:DeveloperPane:Name_Field
+- `website` (String) UI map: AppEditPage:DeveloperPane:Website_Field, AppDetailsPage:DeveloperPane:Website_Field
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--permissions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.permissions`
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--manifest_json--resources"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.manifest_json.resources`
+
+Optional:
+
+- `name` (String) Name of the Resource (Required)
+- `value` (String) Value of Resource (Required)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--apps--parent_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.apps.parent_detail`
+
+Optional:
+
+- `reference_exists` (Boolean) Relation with child and parent object exists or not
+- `update_available` (Boolean) Update required flag
+
+Read-Only:
+
+- `id_of_parent_object` (String) system defined unique id of parent object
+- `version_of_parent_object` (Number) version of object present in parent
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent`
+
+Required:
+
+- `cpus` (Number) user defined cpus for bundle
+- `memory` (Number) user defined memory for bundle
+- `name` (String) User defined name of the edge application, unique across the enterprise. Once object is created, name can’t be changed
+- `networks` (Number) user defined network options
+- `origin_type` (String) origin of object
+- `title` (String) User defined title of the edge application. Title can be changed at any time
+
+Optional:
+
+- `app_id` (String) User defined name of the edge app, unique across the enterprise. Once app name is created, name can’t be changed
+- `app_version` (String) Current version of the attached bundle
+- `description` (String) Detailed description of the edge application
+- `interfaces` (Block List) application interfaces (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces))
+- `manifest_json` (Block List) Manifest data (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json))
+- `name_app_part` (String) User provided name part  for the auto deployed app
+- `name_project_part` (String) User provided name part  for the auto deployed app
+- `naming_scheme` (String) app naming scheme
+- `parent_detail` (Block List) origin and parent related details (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--parent_detail))
+- `start_delay_in_seconds` (Number) start delay is the time in seconds EVE should wait after boot before starting the application instance
+- `storage` (Number) user defined storage for bundle
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+
+Read-Only:
+
+- `drives` (Number) user defined drives
+- `id` (String) System defined universally unique Id of the edge application
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.interfaces`
+
+Required:
+
+- `intfname` (String) intf Name
+- `netinstname` (String) Network Instance name to be matched for interface assignment. Applicable only when "direct attach" flag is false
+- `privateip` (Boolean) Private IP flag
+
+Optional:
+
+- `access_vlan_id` (Number) access port VLAN ID, vlan id of zero will be treated as trunk port and vlan id 1 is implicitly used by linux bridges
+- `acls` (Block List) app Acls (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--acls))
+- `default_net_instance` (Boolean) default instance flag
+- `directattach` (Boolean) direct attach flag
+- `eidregister` (Block List) EID register details (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--eidregister))
+- `intforder` (Number) intforder
+- `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--io))
+- `ipaddr` (String) IP address
+- `macaddr` (String) MAC address
+- `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
+- `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--acls"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.interfaces.acls`
+
+Optional:
+
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--acls--matches))
+- `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
+
+Read-Only:
+
+- `id` (Number) app ACE id
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--acls--actions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.interfaces.acls.actions`
+
+Optional:
+
+- `drop` (Boolean) ACE drop flag
+- `limit` (Boolean) ACE limit flag
+- `limitburst` (Number) ACE limit burst
+- `limitrate` (Number) ACE limit rate
+- `limitunit` (String) ACE limit unit
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams))
+- `portmap` (Boolean) application port map flag
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--acls--actions--mapparams"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.interfaces.acls.actions.mapparams`
+
+Optional:
+
+- `port` (Number) Application port
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--acls--matches"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.interfaces.acls.matches`
+
+Optional:
+
+- `type` (String) Type
+- `value` (String) Value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--eidregister"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.interfaces.eidregister`
+
+Required:
+
+- `display_name` (String) Display name
+- `e_id` (String) EID
+- `e_id_hash_len` (Number) EID hash length
+- `lisp_instance` (Number) Lisp Instance
+- `lisp_map_servers` (Block List, Min: 1) Lisp Map Server (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--eidregister--lisp_map_servers))
+- `lisp_signature` (String) Lisp Signature
+- `uuid` (String) UUID
+
+Read-Only:
+
+- `app_cert` (String) app certificate
+- `app_private_key` (String) App private key
+- `app_public_key` (String) App public key
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--eidregister--lisp_map_servers"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.interfaces.eidregister.lisp_map_servers`
+
+Required:
+
+- `credential` (String, Sensitive) lisp credential
+- `name_or_ip` (String) name/IP
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--interfaces--io"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.interfaces.io`
+
+Optional:
+
+- `name` (String) Physical Adapter name
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+- `type` (String) IoType specifies the type of the Input output of the device
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json`
+
+Required:
+
+- `ac_kind` (String) UI map: N/A - not exposed to users
+- `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
+- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE", "APP_TYPE_DOCKER_COMPOSE".
+- `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration))
+- `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--container_detail))
+- `cpu_pinning_enabled` (Boolean) Enable CpuPinning
+- `deployment_type` (String) Deployment type for the app. The correct values are: "DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE","DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS","DEPLOYMENT_TYPE_VMWARE_VCE".
+- `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--desc))
+- `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
+- `disable_v_t_p_m` (Boolean) UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field
+- `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `docker_compose_tar_image_name` (String) Docker compose tar image name
+- `docker_compose_yaml_text` (String) Docker compose base64 encoded plain text
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
+- `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
+- `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--images))
+- `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces))
+- `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--module))
+- `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--owner))
+- `permissions` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--permissions))
+- `persistent_runtime_size_bytes` (String) Size of persistent blank storage for runtime in bytes
+- `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--resources))
+- `runtime_protocol_version` (String) Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime
+- `runtime_version` (String) Indicates the version of container orchestration software
+- `vmmode` (String) UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.configuration`
+
+Optional:
+
+- `custom_config` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config`
+
+Optional:
+
+- `add` (Boolean) Add the Custom Config to App Instance (Optional. Default: False)
+- `allow_storage_resize` (Boolean) Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)
+- `field_delimiter` (String) Field delimiter used in specifying variables in template. (Required)
+- `name` (String) Name of CustomConfig (Required)
+- `override` (Boolean) Override existing custom config from App Bundle Manifest (Optional. Default: False)
+- `template` (String) base64 encrypted template string. (Optional)
+- `variable_groups` (Block List) List of Variable groups. (Required) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups`
+
+Optional:
+
+- `condition` (Block List) Condition to apply the variable group. (Optional. Default: None) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--condition))
+- `name` (String) Name of the Variable Group(Required)
+- `required` (Boolean) Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)
+- `variables` (Block List) List of variables(Required) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.condition`
+
+Optional:
+
+- `name` (String)
+- `operator` (String)
+- `value` (String)
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.variables`
+
+Required:
+
+- `format` (String) Format of the user variable. (Required)
+- `label` (String) Label for the variable (Required)
+- `name` (String) Name of the Variable (Required)
+- `required` (Boolean) This variable MUST be specified when creating an App Instance. (Optional. Default: False)
+
+Optional:
+
+- `default` (String) Default value of the variable. (Optional. Default: <Default value based on type>)
+- `encode` (String) Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE
+- `max_length` (String) Max length of the value of the variable(Optional. Default: 1024)
+- `options` (Block List) Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `process_input` (String)
+- `type` (String)
+- `value` (String) User-specified value of the variable.(Required if required is true. Optional otherwise)
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.configuration.custom_config.variable_groups.variables.options`
+
+Optional:
+
+- `label` (String) Display label of the key in User-Agent
+- `value` (String) Value of the key to be used
+
+
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--container_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.container_detail`
+
+Optional:
+
+- `container_create_option` (String) Create options direct the creation of the Docker container
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--desc"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.desc`
+
+Required:
+
+- `app_category` (String)
+
+Optional:
+
+- `agreement_list` (Map of String) UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field
+- `category` (String) UI map: AppMarketplacePage:AppCard:DescriptionField, AppEditPage:IdentityPane:CategoryField, AppDetailsPage:IdentityPane:CategoryField
+- `license_list` (Map of String) UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License
+- `logo` (Map of String) UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo
+- `os` (String)
+- `screenshot_list` (Map of String) UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields
+- `support` (String) UI map: AppEditPage:DeveloperPane:Support_Description_Field, AppDetailsPage:DeveloperPane:Support_Description_Field
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--images"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.images`
+
+Optional:
+
+- `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
+- `drvtype` (String) UI map: AppEditPage:DrivesPane:Drive_Type_Field, AppDetailsPage:DrivesPane:Drive_Type_Field
+- `ignorepurge` (Boolean) UI map: AppEditPage:DrivesPane:Ignorepurge, AppDetailsPage:DrivesPane:Ignorepurgee_Field
+- `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
+- `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
+- `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
+- `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
+- `params` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--images--params))
+- `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
+- `readonly` (Boolean)
+- `target` (String) UI map: AppEditPage:DrivesPane:Target_Field, AppDetailsPage:DrivesPane:Target_Field
+- `volumelabel` (String) UI map: AppEditPage:DrivesPane:Volume_Label, AppDetailsPage:DrivesPane:Volume_Label
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--images--params"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.images.params`
+
+Optional:
+
+- `name` (String) Name of the Parameter (Required)
+- `value` (String) Value of the parameter (Required)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.interfaces`
+
+Optional:
+
+- `acls` (Block List) Traffic access control rules for this interface. Applicable only when "direct attach" flag is false. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls))
+- `directattach` (Boolean) If true, a physical adapter is assigned to the edge application directly. If false, a network instance is assigned to the edge application.
+- `name` (String) Interface name used by the edge application
+- `optional` (Boolean) Indicates if the interface is optional for edge application.
+- `privateip` (Boolean) If true, DHCP network can't be assigned and user needs to provide a static IP address.
+- `type` (String) Physical Adapter type for this interface. Applicable only when "direct attach" flag is true.
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls`
+
+Optional:
+
+- `actions` (Block List) Chain of actions to be taken on matching network traffic (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions))
+- `matches` (Block List) Network traffic matching criteria consistngs of one or more of source IP address, destination IP address, protocol, source port and destination port (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--matches))
+- `name` (String) Name of the Access Control List
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions`
+
+Optional:
+
+- `drop` (Boolean) Drop the packet
+- `limit` (Boolean) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limit_value` (Block List) Value to be used for limit action (Required if limit is true) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--limit_value))
+- `limitburst` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitrate` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitunit` (String) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `portmap` (Boolean) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `portmapto` (Block List) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--portmapto))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--limit_value"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions.limit_value`
+
+Optional:
+
+- `limitburst` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitrate` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitunit` (String) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--actions--portmapto"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.actions.portmapto`
+
+Optional:
+
+- `app_port` (Number) Application Port value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--interfaces--acls--matches"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.interfaces.acls.matches`
+
+Optional:
+
+- `type` (String) Type of Match (Required)
+- `value` (String) Value of match (Required)
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--module"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.module`
+
+Optional:
+
+- `environment` (Map of String) Extra information to module to make configuration easier
+- `module_type` (String) Type of modules
+- `routes` (Map of String) Send messages between modules or send messages from modules to iot hub
+- `twin_detail` (String) Base64 encoded module twin details, desired properties of the module will be updated to reflect these values
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--owner"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.owner`
+
+Optional:
+
+- `company` (String) UI map: AppEditPage:IdentityPane:Category_Field, AppDetailsPage:IdentityPane:Category_Field
+- `email` (String) UI map: AppEditPage:DeveloperPane:Email_Field, AppDetailsPage:DeveloperPane:Email_Field
+- `group` (String)
+- `user` (String) UI map: AppEditPage:DeveloperPane:Name_Field, AppDetailsPage:DeveloperPane:Name_Field
+- `website` (String) UI map: AppEditPage:DeveloperPane:Website_Field, AppDetailsPage:DeveloperPane:Website_Field
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--permissions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.permissions`
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--manifest_json--resources"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.manifest_json.resources`
+
+Optional:
+
+- `name` (String) Name of the Resource (Required)
+- `value` (String) Value of Resource (Required)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_agent--parent_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_agent.parent_detail`
+
+Optional:
+
+- `reference_exists` (Boolean) Relation with child and parent object exists or not
+- `update_available` (Boolean) Update required flag
+
+Read-Only:
+
+- `id_of_parent_object` (String) system defined unique id of parent object
+- `version_of_parent_object` (Number) version of object present in parent
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub`
+
+Required:
+
+- `cpus` (Number) user defined cpus for bundle
+- `memory` (Number) user defined memory for bundle
+- `name` (String) User defined name of the edge application, unique across the enterprise. Once object is created, name can’t be changed
+- `networks` (Number) user defined network options
+- `origin_type` (String) origin of object
+- `title` (String) User defined title of the edge application. Title can be changed at any time
+
+Optional:
+
+- `app_id` (String) User defined name of the edge app, unique across the enterprise. Once app name is created, name can’t be changed
+- `app_version` (String) Current version of the attached bundle
+- `description` (String) Detailed description of the edge application
+- `interfaces` (Block List) application interfaces (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces))
+- `manifest_json` (Block List) Manifest data (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json))
+- `name_app_part` (String) User provided name part  for the auto deployed app
+- `name_project_part` (String) User provided name part  for the auto deployed app
+- `naming_scheme` (String) app naming scheme
+- `parent_detail` (Block List) origin and parent related details (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--parent_detail))
+- `start_delay_in_seconds` (Number) start delay is the time in seconds EVE should wait after boot before starting the application instance
+- `storage` (Number) user defined storage for bundle
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+
+Read-Only:
+
+- `drives` (Number) user defined drives
+- `id` (String) System defined universally unique Id of the edge application
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.interfaces`
+
+Required:
+
+- `intfname` (String) intf Name
+- `netinstname` (String) Network Instance name to be matched for interface assignment. Applicable only when "direct attach" flag is false
+- `privateip` (Boolean) Private IP flag
+
+Optional:
+
+- `access_vlan_id` (Number) access port VLAN ID, vlan id of zero will be treated as trunk port and vlan id 1 is implicitly used by linux bridges
+- `acls` (Block List) app Acls (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--acls))
+- `default_net_instance` (Boolean) default instance flag
+- `directattach` (Boolean) direct attach flag
+- `eidregister` (Block List) EID register details (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--eidregister))
+- `intforder` (Number) intforder
+- `io` (Block List) Physical Adapter to be matched for interface assignment. Applicable only when "direct attach" flag is true (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--io))
+- `ipaddr` (String) IP address
+- `macaddr` (String) MAC address
+- `netinsttag` (Map of String) Network Instance tag to be matched for interface assignment. Applicable only when "direct attach" flag is false
+- `netname` (String) network name: will be deprecated in future, use netinstname
+
+Read-Only:
+
+- `netinstid` (String) Network Instance id to be matched for interface assignment.
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--acls"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.interfaces.acls`
+
+Optional:
+
+- `actions` (Block List) app ACE actions (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--acls--actions))
+- `matches` (Block List) app ACE match (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--acls--matches))
+- `name` (String) User defined name of the app ACE, unique across the enterprise. Once object is created, name can’t be changed
+
+Read-Only:
+
+- `id` (Number) app ACE id
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--acls--actions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.interfaces.acls.actions`
+
+Optional:
+
+- `drop` (Boolean) ACE drop flag
+- `limit` (Boolean) ACE limit flag
+- `limitburst` (Number) ACE limit burst
+- `limitrate` (Number) ACE limit rate
+- `limitunit` (String) ACE limit unit
+- `mapparams` (Block List) Application map params (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams))
+- `portmap` (Boolean) application port map flag
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--acls--actions--mapparams"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.interfaces.acls.actions.mapparams`
+
+Optional:
+
+- `port` (Number) Application port
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--acls--matches"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.interfaces.acls.matches`
+
+Optional:
+
+- `type` (String) Type
+- `value` (String) Value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--eidregister"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.interfaces.eidregister`
+
+Required:
+
+- `display_name` (String) Display name
+- `e_id` (String) EID
+- `e_id_hash_len` (Number) EID hash length
+- `lisp_instance` (Number) Lisp Instance
+- `lisp_map_servers` (Block List, Min: 1) Lisp Map Server (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--eidregister--lisp_map_servers))
+- `lisp_signature` (String) Lisp Signature
+- `uuid` (String) UUID
+
+Read-Only:
+
+- `app_cert` (String) app certificate
+- `app_private_key` (String) App private key
+- `app_public_key` (String) App public key
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--eidregister--lisp_map_servers"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.interfaces.eidregister.lisp_map_servers`
+
+Required:
+
+- `credential` (String, Sensitive) lisp credential
+- `name_or_ip` (String) name/IP
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--interfaces--io"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.interfaces.io`
+
+Optional:
+
+- `name` (String) Physical Adapter name
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+- `type` (String) IoType specifies the type of the Input output of the device
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json`
+
+Required:
+
+- `ac_kind` (String) UI map: N/A - not exposed to users
+- `ac_version` (String) UI map: N/A - not exposed to users
+- `name` (String) UI map: AppEditPage:IdentityPane:Name_Field, AppDetailsPage:IdentityPane:Name_Field
+
+Optional:
+
+- `app_type` (String) App (bundle) type. The correct values are: "APP_TYPE_UNSPECIFIED","APP_TYPE_VM","APP_TYPE_VM_RUNTIME","APP_TYPE_CONTAINER","APP_TYPE_MODULE", "APP_TYPE_DOCKER_COMPOSE".
+- `configuration` (Block List) Template for Custom Configuration. Used for Cloud-Init (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration))
+- `container_detail` (Block List) Create options direct the creation of the Docker container (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--container_detail))
+- `cpu_pinning_enabled` (Boolean) Enable CpuPinning
+- `deployment_type` (String) Deployment type for the app. The correct values are: "DEPLOYMENT_TYPE_UNSPECIFIED","DEPLOYMENT_TYPE_STAND_ALONE","DEPLOYMENT_TYPE_AZURE","DEPLOYMENT_TYPE_K3S","DEPLOYMENT_TYPE_AWS","DEPLOYMENT_TYPE_K3S_AZURE","DEPLOYMENT_TYPE_K3S_AWS","DEPLOYMENT_TYPE_VMWARE_VCE".
+- `desc` (Block List) Description of the application (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--desc))
+- `description` (String) UI map: AppDetailsPage:IdentityPane:DescriptionField, AppMarketplacePage:AppCard:DescriptionField
+- `disable_v_t_p_m` (Boolean) UI map: AppEditPage:IdentityPane:DISABLEVTPM_Field, AppDetailsPage:IdentityPane:DISABLEVTPM_Field
+- `display_name` (String) UI map: AppEditPage:IdentityPane:Title_Field, AppDetailsPage:IdentityPane:Title_Field
+- `docker_compose_tar_image_name` (String) Docker compose tar image name
+- `docker_compose_yaml_text` (String) Docker compose base64 encoded plain text
+- `enable_oem_win_license_key` (Boolean) UI map: AppEditPage:IdentityPane:ENABLEVMCONFIG_Field, AppDetailsPage:IdentityPane:ENABLEVMCONFIG_Field
+- `enablevnc` (Boolean) UI map: AppEditPage:IdentityPane:VNC_Field, AppDetailsPage:IdentityPane:VNC_Field
+- `images` (Block List) UI map: AppEditPage:DrivesPane, AppDetailsPage:DrivesPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--images))
+- `interfaces` (Block List) UI map: AppEditPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces))
+- `module` (Block List) Azure module specific details like module twin, environment variable, routes (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--module))
+- `owner` (Block List) Owner of the application (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--owner))
+- `permissions` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--permissions))
+- `persistent_runtime_size_bytes` (String) Size of persistent blank storage for runtime in bytes
+- `resources` (Block List) UI map: AppEditPage:ResourcesPane, AppDetailsPage:ResourcesPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--resources))
+- `runtime_protocol_version` (String) Indicates the internal communication protocol to pass configuration between Zedcloud and docker-compose runtime
+- `runtime_version` (String) Indicates the version of container orchestration software
+- `vmmode` (String) UI map: AppEditPage:IdentityPane:VM_Mode_Field, AppDetailsPage:IdentityPane:VM_Mode_Field
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.configuration`
+
+Optional:
+
+- `custom_config` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config`
+
+Optional:
+
+- `add` (Boolean) Add the Custom Config to App Instance (Optional. Default: False)
+- `allow_storage_resize` (Boolean) Allow Appinstance storage to be resized after app instance is created. (Optional. Default: False)
+- `field_delimiter` (String) Field delimiter used in specifying variables in template. (Required)
+- `name` (String) Name of CustomConfig (Required)
+- `override` (Boolean) Override existing custom config from App Bundle Manifest (Optional. Default: False)
+- `template` (String) base64 encrypted template string. (Optional)
+- `variable_groups` (Block List) List of Variable groups. (Required) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups`
+
+Optional:
+
+- `condition` (Block List) Condition to apply the variable group. (Optional. Default: None) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--condition))
+- `name` (String) Name of the Variable Group(Required)
+- `required` (Boolean) Indicates if the variable group is required to be specified for the App Instance. (Optional. Default:False)
+- `variables` (Block List) List of variables(Required) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--condition"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.condition`
+
+Optional:
+
+- `name` (String)
+- `operator` (String)
+- `value` (String)
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.variables`
+
+Required:
+
+- `format` (String) Format of the user variable. (Required)
+- `label` (String) Label for the variable (Required)
+- `name` (String) Name of the Variable (Required)
+- `required` (Boolean) This variable MUST be specified when creating an App Instance. (Optional. Default: False)
+
+Optional:
+
+- `default` (String) Default value of the variable. (Optional. Default: <Default value based on type>)
+- `encode` (String) Encoding of file content. Applicable if format is VARIABLE_FORMAT_FILE
+- `max_length` (String) Max length of the value of the variable(Optional. Default: 1024)
+- `options` (Block List) Key-Value pair of options. Applicable if format is VARIABLE_FORMAT_DROPDOWN (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables--options))
+- `process_input` (String)
+- `type` (String)
+- `value` (String) User-specified value of the variable.(Required if required is true. Optional otherwise)
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--configuration--custom_config--variable_groups--variables--options"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.configuration.custom_config.variable_groups.variables.options`
+
+Optional:
+
+- `label` (String) Display label of the key in User-Agent
+- `value` (String) Value of the key to be used
+
+
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--container_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.container_detail`
+
+Optional:
+
+- `container_create_option` (String) Create options direct the creation of the Docker container
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--desc"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.desc`
+
+Required:
+
+- `app_category` (String)
+
+Optional:
+
+- `agreement_list` (Map of String) UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field
+- `category` (String) UI map: AppMarketplacePage:AppCard:DescriptionField, AppEditPage:IdentityPane:CategoryField, AppDetailsPage:IdentityPane:CategoryField
+- `license_list` (Map of String) UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License
+- `logo` (Map of String) UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo
+- `os` (String)
+- `screenshot_list` (Map of String) UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields
+- `support` (String) UI map: AppEditPage:DeveloperPane:Support_Description_Field, AppDetailsPage:DeveloperPane:Support_Description_Field
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--images"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.images`
+
+Optional:
+
+- `cleartext` (Boolean) UI map: AppEditPage:DrivesPane:Cleartext, AppDetailsPage:DrivesPane:ClearText_Field
+- `drvtype` (String) UI map: AppEditPage:DrivesPane:Drive_Type_Field, AppDetailsPage:DrivesPane:Drive_Type_Field
+- `ignorepurge` (Boolean) UI map: AppEditPage:DrivesPane:Ignorepurge, AppDetailsPage:DrivesPane:Ignorepurgee_Field
+- `imageformat` (String) UI map: AppEditPage:DrivesPane:Image_Format_Field, AppDetailsPage:DrivesPane:Image_Format_Field
+- `imageid` (String) UI map: AppEditPage:DrivesPane:Image_ID_Field, AppDetailsPage:DrivesPane:Image_ID_Field
+- `imagename` (String) UI map: AppEditPage:DrivesPane:Image_Name_Field, AppDetailsPage:DrivesPane:Image_Name_Field
+- `maxsize` (String) UI map: AppEditPage:DrivesPane:Max_Size_Field, AppDetailsPage:DrivesPane:Max_Size_Field
+- `mountpath` (String) UI map: AppEditPage:DrivesPane:Mountpath, AppDetailsPage:DrivesPane:Mountpath_Field
+- `params` (Block List) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--images--params))
+- `preserve` (Boolean) UI map: AppEditPage:DrivesPane:Preserve_Field, AppDetailsPage:DrivesPane:Preserve_Field
+- `readonly` (Boolean)
+- `target` (String) UI map: AppEditPage:DrivesPane:Target_Field, AppDetailsPage:DrivesPane:Target_Field
+- `volumelabel` (String) UI map: AppEditPage:DrivesPane:Volume_Label, AppDetailsPage:DrivesPane:Volume_Label
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--images--params"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.images.params`
+
+Optional:
+
+- `name` (String) Name of the Parameter (Required)
+- `value` (String) Value of the parameter (Required)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.interfaces`
+
+Optional:
+
+- `acls` (Block List) Traffic access control rules for this interface. Applicable only when "direct attach" flag is false. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls))
+- `directattach` (Boolean) If true, a physical adapter is assigned to the edge application directly. If false, a network instance is assigned to the edge application.
+- `name` (String) Interface name used by the edge application
+- `optional` (Boolean) Indicates if the interface is optional for edge application.
+- `privateip` (Boolean) If true, DHCP network can't be assigned and user needs to provide a static IP address.
+- `type` (String) Physical Adapter type for this interface. Applicable only when "direct attach" flag is true.
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls`
+
+Optional:
+
+- `actions` (Block List) Chain of actions to be taken on matching network traffic (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions))
+- `matches` (Block List) Network traffic matching criteria consistngs of one or more of source IP address, destination IP address, protocol, source port and destination port (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--matches))
+- `name` (String) Name of the Access Control List
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions`
+
+Optional:
+
+- `drop` (Boolean) Drop the packet
+- `limit` (Boolean) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limit_value` (Block List) Value to be used for limit action (Required if limit is true) (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--limit_value))
+- `limitburst` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitrate` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitunit` (String) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `portmap` (Boolean) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `portmapto` (Block List) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--portmapto))
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--limit_value"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions.limit_value`
+
+Optional:
+
+- `limitburst` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitrate` (Number) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+- `limitunit` (String) UI map: AppDetailsPage:EnvironmentsPane, AppDetailsPage:EnvironmentsPane
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--actions--portmapto"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.actions.portmapto`
+
+Optional:
+
+- `app_port` (Number) Application Port value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--interfaces--acls--matches"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.interfaces.acls.matches`
+
+Optional:
+
+- `type` (String) Type of Match (Required)
+- `value` (String) Value of match (Required)
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--module"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.module`
+
+Optional:
+
+- `environment` (Map of String) Extra information to module to make configuration easier
+- `module_type` (String) Type of modules
+- `routes` (Map of String) Send messages between modules or send messages from modules to iot hub
+- `twin_detail` (String) Base64 encoded module twin details, desired properties of the module will be updated to reflect these values
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--owner"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.owner`
+
+Optional:
+
+- `company` (String) UI map: AppEditPage:IdentityPane:Category_Field, AppDetailsPage:IdentityPane:Category_Field
+- `email` (String) UI map: AppEditPage:DeveloperPane:Email_Field, AppDetailsPage:DeveloperPane:Email_Field
+- `group` (String)
+- `user` (String) UI map: AppEditPage:DeveloperPane:Name_Field, AppDetailsPage:DeveloperPane:Name_Field
+- `website` (String) UI map: AppEditPage:DeveloperPane:Website_Field, AppDetailsPage:DeveloperPane:Website_Field
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--permissions"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.permissions`
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--manifest_json--resources"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.manifest_json.resources`
+
+Optional:
+
+- `name` (String) Name of the Resource (Required)
+- `value` (String) Value of Resource (Required)
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--azure_edge_hub--parent_detail"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.azure_edge_hub.parent_detail`
+
+Optional:
+
+- `reference_exists` (Boolean) Relation with child and parent object exists or not
+- `update_available` (Boolean) Update required flag
+
+Read-Only:
+
+- `id_of_parent_object` (String) system defined unique id of parent object
+- `version_of_parent_object` (Number) version of object present in parent
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--module_policy--metrics"></a>
+### Nested Schema for `port_based_network_access_control_policy.module_policy.metrics`
+
+Optional:
+
+- `queries` (Map of String) Mapping of queries variable keys and value
+- `results` (Map of String) Mapping of results variable keys and value
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy`
+
+Required:
+
+- `net_instance_config` (Block List, Min: 1) list of network details that will be created on all the devices of the project to which this policy is attached (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config))
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config`
+
+Required:
+
+- `kind` (String) Kind of Network Instance:
+NETWORK_INSTANCE_KIND_UNSPECIFIED
+NETWORK_INSTANCE_KIND_TRANSPARENT
+NETWORK_INSTANCE_KIND_SWITCH
+NETWORK_INSTANCE_KIND_LOCAL
+NETWORK_INSTANCE_KIND_CLOUD
+NETWORK_INSTANCE_KIND_MESH
+NETWORK_INSTANCE_KIND_HONEYPOT
+- `name` (String) User defined name of the network instance, unique across the enterprise. Once object is created, name can’t be changed
+- `title` (String) User defined title of the network instance. Title can be changed at any time
+
+Optional:
+
+- `cluster_id` (String) ID of the Cluster in which the network instance is configured
+- `description` (String) Detailed description of the network instance
+- `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
+- `device_id` (String) ID of the device on which network instance is created
+- `dhcp` (Boolean) Deprecated
+- `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--dns_list))
+- `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
+- `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--ip))
+- `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
+- `network_policy_id` (String) id of the network policy to be attached to this network instance
+- `oconfig` (String)
+- `opaque` (Block List) Service specific Config (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--opaque))
+- `port` (String) name of port mapping in the model
+- `port_tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+- `project_id` (String) id of the project in which network instance is created
+- `propagate_connected_routes` (Boolean) Automatically propagate connected routes
+- `static_routes` (Block List) List of Static IP routes (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--static_routes))
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+- `type` (String) Type of DHCP for this Network Instance:
+NETWORK_INSTANCE_DHCP_TYPE_V4
+NETWORK_INSTANCE_DHCP_TYPE_V6
+NETWORK_INSTANCE_DHCP_TYPE_CRYPTOEID
+NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV4
+NETWORK_INSTANCE_DHCP_TYPE_CRYPTOV6
+
+Read-Only:
+
+- `id` (String) System defined universally unique ID of the network instance
+- `lisp` (List of Object) Lisp Config : read only for now. Deprecated. (see [below for nested schema](#nestedatt--port_based_network_access_control_policy--network_policy--net_instance_config--lisp))
+- `revision` (List of Object) system defined info for the object (see [below for nested schema](#nestedatt--port_based_network_access_control_policy--network_policy--net_instance_config--revision))
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--dns_list"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.dns_list`
+
+Optional:
+
+- `addrs` (List of String) Addresses
+- `hostname` (String) Host name
+
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--edge_node_cluster"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.edge_node_cluster`
+
+Required:
+
+- `id` (String) Id of the Edge Node Cluster
+
+Optional:
+
+- `designated_node_id` (String) Id of the designated Edge Node
+
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--ip"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.ip`
+
+Optional:
+
+- `dhcp_range` (Block List) Range of IP addresses to be used for DHCP (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--ip--dhcp_range))
+- `dns` (List of String) IP Addresses of DNS servers
+- `domain` (String) Network domain
+- `gateway` (String) IP Address of Network Gateway
+- `mask` (String) Subnet Mask
+- `ntp` (String) IP Address of NTP Server
+- `subnet` (String) Subnet address
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--ip--dhcp_range"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.ip.dhcp_range`
+
+Optional:
+
+- `end` (String) ending IP
+- `start` (String) starting IP
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--opaque"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.opaque`
+
+Optional:
+
+- `lisp` (Block List) Deprecated - Lisp config (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--opaque--lisp))
+- `oconfig` (String) base64 encoded string of opaque config
+- `type` (String) type of Opaque config
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--opaque--lisp"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.opaque.lisp`
+
+Optional:
+
+- `allocate` (Boolean) Allocate flag
+- `allocationprefix` (String) Allocation Prefix
+- `allocationprefixlen` (Number) Allocation Prefix Length
+- `exportprivate` (Boolean) Export Private flag
+- `lispiid` (Number) lisp id
+- `sp` (Block List) Service Point List (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--opaque--lisp--sp))
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--opaque--lisp--sp"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.opaque.lisp.sp`
+
+Optional:
+
+- `credential` (String) Service credentials
+- `name_or_ip` (String) Service name/ service name
+- `type` (String) Service Point Type
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--static_routes"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.static_routes`
+
+Optional:
+
+- `gateway` (String) Gateway IP
+- `output_port` (String) Output Port
+- `prefix` (String) IP Prefix
+- `probe_config` (Block List) Probe Configuration (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--static_routes--probe_config))
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--static_routes--probe_config"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.static_routes.probe_config`
+
+Optional:
+
+- `custom_probe_config` (Block List) Custom probe configuration (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config))
+- `enable_gateway_ping` (Boolean) Enable gateway ping
+- `ping_max_cost` (Number) Ping max cost
+- `prefer_lower_cost` (Boolean) Prefer lower cost
+- `prefer_stronger_wwan_signal` (Boolean) Prefer stronger WWAN signal
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config`
+
+Optional:
+
+- `probe_endpoint` (Block List) Endpoint to probe using the selected probing mechanism to determine
+the connectivity status. (see [below for nested schema](#nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint))
+- `probe_method` (String) Method to use to determine the connectivity status.
+
+<a id="nestedblock--port_based_network_access_control_policy--network_policy--net_instance_config--static_routes--probe_config--custom_probe_config--probe_endpoint"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.static_routes.probe_config.custom_probe_config.probe_endpoint`
+
+Optional:
+
+- `host` (String) IP address or FQDN.
+- `port` (Number) TCP port required for CONNECTIVITY_PROBE_METHOD_TCP.
+Leave empty for CONNECTIVITY_PROBE_METHOD_ICMP.
+
+
+
+
+
+<a id="nestedatt--port_based_network_access_control_policy--network_policy--net_instance_config--lisp"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.lisp`
+
+Read-Only:
+
+- `allocate` (Boolean)
+- `allocationprefix` (String)
+- `allocationprefixlen` (Number)
+- `exportprivate` (Boolean)
+- `lispiid` (Number)
+- `sp` (List of Object) (see [below for nested schema](#nestedobjatt--port_based_network_access_control_policy--network_policy--net_instance_config--lisp--sp))
+
+<a id="nestedobjatt--port_based_network_access_control_policy--network_policy--net_instance_config--lisp--sp"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.lisp.sp`
+
+Read-Only:
+
+- `credential` (String)
+- `name_or_ip` (String)
+- `type` (String)
+
+
+
+<a id="nestedatt--port_based_network_access_control_policy--network_policy--net_instance_config--revision"></a>
+### Nested Schema for `port_based_network_access_control_policy.network_policy.net_instance_config.revision`
+
+Read-Only:
+
+- `created_at` (String)
+- `created_by` (String)
+- `curr` (String)
+- `prev` (String)
+- `updated_at` (String)
+- `updated_by` (String)
+
+
+
+
+<a id="nestedblock--port_based_network_access_control_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `port_based_network_access_control_policy.port_based_network_access_control_policy`
+
+Optional:
+
+- `certificate_enrollment_id` (String) ID of the certificate enrollment object used for 802.1X authentication
+- `eap_identity` (String) EAP identity string used for authentication
+- `eap_method` (String) EAP method to use for port based network access control. Only EAP-TLS is supported currently.
+- `enable_port_based_network_access_control` (Boolean) Enable or disable port based network access control (802.1X). When disabled, other fields are ignored.
+
+Read-Only:
+
+- `id` (String) unique policy id
+
+
+<a id="nestedatt--port_based_network_access_control_policy--revision"></a>
+### Nested Schema for `port_based_network_access_control_policy.revision`
 
 Read-Only:
 
@@ -14283,6 +16772,7 @@ Read-Only:
 - `module_policy` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--module_policy))
 - `name` (String)
 - `network_policy` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy))
+- `port_based_network_access_control_policy` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--port_based_network_access_control_policy))
 - `revision` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--revision))
 - `status` (String)
 - `status_message` (String)
@@ -16290,6 +18780,7 @@ Read-Only:
 - `dhcp` (Boolean)
 - `dns_list` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--dns_list))
 - `edge_node_cluster` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean)
 - `id` (String)
 - `ip` (List of Object) (see [below for nested schema](#nestedobjatt--cloud_policy--network_policy--net_instance_config--ip))
 - `kind` (String)
@@ -16462,6 +18953,18 @@ Read-Only:
 
 
 
+<a id="nestedobjatt--cloud_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `cloud_policy.port_based_network_access_control_policy`
+
+Read-Only:
+
+- `certificate_enrollment_id` (String)
+- `eap_identity` (String)
+- `eap_method` (String)
+- `enable_port_based_network_access_control` (Boolean)
+- `id` (String)
+
+
 <a id="nestedobjatt--cloud_policy--revision"></a>
 ### Nested Schema for `cloud_policy.revision`
 
@@ -16494,6 +18997,7 @@ Read-Only:
 - `module_policy` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--module_policy))
 - `name` (String)
 - `network_policy` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy))
+- `port_based_network_access_control_policy` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--port_based_network_access_control_policy))
 - `revision` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--revision))
 - `status` (String)
 - `status_message` (String)
@@ -18501,6 +21005,7 @@ Read-Only:
 - `dhcp` (Boolean)
 - `dns_list` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--dns_list))
 - `edge_node_cluster` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--edge_node_cluster))
+- `forward_lldp` (Boolean)
 - `id` (String)
 - `ip` (List of Object) (see [below for nested schema](#nestedobjatt--module_policy--network_policy--net_instance_config--ip))
 - `kind` (String)
@@ -18671,6 +21176,18 @@ Read-Only:
 
 
 
+
+
+<a id="nestedobjatt--module_policy--port_based_network_access_control_policy"></a>
+### Nested Schema for `module_policy.port_based_network_access_control_policy`
+
+Read-Only:
+
+- `certificate_enrollment_id` (String)
+- `eap_identity` (String)
+- `eap_method` (String)
+- `enable_port_based_network_access_control` (Boolean)
+- `id` (String)
 
 
 <a id="nestedobjatt--module_policy--revision"></a>

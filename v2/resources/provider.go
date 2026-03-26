@@ -72,6 +72,7 @@ func Provider() *schema.Provider {
 			"zedcloud_kubernetes_deployment":     KubernetesDeploymentDataSource(),
 			"zedcloud_kubernetes_gitops":         KubernetesGitOpsDataSource(),
 			"zedcloud_kubernetes_secret":         KubernetesSecretDataSource(),
+			"zedcloud_cep_profile":               CEPProfileDataSource(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":                  NodeResource(),
@@ -107,6 +108,7 @@ func Provider() *schema.Provider {
 			"zedcloud_kubernetes_deployment":     KubernetesDeploymentResource(),
 			"zedcloud_kubernetes_gitops":         KubernetesGitOpsResource(),
 			"zedcloud_kubernetes_secret":         KubernetesSecretResource(),
+			"zedcloud_cep_profile":               CEPProfileResource(),
 		},
 	}
 }

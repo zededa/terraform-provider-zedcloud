@@ -35,6 +35,9 @@ const (
 
 	// DevicePolicyTypeDEVICEPOLICYTYPEATTESTATION captures enum value "DEVICE_POLICY_TYPE_ATTESTATION"
 	DevicePolicyTypeDEVICEPOLICYTYPEATTESTATION DevicePolicyType = "DEVICE_POLICY_TYPE_ATTESTATION"
+
+	// DevicePolicyTypeDEVICEPOLICYTYPEPORTBASEDNETWORKACCESSCONTROL captures enum value "DEVICE_POLICY_TYPE_PORT_BASED_NETWORK_ACCESS_CONTROL"
+	DevicePolicyTypeDEVICEPOLICYTYPEPORTBASEDNETWORKACCESSCONTROL DevicePolicyType = "DEVICE_POLICY_TYPE_PORT_BASED_NETWORK_ACCESS_CONTROL"
 )
 
 // for schema
@@ -42,7 +45,7 @@ var devicePolicyTypeEnum []interface{}
 
 func init() {
 	var res []DevicePolicyType
-	if err := json.Unmarshal([]byte(`["DEVICE_POLICY_TYPE_UNSPECIFIED","DEVICE_POLICY_TYPE_ATTESTATION"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["DEVICE_POLICY_TYPE_UNSPECIFIED","DEVICE_POLICY_TYPE_ATTESTATION","DEVICE_POLICY_TYPE_PORT_BASED_NETWORK_ACCESS_CONTROL"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

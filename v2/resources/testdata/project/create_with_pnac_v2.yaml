@@ -1,0 +1,15 @@
+name: "test_tf_provider_pnac_v2_depl"
+title: "Test PNAC v2 Deployment"
+deploymentTag: "pnac:v2"
+
+devicePolicies:
+  - metaData:
+      name: "test_tf_provider_pnac_v2_device_policy"
+      title: "Test PNAC v2 Device Policy"
+      policyTargetCondition:
+        pnac: "v2"
+    policySubType: "DEVICE_POLICY_TYPE_PORT_BASED_NETWORK_ACCESS_CONTROL"
+    portBasedNetworkAccessControlPolicy:
+      enablePortBasedNetworkAccessControl: true
+      eapMethod: EAP_METHOD_TLS
+      eapIdentity: device-identity-v2
