@@ -65,7 +65,6 @@ func TestCEPProfile_CRUD(t *testing.T) {
 				ImportStateVerify: true,
 				ImportStateVerifyIgnore: []string{
 					"secret",
-					"ca_cert_pem",
 				},
 			},
 		},

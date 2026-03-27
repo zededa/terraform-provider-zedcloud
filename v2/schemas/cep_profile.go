@@ -4,6 +4,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"strings"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -13,9 +14,13 @@ import (
 // validatePEMCertificate checks that the value is a valid PEM-encoded X.509 certificate.
 func validatePEMCertificate(v interface{}, k string) (warnings []string, errors []error) {
 	s := v.(string)
-	block, _ := pem.Decode([]byte(s))
+	block, rest := pem.Decode([]byte(s))
 	if block == nil {
 		errors = append(errors, fmt.Errorf("%q: not a valid PEM-encoded certificate (missing or malformed PEM block)", k))
+		return
+	}
+	if len(strings.TrimSpace(string(rest))) > 0 {
+		errors = append(errors, fmt.Errorf("%q: contains extra data after the PEM block; each list entry must contain exactly one certificate", k))
 		return
 	}
 	if _, err := x509.ParseCertificate(block.Bytes); err != nil {
@@ -36,7 +41,14 @@ func CEPProfileModel(d *schema.ResourceData) *models.CEPCommonSCEPProfile {
 	caCertPemInterface, caCertPemIsSet := d.GetOk("ca_cert_pem")
 	if caCertPemIsSet {
 		for _, v := range caCertPemInterface.([]interface{}) {
-			caCertPem = append(caCertPem, strfmt.Base64(v.(string)))
+			if s, ok := v.(string); ok && s != "" {
+				// The API requires each PEM cert to end with a trailing newline.
+				// Without it, the API silently stores 0 certs. Add one if missing.
+				if !strings.HasSuffix(s, "\n") {
+					s += "\n"
+				}
+				caCertPem = append(caCertPem, strfmt.Base64(s))
+			}
 		}
 	}
 
@@ -90,7 +102,9 @@ func CEPProfileModelFromMap(m map[string]interface{}) *models.CEPCommonSCEPProfi
 	caCertPemInterface, caCertPemIsSet := m["ca_cert_pem"]
 	if caCertPemIsSet {
 		for _, v := range caCertPemInterface.([]interface{}) {
-			caCertPem = append(caCertPem, strfmt.Base64(v.(string)))
+			if s, ok := v.(string); ok && s != "" {
+				caCertPem = append(caCertPem, strfmt.Base64(s))
+			}
 		}
 	}
 
@@ -205,9 +219,11 @@ func SetCEPProfileResourceData(d *schema.ResourceData, m *models.CEPCommonSCEPPr
 	}
 	d.Set("use_controller_proxy", m.UseControllerProxy)
 
+	// Trim whitespace from each cert before storing in state: the API may return PEM blocks with a
+	// trailing newline that the user's config omits, causing a spurious diff on identical content.
 	var caCertPemStrings []string
 	for _, b := range m.CaCertPem {
-		caCertPemStrings = append(caCertPemStrings, string(b))
+		caCertPemStrings = append(caCertPemStrings, strings.TrimSpace(string(b)))
 	}
 	d.Set("ca_cert_pem", caCertPemStrings)
 
@@ -263,8 +279,16 @@ func SetCEPCSRProfileSubResourceData(m []*models.CEPCommonCSRProfile) (d []*map[
 			properties["state"] = csrProfile.State
 			properties["locality"] = csrProfile.Locality
 			properties["renew_period_percent"] = int(csrProfile.RenewPeriodPercent)
-			properties["san_uri"] = csrProfile.SanURI
-			properties["san_email"] = csrProfile.SanEmail
+			if csrProfile.SanURI != nil {
+				properties["san_uri"] = csrProfile.SanURI
+			} else {
+				properties["san_uri"] = []string{}
+			}
+			if csrProfile.SanEmail != nil {
+				properties["san_email"] = csrProfile.SanEmail
+			} else {
+				properties["san_email"] = []string{}
+			}
 			if csrProfile.KeyType != nil {
 				properties["key_type"] = string(*csrProfile.KeyType)
 			} else {
@@ -467,4 +491,23 @@ func CEPProfileSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+}
+
+// CEPProfileDataSourceSchema returns the schema for the CEP profile data source.
+// Identical to CEPProfileSchema except Required fields become Optional+Computed
+// so users only need to supply name or id for the lookup.
+func CEPProfileDataSourceSchema() map[string]*schema.Schema {
+	s := CEPProfileSchema()
+	s["scep_url"].Required = false
+	s["scep_url"].Optional = true
+	s["scep_url"].Computed = true
+	s["ca_cert_pem"].Required = false
+	s["ca_cert_pem"].Optional = true
+	s["ca_cert_pem"].Computed = true
+	s["ca_cert_pem"].MinItems = 0
+	s["csr_profile"].Required = false
+	s["csr_profile"].Optional = true
+	s["csr_profile"].Computed = true
+	s["csr_profile"].MinItems = 0
+	return s
 }

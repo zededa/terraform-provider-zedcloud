@@ -30,7 +30,7 @@ func CEPProfileResource() *schema.Resource {
 func CEPProfileDataSource() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: GetCEPProfile,
-		Schema:      zschema.CEPProfileSchema(),
+		Schema:      zschema.CEPProfileDataSourceSchema(),
 	}
 }
 
