@@ -1,10 +1,28 @@
 package schemas
 
 import (
+	"crypto/x509"
+	"encoding/pem"
+	"fmt"
+
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
+
+// validatePEMCertificate checks that the value is a valid PEM-encoded X.509 certificate.
+func validatePEMCertificate(v interface{}, k string) (warnings []string, errors []error) {
+	s := v.(string)
+	block, _ := pem.Decode([]byte(s))
+	if block == nil {
+		errors = append(errors, fmt.Errorf("%q: not a valid PEM-encoded certificate (missing or malformed PEM block)", k))
+		return
+	}
+	if _, err := x509.ParseCertificate(block.Bytes); err != nil {
+		errors = append(errors, fmt.Errorf("%q: invalid X.509 certificate: %s", k, err))
+	}
+	return
+}
 
 func CEPProfileModel(d *schema.ResourceData) *models.CEPCommonSCEPProfile {
 	id, _ := d.Get("id").(string)
@@ -189,7 +207,7 @@ func SetCEPProfileResourceData(d *schema.ResourceData, m *models.CEPCommonSCEPPr
 
 	var caCertPemStrings []string
 	for _, b := range m.CaCertPem {
-		caCertPemStrings = append(caCertPemStrings, b.String())
+		caCertPemStrings = append(caCertPemStrings, string(b))
 	}
 	d.Set("ca_cert_pem", caCertPemStrings)
 
@@ -219,7 +237,7 @@ func SetCEPProfileSubResourceData(m []*models.CEPCommonSCEPProfile) (d []*map[st
 			properties["use_controller_proxy"] = CEPProfileModel.UseControllerProxy
 			var caCertPemStrings []string
 			for _, b := range CEPProfileModel.CaCertPem {
-				caCertPemStrings = append(caCertPemStrings, b.String())
+				caCertPemStrings = append(caCertPemStrings, string(b))
 			}
 			properties["ca_cert_pem"] = caCertPemStrings
 			properties["csr_profile"] = SetCEPCSRProfileSubResourceData([]*models.CEPCommonCSRProfile{CEPProfileModel.CsrProfile})
@@ -293,7 +311,7 @@ func CEPProfileSchema() map[string]*schema.Schema {
 		"title": {
 			Description: `Human-readable display title`,
 			Type:        schema.TypeString,
-			Required:    true,
+			Optional:    true,
 		},
 
 		"description": {
@@ -318,9 +336,11 @@ func CEPProfileSchema() map[string]*schema.Schema {
 			Description: `PEM-encoded trusted CA certificates for SCEP server validation`,
 			Type:        schema.TypeList,
 			Elem: &schema.Schema{
-				Type: schema.TypeString,
+				Type:         schema.TypeString,
+				ValidateFunc: validatePEMCertificate,
 			},
-			Optional: true,
+			Required: true,
+			MinItems: 1,
 		},
 
 		"csr_profile": {

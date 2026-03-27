@@ -11,20 +11,17 @@ resource "zedcloud_cep_profile" "test_tf_provider" {
   ]
 
   csr_profile {
-    common_name          = "device-{{.DeviceID}}"
+    common_name          = "$zri.system.edge-node.name"
     organization         = "Zededa"
     organizational_unit  = "Engineering"
     country              = "US"
     renew_period_percent = 80
     key_type             = "KEY_TYPE_RSA_2048"
     hash_algorithm       = "HASH_ALGORITHM_SHA256"
+    san_uri              = ["urn:zri:$zri.system.edge-node.id"]
   }
 
   secret {
     challenge_password = "test-challenge-password"
-  }
-
-  lifecycle {
-    ignore_changes = [ca_cert_pem]
   }
 }
