@@ -556,6 +556,160 @@ func diffSuppressEdgeviewConfig(field string) schema.SchemaDiffSuppressFunc {
 	}
 }
 
+// compareSysInterfaceIgnoringAutoFields compares two SysInterface structs for
+// equality, deliberately skipping Intfname and Ztype because the API
+// auto-populates them (Intfname is set to the adapter's logical label;
+// Ztype is set to "IO_TYPE_ETH") and we must not treat those API-assigned
+// values as user-driven changes.
+func compareSysInterfaceIgnoringAutoFields(x, y *models.SysInterface) (bool, string) {
+	if x == nil && y == nil {
+		return true, ""
+	}
+	if x == nil || y == nil {
+		return false, "one interface is nil, other is not"
+	}
+	if x.Cost != y.Cost {
+		return false, fmt.Sprintf("Cost mismatch: %d vs %d", x.Cost, y.Cost)
+	}
+	if x.IntfUsage != nil && y.IntfUsage != nil {
+		if *x.IntfUsage != *y.IntfUsage {
+			return false, fmt.Sprintf("IntfUsage mismatch: %s vs %s", *x.IntfUsage, *y.IntfUsage)
+		}
+	} else if x.IntfUsage != y.IntfUsage {
+		return false, "IntfUsage mismatch: one is nil, other is not"
+	}
+	if x.Ipaddr != y.Ipaddr {
+		return false, fmt.Sprintf("Ipaddr mismatch: %s vs %s", x.Ipaddr, y.Ipaddr)
+	}
+	if x.Macaddr != y.Macaddr {
+		return false, fmt.Sprintf("Macaddr mismatch: %s vs %s", x.Macaddr, y.Macaddr)
+	}
+	if x.Netname != y.Netname {
+		return false, fmt.Sprintf("Netname mismatch: %s vs %s", x.Netname, y.Netname)
+	}
+	if x.Netid != y.Netid {
+		return false, fmt.Sprintf("Netid mismatch: %s vs %s", x.Netid, y.Netid)
+	}
+	// Note: Intfname and Ztype are intentionally excluded — the API auto-assigns
+	// them and they should not trigger plan diffs.
+	return true, ""
+}
+
+func diffSuppressBondAdapterListOrder(mapKey string) schema.SchemaDiffSuppressFunc {
+	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
+		oldData, newData := d.GetChange(mapKey)
+		if newData == nil && oldData == nil {
+			return true
+		}
+		if oldData == nil || newData == nil {
+			return false
+		}
+
+		old := oldData.([]interface{})
+		new := newData.([]interface{})
+		if len(old) != len(new) {
+			return false
+		}
+
+		var oldList []*models.BondAdapter
+		for _, o := range old {
+			if o == nil {
+				continue
+			}
+			if elem, ok := o.(map[string]interface{}); ok {
+				oldList = append(oldList, BondAdapterModelFromMap(elem))
+			}
+		}
+		var newList []*models.BondAdapter
+		for _, n := range new {
+			if n == nil {
+				continue
+			}
+			if elem, ok := n.(map[string]interface{}); ok {
+				newList = append(newList, BondAdapterModelFromMap(elem))
+			}
+		}
+
+		equal, reason := compareBondAdaptersForDiffSuppress(oldList, newList)
+		if !equal {
+			log.Printf("BondAdapter list mismatch: %s\n", reason)
+		}
+		return equal
+	}
+}
+
+// compareBondAdaptersForDiffSuppress compares two BondAdapter lists for diff
+// suppression. It is more thorough than CompareBondAdapterLists (which is used
+// in acceptance tests against YAML snapshots that omit the Interface sub-block)
+// because it also checks the nested SysInterface — but using the lenient
+// compareSysInterfaceIgnoringAutoFields helper so that API-assigned Intfname /
+// Ztype values are never treated as user-driven changes.
+func compareBondAdaptersForDiffSuppress(a, b []*models.BondAdapter) (bool, string) {
+	if len(a) != len(b) {
+		return false, fmt.Sprintf("bond_adapters length mismatch: %d vs %d", len(a), len(b))
+	}
+
+	slices.SortFunc(a, func(i, j *models.BondAdapter) int {
+		return strings.Compare(strings.ToLower(i.LogicalLabel), strings.ToLower(j.LogicalLabel))
+	})
+	slices.SortFunc(b, func(i, j *models.BondAdapter) int {
+		return strings.Compare(strings.ToLower(i.LogicalLabel), strings.ToLower(j.LogicalLabel))
+	})
+
+	reason := ""
+	equal := slices.EqualFunc(a, b, func(x, y *models.BondAdapter) bool {
+		if x.LogicalLabel != y.LogicalLabel {
+			reason = fmt.Sprintf("LogicalLabel mismatch: %s vs %s", x.LogicalLabel, y.LogicalLabel)
+			return false
+		}
+		if x.BondMode != nil && y.BondMode != nil {
+			if *x.BondMode != *y.BondMode {
+				reason = fmt.Sprintf("BondMode mismatch: %s vs %s", *x.BondMode, *y.BondMode)
+				return false
+			}
+		} else if x.BondMode != y.BondMode {
+			reason = "BondMode mismatch: one is nil, other is not"
+			return false
+		}
+		xLacpRate := models.LacpRateLACPRATEUNSPECIFIED
+		if x.LacpRate != nil {
+			xLacpRate = *x.LacpRate
+		}
+		yLacpRate := models.LacpRateLACPRATEUNSPECIFIED
+		if y.LacpRate != nil {
+			yLacpRate = *y.LacpRate
+		}
+		if xLacpRate != yLacpRate {
+			reason = fmt.Sprintf("LacpRate mismatch: %s vs %s", xLacpRate, yLacpRate)
+			return false
+		}
+		xNames := slices.Clone(x.LowerLayerNames)
+		yNames := slices.Clone(y.LowerLayerNames)
+		slices.Sort(xNames)
+		slices.Sort(yNames)
+		if !slices.Equal(xNames, yNames) {
+			reason = fmt.Sprintf("LowerLayerNames mismatch: %v vs %v", x.LowerLayerNames, y.LowerLayerNames)
+			return false
+		}
+		if x.Arp != nil && y.Arp != nil {
+			if x.Arp.Interval != y.Arp.Interval {
+				reason = fmt.Sprintf("Arp.Interval mismatch: %d vs %d", x.Arp.Interval, y.Arp.Interval)
+				return false
+			}
+		} else if x.Arp != y.Arp {
+			reason = "Arp mismatch: one is nil, other is not"
+			return false
+		}
+		ok, ifaceReason := compareSysInterfaceIgnoringAutoFields(x.Interface, y.Interface)
+		if !ok {
+			reason = fmt.Sprintf("Interface mismatch: %s", ifaceReason)
+			return false
+		}
+		return true
+	})
+	return equal, reason
+}
+
 // Equal tells whether a and b contain the same elements.
 // A nil argument is equivalent to an empty slice.
 func Equal(a, b []string) bool {

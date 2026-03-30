@@ -1474,6 +1474,610 @@
                     "200": {
                         "description": "A successful response.",
                         "schema": {
+                            "$ref": "#/definitions/SysBrand"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "user defined sys brand name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "enterpriseId",
+                        "description": "deprecated field: EnterpriseId",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "HardwareModel"
+                ],
+                "externalDocs": {
+                    "description": "ZEDEDA Product Documentation",
+                    "url": "https://docs.zededa.com/-M-8m8d8KqdLpfOgY_jo/edge-nodes"
+                }
+            }
+        },
+        "/v1/ceps": {
+            "get": {
+                "summary": "List certificate enrollment profiles",
+                "description": "List all certificate enrollment profiles with optional filtering and pagination.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_QueryCEPs",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/CEPCommonSCEPProfiles"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of invalid filter parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "namePattern",
+                        "description": "query param : \"name-pattern\" . Search * namePattern * in name field to filter records",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "summary",
+                        "description": "Only summary of the records required",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "showProjectsList",
+                        "description": "If true, include the list of projects referencing each CEP profile",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "next.pageToken",
+                        "description": "Page Token",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "next.orderBy",
+                        "description": "OrderBy helps in sorting the list response",
+                        "in": "query",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "next.pageNum",
+                        "description": "Page Number",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.pageSize",
+                        "description": "Defines the page size",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "next.totalPages",
+                        "description": "Total number of pages to be fetched.",
+                        "in": "query",
+                        "required": false,
+                        "type": "number",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            },
+            "post": {
+                "summary": "Create a certificate enrollment profile",
+                "description": "Create a certificate enrollment profile (CEP) for SCEP-based certificate provisioning on edge devices.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_CreateCEP",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because this CEP record will conflict with an already existing CEP record.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CEPCommonSCEPProfile"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            }
+        },
+        "/v1/ceps/id/{id}": {
+            "get": {
+                "summary": "Get certificate enrollment profile by ID",
+                "description": "Get the configuration of a certificate enrollment profile by its unique ID.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_GetCEPById",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/CEPCommonSCEPProfile"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the CEP profile",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "showProjectsList",
+                        "description": "If true, include the list of projects referencing this CEP profile",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            },
+            "delete": {
+                "summary": "Delete a certificate enrollment profile",
+                "description": "Delete a certificate enrollment profile by its unique ID.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_DeleteCEP",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System defined universally unique Id of the CEP profile",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "showProjectsList",
+                        "description": "If true, include the list of projects referencing this CEP profile",
+                        "in": "query",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            },
+            "put": {
+                "summary": "Update a certificate enrollment profile",
+                "description": "Update a certificate enrollment profile. Fields id, name, enterprise_id, and status are immutable and cannot be changed.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_UpdateCEP",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. The API gateway did not process the request because of missing parameter or invalid value of parameters.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. The API gateway did not process the request because it lacks valid authentication credentials for the target resource. The request header has either no authorization details or an authorization that has been refused.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. The API gateway did not process the request because the requestor does not have edge-node level access permission for the operation or does not have access scope to the project.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. The API gateway did not process the request because the requested resource could not be found.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict. The API gateway did not process the request because of a version conflict with the current state of the resource.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error. The API gateway experienced an unexpected condition. Specific error condition is indicated in error codes.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "504": {
+                        "description": "Gateway Timeout. The API gateway did not receive a timely response from an upstream microservice it needed to communicate with in order to complete the request.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "description": "System-generated unique identifier (UUID)",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "User-defined unique name for the profile",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+"
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "description": "Human-readable display title",
+                                    "maxLength": 256,
+                                    "minLength": 3,
+                                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "description": "Detailed description of the profile purpose",
+                                    "maxLength": 256
+                                },
+                                "scepUrl": {
+                                    "type": "string",
+                                    "description": "Full SCEP server URL including scheme, host, and path (e.g., https://ca.example.com/scep)"
+                                },
+                                "useControllerProxy": {
+                                    "type": "boolean",
+                                    "description": "If true, SCEP requests are routed through the controller proxy; if false, device connects directly to SCEP server"
+                                },
+                                "secret": {
+                                    "$ref": "#/definitions/CEPCommonSCEPProfileSecrets",
+                                    "description": "Write-only secret fields (challenge password). Not returned in GET responses."
+                                },
+                                "encryptedSecrets": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    },
+                                    "description": "Encrypted secret data (set by server, do not modify)"
+                                },
+                                "cryptoKey": {
+                                    "type": "string",
+                                    "description": "Encryption key reference (set by server, do not modify)"
+                                },
+                                "caCertPem": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "format": "byte"
+                                    },
+                                    "description": "PEM-encoded trusted CA certificates for SCEP server validation (per RFC8894 section 2.2)"
+                                },
+                                "csrProfile": {
+                                    "$ref": "#/definitions/CEPCommonCSRProfile",
+                                    "description": "Certificate Signing Request configuration including subject DN, SANs, and key parameters"
+                                },
+                                "enterpriseId": {
+                                    "type": "string",
+                                    "description": "Enterprise ID owning this profile",
+                                    "readOnly": true
+                                },
+                                "revision": {
+                                    "$ref": "#/definitions/ObjectRevision",
+                                    "description": "Object revision information",
+                                    "readOnly": true
+                                },
+                                "projectsList": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/CEPCommonProjectReference"
+                                    },
+                                    "description": "Projects referencing this CEP profile (populated only when showProjectsList=true)",
+                                    "readOnly": true
+                                }
+                            },
+                            "description": "SCEP Certificate Enrollment Profile for obtaining certificates from a SCEP server",
+                            "title": "SCEP Profile",
+                            "required": [
+                                "name",
+                                "scepUrl",
+                                "caCertPem",
+                                "csrProfile"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "CertificateEnrollmentProfileConfiguration"
+                ]
+            }
+        },
+        "/v1/ceps/name/{name}": {
+            "get": {
+                "summary": "Get certificate enrollment profile by name",
+                "description": "Get the configuration of a certificate enrollment profile by its unique name.",
+                "operationId": "CertificateEnrollmentProfileConfiguration_GetCEPByName",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
                             "$ref": "#/definitions/CEPCommonSCEPProfile"
                         }
                     },
@@ -2265,6 +2869,13 @@
                                 "pcrPolicy": {
                                     "$ref": "#/definitions/PolicyConfig",
                                     "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
+                                },
+                                "bondAdapter": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BondAdapter"
+                                    },
+                                    "description": "A list of bond interfaces"
                                 }
                             },
                             "description": "Device Configuration request payload holds the device properties",
@@ -2695,6 +3306,13 @@
                                 "pcrPolicy": {
                                     "$ref": "#/definitions/PolicyConfig",
                                     "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
+                                },
+                                "bondAdapter": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BondAdapter"
+                                    },
+                                    "description": "A list of bond interfaces"
                                 }
                             },
                             "description": "Device Configuration request payload holds the device properties",
@@ -3951,6 +4569,13 @@
                                 "pcrPolicy": {
                                     "$ref": "#/definitions/PolicyConfig",
                                     "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
+                                },
+                                "bondAdapter": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BondAdapter"
+                                    },
+                                    "description": "A list of bond interfaces"
                                 }
                             },
                             "description": "Device Configuration request payload holds the device properties",
@@ -4952,6 +5577,13 @@
                                 "pcrPolicy": {
                                     "$ref": "#/definitions/PolicyConfig",
                                     "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
+                                },
+                                "bondAdapter": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/BondAdapter"
+                                    },
+                                    "description": "A list of bond interfaces"
                                 }
                             },
                             "description": "Device Configuration request payload holds the device properties",
@@ -11202,6 +11834,24 @@
             "default": "APP_TYPE_UNSPECIFIED",
             "description": "type of app bundle."
         },
+        "ArpMonitor": {
+            "type": "object",
+            "properties": {
+                "interval": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Interval specifies the ARP link monitoring frequency in milliseconds."
+                },
+                "ipTargets": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "IpTargets specifies the IPv4 addresses to use as ARP monitoring peers.\nThese are the targets of ARP requests sent to determine the health of links."
+                }
+            },
+            "description": "ArpMonitor : ARP-based link monitoring parameters.\nDefined for BondAdapter."
+        },
         "AttestPolicyType": {
             "type": "string",
             "enum": [
@@ -11639,6 +12289,278 @@
             "description": "Paginated list of SCEP profiles",
             "title": "SCEP Profiles List"
         },
+        "BondAdapter": {
+            "type": "object",
+            "properties": {
+                "logicalLabel": {
+                    "type": "string",
+                    "description": "Logical name of this bond adapter"
+                },
+                "interfaceName": {
+                    "type": "string",
+                    "description": "A physical name of the bond interface"
+                },
+                "lowerLayerNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Logical names of aggregated PhysicalIOs"
+                },
+                "bondMode": {
+                    "$ref": "#/definitions/BondMode",
+                    "description": "Bonding mode",
+                    "title": "A bonding mode specifies the policy indicating how bonding slaves are used\nduring network transmission"
+                },
+                "mii": {
+                    "$ref": "#/definitions/MIIMonitor",
+                    "description": "MII monitor"
+                },
+                "arp": {
+                    "$ref": "#/definitions/ArpMonitor",
+                    "description": "ARP monitor"
+                },
+                "lacpRate": {
+                    "$ref": "#/definitions/LacpRate",
+                    "description": "LACPDU transmission rate in 802.3ad mode"
+                },
+                "interface": {
+                    "$ref": "#/definitions/SysInterface",
+                    "description": "System Sub-Interface"
+                }
+            },
+            "description": "bondAdapter represents a single bond interface",
+            "title": "bondAdapter payload detail"
+        },
+        "BondMode": {
+            "type": "string",
+            "enum": [
+                "BOND_MODE_UNSPECIFIED",
+                "BOND_MODE_BALANCE_RR",
+                "BOND_MODE_ACTIVE_BACKUP",
+                "BOND_MODE_BALANCE_XOR",
+                "BOND_MODE_BROADCAST",
+                "BOND_MODE_802_3AD",
+                "BOND_MODE_BALANCE_TLB",
+                "BOND_MODE_BALANCE_ALB"
+            ],
+            "default": "BOND_MODE_UNSPECIFIED",
+            "description": "A bonding mode specifies the policy indicating how bonding slaves are used\nduring network transmission.\n\n - BOND_MODE_UNSPECIFIED: BOND_MODE_UNSPECIFIED : if bonding mode is not explicitly specified,\nthen by default Round-Robin policy is applied (BOND_MODE_BALANCE_RR).\n - BOND_MODE_BALANCE_RR: BOND_MODE_BALANCE_RR : transmit packets in sequential order from the first\navailable slave through the last. This mode provides load balancing\nand fault tolerance.\nThis is the default bonding mode.\n - BOND_MODE_ACTIVE_BACKUP: BOND_MODE_ACTIVE_BACKUP : only one slave in the bond is active.\nA different slave becomes active if, and only if, the active slave fails.\nThe bond's MAC address is externally visible on only one port to avoid\nconfusing the switch.\nThis mode provides fault tolerance.\n - BOND_MODE_BALANCE_XOR: BOND_MODE_BALANCE_XOR : packet source and destination MAC addresses are\nused to calculate hash and select the output slave interface accordingly.\nThis algorithm will place all traffic destined to a particular network\npeer on the same slave.\nThis mode provides load balancing and fault tolerance.\n - BOND_MODE_BROADCAST: BOND_MODE_BROADCAST: transmits everything on all slave interfaces.\nThis mode provides fault tolerance.\n - BOND_MODE_802_3AD: BOND_MODE_802_3AD : IEEE 802.3ad Dynamic link aggregation.\nCreates aggregation groups that share the same speed and duplex settings.\nUtilizes all slaves in the active aggregator according to the 802.3ad\nspecification.\nRequires that upstream networks equipment supports and has the IEEE 802.3ad\nDynamic link aggregation properly configured.\n - BOND_MODE_BALANCE_TLB: BOND_MODE_BALANCE_TLB : adaptive transmit load balancing. Channel bonding that\ndoes not require any special switch support. The outgoing traffic\nis distributed according to the current load (computed relative to the speed)\non each slave.\nIncoming traffic is received by the current slave. If the receiving slave\nfails, another slave takes over the MAC address of the failed receiving slave.\nThis mode provides (TX) load balancing and fault tolerance.\n - BOND_MODE_BALANCE_ALB: BOND_MODE_BALANCE_ALB : adaptive load balancing. Includes BOND_MODE_BALANCE_TLB\nplus receive load balancing (RLB) for IPV4 traffic, and does not require\nany special switch support. The receive load balancing is achieved by ARP\nnegotiation.\nThis mode provides load balancing and fault tolerance."
+        },
+        "CEPCommonCSRProfile": {
+            "type": "object",
+            "properties": {
+                "commonName": {
+                    "type": "string",
+                    "description": "Common Name (CN) - typically the device identifier or hostname"
+                },
+                "organization": {
+                    "type": "string",
+                    "description": "Organization (O) - company or entity name"
+                },
+                "organizationalUnit": {
+                    "type": "string",
+                    "description": "Organizational Unit (OU) - department or division"
+                },
+                "country": {
+                    "type": "string",
+                    "description": "Country (C) - two-letter ISO country code"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "State or Province (ST)"
+                },
+                "locality": {
+                    "type": "string",
+                    "description": "Locality (L) - city name"
+                },
+                "sanUri": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "URIs for Subject Alternative Name extension"
+                },
+                "sanEmail": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Email addresses for Subject Alternative Name extension"
+                },
+                "renewPeriodPercent": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Percentage of certificate validity period after which renewal should be attempted (e.g., 80 means renew when 80% of validity has passed)"
+                },
+                "keyType": {
+                    "$ref": "#/definitions/CEPCommonKeyType",
+                    "description": "Key type and size for certificate key pair generation"
+                },
+                "hashAlgorithm": {
+                    "$ref": "#/definitions/CEPCommonHashAlgorithm",
+                    "description": "Hash algorithm used for signing the CSR and SCEP messages"
+                }
+            },
+            "description": "Certificate Signing Request configuration including subject DN, SANs, and key parameters",
+            "title": "CSR Profile",
+            "required": [
+                "commonName"
+            ]
+        },
+        "CEPCommonHashAlgorithm": {
+            "type": "string",
+            "enum": [
+                "HASH_ALGORITHM_UNSPECIFIED",
+                "HASH_ALGORITHM_SHA256",
+                "HASH_ALGORITHM_SHA384",
+                "HASH_ALGORITHM_SHA512"
+            ],
+            "default": "HASH_ALGORITHM_UNSPECIFIED",
+            "title": "Supported hash algorithms for signing"
+        },
+        "CEPCommonKeyType": {
+            "type": "string",
+            "enum": [
+                "KEY_TYPE_UNSPECIFIED",
+                "KEY_TYPE_RSA_2048",
+                "KEY_TYPE_RSA_3072",
+                "KEY_TYPE_RSA_4096"
+            ],
+            "default": "KEY_TYPE_UNSPECIFIED",
+            "title": "Supported key types (algorithm + parameters)"
+        },
+        "CEPCommonProjectReference": {
+            "type": "object",
+            "properties": {
+                "projectId": {
+                    "type": "string",
+                    "description": "Project unique identifier"
+                },
+                "projectName": {
+                    "type": "string",
+                    "description": "Project name"
+                }
+            },
+            "title": "ProjectReference represents a project that references a CEP profile"
+        },
+        "CEPCommonSCEPProfile": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "System-generated unique identifier (UUID)",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string",
+                    "description": "User-defined unique name for the profile",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9][a-zA-Z0-9_.-]+"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Human-readable display title",
+                    "maxLength": 256,
+                    "minLength": 3,
+                    "pattern": "[a-zA-Z0-9]+[a-zA-Z0-9!-~ ]+"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Detailed description of the profile purpose",
+                    "maxLength": 256
+                },
+                "scepUrl": {
+                    "type": "string",
+                    "description": "Full SCEP server URL including scheme, host, and path (e.g., https://ca.example.com/scep)"
+                },
+                "useControllerProxy": {
+                    "type": "boolean",
+                    "description": "If true, SCEP requests are routed through the controller proxy; if false, device connects directly to SCEP server"
+                },
+                "secret": {
+                    "$ref": "#/definitions/CEPCommonSCEPProfileSecrets",
+                    "description": "Write-only secret fields (challenge password). Not returned in GET responses."
+                },
+                "encryptedSecrets": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Encrypted secret data (set by server, do not modify)"
+                },
+                "cryptoKey": {
+                    "type": "string",
+                    "description": "Encryption key reference (set by server, do not modify)"
+                },
+                "caCertPem": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "byte"
+                    },
+                    "description": "PEM-encoded trusted CA certificates for SCEP server validation (per RFC8894 section 2.2)"
+                },
+                "csrProfile": {
+                    "$ref": "#/definitions/CEPCommonCSRProfile",
+                    "description": "Certificate Signing Request configuration including subject DN, SANs, and key parameters"
+                },
+                "enterpriseId": {
+                    "type": "string",
+                    "description": "Enterprise ID owning this profile",
+                    "readOnly": true
+                },
+                "revision": {
+                    "$ref": "#/definitions/ObjectRevision",
+                    "description": "Object revision information",
+                    "readOnly": true
+                },
+                "projectsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CEPCommonProjectReference"
+                    },
+                    "description": "Projects referencing this CEP profile (populated only when showProjectsList=true)",
+                    "readOnly": true
+                }
+            },
+            "description": "SCEP Certificate Enrollment Profile for obtaining certificates from a SCEP server",
+            "title": "SCEP Profile",
+            "required": [
+                "name",
+                "scepUrl",
+                "caCertPem",
+                "csrProfile"
+            ]
+        },
+        "CEPCommonSCEPProfileSecrets": {
+            "type": "object",
+            "properties": {
+                "challengePassword": {
+                    "type": "string",
+                    "description": "SCEP challenge password for certificate enrollment authentication"
+                }
+            }
+        },
+        "CEPCommonSCEPProfiles": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CEPCommonSCEPProfile"
+                    },
+                    "description": "List of SCEP profiles"
+                },
+                "next": {
+                    "$ref": "#/definitions/Cursor",
+                    "description": "Pagination cursor for next page"
+                }
+            },
+            "description": "Paginated list of SCEP profiles",
+            "title": "SCEP Profiles List"
+        },
         "Capabilities": {
             "type": "object",
             "properties": {
@@ -11749,6 +12671,55 @@
             },
             "description": "CellularStatus contains status information for a single cellular network",
             "title": "CellularStatus contains status information for a single cellular network"
+        },
+        "CertDistinguishedName": {
+            "type": "object",
+            "properties": {
+                "commonName": {
+                    "type": "string",
+                    "description": "Common Name (CN)"
+                },
+                "serialNumber": {
+                    "type": "string",
+                    "description": "Serial Number (SERIALNUMBER)"
+                },
+                "organization": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Organization (O)"
+                },
+                "organizationalUnit": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Organizational Unit (OU)"
+                },
+                "country": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Country (C)"
+                },
+                "stateOrProvince": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "State or Province (ST)"
+                },
+                "locality": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Locality (L)"
+                }
+            },
+            "description": "CertDistinguishedName represents an X.509 distinguished name."
         },
         "CertDistinguishedName": {
             "type": "object",
@@ -12866,6 +13837,13 @@
                 "pcrPolicy": {
                     "$ref": "#/definitions/PolicyConfig",
                     "description": "PCR policy for TPM key sealing on this specific device (overrides project policy)"
+                },
+                "bondAdapter": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BondAdapter"
+                    },
+                    "description": "A list of bond interfaces"
                 }
             },
             "description": "Device Configuration request payload holds the device properties",
@@ -15247,6 +16225,16 @@
             "description": "Details of LTE Adapter",
             "title": "LTE Adapter"
         },
+        "LacpRate": {
+            "type": "string",
+            "enum": [
+                "LACP_RATE_UNSPECIFIED",
+                "LACP_RATE_SLOW",
+                "LACP_RATE_FAST"
+            ],
+            "default": "LACP_RATE_UNSPECIFIED",
+            "description": "Option specifying the rate in which EVE will ask LACP link partners\nto transmit LACPDU packets in 802.3ad mode.\n\n - LACP_RATE_UNSPECIFIED: Default LACP rate is Slow.\n - LACP_RATE_SLOW: Request LACP partner to transmit LACPDUs every 30 seconds.\n - LACP_RATE_FAST: Request LACP partner to transmit LACPDUs every 1 second."
+        },
         "LimitParams": {
             "type": "object",
             "properties": {
@@ -15351,6 +16339,27 @@
             "required": [
                 "locURL"
             ]
+        },
+        "MIIMonitor": {
+            "type": "object",
+            "properties": {
+                "interval": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Specifies the MII link monitoring frequency in milliseconds.\nThis determines how often the link state of each bond slave is inspected\nfor link failures."
+                },
+                "updelay": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Updelay specifies the time, in milliseconds, to wait before enabling\na bond slave after a link recovery has been detected.\nThe updelay value should be a multiple of the monitoring interval; if not,\nit will be rounded down to the nearest multiple.\nThe default value is 0."
+                },
+                "downdelay": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Specifies the time, in milliseconds, to wait before disabling a bond\nslave after a link failure has been detected.\nThe downdelay value should be a multiple of the monitoring interval; if not,\nit will be rounded down to the nearest multiple.\nThe default value is 0."
+                }
+            },
+            "description": "MIIMonitor : MII link monitoring parameters.\nDefined for BondAdapter."
         },
         "MapParams": {
             "type": "object",
