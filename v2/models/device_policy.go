@@ -26,6 +26,9 @@ type DevicePolicy struct {
 
 	// device policy type
 	PolicySubType *DevicePolicyType `json:"policySubType,omitempty"`
+
+	// port based network access control (802.1X) policy to enforce on devices of this project
+	PortBasedNetworkAccessControlPolicy *DevicePortBasedNetworkAccessControlPolicy `json:"portBasedNetworkAccessControlPolicy,omitempty"`
 }
 
 // Validate validates this device policy
@@ -41,6 +44,10 @@ func (m *DevicePolicy) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validatePolicySubType(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePortBasedNetworkAccessControlPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -107,6 +114,25 @@ func (m *DevicePolicy) validatePolicySubType(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *DevicePolicy) validatePortBasedNetworkAccessControlPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.PortBasedNetworkAccessControlPolicy) { // not required
+		return nil
+	}
+
+	if m.PortBasedNetworkAccessControlPolicy != nil {
+		if err := m.PortBasedNetworkAccessControlPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("portBasedNetworkAccessControlPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("portBasedNetworkAccessControlPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this device policy based on the context it is used
 func (m *DevicePolicy) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -120,6 +146,10 @@ func (m *DevicePolicy) ContextValidate(ctx context.Context, formats strfmt.Regis
 	}
 
 	if err := m.contextValidatePolicySubType(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePortBasedNetworkAccessControlPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -169,6 +199,22 @@ func (m *DevicePolicy) contextValidatePolicySubType(ctx context.Context, formats
 				return ve.ValidateName("policySubType")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("policySubType")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DevicePolicy) contextValidatePortBasedNetworkAccessControlPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.PortBasedNetworkAccessControlPolicy != nil {
+		if err := m.PortBasedNetworkAccessControlPolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("portBasedNetworkAccessControlPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("portBasedNetworkAccessControlPolicy")
 			}
 			return err
 		}

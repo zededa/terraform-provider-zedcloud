@@ -192,12 +192,12 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		if len(existingNode.BaseImage) == 0 {
 			hasBaseImageChange = true
 		} else if len(newNode.BaseImage) > 0 && len(existingNode.BaseImage) > 0 {
-			newVersion := newNode.BaseImage[0].Version
+			newImageName := newNode.BaseImage[0].ImageName
 			existingImageName := existingNode.BaseImage[0].ImageName
 			existingActivate := existingNode.BaseImage[0].Activate
 
-			if newVersion != nil && existingImageName != nil {
-				if *newVersion != *existingImageName {
+			if newImageName != nil && existingImageName != nil {
+				if *newImageName != *existingImageName {
 					hasBaseImageChange = true
 				} else if existingActivate != nil && !*existingActivate {
 					hasBaseImageChange = true

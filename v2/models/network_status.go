@@ -50,6 +50,9 @@ type NetworkStatus struct {
 	// Network MTU
 	Mtu int64 `json:"mtu,omitempty"`
 
+	// PNAC 802.1X authentication status for this port
+	PnacStatus *PNACPortStatus `json:"pnacStatus,omitempty"`
+
 	// Network Proxy status
 	Proxy *NetProxyStatus `json:"proxy,omitempty"`
 
@@ -81,6 +84,10 @@ func (m *NetworkStatus) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validateLocation(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePnacStatus(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -189,6 +196,25 @@ func (m *NetworkStatus) validateLocation(formats strfmt.Registry) error {
 	return nil
 }
 
+func (m *NetworkStatus) validatePnacStatus(formats strfmt.Registry) error {
+	if swag.IsZero(m.PnacStatus) { // not required
+		return nil
+	}
+
+	if m.PnacStatus != nil {
+		if err := m.PnacStatus.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("pnacStatus")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("pnacStatus")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *NetworkStatus) validateProxy(formats strfmt.Registry) error {
 	if swag.IsZero(m.Proxy) { // not required
 		return nil
@@ -229,6 +255,10 @@ func (m *NetworkStatus) ContextValidate(ctx context.Context, formats strfmt.Regi
 	}
 
 	if err := m.contextValidateLocation(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePnacStatus(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -319,6 +349,27 @@ func (m *NetworkStatus) contextValidateLocation(ctx context.Context, formats str
 				return ve.ValidateName("location")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("location")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *NetworkStatus) contextValidatePnacStatus(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.PnacStatus != nil {
+
+		if swag.IsZero(m.PnacStatus) { // not required
+			return nil
+		}
+
+		if err := m.PnacStatus.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("pnacStatus")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("pnacStatus")
 			}
 			return err
 		}

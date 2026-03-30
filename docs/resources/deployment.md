@@ -566,6 +566,7 @@ Optional:
 - `attestation_policy` (Block List) device attestation policy (see [below for nested schema](#nestedblock--device_policies--attestation_policy))
 - `meta_data` (Block List) all the required metadata for a policy like id, name, different types of tags (see [below for nested schema](#nestedblock--device_policies--meta_data))
 - `policy_sub_type` (String) device policy type
+- `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on devices of this project (see [below for nested schema](#nestedblock--device_policies--port_based_network_access_control_policy))
 
 <a id="nestedblock--device_policies--attestation_policy"></a>
 ### Nested Schema for `device_policies.attestation_policy`
@@ -604,6 +605,17 @@ Read-Only:
 - `updated_at` (String)
 - `updated_by` (String)
 
+
+
+<a id="nestedblock--device_policies--port_based_network_access_control_policy"></a>
+### Nested Schema for `device_policies.port_based_network_access_control_policy`
+
+Optional:
+
+- `certificate_enrollment_id` (String) ID of the certificate enrollment object used for 802.1X authentication
+- `eap_identity` (String) EAP identity string used for authentication
+- `eap_method` (String) EAP method to use for port based network access control. Only EAP-TLS is supported currently.
+- `enable_port_based_network_access_control` (Boolean) Enable or disable port based network access control (802.1X). When disabled, other fields are ignored.
 
 
 

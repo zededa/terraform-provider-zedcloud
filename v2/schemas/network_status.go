@@ -39,6 +39,12 @@ func NetworkStatusModel(d *schema.ResourceData) *models.NetworkStatus {
 	macAddr, _ := d.Get("mac_addr").(string)
 	mtuInt, _ := d.Get("mtu").(int)
 	mtu := int64(mtuInt)
+	var pnacStatus *models.PNACPortStatus // PNACPortStatus
+	pnacStatusInterface, pnacStatusIsSet := d.GetOk("pnac_status")
+	if pnacStatusIsSet {
+		pnacStatusMap := pnacStatusInterface.([]interface{})[0].(map[string]interface{})
+		pnacStatus = PNACPortStatusModelFromMap(pnacStatusMap)
+	}
 	var proxy *models.NetProxyStatus // NetProxyStatus
 	proxyInterface, proxyIsSet := d.GetOk("proxy")
 	if proxyIsSet {
@@ -57,6 +63,7 @@ func NetworkStatusModel(d *schema.ResourceData) *models.NetworkStatus {
 		Location:       location,
 		MacAddr:        macAddr,
 		Mtu:			mtu,
+		PnacStatus:     pnacStatus,
 		Proxy:          proxy,
 		Up:             up,
 		Uplink:         uplink,
@@ -97,6 +104,15 @@ func NetworkStatusModelFromMap(m map[string]interface{}) *models.NetworkStatus {
 	//
 	macAddr := m["mac_addr"].(string)
 	mtu := int64(m["mtu"].(int))     // int64
+	var pnacStatus *models.PNACPortStatus // PNACPortStatus
+	pnacStatusInterface, pnacStatusIsSet := m["pnac_status"]
+	if pnacStatusIsSet {
+		pnacStatusList := pnacStatusInterface.([]interface{})
+		if len(pnacStatusList) > 0 && pnacStatusList[0] != nil {
+			pnacStatus = PNACPortStatusModelFromMap(pnacStatusList[0].(map[string]interface{}))
+		}
+	}
+	//
 	var proxy *models.NetProxyStatus // NetProxyStatus
 	proxyInterface, proxyIsSet := m["proxy"]
 	if proxyIsSet {
@@ -116,6 +132,7 @@ func NetworkStatusModelFromMap(m map[string]interface{}) *models.NetworkStatus {
 		Location:       location,
 		MacAddr:        macAddr,
 		Mtu:			mtu,
+		PnacStatus:     pnacStatus,
 		Proxy:          proxy,
 		Up:             up,
 		Uplink:         uplink,
@@ -133,6 +150,7 @@ func SetNetworkStatusResourceData(d *schema.ResourceData, m *models.NetworkStatu
 	d.Set("location", SetGeoLocationSubResourceData([]*models.GeoLocation{m.Location}))
 	d.Set("mac_addr", m.MacAddr)
 	d.Set("mtu", m.Mtu)
+	d.Set("pnac_status", SetPNACPortStatusSubResourceData([]*models.PNACPortStatus{m.PnacStatus}))
 	d.Set("proxy", SetNetProxyStatusSubResourceData([]*models.NetProxyStatus{m.Proxy}))
 	d.Set("up", m.Up)
 	d.Set("uplink", m.Uplink)
@@ -152,6 +170,7 @@ func SetNetworkStatusSubResourceData(m []*models.NetworkStatus) (d []*map[string
 			properties["location"] = SetGeoLocationSubResourceData([]*models.GeoLocation{NetworkStatusModel.Location})
 			properties["mac_addr"] = NetworkStatusModel.MacAddr
 			properties["mtu"] = NetworkStatusModel.Mtu
+			properties["pnac_status"] = SetPNACPortStatusSubResourceData([]*models.PNACPortStatus{NetworkStatusModel.PnacStatus})
 			properties["proxy"] = SetNetProxyStatusSubResourceData([]*models.NetProxyStatus{NetworkStatusModel.Proxy})
 			properties["up"] = NetworkStatusModel.Up
 			properties["uplink"] = NetworkStatusModel.Uplink
@@ -236,6 +255,15 @@ func NetworkStatusSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		"pnac_status": {
+			Description: `PNAC 802.1X authentication status for this port`,
+			Type:        schema.TypeList,
+			Elem: &schema.Resource{
+				Schema: PNACPortStatusSchema(),
+			},
+			Computed: true,
+		},
+
 		"proxy": {
 			Description: `Network Proxy status`,
 			Type:        schema.TypeList, //GoType: NetProxyStatus
@@ -271,6 +299,7 @@ func GetNetworkStatusPropertyFields() (t []string) {
 		"location",
 		"mac_addr",
 		"mtu",
+		"pnac_status",
 		"proxy",
 		"up",
 		"uplink",

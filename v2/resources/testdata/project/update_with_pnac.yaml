@@ -1,0 +1,22 @@
+name: test_tf_provider_pnac
+title: Test PNAC Project Updated
+type: TAG_TYPE_PROJECT
+attr: {}
+attestationpolicy:
+  title: test_tf_provider_pnac_attest
+  type: POLICY_TYPE_ATTESTATION
+  attestationpolicy:
+    type: ATTEST_POLICY_TYPE_ACCEPT
+  attr: {}
+  status: POLICY_STATUS_READY
+  statusmessage: "Policy configured successfully"
+portbasednetworkaccesscontrolpolicy:
+  title: Test PNAC Policy Updated
+  type: POLICY_TYPE_PORT_BASED_NETWORK_ACCESS_CONTROL
+  portbasednetworkaccesscontrolpolicy:
+    enablePortBasedNetworkAccessControl: true
+    eapMethod: EAP_METHOD_TLS
+    eapIdentity: updated-device-identity
+  status: POLICY_STATUS_READY
+  statusmessage: "Policy configured successfully"
+tags: {}

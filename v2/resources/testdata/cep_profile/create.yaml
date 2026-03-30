@@ -1,0 +1,13 @@
+name: test_tf_provider_cep
+title: Test CEP Profile
+description: Test SCEP certificate enrollment profile
+scepUrl: "https://scep.example.com/scep"
+useControllerProxy: false
+csrProfile:
+  commonName: "device-{{.DeviceID}}"
+  organization: Zededa
+  organizationalUnit: Engineering
+  country: US
+  renewPeriodPercent: 80
+  keyType: KEY_TYPE_RSA_2048
+  hashAlgorithm: HASH_ALGORITHM_SHA256

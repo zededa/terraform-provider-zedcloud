@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/app_profile_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/certificate_enrollment_profile"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/asset_group_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
@@ -102,6 +103,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.KubernetesGitOps = kubernetes_git_ops.New(transport, formats)
 	cli.KubernetesSecret = kubernetes_secrets.New(transport, formats)
 	cli.HelmChartManagement = helm_chart_management.New(transport, formats)
+	cli.CertificateEnrollmentProfile = certificate_enrollment_profile.New(transport, formats)
 	return cli
 }
 
@@ -195,6 +197,8 @@ type ZedcloudAPI struct {
 	KubernetesSecret kubernetes_secrets.ClientService
 
 	HelmChartManagement helm_chart_management.ClientService
+
+	CertificateEnrollmentProfile certificate_enrollment_profile.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
@@ -236,4 +240,6 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.KubernetesSecret.SetTransport(transport)
 
 	c.HelmChartManagement.SetTransport(transport)
+
+	c.CertificateEnrollmentProfile.SetTransport(transport)
 }

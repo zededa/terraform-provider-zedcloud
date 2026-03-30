@@ -28,10 +28,19 @@ func DevicePolicyModel(d *schema.ResourceData) *models.DevicePolicy {
 		policySubTypeModel := policySubTypeInterface.(string)
 		policySubType = models.NewDevicePolicyType(models.DevicePolicyType(policySubTypeModel))
 	}
+	var portBasedNetworkAccessControlPolicy *models.DevicePortBasedNetworkAccessControlPolicy // DevicePortBasedNetworkAccessControlPolicy
+	portBasedNetworkAccessControlPolicyInterface, portBasedNetworkAccessControlPolicyIsSet := d.GetOk("port_based_network_access_control_policy")
+	if portBasedNetworkAccessControlPolicyIsSet && portBasedNetworkAccessControlPolicyInterface != nil {
+		portBasedNetworkAccessControlPolicyMap := portBasedNetworkAccessControlPolicyInterface.([]interface{})
+		if len(portBasedNetworkAccessControlPolicyMap) > 0 {
+			portBasedNetworkAccessControlPolicy = DevicePortBasedNetworkAccessControlPolicyModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.DevicePolicy{
-		AttestationPolicy: attestationPolicy,
-		MetaData:          metaData,
-		PolicySubType:     policySubType,
+		AttestationPolicy:                   attestationPolicy,
+		MetaData:                            metaData,
+		PolicySubType:                       policySubType,
+		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
 	}
 }
 
@@ -60,10 +69,19 @@ func DevicePolicyModelFromMap(m map[string]interface{}) *models.DevicePolicy {
 		policySubTypeModel := policySubTypeInterface.(string)
 		policySubType = models.NewDevicePolicyType(models.DevicePolicyType(policySubTypeModel))
 	}
+	var portBasedNetworkAccessControlPolicy *models.DevicePortBasedNetworkAccessControlPolicy // DevicePortBasedNetworkAccessControlPolicy
+	portBasedNetworkAccessControlPolicyInterface, portBasedNetworkAccessControlPolicyIsSet := m["port_based_network_access_control_policy"]
+	if portBasedNetworkAccessControlPolicyIsSet && portBasedNetworkAccessControlPolicyInterface != nil {
+		portBasedNetworkAccessControlPolicyMap := portBasedNetworkAccessControlPolicyInterface.([]interface{})
+		if len(portBasedNetworkAccessControlPolicyMap) > 0 {
+			portBasedNetworkAccessControlPolicy = DevicePortBasedNetworkAccessControlPolicyModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	return &models.DevicePolicy{
-		AttestationPolicy: attestationPolicy,
-		MetaData:          metaData,
-		PolicySubType:     policySubType,
+		AttestationPolicy:                   attestationPolicy,
+		MetaData:                            metaData,
+		PolicySubType:                       policySubType,
+		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
 	}
 }
 
@@ -71,6 +89,7 @@ func SetDevicePolicyResourceData(d *schema.ResourceData, m *models.DevicePolicy)
 	d.Set("attestation_policy", SetDeviceAttestationPolicySubResourceData([]*models.DeviceAttestationPolicy{m.AttestationPolicy}))
 	d.Set("meta_data", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.MetaData}))
 	d.Set("policy_sub_type", m.PolicySubType)
+	d.Set("port_based_network_access_control_policy", SetDevicePortBasedNetworkAccessControlPolicySubResourceData([]*models.DevicePortBasedNetworkAccessControlPolicy{m.PortBasedNetworkAccessControlPolicy}))
 }
 
 func SetDevicePolicySubResourceData(m []*models.DevicePolicy) (d []*map[string]interface{}) {
@@ -80,6 +99,7 @@ func SetDevicePolicySubResourceData(m []*models.DevicePolicy) (d []*map[string]i
 			properties["attestation_policy"] = SetDeviceAttestationPolicySubResourceData([]*models.DeviceAttestationPolicy{DevicePolicyModel.AttestationPolicy})
 			properties["meta_data"] = SetPolicyCommonSubResourceData([]*models.PolicyCommon{DevicePolicyModel.MetaData})
 			properties["policy_sub_type"] = DevicePolicyModel.PolicySubType
+			properties["port_based_network_access_control_policy"] = SetDevicePortBasedNetworkAccessControlPolicySubResourceData([]*models.DevicePortBasedNetworkAccessControlPolicy{DevicePolicyModel.PortBasedNetworkAccessControlPolicy})
 			d = append(d, &properties)
 		}
 	}
@@ -111,6 +131,16 @@ func DevicePolicy() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
+
+		"port_based_network_access_control_policy": {
+			Description: `port based network access control (802.1X) policy to enforce on devices of this project`,
+			Type:        schema.TypeList, //GoType: DevicePortBasedNetworkAccessControlPolicy
+			Elem: &schema.Resource{
+				Schema: DevicePortBasedNetworkAccessControlPolicySchema(),
+			},
+			MaxItems: 1,
+			Optional: true,
+		},
 	}
 }
 
@@ -119,5 +149,6 @@ func GetDevicePolicyPropertyFields() (t []string) {
 		"attestation_policy",
 		"meta_data",
 		"policy_sub_type",
+		"port_based_network_access_control_policy",
 	}
 }

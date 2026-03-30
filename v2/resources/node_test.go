@@ -12,7 +12,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
+	cep_client "github.com/zededa/terraform-provider-zedcloud/v2/client/certificate_enrollment_profile"
+	hw_client "github.com/zededa/terraform-provider-zedcloud/v2/client/hardware_model"
 	config "github.com/zededa/terraform-provider-zedcloud/v2/client/node"
+	project_client "github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	"github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 	testhelper "github.com/zededa/terraform-provider-zedcloud/v2/testing"
@@ -264,6 +267,146 @@ func testNodeDestroy(s *terraform.State) error {
 		_, ok := err.(*config.EdgeNodeNotFound)
 		if !ok {
 			return fmt.Errorf("destroy failed, expect status code 404 for Node (%s)", params.ID)
+		}
+	}
+	return nil
+}
+
+// TestNode_PNAC_Onboard tests onboarding an edge node into a PNAC-enabled project.
+// Steps:
+//  1. Create a PNAC project (with CEP profile) and an edge node with eth0 having PNAC enabled.
+//     Cross-verify that the CEP profile referenced by the project is valid (scep_url and csr_profile set).
+//  2. Update: disable PNAC on eth0 and verify the interface flag is cleared.
+func TestNode_PNAC_Onboard(t *testing.T) {
+	var gotCreated, gotUpdated, expectCreated, expectUpdated models.Node
+
+	inputCreate := testhelper.MustGetTestInput(t, "node/create_with_pnac.tf")
+	inputUpdate := testhelper.MustGetTestInput(t, "node/update_with_pnac.tf")
+
+	testhelper.MustGetExpectedOutput(t, "node/create_with_pnac.yaml", &expectCreated)
+	testhelper.MustGetExpectedOutput(t, "node/update_with_pnac.yaml", &expectUpdated)
+
+	uuidRegexp := regexp.MustCompile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89abAB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testhelper.CheckEnv(t) },
+		CheckDestroy: testNodePNACDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			// Step 1: Create node in PNAC project with eth0 PNAC enabled.
+			{
+				Config: inputCreate,
+				Check: resource.ComposeTestCheckFunc(
+					testNodeExists("zedcloud_edgenode.test_tf_provider_node_pnac", &gotCreated),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "name", "test_tf_provider_node_pnac"),
+					resource.TestMatchResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "id", uuidRegexp),
+					testNodeAttributes(t, "create node pnac", &gotCreated, &expectCreated),
+					// Cross-verify: CEP profile referenced by the project is valid.
+					testNodePNACCEPProfileValid("zedcloud_cep_profile.test_tf_provider_node_pnac_cep"),
+				),
+			},
+			// Step 2: Update node — disable PNAC on eth0.
+			{
+				Config: inputUpdate,
+				Check: resource.ComposeTestCheckFunc(
+					testNodeExists("zedcloud_edgenode.test_tf_provider_node_pnac", &gotUpdated),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "name", "test_tf_provider_node_pnac"),
+					resource.TestMatchResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "id", uuidRegexp),
+					testNodeAttributes(t, "update node pnac", &gotUpdated, &expectUpdated),
+				),
+			},
+		},
+	})
+}
+
+// testNodePNACCEPProfileValid fetches the CEP profile from the API and verifies it has a non-empty
+// scep_url and csr_profile, confirming the profile is properly configured for PNAC use.
+func testNodePNACCEPProfileValid(resourceName string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rs, ok := s.RootModule().Resources[resourceName]
+		if !ok {
+			return fmt.Errorf("CEP profile resource not found in state: %s", resourceName)
+		}
+		if rs.Primary.ID == "" {
+			return fmt.Errorf("CEP profile ID is empty")
+		}
+
+		client := testProvider.Meta().(*api_client.ZedcloudAPI)
+		params := cep_client.GetByIDParams()
+		params.ID = rs.Primary.ID
+
+		resp, err := client.CertificateEnrollmentProfile.GetByID(params, nil)
+		if err != nil {
+			return fmt.Errorf("could not fetch CEP profile (%s): %w", rs.Primary.ID, err)
+		}
+		cep := resp.GetPayload()
+		if cep == nil {
+			return fmt.Errorf("CEP profile payload is nil for ID %s", rs.Primary.ID)
+		}
+		if cep.ScepURL == nil || *cep.ScepURL == "" {
+			return fmt.Errorf("CEP profile %s has empty scep_url", rs.Primary.ID)
+		}
+		if cep.CsrProfile == nil {
+			return fmt.Errorf("CEP profile %s has nil csr_profile", rs.Primary.ID)
+		}
+		if cep.CsrProfile.CommonName == nil || *cep.CsrProfile.CommonName == "" {
+			return fmt.Errorf("CEP profile %s csr_profile has empty common_name", rs.Primary.ID)
+		}
+		return nil
+	}
+}
+
+// testNodePNACDestroy verifies the node, project, CEP profile, brand, and model are all destroyed.
+func testNodePNACDestroy(s *terraform.State) error {
+	client := testProvider.Meta().(*api_client.ZedcloudAPI)
+
+	for _, rs := range s.RootModule().Resources {
+		switch rs.Type {
+		case "zedcloud_edgenode":
+			params := config.GetByIDParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.Node.GetByID(params, nil)
+			if err == nil {
+				if n := resp.GetPayload(); n != nil && n.ID == rs.Primary.ID {
+					return fmt.Errorf("destroy failed: node (%s) still exists", n.ID)
+				}
+			}
+		case "zedcloud_project":
+			params := project_client.GetByIDParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.Project.GetByID(params, nil)
+			if err == nil {
+				if p := resp.GetPayload(); p != nil && p.ID == rs.Primary.ID {
+					return fmt.Errorf("destroy failed: project (%s) still exists", p.ID)
+				}
+			}
+		case "zedcloud_cep_profile":
+			params := cep_client.GetByIDParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.CertificateEnrollmentProfile.GetByID(params, nil)
+			if err == nil {
+				if p := resp.GetPayload(); p != nil && p.ID == rs.Primary.ID {
+					return fmt.Errorf("destroy failed: CEP profile (%s) still exists", p.ID)
+				}
+			}
+		case "zedcloud_brand":
+			params := hw_client.NewHardwareModelGetHardwareBrandParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.HardwareModel.HardwareModelGetHardwareBrand(params, nil)
+			if err == nil {
+				if b := resp.GetPayload(); b != nil && b.ID == rs.Primary.ID {
+					return fmt.Errorf("destroy failed: brand (%s) still exists", b.ID)
+				}
+			}
+		case "zedcloud_model":
+			params := hw_client.NewHardwareModelGetHardwareModelParams()
+			params.ID = rs.Primary.ID
+			resp, err := client.HardwareModel.HardwareModelGetHardwareModel(params, nil)
+			if err == nil {
+				if m := resp.GetPayload(); m != nil && m.ID == rs.Primary.ID {
+					return fmt.Errorf("destroy failed: model (%s) still exists", m.ID)
+				}
+			}
 		}
 	}
 	return nil
