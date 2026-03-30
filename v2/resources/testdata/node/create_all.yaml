@@ -1,5 +1,5 @@
-adminstate: ADMIN_STATE_ACTIVE
-assetid: asset_id
+adminstate: ADMIN_STATE_CREATED
+assetid: ""
 baseimage: []
 bondadapter:
     - logicallabel: bondTest
@@ -18,58 +18,91 @@ baseosretrycounter: 0
 baseosretrytime: ""
 clientip: ""
 clusterid: ""
-configitem:
-    - boolvalue: true
-      floatvalue: 1
-      key: key
-      stringvalue: string
-      uint32value: 32
-      uint64value: "64"
-      valuetype: value type
+configitem: []
 configlock: DEVICE_CONFIG_LOCK_DISABLED
 cpu: 0
 debugknob: null
 defaultnetinst: null
-deploymenttag: depl_tag
+deploymenttag: ""
 deprecated: ""
-description: description
-devlocation:
-    city: berlin
-    country: germany
-    freeloc: freeloc
-    hostname: hostname
-    latlong: ""
-    loc: 52.520008, 13.404954
-    org: zededa
-    postal: "10115"
-    region: europe/west
-    underlayip: ""
+description: device with default network instance
+devlocation: null
 dlisp: null
 edgeviewconfig: null
 generatesoftserial: false
 id: ""
 identity: ""
 interfaces:
-    - cost: 255
-      intfusage: ADAPTER_USAGE_MANAGEMENT
-      intfname: defaultIPv4
-      ipaddr: 127.0.0.1
-      macaddr: "00:00:00:00:00:00"
-      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
-      sharedlabels: [label1, label2]
-      netname: ""
-      tags:
-        system_interface_1_key: system_interface_1_value
-        system_interface_2_key: system_interface_2_value
     - cost: 0
       intfusage: ADAPTER_USAGE_UNSPECIFIED
-      intfname: eth0
+      intfname: Audio
       netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
       ipaddr: ""
       macaddr: ""
       netname: ""
       tags: {}
       sharedlabels: []
+      ztype: IO_TYPE_AUDIO
+    - cost: 0
+      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfname: COM4
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
+      sharedlabels: []
+      ztype: IO_TYPE_COM
+    - cost: 0
+      intfusage: ADAPTER_USAGE_MANAGEMENT
+      intfname: ethernet0
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
+      sharedlabels: []
+      ztype: IO_TYPE_ETH
+    - cost: 0
+      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfname: ethernet1
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
+      sharedlabels: []
+      ztype: IO_TYPE_ETH
+    - cost: 0
+      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfname: ethernet2
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
+      sharedlabels: []
+      ztype: IO_TYPE_ETH
+    - cost: 0
+      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfname: ethernet3
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
+      sharedlabels: []
+      ztype: IO_TYPE_ETH
+    - cost: 0
+      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfname: ethernet4
+      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
+      ipaddr: ""
+      macaddr: ""
+      netname: ""
+      tags: {}
+      sharedlabels: []
+      ztype: IO_TYPE_ETH
 location: ""
 memory: 0
 modelid: 2f716b55-2639-486c-9a2f-55a2e94146a6
@@ -82,13 +115,11 @@ projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 resetcounter: 0
 resettime: ""
 revision: null
-serialno: d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b
+serialno: def-netinst
 sitepictures: []
 storage: 0
-tags:
-    tag-key-1: tag-value-1
-    tag-key-2: tag-value-2
+tags: {}
 thread: 0
 title: test_tf_provider-title
-token: token_all
+token: ""
 utype: "AMD64"

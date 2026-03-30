@@ -33,15 +33,17 @@ func BondAdapterModel(d *schema.ResourceData) *models.BondAdapter {
 		}
 	}
 	interfaceName, _ := d.Get("interface_name").(string)
-	var lacpRate *models.LacpRate // LacpRate
+	lacpRate := models.LacpRateLACPRATEUNSPECIFIED.Pointer()
 	lacpRateInterface, lacpRateIsSet := d.GetOk("lacp_rate")
 	if lacpRateIsSet {
 		lacpRateModel := lacpRateInterface.(string)
-		lacpRate = models.NewLacpRate(models.LacpRate(lacpRateModel))
+		if lacpRateModel != "" {
+			lacpRate = models.NewLacpRate(models.LacpRate(lacpRateModel))
+		}
 	}
 	logicalLabel, _ := d.Get("logical_label").(string)
 	var lowerLayerNames []string
-	lowerLayerNamesInterface, lowerLayerNamesIsSet := d.GetOk("lowerLayerNames")
+	lowerLayerNamesInterface, lowerLayerNamesIsSet := d.GetOk("lower_layer_names")
 	if lowerLayerNamesIsSet {
 		var items []interface{}
 		if listItems, isList := lowerLayerNamesInterface.([]interface{}); isList {
@@ -102,15 +104,17 @@ func BondAdapterModelFromMap(m map[string]interface{}) *models.BondAdapter {
 	}
 	//
 	interfaceName := m["interface_name"].(string)
-	var lacpRate *models.LacpRate // LacpRate
+	lacpRate := models.LacpRateLACPRATEUNSPECIFIED.Pointer()
 	lacpRateInterface, lacpRateIsSet := m["lacp_rate"]
 	if lacpRateIsSet {
 		lacpRateModel := lacpRateInterface.(string)
-		lacpRate = models.NewLacpRate(models.LacpRate(lacpRateModel))
+		if lacpRateModel != "" {
+			lacpRate = models.NewLacpRate(models.LacpRate(lacpRateModel))
+		}
 	}
 	logicalLabel := m["logical_label"].(string)
 	var lowerLayerNames []string
-	lowerLayerNamesInterface, lowerLayerNamesIsSet := m["lowerLayerNames"]
+	lowerLayerNamesInterface, lowerLayerNamesIsSet := m["lower_layer_names"]
 	if lowerLayerNamesIsSet {
 		var items []interface{}
 		if listItems, isList := lowerLayerNamesInterface.([]interface{}); isList {
@@ -204,13 +208,18 @@ func BondAdapterSchema() map[string]*schema.Schema {
 		"interface_name": {
 			Description: `A physical name of the bond interface`,
 			Type:        schema.TypeString,
-			Optional:    true,
+			// Computed because the backend auto-assigns a name (e.g. "bond0", "bond1").
+			Optional: true,
+			Computed: true,
 		},
 
 		"lacp_rate": {
 			Description: `LACPDU transmission rate in 802.3ad mode`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			// The backend always returns LACP_RATE_UNSPECIFIED when lacpRate is not set,
+			// so use it as the default to avoid a perpetual plan diff.
+			Default: string(models.LacpRateLACPRATEUNSPECIFIED),
 		},
 
 		"logical_label": {
@@ -258,10 +267,8 @@ func CompareBondAdapterLists(a, b []*models.BondAdapter) (bool, string) {
 			reason = fmt.Sprintf("LogicalLabel mismatch: %s vs %s", x.LogicalLabel, y.LogicalLabel)
 			return false
 		}
-		if x.InterfaceName != y.InterfaceName {
-			reason = fmt.Sprintf("InterfaceName mismatch: %s vs %s", x.InterfaceName, y.InterfaceName)
-			return false
-		}
+		// InterfaceName is auto-assigned by the backend (e.g. "bond0", "bond1") and
+		// cannot be predicted from Terraform config, so it is excluded from comparison.
 		if x.BondMode != nil && y.BondMode != nil {
 			if *x.BondMode != *y.BondMode {
 				reason = fmt.Sprintf("BondMode mismatch: %s vs %s", *x.BondMode, *y.BondMode)
@@ -271,13 +278,20 @@ func CompareBondAdapterLists(a, b []*models.BondAdapter) (bool, string) {
 			reason = "BondMode mismatch: one is nil, other is not"
 			return false
 		}
-		if x.LacpRate != nil && y.LacpRate != nil {
-			if *x.LacpRate != *y.LacpRate {
-				reason = fmt.Sprintf("LacpRate mismatch: %s vs %s", *x.LacpRate, *y.LacpRate)
-				return false
-			}
-		} else if x.LacpRate != y.LacpRate {
-			reason = "LacpRate mismatch: one is nil, other is not"
+		// Treat nil as LACP_RATE_UNSPECIFIED: the schema Default always sends
+		// LACP_RATE_UNSPECIFIED to the API, so the backend returns a non-nil
+		// pointer even when the field was not set in the Terraform config.
+		// YAML snapshots that omit lacprate must still compare equal.
+		xLacpRate := models.LacpRateLACPRATEUNSPECIFIED
+		if x.LacpRate != nil {
+			xLacpRate = *x.LacpRate
+		}
+		yLacpRate := models.LacpRateLACPRATEUNSPECIFIED
+		if y.LacpRate != nil {
+			yLacpRate = *y.LacpRate
+		}
+		if xLacpRate != yLacpRate {
+			reason = fmt.Sprintf("LacpRate mismatch: %s vs %s", xLacpRate, yLacpRate)
 			return false
 		}
 		xNames := slices.Clone(x.LowerLayerNames)

@@ -7,11 +7,18 @@ import (
 
 func LacpRateModel(d *schema.ResourceData) *models.LacpRate {
 	lacpRate, _ := d.Get("lacp_rate").(models.LacpRate)
+	if lacpRate == "" {
+		lacpRate = models.LacpRateLACPRATEUNSPECIFIED
+	}
 	return &lacpRate
 }
 
 func LacpRateModelFromMap(m map[string]interface{}) *models.LacpRate {
+	defaultLacpRate := models.LacpRateLACPRATEUNSPECIFIED
 	lacpRate := m["lacp_rate"].(models.LacpRate)
+	if lacpRate == "" {
+		lacpRate = defaultLacpRate
+	}
 	return &lacpRate
 }
 

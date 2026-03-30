@@ -92,62 +92,145 @@ resource "zedcloud_model" "test_tf_provider" {
 	]
 }
 
+resource "zedcloud_network" "complete_with_pac" {
+    depends_on = [
+        zedcloud_project.test_tf_provider
+    ]
+    # required
+    name = "zedcloud_network.complete_with_pac.name"
+    project_id = zedcloud_project.test_tf_provider.id
+    title = "zedcloud_network.complete_with_pac.title"
+    ip {
+        dhcp = "NETWORK_DHCP_TYPE_STATIC"
+        dhcp_range {
+            start = "172.25.24.1"
+            end = "172.25.24.3"
+        }
+        dns = [
+            "172.25.24.254",
+            "172.25.24.255"
+        ]
+        domain = "example.com"
+        gateway = "172.25.24.254"
+        mask = "255.255.0.0"
+        ntp = ""
+        subnet = "172.25.24.0/22"
+    }
+    kind = "NETWORK_KIND_V4"
+
+    # optional
+    description = "terraform test network"
+
+    # not supported
+    dns_list {
+        addrs = [ "10.10.10.1", "10.2.2.2"]
+        hostname = "www.example.com"
+    }
+
+    enterprise_default = false
+
+    proxy {
+        pacfile = "testpacfile"
+    }
+
+    wireless {
+        cellular {
+            apn = "1234"
+        }
+        type = "NETWORK_WIRELESS_TYPE_WIFI"
+        wifi {
+            key_scheme = "NETWORK_WIFIKEY_SCHEME_WPAPSK"
+            priority = 5
+            wifi_ssid = "test-SSID"
+        }
+    }
+}
+
 resource "zedcloud_edgenode" "test_tf_provider" {
 	depends_on = [
 		zedcloud_project.test_tf_provider,
-		zedcloud_model.test_tf_provider
+		zedcloud_model.test_tf_provider,
+		zedcloud_network.complete_with_pac
 	]
-	name = "test_tf_provider"
-	model_id = zedcloud_model.test_tf_provider.id
-	project_id = zedcloud_project.test_tf_provider.id
-	title = "test_tf_provider-title"
-	# optional
-	onboarding_key = ""
-	serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45b"
-	admin_state = "ADMIN_STATE_ACTIVE"
-	asset_id = "asset_id"
-	deployment_tag = "depl_tag"
-	description = "description"
-	generate_soft_serial = false
-	token = "token_all"
-	site_pictures = []
+	name        = "test_tf_provider"
+	model_id    = zedcloud_model.test_tf_provider.id
+	project_id  = zedcloud_project.test_tf_provider.id
+	title       = "test_tf_provider-title"
+	description = "device with default network instance"
+	serialno    = "def-netinst"
+	admin_state = "ADMIN_STATE_CREATED"
+
 	interfaces {
-		cost = 255
-		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
-		intfname = "defaultIPv4"
-		ipaddr = "127.0.0.1"
-		macaddr = "00:00:00:00:00:00"
-		tags = {
-			"system_interface_1_key" = "system_interface_1_value"
-			"system_interface_2_key" = "system_interface_2_value"
-		}
-		shared_labels = [ "label1", "label2" ]
-	}
-	interfaces {
-		intfname = "eth0"
+		intfname   = "Audio"
 		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		ztype      = "IO_TYPE_AUDIO"
+	}
+	interfaces {
+		intfname   = "COM4"
+		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		ztype      = "IO_TYPE_COM"
+	}
+	interfaces {
+		intfname   = "ethernet0"
+		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+		ztype      = "IO_TYPE_ETH"
+	}
+	interfaces {
+		intfname   = "ethernet1"
+		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		ztype      = "IO_TYPE_ETH"
+	}
+	interfaces {
+		intfname   = "ethernet2"
+		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		ztype      = "IO_TYPE_ETH"
+	}
+	interfaces {
+		intfname   = "ethernet3"
+		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		ztype      = "IO_TYPE_ETH"
+	}
+	interfaces {
+		intfname   = "ethernet4"
+		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		ztype      = "IO_TYPE_ETH"
 	}
 
-	config_item {
-		bool_value = true
-		float_value = 1.0
-		key = "key"
-		string_value = "string"
-		uint32_value = 32
-		uint64_value = 64
-		value_type = "value type"
+	vlan_adapters {
+		logical_label    = "test123"
+		lower_layer_name = "ethernet0"
+		vlan_id          = 1
+		interface {
+			netname    = zedcloud_network.complete_with_pac.name
+			intf_usage = "ADAPTER_USAGE_APP_SHARED"
+			ipaddr     = "172.25.24.2"
+			intfname   = "test123"
+			netid      = zedcloud_network.complete_with_pac.id
+		}
 	}
-
-	dev_location {
-		city = "berlin"
-		country = "germany"
-		freeloc = "freeloc"
-		hostname = "hostname"
-		loc = "52.520008, 13.404954"
-		org = "zededa"
-		postal = "10115"
-		region = "europe/west"
-		underlay_ip = ""
+	vlan_adapters {
+		logical_label    = "test1234"
+		lower_layer_name = "ethernet0"
+		vlan_id          = 2
+		interface {
+			netname    = zedcloud_network.complete_with_pac.name
+			intf_usage = "ADAPTER_USAGE_APP_SHARED"
+			ipaddr     = "172.25.24.2"
+			intfname   = ""
+			netid      = zedcloud_network.complete_with_pac.id
+		}
+	}
+	vlan_adapters {
+		logical_label    = "test12345"
+		lower_layer_name = "bondTest2"
+		vlan_id          = 2
+		interface {
+			netname    = zedcloud_network.complete_with_pac.name
+			intf_usage = "ADAPTER_USAGE_APP_SHARED"
+			ipaddr     = "172.25.24.2"
+			intfname   = ""
+			netid      = zedcloud_network.complete_with_pac.id
+		}
 	}
 
 	bond_adapter {
@@ -158,6 +241,13 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		arp {
 			interval = 1
 		}
+		interface {
+			netname    = zedcloud_network.complete_with_pac.name
+			intf_usage = "ADAPTER_USAGE_APP_SHARED"
+			ipaddr     = "172.25.24.2"
+			intfname   = ""
+			netid      = zedcloud_network.complete_with_pac.id
+		}
 	}
 	bond_adapter {
 		logical_label     = "bondTest2"
@@ -165,8 +255,5 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		bond_mode         = "BOND_MODE_ACTIVE_BACKUP"
 	}
 
-	tags = {
-		"tag-key-1" = "tag-value-1"
-		"tag-key-2" = "tag-value-2"
-	}
+	tags = {}
 }

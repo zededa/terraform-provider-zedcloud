@@ -720,8 +720,9 @@ func Node() map[string]*schema.Schema {
 		},
 
 		"bond_adapter": {
-			Description: `A list of bond interfaces`,
-			Type:        schema.TypeList, //GoType: []*BondAdapter
+			Description:      `A list of bond interfaces`,
+			Type:             schema.TypeList, //GoType: []*BondAdapter
+			DiffSuppressFunc: diffSuppressBondAdapterListOrder("bond_adapter"),
 			Elem: &schema.Resource{
 				Schema: BondAdapterSchema(),
 			},
@@ -1021,6 +1022,9 @@ func Node() map[string]*schema.Schema {
 			Description: `device model arch type`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			// Computed because the backend derives this from the device model
+			// (e.g. "AMD64") and returns it even when not set by the user.
+			Computed: true,
 		},
 
 		"vlan_adapters": {

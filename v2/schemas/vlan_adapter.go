@@ -159,15 +159,17 @@ func CompareVlanAdapterLists(a, b []*models.VlanAdapter) (bool, string) {
 			return false
 		}
 
-		// Compare nested Interface (SysInterface)
+		// Compare nested Interface (SysInterface), ignoring fields that the API
+		// auto-populates (Intfname is set to the logical label, Ztype is set to
+		// "IO_TYPE_ETH"). Comparing them would cause perpetual plan diffs.
 		if x.Interface != nil && y.Interface != nil {
-			interfaceMatch, interfaceReason := CompareSystemInterfaceList([]*models.SysInterface{x.Interface}, []*models.SysInterface{y.Interface})
+			interfaceMatch, interfaceReason := compareSysInterfaceIgnoringAutoFields(x.Interface, y.Interface)
 			if !interfaceMatch {
 				reason = fmt.Sprintf("Interface mismatch: %s", interfaceReason)
 				return false
 			}
 		} else if x.Interface != y.Interface {
-			reason = fmt.Sprintf("Interface mismatch: one is nil, other is not")
+			reason = "Interface mismatch: one is nil, other is not"
 			return false
 		}
 
