@@ -93,6 +93,14 @@ func PolicyConfigModel(d *schema.ResourceData) *models.Policy {
 			networkPolicy = NetworkPolicyModelFromMap(networkPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var portBasedNetworkAccessControlPolicy *models.PortBasedNetworkAccessControlPolicy // PortBasedNetworkAccessControlPolicy
+	portBasedNetworkAccessControlPolicyInterface, portBasedNetworkAccessControlPolicyIsSet := d.GetOk("port_based_network_access_control_policy")
+	if portBasedNetworkAccessControlPolicyIsSet && portBasedNetworkAccessControlPolicyInterface != nil {
+		portBasedNetworkAccessControlPolicyMap := portBasedNetworkAccessControlPolicyInterface.([]interface{})
+		if len(portBasedNetworkAccessControlPolicyMap) > 0 {
+			portBasedNetworkAccessControlPolicy = PortBasedNetworkAccessControlPolicyModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	statusMessage, _ := d.Get("status_message").(string)
 	title, _ := d.Get("title").(string)
 	var typeVar *models.PolicyType // PolicyType
@@ -102,22 +110,23 @@ func PolicyConfigModel(d *schema.ResourceData) *models.Policy {
 		typeVar = models.NewPolicyType(models.PolicyType(typeModel))
 	}
 	return &models.Policy{
-		AppPolicy:                  appPolicy,
-		AttestationPolicy:          attestationPolicy,
-		Attr:                       attr,
-		AzurePolicy:                azurePolicy,
-		ClusterPolicy:              clusterPolicy,
-		ConfigurationLockPolicy:    configurationLockPolicy,
-		Description:                description,
-		EdgeviewPolicy:             edgeviewPolicy,
-		ID:                         id,
-		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
-		ModulePolicy:               modulePolicy,
-		Name:                       &name, // string
-		NetworkPolicy:              networkPolicy,
-		StatusMessage:              statusMessage,
-		Title:                      &title, // string
-		Type:                       typeVar,
+		AppPolicy:                           appPolicy,
+		AttestationPolicy:                   attestationPolicy,
+		Attr:                                attr,
+		AzurePolicy:                         azurePolicy,
+		ClusterPolicy:                       clusterPolicy,
+		ConfigurationLockPolicy:             configurationLockPolicy,
+		Description:                         description,
+		EdgeviewPolicy:                      edgeviewPolicy,
+		ID:                                  id,
+		LocalOperatorConsolePolicy:          localOperatorConsolePolicy,
+		ModulePolicy:                        modulePolicy,
+		Name:                                &name, // string
+		NetworkPolicy:                       networkPolicy,
+		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
+		StatusMessage:                       statusMessage,
+		Title:                               &title, // string
+		Type:                                typeVar,
 	}
 }
 
@@ -218,6 +227,15 @@ func PolicyConfigModelFromMap(m map[string]interface{}) *models.Policy {
 		}
 	}
 	//
+	var portBasedNetworkAccessControlPolicy *models.PortBasedNetworkAccessControlPolicy // PortBasedNetworkAccessControlPolicy
+	portBasedNetworkAccessControlPolicyInterface, portBasedNetworkAccessControlPolicyIsSet := m["port_based_network_access_control_policy"]
+	if portBasedNetworkAccessControlPolicyIsSet && portBasedNetworkAccessControlPolicyInterface != nil {
+		portBasedNetworkAccessControlPolicyMap := portBasedNetworkAccessControlPolicyInterface.([]interface{})
+		if len(portBasedNetworkAccessControlPolicyMap) > 0 {
+			portBasedNetworkAccessControlPolicy = PortBasedNetworkAccessControlPolicyModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
+		}
+	}
+	//
 	statusMessage := m["status_message"].(string)
 	title := m["title"].(string)
 	var typeVar *models.PolicyType // PolicyType
@@ -227,22 +245,23 @@ func PolicyConfigModelFromMap(m map[string]interface{}) *models.Policy {
 		typeVar = models.NewPolicyType(models.PolicyType(typeModel))
 	}
 	return &models.Policy{
-		AppPolicy:                  appPolicy,
-		AttestationPolicy:          attestationPolicy,
-		Attr:                       attr,
-		AzurePolicy:                azurePolicy,
-		ClusterPolicy:              clusterPolicy,
-		ConfigurationLockPolicy:    configurationLockPolicy,
-		Description:                description,
-		EdgeviewPolicy:             edgeviewPolicy,
-		ID:                         id,
-		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
-		ModulePolicy:               modulePolicy,
-		Name:                       &name,
-		NetworkPolicy:              networkPolicy,
-		StatusMessage:              statusMessage,
-		Title:                      &title,
-		Type:                       typeVar,
+		AppPolicy:                           appPolicy,
+		AttestationPolicy:                   attestationPolicy,
+		Attr:                                attr,
+		AzurePolicy:                         azurePolicy,
+		ClusterPolicy:                       clusterPolicy,
+		ConfigurationLockPolicy:             configurationLockPolicy,
+		Description:                         description,
+		EdgeviewPolicy:                      edgeviewPolicy,
+		ID:                                  id,
+		LocalOperatorConsolePolicy:          localOperatorConsolePolicy,
+		ModulePolicy:                        modulePolicy,
+		Name:                                &name,
+		NetworkPolicy:                       networkPolicy,
+		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
+		StatusMessage:                       statusMessage,
+		Title:                               &title,
+		Type:                                typeVar,
 	}
 }
 
@@ -260,6 +279,7 @@ func SetPolicyConfigResourceData(d *schema.ResourceData, m *models.Policy) {
 	d.Set("module_policy", SetModulePolicySubResourceData([]*models.ModulePolicy{m.ModulePolicy}))
 	d.Set("name", m.Name)
 	d.Set("network_policy", SetNetworkPolicySubResourceData([]*models.NetworkPolicy{m.NetworkPolicy}))
+	d.Set("port_based_network_access_control_policy", SetPortBasedNetworkAccessControlPolicySubResourceData([]*models.PortBasedNetworkAccessControlPolicy{m.PortBasedNetworkAccessControlPolicy}))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("status", m.Status)
 	d.Set("status_message", m.StatusMessage)
@@ -284,6 +304,7 @@ func SetPolicyConfigSubResourceData(m []*models.Policy) (d []*map[string]interfa
 			properties["module_policy"] = SetModulePolicySubResourceData([]*models.ModulePolicy{PolicyConfigModel.ModulePolicy})
 			properties["name"] = PolicyConfigModel.Name
 			properties["network_policy"] = SetNetworkPolicySubResourceData([]*models.NetworkPolicy{PolicyConfigModel.NetworkPolicy})
+			properties["port_based_network_access_control_policy"] = SetPortBasedNetworkAccessControlPolicySubResourceData([]*models.PortBasedNetworkAccessControlPolicy{PolicyConfigModel.PortBasedNetworkAccessControlPolicy})
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{PolicyConfigModel.Revision})
 			properties["status"] = PolicyConfigModel.Status
 			properties["status_message"] = PolicyConfigModel.StatusMessage
@@ -407,6 +428,16 @@ func Policy() map[string]*schema.Schema {
 			Optional: true,
 		},
 
+		"port_based_network_access_control_policy": {
+			Description: `port based network access control (802.1X) policy to enforce on all devices in this project`,
+			Type:        schema.TypeList, //GoType: PortBasedNetworkAccessControlPolicy
+			Elem: &schema.Resource{
+				Schema: PortBasedNetworkAccessControlPolicySchema(),
+			},
+			MaxItems: 1,
+			Optional: true,
+		},
+
 		"revision": {
 			Description: `system defined info`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
@@ -457,6 +488,7 @@ func GetPolicyConfigPropertyFields() (t []string) {
 		"module_policy",
 		"name",
 		"network_policy",
+		"port_based_network_access_control_policy",
 		"status_message",
 		"title",
 		"type",

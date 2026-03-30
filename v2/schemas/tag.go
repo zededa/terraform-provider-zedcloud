@@ -58,6 +58,14 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 			networkPolicy = PolicyConfigModelFromMap(networkPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var portBasedNetworkAccessControlPolicy *models.Policy // PolicyConfig
+	portBasedNetworkAccessControlPolicyInterface, portBasedNetworkAccessControlPolicyIsSet := d.GetOk("port_based_network_access_control_policy")
+	if portBasedNetworkAccessControlPolicyIsSet && portBasedNetworkAccessControlPolicyInterface != nil {
+		portBasedNetworkAccessControlPolicyMap := portBasedNetworkAccessControlPolicyInterface.([]interface{})
+		if len(portBasedNetworkAccessControlPolicyMap) > 0 {
+			portBasedNetworkAccessControlPolicy = PolicyConfigModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	var tagLevelSettings *models.TagLevelSettings // TagLevelSettings
 	tagLevelSettingsInterface, tagLevelSettingsIsSet := d.GetOk("tag_level_settings")
 	if tagLevelSettingsIsSet && tagLevelSettingsInterface != nil {
@@ -92,20 +100,21 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		revision = ObjectRevisionModelFromMap(revisionMap)
 	}
 	return &models.Tag{
-		AppPolicy:                  appPolicy,
-		AttestationPolicy:          attestationPolicy,
-		ConfigurationLockPolicy:    configurationLockPolicy,
-		Description:                description,
-		EdgeviewPolicy:             edgeviewPolicy,
-		ID:                         id,
-		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
-		Name:                       &name, // string
-		NetworkPolicy:              networkPolicy,
-		Revision:                   revision,
-		TagLevelSettings:           tagLevelSettings,
-		Tags:                       tags,
-		Title:                      &title, // string
-		Type:                       typeVar,
+		AppPolicy:                           appPolicy,
+		AttestationPolicy:                   attestationPolicy,
+		ConfigurationLockPolicy:             configurationLockPolicy,
+		Description:                         description,
+		EdgeviewPolicy:                      edgeviewPolicy,
+		ID:                                  id,
+		LocalOperatorConsolePolicy:          localOperatorConsolePolicy,
+		Name:                                &name, // string
+		NetworkPolicy:                       networkPolicy,
+		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
+		Revision:                            revision,
+		TagLevelSettings:                    tagLevelSettings,
+		Tags:                                tags,
+		Title:                               &title, // string
+		Type:                                typeVar,
 	}
 }
 
@@ -166,6 +175,15 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		}
 	}
 	//
+	var portBasedNetworkAccessControlPolicy *models.Policy // PolicyConfig
+	portBasedNetworkAccessControlPolicyInterface, portBasedNetworkAccessControlPolicyIsSet := m["port_based_network_access_control_policy"]
+	if portBasedNetworkAccessControlPolicyIsSet && portBasedNetworkAccessControlPolicyInterface != nil {
+		portBasedNetworkAccessControlPolicyMap := portBasedNetworkAccessControlPolicyInterface.([]interface{})
+		if len(portBasedNetworkAccessControlPolicyMap) > 0 {
+			portBasedNetworkAccessControlPolicy = PolicyConfigModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
+		}
+	}
+	//
 	var tagLevelSettings *models.TagLevelSettings // TagLevelSettings
 	tagLevelSettingsInterface, tagLevelSettingsIsSet := m["tag_level_settings"]
 	if tagLevelSettingsIsSet && tagLevelSettingsInterface != nil {
@@ -203,20 +221,21 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		}
 	}
 	return &models.Tag{
-		AppPolicy:                  appPolicy,
-		AttestationPolicy:          attestationPolicy,
-		ConfigurationLockPolicy:    configurationLockPolicy,
-		Description:                description,
-		EdgeviewPolicy:             edgeviewPolicy,
-		ID:                         id,
-		LocalOperatorConsolePolicy: localOperatorConsolePolicy,
-		Name:                       &name,
-		NetworkPolicy:              networkPolicy,
-		Revision:                   revision,
-		TagLevelSettings:           tagLevelSettings,
-		Tags:                       tags,
-		Title:                      &title,
-		Type:                       typeVar,
+		AppPolicy:                           appPolicy,
+		AttestationPolicy:                   attestationPolicy,
+		ConfigurationLockPolicy:             configurationLockPolicy,
+		Description:                         description,
+		EdgeviewPolicy:                      edgeviewPolicy,
+		ID:                                  id,
+		LocalOperatorConsolePolicy:          localOperatorConsolePolicy,
+		Name:                                &name,
+		NetworkPolicy:                       networkPolicy,
+		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
+		Revision:                            revision,
+		TagLevelSettings:                    tagLevelSettings,
+		Tags:                                tags,
+		Title:                               &title,
+		Type:                                typeVar,
 	}
 }
 
@@ -234,6 +253,7 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("name", m.Name)
 	d.Set("network_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.NetworkPolicy}))
 	d.Set("numdevices", m.Numdevices)
+	d.Set("port_based_network_access_control_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.PortBasedNetworkAccessControlPolicy}))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("tag_level_settings", SetTagLevelSettingsSubResourceData([]*models.TagLevelSettings{m.TagLevelSettings}))
 	d.Set("tags", m.Tags)
@@ -258,6 +278,7 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 			properties["name"] = TagModel.Name
 			properties["network_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.NetworkPolicy})
 			properties["numdevices"] = TagModel.Numdevices
+			properties["port_based_network_access_control_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.PortBasedNetworkAccessControlPolicy})
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{TagModel.Revision})
 			properties["tag_level_settings"] = SetTagLevelSettingsSubResourceData([]*models.TagLevelSettings{TagModel.TagLevelSettings})
 			properties["tags"] = TagModel.Tags
@@ -376,6 +397,16 @@ func Project() map[string]*schema.Schema {
 			Description: `Number of edge nodes in this resource group`,
 			Type:        schema.TypeInt,
 			Computed:    true,
+		},
+
+		"port_based_network_access_control_policy": {
+			Description: `Port based network access control (802.1X) policy to enforce on all devices of this project`,
+			Type:        schema.TypeList, // GoType: PolicyConfig
+			Elem: &schema.Resource{
+				Schema: Policy(),
+			},
+			MaxItems: 1,
+			Optional: true,
 		},
 
 		"revision": {

@@ -331,6 +331,8 @@ func SetDeviceInfoMsgResourceData(d *schema.ResourceData, m *models.DeviceInfoMs
 	d.Set("up_time", m.UpTime)
 	d.Set("zc_counters", SetZedcloudCountersSubResourceData(m.ZcCounters))
 	d.Set("zpool_metrics", SetStorageDeviceMetricsSubResourceData([]*models.StorageDeviceMetrics{m.ZpoolMetrics}))
+	d.Set("enrolled_certs", SetEnrolledCertInfoSubResourceData(m.EnrolledCerts))
+	d.Set("pnac_metrics", SetPNACMetricInfoSubResourceData(m.PnacMetrics))
 }
 
 // Iterate through and update the DeviceInfoMsg resource data within a pagination response (typically defined in the items array field) retrieved from a READ operation for multiple LM resources
@@ -376,6 +378,8 @@ func SetDeviceInfoMsgSubResourceData(m []*models.DeviceInfoMsg) (d []*map[string
 			properties["up_time"] = DeviceInfoMsgModel.UpTime.String()
 			properties["zc_counters"] = SetZedcloudCountersSubResourceData(DeviceInfoMsgModel.ZcCounters)
 			properties["zpool_metrics"] = SetStorageDeviceMetricsSubResourceData([]*models.StorageDeviceMetrics{DeviceInfoMsgModel.ZpoolMetrics})
+			properties["enrolled_certs"] = SetEnrolledCertInfoSubResourceData(DeviceInfoMsgModel.EnrolledCerts)
+			properties["pnac_metrics"] = SetPNACMetricInfoSubResourceData(DeviceInfoMsgModel.PnacMetrics)
 			d = append(d, &properties)
 		}
 	}
@@ -687,6 +691,24 @@ func DeviceInfoMsgSchema() map[string]*schema.Schema {
 			},
 			Optional: true,
 		},
+
+		"enrolled_certs": {
+			Description: `Certificates enrolled on the device via SCEP/CEP profiles`,
+			Type:        schema.TypeList,
+			Elem: &schema.Resource{
+				Schema: EnrolledCertInfoSchema(),
+			},
+			Computed: true,
+		},
+
+		"pnac_metrics": {
+			Description: `802.1X EAPOL frame counters per network port`,
+			Type:        schema.TypeList,
+			Elem: &schema.Resource{
+				Schema: PNACMetricInfoSchema(),
+			},
+			Computed: true,
+		},
 	}
 }
 
@@ -731,5 +753,7 @@ func GetDeviceInfoMsgPropertyFields() (t []string) {
 		"up_time",
 		"zc_counters",
 		"zpool_metrics",
+		"enrolled_certs",
+		"pnac_metrics",
 	}
 }

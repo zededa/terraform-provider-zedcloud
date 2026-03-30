@@ -33,7 +33,6 @@ description: |-
 - `base_os_retry_time` (String) device baseos retry time
 - `client_ip` (String) Client IP
 - `cluster_id` (String) System defined universally unique clusterInstance ID, unique across the enterprise.
-- `cluster_interface` (String) Cluster Interface
 - `config_item` (Block List) ED configurations (see [below for nested schema](#nestedblock--config_item))
 - `config_lock` (String) device configuration lock setting
 - `cpu` (Number) CPU (configured values)
@@ -43,11 +42,9 @@ description: |-
 - `description` (String) user specified description
 - `dev_location` (Block List) User specified geo location (see [below for nested schema](#nestedblock--dev_location))
 - `dlisp` (Block List) device Lisp (see [below for nested schema](#nestedblock--dlisp))
-- `edge_node_cluster` (Block List) Edge Node Cluster Configuration (see [below for nested schema](#nestedblock--edge_node_cluster))
 - `edgeview_allow` (Boolean) Allow device to enable Edgeview
 - `edgeviewconfig` (Block List) edgeview configuration for device (see [below for nested schema](#nestedblock--edgeviewconfig))
 - `generate_soft_serial` (Boolean) indicates whether a soft serial should be generated; it will work ONLY when device is created
-- `identity` (String) Device identity
 - `local_operator_console_url` (String) local operator console url
 - `location` (String) Device location: deprecated
 - `memory` (Number) Device memory in MBs
@@ -67,8 +64,11 @@ description: |-
 
 ### Read-Only
 
+- `cluster_interface` (String) Cluster Interface
 - `debug_knob` (List of Object, Sensitive) debug knob details for the device (see [below for nested schema](#nestedatt--debug_knob))
+- `edge_node_cluster` (List of Object) Edge Node Cluster Configuration (see [below for nested schema](#nestedatt--edge_node_cluster))
 - `id` (String) system generated unique id for a device
+- `identity` (String) Device identity
 - `revision` (Block List) Object revision details (see [below for nested schema](#nestedblock--revision))
 
 <a id="nestedblock--interfaces"></a>
@@ -83,6 +83,7 @@ Optional:
 - `adapter_specific_net` (Block List) device adapter specific network configuration (see [below for nested schema](#nestedblock--interfaces--adapter_specific_net))
 - `allow_local_modifications` (Boolean) Allow the local operator to make (limited) configuration changes to this network adapter.
 - `cost` (Number) cost of using this interface. Default is 0.
+- `enable_port_based_network_access_control` (Boolean) Enable port-based network access control (802.1X) on this interface. Only applicable for Ethernet interfaces that are not app-direct.
 - `intf_usage` (String) Adapter Usage
 - `ipaddr` (String) IP address: we will be needing this in cae of static network
 - `macaddr` (String) mac address needs to be over-written in some cases
@@ -245,9 +246,12 @@ Required:
 
 - `activate` (Boolean) activation flag
 - `image_name` (String) image name
-- `version` (String) image version
 
 Optional:
+
+- `version` (String) image version
+
+Read-Only:
 
 - `imvol_id` (String) immutable Volume for this base image
 - `uuid` (String) system generated unique id for an image
@@ -292,6 +296,7 @@ Optional:
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--default_net_inst--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--default_net_inst--edge_node_cluster))
+- `forward_lldp` (Boolean) Enables forwarding of LLDP (Link Layer Discovery Protocol) frames across this network instance. LLDP is used by devices to advertise identity and capabilities to directly connected neighbors, and is often required for topology discovery and network management tools. When enabled, LLDP frames (EtherType 0x88cc) are not dropped or suppressed by the forwarding plane.
 - `ip` (Block List) DHCP Server Configuration (see [below for nested schema](#nestedblock--default_net_inst--ip))
 - `mtu` (Number) Maximum transmission unit (MTU) to set for the network instance and all application interfaces connected to it
 - `network_policy_id` (String) id of the network policy to be attached to this network instance
@@ -524,27 +529,6 @@ Required:
 
 
 
-<a id="nestedblock--edge_node_cluster"></a>
-### Nested Schema for `edge_node_cluster`
-
-Optional:
-
-- `cluster_prefix` (String) A cluster prefix
-- `is_master` (Boolean) Is it a master node?
-- `manifest` (String) ZKS instance manifest
-- `name` (String) User defined name of the cluster, unique across the enterprise. Once cluster is created, name can’t be changed
-- `project_id` (String) Foreign key to the project
-- `seed_node_id` (String) Seed node id
-- `seed_node_ip` (String) Seed node ip
-- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `tie_breaker_node_id` (String) Tiebreaker node id
-- `token` (String) Cluster token
-
-Read-Only:
-
-- `id` (String) System defined universally unique Id of the cluster
-
-
 <a id="nestedblock--edgeviewconfig"></a>
 ### Nested Schema for `edgeviewconfig`
 
@@ -617,6 +601,7 @@ Optional:
 - `adapter_specific_net` (Block List) device adapter specific network configuration (see [below for nested schema](#nestedblock--vlan_adapters--interface--adapter_specific_net))
 - `allow_local_modifications` (Boolean) Allow the local operator to make (limited) configuration changes to this network adapter.
 - `cost` (Number) cost of using this interface. Default is 0.
+- `enable_port_based_network_access_control` (Boolean) Enable port-based network access control (802.1X) on this interface. Only applicable for Ethernet interfaces that are not app-direct.
 - `intf_usage` (String) Adapter Usage
 - `ipaddr` (String) IP address: we will be needing this in cae of static network
 - `macaddr` (String) mac address needs to be over-written in some cases
@@ -782,6 +767,24 @@ Read-Only:
 - `expired` (Boolean)
 - `expiry` (String)
 - `id` (String)
+
+
+<a id="nestedatt--edge_node_cluster"></a>
+### Nested Schema for `edge_node_cluster`
+
+Read-Only:
+
+- `cluster_prefix` (String)
+- `id` (String)
+- `is_master` (Boolean)
+- `manifest` (String)
+- `name` (String)
+- `project_id` (String)
+- `seed_node_id` (String)
+- `seed_node_ip` (String)
+- `tags` (Map of String)
+- `tie_breaker_node_id` (String)
+- `token` (String)
 
 
 <a id="nestedblock--revision"></a>
