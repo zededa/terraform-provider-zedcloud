@@ -4,10 +4,12 @@ description: Test SCEP certificate enrollment profile
 scepUrl: "https://scep.example.com/scep"
 useControllerProxy: false
 csrProfile:
-  commonName: "device-{{.DeviceID}}"
+  commonName: "$zri.system.edge-node.name"
   organization: Zededa
   organizationalUnit: Engineering
   country: US
   renewPeriodPercent: 80
   keyType: KEY_TYPE_RSA_2048
   hashAlgorithm: HASH_ALGORITHM_SHA256
+  sanUri:
+    - "urn:zri:$zri.system.edge-node.id"
