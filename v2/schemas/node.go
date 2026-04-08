@@ -37,6 +37,23 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 	baseOsRetryCounterInt, _ := d.Get("base_os_retry_counter").(int)
 	baseOsRetryCounter := int64(baseOsRetryCounterInt)
 	baseOsRetryTime, _ := d.Get("base_os_retry_time").(string)
+	var bondAdapter []*models.BondAdapter // []*BondAdapter
+	bondAdapterInterface, bondAdapterIsSet := d.GetOk("bond_adapter")
+	if bondAdapterIsSet {
+		var items []interface{}
+		if listItems, isList := bondAdapterInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = bondAdapterInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := BondAdapterModelFromMap(v.(map[string]interface{}))
+			bondAdapter = append(bondAdapter, m)
+		}
+	}
 	clientIP, _ := d.Get("client_ip").(string)
 	clusterID, _ := d.Get("cluster_id").(string)
 	clusterInterface, _ := d.Get("cluster_interface").(string)
@@ -223,6 +240,7 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 		BaseOsForceUpgrade:      baseOsForceUpgrade,
 		BaseOsRetryCounter:      baseOsRetryCounter,
 		BaseOsRetryTime:         baseOsRetryTime,
+		BondAdapter:             bondAdapter,
 		ClientIP:                clientIP,
 		ClusterID:               clusterID,
 		ClusterInterface:        clusterInterface,
@@ -295,6 +313,23 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 	baseOsForceUpgrade := m["base_os_force_upgrade"].(bool)
 	baseOsRetryCounter := int64(m["base_os_retry_counter"].(int)) // int64
 	baseOsRetryTime := m["base_os_retry_time"].(string)
+	var bondAdapter []*models.BondAdapter // []*BondAdapter
+	bondAdapterInterface, bondAdapterIsSet := m["bond_adapter"]
+	if bondAdapterIsSet {
+		var items []interface{}
+		if listItems, isList := bondAdapterInterface.([]interface{}); isList {
+			items = listItems
+		} else {
+			items = bondAdapterInterface.(*schema.Set).List()
+		}
+		for _, v := range items {
+			if v == nil {
+				continue
+			}
+			m := BondAdapterModelFromMap(v.(map[string]interface{}))
+			bondAdapter = append(bondAdapter, m)
+		}
+	}
 	clientIP := m["client_ip"].(string)
 	clusterID := m["cluster_id"].(string)
 	clusterInterface := m["cluster_interface"].(string)
@@ -478,6 +513,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 		BaseOsForceUpgrade:      baseOsForceUpgrade,
 		BaseOsRetryCounter:      baseOsRetryCounter,
 		BaseOsRetryTime:         baseOsRetryTime,
+		BondAdapter:             bondAdapter,
 		ClientIP:                clientIP,
 		ClusterID:               clusterID,
 		ClusterInterface:        clusterInterface,
@@ -529,6 +565,7 @@ func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("base_os_force_upgrade", m.BaseOsForceUpgrade)
 	d.Set("base_os_retry_counter", m.BaseOsRetryCounter)
 	d.Set("base_os_retry_time", m.BaseOsRetryTime)
+	d.Set("bond_adapter", SetBondAdapterSubResourceData(m.BondAdapter))
 	d.Set("client_ip", m.ClientIP)
 	d.Set("cluster_id", m.ClusterID)
 	d.Set("cluster_interface", m.ClusterInterface)
@@ -582,6 +619,7 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties["base_os_force_upgrade"] = DeviceConfigModel.BaseOsForceUpgrade
 			properties["base_os_retry_counter"] = DeviceConfigModel.BaseOsRetryCounter
 			properties["base_os_retry_time"] = DeviceConfigModel.BaseOsRetryTime
+			properties["bond_adapter"] = SetBondAdapterSubResourceData(DeviceConfigModel.BondAdapter)
 			properties["client_ip"] = DeviceConfigModel.ClientIP
 			properties["cluster_id"] = DeviceConfigModel.ClusterID
 			properties["cluster_interface"] = DeviceConfigModel.ClusterInterface
@@ -679,6 +717,17 @@ func Node() map[string]*schema.Schema {
 			Description: `device baseos retry time`,
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+
+		"bond_adapter": {
+			Description:      `A list of bond interfaces`,
+			Type:             schema.TypeList, //GoType: []*BondAdapter
+			DiffSuppressFunc: diffSuppressBondAdapterListOrder("bond_adapter"),
+			Elem: &schema.Resource{
+				Schema: BondAdapterSchema(),
+			},
+			// ConfigMode: schema.SchemaConfigModeAttr,
+			Optional: true,
 		},
 
 		"client_ip": {
@@ -973,7 +1022,9 @@ func Node() map[string]*schema.Schema {
 			Description: `device model arch type`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Default:     "AMD64",
+			// Computed because the backend derives this from the device model
+			// (e.g. "AMD64") and returns it even when not set by the user.
+			Computed: true,
 		},
 
 		"vlan_adapters": {
@@ -997,6 +1048,7 @@ func GetDeviceConfigPropertyFields() (t []string) {
 		"base_os_force_upgrade",
 		"base_os_retry_counter",
 		"base_os_retry_time",
+		"bond_adapter",
 		"client_ip",
 		"cluster_id",
 		"cluster_interface",
