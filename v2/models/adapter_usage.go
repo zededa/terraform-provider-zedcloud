@@ -21,6 +21,8 @@ import (
 //   - ADAPTER_USAGE_APP_DIRECT: Adapter is directly used by one edge application
 //   - ADAPTER_USAGE_APP_SHARED: Adapter can be shared by different network instances
 //   - ADAPTER_USAGE_DISABLED: Adapter disabled, for future use
+//   - ADAPTER_USAGE_VLANS_ONLY: Adapter is used exclusively for VLANs
+//   - ADAPTER_USAGE_BOND_MEMBER: Adapter is used exclusively for BOND interfaces
 //
 // swagger:model AdapterUsage
 type AdapterUsage string
@@ -50,6 +52,12 @@ const (
 
 	// AdapterUsageADAPTERUSAGEDISABLED captures enum value "ADAPTER_USAGE_DISABLED"
 	AdapterUsageADAPTERUSAGEDISABLED AdapterUsage = "ADAPTER_USAGE_DISABLED"
+
+	// AdapterUsageADAPTERUSAGEVLANSONLY captures enum value "ADAPTER_USAGE_VLANS_ONLY"
+	AdapterUsageADAPTERUSAGEVLANSONLY AdapterUsage = "ADAPTER_USAGE_VLANS_ONLY"
+
+	// AdapterUsageADAPTERUSAGEBONDMEMBER captures enum value "ADAPTER_USAGE_BOND_MEMBER"
+	AdapterUsageADAPTERUSAGEBONDMEMBER AdapterUsage = "ADAPTER_USAGE_BOND_MEMBER"
 )
 
 // for schema
@@ -57,7 +65,7 @@ var adapterUsageEnum []interface{}
 
 func init() {
 	var res []AdapterUsage
-	if err := json.Unmarshal([]byte(`["ADAPTER_USAGE_UNSPECIFIED","ADAPTER_USAGE_MANAGEMENT","ADAPTER_USAGE_APP_DIRECT","ADAPTER_USAGE_APP_SHARED","ADAPTER_USAGE_DISABLED"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["ADAPTER_USAGE_UNSPECIFIED","ADAPTER_USAGE_MANAGEMENT","ADAPTER_USAGE_APP_DIRECT","ADAPTER_USAGE_APP_SHARED","ADAPTER_USAGE_DISABLED","ADAPTER_USAGE_VLANS_ONLY","ADAPTER_USAGE_BOND_MEMBER"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

@@ -182,17 +182,17 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 	}
 	interfaces {
 		intfname   = "ethernet2"
-		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		intf_usage = "ADAPTER_USAGE_BOND_MEMBER"
 		ztype      = "IO_TYPE_ETH"
 	}
 	interfaces {
 		intfname   = "ethernet3"
-		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		intf_usage = "ADAPTER_USAGE_BOND_MEMBER"
 		ztype      = "IO_TYPE_ETH"
 	}
 	interfaces {
 		intfname   = "ethernet4"
-		intf_usage = "ADAPTER_USAGE_UNSPECIFIED"
+		intf_usage = "ADAPTER_USAGE_BOND_MEMBER"
 		ztype      = "IO_TYPE_ETH"
 	}
 
