@@ -18,7 +18,7 @@ import (
 //
 // - IO_TYPE_UNSPECIFIED: No operation/ Invalid peration
 //   - IO_TYPE_ETH: Ethernet
-//   - IO_TYPE_USB: USB Type
+//   - IO_TYPE_USB: USB Type - General
 //   - IO_TYPE_COM: Communication Port
 //   - IO_TYPE_AUDIO: Audio Port
 //   - IO_TYPE_WLAN: wireless LAN
@@ -27,6 +27,14 @@ import (
 //   - IO_TYPE_LTE: LTE Interfaces
 //   - IO_TYPE_STORAGE_NVME_DEVICE: Storage NVME device
 //   - IO_TYPE_STORAGE_SATA_DEVICE: Storage SATA device
+//   - IO_TYPE_ETH_PF: Physical Interface (PF) of the Virtual Functions
+//   - IO_TYPE_ETH_VF: Virtual Function (VF)
+//   - IO_TYPE_USB_CONTROLLER: USB Type - Controller
+//   - IO_TYPE_USB_DEVICE: USB Type - Device
+//   - IO_TYPE_CAN: CAN - Device
+//   - IO_TYPE_VCAN: VCAN - Virtual CAN device
+//   - IO_TYPE_LCAN: LCAN - Logical CAN device
+//   - IO_TYPE_VLAN: VLAN - Virtual LAN device
 //   - IO_TYPE_OTHER: Other Io Types
 //
 // swagger:model IoType
@@ -76,6 +84,30 @@ const (
 	// IoTypeIOTYPESTORAGESATADEVICE captures enum value "IO_TYPE_STORAGE_SATA_DEVICE"
 	IoTypeIOTYPESTORAGESATADEVICE IoType = "IO_TYPE_STORAGE_SATA_DEVICE"
 
+	// IoTypeIOTYPEETHPF captures enum value "IO_TYPE_ETH_PF"
+	IoTypeIOTYPEETHPF IoType = "IO_TYPE_ETH_PF"
+
+	// IoTypeIOTYPEETHVF captures enum value "IO_TYPE_ETH_VF"
+	IoTypeIOTYPEETHVF IoType = "IO_TYPE_ETH_VF"
+
+	// IoTypeIOTYPEUSBCONTROLLER captures enum value "IO_TYPE_USB_CONTROLLER"
+	IoTypeIOTYPEUSBCONTROLLER IoType = "IO_TYPE_USB_CONTROLLER"
+
+	// IoTypeIOTYPEUSBDEVICE captures enum value "IO_TYPE_USB_DEVICE"
+	IoTypeIOTYPEUSBDEVICE IoType = "IO_TYPE_USB_DEVICE"
+
+	// IoTypeIOTYPECAN captures enum value "IO_TYPE_CAN"
+	IoTypeIOTYPECAN IoType = "IO_TYPE_CAN"
+
+	// IoTypeIOTYPEVCAN captures enum value "IO_TYPE_VCAN"
+	IoTypeIOTYPEVCAN IoType = "IO_TYPE_VCAN"
+
+	// IoTypeIOTYPELCAN captures enum value "IO_TYPE_LCAN"
+	IoTypeIOTYPELCAN IoType = "IO_TYPE_LCAN"
+
+	// IoTypeIOTYPEVLAN captures enum value "IO_TYPE_VLAN"
+	IoTypeIOTYPEVLAN IoType = "IO_TYPE_VLAN"
+
 	// IoTypeIOTYPEOTHER captures enum value "IO_TYPE_OTHER"
 	IoTypeIOTYPEOTHER IoType = "IO_TYPE_OTHER"
 )
@@ -85,7 +117,7 @@ var ioTypeEnum []interface{}
 
 func init() {
 	var res []IoType
-	if err := json.Unmarshal([]byte(`["IO_TYPE_UNSPECIFIED","IO_TYPE_ETH","IO_TYPE_USB","IO_TYPE_COM","IO_TYPE_AUDIO","IO_TYPE_WLAN","IO_TYPE_WWAN","IO_TYPE_HDMI","IO_TYPE_LTE","IO_TYPE_STORAGE_NVME_DEVICE","IO_TYPE_STORAGE_SATA_DEVICE","IO_TYPE_OTHER"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["IO_TYPE_UNSPECIFIED","IO_TYPE_ETH","IO_TYPE_USB","IO_TYPE_COM","IO_TYPE_AUDIO","IO_TYPE_WLAN","IO_TYPE_WWAN","IO_TYPE_HDMI","IO_TYPE_LTE","IO_TYPE_STORAGE_NVME_DEVICE","IO_TYPE_STORAGE_SATA_DEVICE","IO_TYPE_ETH_PF","IO_TYPE_ETH_VF","IO_TYPE_USB_CONTROLLER","IO_TYPE_USB_DEVICE","IO_TYPE_CAN","IO_TYPE_VCAN","IO_TYPE_LCAN","IO_TYPE_VLAN","IO_TYPE_OTHER"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {

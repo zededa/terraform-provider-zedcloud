@@ -74,7 +74,7 @@ interfaces:
       sharedlabels: []
       ztype: IO_TYPE_ETH
     - cost: 0
-      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfusage: ADAPTER_USAGE_BOND_MEMBER
       intfname: ethernet2
       netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
       ipaddr: ""
@@ -84,7 +84,7 @@ interfaces:
       sharedlabels: []
       ztype: IO_TYPE_ETH
     - cost: 0
-      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfusage: ADAPTER_USAGE_BOND_MEMBER
       intfname: ethernet3
       netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
       ipaddr: ""
@@ -94,7 +94,7 @@ interfaces:
       sharedlabels: []
       ztype: IO_TYPE_ETH
     - cost: 0
-      intfusage: ADAPTER_USAGE_UNSPECIFIED
+      intfusage: ADAPTER_USAGE_BOND_MEMBER
       intfname: ethernet4
       netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
       ipaddr: ""
