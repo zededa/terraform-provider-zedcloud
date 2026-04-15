@@ -69,3 +69,7 @@ tfclean:
 	rm -f .terraform.lock.hcl
 	rm -f terraform.log
 	rm -f terraform.tfstate
+
+.PHONY: docs
+docs:
+	tfplugindocs generate --provider-dir v2 --provider-name terraform-provider-zedcloud --rendered-website-dir ../docs
