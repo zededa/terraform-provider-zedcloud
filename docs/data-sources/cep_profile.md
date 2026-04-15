@@ -17,16 +17,16 @@ description: |-
 
 ### Required
 
-- `csr_profile` (Block List, Min: 1, Max: 1) Certificate Signing Request configuration (see [below for nested schema](#nestedblock--csr_profile))
 - `name` (String) User-defined unique name for the profile
-- `scep_url` (String) Full SCEP server URL including scheme, host, and path
-- `title` (String) Human-readable display title
 
 ### Optional
 
 - `ca_cert_pem` (List of String) PEM-encoded trusted CA certificates for SCEP server validation
+- `csr_profile` (Block List, Max: 1) Certificate Signing Request configuration (see [below for nested schema](#nestedblock--csr_profile))
 - `description` (String) Detailed description of the profile purpose
+- `scep_url` (String) Full SCEP server URL including scheme, host, and path
 - `secret` (Block List, Max: 1) Write-only secret fields (challenge password) (see [below for nested schema](#nestedblock--secret))
+- `title` (String) Human-readable display title
 - `use_controller_proxy` (Boolean) If true, SCEP requests are routed through the controller proxy
 
 ### Read-Only
