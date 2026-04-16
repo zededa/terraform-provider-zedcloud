@@ -19,19 +19,18 @@ KubernetesSnapshots kubernetes snapshots API
 
 func KubernetesSnapshots() *schema.Resource {
 	return &schema.Resource{
-		/*
-			CreateContext: KubernetesSnapshots_CreateSnapshot,
-			DeleteContext: KubernetesSnapshots_DeleteSnapshot,
-			CreateContext: KubernetesSnapshots_RestoreSnapshot,
-		*/
-		Schema: zschema.KubernetesSnapshotsSchema(),
+		CreateContext: KubernetesSnapshots_CreateSnapshot,
+		ReadContext:   KubernetesSnapshots_ListSnapshots,
+		DeleteContext: KubernetesSnapshots_DeleteSnapshot,
+		UpdateContext: KubernetesSnapshots_RestoreSnapshot,
+		Schema:        zschema.KubernetesSnapshotsSchema(),
 	}
 }
 
 func DataResourceKubernetesSnapshots() *schema.Resource {
 	return &schema.Resource{
 		ReadContext: KubernetesSnapshots_ListSnapshots,
-		//Schema:      zschema.KubernetesSnapshotsSchema(),
+		Schema:      zschema.KubernetesSnapshotsSchema(),
 	}
 }
 
