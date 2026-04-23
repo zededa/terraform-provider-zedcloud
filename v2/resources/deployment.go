@@ -3,8 +3,10 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -28,9 +30,28 @@ It will help create a proper dependency graph for the Terraform plan.`,
 		UpdateContext: UpdateDeployment,
 		Schema:        zschema.Deployment(),
 		Importer: &schema.ResourceImporter{
-			StateContext: schema.ImportStatePassthroughContext,
+			StateContext: deploymentImportStateContext,
 		},
 	}
+}
+
+// deploymentImportStateContext is a custom import function that accepts a
+// composite ID in the form "project_id:deployment_id". Both parts are
+// required because the GetByID API endpoint requires the project ID.
+func deploymentImportStateContext(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+	parts := strings.SplitN(d.Id(), ":", 2)
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return nil, fmt.Errorf(
+			"invalid import ID %q: expected format \"project_id:deployment_id\"",
+			d.Id(),
+		)
+	}
+	projectID, deploymentID := parts[0], parts[1]
+	if err := d.Set("project_id", projectID); err != nil {
+		return nil, fmt.Errorf("failed to set project_id: %w", err)
+	}
+	d.SetId(deploymentID)
+	return []*schema.ResourceData{d}, nil
 }
 
 // CreateDeployment creates a new deployment in ZedCloud.
