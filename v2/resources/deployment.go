@@ -330,6 +330,7 @@ func GetDeploymentByID(ctx context.Context, d *schema.ResourceData, m interface{
 
 	respModel := resp.GetPayload()
 	zschema.SetDeploymentResourceData(d, respModel)
+	d.SetId(id)
 
 	return diags
 }
