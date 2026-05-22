@@ -9,7 +9,7 @@ import (
 )
 
 func TestDeployment_DataSource(t *testing.T) {
-	createCfg := testhelper.MustGetTestInput(t, "deployment/create.tf")
+	createCfg := testhelper.MustGetTestInput(t, "deployment/datasource_create.tf")
 	dsCfg := testhelper.MustGetTestInput(t, "deployment/datasource.tf")
 	combined := createCfg + "\n" + dsCfg
 
@@ -27,7 +27,7 @@ func TestDeployment_DataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"data.zedcloud_deployment.by_name",
 						"name",
-						"test_tf_provider-deployment",
+						"test_tf_provider-deployment-ds",
 					),
 					resource.TestCheckResourceAttr(
 						"data.zedcloud_deployment.by_name",
