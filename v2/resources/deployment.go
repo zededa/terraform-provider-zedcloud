@@ -22,7 +22,7 @@ func DeploymentResource() *schema.Resource {
 	return &schema.Resource{
 		Description: `Resource "zedcloud_deployment" manages deployments in ZedCloud. A deployment is a collection of policies applied to a device.
 The api design does not support updates on a deployment. If you want to add changes to a deployment, you need to create a new version.
-When you create a new version of a deployment, it makes sense to show that it depends on the previous version. 
+When you create a new version of a deployment, it makes sense to show that it depends on the previous version.
 It will help create a proper dependency graph for the Terraform plan.`,
 		CreateContext: CreateDeployment,
 		DeleteContext: DeleteDeployment,
@@ -33,6 +33,115 @@ It will help create a proper dependency graph for the Terraform plan.`,
 			StateContext: deploymentImportStateContext,
 		},
 	}
+}
+
+// DeploymentDataSource returns the schema and read function for the
+// zedcloud_deployment data source. It supports lookup by id or name; in
+// both cases project_id is required. When multiple versions of a
+// deployment share a name, the latest revision is returned.
+func DeploymentDataSource() *schema.Resource {
+	s := zschema.Deployment()
+	s["id"] = &schema.Schema{
+		Type:        schema.TypeString,
+		Optional:    true,
+		Computed:    true,
+		Description: "system generated unique id for a deployment",
+	}
+	s["name"] = &schema.Schema{
+		Type:        schema.TypeString,
+		Optional:    true,
+		Computed:    true,
+		Description: "user defined name for the deployment",
+	}
+	return &schema.Resource{
+		Description: `Data source "zedcloud_deployment" reads an existing deployment from ZedCloud. Look up by ` + "`id`" + ` or ` + "`name`" + ` within a ` + "`project_id`" + `.`,
+		ReadContext: GetDeployment,
+		Schema:      s,
+	}
+}
+
+// GetDeployment is the read function for the zedcloud_deployment data
+// source. Dispatches to id- or name-based lookup; project_id is required
+// either way.
+func GetDeployment(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if _, ok := d.GetOk("project_id"); !ok {
+		return append(diags, diag.Errorf("missing required parameter: project_id")...)
+	}
+
+	_, hasID := d.GetOk("id")
+	_, hasName := d.GetOk("name")
+	if !hasID && !hasName {
+		return append(diags, diag.Errorf("one of `id` or `name` must be set")...)
+	}
+
+	if hasID {
+		return GetDeploymentByID(ctx, d, m)
+	}
+	return getDeploymentByName(ctx, d, m)
+}
+
+// getDeploymentByName lists deployments in a project, filters by the
+// configured name, picks the latest revision, then fetches the full
+// deployment by id to populate state.
+func getDeploymentByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	client := m.(*api_client.ZedcloudAPI)
+	projectID := d.Get("project_id").(string)
+	wantName := d.Get("name").(string)
+
+	listParams := deployment.NewGetListbyIdParams()
+	listParams.SetProjectID(projectID)
+
+	listResp, err := client.Deployment.GetListByProjectID(listParams, nil)
+	if err != nil {
+		log.Printf("[TRACE] deployment list error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			return append(diags, ds...)
+		}
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
+
+	var matchID string
+	var matchVersion int
+	for _, dep := range listResp.GetPayload().List {
+		if dep.Name != wantName {
+			continue
+		}
+		if dep.Revision == nil || dep.Revision.Curr == nil {
+			continue
+		}
+		v, err := strconv.Atoi(*dep.Revision.Curr)
+		if err != nil {
+			continue
+		}
+		if matchID == "" || v > matchVersion {
+			matchID = dep.ID
+			matchVersion = v
+		}
+	}
+
+	if matchID == "" {
+		return append(diags, diag.Errorf("no deployment named %q found in project %s", wantName, projectID)...)
+	}
+
+	getParams := deployment.NewGetByIDParams()
+	getParams.ID = matchID
+	getParams.ProjectID = projectID
+	resp, err := client.Deployment.GetByID(getParams, nil)
+	if err != nil {
+		log.Printf("[TRACE] deployment get by id error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			return append(diags, ds...)
+		}
+		return append(diags, diag.Errorf("unexpected: %s", err)...)
+	}
+
+	zschema.SetDeploymentResourceData(d, resp.GetPayload())
+	d.SetId(matchID)
+	return diags
 }
 
 // deploymentImportStateContext is a custom import function that accepts a
@@ -221,6 +330,7 @@ func GetDeploymentByID(ctx context.Context, d *schema.ResourceData, m interface{
 
 	respModel := resp.GetPayload()
 	zschema.SetDeploymentResourceData(d, respModel)
+	d.SetId(id)
 
 	return diags
 }

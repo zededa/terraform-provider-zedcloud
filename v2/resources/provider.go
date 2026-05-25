@@ -50,6 +50,7 @@ func Provider() *schema.Provider {
 			"zedcloud_datastore":                 DatastoreDataSource(),
 			"zedcloud_volume_instance":           VolumeInstanceDataSource(),
 			"zedcloud_project":                   ProjectDataSource(),
+			"zedcloud_deployment":                DeploymentDataSource(),
 			"zedcloud_user":                      UserDataSource(),
 			"zedcloud_role":                      RoleDataSource(),
 			"zedcloud_credential":                CredentialDataSource(),
