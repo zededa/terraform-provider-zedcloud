@@ -249,6 +249,10 @@ func DeleteNetwork(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	_, err := client.Network.DeleteNetwork(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] network delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

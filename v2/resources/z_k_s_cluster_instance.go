@@ -365,6 +365,10 @@ func DeleteZKSInstance(ctx context.Context, d *schema.ResourceData, m interface{
 
 	_, err := client.ZksClusterInstance.DeleteZKSInstance(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] DeleteZKSInstance error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

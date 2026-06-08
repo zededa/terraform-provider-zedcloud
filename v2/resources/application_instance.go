@@ -263,6 +263,10 @@ func DeleteApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 
 	_, err := client.ApplicationInstance.Delete(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] edge application instance delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

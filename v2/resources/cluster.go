@@ -255,6 +255,10 @@ func DeleteCluster(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	_, err := client.Cluster.DeleteCluster(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] edge node cluster delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

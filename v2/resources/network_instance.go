@@ -258,6 +258,10 @@ func DeleteNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 
 	_, err := client.NetworkInstance.Delete(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] network instance delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

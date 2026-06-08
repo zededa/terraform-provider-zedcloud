@@ -288,6 +288,10 @@ func DeleteImage(ctx context.Context, d *schema.ResourceData, m interface{}) dia
 
 	_, err := client.Image.Delete(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] image delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
