@@ -108,7 +108,8 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   interfaces {
     cost = 0
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
-    intfname = "ethernet0"
+    intfname = "defaultIPv4"
+    ipaddr = "127.0.0.1"
     tags = {}
   }
   config_item {
