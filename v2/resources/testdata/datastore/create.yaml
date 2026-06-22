@@ -1,4 +1,4 @@
-dsfqdn: "my-datastore.my-company.com"
+dsfqdn: "https://my-datastore.my-company.com"
 dspath: "download/AMD64"
 dstype: "DATASTORE_TYPE_AZUREBLOB"
 dsstatus: "DATASTORE_STATUS_ACTIVE"
