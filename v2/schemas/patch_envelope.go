@@ -109,7 +109,11 @@ func PatchEnvelopeModelFromMap(m map[string]interface{}) *models.PatchEnvelope {
 
 func SetPatchEnvelopeResourceData(d *schema.ResourceData, m *models.PatchEnvelope) {
 	d.Set("action", m.Action)
-	d.Set("artifacts", SetBinaryArtifactSubResourceData(m.Artifacts))
+	// The backend does not preserve artifact ordering, so reorder the response
+	// to match the order already in state before writing it. artifacts is a
+	// positional TypeList; without this a reordered response shows up as a
+	// perpetual (and flaky) plan diff.
+	d.Set("artifacts", SetBinaryArtifactSubResourceData(reorderBinaryArtifactsToMatchState(d, m.Artifacts)))
 	d.Set("description", m.Description)
 	d.Set("device_count", m.DeviceCount)
 	d.Set("id", m.ID)
@@ -119,6 +123,101 @@ func SetPatchEnvelopeResourceData(d *schema.ResourceData, m *models.PatchEnvelop
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("title", m.Title)
 	d.Set("user_defined_version", m.UserDefinedVersion)
+}
+
+// reorderBinaryArtifactsToMatchState returns apiArtifacts reordered to match the
+// order of the "artifacts" list currently held in d, matching elements by a
+// content signature (artifact type + file name) that is present in both the
+// configured/state value and the API response. If the lists cannot be matched
+// 1:1 (e.g. different length, or an identifying field changed), the API order
+// is returned unchanged so no data is dropped or duplicated.
+func reorderBinaryArtifactsToMatchState(d *schema.ResourceData, apiArtifacts []*models.BinaryArtifact) []*models.BinaryArtifact {
+	raw, ok := d.GetOk("artifacts")
+	if !ok {
+		return apiArtifacts
+	}
+	var stateList []interface{}
+	switch v := raw.(type) {
+	case []interface{}:
+		stateList = v
+	case *schema.Set:
+		stateList = v.List()
+	default:
+		return apiArtifacts
+	}
+	if len(stateList) != len(apiArtifacts) {
+		return apiArtifacts
+	}
+
+	used := make([]bool, len(apiArtifacts))
+	ordered := make([]*models.BinaryArtifact, 0, len(apiArtifacts))
+	for _, s := range stateList {
+		sm, ok := s.(map[string]interface{})
+		if !ok {
+			return apiArtifacts
+		}
+		key := binaryArtifactStateKey(sm)
+		matched := -1
+		for i, a := range apiArtifacts {
+			if !used[i] && binaryArtifactModelKey(a) == key {
+				matched = i
+				break
+			}
+		}
+		if matched < 0 {
+			return apiArtifacts
+		}
+		ordered = append(ordered, apiArtifacts[matched])
+		used[matched] = true
+	}
+	return ordered
+}
+
+// binaryArtifactModelKey builds the match signature for an API artifact.
+func binaryArtifactModelKey(a *models.BinaryArtifact) string {
+	switch {
+	case a == nil:
+		return ""
+	case a.Base64Artifact != nil:
+		return "inline|" + a.Base64Artifact.FileNameToUse
+	case a.BinaryArtifact != nil:
+		return "binary|" + a.BinaryArtifact.FileNameToUse
+	}
+	return "unknown"
+}
+
+// binaryArtifactStateKey builds the match signature for an artifact held in state.
+func binaryArtifactStateKey(m map[string]interface{}) string {
+	if name, ok := nestedArtifactFileName(m, "base64_artifact"); ok {
+		return "inline|" + name
+	}
+	if name, ok := nestedArtifactFileName(m, "binary_artifact"); ok {
+		return "binary|" + name
+	}
+	return "unknown"
+}
+
+// nestedArtifactFileName extracts file_name_to_use from a nested base64_artifact
+// or binary_artifact block, reporting whether that block is present.
+func nestedArtifactFileName(m map[string]interface{}, key string) (string, bool) {
+	var list []interface{}
+	switch v := m[key].(type) {
+	case []interface{}:
+		list = v
+	case *schema.Set:
+		list = v.List()
+	default:
+		return "", false
+	}
+	if len(list) == 0 {
+		return "", false
+	}
+	inner, ok := list[0].(map[string]interface{})
+	if !ok {
+		return "", false
+	}
+	name, _ := inner["file_name_to_use"].(string)
+	return name, true
 }
 
 func SetPatchEnvelopeSubResourceData(m []*models.PatchEnvelope) (d []*map[string]interface{}) {

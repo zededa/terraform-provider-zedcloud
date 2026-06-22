@@ -94,6 +94,18 @@ func testPatchEnvelopeReferenceUpdateAttributes(t *testing.T, got, expected *mod
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
 
+		// The backend does not guarantee artifact ordering, so match artifacts
+		// by type (inline base64 vs external binary) rather than by position.
+		gotInline, gotBinary := splitArtifactsByType(got.Artifacts)
+		expectedInline, expectedBinary := splitArtifactsByType(expected.Artifacts)
+
+		if gotInline == nil || expectedInline == nil {
+			return fmt.Errorf("%s: missing inline base64 artifact (got: %v, expected: %v)", t.Name(), gotInline != nil, expectedInline != nil)
+		}
+		if gotBinary == nil || expectedBinary == nil {
+			return fmt.Errorf("%s: missing external binary artifact (got: %v, expected: %v)", t.Name(), gotBinary != nil, expectedBinary != nil)
+		}
+
 		ignoredFields = []string{
 			"ID",
 			"BinaryArtifact",
@@ -101,25 +113,36 @@ func testPatchEnvelopeReferenceUpdateAttributes(t *testing.T, got, expected *mod
 			"Format",
 		}
 		opts = cmpopts.IgnoreFields(models.BinaryArtifact{}, ignoredFields...)
-		if diff := cmp.Diff(*got.Artifacts[0], *expected.Artifacts[0], opts); len(diff) != 0 {
+		if diff := cmp.Diff(*gotInline, *expectedInline, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
 
-		ignoredFields = []string{}
-		opts = cmpopts.IgnoreFields(models.InlineOpaqueBase64Data{}, ignoredFields...)
-		if diff := cmp.Diff(*got.Artifacts[0].Base64Artifact, *expected.Artifacts[0].Base64Artifact, opts); len(diff) != 0 {
+		opts = cmpopts.IgnoreFields(models.InlineOpaqueBase64Data{})
+		if diff := cmp.Diff(*gotInline.Base64Artifact, *expectedInline.Base64Artifact, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
-		ignoredFields = []string{
-			"ImageID",
-		}
-		opts = cmpopts.IgnoreFields(models.ExternalOpaqueBinaryBlob{}, ignoredFields...)
-		if diff := cmp.Diff(*got.Artifacts[1].BinaryArtifact, *expected.Artifacts[1].BinaryArtifact, opts); len(diff) != 0 {
+		opts = cmpopts.IgnoreFields(models.ExternalOpaqueBinaryBlob{}, "ImageID")
+		if diff := cmp.Diff(*gotBinary.BinaryArtifact, *expectedBinary.BinaryArtifact, opts); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
 
 		return nil
 	}
+}
+
+// splitArtifactsByType returns the inline base64 artifact and the external
+// binary artifact from the list, identified by which payload field is set.
+// Returns nil for a kind that is absent.
+func splitArtifactsByType(artifacts []*models.BinaryArtifact) (inline, binary *models.BinaryArtifact) {
+	for _, a := range artifacts {
+		switch {
+		case a.Base64Artifact != nil:
+			inline = a
+		case a.BinaryArtifact != nil:
+			binary = a
+		}
+	}
+	return inline, binary
 }
 
 // testPatchEnvelopeReferenceDestroy verifies the PatchEnvelope has been destroyed.
