@@ -14,6 +14,9 @@ resource "zedcloud_project" "test_tf_provider" {
 
 		# optional
 		type = "TAG_TYPE_PROJECT"
+		attr = {
+			"debug.enable.ssh" = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID7DLllDbRg3j5oVJyWrAGtzEsS7RAVJIu0sG7kirZUV test@zededa.com"
+		}
 		attestation_policy {
 		    # computed
         # id =

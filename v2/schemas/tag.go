@@ -31,6 +31,18 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		}
 	}
 
+	attr := map[string]string{}
+	attrInterface, attrIsSet := d.GetOk("attr")
+	if attrIsSet {
+		attrMap := attrInterface.(map[string]interface{})
+		for k, v := range attrMap {
+			if v == nil {
+				continue
+			}
+			attr[k] = v.(string)
+		}
+	}
+
 	description, _ := d.Get("description").(string)
 	var edgeviewPolicy *models.Policy // Policy
 	edgeviewPolicyInterface, edgeviewPolicyIsSet := d.GetOk("edgeview_policy")
@@ -102,6 +114,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 	return &models.Tag{
 		AppPolicy:                           appPolicy,
 		AttestationPolicy:                   attestationPolicy,
+		Attr:                                attr,
 		ConfigurationLockPolicy:             configurationLockPolicy,
 		Description:                         description,
 		EdgeviewPolicy:                      edgeviewPolicy,
@@ -142,6 +155,18 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		configurationLockPolicyMap := configurationLockPolicyInterface.([]interface{})
 		if len(configurationLockPolicyMap) > 0 {
 			configurationLockPolicy = PolicyConfigModelFromMap(configurationLockPolicyMap[0].(map[string]interface{}))
+		}
+	}
+	//
+	attr := map[string]string{}
+	attrInterface, attrIsSet := m["attr"]
+	if attrIsSet && attrInterface != nil {
+		attrMap := attrInterface.(map[string]interface{})
+		for k, v := range attrMap {
+			if v == nil {
+				continue
+			}
+			attr[k] = v.(string)
 		}
 	}
 	//
@@ -223,6 +248,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 	return &models.Tag{
 		AppPolicy:                           appPolicy,
 		AttestationPolicy:                   attestationPolicy,
+		Attr:                                attr,
 		ConfigurationLockPolicy:             configurationLockPolicy,
 		Description:                         description,
 		EdgeviewPolicy:                      edgeviewPolicy,
@@ -317,6 +343,7 @@ func Project() map[string]*schema.Schema {
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
+			Optional: true,
 			Computed: true,
 		},
 
