@@ -18,6 +18,12 @@ func VlanAdapterModel(d *schema.ResourceData) *models.VlanAdapter {
 			interfaceVar = SysInterfaceModelFromMap(interfaceMap[0].(map[string]interface{}))
 		}
 	}
+	if interfaceVar != nil {
+		// Ztype on a VLAN sub-interface is auto-populated by the API (IO_TYPE_VLAN) and
+		// must not be sent back: create accepts an empty ztype but update rejects the
+		// API-derived value with a 400. Clear it so the update payload matches create.
+		interfaceVar.Ztype = ""
+	}
 	interfaceName, _ := d.Get("interface_name").(string)
 	logicalLabel, _ := d.Get("logical_label").(string)
 	lowerLayerName, _ := d.Get("lower_layer_name").(string)
@@ -40,6 +46,10 @@ func VlanAdapterModelFromMap(m map[string]interface{}) *models.VlanAdapter {
 		if len(interfaceMap) > 0 {
 			interfaceVar = SysInterfaceModelFromMap(interfaceMap[0].(map[string]interface{}))
 		}
+	}
+	if interfaceVar != nil {
+		// See VlanAdapterModel: Ztype is API-auto-populated and rejected on update.
+		interfaceVar.Ztype = ""
 	}
 	//
 	interfaceName := m["interface_name"].(string)

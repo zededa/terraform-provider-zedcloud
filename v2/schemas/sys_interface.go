@@ -309,6 +309,7 @@ func SysInterfaceSchema() map[string]*schema.Schema {
 			Description: `Z Type`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 	}
 }
