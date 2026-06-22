@@ -41,6 +41,7 @@ interfaces:
       intfusage: ADAPTER_USAGE_MANAGEMENT
       allowlocalmodifications: false
       intfname: eth0
+      ztype: IO_TYPE_ETH
       ipaddr: 10.1.1.3
       macaddr: ""
       netdhcp: NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC

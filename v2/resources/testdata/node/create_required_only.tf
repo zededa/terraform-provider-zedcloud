@@ -95,10 +95,34 @@ resource "zedcloud_model" "test_tf_provider" {
 	]
 }
 
+resource "zedcloud_network" "test_tf_provider" {
+	depends_on = [
+		zedcloud_project.test_tf_provider
+	]
+	name = "test_tf_provider-required_only-net"
+	project_id = zedcloud_project.test_tf_provider.id
+	title = "test_tf_provider-required_only-net"
+	kind = "NETWORK_KIND_V4"
+	ip {
+		dhcp = "NETWORK_DHCP_TYPE_STATIC"
+		dhcp_range {
+			start = "172.25.24.1"
+			end = "172.25.24.3"
+		}
+		dns = ["172.25.24.254"]
+		domain = "example.com"
+		gateway = "172.25.24.254"
+		mask = "255.255.0.0"
+		ntp = ""
+		subnet = "172.25.24.0/22"
+	}
+}
+
 resource "zedcloud_edgenode" "required_only" {
 	depends_on = [
 		zedcloud_project.test_tf_provider,
-		zedcloud_model.test_tf_provider
+		zedcloud_model.test_tf_provider,
+		zedcloud_network.test_tf_provider
 	]
 	name = "test_tf_provider-required_only"
 	model_id = zedcloud_model.test_tf_provider.id
@@ -108,6 +132,10 @@ resource "zedcloud_edgenode" "required_only" {
 		cost = 0
 		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
 		intfname = "ethernet0"
+		netname = zedcloud_network.test_tf_provider.name
+		netid = zedcloud_network.test_tf_provider.id
+		net_dhcp = zedcloud_network.test_tf_provider.ip[0].dhcp
+		ipaddr = "172.25.24.2"
 		tags = {}
 	}
 }

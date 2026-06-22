@@ -23,10 +23,10 @@ interfaces:
       intfusage: ADAPTER_USAGE_MANAGEMENT
       intfname: eth0
       enablePortBasedNetworkAccessControl: false
-      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
-      ipaddr: ""
+      netdhcp: NETWORK_DHCP_TYPE_STATIC
+      ipaddr: "172.25.24.2"
       macaddr: ""
-      netname: ""
+      netname: "test_tf_provider_node_pnac-net"
       tags: {}
       sharedlabels: []
 location: ""

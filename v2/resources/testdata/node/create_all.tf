@@ -174,6 +174,10 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		intfname   = "ethernet0"
 		intf_usage = "ADAPTER_USAGE_MANAGEMENT"
 		ztype      = "IO_TYPE_ETH"
+		netname    = zedcloud_network.complete_with_pac.name
+		netid      = zedcloud_network.complete_with_pac.id
+		net_dhcp   = zedcloud_network.complete_with_pac.ip[0].dhcp
+		ipaddr     = "172.25.24.2"
 	}
 	interfaces {
 		intfname   = "ethernet1"
