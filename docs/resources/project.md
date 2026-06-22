@@ -25,6 +25,7 @@ description: |-
 
 - `app_policy` (Block List) Resource group wide policy for edge applications to be deployed on all edge nodes on this resource group (see [below for nested schema](#nestedblock--app_policy))
 - `attestation_policy` (Block List) Attestation policy to enforce on all devices of this project (see [below for nested schema](#nestedblock--attestation_policy))
+- `attr` (Map of String) Resource group wide configuration for edge nodes
 - `configuration_lock_policy` (Block List) Configuration lock prevents users to send unintentional misconfigurations (see [below for nested schema](#nestedblock--configuration_lock_policy))
 - `description` (String) Detailed description of the resource group.
 - `edgeview_policy` (Block List) Edgeview policy on devices of this project (see [below for nested schema](#nestedblock--edgeview_policy))
@@ -36,7 +37,6 @@ description: |-
 
 ### Read-Only
 
-- `attr` (Map of String) Resource group wide configuration for edge nodes
 - `cloud_policy` (List of Object) Resource group wide policy for Azure IoTEdge configuration to be applied to all edge applications (see [below for nested schema](#nestedatt--cloud_policy))
 - `id` (String) System defined universally unique Id of the resource group.
 - `module_policy` (List of Object) Resource group wide policy for Azure module configuration to be applied to all edge applications (see [below for nested schema](#nestedatt--module_policy))
