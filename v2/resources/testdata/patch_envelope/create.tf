@@ -27,7 +27,7 @@ resource "zedcloud_datastore"  "test_tf_provider" {
     zedcloud_project.test_tf_provider
   ]
   # required
-  ds_fqdn = "my-datastore.my-company.com"
+  ds_fqdn = "https://my-datastore.my-company.com"
   ds_path = "download/AMD64"
   ds_type = "DATASTORE_TYPE_AZUREBLOB"
   name = "test_tf_provider-test_datastore"

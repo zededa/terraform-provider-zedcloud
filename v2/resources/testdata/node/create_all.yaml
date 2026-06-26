@@ -56,10 +56,10 @@ interfaces:
     - cost: 0
       intfusage: ADAPTER_USAGE_MANAGEMENT
       intfname: ethernet0
-      netdhcp: NETWORK_DHCP_TYPE_UNSPECIFIED
-      ipaddr: ""
+      netdhcp: NETWORK_DHCP_TYPE_STATIC
+      ipaddr: "172.25.24.2"
       macaddr: ""
-      netname: ""
+      netname: "zedcloud_network.complete_with_pac.name"
       tags: {}
       sharedlabels: []
       ztype: IO_TYPE_ETH

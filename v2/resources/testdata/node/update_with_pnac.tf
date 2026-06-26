@@ -93,10 +93,34 @@ resource "zedcloud_model" "test_tf_provider_node_pnac" {
   depends_on = [zedcloud_brand.test_tf_provider_node_pnac]
 }
 
+resource "zedcloud_network" "test_tf_provider_node_pnac" {
+  depends_on = [
+    zedcloud_project.test_tf_provider_node_pnac
+  ]
+  name       = "test_tf_provider_node_pnac-net"
+  project_id = zedcloud_project.test_tf_provider_node_pnac.id
+  title      = "test_tf_provider_node_pnac-net"
+  kind       = "NETWORK_KIND_V4"
+  ip {
+    dhcp = "NETWORK_DHCP_TYPE_STATIC"
+    dhcp_range {
+      start = "172.25.24.1"
+      end   = "172.25.24.3"
+    }
+    dns     = ["172.25.24.254"]
+    domain  = "example.com"
+    gateway = "172.25.24.254"
+    mask    = "255.255.0.0"
+    ntp     = ""
+    subnet  = "172.25.24.0/22"
+  }
+}
+
 resource "zedcloud_edgenode" "test_tf_provider_node_pnac" {
   depends_on = [
     zedcloud_project.test_tf_provider_node_pnac,
     zedcloud_model.test_tf_provider_node_pnac,
+    zedcloud_network.test_tf_provider_node_pnac,
   ]
   name       = "test_tf_provider_node_pnac"
   title      = "test_tf_provider_node_pnac"
@@ -109,5 +133,9 @@ resource "zedcloud_edgenode" "test_tf_provider_node_pnac" {
     intfname   = "eth0"
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
     enable_port_based_network_access_control = false
+    netname    = zedcloud_network.test_tf_provider_node_pnac.name
+    netid      = zedcloud_network.test_tf_provider_node_pnac.id
+    net_dhcp   = zedcloud_network.test_tf_provider_node_pnac.ip[0].dhcp
+    ipaddr     = "172.25.24.2"
   }
 }

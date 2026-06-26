@@ -114,7 +114,7 @@ resource "zedcloud_edgenode" "test_tf_runtime_node" {
 }
 
 resource "zedcloud_datastore" "test_datastore_runtime" {
-  ds_fqdn             = "ftp:://fake-datastore.com"
+  ds_fqdn             = "fake-datastore.com:22"
   ds_path             = ""
   ds_type             = "DATASTORE_TYPE_SFTP"
   name                = "test_tf_provider-ftp-runtime"
