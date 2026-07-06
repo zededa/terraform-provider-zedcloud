@@ -154,6 +154,12 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		return diag.Errorf("missing client parameter: id")
 	}
 	newNode := zschema.NodeModel(d)
+	// Use the revision we just fetched from the server as the optimistic-lock
+	// token instead of the (possibly stale) value cached in Terraform state.
+	// The device version can advance out-of-band between Terraform's last
+	// refresh and this update; sending the stale revision makes the API reject
+	// the update with HTTP 409 "Version mismatch".
+	newNode.Revision = existingNode.Revision
 	params.SetBody(newNode)
 
 	// Call node update
