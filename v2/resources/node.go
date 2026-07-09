@@ -269,6 +269,10 @@ func DeleteNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	_, err := client.Node.Delete(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] edge node delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

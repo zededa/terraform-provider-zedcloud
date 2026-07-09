@@ -260,6 +260,10 @@ func DeleteDatastore(ctx context.Context, d *schema.ResourceData, m interface{})
 
 	_, err := client.Datastore.Delete(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] datastore delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

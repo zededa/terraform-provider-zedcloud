@@ -277,6 +277,10 @@ func DeleteDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 	resp, err := client.Deployment.Delete(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] deployment delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

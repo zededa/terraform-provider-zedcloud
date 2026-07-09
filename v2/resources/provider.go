@@ -200,11 +200,6 @@ func getRetryClient() *retryablehttp.Client {
 			return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
 		}
 
-		// If we have a response, check for 404 specifically and retry
-		if resp.StatusCode == http.StatusNotFound {
-			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
-		}
-
 		// We cannot retry on other methods rather than GET. Our API is not idempotent.
 		if resp.Request == nil {
 			// Be conservative: defer to default policy if request is missing
@@ -213,6 +208,14 @@ func getRetryClient() *retryablehttp.Client {
 
 		if resp.Request.Method != http.MethodGet {
 			return false, nil
+		}
+
+		// On GET, retry 404 to absorb read-after-write eventual consistency.
+		// For non-GET methods we never retry 404: on DELETE it is the success
+		// case, and on POST/PUT it indicates a missing parent that retries
+		// won't resolve. See CI-723.
+		if resp.StatusCode == http.StatusNotFound {
+			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
 		}
 
 		return retryablehttp.DefaultRetryPolicy(ctx, resp, err)

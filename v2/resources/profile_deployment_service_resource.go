@@ -261,6 +261,10 @@ func DeleteProfileDeployment(ctx context.Context, d *schema.ResourceData, m inte
 
 	_, err := client.ProfileDeployment.ProfileDeploymentServiceDeleteProfileDeployment(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] ProfileDeploymentService.ProfileDeploymentServiceDeleteProfileDeployment error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

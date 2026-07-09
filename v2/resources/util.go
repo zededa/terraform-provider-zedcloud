@@ -2,12 +2,32 @@ package resources
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
+
+// isStatusNotFound reports whether err represents an HTTP 404 from the
+// zedcloud API. It recognises both the typed swagger NotFound responses
+// (which implement Code() int) and the string-wrapped error emitted by
+// retryablehttp after it gives up retrying a 404. Used by Delete
+// handlers so a missing resource is treated as success, making deletes
+// idempotent against cascading server-side cleanup.
+func isStatusNotFound(err error) bool {
+	if err == nil {
+		return false
+	}
+	type statusCoder interface {
+		Code() int
+	}
+	if sc, ok := err.(statusCoder); ok && sc.Code() == http.StatusNotFound {
+		return true
+	}
+	return strings.Contains(err.Error(), "404 Not Found")
+}
 
 // HTLogger is a logger which satisfies the go-openapi/runtime/logger.Logger
 // interface using go stdlib "log". It appends a prefix to each message to make

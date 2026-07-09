@@ -87,6 +87,10 @@ func DeletePatchEnvelopeReference(ctx context.Context, d *schema.ResourceData, m
 
 	resp, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationUpdatePatchEnvelopeReferencetoAppInstance(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
 		log.Printf("[TRACE] patch reference update delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
