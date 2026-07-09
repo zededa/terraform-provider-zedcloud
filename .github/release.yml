@@ -1,0 +1,25 @@
+# Configuration for GitHub's automatically generated release notes.
+# Categorization is driven by the labels applied to each merged PR.
+# See: https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+changelog:
+  exclude:
+    labels:
+      - duplicate
+      - invalid
+      - wontfix
+  categories:
+    - title: 🚀 Features
+      labels:
+        - enhancement
+    - title: 🐛 Bug Fixes
+      labels:
+        - bug
+    - title: 📖 Documentation
+      labels:
+        - documentation
+    - title: ⬆️ Dependencies
+      labels:
+        - dependencies
+    - title: Other Changes
+      labels:
+        - "*"
