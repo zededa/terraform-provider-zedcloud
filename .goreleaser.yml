@@ -52,5 +52,8 @@ signs:
 release:
 # If you want to manually examine the release before its live, uncomment this line:
 # draft: true
+  # Mark the GitHub release as a prerelease when the tag has a prerelease
+  # suffix (e.g. v2.8.0-rc), and a full release otherwise.
+  prerelease: auto
 changelog:
   skip: true
