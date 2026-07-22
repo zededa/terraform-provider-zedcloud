@@ -405,7 +405,9 @@ func CompareSystemInterfaceList(a, b []*models.SysInterface) (bool, string) {
 			reason = fmt.Sprintf("Netname mismatch: %s vs %s", x.Netname, y.Netname)
 			return false
 		}
-		if x.Netid != y.Netid {
+		// Netid is resolved by the API from netname, so an empty value only
+		// means "not specified yet"; compare only when both sides carry one.
+		if x.Netid != "" && y.Netid != "" && x.Netid != y.Netid {
 			reason = fmt.Sprintf("Netid mismatch: %s vs %s", x.Netid, y.Netid)
 			return false
 		}

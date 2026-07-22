@@ -269,7 +269,7 @@ func TestCompareSysInterfaceList(t *testing.T) {
 			expected: false,
 		},
 		{
-			name: "different Netid",
+			name: "different Netid - both set",
 			list1: []*models.SysInterface{
 				{
 					Intfname: "eth0",
@@ -285,6 +285,24 @@ func TestCompareSysInterfaceList(t *testing.T) {
 				},
 			},
 			expected: false,
+		},
+		{
+			name: "Netid - one empty, one resolved by API (should be equal)",
+			list1: []*models.SysInterface{
+				{
+					Intfname: "eth0",
+					Netname:  "management",
+					Netid:    "49972e18-a905-4740-938e-fd283b084257",
+				},
+			},
+			list2: []*models.SysInterface{
+				{
+					Intfname: "eth0",
+					Netname:  "management",
+					Netid:    "",
+				},
+			},
+			expected: true,
 		},
 		{
 			name: "different NetDhcp - both set",
