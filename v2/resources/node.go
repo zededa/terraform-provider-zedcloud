@@ -3,9 +3,11 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -24,10 +26,60 @@ func NodeResource() *schema.Resource {
 		UpdateContext: UpdateNode,
 		DeleteContext: DeleteNode,
 		Schema:        zschema.Node(),
+		CustomizeDiff: validateBondMemberInterfaces,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
+}
+
+// validateBondMemberInterfaces rejects configurations that explicitly declare
+// netname/netid on a bond member interface. The API refuses such interfaces
+// with a generic 400, so fail at plan time with an actionable message instead.
+// It inspects the raw config (not the merged plan) because netid is a Computed
+// attribute whose stale state value is carried forward when absent from the
+// config; that carried value is dropped when building the request payload and
+// must not trigger this error (ENG-2782).
+func validateBondMemberInterfaces(ctx context.Context, d *schema.ResourceDiff, m interface{}) error {
+	return checkBondMemberInterfaces(d.GetRawConfig())
+}
+
+func checkBondMemberInterfaces(rawConfig cty.Value) error {
+	if rawConfig.IsNull() || !rawConfig.IsKnown() || !rawConfig.Type().IsObjectType() || !rawConfig.Type().HasAttribute("interfaces") {
+		return nil
+	}
+	interfaces := rawConfig.GetAttr("interfaces")
+	if interfaces.IsNull() || !interfaces.IsKnown() || !interfaces.CanIterateElements() {
+		return nil
+	}
+	for it := interfaces.ElementIterator(); it.Next(); {
+		_, iface := it.Element()
+		if iface.IsNull() || !iface.IsKnown() {
+			continue
+		}
+		if rawConfigString(iface, "intf_usage") != string(models.AdapterUsageADAPTERUSAGEBONDMEMBER) {
+			continue
+		}
+		if rawConfigString(iface, "netname") != "" || rawConfigString(iface, "netid") != "" {
+			return fmt.Errorf(
+				"interface %q: netname/netid must not be set when intf_usage is %s, a bond member interface cannot carry a network identity",
+				rawConfigString(iface, "intfname"),
+				models.AdapterUsageADAPTERUSAGEBONDMEMBER,
+			)
+		}
+	}
+	return nil
+}
+
+func rawConfigString(v cty.Value, attr string) string {
+	if !v.Type().IsObjectType() || !v.Type().HasAttribute(attr) {
+		return ""
+	}
+	attrVal := v.GetAttr(attr)
+	if attrVal.IsNull() || !attrVal.IsKnown() || attrVal.Type() != cty.String {
+		return ""
+	}
+	return attrVal.AsString()
 }
 
 func NodeDataSource() *schema.Resource {
