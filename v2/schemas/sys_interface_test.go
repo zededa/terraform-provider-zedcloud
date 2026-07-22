@@ -269,6 +269,24 @@ func TestCompareSysInterfaceList(t *testing.T) {
 			expected: false,
 		},
 		{
+			name: "different Netid",
+			list1: []*models.SysInterface{
+				{
+					Intfname: "eth0",
+					Netname:  "management",
+					Netid:    "49972e18-a905-4740-938e-fd283b084257",
+				},
+			},
+			list2: []*models.SysInterface{
+				{
+					Intfname: "eth0",
+					Netname:  "management",
+					Netid:    "11111111-2222-3333-4444-555555555555",
+				},
+			},
+			expected: false,
+		},
+		{
 			name: "different NetDhcp - both set",
 			list1: []*models.SysInterface{
 				{
@@ -556,4 +574,64 @@ func TestCompareSysInterfaceList(t *testing.T) {
 			}
 		})
 	}
+}
+
+// Reproduces ENG-2782: converting an interface to ADAPTER_USAGE_BOND_MEMBER
+// must drop the netid/netname carried forward from state via the Computed
+// netid attribute, otherwise the API rejects the update with a 400.
+func TestSysInterfaceModelFromMap_BondMemberDropsNetworkIdentity(t *testing.T) {
+	interfaceMap := func(usage, netname, netid string) map[string]interface{} {
+		return map[string]interface{}{
+			"allow_local_modifications":                false,
+			"enable_port_based_network_access_control": false,
+			"cost":       0,
+			"intf_usage": usage,
+			"intfname":   "eth0",
+			"ipaddr":     "",
+			"macaddr":    "",
+			"net_dhcp":   string(models.NetworkDHCPTypeNETWORKDHCPTYPECLIENT),
+			"netid":      netid,
+			"netname":    netname,
+			"ztype":      "",
+		}
+	}
+
+	t.Run("bond member drops stale netid and netname", func(t *testing.T) {
+		m := SysInterfaceModelFromMap(interfaceMap(
+			string(models.AdapterUsageADAPTERUSAGEBONDMEMBER),
+			"defaultIPv4-net",
+			"49972e18-a905-4740-938e-fd283b084257",
+		))
+		if m.Netid != "" {
+			t.Errorf("Netid = %q, expected empty for bond member interface", m.Netid)
+		}
+		if m.Netname != "" {
+			t.Errorf("Netname = %q, expected empty for bond member interface", m.Netname)
+		}
+	})
+
+	t.Run("management interface keeps netid and netname", func(t *testing.T) {
+		m := SysInterfaceModelFromMap(interfaceMap(
+			string(models.AdapterUsageADAPTERUSAGEMANAGEMENT),
+			"defaultIPv4-net",
+			"49972e18-a905-4740-938e-fd283b084257",
+		))
+		if m.Netid != "49972e18-a905-4740-938e-fd283b084257" {
+			t.Errorf("Netid = %q, expected it to be kept for management interface", m.Netid)
+		}
+		if m.Netname != "defaultIPv4-net" {
+			t.Errorf("Netname = %q, expected it to be kept for management interface", m.Netname)
+		}
+	})
+
+	t.Run("interface without usage keeps netid and netname", func(t *testing.T) {
+		m := SysInterfaceModelFromMap(interfaceMap(
+			"",
+			"defaultIPv4-net",
+			"49972e18-a905-4740-938e-fd283b084257",
+		))
+		if m.Netid == "" || m.Netname == "" {
+			t.Errorf("Netid/Netname = %q/%q, expected them to be kept when intf_usage is unset", m.Netid, m.Netname)
+		}
+	})
 }

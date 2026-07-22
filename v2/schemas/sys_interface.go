@@ -45,6 +45,13 @@ func SysInterfaceModel(d *schema.ResourceData) *models.SysInterface {
 	}
 	netid, _ := d.Get("netid").(string)
 	netname, _ := d.Get("netname").(string)
+	// A bond member interface must not carry a network identity, the API rejects
+	// it. Since netid is Computed, a value removed from the config is carried
+	// forward from state, so it has to be dropped here (ENG-2782).
+	if intfUsage != nil && *intfUsage == models.AdapterUsageADAPTERUSAGEBONDMEMBER {
+		netid = ""
+		netname = ""
+	}
 	var sharedLabels []string
 	sharedLabelsInterface, sharedLabelsIsSet := d.GetOk("shared_labels")
 	if sharedLabelsIsSet {
@@ -127,6 +134,13 @@ func SysInterfaceModelFromMap(m map[string]interface{}) *models.SysInterface {
 	}
 	netid := m["netid"].(string)
 	netname := m["netname"].(string)
+	// A bond member interface must not carry a network identity, the API rejects
+	// it. Since netid is Computed, a value removed from the config is carried
+	// forward from state, so it has to be dropped here (ENG-2782).
+	if intfUsage != nil && *intfUsage == models.AdapterUsageADAPTERUSAGEBONDMEMBER {
+		netid = ""
+		netname = ""
+	}
 	var sharedLabels []string
 	sharedLabelsInterface, sharedLabelsIsSet := m["shared_labels"]
 	if sharedLabelsIsSet {
@@ -389,6 +403,10 @@ func CompareSystemInterfaceList(a, b []*models.SysInterface) (bool, string) {
 		}
 		if x.Netname != y.Netname {
 			reason = fmt.Sprintf("Netname mismatch: %s vs %s", x.Netname, y.Netname)
+			return false
+		}
+		if x.Netid != y.Netid {
+			reason = fmt.Sprintf("Netid mismatch: %s vs %s", x.Netid, y.Netid)
 			return false
 		}
 
