@@ -179,6 +179,107 @@ func TestNodeResource_BondAdapterUnchanged_SuppressesDiff(t *testing.T) {
 	}
 }
 
+// TestNodeResource_BondAdapterAddition_PlansDiff pins the ENG-2782 forward
+// scenario (convert interfaces to BOND_MEMBER and add a bond_adapter block)
+// at the plan level, proving the ENG-2805 raw-config guard does not interfere
+// with it: the guard is inert on addition because the config still carries the
+// bond_adapter key, so GetChange never falls back to state.
+func TestNodeResource_BondAdapterAddition_PlansDiff(t *testing.T) {
+	r := NodeResource()
+
+	// state: no bond adapter, members still MANAGEMENT with netid/netname
+	state := &terraform.InstanceState{
+		ID: "609fe5d4-d6a6-4063-a8a5-fbd5cfdcb8d6",
+		Attributes: map[string]string{
+			"id":    "609fe5d4-d6a6-4063-a8a5-fbd5cfdcb8d6",
+			"name":  "lag-device",
+			"title": "lag-device",
+
+			"interfaces.#":            "2",
+			"interfaces.0.intfname":   "eth0",
+			"interfaces.0.intf_usage": "ADAPTER_USAGE_MANAGEMENT",
+			"interfaces.0.netname":    "defaultIPv4-net",
+			"interfaces.0.netid":      "49972e18-a905-4740-938e-fd283b084257",
+			"interfaces.0.net_dhcp":   "NETWORK_DHCP_TYPE_CLIENT",
+			"interfaces.0.cost":       "0",
+			"interfaces.0.tags.%":     "0",
+			"interfaces.1.intfname":   "eth2",
+			"interfaces.1.intf_usage": "ADAPTER_USAGE_MANAGEMENT",
+			"interfaces.1.netname":    "defaultIPv4-net",
+			"interfaces.1.netid":      "49972e18-a905-4740-938e-fd283b084257",
+			"interfaces.1.net_dhcp":   "NETWORK_DHCP_TYPE_CLIENT",
+			"interfaces.1.cost":       "0",
+			"interfaces.1.tags.%":     "0",
+
+			"bond_adapter.#": "0",
+		},
+	}
+	// raw config declares one bond_adapter block
+	state.RawConfig = cty.ObjectVal(map[string]cty.Value{
+		"bond_adapter": cty.ListVal([]cty.Value{
+			cty.ObjectVal(map[string]cty.Value{
+				"logical_label": cty.StringVal("lag-test-01"),
+			}),
+		}),
+	})
+
+	config := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"name":  "lag-device",
+		"title": "lag-device",
+		"interfaces": []interface{}{
+			map[string]interface{}{
+				"intfname":   "eth0",
+				"intf_usage": "ADAPTER_USAGE_BOND_MEMBER",
+			},
+			map[string]interface{}{
+				"intfname":   "eth2",
+				"intf_usage": "ADAPTER_USAGE_BOND_MEMBER",
+			},
+		},
+		"bond_adapter": []interface{}{
+			map[string]interface{}{
+				"logical_label":     "lag-test-01",
+				"bond_mode":         "BOND_MODE_802_3AD",
+				"lacp_rate":         "LACP_RATE_FAST",
+				"lower_layer_names": []interface{}{"eth0", "eth2"},
+				"interface": []interface{}{
+					map[string]interface{}{
+						"intfname":   "lag-test-01",
+						"intf_usage": "ADAPTER_USAGE_MANAGEMENT",
+						"netname":    "defaultIPv4-net",
+						"netid":      "49972e18-a905-4740-938e-fd283b084257",
+						"net_dhcp":   "NETWORK_DHCP_TYPE_CLIENT",
+					},
+				},
+			},
+		},
+	})
+
+	diff, err := r.Diff(context.Background(), state, config, nil)
+	if err != nil {
+		t.Fatalf("diff error: %s", err)
+	}
+	if diff == nil {
+		t.Fatal("diff is nil, expected bond_adapter addition and interface conversion to be planned")
+	}
+
+	countDiff, ok := diff.Attributes["bond_adapter.#"]
+	if !ok {
+		t.Fatal("bond_adapter.# missing from diff, addition not planned")
+	}
+	if countDiff.Old != "0" || countDiff.New != "1" {
+		t.Errorf("bond_adapter.# diff = %q => %q, expected \"0\" => \"1\"", countDiff.Old, countDiff.New)
+	}
+
+	usageDiff, ok := diff.Attributes["interfaces.0.intf_usage"]
+	if !ok {
+		t.Fatal("interfaces.0.intf_usage missing from diff, conversion not planned")
+	}
+	if usageDiff.New != "ADAPTER_USAGE_BOND_MEMBER" {
+		t.Errorf("interfaces.0.intf_usage new = %q, expected ADAPTER_USAGE_BOND_MEMBER", usageDiff.New)
+	}
+}
+
 func TestNodeResource_VlanAdapterRemoval_PlansDiff(t *testing.T) {
 	r := NodeResource()
 
