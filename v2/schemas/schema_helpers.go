@@ -192,6 +192,14 @@ func diffSuppressVlanAdapterListOrder(mapKey string) schema.SchemaDiffSuppressFu
 
 		old := oldData.([]interface{})
 		new := newData.([]interface{})
+		// GetChange's "new" side merges config over state; when the last block
+		// is removed from the config, the key is absent and the merge falls
+		// back to state, making old==new. The raw config is the source of
+		// truth for the declared block count — if it disagrees, there is a
+		// real change (same defect as ENG-2805).
+		if rawLen := rawConfigListLength(d, mapKey); rawLen >= 0 && rawLen != len(new) {
+			return false
+		}
 		if len(old) != len(new) {
 			return false
 		}
@@ -504,6 +512,23 @@ func diffSuppressIfFieldValueEqual(field, value string) schema.SchemaDiffSuppres
 	}
 }
 
+// rawConfigListLength returns the number of elements the raw Terraform config
+// declares for the given top-level list attribute, or -1 when it cannot tell
+// (raw config unavailable, e.g. during destroy, or the value is not fully
+// known yet). Unlike GetChange, the raw config always carries the attribute,
+// even when the config declares zero blocks.
+func rawConfigListLength(d *schema.ResourceData, field string) int {
+	rawConfig := d.GetRawConfig()
+	if rawConfig.IsNull() || !rawConfig.Type().IsObjectType() || !rawConfig.Type().HasAttribute(field) {
+		return -1
+	}
+	attr := rawConfig.GetAttr(field)
+	if attr.IsNull() || !attr.IsKnown() || !attr.CanIterateElements() {
+		return -1
+	}
+	return attr.LengthInt()
+}
+
 func isFieldDefinedInTerraformConfig(d *schema.ResourceData, field string) bool {
 	rawConfig := d.GetRawConfig()
 	if !rawConfig.IsKnown() || rawConfig.IsNull() {
@@ -608,6 +633,14 @@ func diffSuppressBondAdapterListOrder(mapKey string) schema.SchemaDiffSuppressFu
 
 		old := oldData.([]interface{})
 		new := newData.([]interface{})
+		// GetChange's "new" side merges config over state; when the last block
+		// is removed from the config, the key is absent and the merge falls
+		// back to state, making old==new. The raw config is the source of
+		// truth for the declared block count — if it disagrees, there is a
+		// real change (ENG-2805).
+		if rawLen := rawConfigListLength(d, mapKey); rawLen >= 0 && rawLen != len(new) {
+			return false
+		}
 		if len(old) != len(new) {
 			return false
 		}
