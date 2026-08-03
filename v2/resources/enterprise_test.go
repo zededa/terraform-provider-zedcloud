@@ -57,6 +57,129 @@ func TestEnterprise_Create(t *testing.T) {
 	})
 }
 
+// TestEnterpriseResource_InternalValidate checks the enterprise schema against the
+// SDK's own rules. It runs without a controller, unlike the acceptance tests below,
+// so it is the only automated guard on wiring like the ConflictsWith pair between
+// white_labeling and attributes - a bad reference there panics at provider startup.
+func TestEnterpriseResource_InternalValidate(t *testing.T) {
+	if err := EnterpriseResource().InternalValidate(nil, true); err != nil {
+		t.Errorf("enterprise resource schema is invalid: %v", err)
+	}
+}
+
+// TestEnterprise_WhiteLabeling verifies the white_labeling block reaches the API as
+// the enterprise attribute keys the console reads, and that removing the block clears
+// them again. The attribute keys are the actual contract - the API rejects any key
+// outside its allowlist, and the console looks up exactly these four - so this asserts
+// the API-side map rather than only the Terraform state.
+func TestEnterprise_WhiteLabeling(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping enterprise test for CI environment")
+	}
+
+	var got models.Enterprise
+
+	resourceName := "zedcloud_enterprise.test_tf_provider_white_labeling"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testhelper.CheckEnv(t) },
+		CheckDestroy: testEnterpriseDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testhelper.MustGetTestInput(t, "iam/enterprise.white_labeling.tf"),
+				Check: resource.ComposeTestCheckFunc(
+					testEnterpriseExists(resourceName, &got),
+					resource.TestCheckResourceAttr(resourceName, "white_labeling.0.primary_color", "#0A2540"),
+					resource.TestCheckResourceAttr(resourceName, "white_labeling.0.secondary_color", "#00B3A4"),
+					resource.TestCheckResourceAttr(resourceName, "white_labeling.0.logo_url", "https://acme.example.com/logo.svg"),
+					resource.TestCheckResourceAttr(resourceName, "white_labeling.0.product_name", "Acme Edge"),
+					// the block owns these keys, so they must not also show up in the
+					// deprecated raw attributes map, where they would fight over the
+					// same value on every plan
+					resource.TestCheckNoResourceAttr(resourceName, "attributes.$ztag.entp.zui.ux.logo"),
+					resource.TestCheckNoResourceAttr(resourceName, "attributes.$ztag.entp.zui.ux.product.name"),
+					testEnterpriseWhiteLabelAttributes(t, &got, map[string]string{
+						"$ztag.entp.zui.ux.color.primary":   "#0A2540",
+						"$ztag.entp.zui.ux.color.secondary": "#00B3A4",
+						"$ztag.entp.zui.ux.logo":            "https://acme.example.com/logo.svg",
+						"$ztag.entp.zui.ux.product.name":    "Acme Edge",
+					}),
+				),
+			},
+			{
+				Config: testhelper.MustGetTestInput(t, "iam/enterprise.white_labeling.cleared.tf"),
+				Check: resource.ComposeTestCheckFunc(
+					testEnterpriseExists(resourceName, &got),
+					resource.TestCheckResourceAttr(resourceName, "white_labeling.#", "0"),
+					testEnterpriseWhiteLabelAttributes(t, &got, map[string]string{}),
+				),
+			},
+		},
+	})
+}
+
+// TestEnterprise_WhiteLabelingLegacyAttributes protects configs written before the
+// white_labeling block existed, which set the $ztag keys straight into attributes.
+// The values must stay in attributes rather than migrating into the block: the test
+// framework fails a step whose apply leaves a non-empty plan, so this is what proves
+// such a config does not get a diff that never converges.
+func TestEnterprise_WhiteLabelingLegacyAttributes(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping enterprise test for CI environment")
+	}
+
+	var got models.Enterprise
+
+	resourceName := "zedcloud_enterprise.test_tf_provider_white_labeling_legacy"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testhelper.CheckEnv(t) },
+		CheckDestroy: testEnterpriseDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testhelper.MustGetTestInput(t, "iam/enterprise.white_labeling.legacy.tf"),
+				Check: resource.ComposeTestCheckFunc(
+					testEnterpriseExists(resourceName, &got),
+					// the values stay where the config put them
+					resource.TestCheckResourceAttr(resourceName, "attributes.$ztag.entp.zui.ux.color.primary", "#0A2540"),
+					resource.TestCheckResourceAttr(resourceName, "attributes.$ztag.entp.zui.ux.product.name", "Acme Edge"),
+					// and are not also projected into the block, which would make both
+					// fields claim the same value
+					resource.TestCheckResourceAttr(resourceName, "white_labeling.#", "0"),
+					testEnterpriseWhiteLabelAttributes(t, &got, map[string]string{
+						"$ztag.entp.zui.ux.color.primary": "#0A2540",
+						"$ztag.entp.zui.ux.product.name":  "Acme Edge",
+					}),
+				),
+			},
+		},
+	})
+}
+
+// testEnterpriseWhiteLabelAttributes asserts the white-label entries of the
+// enterprise attribute map as stored by the API.
+func testEnterpriseWhiteLabelAttributes(t *testing.T, got *models.Enterprise, expected map[string]string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		whiteLabelKeys := []string{
+			"$ztag.entp.zui.ux.color.primary",
+			"$ztag.entp.zui.ux.color.secondary",
+			"$ztag.entp.zui.ux.logo",
+			"$ztag.entp.zui.ux.product.name",
+		}
+		for _, key := range whiteLabelKeys {
+			if got.Attributes[key] != expected[key] {
+				return fmt.Errorf(
+					"%s: enterprise attribute %q: expected %q, got %q",
+					t.Name(), key, expected[key], got.Attributes[key],
+				)
+			}
+		}
+		return nil
+	}
+}
+
 // testEnterpriseExists retrieves the Enterprise and stores it in the provided *models.DeviceConfig.
 func testEnterpriseExists(resourceName string, enterpriseModel *models.Enterprise) resource.TestCheckFunc {
 	return func(s *terraform.State) error {

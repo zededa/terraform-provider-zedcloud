@@ -23,7 +23,7 @@ description: |-
 ### Optional
 
 - `api_token_expiry_in_seconds` (Number) Enterprise settings for API Token expiry to be set in seconds
-- `attributes` (Map of String) enterprise level key-value pairs
+- `attributes` (Map of String, Deprecated) enterprise level key-value pairs
 - `azure_sub_id` (String) Azure subscription ID tied to this enterprise
 - `child_enterprises` (Block List) List of all child enterprises (see [below for nested schema](#nestedblock--child_enterprises))
 - `controller_host_url` (String) zedcontrol host
@@ -38,6 +38,7 @@ description: |-
 - `stream_events` (Block List) Enable / Disable streaming of events to 3rd party end point (see [below for nested schema](#nestedblock--stream_events))
 - `totp_settings` (Block List) Enterprise settings to enforce TOTP (see [below for nested schema](#nestedblock--totp_settings))
 - `type` (String) Enterprise type
+- `white_labeling` (Block List, Max: 1) Console white-labeling for this enterprise: theme colors, logo and product name shown in the UI. A browser request is mapped to an enterprise by matching its host against controller_host_url, which today is only honored on a parent enterprise. Terraform owns these values: the API replaces the whole attribute map on every update, so an apply overwrites white-labeling that was configured in the UI, and removing the block clears it (see [below for nested schema](#nestedblock--white_labeling))
 
 ### Read-Only
 
@@ -93,6 +94,17 @@ Optional:
 - `enforce` (Boolean)
 - `enforce_in_children` (Boolean)
 - `enforced_by_parent` (Boolean)
+
+
+<a id="nestedblock--white_labeling"></a>
+### Nested Schema for `white_labeling`
+
+Optional:
+
+- `logo_url` (String) URL of the logo shown in the console. Must be at most 256 characters, so the image cannot be inlined
+- `primary_color` (String) Primary theme color of the console, as a CSS color value, e.g. "#0A2540"
+- `product_name` (String) Product name shown in the console in place of the default one
+- `secondary_color` (String) Secondary theme color of the console, as a CSS color value, e.g. "#00B3A4"
 
 
 <a id="nestedblock--revision"></a>
