@@ -119,6 +119,45 @@ func TestEnterprise_WhiteLabeling(t *testing.T) {
 	})
 }
 
+// TestEnterprise_WhiteLabelingControllerHostURL covers the host mapping that makes
+// white-labeling actually reach the console: it is what GET /api/v1/cloud/environment
+// matches the request host against to pick an enterprise, including a child one.
+//
+// controllerHostURL is write-only - the API stores it but never returns it - so
+// without special handling state reads back empty and every plan wants to re-apply a
+// value that is already stored. The framework fails a step whose apply leaves a
+// non-empty plan, so this is what proves the field is usable at all.
+func TestEnterprise_WhiteLabelingControllerHostURL(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping enterprise test for CI environment")
+	}
+
+	var got models.Enterprise
+
+	resourceName := "zedcloud_enterprise.test_tf_provider_wl_host"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:     func() { testhelper.CheckEnv(t) },
+		CheckDestroy: testEnterpriseDestroy,
+		Providers:    testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testhelper.MustGetTestInput(t, "iam/enterprise.white_labeling.host.tf"),
+				Check: resource.ComposeTestCheckFunc(
+					testEnterpriseExists(resourceName, &got),
+					// the configured host survives the read even though the API omits it
+					resource.TestCheckResourceAttr(resourceName, "controller_host_url", "tf-wl-host.local.zededa.net"),
+					resource.TestCheckResourceAttr(resourceName, "white_labeling.0.primary_color", "#112233"),
+					testEnterpriseWhiteLabelAttributes(t, &got, map[string]string{
+						"$ztag.entp.zui.ux.color.primary": "#112233",
+						"$ztag.entp.zui.ux.product.name":  "Host Brand",
+					}),
+				),
+			},
+		},
+	})
+}
+
 // TestEnterprise_WhiteLabelingLegacyAttributes protects configs written before the
 // white_labeling block existed, which set the $ztag keys straight into attributes.
 // The values must stay in attributes rather than migrating into the block: the test

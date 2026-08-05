@@ -26,7 +26,7 @@ description: |-
 - `attributes` (Map of String, Deprecated) enterprise level key-value pairs
 - `azure_sub_id` (String) Azure subscription ID tied to this enterprise
 - `child_enterprises` (Block List) List of all child enterprises (see [below for nested schema](#nestedblock--child_enterprises))
-- `controller_host_url` (String) zedcontrol host
+- `controller_host_url` (String) zedcontrol host. Maps a browser host to this enterprise so the console serves its white_labeling, forwarded to the API by the ingress as the X-HOST header. Write-only: the API stores this but never returns it, so Terraform keeps the configured value in state rather than reading it back
 - `description` (String) Detailed description of the enterprise
 - `hubspot_id` (String)
 - `inherit_auth_from_parent` (Boolean) Perform authorization using parent enterprise
@@ -38,7 +38,7 @@ description: |-
 - `stream_events` (Block List) Enable / Disable streaming of events to 3rd party end point (see [below for nested schema](#nestedblock--stream_events))
 - `totp_settings` (Block List) Enterprise settings to enforce TOTP (see [below for nested schema](#nestedblock--totp_settings))
 - `type` (String) Enterprise type
-- `white_labeling` (Block List, Max: 1) Console white-labeling for this enterprise: theme colors, logo and product name shown in the UI, served to the browser by GET /api/v1/cloud/environment. That endpoint maps the request host to an enterprise via its controllerHostURL, but the API does not persist controller_host_url on a child enterprise, so an enterprise created here cannot be host-resolved today and the console falls back to the default parent enterprise. Terraform owns these values: the API replaces the whole attribute map on every update, so an apply overwrites white-labeling that was configured in the UI, and removing the block clears it (see [below for nested schema](#nestedblock--white_labeling))
+- `white_labeling` (Block List, Max: 1) Console white-labeling for this enterprise: theme colors, logo and product name shown in the UI, served to the browser by the unauthenticated GET /api/v1/cloud/environment. That endpoint picks the enterprise by matching the request host against controller_host_url, which works for child enterprises too, and falls back to the default parent enterprise when no host matches. Terraform owns these values: the API replaces the whole attribute map on every update, so an apply overwrites white-labeling that was configured in the UI, and removing the block clears it (see [below for nested schema](#nestedblock--white_labeling))
 
 ### Read-Only
 

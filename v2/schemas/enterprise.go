@@ -272,7 +272,7 @@ func SetEnterpriseResourceData(d *schema.ResourceData, m *models.Enterprise) {
 	setEnterpriseAttributes(d, m.Attributes)
 	d.Set("azure_sub_id", m.AzureSubID)
 	d.Set("child_enterprises", SetEnterpriseSummarySubResourceData(m.ChildEnterprises))
-	d.Set("controller_host_url", m.ControllerHostURL)
+	setEnterpriseControllerHostURL(d, m.ControllerHostURL)
 	d.Set("description", m.Description)
 	d.Set("id", m.ID)
 	d.Set("inherit_auth_from_parent", m.InheritAuthFromParent)
@@ -286,6 +286,22 @@ func SetEnterpriseResourceData(d *schema.ResourceData, m *models.Enterprise) {
 	d.Set("title", m.Title)
 	d.Set("totp_settings", SetTOTPSettingsSubResourceData([]*models.TOTPSettings{m.TotpSettings}))
 	d.Set("type", m.Type)
+}
+
+// setEnterpriseControllerHostURL writes controller_host_url to state, but only when
+// the API actually returned one.
+//
+// controllerHostURL is write-only: the API stores it, and the console matches it
+// against the request host to pick an enterprise's white-labeling, but the read path
+// never returns it. Overwriting state with the empty string would make every plan
+// want to re-apply a value that was already stored. Leaving state untouched keeps a
+// refresh idempotent while still diffing when the configured host changes, since by
+// then state holds the previously configured value.
+func setEnterpriseControllerHostURL(d *schema.ResourceData, controllerHostURL string) {
+	if controllerHostURL == "" {
+		return
+	}
+	d.Set("controller_host_url", controllerHostURL)
 }
 
 // setEnterpriseAttributes splits the enterprise attribute map between the typed
@@ -395,9 +411,12 @@ func EnterpriseSchema() map[string]*schema.Schema {
 		},
 
 		"controller_host_url": {
-			Description: `zedcontrol host`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description: `zedcontrol host. Maps a browser host to this enterprise so the console serves ` +
+				`its white_labeling, forwarded to the API by the ingress as the X-HOST header. ` +
+				`Write-only: the API stores this but never returns it, so Terraform keeps the ` +
+				`configured value in state rather than reading it back`,
+			Type:     schema.TypeString,
+			Optional: true,
 		},
 
 		"description": {
@@ -501,13 +520,13 @@ func EnterpriseSchema() map[string]*schema.Schema {
 
 		"white_labeling": {
 			Description: `Console white-labeling for this enterprise: theme colors, logo and product name ` +
-				`shown in the UI, served to the browser by GET /api/v1/cloud/environment. That endpoint ` +
-				`maps the request host to an enterprise via its controllerHostURL, but the API does not ` +
-				`persist controller_host_url on a child enterprise, so an enterprise created here cannot ` +
-				`be host-resolved today and the console falls back to the default parent enterprise. ` +
-				`Terraform owns these values: the API replaces the whole attribute map on every update, ` +
-				`so an apply overwrites white-labeling that was configured in the UI, and removing the ` +
-				`block clears it`,
+				`shown in the UI, served to the browser by the unauthenticated ` +
+				`GET /api/v1/cloud/environment. That endpoint picks the enterprise by matching the ` +
+				`request host against controller_host_url, which works for child enterprises too, and ` +
+				`falls back to the default parent enterprise when no host matches. Terraform owns these ` +
+				`values: the API replaces the whole attribute map on every update, so an apply ` +
+				`overwrites white-labeling that was configured in the UI, and removing the block ` +
+				`clears it`,
 			Type:     schema.TypeList, //GoType: white-label subset of Attributes
 			MaxItems: 1,
 			Elem: &schema.Resource{

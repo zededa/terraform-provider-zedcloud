@@ -7,6 +7,13 @@ resource "zedcloud_enterprise" "acme" {
   name  = "acme"
   title = "Acme"
 
+  # The host users browse to. The console matches this to pick whose branding to
+  # serve, and it works on a child enterprise like this one.
+  #
+  # Write-only: the API stores it but never returns it on read, so Terraform keeps
+  # the configured value in state rather than reading it back.
+  controller_host_url = "acme.zededa.net"
+
   white_labeling {
     primary_color   = "#0A2540"
     secondary_color = "#00B3A4"
@@ -21,13 +28,13 @@ resource "zedcloud_enterprise" "acme" {
 
 # How the console picks these up
 #
-# The browser calls the unauthenticated GET /api/v1/cloud/environment, which maps the
-# request host to an enterprise by matching it against that enterprise's
-# controllerHostURL, and returns that enterprise's white-label attributes.
+# The browser calls the unauthenticated GET /api/v1/cloud/environment before anyone
+# logs in. The API resolves the enterprise from the X-HOST header, which the ingress
+# sets from the browser's Host header, by matching it against controller_host_url. It
+# returns that enterprise's white-label attributes, and falls back to the default
+# parent enterprise when no enterprise matches the host.
 #
-# Note that the API does not persist controller_host_url on a child enterprise: it
-# accepts the request and silently discards the value. Every enterprise created
-# through Terraform is a child of the default parent, so it cannot be host-resolved
-# today and the console falls back to the default parent enterprise. Setting
-# controller_host_url here would also leave a permanent diff, since the value never
-# comes back on read - which is why it is deliberately left out of this example.
+# So beyond the Terraform config, the host has to actually reach the controller:
+# it must resolve to the ingress, terminate TLS, and be served by a matching ingress
+# server block - otherwise the request never arrives with that X-HOST value and the
+# console keeps serving the default parent's branding.
