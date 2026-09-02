@@ -1,0 +1,191 @@
+# End-to-end test against a real, virtual EVE-OS edge node.
+#
+# Runs on a SELF-HOSTED runner on the Berlin lab host (h-m-dl20), because that
+# is where the QEMU VMs live. The host is RFC1918 and reachable only over the
+# office VPN, so a GitHub-hosted runner could not drive it; putting the runner
+# on the host removes the network problem entirely.
+#
+# See docs/design/e2e-virtual-eve-node-testing.md.
+
+name: E2E (virtual EVE node)
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+# Per-BRANCH coalescing only: a new push supersedes its own in-flight run.
+#
+# Deliberately NOT a single global group. A concurrency group holds at most one
+# pending run and cancels the older one when a newer arrives, which starves the
+# PR that has been waiting longest. Serialisation is instead a property of
+# having ONE self-hosted runner: GitHub dispatches jobs to a runner label one at
+# a time, in arrival order, which is the behaviour we actually want.
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: Virtual EVE node
+    runs-on: [self-hosted, berlin-lab]
+    timeout-minutes: 60
+
+    # ---------------------------------------------------------------------
+    # SECURITY GATE -- DO NOT REMOVE
+    #
+    # This repository is PUBLIC and the runner is self-hosted on a machine
+    # inside the Berlin lab network. Without this condition, anyone opening a
+    # pull request from a fork would execute their code on that host.
+    #
+    # Note this is a stronger requirement than for a GitHub-hosted runner:
+    # GitHub withholds repository secrets from fork `pull_request` workflows,
+    # so a hosted runner would hand a fork nothing useful. Here the code is
+    # already running on the target, so no secret is needed to do damage.
+    #
+    # With this gate, only branches pushed to this repository reach the runner,
+    # making the trust boundary "who has push access".
+    # ---------------------------------------------------------------------
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+
+    env:
+      # Control API. The device API (zedcloud.alpha) is baked into the EVE
+      # image by the Terraform config, not needed here.
+      TF_VAR_zedcloud_url: ${{ vars.TF_VAR_ZEDCLOUD_URL }}
+      TF_VAR_zedcloud_token: ${{ secrets.TF_VAR_ZEDCLOUD_TOKEN }}
+
+      # Unique per run, threaded through every created object name so
+      # concurrent or leftover runs cannot collide on the shared alpha
+      # enterprise (~233 devices, ~334 projects belonging to other people).
+      RUN_ID: gh${{ github.run_id }}
+
+      # Pin the zedamigo provider. Not on a public registry, so it is fetched
+      # by its own install.sh.
+      ZEDAMIGO_VERSION: "0.13.1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # The runner's PATH comes from services.github-runners.extraPackages in
+      # hosts/h-m-dl20/github-runners.nix. Fail loudly and early if something
+      # is missing, rather than midway through an apply that has already
+      # started a VM.
+      - name: Verify host toolchain
+        run: |
+          set -euo pipefail
+          for t in go tofu qemu-system-x86_64 qemu-img docker ip flock jq curl unzip; do
+            command -v "$t" >/dev/null || { echo "missing: $t"; exit 1; }
+          done
+          test -w /dev/kvm || { echo "/dev/kvm not writable"; exit 1; }
+          echo "toolchain ok: $(tofu version | head -1), $(go version)"
+
+      - name: Build provider under test
+        run: make build
+
+      # zedamigo drives QEMU locally on this host. Installed under the runner's
+      # HOME so each runner account is self-contained.
+      - name: Install zedamigo provider
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://raw.githubusercontent.com/andrei-zededa/terraform-provider-zedamigo/v${ZEDAMIGO_VERSION}/install.sh" \
+            | bash -s -- --binary-only "${ZEDAMIGO_VERSION}"
+
+      # Generated rather than committed: the filesystem_mirror path depends on
+      # the runner account's HOME, and the repo's own dev.tfrc breaks zedamigo
+      # resolution (its dev_overrides + direct{} block shadow the mirror).
+      - name: Write provider CLI config
+        run: |
+          set -euo pipefail
+          cat > "${RUNNER_TEMP}/e2e.tfrc" <<EOF
+          provider_installation {
+            filesystem_mirror {
+              path    = "${HOME}/.terraform.d/plugins"
+              include = ["localhost/andrei-zededa/zedamigo"]
+            }
+            direct {
+              exclude = ["localhost/andrei-zededa/zedamigo"]
+            }
+          }
+          EOF
+
+      # Creates the cloud objects, builds the EVE installer, installs it,
+      # boots the VM, and blocks on zedamigo_wait_until until the controller
+      # reports the device RUN_STATE_ONLINE. `target` is localhost, so the
+      # provider uses its local executor -- no SSH.
+      - name: Create virtual EVE node
+        id: node
+        working-directory: test/e2e
+        env:
+          TF_CLI_CONFIG_FILE: ${{ runner.temp }}/e2e.tfrc
+          TF_VAR_run_id: ${{ env.RUN_ID }}
+          TF_VAR_edge_node_ssh_pub_key: ""
+        run: |
+          set -euo pipefail
+          tofu init -input=false
+          tofu apply -auto-approve -input=false
+          {
+            echo "device_id=$(tofu output -raw device_id)"
+            echo "device_name=$(tofu output -raw device_name)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run real-node acceptance tests
+        working-directory: v2/resources
+        env:
+          TF_ACC: "1"
+          CI: "true"
+          TF_CLI_CONFIG_FILE: ${{ github.workspace }}/dev.tfrc
+          ZEDCLOUD_ACC_REAL_NODE: "1"
+          ZEDCLOUD_TEST_NODE_NAME: ${{ steps.node.outputs.device_name }}
+          ZEDCLOUD_TEST_SUFFIX: _${{ env.RUN_ID }}
+        run: go test -v -timeout 40m -run TestApplicationInstance_RealNode .
+
+      # Console logs are the only place EVE's silent failures show up (TLS
+      # trust, console misconfiguration), so collect them regardless of result.
+      - name: Collect diagnostics
+        if: always()
+        working-directory: test/e2e
+        env:
+          TF_CLI_CONFIG_FILE: ${{ runner.temp }}/e2e.tfrc
+          TF_VAR_run_id: ${{ env.RUN_ID }}
+        run: |
+          mkdir -p "${RUNNER_TEMP}/diag"
+          for o in install_console_log run_console_log; do
+            p="$(tofu output -raw "$o" 2>/dev/null || true)"
+            [ -n "$p" ] && [ -f "$p" ] && cp "$p" "${RUNNER_TEMP}/diag/" || true
+          done
+          cp apply.log "${RUNNER_TEMP}/diag/" 2>/dev/null || true
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-diagnostics-${{ env.RUN_ID }}
+          path: ${{ runner.temp }}/diag
+          if-no-files-found: ignore
+          retention-days: 7
+
+      # Non-negotiable. Destroy releases the QEMU process, the disk images AND
+      # the host capacity reservation, which is durable and survives reboots --
+      # a skipped destroy leaks CPU and RAM slots for every later run.
+      - name: Destroy
+        if: always()
+        working-directory: test/e2e
+        env:
+          TF_CLI_CONFIG_FILE: ${{ runner.temp }}/e2e.tfrc
+          TF_VAR_run_id: ${{ env.RUN_ID }}
+          TF_VAR_edge_node_ssh_pub_key: ""
+        run: tofu destroy -auto-approve -input=false
+
+      # Belt and braces. zedamigo_edge_node.Delete treats a failed QMP quit as
+      # a warning and removes the state directory anyway, so an orphaned QEMU
+      # process with its files deleted is an expected outcome, not an exotic
+      # one. A cancelled job can also skip the destroy above entirely.
+      - name: Sweep orphans
+        if: always()
+        run: |
+          pkill -f "zedamigo/edge_nodes/" || true
+          pkill -f "terraform-provider-zedamigo -socket-tailer" || true
