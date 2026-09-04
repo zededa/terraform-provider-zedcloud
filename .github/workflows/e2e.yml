@@ -89,7 +89,17 @@ jobs:
       ZEDAMIGO_VERSION: "0.13.1"
 
     steps:
+      # fetch-tags because the Makefile derives the binary name from
+      # `git describe --always --abbrev=0 --tags`. With checkout's default
+      # shallow fetch there are no tags, `describe` falls back to a bare
+      # commit SHA, and the build produces
+      # terraform-provider-zedcloud_<sha> -- which matches neither
+      # Terraform's expected terraform-provider-NAME_vX.Y.Z form nor the
+      # `rm -f ./v2/terraform-provider-zedcloud_v*` cleanup in the same
+      # target, so stale binaries pile up run after run.
       - uses: actions/checkout@v4
+        with:
+          fetch-tags: true
 
       # The runner's PATH comes from services.github-runners.extraPackages in
       # hosts/h-m-dl20/github-runners.nix. Fail loudly and early if something
@@ -127,7 +137,22 @@ jobs:
           test -w /dev/kvm || { echo "/dev/kvm not writable"; exit 1; }
           echo "toolchain ok: $(tofu version | head -1), $(go version)"
 
+      # CGO_ENABLED=0 to match how the provider is actually released.
+      # .goreleaser.yml sets it, with the comment "goreleaser does not work
+      # with CGO", so every published binary is built without cgo -- and the
+      # only `import "C"` in the tree is vendored x/sys code for hurd and aix,
+      # which never builds on linux/amd64 anyway.
+      #
+      # Without this the runner needs a C toolchain purely to satisfy
+      # runtime/cgo, and the build fails with
+      # `cgo: C compiler "gcc" not found`. Adding gcc to the runner would
+      # work, but it would make this step LESS faithful than the release --
+      # it would be the only place the provider gets built with cgo. Note
+      # go.yml on ubuntu-latest does exactly that today, silently, because
+      # the hosted image ships gcc.
       - name: Build provider under test
+        env:
+          CGO_ENABLED: "0"
         run: make build
 
       # zedamigo drives QEMU locally on this host. Installed under the runner's
