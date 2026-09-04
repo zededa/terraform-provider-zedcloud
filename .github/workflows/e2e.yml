@@ -103,19 +103,19 @@ jobs:
       # this unit's PATH -- `docker` was missing for exactly that reason,
       # since it is a dockerCompat symlink in the system profile.
       #
-      # `make` and `terraform` were absent from this list for the same reason
-      # they were absent from the runner: nobody checked. Both are needed.
-      # `terraform` in particular is NOT interchangeable with `tofu` here:
-      # the plugin-SDK acceptance driver looks for TF_ACC_TERRAFORM_PATH,
-      # then a binary literally named `terraform`, and failing both downloads
-      # an unpinned Terraform from releases.hashicorp.com. OpenTofu is never
-      # a candidate, so `tofu` alone leaves the test step silently pulling a
-      # random version over the network.
+      # `make` was absent from this list for the same reason it was absent
+      # from the runner: nobody checked.
+      #
+      # `terraform` is deliberately NOT checked for, and must not be added.
+      # The acceptance step needs a Terraform CLI, but nixpkgs' terraform is
+      # BUSL-licensed and the lab flake does not allow unfree packages, so
+      # installing it is a policy change rather than a fix. TF_ACC_TERRAFORM_PATH
+      # points the test driver at OpenTofu instead -- see that step.
       - name: Verify host toolchain
         run: |
           set -euo pipefail
           missing=()
-          for t in go make tofu terraform qemu-system-x86_64 qemu-img docker \
+          for t in go make tofu qemu-system-x86_64 qemu-img docker \
                    ip flock jq curl unzip; do
             command -v "$t" >/dev/null || missing+=("$t")
           done
@@ -176,6 +176,21 @@ jobs:
             echo "device_name=$(tofu output -raw device_name)"
           } >> "$GITHUB_OUTPUT"
 
+      # WHY TF_ACC_TERRAFORM_PATH IS SET HERE
+      #
+      # The plugin-SDK test driver needs a Terraform CLI, and finds one by
+      # checking TF_ACC_TERRAFORM_PATH, then hc-install's search for a binary
+      # literally named `terraform`, then -- failing both -- DOWNLOADING the
+      # latest Terraform from releases.hashicorp.com at test time. OpenTofu is
+      # never discovered on its own, whatever `tofu` is on PATH.
+      #
+      # That default is wrong for us twice over: an unpinned version fetched
+      # over the network on every run, and a binary we cannot install anyway
+      # (nixpkgs' terraform is BUSL-licensed and the lab flake does not allow
+      # unfree packages). So point the driver at OpenTofu explicitly. This is
+      # the documented way to run acceptance tests against tofu, and
+      # `tofu version -json` still reports a `terraform_version` key for
+      # exactly this compatibility.
       - name: Run real-node acceptance tests
         working-directory: v2/resources
         env:
@@ -185,7 +200,12 @@ jobs:
           ZEDCLOUD_ACC_REAL_NODE: "1"
           ZEDCLOUD_TEST_NODE_NAME: ${{ steps.node.outputs.device_name }}
           ZEDCLOUD_TEST_SUFFIX: _${{ env.RUN_ID }}
-        run: go test -v -timeout 40m -run TestApplicationInstance_RealNode .
+        run: |
+          set -euo pipefail
+          TF_ACC_TERRAFORM_PATH="$(command -v tofu)"
+          export TF_ACC_TERRAFORM_PATH
+          echo "acceptance driver will use: $TF_ACC_TERRAFORM_PATH"
+          go test -v -timeout 40m -run TestApplicationInstance_RealNode .
 
       # Console logs are the only place EVE's silent failures show up (TLS
       # trust, console misconfiguration), so collect them regardless of result.

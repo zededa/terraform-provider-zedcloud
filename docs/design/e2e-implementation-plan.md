@@ -204,7 +204,15 @@ not inherit `environment.systemPackages`, so anything the job shells out to must
 |---|---|
 | `docker` | Comes from `virtualisation.podman.dockerCompat`, which writes the symlink into the *system* profile. Needs an explicit shim in `runnerTools`, e.g. `(pkgs.writeShellScriptBin "docker" ''exec ${pkgs.podman}/bin/podman "$@"'')` |
 | `make` | Absent from `runnerTools` **and** `environment.systemPackages` — no fallback at all. `make build` fails with a bare `command not found` |
-| `terraform` | `runnerTools` provides `opentofu`. The plugin-SDK test driver looks for `TF_ACC_TERRAFORM_PATH`, then a binary named `terraform`, then downloads an unpinned Terraform from `releases.hashicorp.com`. OpenTofu is never a candidate — the `tofu` check in the toolchain guard does not cover the acceptance step |
+| a Terraform CLI | The plugin-SDK test driver checks `TF_ACC_TERRAFORM_PATH`, then searches for a binary named `terraform`, then **downloads an unpinned Terraform from `releases.hashicorp.com`**. OpenTofu is never discovered on its own, so the `tofu` entry in the toolchain guard did not cover the acceptance step at all |
+
+The third one does **not** get fixed by installing `terraform`. nixpkgs' `terraform` is
+BUSL-licensed and this flake does not allow unfree packages, so adding it would be a policy
+change smuggled in as a CI fix. `e2e.yml` sets `TF_ACC_TERRAFORM_PATH` to the `tofu` on the
+runner's PATH instead — the documented route, and `tofu version -json` still reports a
+`terraform_version` key for exactly this compatibility. The toolchain guard deliberately
+does not check for `terraform`, and a comment there says so, because the obvious "fix"
+is the wrong one.
 
 Rootless podman is still the *predicted* failure point beyond these — the EVE installer
 runs `docker run` as a system user with no login session — but the guard fires before
