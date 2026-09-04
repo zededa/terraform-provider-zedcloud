@@ -33,6 +33,27 @@ jobs:
     runs-on: [self-hosted, berlin-lab]
     timeout-minutes: 60
 
+    # INFORMATIONAL ONLY -- this job must not gate a merge yet.
+    #
+    # The job has never completed a green run on the real runner (UE-138), and
+    # its failure modes are still host-level rather than code-level: rootless
+    # podman without a login session, capacity claims against a tree shared
+    # with humans' manual runs, an EVE tag that could go stale. A red X from
+    # any of those says nothing about the pull request it is attached to, and
+    # a check that is routinely wrong is a check people learn to ignore.
+    #
+    # `continue-on-error` reports the job as successful whatever the outcome,
+    # so the result stays visible on the PR (and the step-level status shows
+    # what actually failed) without ever blocking a merge. This is belt and
+    # braces alongside branch protection, where `main` currently requires no
+    # status checks at all -- but that is a setting anyone can change, and it
+    # should not be the only thing standing between a flaky lab host and a
+    # blocked merge queue.
+    #
+    # REMOVE in UE-141, once the job has been stable for several weeks and is
+    # deliberately promoted to a required check.
+    continue-on-error: true
+
     # ---------------------------------------------------------------------
     # SECURITY GATE -- DO NOT REMOVE
     #
