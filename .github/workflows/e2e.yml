@@ -88,6 +88,22 @@ jobs:
       # by its own install.sh.
       ZEDAMIGO_VERSION: "0.13.1"
 
+      # JOB-level, not step-level, because EVERY Go invocation here needs it
+      # and there is more than one. This started as a step-level setting on
+      # `make build`, and the acceptance step then failed identically --
+      # `go test` compiles the package too, so it wanted a C compiler just as
+      # much as the build did.
+      #
+      # Why 0 rather than installing gcc: .goreleaser.yml sets CGO_ENABLED=0
+      # ("goreleaser does not work with CGO"), so every published binary is
+      # built without cgo, and the only `import "C"` in the tree is vendored
+      # x/sys code for hurd and aix that never builds on linux/amd64. Adding
+      # a C toolchain would make this the one place the provider is compiled
+      # WITH cgo -- less faithful to the release, not more. (go.yml on
+      # ubuntu-latest does exactly that today, silently, because the hosted
+      # image ships gcc.)
+      CGO_ENABLED: "0"
+
     steps:
       # fetch-tags because the Makefile derives the binary name from
       # `git describe --always --abbrev=0 --tags`. With checkout's default
@@ -137,22 +153,9 @@ jobs:
           test -w /dev/kvm || { echo "/dev/kvm not writable"; exit 1; }
           echo "toolchain ok: $(tofu version | head -1), $(go version)"
 
-      # CGO_ENABLED=0 to match how the provider is actually released.
-      # .goreleaser.yml sets it, with the comment "goreleaser does not work
-      # with CGO", so every published binary is built without cgo -- and the
-      # only `import "C"` in the tree is vendored x/sys code for hurd and aix,
-      # which never builds on linux/amd64 anyway.
-      #
-      # Without this the runner needs a C toolchain purely to satisfy
-      # runtime/cgo, and the build fails with
-      # `cgo: C compiler "gcc" not found`. Adding gcc to the runner would
-      # work, but it would make this step LESS faithful than the release --
-      # it would be the only place the provider gets built with cgo. Note
-      # go.yml on ubuntu-latest does exactly that today, silently, because
-      # the hosted image ships gcc.
+      # CGO_ENABLED=0 comes from the job-level env above -- see the note
+      # there for why, and why it is not step-level.
       - name: Build provider under test
-        env:
-          CGO_ENABLED: "0"
         run: make build
 
       # zedamigo drives QEMU locally on this host. Installed under the runner's
