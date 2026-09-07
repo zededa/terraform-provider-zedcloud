@@ -11,13 +11,21 @@ terraform {
       version = "0.13.1"
     }
 
-    # Public registry. Iteration 1 uses the released provider because we are
-    # proving out the node lifecycle, not the provider under test. Later
-    # iterations run the acceptance suite, which loads the provider in-process
-    # and therefore does not use this binary at all.
+    # Resolved from a dev_overrides entry pointing at the locally built
+    # provider -- see the generated e2e.tfrc in .github/workflows/e2e.yml,
+    # and test/e2e/README.md for the manual equivalent.
+    #
+    # NO VERSION CONSTRAINT, deliberately. dev_overrides ignores version
+    # constraints (with a warning), so a pin here would be decorative and
+    # would imply this comes from the registry. It used to: iteration 1
+    # pinned ">= 2.7.0" from the public registry on the grounds that we were
+    # proving out the node lifecycle rather than the provider. That stopped
+    # being true once the acceptance suite ran -- every object this config
+    # creates (project, brand, model, network instance, image, edgenode) is
+    # part of what a pull request can break, so it has to be the PR's binary
+    # creating them.
     zedcloud = {
-      source  = "zededa/zedcloud"
-      version = ">= 2.7.0"
+      source = "zededa/zedcloud"
     }
   }
 }

@@ -155,8 +155,27 @@ jobs:
 
       # CGO_ENABLED=0 comes from the job-level env above -- see the note
       # there for why, and why it is not step-level.
+      #
+      # The unsuffixed symlink is what makes this step's output actually get
+      # used. `make build` emits terraform-provider-zedcloud_<version> (the
+      # name a filesystem mirror or release archive wants), but a
+      # `dev_overrides` directory is scanned for a plain
+      # terraform-provider-<TYPE>. Without the link, tofu silently falls back
+      # to the registry and `test/e2e` applies a RELEASED provider -- which is
+      # what it did until now, making the step name a lie.
+      #
+      # `make build` starts with `rm -f ./v2/terraform-provider-zedcloud_v*`,
+      # which does not match the unsuffixed name, so the link survives and is
+      # re-pointed here on every run.
       - name: Build provider under test
-        run: make build
+        run: |
+          set -euo pipefail
+          make build
+          cd v2
+          bin="$(ls -1t terraform-provider-zedcloud_* | head -1)"
+          ln -sf "$bin" terraform-provider-zedcloud
+          echo "provider under test: $bin"
+          ls -l terraform-provider-zedcloud
 
       # zedamigo drives QEMU locally on this host. Installed under the runner's
       # HOME so each runner account is self-contained.
@@ -166,14 +185,32 @@ jobs:
           curl -fsSL "https://raw.githubusercontent.com/andrei-zededa/terraform-provider-zedamigo/v${ZEDAMIGO_VERSION}/install.sh" \
             | bash -s -- --binary-only "${ZEDAMIGO_VERSION}"
 
-      # Generated rather than committed: the filesystem_mirror path depends on
-      # the runner account's HOME, and the repo's own dev.tfrc breaks zedamigo
-      # resolution (its dev_overrides + direct{} block shadow the mirror).
+      # Generated rather than committed: both paths below are run-specific --
+      # the filesystem_mirror depends on the runner account's HOME and the
+      # dev_overrides on the workspace checkout. The repo's own dev.tfrc is
+      # not usable here either; its dev_overrides path is relative ("./v2"),
+      # so it resolves against whatever directory tofu happens to run in.
+      #
+      # dev_overrides is what makes this job test the PULL REQUEST's provider
+      # rather than a released one. Before it, terraform.tf resolved
+      # zededa/zedcloud from the public registry, so every cloud object the
+      # harness created -- project, brand, model, network instance, image,
+      # edgenode -- was created by whatever version the registry served. A PR
+      # that broke edgenode creation would have sailed straight through node
+      # setup. (The acceptance test itself was always fine: the SDK links the
+      # provider in-process from source and never resolves it from disk.)
+      #
+      # dev_overrides must come first in provider_installation, and it makes
+      # tofu ignore version constraints for that provider with a warning --
+      # which is why terraform.tf no longer pins one.
       - name: Write provider CLI config
         run: |
           set -euo pipefail
           cat > "${RUNNER_TEMP}/e2e.tfrc" <<EOF
           provider_installation {
+            dev_overrides {
+              "zededa/zedcloud" = "${GITHUB_WORKSPACE}/v2"
+            }
             filesystem_mirror {
               path    = "${HOME}/.terraform.d/plugins"
               include = ["localhost/andrei-zededa/zedamigo"]
@@ -183,6 +220,11 @@ jobs:
             }
           }
           EOF
+          echo "--- e2e.tfrc ---"
+          cat "${RUNNER_TEMP}/e2e.tfrc"
+          # Fail here rather than let tofu quietly fall back to the registry.
+          test -x "${GITHUB_WORKSPACE}/v2/terraform-provider-zedcloud" \
+            || { echo "dev_overrides target missing or not executable"; exit 1; }
 
       # Creates the cloud objects, builds the EVE installer, installs it,
       # boots the VM, and blocks on zedamigo_wait_until until the controller

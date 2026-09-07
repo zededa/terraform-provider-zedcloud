@@ -67,6 +67,44 @@ The lab host is on `10.208.13.94`, reachable only via the Berlin office VPN.
 
    The binary is statically linked, which is what makes it run on NixOS.
 
+4. Point `zededa/zedcloud` at a locally built provider. `terraform.tf` declares
+   no version constraint on purpose — this config is meant to exercise the
+   provider **you are changing**, not whatever the registry currently serves —
+   so your `e2e.tfrc` needs a `dev_overrides` entry:
+
+   ```hcl
+   provider_installation {
+     dev_overrides {
+       "zededa/zedcloud" = "/home/<you>/e2e-alpha-provider"
+     }
+     filesystem_mirror {
+       path    = "/home/<you>/.terraform.d/plugins"
+       include = ["localhost/andrei-zededa/zedamigo"]
+     }
+     direct {
+       exclude = ["localhost/andrei-zededa/zedamigo"]
+     }
+   }
+   ```
+
+   `dev_overrides` must come first, and the directory is scanned for a plain
+   `terraform-provider-zedcloud`. `make build` emits a version-suffixed name,
+   so link it:
+
+   ```sh
+   make build
+   ln -sf "$(ls -1t v2/terraform-provider-zedcloud_* | head -1)" \
+          v2/terraform-provider-zedcloud
+   ```
+
+   Cross-compile for the lab host if you are building on macOS:
+   `GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -C ./v2 -o ../provider-linux .`
+
+   Expect `tofu` to print "Provider development overrides are in effect" on
+   every command. That warning is the confirmation it worked — without it, you
+   are silently testing a released provider. CI generates the equivalent config
+   and hard-fails if the binary is missing, rather than falling back.
+
 ## Running it
 
 OpenTofu runs **on the lab host** in this iteration, so the zedamigo `target` is
