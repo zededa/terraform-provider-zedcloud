@@ -105,17 +105,22 @@ jobs:
       CGO_ENABLED: "0"
 
     steps:
-      # fetch-tags because the Makefile derives the binary name from
-      # `git describe --always --abbrev=0 --tags`. With checkout's default
-      # shallow fetch there are no tags, `describe` falls back to a bare
-      # commit SHA, and the build produces
-      # terraform-provider-zedcloud_<sha> -- which matches neither
-      # Terraform's expected terraform-provider-NAME_vX.Y.Z form nor the
-      # `rm -f ./v2/terraform-provider-zedcloud_v*` cleanup in the same
-      # target, so stale binaries pile up run after run.
+      # fetch-depth: 0 because the Makefile derives the binary name from
+      # `git describe --always --abbrev=0 --tags`, and describe needs the
+      # tagged COMMIT, not just the tag ref.
+      #
+      # fetch-tags: true alone was tried and does not work: with the default
+      # fetch-depth: 1 the tag refs arrive but the history to reach them does
+      # not, so describe still falls back through `--always` to a bare SHA.
+      # Verified in run 34111213613, which produced
+      # terraform-provider-zedcloud_c132819ec9... with fetch-tags already set.
+      #
+      # The name matters for one practical reason: `make build` starts with
+      # `rm -f ./v2/terraform-provider-zedcloud_v*`, which a SHA-named binary
+      # does not match, so every run left another one behind on the runner.
       - uses: actions/checkout@v4
         with:
-          fetch-tags: true
+          fetch-depth: 0
 
       # The runner's PATH comes from services.github-runners.extraPackages in
       # hosts/h-m-dl20/github-runners.nix. Fail loudly and early if something
