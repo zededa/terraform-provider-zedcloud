@@ -87,21 +87,88 @@ func RealNode(t *testing.T) RealNodeInfo {
 		t.Logf("%s not set, generated run suffix %q", EnvTestSuffix, suffix)
 	}
 
-	id, runState, err := resolveNodeByName(name)
-	if err != nil {
-		t.Fatalf("resolving edge node %q: %s", name, err)
-	}
-
 	// A node that is not online cannot run a workload, and the resulting
-	// failure would look like an unrelated timeout deep in the test. Fail here
-	// instead, where the message is actionable.
-	if runState != "RUN_STATE_ONLINE" {
-		t.Fatalf("edge node %q (%s) is %s, not RUN_STATE_ONLINE; bring it online before running real-node tests",
-			name, id, runState)
+	// failure would look like an unrelated timeout deep in the test, so this
+	// is checked up front where the message is actionable.
+	//
+	// But it is POLLED rather than sampled once, because "not online" is
+	// routinely transient. An edge node reboots shortly after onboarding, so
+	// the sequence in CI is:
+	//
+	//	tofu apply -> zedamigo_wait_until sees RUN_STATE_ONLINE -> apply ends
+	//	  -> device reboots -> this test starts -> RUN_STATE_BOOTING
+	//
+	// A single reading therefore fails or passes depending on where in that
+	// window the test happens to start. Observed both ways on consecutive CI
+	// runs against an otherwise healthy node: run 34103767333 sailed past this
+	// check, run 34106625131 died on it in 0.43s. Treating one non-ONLINE
+	// sample as fatal is the bug; the node being briefly unavailable is not.
+	id, runState, err := waitNodeOnline(t, name, nodeOnlineTimeout)
+	if err != nil {
+		t.Fatalf("%s", err)
 	}
 
 	t.Logf("real node %q resolved to %s (%s), run suffix %q", name, id, runState, suffix)
 	return RealNodeInfo{Name: name, ID: id, Suffix: suffix}
+}
+
+// nodeOnlineTimeout bounds the wait for a node to report RUN_STATE_ONLINE.
+//
+// Sized against the measured cold path: a freshly installed node reaches
+// ONLINE about 1m20s after boot, so a post-onboard reboot should clear well
+// inside this. Long enough to absorb that, short enough that a genuinely dead
+// node fails the job in minutes rather than at the 40m go test timeout.
+const nodeOnlineTimeout = 4 * time.Minute
+
+// waitNodeOnline resolves an edge node by name and polls until it reports
+// RUN_STATE_ONLINE, returning its id and final run state.
+//
+// Lookup errors are retried alongside the state check: the same reboot that
+// flips runState can also make the status endpoint briefly return nothing
+// useful, and failing on the first such blip would defeat the point.
+func waitNodeOnline(t *testing.T, name string, timeout time.Duration) (string, string, error) {
+	t.Helper()
+
+	const interval = 10 * time.Second
+
+	deadline := time.Now().Add(timeout)
+	var (
+		lastID    string
+		lastState string
+		lastErr   error
+	)
+
+	for attempt := 1; ; attempt++ {
+		id, runState, err := resolveNodeByName(name)
+		if id != "" {
+			lastID = id
+		}
+		switch {
+		case err != nil:
+			lastErr = err
+			t.Logf("attempt %d: resolving edge node %q failed: %s", attempt, name, err)
+		case runState == "RUN_STATE_ONLINE":
+			if attempt > 1 {
+				t.Logf("edge node %q reached RUN_STATE_ONLINE after %d attempt(s)", name, attempt)
+			}
+			return id, runState, nil
+		default:
+			lastState = runState
+			lastErr = nil
+			t.Logf("attempt %d: edge node %q (%s) is %s, waiting for RUN_STATE_ONLINE", attempt, name, id, runState)
+		}
+
+		if time.Now().After(deadline) {
+			if lastErr != nil {
+				return lastID, lastState, fmt.Errorf(
+					"gave up after %s resolving edge node %q: %w", timeout, name, lastErr)
+			}
+			return lastID, lastState, fmt.Errorf(
+				"edge node %q (%s) still %s after %s, never reached RUN_STATE_ONLINE; bring it online before running real-node tests",
+				name, lastID, lastState, timeout)
+		}
+		time.Sleep(interval)
+	}
 }
 
 // resolveNodeByName looks up an edge node's UUID and current run state.
