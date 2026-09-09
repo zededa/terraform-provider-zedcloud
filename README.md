@@ -92,3 +92,5 @@ If you need help setting up the __terraform-provider-zedcloud__ please reach out
 
 The latest version of the provider can be found in the official Terraform provider registry under https://registry.terraform.io/providers/zededa/zedcloud/latest.
 
+
+<!-- e2e runner serialisation test 2 of 2 -- disposable branch, do not merge -->
