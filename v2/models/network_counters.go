@@ -17,46 +17,86 @@ import (
 // # NetworkCounter is used to store the Network Stats and Counters
 //
 // swagger:model NetworkCounters
+//
+// HAND-EDITED, AND A REGEN WILL REVERT IT.
+//
+// Every uint64 below carries an extra `,string` that go-swagger did not
+// generate. The controller serialises 64-bit integers as JSON *strings* --
+// that is the canonical protobuf JSON mapping, because a float64 cannot hold
+// the full uint64 range -- so the generated `uint64` tags cannot decode a real
+// response:
+//
+//	json: cannot unmarshal string into Go struct field
+//	NetworkCounters.netCounterList.txBytes of type uint64
+//
+// This went unnoticed because nothing in the repo called the /status endpoints
+// until the real-node test helper (v2/testing/realnode.go); the generated
+// client covers only the config endpoints. Once an app instance starts
+// producing network counters, every status poll fails to decode, which is what
+// made TestApplicationInstance_RealNode time out at 15m while reporting a
+// stale swState -- see UE-138.
+//
+// TWO MEASURED CONSEQUENCES, so the next person does not have to rediscover
+// them (verified against encoding/json, not assumed):
+//
+//   - `,string` accepts ONLY a quoted value on decode. An unquoted number now
+//     fails with "invalid use of ,string struct tag, trying to unmarshal
+//     unquoted value into uint64". If the controller ever returns these
+//     unquoted, that is the error to expect, and it means the field needs a
+//     custom UnmarshalJSON accepting both forms rather than this tag.
+//   - It changes MARSHALLING too: uint64(42) now emits "42", not 42. Harmless
+//     for these fields because NetworkCounters only ever appears inside
+//     read-only status messages (AppInstStatusMsg, DeviceInfoMsg,
+//     DeviceStatusMsg), never in a request body. Do not copy this tag onto a
+//     field the provider SENDS without checking the API accepts quoted.
+//
+// The same problem exists on ~180 other int64/uint64 fields across this
+// package; only the ones actually exercised are fixed here. Tracked separately
+// under UE-131, because a blanket change is exactly what the first bullet says
+// not to do.
+//
+// If you regenerate models from swagger, re-apply this, or teach the generator
+// to emit `,string` for 64-bit integers.
 type NetworkCounters struct {
 
 	// ifName
 	IfName string `json:"ifName,omitempty"`
 
 	// Rx ACL Rate Drops
-	RxACLDrops uint64 `json:"rxAclDrops,omitempty"`
+	RxACLDrops uint64 `json:"rxAclDrops,omitempty,string"`
 
 	// Rx ACL Rate Limit Drops
-	RxACLRateLimitDrops uint64 `json:"rxAclRateLimitDrops,omitempty"`
+	RxACLRateLimitDrops uint64 `json:"rxAclRateLimitDrops,omitempty,string"`
 
 	// Rx Bytes
-	RxBytes uint64 `json:"rxBytes,omitempty"`
+	RxBytes uint64 `json:"rxBytes,omitempty,string"`
 
 	// Rx Drops
-	RxDrops uint64 `json:"rxDrops,omitempty"`
+	RxDrops uint64 `json:"rxDrops,omitempty,string"`
 
 	// Rx Errors
-	RxErrors uint64 `json:"rxErrors,omitempty"`
+	RxErrors uint64 `json:"rxErrors,omitempty,string"`
 
 	// Rx packets
-	RxPkts uint64 `json:"rxPkts,omitempty"`
+	RxPkts uint64 `json:"rxPkts,omitempty,string"`
 
 	// Tx ACL Rate Drops
-	TxACLDrops uint64 `json:"txAclDrops,omitempty"`
+	TxACLDrops uint64 `json:"txAclDrops,omitempty,string"`
 
 	// Tx ACL Rate Limit Drops
-	TxACLRateLimitDrops uint64 `json:"txAclRateLimitDrops,omitempty"`
+	TxACLRateLimitDrops uint64 `json:"txAclRateLimitDrops,omitempty,string"`
 
 	// Tx Bytes
-	TxBytes uint64 `json:"txBytes,omitempty"`
+	TxBytes uint64 `json:"txBytes,omitempty,string"`
 
 	// Tx Drops
-	TxDrops uint64 `json:"txDrops,omitempty"`
+	TxDrops uint64 `json:"txDrops,omitempty,string"`
 
 	// Tx Errors
-	TxErrors uint64 `json:"txErrors,omitempty"`
+	TxErrors uint64 `json:"txErrors,omitempty,string"`
 
 	// Tx Packets
-	TxPkts uint64 `json:"txPkts,omitempty"`
+	TxPkts uint64 `json:"txPkts,omitempty,string"`
 }
 
 // Validate validates this network counters
