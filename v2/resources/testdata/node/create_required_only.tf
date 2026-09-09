@@ -3,7 +3,7 @@
 
 resource "zedcloud_project" "test_tf_provider" {
 	# required
-	name = "test_tf_provider-create_node_1"
+	name = "test_tf_provider-create_node_1__SUFFIX__"
 	title = "title"
 
 	# optional
@@ -33,8 +33,8 @@ resource "zedcloud_datastore"  "test_tf_provider" {
 	ds_fqdn = "https://my-datastore.my-company.com"
 	ds_path = "download/AMD64"
 	ds_type = "DATASTORE_TYPE_AZUREBLOB"
-	name = "test_tf_provider-test_datastore"
-	title = "test_tf_provider-test_datastore"
+	name = "test_tf_provider-test_datastore__SUFFIX__"
+	title = "test_tf_provider-test_datastore__SUFFIX__"
 	description = "test_tf_provider-test_datastore"
 	region = "eu"
 	project_access_list = [zedcloud_project.test_tf_provider.id]
@@ -45,7 +45,7 @@ resource "zedcloud_image" "test_tf_provider" {
 		zedcloud_datastore.test_tf_provider,
 		zedcloud_project.test_tf_provider
 	]
-	name = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
 	datastore_id = zedcloud_datastore.test_tf_provider.id
 	image_arch = "AMD64"
 	image_format = "CONTAINER"
@@ -57,16 +57,16 @@ resource "zedcloud_image" "test_tf_provider" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-	name = "test_tf_provider-create_edgenode"
-	title = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
+	title = "test_tf_provider-create_edgenode__SUFFIX__"
 	description = "description"
 	origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider" {
 	brand_id = zedcloud_brand.test_tf_provider.id
-	name = "test_tf_provider-create_edgenode"
-	title = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
+	title = "test_tf_provider-create_edgenode__SUFFIX__"
 	type = "AMD64"
 	origin_type = "ORIGIN_LOCAL"
 	state = "SYS_MODEL_STATE_ACTIVE"
@@ -99,9 +99,9 @@ resource "zedcloud_network" "test_tf_provider" {
 	depends_on = [
 		zedcloud_project.test_tf_provider
 	]
-	name = "test_tf_provider-required_only-net"
+	name = "test_tf_provider-required_only-net__SUFFIX__"
 	project_id = zedcloud_project.test_tf_provider.id
-	title = "test_tf_provider-required_only-net"
+	title = "test_tf_provider-required_only-net__SUFFIX__"
 	kind = "NETWORK_KIND_V4"
 	ip {
 		dhcp = "NETWORK_DHCP_TYPE_STATIC"
@@ -124,7 +124,7 @@ resource "zedcloud_edgenode" "required_only" {
 		zedcloud_model.test_tf_provider,
 		zedcloud_network.test_tf_provider
 	]
-	name = "test_tf_provider-required_only"
+	name = "test_tf_provider-required_only__SUFFIX__"
 	model_id = zedcloud_model.test_tf_provider.id
 	project_id = zedcloud_project.test_tf_provider.id
 	title = "required_only-title"

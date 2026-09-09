@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
 	# required
-	name = "test_tf_provider-create_node_2"
+	name = "test_tf_provider-create_node_2__SUFFIX__"
 	title = "title"
 
 	# optional
@@ -30,7 +30,7 @@ resource "zedcloud_datastore"  "test_tf_provider" {
 	ds_fqdn = "https://my-datastore.my-company.com"
 	ds_path = "download/AMD64"
 	ds_type = "DATASTORE_TYPE_AZUREBLOB"
-	name = "test_tf_provider-amd64"
+	name = "test_tf_provider-amd64__SUFFIX__"
 	title = "title"
 	description = "description"
 	region = "eu"
@@ -42,7 +42,7 @@ resource "zedcloud_image" "test_tf_provider" {
 		zedcloud_datastore.test_tf_provider,
 		zedcloud_project.test_tf_provider
 	]
-	name = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
 	datastore_id = zedcloud_datastore.test_tf_provider.id
 	image_arch = "AMD64"
 	image_format = "CONTAINER"
@@ -54,16 +54,16 @@ resource "zedcloud_image" "test_tf_provider" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-	name = "test_tf_provider-create_edgenode"
-	title = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
+	title = "test_tf_provider-create_edgenode__SUFFIX__"
 	description = "description"
 	origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider" {
 	brand_id = zedcloud_brand.test_tf_provider.id
-	name = "test_tf_provider-create_edgenode"
-	title = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
+	title = "test_tf_provider-create_edgenode__SUFFIX__"
 	type = "AMD64"
 	origin_type = "ORIGIN_LOCAL"
 	state = "SYS_MODEL_STATE_ACTIVE"
@@ -97,9 +97,9 @@ resource "zedcloud_network" "complete_with_pac" {
         zedcloud_project.test_tf_provider
     ]
     # required
-    name = "zedcloud_network.complete_with_pac.name"
+    name = "zedcloud_network.complete_with_pac.name__SUFFIX__"
     project_id = zedcloud_project.test_tf_provider.id
-    title = "zedcloud_network.complete_with_pac.title"
+    title = "zedcloud_network.complete_with_pac.title__SUFFIX__"
     ip {
         dhcp = "NETWORK_DHCP_TYPE_STATIC"
         dhcp_range {
@@ -152,12 +152,12 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 		zedcloud_model.test_tf_provider,
 		zedcloud_network.complete_with_pac
 	]
-	name        = "test_tf_provider"
+	name        = "test_tf_provider__SUFFIX__"
 	model_id    = zedcloud_model.test_tf_provider.id
 	project_id  = zedcloud_project.test_tf_provider.id
-	title       = "test_tf_provider-title"
+	title       = "test_tf_provider-title__SUFFIX__"
 	description = "device with default network instance"
-	serialno    = "def-netinst"
+	serialno    = "def-netinst__SUFFIX__"
 	admin_state = "ADMIN_STATE_CREATED"
 
 	interfaces {

@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
     # required
-    name = "test_tf_provider-create_net_1"
+    name = "test_tf_provider-create_net_1__SUFFIX__"
     title = "title"
 
     # optional
@@ -25,8 +25,8 @@ resource "zedcloud_network" "required_only" {
     depends_on = [
         zedcloud_project.test_tf_provider
     ]
-    name = "zedcloud_network.required_only.name"
-    title = "zedcloud_network.required_only.title"
+    name = "zedcloud_network.required_only.name__SUFFIX__"
+    title = "zedcloud_network.required_only.title__SUFFIX__"
     project_id = zedcloud_project.test_tf_provider.id
     ip {
         dhcp = "NETWORK_DHCP_TYPE_STATIC"
@@ -51,8 +51,8 @@ resource "zedcloud_network" "test_tf_adapter_spec_network" {
     depends_on = [
         zedcloud_project.test_tf_provider
     ]
-    name = "test_tf_adapter_spec_network"
-    title = "adapter specific network"
+    name = "test_tf_adapter_spec_network__SUFFIX__"
+    title = "adapter specific network__SUFFIX__"
     project_id = zedcloud_project.test_tf_provider.id
     ip {
         dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"

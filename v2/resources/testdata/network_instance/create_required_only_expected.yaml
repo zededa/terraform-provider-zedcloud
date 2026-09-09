@@ -1,5 +1,5 @@
-name: "test_tf_provider-netinst"
-title: "test_tf_provider-netinst"
+name: "test_tf_provider-netinst__SUFFIX__"
+title: "test_tf_provider-netinst__SUFFIX__"
 kind: "NETWORK_INSTANCE_KIND_SWITCH"
 port: "eth1"
 type: "NETWORK_INSTANCE_DHCP_TYPE_UNSPECIFIED"

@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
   # required
-  name = "test_tf_provider-create_edgenode"
+  name = "test_tf_provider-create_edgenode__SUFFIX__"
   title = "title"
 
   # optional
@@ -22,16 +22,16 @@ resource "zedcloud_project" "test_tf_provider" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-  name = "test_tf_provider-create_edgenode"
-  title = "test_tf_provider-create_edgenode"
+  name = "test_tf_provider-create_edgenode__SUFFIX__"
+  title = "test_tf_provider-create_edgenode__SUFFIX__"
   description = "description"
   origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider" {
   brand_id = zedcloud_brand.test_tf_provider.id
-  name = "test_tf_provider-create_edgenode"
-  title = "test_tf_provider-create_edgenode"
+  name = "test_tf_provider-create_edgenode__SUFFIX__"
+  title = "test_tf_provider-create_edgenode__SUFFIX__"
   type = "AMD64"
   origin_type = "ORIGIN_LOCAL"
   state = "SYS_MODEL_STATE_ACTIVE"
@@ -61,7 +61,7 @@ resource "zedcloud_model" "test_tf_provider" {
 }
 
 resource "zedcloud_edgenode" "test_tf_provider" {
-  name = "test_tf_provider-create_edgenode"
+  name = "test_tf_provider-create_edgenode__SUFFIX__"
   model_id = zedcloud_model.test_tf_provider.id
   project_id = zedcloud_project.test_tf_provider.id
   title = "title"

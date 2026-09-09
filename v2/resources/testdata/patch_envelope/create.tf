@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
   # required
-  name = "test_tf_provider-create_patch_envelope"
+  name = "test_tf_provider-create_patch_envelope__SUFFIX__"
   title = "title"
 
   # optional
@@ -30,7 +30,7 @@ resource "zedcloud_datastore"  "test_tf_provider" {
   ds_fqdn = "https://my-datastore.my-company.com"
   ds_path = "download/AMD64"
   ds_type = "DATASTORE_TYPE_AZUREBLOB"
-  name = "test_tf_provider-test_datastore"
+  name = "test_tf_provider-test_datastore__SUFFIX__"
   title = "title"
   description = "description"
   region = "eu"
@@ -41,8 +41,8 @@ resource "zedcloud_image"  "test_tf_provider" {
   depends_on = [
     zedcloud_datastore.test_tf_provider
   ]
-  name = "test_tf_provider"
-  title = "test_tf_provider"
+  name = "test_tf_provider__SUFFIX__"
+  title = "test_tf_provider__SUFFIX__"
   image_arch = "UNSPECIFIED"
   image_format = "RAW"
   datastore_id = zedcloud_datastore.test_tf_provider.id
@@ -53,9 +53,9 @@ resource "zedcloud_image"  "test_tf_provider" {
 }
 
 resource "zedcloud_patch_envelope" "test_tf_provider" {
-  name   = "test_tf_provider"
+  name   = "test_tf_provider__SUFFIX__"
   action = "PATCH_ENVELOPE_ACTION_STORE"
-  title  = "test_tf_provider"
+  title  = "test_tf_provider__SUFFIX__"
   description = "test tf provider"
   user_defined_version = "1.0"
 

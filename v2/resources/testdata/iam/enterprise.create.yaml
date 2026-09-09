@@ -1,5 +1,5 @@
-name: "test_tf_provider"
-title: "test_tf_provider"
+name: "test_tf_provider__SUFFIX__"
+title: "test_tf_provider__SUFFIX__"
 apitokenexpiryinseconds: 7776000
 attributes: {}
 childenterprises: []

@@ -9,7 +9,7 @@ resource "zedcloud_project" "test_tf_provider" {
     # revision =
 
 		# required
-		name = "test_tf_provider"
+		name = "test_tf_provider__SUFFIX__"
     title = "title"
 
 		# optional

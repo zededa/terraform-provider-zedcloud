@@ -26,12 +26,12 @@ interfaces:
       netdhcp: NETWORK_DHCP_TYPE_STATIC
       ipaddr: "172.25.24.2"
       macaddr: ""
-      netname: "test_tf_provider_node_pnac-net"
+      netname: "test_tf_provider_node_pnac-net__SUFFIX__"
       tags: {}
       sharedlabels: []
 location: ""
 memory: 0
-name: test_tf_provider_node_pnac
+name: test_tf_provider_node_pnac__SUFFIX__
 obkey: ""
 onboarding: null
 preparepoweroffcounter: 0
@@ -40,11 +40,11 @@ projectid: ""
 resetcounter: 0
 resettime: ""
 revision: null
-serialno: node-pnac-test-serial-001
+serialno: node-pnac-test-serial-001__SUFFIX__
 sitepictures: []
 storage: 0
 tags: {}
 thread: 0
-title: test_tf_provider_node_pnac
+title: test_tf_provider_node_pnac__SUFFIX__
 token: ""
 utype: "AMD64"

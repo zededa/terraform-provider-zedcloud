@@ -3,8 +3,8 @@ resource "zedcloud_datastore" "open_ds" {
   ds_fqdn             = "http://147.75.33.217"
   ds_path             = "images"
   ds_type             = "DATASTORE_TYPE_HTTP"
-  name                = "test_tf_provider-open_ds"
-  title               = "test_tf_provider-open_ds"
+  name                = "test_tf_provider-open_ds__SUFFIX__"
+  title               = "test_tf_provider-open_ds__SUFFIX__"
   description         = "test_tf_provider-open_ds"
   region              = "eu"
   # project_access_list = [zedcloud_project.test_tf_provider.id]
@@ -14,21 +14,21 @@ resource "zedcloud_image" "open_alpine_image" {
   depends_on = [
     zedcloud_datastore.open_ds
   ]
-  name                = "test_tf_provider-open_alpine_image"
+  name                = "test_tf_provider-open_alpine_image__SUFFIX__"
   datastore_id        = zedcloud_datastore.open_ds.id
   image_arch          = "ARM64"
   image_format        = "CONTAINER"
   image_rel_url       = "alpine:latest"
   image_size_bytes    = 0
   image_type          = "IMAGE_TYPE_APPLICATION"
-  title               = "openalpine"
+  title               = "openalpine__SUFFIX__"
 }
 
 
 resource "zedcloud_app_profile" "test_tf_provider" {
   depends_on = [ zedcloud_image.open_alpine_image ]
-  name = "test_tf_provider"
-  title = "test_tf_provider"
+  name = "test_tf_provider__SUFFIX__"
+  title = "test_tf_provider__SUFFIX__"
 
   app_policies {
     meta_data {

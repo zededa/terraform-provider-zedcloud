@@ -1,5 +1,5 @@
-name: test_tf_provider_pnac
-title: Test PNAC Project Updated
+name: test_tf_provider_pnac__SUFFIX__
+title: Test PNAC Project Updated__SUFFIX__
 type: TAG_TYPE_PROJECT
 attr: {}
 attestationpolicy:

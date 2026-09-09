@@ -1,4 +1,4 @@
-name: test_tf_provider
+name: test_tf_provider__SUFFIX__
 type: TAG_TYPE_PROJECT
 title: title
 attr:
@@ -28,7 +28,7 @@ edgeviewpolicy:
         numinst:   1
     maxexpiresec: 2592000
     maxinst: 3
-  name: test_tf_provider.edgeviewPolicy
+  name: test_tf_provider__SUFFIX__.edgeviewPolicy
   status: POLICY_STATUS_READY
   statusmessage: "Policy configured successfully"
   type: POLICY_TYPE_EDGEVIEW

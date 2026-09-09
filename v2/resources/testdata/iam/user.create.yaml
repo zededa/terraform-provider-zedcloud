@@ -2,7 +2,7 @@ allowed_enterprises:
   id: "AAFlABDe6Nm63ixF5LJBbk9Keqp6"
   name: "zededa"
   roleid: "AAGFABCnEbWH56VAfZUHmv6ZfXRc"
-email: "user1@example.com"
+email: "user1__SUFFIX__@example.com"
 emailstate: ID_STATE_VERIFIED
 enterpriseid: "AAFlABDe6Nm63ixF5LJBbk9Keqp6"
 firstname: "user"
@@ -19,4 +19,4 @@ state: "USER_STATE_ACTIVE"
 timezone: ""
 totpenabled: false
 type: "AUTH_TYPE_LOCAL"
-username: "user2@example.com"
+username: "user2__SUFFIX__@example.com"

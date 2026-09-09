@@ -1,5 +1,5 @@
-name: "test_tf_provider-deployment"
-title: "test_tf_provider-deployment"
+name: "test_tf_provider-deployment__SUFFIX__"
+title: "test_tf_provider-deployment__SUFFIX__"
 deploymentTag: "depl:1234"
 
 devicePolicies:
@@ -42,7 +42,7 @@ appInstPolicies:
       namingScheme: "APP_NAMING_SCHEMEV2_PROJECT_APP_DEVICE"
       nameProjectPart: "depl-project"
       startDelayInSeconds: 0
-      nameAppPart: "test_tf_provider"
+      nameAppPart: "test_tf_provider__SUFFIX__"
       originType: "ORIGIN_LOCAL"
       interfaces:
         - intforder: 1

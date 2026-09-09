@@ -1,6 +1,6 @@
 id: e2a28a73-0933-4f99-a0fa-0029da76a664
-name: test_tf_provider
-title: test_tf_provider
+name: test_tf_provider__SUFFIX__
+title: test_tf_provider__SUFFIX__
 description: ''
 projectId: a223ddf6-bfbd-4032-a194-a3ef8cf1ca1f
 appProfileInfo:

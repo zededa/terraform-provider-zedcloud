@@ -1,6 +1,6 @@
 resource "zedcloud_cep_profile" "test_tf_provider" {
-  name        = "test_tf_provider_cep"
-  title       = "Test CEP Profile"
+  name        = "test_tf_provider_cep__SUFFIX__"
+  title       = "Test CEP Profile__SUFFIX__"
   description = "Test SCEP certificate enrollment profile"
   scep_url    = "https://scep.example.com/scep"
 

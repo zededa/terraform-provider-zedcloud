@@ -1,6 +1,6 @@
 resource "zedcloud_cep_profile" "test_tf_provider_node_pnac_cep" {
-  name        = "test_tf_provider_node_pnac_cep"
-  title       = "Test CEP for Node PNAC"
+  name        = "test_tf_provider_node_pnac_cep__SUFFIX__"
+  title       = "Test CEP for Node PNAC__SUFFIX__"
   description = "CEP profile used by Node PNAC onboarding test"
   scep_url    = "https://scep.example.com/scep"
 
@@ -30,8 +30,8 @@ resource "zedcloud_cep_profile" "test_tf_provider_node_pnac_cep" {
 }
 
 resource "zedcloud_project" "test_tf_provider_node_pnac" {
-  name  = "test_tf_provider_node_pnac"
-  title = "Test Node PNAC Project"
+  name  = "test_tf_provider_node_pnac__SUFFIX__"
+  title = "Test Node PNAC Project__SUFFIX__"
   type  = "TAG_TYPE_PROJECT"
 
   attestation_policy {
@@ -57,16 +57,16 @@ resource "zedcloud_project" "test_tf_provider_node_pnac" {
 }
 
 resource "zedcloud_brand" "test_tf_provider_node_pnac" {
-  name        = "test_tf_provider_node_pnac"
-  title       = "test_tf_provider_node_pnac"
+  name        = "test_tf_provider_node_pnac__SUFFIX__"
+  title       = "test_tf_provider_node_pnac__SUFFIX__"
   description = "description"
   origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider_node_pnac" {
   brand_id    = zedcloud_brand.test_tf_provider_node_pnac.id
-  name        = "test_tf_provider_node_pnac"
-  title       = "test_tf_provider_node_pnac"
+  name        = "test_tf_provider_node_pnac__SUFFIX__"
+  title       = "test_tf_provider_node_pnac__SUFFIX__"
   type        = "AMD64"
   origin_type = "ORIGIN_LOCAL"
   state       = "SYS_MODEL_STATE_ACTIVE"
@@ -97,9 +97,9 @@ resource "zedcloud_network" "test_tf_provider_node_pnac" {
   depends_on = [
     zedcloud_project.test_tf_provider_node_pnac
   ]
-  name       = "test_tf_provider_node_pnac-net"
+  name       = "test_tf_provider_node_pnac-net__SUFFIX__"
   project_id = zedcloud_project.test_tf_provider_node_pnac.id
-  title      = "test_tf_provider_node_pnac-net"
+  title      = "test_tf_provider_node_pnac-net__SUFFIX__"
   kind       = "NETWORK_KIND_V4"
   ip {
     dhcp = "NETWORK_DHCP_TYPE_STATIC"
@@ -122,11 +122,11 @@ resource "zedcloud_edgenode" "test_tf_provider_node_pnac" {
     zedcloud_model.test_tf_provider_node_pnac,
     zedcloud_network.test_tf_provider_node_pnac,
   ]
-  name       = "test_tf_provider_node_pnac"
-  title      = "test_tf_provider_node_pnac"
+  name       = "test_tf_provider_node_pnac__SUFFIX__"
+  title      = "test_tf_provider_node_pnac__SUFFIX__"
   model_id   = zedcloud_model.test_tf_provider_node_pnac.id
   project_id = zedcloud_project.test_tf_provider_node_pnac.id
-  serialno   = "node-pnac-test-serial-001"
+  serialno   = "node-pnac-test-serial-001__SUFFIX__"
   admin_state = "ADMIN_STATE_ACTIVE"
 
   interfaces {

@@ -23,7 +23,7 @@ ip:
     ntp: "10.1.0.2"
 kind: NETWORK_INSTANCE_KIND_LOCAL
 lisp: null
-name: test_tf_provider-netinst_complete
+name: test_tf_provider-netinst_complete__SUFFIX__
 networkpolicyid: ""
 oconfig: ""
 opaque:
@@ -36,7 +36,7 @@ projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 tags:
     ni-tag1: ni-tag-value-1
     ni-tag2: ni-tag-value-2
-title: test_tf_provider-netinst_complete
+title: test_tf_provider-netinst_complete__SUFFIX__
 type: NETWORK_INSTANCE_DHCP_TYPE_V4
 static_routes:
     - gateway: "10.0.20.1"

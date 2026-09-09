@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
 	# required
-	name = "test_tf_provider-create_application"
+	name = "test_tf_provider-create_application__SUFFIX__"
 	title = "title"
 
 	# optional
@@ -25,8 +25,8 @@ resource "zedcloud_application" "test_tf_provider" {
 	depends_on = [
 		zedcloud_project.test_tf_provider
 	]
-	name = "test_tf_provider-ubuntu-all-ip"
-	title = "test_tf_provider-ubuntu-all-ip"
+	name = "test_tf_provider-ubuntu-all-ip__SUFFIX__"
+	title = "test_tf_provider-ubuntu-all-ip__SUFFIX__"
 	description = "test_tf_provider-ubuntu-all-ip"
 	user_defined_version = "1.1"
 	origin_type = "ORIGIN_LOCAL"

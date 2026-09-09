@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
 	# required
-	name = "test_tf_provider-create_node_2"
+	name = "test_tf_provider-create_node_2__SUFFIX__"
 	title = "title"
 
 	# optional
@@ -30,7 +30,7 @@ resource "zedcloud_datastore"  "test_tf_provider" {
 	ds_fqdn = "https://my-datastore.my-company.com"
 	ds_path = "download/AMD64"
 	ds_type = "DATASTORE_TYPE_AZUREBLOB"
-	name = "test_tf_provider-amd64"
+	name = "test_tf_provider-amd64__SUFFIX__"
 	title = "title"
 	description = "description"
 	region = "eu"
@@ -42,7 +42,7 @@ resource "zedcloud_image" "test_tf_provider" {
 		zedcloud_datastore.test_tf_provider,
 		zedcloud_project.test_tf_provider
 	]
-	name = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
 	datastore_id = zedcloud_datastore.test_tf_provider.id
 	image_arch = "AMD64"
 	image_format = "CONTAINER"
@@ -54,16 +54,16 @@ resource "zedcloud_image" "test_tf_provider" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-	name = "test_tf_provider-create_edgenode"
-	title = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
+	title = "test_tf_provider-create_edgenode__SUFFIX__"
 	description = "description"
 	origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider" {
 	brand_id = zedcloud_brand.test_tf_provider.id
-	name = "test_tf_provider-create_edgenode"
-	title = "test_tf_provider-create_edgenode"
+	name = "test_tf_provider-create_edgenode__SUFFIX__"
+	title = "test_tf_provider-create_edgenode__SUFFIX__"
 	type = "AMD64"
 	origin_type = "ORIGIN_LOCAL"
 	state = "SYS_MODEL_STATE_ACTIVE"
@@ -96,8 +96,8 @@ resource "zedcloud_network" "test_tf_adapter_spec_network" {
     depends_on = [
         zedcloud_project.test_tf_provider
     ]
-    name = "test_tf_provider-adapter_spec_network"
-    title = "adapter specific network"
+    name = "test_tf_provider-adapter_spec_network__SUFFIX__"
+    title = "adapter specific network__SUFFIX__"
     project_id = zedcloud_project.test_tf_provider.id
     ip {
         dhcp = "NETWORK_DHCP_TYPE_STATIC_ADAPTER_SPECIFIC"
@@ -110,19 +110,19 @@ resource "zedcloud_edgenode" "test_tf_dev_adap_spec_net" {
 		zedcloud_model.test_tf_provider,
 		zedcloud_network.test_tf_adapter_spec_network
 	]
-	name = "test_tf_provider-dev_adap_spec_net"
+	name = "test_tf_provider-dev_adap_spec_net__SUFFIX__"
 	model_id = zedcloud_model.test_tf_provider.id
 	project_id = zedcloud_project.test_tf_provider.id
-	title = "test_tf_dev_adap_spec_net"
+	title = "test_tf_dev_adap_spec_net__SUFFIX__"
 	# optional
 	onboarding_key = ""
-	serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45c"
+	serialno = "d6aebfa5-56b6-4b66-9d8e-6552b0e2b45c__SUFFIX__"
 	admin_state = "ADMIN_STATE_ACTIVE"
 	asset_id = "asset_id"
 	deployment_tag = "depl_tag"
 	description = "description"
 	generate_soft_serial = false
-	token = "token_all"
+	token = "token_all__SUFFIX__"
 	site_pictures = []
 	interfaces {
 		cost = 255

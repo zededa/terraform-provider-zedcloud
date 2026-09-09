@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
   # required
-  name = "test_tf_provider-create_net_2"
+  name = "test_tf_provider-create_net_2__SUFFIX__"
   title = "title"
 
   # optional
@@ -27,8 +27,8 @@ resource "zedcloud_network" "complete_with_proxy" {
     zedcloud_project.test_tf_provider
   ]
   # required
-  name = "zedcloud_network.complete_with_proxy.name"
-  title = "zedcloud_network.complete_with_proxy.title"
+  name = "zedcloud_network.complete_with_proxy.name__SUFFIX__"
+  title = "zedcloud_network.complete_with_proxy.title__SUFFIX__"
   project_id = zedcloud_project.test_tf_provider.id
   ip {
     dhcp = "NETWORK_DHCP_TYPE_STATIC"

@@ -1,6 +1,6 @@
 resource "zedcloud_cep_profile" "test_tf_provider_pnac_cep" {
-  name        = "test_tf_provider_pnac_cep"
-  title       = "Test CEP for PNAC"
+  name        = "test_tf_provider_pnac_cep__SUFFIX__"
+  title       = "Test CEP for PNAC__SUFFIX__"
   description = "CEP profile used by PNAC policy test"
   scep_url    = "https://scep.example.com/scep"
 
@@ -30,8 +30,8 @@ resource "zedcloud_cep_profile" "test_tf_provider_pnac_cep" {
 }
 
 resource "zedcloud_project" "test_tf_provider_pnac" {
-  name  = "test_tf_provider_pnac"
-  title = "Test PNAC Project Updated"
+  name  = "test_tf_provider_pnac__SUFFIX__"
+  title = "Test PNAC Project Updated__SUFFIX__"
   type  = "TAG_TYPE_PROJECT"
 
   attestation_policy {
