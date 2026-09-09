@@ -69,10 +69,6 @@ jobs:
     # With this gate, only branches pushed to this repository reach the runner,
     # making the trust boundary "who has push access".
     # ---------------------------------------------------------------------
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event.pull_request.head.repo.full_name == github.repository
-
     env:
       # Control API. The device API (zedcloud.alpha) is baked into the EVE
       # image by the Terraform config, not needed here.
