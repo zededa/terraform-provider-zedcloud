@@ -24,6 +24,7 @@ import (
 	kubernetes_deployment "github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_deployment"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_git_ops"
 	kubernetes_secrets "github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_secret"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_snapshots"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/network"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/network_instance"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/node"
@@ -104,6 +105,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.KubernetesSecret = kubernetes_secrets.New(transport, formats)
 	cli.HelmChartManagement = helm_chart_management.New(transport, formats)
 	cli.CertificateEnrollmentProfile = certificate_enrollment_profile.New(transport, formats)
+	cli.KubernetesSnapshots = kubernetes_snapshots.New(transport, formats)
 	return cli
 }
 
@@ -199,6 +201,8 @@ type ZedcloudAPI struct {
 	HelmChartManagement helm_chart_management.ClientService
 
 	CertificateEnrollmentProfile certificate_enrollment_profile.ClientService
+
+	KubernetesSnapshots kubernetes_snapshots.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
@@ -242,4 +246,6 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.HelmChartManagement.SetTransport(transport)
 
 	c.CertificateEnrollmentProfile.SetTransport(transport)
+
+	c.KubernetesSnapshots.SetTransport(transport)
 }
