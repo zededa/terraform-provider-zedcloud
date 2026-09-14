@@ -80,8 +80,13 @@ func TestFixtureTokensAreKnown(t *testing.T) {
 //
 // Several fixtures set `description` to the same string as the object's name.
 // Descriptions have no uniqueness constraint so the fixtures leave them alone,
-// which means the golden copy must stay untokenised too.
-var goldenDenyKeys = map[string]bool{"description": true}
+// which means the golden copy must stay untokenised too. nameAppPart is the
+// same: deployment/create.tf sets name_app_part as a naming-scheme component,
+// not as a reference to the app, so the controller echoes it unsuffixed.
+//
+// Add a key here only after confirming against a controller that the field
+// really does come back without the suffix.
+var goldenDenyKeys = map[string]bool{"description": true, "nameAppPart": true}
 
 var (
 	// name/title/serialno/token = "value__SUFFIX__" in a .tf fixture.

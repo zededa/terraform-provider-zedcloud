@@ -58,6 +58,19 @@ MIDSTRING = {
 }
 MIDSTRING_ATTR = re.compile(r'^(?P<pre>\s*(?P<key>email|username)\s*=\s*")(?P<val>[^"]*)(?P<post>"\s*)$')
 
+# Keys that REFERENCE another object by name rather than naming one.
+#
+# Two fixtures wire an app instance's drive to their own image with a hardcoded
+# `imagename = "test_tf_provider"` instead of zedcloud_image.x.name, so suffixing
+# the image alone leaves the drive pointing at an image that does not exist.
+#
+# These are only suffixed when the value matches a name tokenised IN THE SAME
+# FILE: elsewhere `imagename` holds an external artifact ("test-xenial-amd64")
+# that must not move.
+REF_KEYS = {"imagename"}
+REF_ATTR = re.compile(
+    r'^(?P<pre>\s*(?P<key>[a-z_][a-z0-9_]*)\s*=\s*")(?P<val>[^"]*)(?P<post>"\s*)$')
+
 
 def rewrite(text):
     out, path, changed = [], [], 0
@@ -81,6 +94,27 @@ def rewrite(text):
             elif re.match(r'^\s*\}\s*$', line) and path:
                 path.pop()
         out.append(line)
+
+    text = "".join(out)
+    text, n = rewrite_refs(text)
+    return text, changed + n
+
+
+def rewrite_refs(text):
+    """Second pass over one file: point name references at the suffixed names."""
+    local = set()
+    for line in text.splitlines():
+        m = ATTR.match(line)
+        if m and m.group("val").endswith("__SUFFIX__"):
+            local.add(m.group("val")[: -len("__SUFFIX__")])
+
+    out, changed = [], 0
+    for line in text.splitlines(keepends=True):
+        m = REF_ATTR.match(line)
+        if m and m.group("key") in REF_KEYS and m.group("val") in local:
+            line = f'{m.group("pre")}{m.group("val")}__SUFFIX__{m.group("post")}'
+            changed += 1
+        out.append(line)
     return "".join(out), changed
 
 # --------------------------------------------------------------------------- #
@@ -103,7 +137,16 @@ YAML_ATTR = re.compile(
 # (`description = "test_tf_provider-test_datastore"`). Descriptions are free text
 # with no uniqueness constraint, so the .tf pass does not touch them -- and
 # tokenising the golden copy would then assert a suffix the provider never sent.
-DENY_KEYS = {"description"}
+#
+# nameAppPart is the same trap: deployment/create.tf sets
+# `name_app_part = "test_tf_provider"` as a naming-scheme component, not as a
+# reference to the app, so the controller echoes it unsuffixed. Found by a live
+# suffixed run -- the golden expected "test_tf_provider_ue139d" and got
+# "test_tf_provider".
+#
+# The rule: a golden field may only carry the token when the fixture field it
+# reflects carries it too.
+DENY_KEYS = {"description", "nameAppPart"}
 
 # Golden values the CONTROLLER derives from a name the fixture sets, so the token
 # lands mid-string rather than at the end. Each entry is

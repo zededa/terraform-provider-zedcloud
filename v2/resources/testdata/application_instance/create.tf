@@ -296,7 +296,7 @@ resource "zedcloud_application_instance"  "test_tf_provider" {
   drives {
     # required
     drvtype = "UNSPECIFIED"
-    imagename = "test_tf_provider-create_edgenode"
+    imagename = "test_tf_provider-create_edgenode__SUFFIX__"
     #             "ubuntu-tiny"
     maxsize = "0"
     preserve = false

@@ -298,19 +298,74 @@ time with the cause visible: `dial tcp 10.101.228.195:5432: connect: connection 
 the local cluster's Postgres had gone away. So the tail of that suite run, and every run
 after it, was measuring a degraded cluster.
 
-Outstanding, once the local cluster is healthy:
+### 6.1 Second session: three bugs, two of them mine
 
-1. Re-run the full suite with the suffix unset, and confirm the failure set is exactly the
-   two known ones (`CreateCompose`, `ProfileDeployment_Create`).
-2. AC2: `ZEDCLOUD_TEST_SUFFIX=_ue139a make test`, then confirm on the controller that every
-   created object carries the suffix. Anything without it is a fixture path the allowlist
-   missed.
-3. AC3: two runs back to back with different suffixes.
+Re-run after the local cluster was restarted (clean DB, 0 leftovers).
 
-Also worth knowing: the interrupted runs left objects behind (`Error running post-test
-destroy, there may be dangling resources`), which is the case for the nightly janitor in
-[UE-142](https://zededa.atlassian.net/browse/UE-142) — and, until it exists, for sweeping by
-suffix prefix by hand.
+**Full suite, suffix unset: 66 passed, 1 skipped, 3 failed** —
+`CreateCompose` (needs a device, [UE-140](https://zededa.atlassian.net/browse/UE-140)),
+`ProfileDeployment_Create` (the known flake), and `PatchEnvelope_Create` with a
+`Format: ExternalBinary` vs `Inline` diff that **disappears** when a suffix is set, leaving
+only a destroy-time 404 race. Nothing name-related; zero collisions.
+
+Then a suffixed run found what an unsuffixed one structurally cannot. Two genuine defects in
+this change:
+
+1. **Golden names written as list items were never tokenised.** The rewriter's YAML matcher
+   wanted `key: value` at line start, but a golden's first key inside a list item reads
+   `- imagename: x`. Two image references in `app_profiles/create.yaml` and
+   `deployment/create.yaml` stayed unsuffixed, so a suffixed run failed with
+   `Imagename: "test_tf_provider-alpine_ue139d"` against an expected
+   `"test_tf_provider-alpine"`.
+
+2. **Two fixtures referenced their own image by a hardcoded name.**
+   `application_instance/create.tf` and `patch_reference_update/create.tf` wire a drive with
+   `imagename = "test_tf_provider…"` rather than `zedcloud_image.x.name`, so suffixing the
+   image left the drive pointing at an image that does not exist. Fixed by a per-file
+   reference pass that suffixes `imagename` **only** when the value matches a name tokenised
+   in the same file — elsewhere `imagename` holds an external artifact
+   (`test-xenial-amd64`) that must not move.
+
+And one over-reach in the opposite direction:
+
+3. **`nameAppPart` was tokenised but should not be.** `deployment/create.tf` sets
+   `name_app_part = "test_tf_provider"` as a naming-scheme component, not as a reference to
+   the app, so the controller echoes it unsuffixed — the same trap as `description`. Both are
+   now in the golden pass's `DENY_KEYS`.
+
+The rule the three cases share: **a golden field may carry the token only when the fixture
+field it reflects carries it too.** A sweep for every fixture key holding an untokenised copy
+of a suffixed name turned up exactly four — `description`, `name_app_part`, `image_rel_url`
+(a datastore path, no golden) and `imagename` — so the classification is now believed
+complete, and it was established by reading the tree rather than by one more 20-minute run.
+
+`TestGoldensTokeniseEveryFixtureName` closes the gap statically in the direction that can be
+checked: for every name the fixtures tokenise, it fails on any golden asserting the same
+value without the token, under any key, list item or not. It reproduces both misses when the
+fix is reverted.
+
+### 6.2 Why AC2 and AC3 are still not signed off
+
+The local minikube cluster cannot sustain the suite. During the suffixed full run the node
+itself went `NodeNotReady` for ~23 minutes, taking every namespace with it (argocd,
+monitoring, services, zedcloud all in `CrashLoopBackOff`, 8-14 restarts each); afterwards the
+API alternated between `503`, 10-second responses and connection timeouts, and a later
+attempt wedged the kube API server itself so that even `kubectl` hung. Runs in that window
+fail at the client deadline in ~40s with `context deadline exceeded` — 10 to 32 transport
+errors per run — so they measure the cluster, not the change. Every such run reported **zero
+golden mismatches**.
+
+What remains, on a cluster that can hold up for 20 minutes (or on alpha, which the suffix now
+makes safe — that is the point of the change):
+
+1. Full suite, suffix unset: confirm the failure set is only the two known ones.
+2. Full suite with a suffix: confirm every created object carries it.
+3. The same twice with different suffixes, back to back.
+
+A note for whoever runs it: the minikube VM likely needs more CPU/RAM before it can carry
+this suite, and the brand `Entry Already Exists brandId: …` errors seen in those runs are the
+timeout-then-retry pattern (the POST succeeds, the client gives up, the retry conflicts), not
+a naming collision.
 
 The suite stays sequential; no `t.Parallel()` (design §6.5).
 

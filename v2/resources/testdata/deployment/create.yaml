@@ -42,7 +42,7 @@ appInstPolicies:
       namingScheme: "APP_NAMING_SCHEMEV2_PROJECT_APP_DEVICE"
       nameProjectPart: "depl-project"
       startDelayInSeconds: 0
-      nameAppPart: "test_tf_provider__SUFFIX__"
+      nameAppPart: "test_tf_provider"
       originType: "ORIGIN_LOCAL"
       interfaces:
         - intforder: 1
