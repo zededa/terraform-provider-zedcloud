@@ -75,6 +75,86 @@ func TestFixtureTokensAreKnown(t *testing.T) {
 	t.Logf("placeholders: %v", seen)
 }
 
+// goldenDenyKeys are golden fields that legitimately hold an object's name
+// without the token.
+//
+// Several fixtures set `description` to the same string as the object's name.
+// Descriptions have no uniqueness constraint so the fixtures leave them alone,
+// which means the golden copy must stay untokenised too.
+var goldenDenyKeys = map[string]bool{"description": true}
+
+var (
+	// name/title/serialno/token = "value__SUFFIX__" in a .tf fixture.
+	fixtureTokenised = regexp.MustCompile(
+		`(?m)^\s*(?:name|title|serialno|token)\s*=\s*"([^"]*)__SUFFIX__"\s*$`)
+	// `key: value` in a golden, including the first key of a list item.
+	goldenScalar = regexp.MustCompile(`^\s*(?:-\s+)?([A-Za-z_][A-Za-z0-9_]*):\s*"?([^"\n]*?)"?\s*$`)
+)
+
+// TestGoldensTokeniseEveryFixtureName fails when a golden asserts an object name
+// that the fixtures suffix, without the token.
+//
+// This is the one failure mode the mechanism has that nothing else catches
+// cheaply: the fixture creates `foo_gh123` and the golden still expects `foo`,
+// so the suite passes with an empty suffix and fails only in CI, where a suffix
+// is set. It was found the expensive way -- two golden `imagename:` references
+// written as list items (`- imagename: x`) were missed by the rewrite, and only
+// a live suffixed run against a controller showed it.
+//
+// Goldens name objects under many keys (`imagename`, `netname`, `projectName`,
+// `nameAppPart`, ...), so this matches on the value rather than the key.
+func TestGoldensTokeniseEveryFixtureName(t *testing.T) {
+	tokenised := map[string]string{} // base name -> fixture that declares it
+
+	err := filepath.Walk(fixtureRoot, func(path string, info os.FileInfo, err error) error {
+		if err != nil || info.IsDir() || filepath.Ext(path) != ".tf" {
+			return err
+		}
+		b, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		for _, m := range fixtureTokenised.FindAllStringSubmatch(string(b), -1) {
+			if m[1] != "" {
+				tokenised[m[1]] = path
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walking %s: %s", fixtureRoot, err)
+	}
+	if len(tokenised) == 0 {
+		t.Fatalf("no tokenised names found under %s", fixtureRoot)
+	}
+
+	err = filepath.Walk(fixtureRoot, func(path string, info os.FileInfo, err error) error {
+		if err != nil || info.IsDir() || filepath.Ext(path) != ".yaml" {
+			return err
+		}
+		b, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		for i, line := range strings.Split(string(b), "\n") {
+			m := goldenScalar.FindStringSubmatch(line)
+			if m == nil || goldenDenyKeys[m[1]] {
+				continue
+			}
+			if src, ok := tokenised[m[2]]; ok {
+				t.Errorf("%s:%d: %s: %q is suffixed in %s but not here; "+
+					"append __SUFFIX__ (or add the key to goldenDenyKeys if the fixture "+
+					"really does send it unsuffixed)",
+					path, i+1, m[1], m[2], src)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walking %s: %s", fixtureRoot, err)
+	}
+}
+
 // TestSuffixIsEnvVerbatim pins the property the whole rollout rests on: with
 // ZEDCLOUD_TEST_SUFFIX unset the fixtures render exactly as they did before
 // tokenisation, so a green suite proves the refactor changed nothing.

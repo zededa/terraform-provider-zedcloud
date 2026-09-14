@@ -91,7 +91,11 @@ def rewrite(text):
 # (serialno/serialNo, metaData.name), and matching on the VALUE rather than the
 # key is both simpler and harder to get wrong -- only values the .tf pass
 # actually tokenised are eligible.
-YAML_ATTR = re.compile(r'^(?P<pre>\s*(?P<key>[A-Za-z_][A-Za-z0-9_]*):\s*"?)(?P<val>[^"\n]*?)(?P<post>"?\s*)$')
+# The leading "-\s+" matters: a golden's first key inside a list item is written
+# as "- imagename: x", and skipping those left two image references untokenised
+# (caught only by a real suffixed run against the controller).
+YAML_ATTR = re.compile(
+    r'^(?P<pre>\s*(?:-\s+)?(?P<key>[A-Za-z_][A-Za-z0-9_]*):\s*"?)(?P<val>[^"\n]*?)(?P<post>"?\s*)$')
 
 # Golden keys to leave alone even when their value matches a suffixed identifier.
 #

@@ -73,7 +73,7 @@ appInstPolicies:
         interfaces: []
         permissions: []
         images:
-          - imageName: "test_tf_provider-alpine"
+          - imageName: "test_tf_provider-alpine__SUFFIX__"
             maxSize: "0"
             imageFormat: "CONTAINER"
             preserve: false

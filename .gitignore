@@ -14,3 +14,4 @@ main.tf
 dev.tfrc
 .vscode/
 *.plan
+__pycache__/
