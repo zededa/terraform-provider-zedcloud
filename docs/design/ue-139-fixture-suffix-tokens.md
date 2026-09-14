@@ -276,96 +276,105 @@ created as `test_tf_provider-test_datastore`, exactly as before) and with
 `ZEDCLOUD_TEST_SUFFIX=_ue139a` (created as `test_tf_provider-test_datastore_ue139a`), the
 golden comparison passing in both — which is the golden tokenisation working end to end.
 
-**Full suite, suffix unset.** 20m22s, **65 passed**, 1 skipped (`RealNode`, no device),
-4 failed:
+**First attempt at the full suite: discarded.** It ran 65 passed / 4 failed, but the local
+cluster degraded partway through (`dial tcp 10.101.228.195:5432: connection refused`, then a
+node flap), so its tail measured the cluster rather than the change. §6.3 covers the resize
+that fixed that; §6.2 has the runs that count. Worth keeping one detail from it: even across
+those failures there were **zero** golden mismatches and **zero** name collisions.
 
-| Test | Failure |
-|---|---|
-| `TestApplicationInstance_CreateCompose` | needs a real device — this is what [UE-140](https://zededa.atlassian.net/browse/UE-140) exists to fix |
-| `TestProfileDeployment_Create` | post-test destroy: controller `400` on app-profile and edge-node delete (the flake the design doc already calls out) |
-| `TestProfileDeployment_CreateViaTags` | `Error running apply` |
-| `TestProject_Create_RequiredOnly` | destroy expected `404`, got a failed request |
+### 6.1 What the suffixed runs found
 
-**None of the four is a tokenisation failure.** Both logs contain **zero**
-`unexpected diff` (golden mismatch) and **zero** name-collision errors; every failure is in
-apply/destroy against a controller returning non-JSON `400`s.
-
-**Why the last two are not yet confirmed pre-existing.** A baseline run of the same four
-tests on a pristine base-commit worktree also failed all four — but in 3-4s each, with
-`(*models.GooglerpcStatus) is not supported by the TextConsumer`, i.e. the client failing to
-decode an error body. Re-running them on this branch with a fresh suffix failed too, this
-time with the cause visible: `dial tcp 10.101.228.195:5432: connect: connection refused` —
-the local cluster's Postgres had gone away. So the tail of that suite run, and every run
-after it, was measuring a degraded cluster.
-
-### 6.1 Second session: three bugs, two of them mine
-
-Re-run after the local cluster was restarted (clean DB, 0 leftovers).
-
-**Full suite, suffix unset: 66 passed, 1 skipped, 3 failed** —
-`CreateCompose` (needs a device, [UE-140](https://zededa.atlassian.net/browse/UE-140)),
-`ProfileDeployment_Create` (the known flake), and `PatchEnvelope_Create` with a
-`Format: ExternalBinary` vs `Inline` diff that **disappears** when a suffix is set, leaving
-only a destroy-time 404 race. Nothing name-related; zero collisions.
-
-Then a suffixed run found what an unsuffixed one structurally cannot. Two genuine defects in
-this change:
+A suffixed run finds what an unsuffixed one structurally cannot, and it found three defects
+in this change plus one over-reach. All are fixed.
 
 1. **Golden names written as list items were never tokenised.** The rewriter's YAML matcher
    wanted `key: value` at line start, but a golden's first key inside a list item reads
-   `- imagename: x`. Two image references in `app_profiles/create.yaml` and
-   `deployment/create.yaml` stayed unsuffixed, so a suffixed run failed with
-   `Imagename: "test_tf_provider-alpine_ue139d"` against an expected
-   `"test_tf_provider-alpine"`.
+   `- imagename: x`. Two image references stayed unsuffixed
+   (`app_profiles/create.yaml`, `deployment/create.yaml`).
 
 2. **Two fixtures referenced their own image by a hardcoded name.**
    `application_instance/create.tf` and `patch_reference_update/create.tf` wire a drive with
-   `imagename = "test_tf_provider…"` rather than `zedcloud_image.x.name`, so suffixing the
-   image left the drive pointing at an image that does not exist. Fixed by a per-file
-   reference pass that suffixes `imagename` **only** when the value matches a name tokenised
-   in the same file — elsewhere `imagename` holds an external artifact
-   (`test-xenial-amd64`) that must not move.
+   `imagename = "test_tf_provider..."` rather than `zedcloud_image.x.name`, so suffixing the
+   image left the drive pointing at an image that does not exist.
 
-And one over-reach in the opposite direction:
+3. **A nested manifest name was left behind.** `app_profiles/create.tf` repeats the app
+   profile's own name inside `manifest_json`, which the controller stores and returns, so
+   `VMManifest.Name` came back unsuffixed against a tokenised golden.
 
-3. **`nameAppPart` was tokenised but should not be.** `deployment/create.tf` sets
-   `name_app_part = "test_tf_provider"` as a naming-scheme component, not as a reference to
-   the app, so the controller echoes it unsuffixed — the same trap as `description`. Both are
-   now in the golden pass's `DENY_KEYS`.
+   The fix is deliberately narrow. Blanket-suffixing every `manifest_json.name` would also
+   hit `deployment/create.tf`, whose manifest name (`tf-app-instance`) is a label of its own
+   that appears nowhere else and comes back verbatim -- tokenising it would have broken a
+   passing test. So a manifest's `name`/`title` is treated as a *reference*: it moves only
+   when the same value is tokenised elsewhere in the same file. `TestAppProfile_Create` and
+   `TestDeployment_Create` both pass under that rule.
 
-The rule the three cases share: **a golden field may carry the token only when the fixture
-field it reflects carries it too.** A sweep for every fixture key holding an untokenised copy
-of a suffixed name turned up exactly four — `description`, `name_app_part`, `image_rel_url`
-(a datastore path, no golden) and `imagename` — so the classification is now believed
-complete, and it was established by reading the tree rather than by one more 20-minute run.
+4. **`nameAppPart` was tokenised but should not be.** `deployment/create.tf` sets
+   `name_app_part` as a naming-scheme component, not as a reference to the app, so the
+   controller echoes it unsuffixed -- the same trap as `description`. Both are in the golden
+   pass's `DENY_KEYS`.
+
+The rule these share: **a golden field may carry the token only when the fixture field it
+reflects carries it too.** A sweep for every fixture key holding an untokenised copy of a
+suffixed name found exactly four -- `description`, `name_app_part`, `image_rel_url` (a
+datastore path, absent from the goldens) and `imagename` -- so the classification is believed
+complete, established by reading the tree rather than by more 20-minute runs.
 
 `TestGoldensTokeniseEveryFixtureName` closes the gap statically in the direction that can be
 checked: for every name the fixtures tokenise, it fails on any golden asserting the same
-value without the token, under any key, list item or not. It reproduces both misses when the
+value without the token, under any key, list item or not. It reproduces the misses when the
 fix is reverted.
 
-### 6.2 Why AC2 and AC3 are still not signed off
+### 6.2 Acceptance criteria: met
 
-The local minikube cluster cannot sustain the suite. During the suffixed full run the node
-itself went `NodeNotReady` for ~23 minutes, taking every namespace with it (argocd,
-monitoring, services, zedcloud all in `CrashLoopBackOff`, 8-14 restarts each); afterwards the
-API alternated between `503`, 10-second responses and connection timeouts, and a later
-attempt wedged the kube API server itself so that even `kubectl` hung. Runs in that window
-fail at the client deadline in ~40s with `context deadline exceeded` — 10 to 32 transport
-errors per run — so they measure the cluster, not the change. Every such run reported **zero
-golden mismatches**.
+Three full runs of `v2/resources` back to back on the resized cluster (§6.3), each with
+**zero transport errors** and the node never leaving `Ready`:
 
-What remains, on a cluster that can hold up for 20 minutes (or on alpha, which the suffix now
-makes safe — that is the point of the change):
+| | AC1 (no suffix) | AC2 (`_ue139a`) | AC3 (`_ue139b`) |
+|---|---|---|---|
+| pass / fail / skip | 43 / 3 / 1 | 38 / 4 / 1 | 43 / 3 / 1 |
+| elapsed | 18m49s | 47m34s | 17m16s |
+| name collisions | 0 | 0 | 0 |
 
-1. Full suite, suffix unset: confirm the failure set is only the two known ones.
-2. Full suite with a suffix: confirm every created object carries it.
-3. The same twice with different suffixes, back to back.
+**AC1 — byte-identical with the suffix unset.** Proven mechanically first: all 80 changed
+fixture and golden files, with `__SUFFIX__` stripped, are byte-identical to the base commit.
+The suite then ran with the failure set below.
 
-A note for whoever runs it: the minikube VM likely needs more CPU/RAM before it can carry
-this suite, and the brand `Entry Already Exists brandId: …` errors seen in those runs are the
-timeout-then-retry pattern (the POST succeeds, the client gives up, the retry conflicts), not
-a naming collision.
+**AC2 — every created object carries the suffix.** Audited from the run's own API traffic:
+**96 of 96** distinct object names carried `_ue139a`. AC3 reported 99 of 101, and both
+exceptions are artefacts of the audit, not misses: `test-name` is a fixture literal
+deliberately left alone, and `user2_ue139b@example.com` carries the token mid-string.
+
+**AC3 — two suffixes back to back.** AC3 ran immediately after AC2 against the objects AC2
+had just created and destroyed, with no collisions and the same pass set as AC1.
+
+Every failure is accounted for, none in this change:
+
+| Test | Verdict |
+|---|---|
+| `TestApplicationInstance_CreateCompose` | needs a real device -- the point of [UE-140](https://zededa.atlassian.net/browse/UE-140). Fails on the base commit too. |
+| `TestProfileDeployment_Create` | the flake the design doc already calls out. Fails in all three runs and on base. |
+| `TestPatchEnvelope_Create` | pre-existing flake: the base commit fails it **3 of 3** with the same `OpaqueObjectCategoryInline` vs `ExternalBinary` artifact diff -- the fixture declares one inline and one external artifact and the comparison pairs them by position. No name involved. Passed in AC3. |
+| `TestAppProfile_Create` | was ours (finding 3). Passes with a suffix after the fix. |
+
+### 6.3 The cluster had to be resized first
+
+The first attempt at these runs measured the cluster rather than the change: during a
+suffixed run the minikube node went `NodeNotReady` for ~23 minutes, taking every namespace
+with it, and afterwards the API alternated between `503`, 10-second responses and timeouts.
+
+Cause, from `docker stats`: the minikube container was at **22.39 GiB of a 23.44 GiB limit
+(95.5%)** with CPU pinned at 808% of 8 cores, while the sum of pod memory *limits* was
+22492Mi (~22.0 GiB) -- no headroom for what 70 acceptance tests add. Worse, the kubelet
+reports node capacity as the **Docker VM's** 31.8 GiB rather than the container's cgroup
+limit, so it never sees MemoryPressure and never evicts; the container simply walks into its
+wall and the kernel kills pods inside it.
+
+`tools/zedcloud-local/.env` in `sre-helm` now sets `MINIKUBE_RAM=28000` (from 24000) and
+`MINIKUBE_CPUS=12` (from 8) -- the largest that still fits inside the existing 31.8 GiB
+Docker VM with slack. After `minikube delete` + `make cloud-all`, the same suite runs at
+**77-84% of 27.34 GiB** with CPU around 200% of 1200%, and all three runs above completed
+with no node flap. The capacity-reporting gap is narrowed (4.5 GiB rather than 8.4) but not
+closed: to close it, raise Docker Desktop's VM to ~40 GiB and `MINIKUBE_RAM` to 36000.
 
 The suite stays sequential; no `t.Parallel()` (design §6.5).
 
@@ -396,10 +405,15 @@ The suite stays sequential; no `t.Parallel()` (design §6.5).
 ## 8. Follow-ups this left behind
 
 1. **Tag-selector suffixing** (§4, departure 2). Needed before two suites can run
-   concurrently; not needed for back-to-back. Candidate ticket under UE-131.
-2. **Finish AC1–AC3 against a healthy cluster** (§6). Three runs; the mechanical proof is
-   already done and does not need repeating.
-3. **`ZEDCLOUD_TEST_SUFFIX` on the CI job** when [UE-141](https://zededa.atlassian.net/browse/UE-141)
+   concurrently; not needed for back-to-back, which AC3 demonstrates. Candidate ticket under
+   UE-131.
+2. **`ZEDCLOUD_TEST_SUFFIX` on the CI job** when [UE-141](https://zededa.atlassian.net/browse/UE-141)
    widens `e2e.yml` past the real-node test. The real-node step already sets it.
-4. **Sweep the leftovers** the degraded-cluster runs left on the local cluster
-   ([UE-142](https://zededa.atlassian.net/browse/UE-142) is the durable answer).
+3. **`TestPatchEnvelope_Create` is a real flake** — the base commit fails it 3 of 3 on a
+   healthy cluster, comparing two artifacts by position. Worth its own ticket; do not launder
+   it behind a capability gate (the same argument the design doc makes for
+   `TestProfileDeployment_Create`).
+4. **Sweep leftovers** from the runs' failed destroys ([UE-142](https://zededa.atlassian.net/browse/UE-142)
+   is the durable answer; until then, by suffix prefix).
+5. **Close the kubelet capacity gap** if the cluster still wobbles: Docker Desktop VM to
+   ~40 GiB and `MINIKUBE_RAM=36000` (§6.3).

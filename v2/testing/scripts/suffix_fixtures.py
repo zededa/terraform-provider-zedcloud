@@ -28,6 +28,12 @@ BLOCK_OPEN = re.compile(r'^\s*(?:(?P<kw>resource|data)\s+"(?P<type>[^"]+)"\s+"(?
 # NOT in `resources`/`interfaces`/`custom_config`, where `name` is a key the
 # controller interprets. serialno and token are device identity, resource-level
 # only.
+# Matched against the LAST path segment. "" means a direct resource attribute.
+#
+# `manifest_json` is deliberately absent: a nested manifest's name sometimes
+# repeats the object's name (app_profiles) and sometimes is a label of its own
+# that the controller echoes verbatim (deployment's "tf-app-instance"), so it is
+# handled as a reference below rather than as a name in its own right.
 ALLOWED_PATHS = {
     "name":     {"", "manifest"},
     "title":    {"", "manifest"},
@@ -71,6 +77,18 @@ REF_KEYS = {"imagename"}
 REF_ATTR = re.compile(
     r'^(?P<pre>\s*(?P<key>[a-z_][a-z0-9_]*)\s*=\s*")(?P<val>[^"]*)(?P<post>"\s*)$')
 
+# Blocks whose `name`/`title` follow the object they name, but only when that
+# name is tokenised in the same file.
+#
+# app_profiles/create.tf repeats the app profile's own name inside
+# manifest_json, and the controller stores and returns it -- so the golden's
+# copy has to move with it (VMManifest.Name, found by a suffixed run).
+# deployment/create.tf instead uses manifest_json name = "tf-app-instance",
+# a label that appears nowhere else and comes back verbatim, so the
+# same-file test leaves it alone.
+REF_BLOCKS = {"manifest_json"}
+REF_BLOCK_KEYS = {"name", "title"}
+
 
 def rewrite(text):
     out, path, changed = [], [], 0
@@ -78,7 +96,7 @@ def rewrite(text):
         m = ATTR.match(line)
         mm = MIDSTRING_ATTR.match(line)
         if m and path:                      # inside a resource/data block
-            ctx = ".".join(path[1:])        # drop the resource/data frame
+            ctx = path[-1] if len(path) > 1 else ""   # innermost block, "" at resource level
             v = m.group("val")
             if (ctx in ALLOWED_PATHS[m.group("key")]
                     and v not in NEVER and "__SUFFIX__" not in v and v != ""):
@@ -108,12 +126,20 @@ def rewrite_refs(text):
         if m and m.group("val").endswith("__SUFFIX__"):
             local.add(m.group("val")[: -len("__SUFFIX__")])
 
-    out, changed = [], 0
+    out, changed, path = [], 0, []
     for line in text.splitlines(keepends=True):
         m = REF_ATTR.match(line)
-        if m and m.group("key") in REF_KEYS and m.group("val") in local:
-            line = f'{m.group("pre")}{m.group("val")}__SUFFIX__{m.group("post")}'
-            changed += 1
+        if m and m.group("val") in local:
+            key, block = m.group("key"), (path[-1] if path else "")
+            if key in REF_KEYS or (key in REF_BLOCK_KEYS and block in REF_BLOCKS):
+                line = f'{m.group("pre")}{m.group("val")}__SUFFIX__{m.group("post")}'
+                changed += 1
+        else:
+            bo = BLOCK_OPEN.match(line)
+            if bo:
+                path.append(bo.group("type") if bo.group("kw") else bo.group("blk"))
+            elif re.match(r'^\s*\}\s*$', line) and path:
+                path.pop()
         out.append(line)
     return "".join(out), changed
 

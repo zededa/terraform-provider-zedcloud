@@ -43,7 +43,7 @@ resource "zedcloud_app_profile" "test_tf_provider" {
       manifest_json {
         ac_kind             = "VMManifest"
         ac_version          = "1.2.0"
-        name                = "test_tf_provider"
+        name                = "test_tf_provider__SUFFIX__"
         vmmode              = "HV_HVM"
         enablevnc           = false
         app_type            = "APP_TYPE_VM"
