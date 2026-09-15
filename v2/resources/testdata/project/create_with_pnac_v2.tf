@@ -1,6 +1,6 @@
 resource "zedcloud_cep_profile" "test_tf_provider_pnac_v2_cep" {
-  name        = "test_tf_provider_pnac_v2_cep"
-  title       = "Test CEP for PNAC v2"
+  name        = "test_tf_provider_pnac_v2_cep__SUFFIX__"
+  title       = "Test CEP for PNAC v2__SUFFIX__"
   description = "CEP profile used by PNAC v2 deployment policy test"
   scep_url    = "https://scep.example.com/scep"
 
@@ -30,8 +30,8 @@ resource "zedcloud_cep_profile" "test_tf_provider_pnac_v2_cep" {
 }
 
 resource "zedcloud_project" "test_tf_provider_pnac_v2" {
-  name  = "test_tf_provider_pnac_v2"
-  title = "Test PNAC v2 Project"
+  name  = "test_tf_provider_pnac_v2__SUFFIX__"
+  title = "Test PNAC v2 Project__SUFFIX__"
   type  = "TAG_TYPE_DEPLOYMENT"
 
   tag_level_settings {
@@ -46,8 +46,8 @@ resource "zedcloud_deployment" "test_tf_provider_pnac_v2_depl" {
     zedcloud_project.test_tf_provider_pnac_v2,
   ]
 
-  name           = "test_tf_provider_pnac_v2_depl"
-  title          = "Test PNAC v2 Deployment"
+  name           = "test_tf_provider_pnac_v2_depl__SUFFIX__"
+  title          = "Test PNAC v2 Deployment__SUFFIX__"
   deployment_tag = "pnac:v2"
 
   project_id = zedcloud_project.test_tf_provider_pnac_v2.id

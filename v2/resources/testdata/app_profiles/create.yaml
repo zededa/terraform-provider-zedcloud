@@ -1,6 +1,6 @@
 id: 54f9bd51-43d2-4b5a-a502-85d628946b2
-name: test_tf_provider
-title: test_tf_provider
+name: test_tf_provider__SUFFIX__
+title: test_tf_provider__SUFFIX__
 appPolicies:
 - metaData:
     id: d977f629-0a39-8683-e3ca-2d5d5198833b
@@ -15,13 +15,13 @@ appPolicies:
     manifestJSON:
       acKind: VMManifest
       acVersion: 1.2.0
-      name: test_tf_provider
+      name: test_tf_provider__SUFFIX__
       displayName: ''
       description: ""
       owner: null
       desc: null
       images:
-      - imagename: test_tf_provider-open_alpine_image
+      - imagename: test_tf_provider-open_alpine_image__SUFFIX__
         imageid: 6c2609a1-7c0d-4115-ba99-5f16eb634f27
         imageformat: CONTAINER
         maxsize: '102400000'

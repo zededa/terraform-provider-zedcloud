@@ -59,7 +59,7 @@ interfaces:
       netdhcp: NETWORK_DHCP_TYPE_STATIC
       ipaddr: "172.25.24.2"
       macaddr: ""
-      netname: "zedcloud_network.complete_with_pac.name"
+      netname: "zedcloud_network.complete_with_pac.name__SUFFIX__"
       tags: {}
       sharedlabels: []
       ztype: IO_TYPE_ETH
@@ -106,7 +106,7 @@ interfaces:
 location: ""
 memory: 0
 modelid: 2f716b55-2639-486c-9a2f-55a2e94146a6
-name: test_tf_provider
+name: test_tf_provider__SUFFIX__
 obkey: ""
 onboarding: null
 preparepoweroffcounter: 0
@@ -115,11 +115,11 @@ projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 resetcounter: 0
 resettime: ""
 revision: null
-serialno: def-netinst
+serialno: def-netinst__SUFFIX__
 sitepictures: []
 storage: 0
 tags: {}
 thread: 0
-title: test_tf_provider-title
+title: test_tf_provider-title__SUFFIX__
 token: ""
 utype: "AMD64"

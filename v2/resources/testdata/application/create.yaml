@@ -102,7 +102,7 @@ manifest:
     value: "1024000"
   vmmode: HV_HVM
 memory: 1024000
-name: test_tf_provider-ubuntu-all-ip
+name: test_tf_provider-ubuntu-all-ip__SUFFIX__
 networks: 1
 origintype: ORIGIN_LOCAL
 parentdetail:
@@ -118,5 +118,5 @@ revision:
   updatedat: "2023-02-12T14:45:49.847Z"
   updatedby: us.root@zededa.com
 storage: 0
-title: test_tf_provider-ubuntu-all-ip
+title: test_tf_provider-ubuntu-all-ip__SUFFIX__
 userdefinedversion: "1.1"

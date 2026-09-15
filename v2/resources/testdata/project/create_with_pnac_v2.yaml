@@ -1,5 +1,5 @@
-name: "test_tf_provider_pnac_v2_depl"
-title: "Test PNAC v2 Deployment"
+name: "test_tf_provider_pnac_v2_depl__SUFFIX__"
+title: "Test PNAC v2 Deployment__SUFFIX__"
 deploymentTag: "pnac:v2"
 
 devicePolicies:

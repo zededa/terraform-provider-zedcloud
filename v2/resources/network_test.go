@@ -79,8 +79,8 @@ func TestNetwork_Create_AllAttributes_WithProxy(t *testing.T) {
 				Config: input,
 				Check: resource.ComposeTestCheckFunc(
 					testNetworkExists("zedcloud_network.complete_with_proxy", &got),
-					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "name", "zedcloud_network.complete_with_proxy.name"),
-					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "title", "zedcloud_network.complete_with_proxy.title"),
+					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "name", suffixed("zedcloud_network.complete_with_proxy.name")),
+					resource.TestCheckResourceAttr("zedcloud_network.complete_with_proxy", "title", suffixed("zedcloud_network.complete_with_proxy.title")),
 					resource.TestMatchResourceAttr(
 						"zedcloud_network.complete_with_proxy",
 						"project_id",

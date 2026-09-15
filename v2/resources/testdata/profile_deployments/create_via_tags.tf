@@ -1,7 +1,7 @@
 
 resource "zedcloud_project" "test_tf_provider_deploy_via_tags" {
   # required
-  name  = "test_tf_provider_newproject_deploy_via_tags"
+  name  = "test_tf_provider_newproject_deploy_via_tags__SUFFIX__"
   title = "title"
 
   # optional
@@ -13,7 +13,7 @@ resource "zedcloud_project" "test_tf_provider_deploy_via_tags" {
 }
 
 data "zedcloud_project" "test_tf_provider_deploy_via_tags" {
-  name  = "test_tf_provider_newproject_deploy_via_tags"
+  name  = "test_tf_provider_newproject_deploy_via_tags__SUFFIX__"
   title = "title"
   type = "TAG_TYPE_PROJECT"
   depends_on = [
@@ -22,16 +22,16 @@ data "zedcloud_project" "test_tf_provider_deploy_via_tags" {
 }
 
 resource "zedcloud_brand" "test_tf_provider_deploy_via_tags" {
-  name        = "test_tf_provider-qemu100_deploy_via_tags"
-  title       = "QEMU100"
+  name        = "test_tf_provider-qemu100_deploy_via_tags__SUFFIX__"
+  title       = "QEMU100__SUFFIX__"
   description = "qemu100"
   origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider_deploy_via_tags" {
   brand_id    = zedcloud_brand.test_tf_provider_deploy_via_tags.id
-  name        = "test_tf_provider-create_edgenode100_deploy_via_tags"
-  title       = "test_tf_provider-create_edgenode100"
+  name        = "test_tf_provider-create_edgenode100_deploy_via_tags__SUFFIX__"
+  title       = "test_tf_provider-create_edgenode100__SUFFIX__"
   type        = "AMD64"
   origin_type = "ORIGIN_LOCAL"
   state       = "SYS_MODEL_STATE_ACTIVE"
@@ -63,12 +63,12 @@ resource "zedcloud_model" "test_tf_provider_deploy_via_tags" {
 
 resource "zedcloud_edgenode" "test_tf_provider_deploy_via_tags" {
   onboarding_key = "" # placeholder
-  serialno       = "2293dbe8-29ce-420c-8264-962858edc46b"
+  serialno       = "2293dbe8-29ce-420c-8264-962858edc46b__SUFFIX__"
   # required
-  name       = "test_tf_provider_newedgenode_deploy_via_tags"
+  name       = "test_tf_provider_newedgenode_deploy_via_tags__SUFFIX__"
   model_id   = zedcloud_model.test_tf_provider_deploy_via_tags.id
   project_id = zedcloud_project.test_tf_provider_deploy_via_tags.id
-  title      = "test_tf_provider-create_edgenode-title"
+  title      = "test_tf_provider-create_edgenode-title__SUFFIX__"
 
   admin_state = "ADMIN_STATE_ACTIVE"
   asset_id    = "asset_id"
@@ -98,7 +98,7 @@ resource "zedcloud_edgenode" "test_tf_provider_deploy_via_tags" {
   tags = {
     "tag-key-100" = "tag-value-100"
   }
-  token = "token_profiledeploymenttags"
+  token = "token_profiledeploymenttags__SUFFIX__"
   interfaces {
     cost       = 255
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
@@ -113,7 +113,7 @@ resource "zedcloud_edgenode" "test_tf_provider_deploy_via_tags" {
 }
 
 resource "zedcloud_asset_group" "test_tf_provider_deploy_via_tags" {
-  name        = "test_tf_provider_assetgroup_deploy_via_tags"
+  name        = "test_tf_provider_assetgroup_deploy_via_tags__SUFFIX__"
   description = "This is an example asset group"
   project_id  = data.zedcloud_project.test_tf_provider_deploy_via_tags.id
   asset_tags {
@@ -131,8 +131,8 @@ resource "zedcloud_datastore" "open_ds_provider_deploy_via_tags" {
   ds_fqdn             = "http://147.75.33.217"
   ds_path             = "images"
   ds_type             = "DATASTORE_TYPE_HTTP"
-  name                = "test_tf_provider-open_ds_provider_deploy_via_tags"
-  title               = "open_ds_provider"
+  name                = "test_tf_provider-open_ds_provider_deploy_via_tags__SUFFIX__"
+  title               = "open_ds_provider__SUFFIX__"
   description         = "open_ds_provider"
   region              = "eu"
   # project_access_list = [zedcloud_project.test_tf_provider.id]
@@ -142,21 +142,21 @@ resource "zedcloud_image" "open_alpine_image_deploy_via_tags" {
   depends_on = [
     zedcloud_datastore.open_ds_provider_deploy_via_tags
   ]
-  name                = "test_tf_provider-open_alpine_image_deploy_via_tags"
+  name                = "test_tf_provider-open_alpine_image_deploy_via_tags__SUFFIX__"
   datastore_id        = zedcloud_datastore.open_ds_provider_deploy_via_tags.id
   image_arch          = "ARM64"
   image_format        = "CONTAINER"
   image_rel_url       = "alpine:latest"
   image_size_bytes    = 0
   image_type          = "IMAGE_TYPE_APPLICATION"
-  title               = "openalpine"
+  title               = "openalpine__SUFFIX__"
 }
 
 
 resource "zedcloud_app_profile" "test_tf_provider_app_profile_deploy_via_tags" {
   depends_on = [ zedcloud_image.open_alpine_image_deploy_via_tags ]
-  name = "test_tf_provider_app_profile_deploy_via_tags"
-  title = "test_tf_provider_app_profile"
+  name = "test_tf_provider_app_profile_deploy_via_tags__SUFFIX__"
+  title = "test_tf_provider_app_profile__SUFFIX__"
 
   app_policies {
     meta_data {
@@ -208,24 +208,24 @@ resource "zedcloud_app_profile" "test_tf_provider_app_profile_deploy_via_tags" {
 
 
 data "zedcloud_asset_group" "test_tf_provider_deploy_via_tags" {
-  name     = "test_tf_provider_assetgroup_deploy_via_tags"
-  title    = "test_tf_provider_assetgroup"
+  name     = "test_tf_provider_assetgroup_deploy_via_tags__SUFFIX__"
+  title    = "test_tf_provider_assetgroup__SUFFIX__"
   depends_on = [
     zedcloud_asset_group.test_tf_provider_deploy_via_tags
   ]
 }
 
 data "zedcloud_app_profile" "test_tf_provider_app_profile_deploy_via_tags" {
-  name     = "test_tf_provider_app_profile_deploy_via_tags"
-  title    = "test_tf_provider_app_profile"
+  name     = "test_tf_provider_app_profile_deploy_via_tags__SUFFIX__"
+  title    = "test_tf_provider_app_profile__SUFFIX__"
   depends_on = [
     zedcloud_app_profile.test_tf_provider_app_profile_deploy_via_tags
   ]
 }
 
 resource "zedcloud_profile_deployment" "test_tf_provider_deploy_via_tags" {
-  name = "test_tf_provider_deploy_via_tags"
-  title = "test_tf_provider"
+  name = "test_tf_provider_deploy_via_tags__SUFFIX__"
+  title = "test_tf_provider__SUFFIX__"
   app_profile_info {
     app_profile_id = zedcloud_app_profile.test_tf_provider_app_profile_deploy_via_tags.id
     version = 1

@@ -27,7 +27,7 @@ func TestDeployment_DataSource(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"data.zedcloud_deployment.by_name",
 						"name",
-						"test_tf_provider-deployment-ds",
+						suffixed("test_tf_provider-deployment-ds"),
 					),
 					resource.TestCheckResourceAttr(
 						"data.zedcloud_deployment.by_name",

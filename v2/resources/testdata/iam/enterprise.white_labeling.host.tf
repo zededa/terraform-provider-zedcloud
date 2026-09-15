@@ -1,6 +1,6 @@
 resource "zedcloud_enterprise" "test_tf_provider_wl_host" {
-  name  = "test_tf_provider_wl_host"
-  title = "test_tf_provider_wl_host"
+  name  = "test_tf_provider_wl_host__SUFFIX__"
+  title = "test_tf_provider_wl_host__SUFFIX__"
 
   # Maps a browser host to this enterprise so the console serves its branding.
   # The API stores this but never returns it on read.

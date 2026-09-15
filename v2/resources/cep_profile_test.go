@@ -41,8 +41,8 @@ func TestCEPProfile_CRUD(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testCEPProfileExists("zedcloud_cep_profile.test_tf_provider", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_cep_profile.test_tf_provider", "name", "test_tf_provider_cep"),
-					resource.TestCheckResourceAttr("zedcloud_cep_profile.test_tf_provider", "title", "Test CEP Profile"),
+					resource.TestCheckResourceAttr("zedcloud_cep_profile.test_tf_provider", "name", suffixed("test_tf_provider_cep")),
+					resource.TestCheckResourceAttr("zedcloud_cep_profile.test_tf_provider", "title", suffixed("Test CEP Profile")),
 					resource.TestMatchResourceAttr("zedcloud_cep_profile.test_tf_provider", "id", uuidRegexp),
 					testCEPProfileAttributes(t, &gotCreated, &expectCreated),
 				),
@@ -52,8 +52,8 @@ func TestCEPProfile_CRUD(t *testing.T) {
 				Config: inputUpdate,
 				Check: resource.ComposeTestCheckFunc(
 					testCEPProfileExists("zedcloud_cep_profile.test_tf_provider", &gotUpdated),
-					resource.TestCheckResourceAttr("zedcloud_cep_profile.test_tf_provider", "name", "test_tf_provider_cep"),
-					resource.TestCheckResourceAttr("zedcloud_cep_profile.test_tf_provider", "title", "Test CEP Profile Updated"),
+					resource.TestCheckResourceAttr("zedcloud_cep_profile.test_tf_provider", "name", suffixed("test_tf_provider_cep")),
+					resource.TestCheckResourceAttr("zedcloud_cep_profile.test_tf_provider", "title", suffixed("Test CEP Profile Updated")),
 					resource.TestMatchResourceAttr("zedcloud_cep_profile.test_tf_provider", "id", uuidRegexp),
 					testCEPProfileAttributes(t, &gotUpdated, &expectUpdated),
 				),

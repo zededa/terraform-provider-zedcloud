@@ -20,7 +20,7 @@ ip:
     ntp: ""
     subnet: 172.25.24.0/22
 kind: NETWORK_KIND_V4
-name: zedcloud_network.complete_with_pac.name
+name: zedcloud_network.complete_with_pac.name__SUFFIX__
 projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 proxy:
     # network_proxy: true
@@ -29,7 +29,7 @@ proxy:
     pacfile: "testpacfile"
     proxies: []
 revision: null
-title: zedcloud_network.complete_with_pac.title
+title: zedcloud_network.complete_with_pac.title__SUFFIX__
 wireless:
     cellularcfg:
         apn: "1234"

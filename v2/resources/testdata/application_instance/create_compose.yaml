@@ -17,7 +17,7 @@ manifestinfo:
   nextbundleversion: "1"
   params: {}
   transitionaction: INSTANCE_TA_NONE
-name: test_tf_appinst_compose
+name: test_tf_appinst_compose__SUFFIX__
 purge:
   counter: 0
   opstime: "0001-01-01T00:00:00Z"
@@ -38,7 +38,7 @@ revision:
 startdelayinseconds: 0
 tags:
   tag-key-1: tag-value-1
-title: tf test
+title: tf test__SUFFIX__
 userdata: ""
 userdefinedversion: "1.1"
 vminfo:

@@ -1,7 +1,7 @@
 resource "zedcloud_project" "test_tf_project" {
   # required
-  name  = "test_tf_project-deployment-ds"
-  title = "test_tf_project-deployment-ds"
+  name  = "test_tf_project-deployment-ds__SUFFIX__"
+  title = "test_tf_project-deployment-ds__SUFFIX__"
   type = "TAG_TYPE_DEPLOYMENT"
   tag_level_settings {
     flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_DISABLED"
@@ -10,16 +10,16 @@ resource "zedcloud_project" "test_tf_project" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-  name        = "test_tf_provider-qemu-ds"
-  title       = "test_tf_provider-QEMU-ds"
+  name        = "test_tf_provider-qemu-ds__SUFFIX__"
+  title       = "test_tf_provider-QEMU-ds__SUFFIX__"
   description = "qemu"
   origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider" {
   brand_id    = zedcloud_brand.test_tf_provider.id
-  name        = "test_tf_provider-create_edgenode-ds"
-  title       = "test_tf_provider-create_edgenode-ds"
+  name        = "test_tf_provider-create_edgenode-ds__SUFFIX__"
+  title       = "test_tf_provider-create_edgenode-ds__SUFFIX__"
   type        = "AMD64"
   origin_type = "ORIGIN_LOCAL"
   state       = "SYS_MODEL_STATE_ACTIVE"
@@ -56,8 +56,8 @@ resource "zedcloud_datastore" "test_datastore" {
   ds_fqdn             = "docker://docker.io"
   ds_path             = ""
   ds_type             = "DATASTORE_TYPE_CONTAINERREGISTRY"
-  name                = "test_tf_provider-dockerhub-ds"
-  title               = "test_tf_provider-dockerhub-ds"
+  name                = "test_tf_provider-dockerhub-ds__SUFFIX__"
+  title               = "test_tf_provider-dockerhub-ds__SUFFIX__"
   description         = "test_tf_provider-dockerhub-ds"
   region              = "eu"
   project_access_list = [zedcloud_project.test_tf_project.id]
@@ -68,21 +68,21 @@ resource "zedcloud_image" "test_image" {
     zedcloud_project.test_tf_project,
     zedcloud_datastore.test_datastore
   ]
-  name                = "test_tf_provider-alpine-ds"
+  name                = "test_tf_provider-alpine-ds__SUFFIX__"
   datastore_id        = zedcloud_datastore.test_datastore.id
   image_arch          = "ARM64"
   image_format        = "CONTAINER"
   image_rel_url       = "alpine:latest"
   image_size_bytes    = 1024
   image_type          = "IMAGE_TYPE_APPLICATION"
-  title               = "alpine"
+  title               = "alpine__SUFFIX__"
   project_access_list = [zedcloud_project.test_tf_project.id]
 }
 
 
 resource "zedcloud_application" "alpine_vm_app" {
-  name                 = "test_tf_provider-alpine_vm_app-ds"
-  title                = "test_tf_provider-alpine_vm_app-ds"
+  name                 = "test_tf_provider-alpine_vm_app-ds__SUFFIX__"
+  title                = "test_tf_provider-alpine_vm_app-ds__SUFFIX__"
   user_defined_version = "24.0.4"
   depends_on           = [zedcloud_image.test_image]
   project_access_list  = [zedcloud_project.test_tf_project.id]
@@ -113,8 +113,8 @@ resource "zedcloud_deployment" "tf_deployment" {
     zedcloud_project.test_tf_project
   ]
 
-  name           = "test_tf_provider-deployment-ds"
-  title          = "test_tf_provider-deployment-ds"
+  name           = "test_tf_provider-deployment-ds__SUFFIX__"
+  title          = "test_tf_provider-deployment-ds__SUFFIX__"
   deployment_tag = "depl:1234"
 
   project_id = zedcloud_project.test_tf_project.id

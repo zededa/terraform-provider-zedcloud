@@ -1,5 +1,5 @@
-name: test_tf_provider_cep
-title: Test CEP Profile
+name: test_tf_provider_cep__SUFFIX__
+title: Test CEP Profile__SUFFIX__
 description: Test SCEP certificate enrollment profile
 scepUrl: "https://scep.example.com/scep"
 useControllerProxy: false

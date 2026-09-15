@@ -48,7 +48,7 @@ interfaces:
       sharedlabels:
         - label1
         - label2
-      netname: "test_tf_provider-adapter_spec_network"
+      netname: "test_tf_provider-adapter_spec_network__SUFFIX__"
       tags:
         system_interface_1_key: system_interface_1_value
         system_interface_2_key: system_interface_2_value
@@ -64,7 +64,7 @@ interfaces:
 location: ""
 memory: 0
 modelid: 2f716b55-2639-486c-9a2f-55a2e94146a6
-name: test_tf_provider-dev_adap_spec_net
+name: test_tf_provider-dev_adap_spec_net__SUFFIX__
 obkey: ""
 onboarding: null
 preparepoweroffcounter: 0
@@ -73,13 +73,13 @@ projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 resetcounter: 0
 resettime: ""
 revision: null
-serialno: d6aebfa5-56b6-4b66-9d8e-6552b0e2b45c
+serialno: d6aebfa5-56b6-4b66-9d8e-6552b0e2b45c__SUFFIX__
 sitepictures: []
 storage: 0
 tags:
     tag-key-1: tag-value-1
     tag-key-2: tag-value-2
 thread: 0
-title: test_tf_provider-dev_adap_spec_net
-token: token_all
+title: test_tf_provider-dev_adap_spec_net__SUFFIX__
+token: token_all__SUFFIX__
 utype: "AMD64"

@@ -38,7 +38,7 @@ func TestNode_Create_RequiredAttributesOnly(t *testing.T) {
 				Config: input,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.required_only", &got),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", "test_tf_provider-required_only"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "name", suffixed("test_tf_provider-required_only")),
 					resource.TestCheckResourceAttr("zedcloud_edgenode.required_only", "title", "required_only-title"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.required_only",
@@ -76,8 +76,8 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_provider", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", suffixed("test_tf_provider")),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", suffixed("test_tf_provider-title")),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_provider",
 						"id",
@@ -91,8 +91,8 @@ func TestNode_Create_AllAttributes(t *testing.T) {
 				Config: inputUpdate,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_provider", &gotUpdated),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", "test_tf_provider"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", "test_tf_provider-title"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "name", suffixed("test_tf_provider")),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider", "title", suffixed("test_tf_provider-title")),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_provider",
 						"id",
@@ -130,8 +130,8 @@ func TestNode_Create_WithAdapterSpecificNetwork(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_dev_adap_spec_net", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_provider-dev_adap_spec_net"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", "test_tf_provider-dev_adap_spec_net"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", suffixed("test_tf_provider-dev_adap_spec_net")),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", suffixed("test_tf_provider-dev_adap_spec_net")),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_dev_adap_spec_net",
 						"id",
@@ -144,8 +144,8 @@ func TestNode_Create_WithAdapterSpecificNetwork(t *testing.T) {
 				Config: inputUpdate,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_dev_adap_spec_net", &gotUpdated),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", "test_tf_provider-dev_adap_spec_net"),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", "test_tf_dev_adap_spec_net"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "name", suffixed("test_tf_provider-dev_adap_spec_net")),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_dev_adap_spec_net", "title", suffixed("test_tf_dev_adap_spec_net")),
 					resource.TestMatchResourceAttr(
 						"zedcloud_edgenode.test_tf_dev_adap_spec_net",
 						"id",
@@ -298,7 +298,7 @@ func TestNode_PNAC_Onboard(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_provider_node_pnac", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "name", "test_tf_provider_node_pnac"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "name", suffixed("test_tf_provider_node_pnac")),
 					resource.TestMatchResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "id", uuidRegexp),
 					testNodeAttributes(t, "create node pnac", &gotCreated, &expectCreated),
 					// Cross-verify: CEP profile referenced by the project is valid.
@@ -310,7 +310,7 @@ func TestNode_PNAC_Onboard(t *testing.T) {
 				Config: inputUpdate,
 				Check: resource.ComposeTestCheckFunc(
 					testNodeExists("zedcloud_edgenode.test_tf_provider_node_pnac", &gotUpdated),
-					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "name", "test_tf_provider_node_pnac"),
+					resource.TestCheckResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "name", suffixed("test_tf_provider_node_pnac")),
 					resource.TestMatchResourceAttr("zedcloud_edgenode.test_tf_provider_node_pnac", "id", uuidRegexp),
 					testNodeAttributes(t, "update node pnac", &gotUpdated, &expectUpdated),
 				),

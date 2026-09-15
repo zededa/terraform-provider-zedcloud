@@ -40,7 +40,7 @@ func TestProject_Create_RequiredOnly(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testProjectExists("zedcloud_project.test_tf_provider", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "name", "test_tf_provider"),
+					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "name", suffixed("test_tf_provider")),
 					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "title", "title"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_project.test_tf_provider",
@@ -80,7 +80,7 @@ func TestProject_Create(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testProjectExists("zedcloud_project.test_tf_provider", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "name", "test_tf_provider"),
+					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "name", suffixed("test_tf_provider")),
 					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "title", "title"),
 					resource.TestMatchResourceAttr(
 						"zedcloud_project.test_tf_provider",
@@ -94,9 +94,9 @@ func TestProject_Create(t *testing.T) {
 			// 	Config: inputUpdate,
 			// 	Check: resource.ComposeTestCheckFunc(
 			// 		testProjectExists("zedcloud_project.test_tf_provider", &gotUpdated),
-			// 		resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "name", "test_tf_provider"),
+			// 		resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "name", suffixed("test_tf_provider")),
 			// 		resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "model_id", "2f716b55-2639-486c-9a2f-55a2e94146a6"),
-			// 		resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "title", "test_tf_provider-title"),
+			// 		resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider", "title", suffixed("test_tf_provider-title")),
 			// 		resource.TestMatchResourceAttr(
 			// 			"zedcloud_project.test_tf_provider",
 			// 			"id",
@@ -127,8 +127,8 @@ func TestProject_CreateWithPNACPolicy(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testProjectExists("zedcloud_project.test_tf_provider_pnac", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "name", "test_tf_provider_pnac"),
-					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "title", "Test PNAC Project"),
+					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "name", suffixed("test_tf_provider_pnac")),
+					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "title", suffixed("Test PNAC Project")),
 					resource.TestMatchResourceAttr(
 						"zedcloud_project.test_tf_provider_pnac",
 						"id",
@@ -168,8 +168,8 @@ func TestProject_PNAC_V1_CRUD(t *testing.T) {
 				Config: inputCreate,
 				Check: resource.ComposeTestCheckFunc(
 					testProjectExists("zedcloud_project.test_tf_provider_pnac", &gotCreated),
-					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "name", "test_tf_provider_pnac"),
-					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "title", "Test PNAC Project"),
+					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "name", suffixed("test_tf_provider_pnac")),
+					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "title", suffixed("Test PNAC Project")),
 					resource.TestMatchResourceAttr("zedcloud_project.test_tf_provider_pnac", "id", uuidRegexp),
 					testProjectPNACAttributes(t, &gotCreated, &expectCreated),
 					// Verify the CEP profile cannot be deleted while referenced by the project's PNAC policy
@@ -181,7 +181,7 @@ func TestProject_PNAC_V1_CRUD(t *testing.T) {
 				Config: inputUpdate,
 				Check: resource.ComposeTestCheckFunc(
 					testProjectExists("zedcloud_project.test_tf_provider_pnac", &gotUpdated),
-					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "title", "Test PNAC Project Updated"),
+					resource.TestCheckResourceAttr("zedcloud_project.test_tf_provider_pnac", "title", suffixed("Test PNAC Project Updated")),
 					resource.TestMatchResourceAttr("zedcloud_project.test_tf_provider_pnac", "id", uuidRegexp),
 					testProjectPNACAttributes(t, &gotUpdated, &expectUpdated),
 				),
@@ -258,8 +258,8 @@ func TestProject_PNAC_V2_Create(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 				Check: resource.ComposeTestCheckFunc(
 					testDeploymentPNACExists("zedcloud_deployment.test_tf_provider_pnac_v2_depl", &gotDeployment),
-					resource.TestCheckResourceAttr("zedcloud_deployment.test_tf_provider_pnac_v2_depl", "name", "test_tf_provider_pnac_v2_depl"),
-					resource.TestCheckResourceAttr("zedcloud_deployment.test_tf_provider_pnac_v2_depl", "title", "Test PNAC v2 Deployment"),
+					resource.TestCheckResourceAttr("zedcloud_deployment.test_tf_provider_pnac_v2_depl", "name", suffixed("test_tf_provider_pnac_v2_depl")),
+					resource.TestCheckResourceAttr("zedcloud_deployment.test_tf_provider_pnac_v2_depl", "title", suffixed("Test PNAC v2 Deployment")),
 					resource.TestMatchResourceAttr("zedcloud_deployment.test_tf_provider_pnac_v2_depl", "id", uuidRegexp),
 					testDeploymentPNACAttributes(t, &gotDeployment, &expectDeployment),
 				),

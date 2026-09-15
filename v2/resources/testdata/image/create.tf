@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_provider" {
     # required
-    name = "test_tf_provider-create_image"
+    name = "test_tf_provider-create_image__SUFFIX__"
     title = "title"
 
     # optional
@@ -30,8 +30,8 @@ resource "zedcloud_datastore"  "test_datastore" {
     ds_fqdn = "https://my-datastore.my-company.com"
     ds_path = "download/AMD64"
     ds_type = "DATASTORE_TYPE_AZUREBLOB"
-    name = "test_tf_provider-test_datastore"
-    title = "test_tf_provider-test_datastore"
+    name = "test_tf_provider-test_datastore__SUFFIX__"
+    title = "test_tf_provider-test_datastore__SUFFIX__"
     description = "test_tf_provider-test_datastore"
     region = "eu"
     project_access_list = [zedcloud_project.test_tf_provider.id]
@@ -42,7 +42,7 @@ resource "zedcloud_image" "test_image" {
         zedcloud_project.test_tf_provider,
         zedcloud_datastore.test_datastore
     ]
-    name = "test_tf_provider"
+    name = "test_tf_provider__SUFFIX__"
     datastore_id = zedcloud_datastore.test_datastore.id
     image_arch = "AMD64"
     image_format = "CONTAINER"

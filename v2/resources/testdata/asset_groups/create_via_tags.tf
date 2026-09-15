@@ -1,7 +1,7 @@
 
 resource "zedcloud_project" "test_tf_provider_for_tags" {
   # required
-  name  = "test_tf_provider_newproject_for_tags"
+  name  = "test_tf_provider_newproject_for_tags__SUFFIX__"
   title = "title"
 
   # optional
@@ -13,7 +13,7 @@ resource "zedcloud_project" "test_tf_provider_for_tags" {
 }
 
 data "zedcloud_project" "test_tf_provider_for_tags" {
-  name  = "test_tf_provider_newproject_for_tags"
+  name  = "test_tf_provider_newproject_for_tags__SUFFIX__"
   title = "title"
   type = "TAG_TYPE_PROJECT"
   depends_on = [
@@ -22,16 +22,16 @@ data "zedcloud_project" "test_tf_provider_for_tags" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-  name        = "qemu100_assetgroup_tags"
-  title       = "QEMU100"
+  name        = "qemu100_assetgroup_tags__SUFFIX__"
+  title       = "QEMU100__SUFFIX__"
   description = "qemu100"
   origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider" {
   brand_id    = zedcloud_brand.test_tf_provider.id
-  name        = "test_tf_provider-create_edgenode100_assetgroup_tags"
-  title       = "test_tf_provider-create_edgenode100"
+  name        = "test_tf_provider-create_edgenode100_assetgroup_tags__SUFFIX__"
+  title       = "test_tf_provider-create_edgenode100__SUFFIX__"
   type        = "AMD64"
   origin_type = "ORIGIN_LOCAL"
   state       = "SYS_MODEL_STATE_ACTIVE"
@@ -63,12 +63,12 @@ resource "zedcloud_model" "test_tf_provider" {
 
 resource "zedcloud_edgenode" "test_tf_provider_for_tags" {
   onboarding_key = "" # placeholder
-  serialno       = "2393dbe8-29ce-420c-8364-962858efc46b"
+  serialno       = "2393dbe8-29ce-420c-8364-962858efc46b__SUFFIX__"
   # required
-  name       = "test_tf_provider_newedgenode_for_tags"
+  name       = "test_tf_provider_newedgenode_for_tags__SUFFIX__"
   model_id   = zedcloud_model.test_tf_provider.id
   project_id = data.zedcloud_project.test_tf_provider_for_tags.id
-  title      = "test_tf_provider-create_edgenode-title"
+  title      = "test_tf_provider-create_edgenode-title__SUFFIX__"
 
   admin_state = "ADMIN_STATE_ACTIVE"
   asset_id    = "asset_id"
@@ -98,7 +98,7 @@ resource "zedcloud_edgenode" "test_tf_provider_for_tags" {
   tags = {
     "tag-for-tags" = "value-for-tags"
   }
-  token = "token_assetgroup_tags"
+  token = "token_assetgroup_tags__SUFFIX__"
   interfaces {
     cost       = 255
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
@@ -113,7 +113,7 @@ resource "zedcloud_edgenode" "test_tf_provider_for_tags" {
 }
 
 resource "zedcloud_asset_group" "test_tf_provider_for_tags" {
-  name        = "alphagroup13_for_tags"
+  name        = "alphagroup13_for_tags__SUFFIX__"
   description = "This is an example asset group"
   project_id  = data.zedcloud_project.test_tf_provider_for_tags.id
   

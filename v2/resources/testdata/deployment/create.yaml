@@ -1,5 +1,5 @@
-name: "test_tf_provider-deployment"
-title: "test_tf_provider-deployment"
+name: "test_tf_provider-deployment__SUFFIX__"
+title: "test_tf_provider-deployment__SUFFIX__"
 deploymentTag: "depl:1234"
 
 devicePolicies:
@@ -73,7 +73,7 @@ appInstPolicies:
         interfaces: []
         permissions: []
         images:
-          - imageName: "test_tf_provider-alpine"
+          - imageName: "test_tf_provider-alpine__SUFFIX__"
             maxSize: "0"
             imageFormat: "CONTAINER"
             preserve: false

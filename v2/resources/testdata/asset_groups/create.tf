@@ -1,7 +1,7 @@
 
 resource "zedcloud_project" "test_tf_provider" {
   # required
-  name  = "test_tf_provider_newproject_assetgroup"
+  name  = "test_tf_provider_newproject_assetgroup__SUFFIX__"
   title = "title"
 
   # optional
@@ -13,7 +13,7 @@ resource "zedcloud_project" "test_tf_provider" {
 }
 
 data "zedcloud_project" "test_tf_provider" {
-  name  = "test_tf_provider_newproject_assetgroup"
+  name  = "test_tf_provider_newproject_assetgroup__SUFFIX__"
   title = "title"
   type = "TAG_TYPE_PROJECT"
   depends_on = [
@@ -22,16 +22,16 @@ data "zedcloud_project" "test_tf_provider" {
 }
 
 resource "zedcloud_brand" "test_tf_provider" {
-  name        = "qemu100_assetgroup"
-  title       = "QEMU100"
+  name        = "qemu100_assetgroup__SUFFIX__"
+  title       = "QEMU100__SUFFIX__"
   description = "qemu100"
   origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider" {
   brand_id    = zedcloud_brand.test_tf_provider.id
-  name        = "test_tf_provider-create_edgenode_assetgroup"
-  title       = "test_tf_provider-create_edgenode100"
+  name        = "test_tf_provider-create_edgenode_assetgroup__SUFFIX__"
+  title       = "test_tf_provider-create_edgenode100__SUFFIX__"
   type        = "AMD64"
   origin_type = "ORIGIN_LOCAL"
   state       = "SYS_MODEL_STATE_ACTIVE"
@@ -63,12 +63,12 @@ resource "zedcloud_model" "test_tf_provider" {
 
 resource "zedcloud_edgenode" "test_tf_provider" {
   onboarding_key = "" # placeholder
-  serialno       = "2293dbe8-29ce-420c-8264-962858efc46b"
+  serialno       = "2293dbe8-29ce-420c-8264-962858efc46b__SUFFIX__"
   # required
-  name       = "test_tf_provider_newedgenode_assetgroup"
+  name       = "test_tf_provider_newedgenode_assetgroup__SUFFIX__"
   model_id   = zedcloud_model.test_tf_provider.id
   project_id = zedcloud_project.test_tf_provider.id
-  title      = "test_tf_provider-create_edgenode-title"
+  title      = "test_tf_provider-create_edgenode-title__SUFFIX__"
 
   admin_state = "ADMIN_STATE_ACTIVE"
   asset_id    = "asset_id"
@@ -105,7 +105,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
   tags = {
     "tag-key-1" = "tag-value-1"
   }
-  token = "token_assetgroup"
+  token = "token_assetgroup__SUFFIX__"
   interfaces {
     cost       = 255
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
@@ -120,7 +120,7 @@ resource "zedcloud_edgenode" "test_tf_provider" {
 }
 
 resource "zedcloud_asset_group" "test_tf_provider" {
-  name        = "alphagroup13"
+  name        = "alphagroup13__SUFFIX__"
   description = "This is an example asset group"
   project_id  = resource.zedcloud_project.test_tf_provider.id
   asset_ids {

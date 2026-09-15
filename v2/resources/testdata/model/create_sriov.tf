@@ -1,12 +1,12 @@
 resource "zedcloud_brand" "test_tf_provider_sriov" {
-    name        = "test_tf_provider_sriov_brand"
-    title       = "test_tf_provider_sriov_brand"
+    name        = "test_tf_provider_sriov_brand__SUFFIX__"
+    title       = "test_tf_provider_sriov_brand__SUFFIX__"
     origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_provider_sriov" {
-    name        = "test_tf_provider_sriov_model"
-    title       = "test_tf_provider_sriov_model"
+    name        = "test_tf_provider_sriov_model__SUFFIX__"
+    title       = "test_tf_provider_sriov_model__SUFFIX__"
     origin_type = "ORIGIN_LOCAL"
     brand_id    = zedcloud_brand.test_tf_provider_sriov.id
     attr = {

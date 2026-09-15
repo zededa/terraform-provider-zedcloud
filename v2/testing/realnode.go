@@ -10,7 +10,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -203,39 +202,19 @@ func envEnabled(key string) bool {
 // MustGetTestInputWithVars reads ./testdata/<path> and expands __TOKEN__
 // placeholders from vars.
 //
-// Deliberately a separate function from MustGetTestInput so the 40-odd existing
-// fixtures are untouched. The placeholder form is __TOKEN__ rather than ${TOKEN}
-// because ${...} is HCL interpolation syntax and would break `terraform fmt` and
-// `validate` on the fixture files.
+// Use it for fixtures needing tokens MustGetTestInput does not know about --
+// __NODE_ID__ for the real-node fixture. vars is the complete set: nothing is
+// filled in from the environment, so a caller wanting the suite-wide suffix
+// passes testhelper.Suffix() explicitly (RealNode supplies its own, which is
+// generated when ZEDCLOUD_TEST_SUFFIX is unset).
 //
-// An unexpanded __TOKEN__ left in the output is a hard failure: applying a
-// config containing a literal placeholder would create garbage objects on a
-// shared controller and produce a confusing downstream error.
+// The placeholder form is __TOKEN__ rather than ${TOKEN} because ${...} is HCL
+// interpolation syntax and would break `terraform fmt` and `validate` on the
+// fixture files.
 func MustGetTestInputWithVars(t *testing.T, path string, vars map[string]string) string {
 	t.Helper()
 
-	testdataDir, err := filepath.Abs("./testdata")
-	if err != nil {
-		t.Fatal(err)
-	}
-	b, err := os.ReadFile(filepath.Join(testdataDir, path))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	out := string(b)
-	for k, v := range vars {
-		out = strings.ReplaceAll(out, "__"+k+"__", v)
-	}
-
-	if i := strings.Index(out, "__"); i >= 0 {
-		if j := strings.Index(out[i+2:], "__"); j >= 0 {
-			t.Fatalf("fixture %s still contains an unexpanded placeholder %q; known vars: %v",
-				path, out[i:i+2+j+2], keysOf(vars))
-		}
-	}
-
-	return out
+	return expandTokens(t, path, mustReadTestdata(t, path), vars)
 }
 
 func keysOf(m map[string]string) []string {

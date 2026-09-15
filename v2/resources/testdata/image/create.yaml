@@ -1,4 +1,4 @@
-name: "test_tf_provider"
+name: "test_tf_provider__SUFFIX__"
 datastoreid: "aa7eb10b-7c1e-4f07-87c3-b30331e5d451"
 imagearch: "AMD64"
 imageformat: "CONTAINER"

@@ -1,6 +1,6 @@
 resource "zedcloud_project" "test_tf_runtime_project" {
   # required
-  name = "test_tf_runtime_project"
+  name = "test_tf_runtime_project__SUFFIX__"
   title = "title"
 
   # optional
@@ -22,16 +22,16 @@ resource "zedcloud_project" "test_tf_runtime_project" {
 }
 
 resource "zedcloud_brand" "test_tf_runtime_brand" {
-  name = "test_tf_runtime_brand"
-  title = "test_tf_runtime_brand"
+  name = "test_tf_runtime_brand__SUFFIX__"
+  title = "test_tf_runtime_brand__SUFFIX__"
   description = "description"
   origin_type = "ORIGIN_LOCAL"
 }
 
 resource "zedcloud_model" "test_tf_runtime_model" {
   brand_id = zedcloud_brand.test_tf_runtime_brand.id
-  name = "test_tf_runtime_model"
-  title = "test_tf_runtime_model"
+  name = "test_tf_runtime_model__SUFFIX__"
+  title = "test_tf_runtime_model__SUFFIX__"
   type = "AMD64"
   origin_type = "ORIGIN_LOCAL"
   state = "SYS_MODEL_STATE_ACTIVE"
@@ -59,12 +59,12 @@ resource "zedcloud_model" "test_tf_runtime_model" {
 
 resource "zedcloud_edgenode" "test_tf_runtime_node" {
   onboarding_key = "" # placeholder
-  serialno = "2293dbe8-29ce-420c-8264-962857efc46c"
+  serialno = "2293dbe8-29ce-420c-8264-962857efc46c__SUFFIX__"
   # required
-  name = "test_tf_runtime_node"
+  name = "test_tf_runtime_node__SUFFIX__"
   model_id = zedcloud_model.test_tf_runtime_model.id
   project_id = zedcloud_project.test_tf_runtime_project.id
-  title = "test_tf_provider-create_edgenode-title"
+  title = "test_tf_provider-create_edgenode-title__SUFFIX__"
   interfaces {
     cost = 255
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
@@ -110,15 +110,15 @@ resource "zedcloud_edgenode" "test_tf_runtime_node" {
   tags = {
     "tag-key-1" = "tag-value-1"
   }
-  token = "token_runtime"
+  token = "token_runtime__SUFFIX__"
 }
 
 resource "zedcloud_datastore" "test_datastore_runtime" {
   ds_fqdn             = "fake-datastore.com:22"
   ds_path             = ""
   ds_type             = "DATASTORE_TYPE_SFTP"
-  name                = "test_tf_provider-ftp-runtime"
-  title               = "test_tf_provider-ftp-runtime"
+  name                = "test_tf_provider-ftp-runtime__SUFFIX__"
+  title               = "test_tf_provider-ftp-runtime__SUFFIX__"
   description         = "test_tf_provider-ftp-runtime"
   region              = "eu"
 }
@@ -127,8 +127,8 @@ resource "zedcloud_datastore" "test_datastore_compose" {
   ds_fqdn             = "docker://gcr.io"
   ds_path             = ""
   ds_type             = "DATASTORE_TYPE_CONTAINERREGISTRY"
-  name                = "test_tf_provider-docker-compose"
-  title               = "test_tf_provider-docker-compose"
+  name                = "test_tf_provider-docker-compose__SUFFIX__"
+  title               = "test_tf_provider-docker-compose__SUFFIX__"
   description         = "test_tf_provider-docker-compose"
   secret {
     api_key = "test_api_key"
@@ -142,28 +142,28 @@ resource "zedcloud_datastore" "test_datastore_compose" {
 }
 
 resource "zedcloud_image" "test_runtime_image" {
-  name                = "test_tf_provider-runtime-image"
+  name                = "test_tf_provider-runtime-image__SUFFIX__"
   datastore_id        = zedcloud_datastore.test_datastore_runtime.id
   image_arch          = "AMD64"
   image_format        = "QCOW2"
   image_type          = "IMAGE_TYPE_DOCKER_RUNTIME"
   image_size_bytes    = "0"
   image_rel_url       = "test_tf_provider-runtime-image"
-  title               = "tes_tf_runtime"
+  title               = "tes_tf_runtime__SUFFIX__"
 }
 
 resource "zedcloud_image" "test_compose_image" {
-  name                = "test_tf_provider-compose-image"
+  name                = "test_tf_provider-compose-image__SUFFIX__"
   datastore_id        = zedcloud_datastore.test_datastore_runtime.id
   image_format        = "RAW"
   image_type          = "IMAGE_TYPE_DOCKER_COMPOSE_TAR"
   image_size_bytes    = "0"
   image_rel_url       = "test_tf_provider-compose-image"
-  title               = "tes_tf_compose"
+  title               = "tes_tf_compose__SUFFIX__"
 }
 
 resource "zedcloud_application" "test_tf_app_runtime" {
-  name                 = "test_tf_app_runtime"
+  name                 = "test_tf_app_runtime__SUFFIX__"
   title                = "runtime_app_bundle"
   description          = "runtime app bundle"
   user_defined_version = "1.1"
@@ -248,7 +248,7 @@ resource "zedcloud_application" "test_tf_app_runtime" {
 }
 
 resource "zedcloud_application" "test_tf_app_compose" {
-  name                 = "test_tf_app_compose"
+  name                 = "test_tf_app_compose__SUFFIX__"
   title                = "compose_app_bundle"
   description          = "compose app bundle"
   user_defined_version = "1.1"
@@ -289,7 +289,7 @@ resource "zedcloud_application" "test_tf_app_compose" {
 
 resource "zedcloud_network_instance" "test_tf_netinst_runtime_1" {
   device_id = zedcloud_edgenode.test_tf_runtime_node.id
-  name = "test_tf_netinst_runtime_1"
+  name = "test_tf_netinst_runtime_1__SUFFIX__"
   title = "title"
   kind = "NETWORK_INSTANCE_KIND_SWITCH"
   port = "eth0"
@@ -322,7 +322,7 @@ resource "zedcloud_network_instance" "test_tf_netinst_runtime_1" {
 
 resource "zedcloud_network_instance" "test_tf_netinst_runtime_2" {
   device_id = zedcloud_edgenode.test_tf_runtime_node.id
-  name = "test_tf_netinst_runtime_2"
+  name = "test_tf_netinst_runtime_2__SUFFIX__"
   title = "title"
   kind = "NETWORK_INSTANCE_KIND_LOCAL"
 
@@ -353,8 +353,8 @@ resource "zedcloud_network_instance" "test_tf_netinst_runtime_2" {
 }
 
 resource "zedcloud_application_instance"  "test_tf_appinst_runtime" {
-  name        = "test_tf_appinst_runtime"
-  title       = "tf test"
+  name        = "test_tf_appinst_runtime__SUFFIX__"
+  title       = "tf test__SUFFIX__"
   description = "tf test"
   app_id      = zedcloud_application.test_tf_app_runtime.id
   app_type    = "APP_TYPE_VM"
@@ -404,8 +404,8 @@ resource "zedcloud_application_instance"  "test_tf_appinst_compose" {
   depends_on = [
     zedcloud_application_instance.test_tf_appinst_runtime,
   ]
-  name        = "test_tf_appinst_compose"
-  title       = "tf test"
+  name        = "test_tf_appinst_compose__SUFFIX__"
+  title       = "tf test__SUFFIX__"
   description = "tf test"
   app_id      = zedcloud_application.test_tf_app_compose.id
   app_type    = zedcloud_application.test_tf_app_compose.manifest[0].app_type
