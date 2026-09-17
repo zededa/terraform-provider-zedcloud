@@ -391,10 +391,14 @@ func SetNetworkInstanceSubResourceData(m []*models.NetworkInstance) (d []*map[st
 
 func NetworkInstance() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		// CI-709: Optional + Computed. The controller assigns this for a
+		// cluster-scoped network instance, so it must not be treated as drift
+		// when absent from config. See device_id below for the full rationale.
 		"cluster_id": {
 			Description: `ID of the Cluster in which the network instance is configured`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"description": {
@@ -409,10 +413,35 @@ func NetworkInstance() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		// CI-709: Optional + Computed, NOT Optional alone.
+		//
+		// When a network instance is created cluster-scoped -- `edge_node_cluster`
+		// set and no `device_id` -- the controller resolves a designated node and
+		// PERSISTS it (srvs/seine/netinstproc.go:100-153):
+		//
+		//     if uInput.GetDeviceId() == "" && uInput.GetEdgeNodeCluster().GetId() != "" {
+		//         nodeID, _ := clusterproc.GetEdgeNodeForClusterObject(...)
+		//         uInput.DeviceId = nodeID
+		//     }
+		//     netinst.DeviceId = dev.Id
+		//
+		// So every GET returns a populated device_id. Without Computed, refresh
+		// wrote that into state, config had none, Terraform planned
+		// `device_id -> null`, and Update PUT it back empty -- whereupon the
+		// controller re-derived it and the diff returned on the next plan.
+		// A permanent loop, and the source of the 409 Conflicts in CI-709.
+		//
+		// Reproduced against a live single-node cluster in
+		// test/e2e-cluster/ci709_repro.tf.
+		//
+		// Trade-off of Optional + Computed: once a value is in state, removing it
+		// from config no longer produces a diff. That is correct here -- the
+		// field is controller-owned whenever the object is cluster-scoped.
 		"device_id": {
 			Description: `ID of the device on which network instance is created`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"dhcp": {

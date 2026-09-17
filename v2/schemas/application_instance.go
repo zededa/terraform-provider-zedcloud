@@ -528,11 +528,25 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		// CI-709: Optional + Computed, and the `Default` REMOVED.
+		//
+		// The default was the worse half of the bug. Because config always
+		// asserted "APP_TYPE_UNSPECIFIED" when the user did not set app_type,
+		// every plan showed
+		//
+		//     ~ app_type = "APP_TYPE_VM" -> "APP_TYPE_UNSPECIFIED"
+		//
+		// and the update PUT that back, overwriting whatever the cluster flow had
+		// derived. That is the first line of the diff in the CI-709 report.
+		//
+		// Default and Computed are mutually exclusive in SDKv2, so the Default has
+		// to go; Computed supplies the same "you need not set this" ergonomics
+		// without asserting a value the server did not choose.
 		"app_type": {
 			Description: `type of bundle`,
 			Type:        schema.TypeString,
 			Optional:    true,
-			Default:     "APP_TYPE_UNSPECIFIED",
+			Computed:    true,
 		},
 
 		"bundleversion": {
@@ -541,10 +555,12 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Computed:    true,
 		},
 
+		// CI-709: Optional + Computed. System-defined, per its own description.
 		"cluster_id": {
 			Description: `System defined universally unique clusterInstance ID, unique across the enterprise.`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"collect_stats_ip_addr": {
@@ -583,10 +599,17 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		// CI-709: Optional + Computed. A cluster-scoped app instance gets its
+		// designated node chosen by the controller
+		// (srvs/seine/appinstproc.go:2739 assigns
+		// uInput.DeviceId = designatedNode.GetDesignatedNodeID()), so an absent
+		// config value must not plan as `device_id -> null`. Same defect and fix
+		// as network_instance.device_id -- see the long comment there.
 		"device_id": {
 			Description: `User defined name of the device name, unique across the enterprise. Once device name is defined, name can’t be changed`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"drives": {
