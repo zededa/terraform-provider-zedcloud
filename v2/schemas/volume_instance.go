@@ -236,10 +236,16 @@ func VolumeInstance() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		// CI-709: Optional + Computed. Cluster-scoped volume instances get a
+		// controller-assigned designated node (srvs/purus/volinst.go:145 reads
+		// it back as DesignatedNodeId), so an absent config value must not plan
+		// as `device_id -> null`. Same defect and same fix as
+		// network_instance.device_id -- see the long comment there.
 		"device_id": {
 			Description: `id of the device on which volume instance is created`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Computed:    true,
 		},
 
 		"edge_node_cluster": {
