@@ -15,3 +15,15 @@ dev.tfrc
 .vscode/
 *.plan
 __pycache__/
+
+# Per-user OpenTofu CLI configs for the e2e harnesses: the filesystem_mirror
+# path is absolute and not $HOME-expanded. The committed templates are
+# *.tfrc.example, which these patterns do not match.
+test/e2e/e2e.tfrc
+test/e2e-cluster/*.tfrc
+test/e2e-cluster-macos/*.tfrc
+
+# OpenTofu writes timestamped state backups (terraform.tfstate.<epoch>.backup)
+# on some operations, which the plain terraform.tfstate.backup entry above does
+# not match.
+terraform.tfstate.*.backup
