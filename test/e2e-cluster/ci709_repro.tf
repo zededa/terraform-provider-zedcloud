@@ -17,20 +17,16 @@
 #
 # ROOT CAUSE, confirmed by reading both sides:
 #
-# SERVER: srvs/seine/netinstproc.go:100-153. Create an NI with only
+# SERVER: the controller's network-instance create path. Create an NI with only
 # `edge_node_cluster` and no `device_id`, and the controller resolves a
 # designated node and PERSISTS the choice:
 #
-#     if uInput.GetDeviceId() == "" && uInput.GetEdgeNodeCluster().GetId() != "" {
-#         nodeID, err := clusterproc.GetEdgeNodeForClusterObject(...)
-#         uInput.DeviceId = nodeID
-#         if netinst.DesignatedNodeID == "" { netinst.DesignatedNodeID = nodeID }
-#     }
-#     ...
-#     netinst.DeviceId = dev.Id
+#     create with an edge_node_cluster and no device_id -> the controller
+#     resolves a designated node for that cluster, assigns it as the
+#     instance's device, and PERSISTS both ids
 #
 # So `device_id` comes back populated on every subsequent GET.
-# (appinstproc.go:2739 does the same for app instances.)
+# (the app-instance create path does the same for app instances.)
 #
 # PROVIDER, before the fix: `device_id` was Optional and NOT Computed, and the
 # Update path PUTs the whole model with no per-field change detection. Refresh
@@ -110,7 +106,7 @@ locals {
   # Two reasons. eth0 is the QEMU SLIRP management NIC, so it is the only port
   # with outbound connectivity; bridges A/B/C are host-only, so a container on
   # eth1/2/3 could never pull an image. And putting an application network
-  # instance on the CLUSTER interface invites clusterPrefixOverlap (the
+  # instance on the CLUSTER interface invites the controller's prefix-overlap check (the
   # controller rejects a cluster_prefix overlapping any NI subnet on a member
   # node), which is a different failure than the one under test.
   #
@@ -145,13 +141,13 @@ resource "zedcloud_network_instance" "CI709" {
   # to try to erase. All three resources below share the identical guard.
   #
   # designated_node_id is also left unset, so the controller chooses
-  # (GetEdgeNodeForClusterObject). Setting it explicitly is the other half of
+  # (the controller's designated-node resolution). Setting it explicitly is the other half of
   # the API surface and worth a second test.
   edge_node_cluster {
     id = zedcloud_edgenode_cluster.CLUSTER.id
   }
 
-  # The cluster must exist AND have converged: validateNodesForCluster rejects
+  # The cluster must exist AND have converged: the controller's cluster-membership checks rejects
   # objects on a cluster whose nodes are not ready, and an instance on a
   # half-formed cluster is a different failure mode than the one under test.
   depends_on = [
@@ -328,7 +324,7 @@ resource "zedcloud_application_instance" "CI709" {
   # activate = false ON PURPOSE.
   #
   # CI-709 is entirely config-plane: the controller assigns device_id at create
-  # regardless (appinstproc.go:2739), so activating adds a multi-minute image
+  # regardless (the app-instance create path), so activating adds a multi-minute image
   # pull and a possible device-side error state without strengthening the
   # assertion. Proving a workload actually RUNS is
   # TestApplicationInstance_RealNode's job, on a standalone node.

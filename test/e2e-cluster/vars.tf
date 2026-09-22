@@ -165,12 +165,12 @@ variable "node_count" {
   description = <<-EOT
     Number of virtual EVE nodes to stand up and cluster.
 
-    Zedcloud enforces this hard (srvs/seine/cluster/clusterproc.go):
-      requiredAmountOfNodes = 3
+    Zedcloud enforces this hard (the controller's cluster logic):
+      a required node count of three
       1 node  -> allowed (single-node cluster, 1 master)
-      2 nodes -> rejected by validateClusterFields / validateMasterNodes
+      2 nodes -> rejected by the controller's cluster-field validation / the controller's master-node check
                  ("cluster must not have 2 number of nodes")
-      3+      -> allowed; validateMasterNodes requires exactly 3 SERVER nodes
+      3+      -> allowed; the controller's master-node check requires exactly 3 SERVER nodes
 
     NOTE: the upstream reference config carries a commented-out
     `tie-breaker = true` tag "for 2-node ENC configs", which suggests a
@@ -265,8 +265,8 @@ variable "tie_breaker_node_index" {
   description = <<-EOT
     0-based index of the node to tag `tie-breaker`, or null for none.
 
-    validateNodesForCluster permits AT MOST ONE tie-breaker node
-    ("only one tie-breaker node is allowed in the cluster"), and clusterproc
+    the controller's cluster-membership checks permits AT MOST ONE tie-breaker node
+    ("only one tie-breaker node is allowed in the cluster"), and the controller
     records it as TieBreakerNodeId in the config pushed to EVE.
 
     Andrei suggests tagging the smaller (4-CPU) node, which with the default
@@ -547,7 +547,7 @@ variable "cluster_interface" {
     let the config pick: "eth0" for a single-node cluster, "eth1" for
     multi-node (which is what the upstream reference uses).
 
-    Constraints (resolveClusterSysInterface / validateNodesForCluster, each a
+    Constraints (the controller's cluster-interface resolution / the controller's cluster-membership checks, each a
     400): the label must resolve against the node's interfaces / bond_adapters /
     vlan_adapters, and that interface's intf_usage must not be
     ADAPTER_USAGE_UNSPECIFIED.
@@ -582,10 +582,10 @@ variable "cluster_prefix" {
   type        = string
   description = <<-EOT
     The edge-node-cluster overlay prefix. The provider schema defaults it to
-    10.244.244.2/28 and assignClusterPrefixes hands each node a distinct address
+    10.244.244.2/28 and the controller's prefix assignment hands each node a distinct address
     out of it (a /28 gives ~13 usable node prefixes).
 
-    clusterPrefixOverlap rejects a prefix overlapping any network instance subnet
+    the controller's prefix-overlap check rejects a prefix overlapping any network instance subnet
     on the member nodes -- so keep this away from the bridge subnets above.
 
     NOTE: the upstream reference config does NOT set this at all and relies on

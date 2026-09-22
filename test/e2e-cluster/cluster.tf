@@ -7,36 +7,36 @@
 # Everything above this file exists to satisfy the gates this one resource
 # imposes. Checklist, all enforced server-side:
 #
-#   srvs/seine/cluster/clusterproc.go
-#     requiredAmountOfNodes = 3; 1 or >=3 nodes, NEVER 2 (no quorum)
-#     validateMasterNodes: >=3 nodes -> exactly 3 of type ..._SERVER
-#     clusterPrefixOverlap: cluster_prefix must not overlap any network
+#   the controller's cluster logic
+#     a required node count of three; 1 or >=3 nodes, NEVER 2 (no quorum)
+#     the controller's master-node check: >=3 nodes -> exactly 3 of type ..._SERVER
+#     the controller's prefix-overlap check: cluster_prefix must not overlap any network
 #       instance subnet on the member nodes
-#     assignClusterPrefixes: each node gets a distinct address out of
+#     the controller's prefix assignment: each node gets a distinct address out of
 #       cluster_prefix; a /28 gives ~13 usable node prefixes
 #     a seed node is elected and seed_node_id / seed_node_ip recorded
 #     cluster token is 32 random bytes, generated server-side
 #
-#   srvs/seine/devproc.go:validateNodesForCluster  (each is a 400)
+#   the controller's cluster-membership checks  (each is a 400)
 #     every node id resolves
 #     node not already in a cluster, node.ClusterID empty
 #     node.AdminState == DEVICE_REGISTERED   <- must have ONBOARDED, not just
 #                                               ADMIN_STATE_ACTIVE
 #     at most one 'tie-breaker'-tagged node
-#     resolveClusterSysInterface resolves cluster_interface against the node's
+#     the controller's cluster-interface resolution resolves cluster_interface against the node's
 #       interfaces / bond_adapters / vlan_adapters
 #     that interface's intf_usage != ADAPTER_USAGE_UNSPECIFIED
 #     no app instance with an auto-deployment policy on any node
 #     NO ACTIVE APP INSTANCE on any node
 #
-#   srvs/seine/devproc.go:validateClusterNodesInfo
+#   the controller's live node-capability check
 #     LIVE DeviceStatusReq to all nodes; every one must report
 #     OptionalCapabilities.hvTypeKubevirt, or:
 #       "node %s does not support kubevirt"
 #     and if a node is offline:
 #       "timed out after %s querying cluster node status"
 #
-#   validateClusterNodesSharedLabels
+#   the controller's shared-label check
 #     shared labels on the cluster interface must match across all nodes
 # ===========================================================================
 
@@ -56,7 +56,7 @@ resource "zedcloud_edgenode_cluster" "CLUSTER" {
   # One block per node.
   #
   # node_type is explicit even though the provider defaults it: for a 3-node
-  # cluster validateMasterNodes requires EXACTLY three SERVER nodes, so making
+  # cluster the controller's master-node check requires EXACTLY three SERVER nodes, so making
   # it implicit here hides a hard requirement.
   #
   # resource_labels is left unset -- see the shared-labels note above.
@@ -75,12 +75,12 @@ resource "zedcloud_edgenode_cluster" "CLUSTER" {
 
   # Load-bearing, three times over:
   #
-  #  1. validateNodesForCluster requires every node to be DEVICE_REGISTERED,
+  #  1. the controller's cluster-membership checks requires every node to be DEVICE_REGISTERED,
   #     which only happens once EVE has onboarded. Depending on
   #     zedcloud_edgenode.EN alone is NOT enough -- those records exist long
   #     before the VMs finish booting.
   #
-  #  2. validateClusterNodesInfo issues a LIVE status query to every node and
+  #  2. the controller's live node-capability check issues a LIVE status query to every node and
   #     fails the whole create if any one is unreachable, so all must be up
   #     simultaneously -- and it requires each to report
   #     OptionalCapabilities.hvTypeKubevirt.

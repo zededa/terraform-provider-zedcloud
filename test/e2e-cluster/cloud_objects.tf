@@ -72,7 +72,7 @@ resource "zedcloud_model" "QEMU_VM" {
   # net_cluster.tf); eth1 is the cluster interface.
   #
   # The model MUST declare these or the node will not offer the adapter and
-  # resolveClusterSysInterface fails with
+  # the controller's cluster-interface resolution fails with
   #   "node %s does not have interface eth1".
   #
   # Zedcloud's own virtual model (spec/template_l1_ZedVirtual-4G.json) declares
@@ -142,9 +142,9 @@ resource "zedcloud_network" "cluster_dhcp" {
 # the hardware serial. The cloud object stays the source of truth.
 #
 # The controller's join key is literally "<onboarding_key>:<serialno>"
-# (srvs/seine/devproc.go:GetOnCertCN), so these must be unique per node.
+# (the controller's join-key derivation), so these must be unique per node.
 #
-# admin_state = ADMIN_STATE_ACTIVE is MANDATORY: processRegRequest returns 404
+# admin_state = ADMIN_STATE_ACTIVE is MANDATORY: the controller's registration handler returns 404
 # "Device is not activated" for a device still in DEVICE_CREATED.
 # ---------------------------------------------------------------------------
 
@@ -176,10 +176,10 @@ resource "zedcloud_edgenode" "EN" {
   #
   # For a single node local.cluster_interface is "eth0", already declared above
   # with ADAPTER_USAGE_MANAGEMENT -- which satisfies the only usage check
-  # validateNodesForCluster makes. So no extra blocks are needed, and adding
+  # the controller's cluster-membership checks makes. So no extra blocks are needed, and adding
   # them would describe NICs the VM does not have.
   #
-  # intf_usage must NOT be ADAPTER_USAGE_UNSPECIFIED -- validateNodesForCluster
+  # intf_usage must NOT be ADAPTER_USAGE_UNSPECIFIED -- the controller's cluster-membership checks
   # rejects that with "node %s: interface %s has no usage configured".
   #
   # All three point at the SAME zedcloud_network, exactly as upstream does: the
@@ -187,7 +187,7 @@ resource "zedcloud_edgenode" "EN" {
   # actually lands on is decided by the QEMU tap wiring, not by Zedcloud.
   #
   # shared_labels is deliberately left unset on ALL nodes:
-  # validateClusterNodesSharedLabels requires the shared-label set on the
+  # the controller's shared-label check requires the shared-label set on the
   # cluster interface to match across every node, and "unset everywhere" is the
   # only value that trivially satisfies it.
   dynamic "interfaces" {
@@ -215,8 +215,8 @@ resource "zedcloud_edgenode" "EN" {
     uint64_value = "0"
   }
 
-  # `tie-breaker` on at most ONE node -- validateNodesForCluster rejects more
-  # with "only one tie-breaker node is allowed in the cluster", and clusterproc
+  # `tie-breaker` on at most ONE node -- the controller's cluster-membership checks rejects more
+  # with "only one tie-breaker node is allowed in the cluster", and the controller
   # records it as TieBreakerNodeId in the config pushed to EVE.
   #
   # Opt-in via var.tie_breaker_node_index. Andrei's suggestion is to tag the

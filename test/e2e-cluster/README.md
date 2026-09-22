@@ -104,11 +104,11 @@ Consequences:
 
 The first version polled the controller for
 `OptionalCapabilities.hvTypeKubevirt`, since
-`srvs/seine/devproc.go:validateClusterNodesInfo` gates cluster creation on
+the controller's live node-capability check gates cluster creation on
 exactly that field. It is still a poor barrier:
 
 - zedcloud only populates it `if dinfo.GetOptionalCapabilities() != nil`
-  (`srvs/yamuna/devproc.go:deviceFillInfo`), so "not reported yet" and "not
+  (the controller's device-info handler), so "not reported yet" and "not
   capable" are indistinguishable from outside — both are simply absent.
 - it says nothing about *when* the stack is ready, and creating the cluster too
   early "fails or stalls" (upstream's words).
@@ -225,7 +225,7 @@ Replacing the zedamigo chain (`-replace` on installer / installed_edge_node /
 edge_node) gives the node a **new device certificate**, but leaves the
 `zedcloud_edgenode` object untouched — and the controller already holds that
 object in `DEVICE_REGISTERED` with the *old* cert hash bound to it.
-`srvs/seine/seine.go:processRegRequest` answers re-registration of an already
+the controller's registration handler answers re-registration of an already
 registered device with `304 already registered`, so the reinstalled node never
 completes onboarding and never receives its config.
 
@@ -308,15 +308,15 @@ defaulted to qcow2. `tree /var/lib/zedamigo/reservations/devs/` is the interface
 to look at, not the LVM tooling.)
 
 **Start with `node_count = 1`.** It reproduces both target bugs and needs none
-of the multi-node machinery. `validateClusterFields` allows 1 node or 3+ (only 2
-is rejected — no quorum), `validateMasterNodes` says *"1 node cluster: 1 master
+of the multi-node machinery. the controller's cluster-field validation allows 1 node or 3+ (only 2
+is rejected — no quorum), the controller's master-node check says *"1 node cluster: 1 master
 is fine"*, and there is **no node-count guard on the device mutation path** —
 `devproc.go:1567,1601` populate `dinfo.ClusterInterface` and
 `dinfo.EdgeNodeCluster` identically for one node as for three. So the controller
 writes exactly the fields CI-834 is about.
 
 The single-node `cluster_interface = "eth0"` choice rests on
-`validateNodesForCluster` only requiring `intf_usage != ADAPTER_USAGE_UNSPECIFIED`,
+the controller's cluster-membership checks only requiring `intf_usage != ADAPTER_USAGE_UNSPECIFIED`,
 which `ADAPTER_USAGE_MANAGEMENT` satisfies. With no peers there is no traffic to
 carry. **This is the one untested assumption in the single-node path** — it is
 the first thing an apply will confirm or refute.
@@ -435,7 +435,7 @@ that has to be satisfied.
 
 ### The KubeVirt gate
 
-`srvs/seine/devproc.go:validateClusterNodesInfo` issues a **live**
+the controller's live node-capability check issues a **live**
 `DeviceStatusReq` to every candidate node at cluster-create time and returns
 `400 node %s does not support kubevirt` unless each one reports
 `OptionalCapabilities.hvTypeKubevirt` (`device/devstatus.proto:522`). The `kvm`
@@ -813,9 +813,9 @@ Two things about reading that result:
 1. **CI-709**: create a cluster-scoped `zedcloud_network_instance` and
    `zedcloud_application_instance` using
    `edge_node_cluster { id = <cluster id> }` with **no** `device_id`, then
-   `plan` again. Today the controller assigns `device_id` server-side
-   (`srvs/seine/netinstproc.go:153` persists `netinst.DeviceId = dev.Id` after
-   resolving the designated node) while the provider declares `device_id` as
+   `plan` again. Today the controller assigns `device_id` server-side (its
+   network-instance create path resolves a designated node for the cluster and
+   persists it as the instance's device) while the provider declares `device_id` as
    `Optional` and PUTs the full model on update — so the controller's choice
    round-trips as empty, and the follow-up apply 409s. The network-instance
    half is fixed and merged (PR #234, `Optional + Computed` on `device_id`,
@@ -836,24 +836,24 @@ Either `__NODE_ID_1__`…`__NODE_ID_3__` or a single comma-joined `__NODE_IDS__`
 
 All from `zedcloud`; every one is a 400 if violated.
 
-`srvs/seine/cluster/clusterproc.go`:
+the controller's cluster logic:
 
-- `requiredAmountOfNodes = 3`. Node counts of 1 or 3+ are allowed; **2 is never
+- a required node count of three. Node counts of 1 or 3+ are allowed; **2 is never
   allowed** (no quorum, split-brain). Enforced client-side by a validation on
   `var.node_count`.
-- `validateMasterNodes`: for 3+ nodes, at least 3 and at most 3 of type
+- the controller's master-node check: for 3+ nodes, at least 3 and at most 3 of type
   `EDGE_NODE_CLUSTER_NODE_TYPE_SERVER`. All three nodes here are SERVER.
-- `clusterPrefixOverlap`: `cluster_prefix` must not overlap any network instance
+- the controller's prefix-overlap check: `cluster_prefix` must not overlap any network instance
   subnet on the member nodes. Hence `cluster_prefix` (`10.244.244.2/28`) and
   the bridge subnets (`10.99.1.0/24`, `10.99.2.0/24`) are disjoint. Note
   `var.cluster_prefix` defaults to `null` so the provider's own default
   (`10.244.244.2/28`) applies, matching upstream.
-- `assignClusterPrefixes` gives each node a distinct address out of
+- the controller's prefix assignment gives each node a distinct address out of
   `cluster_prefix`; a `/28` yields ~13 usable node prefixes. Server-generated —
   the per-node `cluster_prefix` in a `nodes` block is `Computed`, do not set it.
 - The seed node and the 32-byte cluster token are chosen server-side.
 
-`srvs/seine/devproc.go:validateNodesForCluster`:
+the controller's cluster-membership checks:
 
 - every node id resolves, is not already in a cluster, and has an empty
   `ClusterID`
@@ -862,7 +862,7 @@ All from `zedcloud`; every one is a 400 if violated.
   depends on the `zedamigo_wait_until.onboarded` barriers and not just on the
   node records.
 - at most one `tie-breaker`-tagged node
-- `resolveClusterSysInterface` resolves `cluster_interface` against the node's
+- the controller's cluster-interface resolution resolves `cluster_interface` against the node's
   `interfaces` / `bond_adapters` / `vlan_adapters`, and that interface's
   `intf_usage` is not `ADAPTER_USAGE_UNSPECIFIED`. Hence `eth1` is declared both
   in the model's `io_member_list` and as an `interfaces` block with
@@ -870,7 +870,7 @@ All from `zedcloud`; every one is a 400 if violated.
 - no app instance with an auto-deployment policy, and **no active app instance**
   on any node
 
-`validateClusterNodesSharedLabels`: shared labels on the cluster interface must
+the controller's shared-label check: shared labels on the cluster interface must
 match across all nodes. `shared_labels` is left unset on every node, which is
 the only value that trivially satisfies this.
 

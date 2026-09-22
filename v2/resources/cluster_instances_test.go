@@ -20,7 +20,7 @@ import (
 // Create a network, volume or application instance with only an
 // `edge_node_cluster` and no `device_id`, and the controller resolves a
 // designated node and persists the choice
-// (srvs/seine/netinstproc.go:100-153, appinstproc.go:2739). The provider
+// (the controller's network-instance create path, the app-instance create path). The provider
 // declared `device_id` as `Optional` and NOT `Computed`, and PUTs the whole
 // model on update with no per-field change detection -- so refresh wrote the
 // server's value into state, the config had none, Terraform planned to remove

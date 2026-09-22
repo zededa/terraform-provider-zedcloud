@@ -200,7 +200,7 @@ resource "zedamigo_edge_node" "VM" {
 # register -> uuid -> certs -> config handshake all happen AFTER apply would
 # otherwise finish. Without this barrier the apply "succeeds" against nodes that
 # never onboarded, and the cluster create then fails with
-# "node %s is not registered" (validateNodesForCluster requires
+# "node %s is not registered" (the controller's cluster-membership checks requires
 # AdminState == DEVICE_REGISTERED, which only onboarding sets).
 # ---------------------------------------------------------------------------
 
@@ -220,13 +220,12 @@ resource "zedamigo_wait_until" "onboarded" {
   #
   # An earlier version demanded RUN_STATE_ONLINE and timed out after 35 minutes
   # on a node sitting in RUN_STATE_SUSPECT -- which is NOT an error state.
-  # srvs/ganges/devcache.go:254 sets SUSPECT when EVE has sent an info message
-  # but no metrics message has been processed yet: "keep opstate as suspect here
-  # and make it online only upon arrival of metrics msg". On a node busy pulling
+  # the controller's device cache sets SUSPECT when EVE has sent an info message
+  # but no metrics message has been processed yet: online only once a metrics message arrives. On a node busy pulling
   # gigabytes of k3s/kubevirt images on first boot, metrics can lag well past
   # the dormant window (DefaultMetricsIntervalSec * 3).
   #
-  # And the cluster API does not care: validateNodesForCluster gates on
+  # And the cluster API does not care: the controller's cluster-membership checks gates on
   # AdminState == DEVICE_REGISTERED, never on runState. So the meaningful
   # condition is "registered and talking", with kube_ready doing the real
   # gating afterwards.
@@ -265,11 +264,11 @@ resource "zedamigo_wait_until" "onboarded" {
 #
 # WHAT NOT TO DO — and what this config did on its first attempt:
 # poll the CONTROLLER for OptionalCapabilities.hvTypeKubevirt. That looks right
-# (srvs/seine/devproc.go:validateClusterNodesInfo gates cluster creation on
+# (the controller's live node-capability check gates cluster creation on
 # exactly that field) but it is a poor barrier:
 #
 #   - zedcloud only populates it `if dinfo.GetOptionalCapabilities() != nil`
-#     (srvs/yamuna/devproc.go:deviceFillInfo), so "not reported yet" and "not
+#     (the controller's device-info handler), so "not reported yet" and "not
 #     capable" are indistinguishable from outside -- both are simply absent.
 #   - observed on a node running the WRONG (old-naming) image: online and
 #     registered for 20+ minutes with optionalCapabilities: null forever, and

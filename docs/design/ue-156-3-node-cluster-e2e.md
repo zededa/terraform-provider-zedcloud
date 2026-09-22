@@ -22,8 +22,8 @@ which **three are host/image concerns rather than Terraform concerns**:
 
 | gate | enforced by | current harness |
 |---|---|---|
-| all nodes report `hvTypeKubevirt` | `validateClusterNodesInfo` | ✗ pinned to a `kvm` image |
-| cluster interface on a shared L2 segment | `resolveClusterSysInterface` + physics | ✗ one SLIRP NIC, no guest-to-guest path |
+| all nodes report `hvTypeKubevirt` | the controller's live node-capability check | ✗ pinned to a `kvm` image |
+| cluster interface on a shared L2 segment | the controller's cluster-interface resolution + physics | ✗ one SLIRP NIC, no guest-to-guest path |
 | `use_sudo` for tap/dhcp resources | `zedamigo` self-invoking under `sudo -n` | ✗ 3 NOPASSWD entries, needs 4 |
 | 3 × node capacity | `zedamigo_host_reservation` (fail, not queue) | ✗ sized for 1 node |
 
@@ -40,7 +40,7 @@ and the ticket becomes "obtain a kubevirt EVE image".
 
 ### 1.1 The gate
 
-`srvs/seine/devproc.go:validateClusterNodesInfo` (~:8610) issues a **live** `DeviceStatusReq`
+the controller's live node-capability check issues a **live** `DeviceStatusReq`
 over Kafka/gRPC to every candidate node at cluster-create time, bounded by
 `clusterNodesInfoQueryTimeout`:
 
@@ -122,7 +122,7 @@ Two clarifications worth keeping, because it is easy to reach for the wrong expl
   genuinely needs in order to run VM-type app instances — a real capability gain for this
   harness. It is independent of architecture, and it was never what blocked clustering.
 - **The gate is the build flavour, not actual nested VM execution.**
-  `validateClusterNodesInfo` only checks that EVE *reports* `hvTypeKubevirt`.
+  the controller's live node-capability check only checks that EVE *reports* `hvTypeKubevirt`.
 
 ### 1.2.2 The capability is not a usable readiness signal
 
@@ -132,7 +132,7 @@ Also learned the hard way. A `15.10.0-kubevirt-amd64` node onboarded cleanly, re
 log — the Kubernetes stack never started at all.
 
 Beyond the wrong image, polling the controller for the capability is the wrong test in
-principle: `srvs/yamuna/devproc.go:deviceFillInfo` only populates the field
+principle: the controller's device-info handler only populates the field
 `if dinfo.GetOptionalCapabilities() != nil`, so "not reported yet" and "not capable" are
 indistinguishable from outside — both are simply absent.
 
@@ -236,13 +236,13 @@ This is `e2e-virtual-eve-node-testing.md` §6.4 **Phase 2** arriving, as predict
 Three matching changes on the Zedcloud side, all in `cloud_objects.tf`:
 
 1. a second `io_member_list` block on the model for `eth1`, `ADAPTER_USAGE_APP_SHARED` — without
-   it the node never offers the adapter and `resolveClusterSysInterface` returns
+   it the node never offers the adapter and the controller's cluster-interface resolution returns
    `node %s does not have interface eth1`
 2. a second `interfaces` block on each `zedcloud_edgenode`, `intf_usage =
    "ADAPTER_USAGE_APP_SHARED"` — `ADAPTER_USAGE_UNSPECIFIED` is rejected with
    `node %s: interface %s has no usage configured`
 3. `shared_labels` left **unset on all three nodes** —
-   `validateClusterNodesSharedLabels` requires the set to match across every node, and "unset
+   the controller's shared-label check requires the set to match across every node, and "unset
    everywhere" is the only value that trivially satisfies it
 
 ### 2.3 Naming: kernel-global, not per-state
@@ -358,12 +358,12 @@ Three things to keep in view:
 Everything above is why the HCL looks the way it does. The server-side checklist it satisfies,
 all 400s:
 
-`srvs/seine/cluster/clusterproc.go`:
+the controller's cluster logic:
 
 ```go
 const (
     defaultClusterPrefix          = "10.244.244.2/28"
-    requiredAmountOfNodes         = 3
+    the required node count         = 3
     requiredMinimumOfZKSNodes     = 1
     preferableAmountOfZKSNodes    = 3
     notAvailableAmountOfZKSNodes  = 2
@@ -371,23 +371,23 @@ const (
 )
 ```
 
-- `validateClusterFields`: 1 or 3+ nodes; **2 is never allowed** (no quorum, split-brain).
+- the controller's cluster-field validation: 1 or 3+ nodes; **2 is never allowed** (no quorum, split-brain).
   Mirrored client-side as a validation on `var.node_count` so the failure is a plan error
   rather than an API round-trip.
-- `validateMasterNodes`: 3+ nodes → at least 3 and at most 3 of type
+- the controller's master-node check: 3+ nodes → at least 3 and at most 3 of type
   `EDGE_NODE_CLUSTER_NODE_TYPE_SERVER`. All three are SERVER, stated explicitly in
   `cluster.tf` rather than left to the schema default, because it is a hard requirement rather
   than a preference.
-- `clusterPrefixOverlap`: `cluster_prefix` must not overlap any network instance subnet on the
+- the controller's prefix-overlap check: `cluster_prefix` must not overlap any network instance subnet on the
   member nodes. Hence `cluster_prefix` (`10.244.244.2/28`) and `cluster_bridge_subnet`
   (`10.77.77.0/24`) are disjoint, and both are variables so a collision with something else in
   the lab is a one-line fix.
-- `assignClusterPrefixes` gives each node a distinct address out of the prefix (a `/28` yields
+- the controller's prefix assignment gives each node a distinct address out of the prefix (a `/28` yields
   ~13 usable node prefixes). Server-generated: the per-node `cluster_prefix` in a `nodes` block
   is `Computed` — do not set it.
 - Seed node election and the 32-byte cluster token are server-side.
 
-`srvs/seine/devproc.go:validateNodesForCluster` (~:8502):
+the controller's cluster-membership checks:
 
 | check | error |
 |---|---|
@@ -396,13 +396,13 @@ const (
 | `AdminState == DEVICE_REGISTERED` | `node %s is not registered` |
 | `ClusterID == ""` | `node %s is a part of a cluster instance` |
 | ≤ 1 `tie-breaker` node | `only one tie-breaker node is allowed in the cluster` |
-| `resolveClusterSysInterface` resolves | `node %s does not have interface %s` |
+| the controller's cluster-interface resolution resolves | `node %s does not have interface %s` |
 | interface usage set | `node %s: interface %s has no usage configured` |
 | no auto-deploy policy | `app instance %s is configured for auto-deployment` |
 | no active app instance | `app instance %s is active on the node` |
 
 `DEVICE_REGISTERED` is the subtle one. `ADMIN_STATE_ACTIVE` on the Terraform resource is a
-*precondition* for onboarding, not evidence of it — `processRegRequest` flips
+*precondition* for onboarding, not evidence of it — the controller's registration handler flips
 `AdminState` to `DEVICE_REGISTERED` only once EVE has actually completed the register
 handshake. So `zedcloud_edgenode_cluster` must `depends_on` the
 `zedamigo_wait_until.onboarded` barriers. Depending on `zedcloud_edgenode.EN` alone would
@@ -509,24 +509,16 @@ candidate for residual churn in the same family.
 
 Root cause, both halves:
 
-*Server side* — `srvs/seine/netinstproc.go:100-153`. Create a network instance with only
-`edge_node_cluster` and no `device_id`, and the controller resolves a designated node and
-persists the choice:
+*Server side* — the controller's network-instance create path. Create a network
+instance with only `edge_node_cluster` and no `device_id`, and the controller:
 
-```go
-if uInput.GetDeviceId() == "" && uInput.GetEdgeNodeCluster().GetId() != "" {
-    ...
-    nodeID, err := clusterproc.GetEdgeNodeForClusterObject(ctx, enterpriseId,
-        uInput.GetEdgeNodeCluster().GetId())
-    uInput.DeviceId = nodeID
-    if netinst.DesignatedNodeID == "" { netinst.DesignatedNodeID = nodeID }
-}
-...
-netinst.DeviceId = dev.Id
-```
+1. sees an empty `device_id` alongside a non-empty cluster id,
+2. resolves a designated node for that cluster,
+3. assigns it as the instance's device, and
+4. persists both the device id and the designated-node id.
 
-So `device_id` comes back populated on every subsequent GET. `appinstproc.go:2739` does the
-same for app instances.
+So `device_id` comes back populated on every subsequent GET. The app-instance
+create path does the same for app instances.
 
 *Provider side* — `device_id` is `Optional` and **not `Computed`** on all three of
 `network_instance`, `volume_instance` and `application_instance`
@@ -558,12 +550,12 @@ contrivance.
 Each is a plan/apply expected to fail with a specific 400, and each costs no additional VM
 time once the three nodes are up:
 
-- 2 nodes → `validateClusterFields` rejects (also caught client-side by the `node_count`
+- 2 nodes → the controller's cluster-field validation rejects (also caught client-side by the `node_count`
   validation, so this one needs a raw-API or fixture-level test)
 - `cluster_interface = "eth0"` where eth0 is MANAGEMENT → should surface a usage/interface error
 - `cluster_interface = "eth9"` → `node %s does not have interface eth9`
 - an active app instance on a member node → `app instance %s is active on the node`
-- `cluster_prefix` overlapping a network instance subnet → `clusterPrefixOverlap`
+- `cluster_prefix` overlapping a network instance subnet → the controller's prefix-overlap check
 
 ### 7.4 Fixture tokens
 
@@ -645,11 +637,11 @@ original framing suggested.
 
 **A single-node cluster reproduces both target bugs, and it needs none of §2, §3 or §4.**
 
-`validateClusterFields` allows 1 node or 3+ (only 2 is rejected — no quorum), and
-`validateMasterNodes` says so explicitly: *"1 node cluster: 1 master is fine"*. Critically,
+the controller's cluster-field validation allows 1 node or 3+ (only 2 is rejected — no quorum), and
+the controller explicitly permits it: a one-node cluster has one master. Critically,
 **there is no node-count guard anywhere on the device mutation path** — `devproc.go:1567,1601`
 set `dinfo.ClusterInterface` and the full `dinfo.EdgeNodeCluster` block, and
-`assignClusterPrefixes` runs, identically for a 1-node cluster. So a single node gives:
+the controller's prefix assignment runs, identically for a 1-node cluster. So a single node gives:
 
 - **CI-834's exact surface** — the controller populates `cluster_interface` and
   `edge_node_cluster` on the device object, which is the entire bug.
@@ -661,7 +653,7 @@ With one node there are no peers, so the shared L2 segment — and with it the b
 resources, `use_sudo`, and the sudoers change — drops out entirely. One third of the capacity,
 too.
 
-Worth trying first, before any of that: `validateNodesForCluster` only requires the cluster
+Worth trying first, before any of that: the controller's cluster-membership checks only requires the cluster
 interface to have `intf_usage != ADAPTER_USAGE_UNSPECIFIED`, and `ADAPTER_USAGE_MANAGEMENT`
 satisfies that. With no peer traffic, **`cluster_interface = "eth0"` on a single node may
 simply work** — reducing the whole thing to the existing `test/e2e` harness plus a kubevirt tag
