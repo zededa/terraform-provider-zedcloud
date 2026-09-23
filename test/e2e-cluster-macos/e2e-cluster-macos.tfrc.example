@@ -1,0 +1,55 @@
+# OpenTofu CLI config template for this directory.
+#
+#   cp e2e-cluster-macos.tfrc.example e2e-cluster-macos.tfrc
+#   $EDITOR e2e-cluster-macos.tfrc        # set the mirror path for your user
+#   export TF_CLI_CONFIG_FILE="$PWD/e2e-cluster-macos.tfrc"
+#
+# The real file is gitignored: the filesystem_mirror path is absolute and is
+# NOT $HOME-expanded.
+#
+# ---------------------------------------------------------------------------
+# BOTH providers come from the mirror.
+#
+# zedamigo because it is not on any registry. zedcloud because this config has
+# to run the PR's binary, not a published release -- every object it creates is
+# part of what a pull request can break.
+#
+# WHY NOT dev_overrides: `tofu init` is needed to install zedamigo from the
+# mirror, and init with dev_overrides in effect fails outright --
+# "provider registry.opentofu.org/zededa/zedcloud was not found in any of the
+# search locations". OpenTofu says as much itself: "Skip tofu init when using
+# provider development overrides." So stage the locally built binary INTO the
+# mirror under a fake version instead. terraform.tf pins no version for
+# zedcloud, so 99.0.0 resolves. RE-COPY AFTER EVERY REBUILD.
+#
+#   cd <repo>/v2 && CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 \
+#     go build -o terraform-provider-zedcloud .
+#   M=~/.terraform.d/plugins/registry.opentofu.org/zededa/zedcloud/99.0.0/darwin_arm64
+#   mkdir -p "$M"
+#   cp -f terraform-provider-zedcloud "$M/terraform-provider-zedcloud_v99.0.0"
+#
+# zedamigo must be the darwin_arm64 build, version 0.13.1:
+#   curl -fsSL https://raw.githubusercontent.com/andrei-zededa/terraform-provider-zedamigo/v0.13.1/install.sh \
+#     | bash -s -- --binary-only 0.13.1
+#
+# Do NOT copy .terraform.lock.hcl or .terraform/ between platforms -- the lock
+# records per-platform checksums.
+# ---------------------------------------------------------------------------
+
+provider_installation {
+  filesystem_mirror {
+    # REQUIRED EDIT: absolute path, no ~ expansion.
+    path = "/Users/CHANGEME/.terraform.d/plugins"
+    include = [
+      "localhost/andrei-zededa/zedamigo",
+      "registry.opentofu.org/zededa/zedcloud",
+    ]
+  }
+
+  direct {
+    exclude = [
+      "localhost/andrei-zededa/zedamigo",
+      "registry.opentofu.org/zededa/zedcloud",
+    ]
+  }
+}
