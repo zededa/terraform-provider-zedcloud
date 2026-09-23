@@ -1,0 +1,68 @@
+# OpenTofu CLI config template for this directory.
+#
+#   cp e2e-cluster.tfrc.example e2e-cluster.tfrc
+#   $EDITOR e2e-cluster.tfrc          # set the mirror path for your user
+#   export TF_CLI_CONFIG_FILE="$PWD/e2e-cluster.tfrc"
+#
+# The real file is gitignored because the filesystem_mirror path is absolute and
+# per-user -- it is NOT $HOME-expanded. test/e2e/e2e.tfrc is untracked for the
+# same reason.
+#
+# ---------------------------------------------------------------------------
+# WHY NOT dev_overrides (verified 2026-09-17)
+#
+# `dev_overrides` for zededa/zedcloud is the obvious way to test a locally built
+# provider, and it is what .github/workflows/e2e.yml generates. But `tofu init`
+# is needed here to install zedamigo from the filesystem mirror, and init with
+# dev_overrides in effect fails:
+#
+#   Error: Failed to query available provider packages
+#   Could not retrieve the list of available versions for provider
+#   zededa/zedcloud: provider registry.opentofu.org/zededa/zedcloud was not
+#   found in any of the search locations
+#
+# OpenTofu says as much itself -- "Skip tofu init when using provider
+# development overrides." Same dev_overrides-vs-zedamigo incompatibility noted
+# in test/e2e/e2e.tfrc, seen from the other side.
+#
+# So: stage the locally built binary INTO the mirror under a fake version and
+# drop dev_overrides entirely. terraform.tf pins no version for zedcloud, so
+# 99.0.0 resolves. Re-copy after every rebuild.
+#
+#   cd <repo>/v2 && CGO_ENABLED=0 go build -o terraform-provider-zedcloud .
+#   M=~/.terraform.d/plugins/registry.opentofu.org/zededa/zedcloud/99.0.0/<os>_<arch>
+#   mkdir -p "$M"
+#   cp -f terraform-provider-zedcloud "$M/terraform-provider-zedcloud_v99.0.0"
+#
+# CGO_ENABLED=0 because h-m-dl20 has neither `make` nor `gcc`.
+#
+# ---------------------------------------------------------------------------
+# PLATFORM NOTES
+#
+# Linux host (tofu running ON the zedamigo target, the proven path):
+#   path = "/home/<user>/.terraform.d/plugins"
+#   zedamigo must be the linux_amd64 build.
+#
+# macOS (tofu on your laptop, var.zedamigo_target set -- see README "Remote
+# mode"): path = "/Users/<user>/.terraform.d/plugins", and zedamigo must be the
+# darwin_arm64 build AND version 0.13.1 to satisfy terraform.tf:
+#   curl -fsSL https://raw.githubusercontent.com/andrei-zededa/terraform-provider-zedamigo/v0.13.1/install.sh \
+#     | bash -s -- --binary-only 0.13.1
+#
+# Do NOT copy .terraform.lock.hcl or .terraform/ between platforms -- the lock
+# records per-platform checksums and a Mac-generated lock makes the Linux host
+# fail with "does not match any of the checksums recorded in the dependency lock
+# file". Run `tofu init` separately on each machine.
+# ---------------------------------------------------------------------------
+
+provider_installation {
+  filesystem_mirror {
+    # REQUIRED EDIT: absolute path, no ~ expansion.
+    path    = "/home/CHANGEME/.terraform.d/plugins"
+    include = ["localhost/andrei-zededa/zedamigo"]
+  }
+
+  direct {
+    exclude = ["localhost/andrei-zededa/zedamigo"]
+  }
+}
