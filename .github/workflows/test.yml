@@ -2,6 +2,16 @@ name: Test
 
 on: [pull_request]
 
+# Per-BRANCH coalescing only: a new push supersedes its own in-flight run.
+#
+# Same reasoning as e2e.yml -- deliberately NOT a single global group, which
+# would hold one pending run and starve whichever PR has waited longest. This
+# only stops a branch racing itself on rapid pushes; isolation BETWEEN PRs is
+# the job of ZEDCLOUD_TEST_SUFFIX below.
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -9,9 +19,36 @@ jobs:
         TF_VAR_zedcloud_token: ${{ secrets.TF_VAR_ZEDCLOUD_TOKEN }}
         TF_VAR_zedcloud_url : ${{ vars.TF_VAR_ZEDCLOUD_URL }}
         CI: true
+        # Per-run suffix on every object the fixtures create.
+        #
+        # `make test` runs the acceptance suite against a SHARED enterprise, and
+        # without this the fixtures render fixed literal names -- test_tf_project,
+        # test_tf_provider and so on. Two PRs whose test jobs overlap then race
+        # for the same names and the loser fails with
+        #
+        #   Error: Zedcloud API call returned HTTP status code: 409
+        #   Error: Entry Already Exists brandId: <uuid> : error Entry already exists
+        #
+        # Observed 2026-09-22 with two runs starting two seconds apart. The
+        # mechanism to prevent it already existed (UE-139, #233) and e2e.yml has
+        # used it since; this workflow simply never adopted it, and
+        # testhelper.Suffix() returns "" when unset so the suite silently kept
+        # the old collision-prone behaviour.
+        #
+        # run_attempt is included so that re-running a failed run does not reuse
+        # a suffix whose objects a crashed run may have left behind.
+        #
+        # Names are validated against [a-zA-Z0-9][a-zA-Z0-9_.-]+ with maxLength
+        # 256; the longest name in testdata is 55 characters, so there is ample
+        # room for the ~17 characters this adds.
+        #
+        # Trade-off: a cancelled or crashed run can leak objects on the shared
+        # enterprise. They no longer BLOCK later runs, but they do accumulate,
+        # so the enterprise still wants an occasional sweep for test_tf* names.
+        ZEDCLOUD_TEST_SUFFIX: _gh${{ github.run_id }}_${{ github.run_attempt }}
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
@@ -19,8 +56,6 @@ jobs:
 
     - name: Install dependencies
       run: cd ./v2 && go mod tidy && cd -
-    
+
     - name: make test
       run:  make test
-      
-        
