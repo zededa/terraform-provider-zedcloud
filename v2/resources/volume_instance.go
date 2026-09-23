@@ -185,7 +185,7 @@ func UpdateVolumeInstance(ctx context.Context, d *schema.ResourceData, m interfa
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.VolumeInstanceModel(d))
+	model := zschema.VolumeInstanceModel(d)
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {
@@ -197,6 +197,25 @@ func UpdateVolumeInstance(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
+
+	// CI-752 / CI-790: use the revision the server holds right now as the
+	// optimistic-lock token, not the one cached in Terraform state.
+	//
+	// The controller sets `exists.Version` from the request's `revision.curr`
+	// and then updates `WHERE Version = <that>`; no row matches a stale value
+	// and the write comes back HTTP 409 VersionConflict. A cluster-scoped
+	// volume's version moves without Terraform doing anything -- allocating an
+	// app instance propagates the designated node onto its explicit volumes --
+	// so the state's revision goes stale on its own. Same fix as UpdateNode
+	// (CI-790, #218), which this resource did not get.
+	if rev, ds := currentVolumeInstanceRevision(d, m); ds.HasError() {
+		return append(diags, ds...)
+	} else if rev != nil {
+		model.Revision = rev
+	}
+
+	params.SetBody(model)
+
 	resp, err := client.VolumeInstance.Update(params, nil)
 	if err != nil {
 		log.Printf("[TRACE] volume instance update error: %s", spew.Sdump(err))
@@ -235,6 +254,37 @@ func UpdateVolumeInstance(ctx context.Context, d *schema.ResourceData, m interfa
 	}
 
 	return diags
+}
+
+// currentVolumeInstanceRevision fetches the volume instance's revision as the
+// server holds it now.
+//
+// A nil revision with no error means "could not determine" -- the update then
+// proceeds with whatever state carried, which is exactly the old behaviour. A
+// read failure here must not be more fatal than the update it is protecting.
+func currentVolumeInstanceRevision(d *schema.ResourceData, m interface{}) (*models.ObjectRevision, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	id, isSet := d.GetOk("id")
+	if !isSet {
+		return nil, diags
+	}
+
+	params := config.GetByIDParams()
+	params.ID = id.(string)
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.VolumeInstance.GetByID(params, nil)
+	if err != nil {
+		log.Printf("[TRACE] volume instance revision read error: %s", spew.Sdump(err))
+		return nil, diags
+	}
+
+	if payload := resp.GetPayload(); payload != nil {
+		return payload.Revision, diags
+	}
+	return nil, diags
 }
 
 func DeleteVolumeInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

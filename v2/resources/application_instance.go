@@ -187,7 +187,7 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.ApplicationInstanceModel(d))
+	model := zschema.ApplicationInstanceModel(d)
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {
@@ -199,6 +199,16 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
+
+	// CI-752 / CI-790: lock on the server's current revision, not the state's.
+	// See the comment on currentVolumeInstanceRevision.
+	if rev, ds := currentApplicationInstanceRevision(d, m); ds.HasError() {
+		return append(diags, ds...)
+	} else if rev != nil {
+		model.Revision = rev
+	}
+
+	params.SetBody(model)
 
 	resp, err := client.ApplicationInstance.Update(params, nil)
 	if err != nil {
@@ -238,6 +248,34 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	}
 
 	return diags
+}
+
+// currentApplicationInstanceRevision fetches the app instance's revision as the
+// server holds it now. nil with no error means "could not determine"; see
+// currentVolumeInstanceRevision.
+func currentApplicationInstanceRevision(d *schema.ResourceData, m interface{}) (*models.ObjectRevision, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	id, isSet := d.GetOk("id")
+	if !isSet {
+		return nil, diags
+	}
+
+	params := config.GetByIDParams()
+	params.ID = id.(string)
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.ApplicationInstance.GetByID(params, nil)
+	if err != nil {
+		log.Printf("[TRACE] application instance revision read error: %s", spew.Sdump(err))
+		return nil, diags
+	}
+
+	if payload := resp.GetPayload(); payload != nil {
+		return payload.Revision, diags
+	}
+	return nil, diags
 }
 
 func DeleteApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
