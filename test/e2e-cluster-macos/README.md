@@ -173,6 +173,37 @@ without committing to the long barriers.
 
 ---
 
+## CI-752 — the cluster-scoped instance repro
+
+`ci752_repro.tf` adds a volume instance and a network instance that supply only
+`edge_node_cluster`, so the controller picks their node. It is opt-in and it
+does **not** wait on `cluster_ready`, which blocker B below makes unreachable
+here — `deviceId` is assigned on the config plane, so the cluster object
+existing is the whole prerequisite. Build in two stages:
+
+```shell
+ZC_RUN_ID=<fresh> ./run.sh apply -auto-approve -var repro_ci752=true \
+  -target=zedcloud_edgenode_cluster.CLUSTER          # node, kube, cluster object
+ZC_RUN_ID=<same>  ./run.sh apply -auto-approve -var repro_ci752=true \
+  -target=zedcloud_volume_instance.CI752 \
+  -target=zedcloud_network_instance.CI752
+ZC_RUN_ID=<same>  ./run.sh plan -var repro_ci752=true \
+  -target=zedcloud_volume_instance.CI752 \
+  -target=zedcloud_network_instance.CI752            # must say "No changes"
+```
+
+Measured 2026-09-23 against the local controller, EVE `17.0.0-lts-k-arm64`:
+onboard 1m0s, kube_ready 4m25s, cluster object 20s. Both instances came back
+with `deviceId` populated and the plan was clean; reverting the #234 schema and
+re-planning against the same objects reproduced the ticket's
+`- device_id = "…" -> null` on both. Two description edits then exercised the
+update path — revision 1 → 2 → 3, no 409, `deviceId` preserved.
+
+The header of `ci752_repro.tf` carries the analysis and the raw-API check that
+keeps the assertion from going vacuous.
+
+---
+
 ## Helper scripts
 
 | script | what it does |

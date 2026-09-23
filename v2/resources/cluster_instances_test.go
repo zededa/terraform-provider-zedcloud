@@ -185,6 +185,97 @@ func TestApplicationInstance_ClusterFieldsProduceNoDiff(t *testing.T) {
 	})
 }
 
+// TestVolumeInstance_ClusterFieldsProduceNoDiff is CI-752's own shape.
+//
+// CI-709 was reported against a network instance and an application instance;
+// CI-752 (https://zededa.atlassian.net/browse/CI-752, "Errors after creating
+// persistent storage to cluster") is the SAME defect reported against a volume
+// instance, with the ticket's plan output reading
+//
+//	~ resource "zedcloud_volume_instance" "ignition_vol1_persist" {
+//	    - device_id = "19a0f34f-..." -> null
+//
+// The volume path is worth its own case rather than a row in
+// serverAssignedFields: the server side differs from the network-instance and
+// app-instance paths, and only `device_id` is at stake, with no `cluster_id`
+// and no `app_type` alongside it to mask a regression.
+//
+// Server side, for the record. `bindVolInstData`
+// (srvs/seine/volinstproc.go:383-397) resolves a node for a volume created with
+// an `edgeNodeCluster` and no `deviceId` by calling
+// `clusterproc.GetEdgeNodeForClusterObject`, which picks at RANDOM among the
+// eligible non-tie-breaker nodes (clusterproc.go:2843), and volinstproc.go:435
+// persists it. Note the difference from the network-instance path, which keeps
+// the existing device on update (netinstproc.go:102-110): `volinstUpdate`
+// (volinstproc.go:1726-1734) copies only title and description, so a PUT that
+// carries an empty `deviceId` changes nothing server-side. That is why the
+// pre-#234 diff never converged -- each apply "removed" a value the server
+// then still reported on the next GET.
+func TestVolumeInstance_ClusterFieldsProduceNoDiff(t *testing.T) {
+	const (
+		deviceID  = "19a0f34f-8d2e-4a1b-9c33-92052fb2c14c"
+		clusterID = "0370bb66-5d53-426f-96da-1575cf5efba0"
+	)
+
+	state := &terraform.InstanceState{
+		ID: "7d721b72-54ab-4729-aca4-3ed7f790735c",
+		Attributes: map[string]string{
+			"id":   "7d721b72-54ab-4729-aca4-3ed7f790735c",
+			"name": "ignition-vol1-sjc-persist",
+
+			// What the controller assigned, as SetVolumeInstanceResourceData
+			// writes it back after refresh.
+			"device_id":              deviceID,
+			"edge_node_cluster.#":    "1",
+			"edge_node_cluster.0.id": clusterID,
+		},
+	}
+
+	// The configuration from the ticket, minus the fields the reporter did not
+	// write: no device_id anywhere in it.
+	cfg := terraform.NewResourceConfigRaw(map[string]interface{}{
+		"name":       "ignition-vol1-sjc-persist",
+		"title":      "ignition-vol1-portainer-persist",
+		"accessmode": "VOLUME_INSTANCE_ACCESS_MODE_READWRITE",
+		"cleartext":  false,
+		"size_bytes": "200000000",
+		"type":       "VOLUME_INSTANCE_TYPE_BLOCKSTORAGE",
+		"edge_node_cluster": []interface{}{
+			map[string]interface{}{"id": clusterID},
+		},
+	})
+
+	volFields := []string{"device_id"}
+
+	t.Run("fixed schema discards nothing", func(t *testing.T) {
+		got := overwrittenAttrs(t, schemas.VolumeInstance(), state, cfg, volFields)
+		if len(got) != 0 {
+			t.Errorf("CI-752 regression: plan would discard %v on a cluster-scoped volume "+
+				"instance. device_id must be Optional + Computed; see PR #234.", got)
+		}
+	})
+
+	// NEGATIVE CONTROL. Without this the assertion above could pass for the
+	// wrong reason -- e.g. a state/config pair that never produces a diff at
+	// all -- and volume_instance has no Default anywhere, so a silent no-diff
+	// is entirely plausible.
+	t.Run("negative control: the pre-#234 shape reintroduces the diff", func(t *testing.T) {
+		broken := schemas.VolumeInstance()
+		s := *broken["device_id"] // copy; leave the shared schema alone
+		s.Computed = false
+		s.Optional = true
+		broken["device_id"] = &s
+
+		got := overwrittenAttrs(t, broken, state, cfg, volFields)
+		if len(got) == 0 {
+			t.Fatal("negative control did not reproduce CI-752: restoring the pre-#234 " +
+				"schema produced no discarding diff, so the assertion above proves " +
+				"nothing. Fix this test before trusting it.")
+		}
+		t.Logf("negative control reproduced the diff on %v", got)
+	})
+}
+
 // TestClusterScopedInstances_RealNode asserts the same thing against instances
 // that genuinely live on a cluster, using the values the controller assigned.
 //
