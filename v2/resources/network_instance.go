@@ -181,7 +181,6 @@ func UpdateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 
 	model := zschema.NetworkInstanceModel(d)
 	params := config.NewEdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceParams()
-	params.SetBody(model)
 
 	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
 	if xRequestIdIsSet {
@@ -199,6 +198,19 @@ func UpdateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 
 	// makes a bulk update for all properties that were changed
 	client := m.(*api_client.ZedcloudAPI)
+
+	// CI-752 / CI-790: lock on the server's current revision, not the state's.
+	// See the comment on currentVolumeInstanceRevision -- a cluster-scoped
+	// network instance is re-homed by the controller when an app instance binds
+	// to it, which advances the version with no Terraform involvement at all.
+	if rev, ds := currentNetworkInstanceRevision(d, m); ds.HasError() {
+		return append(diags, ds...)
+	} else if rev != nil {
+		model.Revision = rev
+	}
+
+	params.SetBody(model)
+
 	resp, err := client.NetworkInstance.EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstance(params, nil)
 	if err != nil {
 		log.Printf("[TRACE] network instance update error: %s", spew.Sdump(err))
@@ -233,6 +245,34 @@ func UpdateNetworkInstance(ctx context.Context, d *schema.ResourceData, m interf
 	}
 
 	return diags
+}
+
+// currentNetworkInstanceRevision fetches the network instance's revision as the
+// server holds it now. nil with no error means "could not determine"; see
+// currentVolumeInstanceRevision.
+func currentNetworkInstanceRevision(d *schema.ResourceData, m interface{}) (*models.ObjectRevision, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	id, isSet := d.GetOk("id")
+	if !isSet {
+		return nil, diags
+	}
+
+	params := config.GetByIDParams()
+	params.ID = id.(string)
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.NetworkInstance.GetByID(params, nil)
+	if err != nil {
+		log.Printf("[TRACE] network instance revision read error: %s", spew.Sdump(err))
+		return nil, diags
+	}
+
+	if payload := resp.GetPayload(); payload != nil {
+		return payload.Revision, diags
+	}
+	return nil, diags
 }
 
 func DeleteNetworkInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

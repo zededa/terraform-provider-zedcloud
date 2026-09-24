@@ -178,7 +178,39 @@ func DatastoreModelFromMap(m map[string]interface{}) *models.Datastore {
 }
 
 func SetDatastoreResourceData(d *schema.ResourceData, m *models.Datastore) {
-	d.Set("api_key", m.APIKey)
+	// CI-752: `api_key` and `secret` are WRITE-ONLY on the API.
+	//
+	// gilas blanks the secrets on the way out of every read --
+	// srvs/gilas/datastore_handlers.go:345 (`datastoreResp.GetDsinfo().Secret =
+	// nil`) for get-by-id and by-name, :411 for the list -- and the legacy
+	// top-level `apiKey` is never populated on a response at all: seine's
+	// `fillDatastoreInfo` (srvs/seine/datastoreproc.go:127-216) has no
+	// `resp.ApiKey =` in it. What comes back instead is the vault ciphertext in
+	// `encryptedSecrets` plus `cryptoKey`, both of which ARE set below.
+	//
+	// Setting them unconditionally therefore erased the configured credentials
+	// from state on every refresh, and the configuration re-asserted them on
+	// every plan:
+	//
+	//	~ resource "zedcloud_datastore" "demo_az_ds" {
+	//	    + api_key = (sensitive value)
+	//	    + secret {
+	//	        + api_passwd = (sensitive value)
+	//	      }
+	//
+	// -- the second perpetual diff in the CI-752 report, and a permanent one:
+	// the value never comes back, so the diff never converges.
+	//
+	// Keeping the prior value when the server sends nothing is the standard
+	// write-only-attribute handling. It is also the safe direction: the
+	// controller's update path does a full-row write with no merge
+	// (srvs/seine/datastoreproc.go:86-87; `DsSecrets`/`CryptoKeyCtx` carry
+	// neither `nullzero` nor `update_invalid` in
+	// srvs/seine/datastoredata.go:385-386), so a PUT built from a state that
+	// had been blanked would overwrite the stored credentials with empty.
+	if m.APIKey != "" {
+		d.Set("api_key", m.APIKey)
+	}
 	d.Set("certificate_chain", SetCertificateChainSubResourceData([]*models.CertificateChain{m.CertificateChain}))
 	d.Set("crypto_key", m.CryptoKey)
 	d.Set("description", m.Description)
@@ -196,7 +228,10 @@ func SetDatastoreResourceData(d *schema.ResourceData, m *models.Datastore) {
 	d.Set("project_access_list", m.ProjectAccessList)
 	d.Set("region", m.Region)
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
-	d.Set("secret", SetDatastoreSecretsSubResourceData([]*models.DatastoreInfoSecrets{m.Secret}))
+	// See the note on api_key above: nil means "redacted", not "removed".
+	if m.Secret != nil {
+		d.Set("secret", SetDatastoreSecretsSubResourceData([]*models.DatastoreInfoSecrets{m.Secret}))
+	}
 	d.Set("title", m.Title)
 }
 
