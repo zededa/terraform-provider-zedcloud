@@ -36,7 +36,11 @@ type ClientService interface {
 
 	GetClusterByName(params *GetByNameParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*GetByNameOK, error)
 
+	GetClusterUpgradeStatus(params *UpgradeStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpgradeStatusOK, error)
+
 	UpdateCluster(params *UpdateParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpdateOK, error)
+
+	UpgradeCluster(params *UpgradeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpgradeOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
@@ -238,6 +242,89 @@ func (a *Client) UpdateCluster(params *UpdateParams, authInfo runtime.ClientAuth
 	}
 	// unexpected success response
 	unexpectedSuccess := result.(*UpdateDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+UpgradeCluster upgrades edge node cluster
+
+Upgrade an Edge-Node Cluster with a new version of the eve-os. The controller
+rolls the image out one node at a time, migrating workloads as it goes, so this
+call returns as soon as the rollout has been accepted rather than when it has
+finished. Progress is available from GetClusterUpgradeStatus.
+*/
+func (a *Client) UpgradeCluster(params *UpgradeParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpgradeOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUpgradeParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "EdgeNodeClusterConfiguration_UpgradeCluster",
+		Method:             "PUT",
+		PathPattern:        "/v1/cluster/id/{id}/upgrade",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &UpgradeReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*UpgradeOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*UpgradeDefault)
+	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
+}
+
+/*
+GetClusterUpgradeStatus gets edge node cluster upgrade status
+
+Get the eve-os upgrade status of an Edge-Node Cluster as reported by the cluster reporter.
+*/
+func (a *Client) GetClusterUpgradeStatus(params *UpgradeStatusParams, authInfo runtime.ClientAuthInfoWriter, opts ...ClientOption) (*UpgradeStatusOK, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewUpgradeStatusParams()
+	}
+	op := &runtime.ClientOperation{
+		ID:                 "ClusterStatus_GetClusterUpgradeStatus",
+		Method:             "GET",
+		PathPattern:        "/v1/cluster/id/{id}/upgrade/status",
+		ProducesMediaTypes: []string{"application/json"},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"https"},
+		Params:             params,
+		Reader:             &UpgradeStatusReader{formats: a.formats},
+		AuthInfo:           authInfo,
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	}
+	for _, opt := range opts {
+		opt(op)
+	}
+
+	result, err := a.transport.Submit(op)
+	if err != nil {
+		return nil, err
+	}
+	success, ok := result.(*UpgradeStatusOK)
+	if ok {
+		return success, nil
+	}
+	// unexpected success response
+	unexpectedSuccess := result.(*UpgradeStatusDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 
