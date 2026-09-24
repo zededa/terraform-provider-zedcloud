@@ -23,6 +23,7 @@ description: |-
 
 ### Optional
 
+- `base_image` (Block List, Max: 1) The EVE-OS image the cluster should run. Changing image_name starts a cluster-scoped, rolling upgrade: the controller upgrades the member nodes one at a time, migrating workloads between them. The apply returns as soon as the rollout has been accepted, not when it has finished -- watch upgrade_status for progress. Do NOT set base_image on the zedcloud_edgenode resources of clustered nodes; the controller rejects a per-node base image for a cluster member. (see [below for nested schema](#nestedblock--base_image))
 - `cluster_prefix` (String) A cluster prefix. The default is: 10.244.244.2/28
 - `description` (String) Detailed description of the cluster
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
@@ -31,6 +32,29 @@ description: |-
 ### Read-Only
 
 - `id` (String) System defined universally unique Id of the cluster
+- `upgrade_status` (List of Object) Per-node progress of the most recent cluster EVE-OS upgrade, as reported by the cluster reporter. (see [below for nested schema](#nestedatt--upgrade_status))
+
+<a id="nestedblock--base_image"></a>
+### Nested Schema for `base_image`
+
+Required:
+
+- `image_name` (String) Name of the EVE-OS image to roll out across the cluster, e.g. "16.5.0-k-amd64". Must be an IMAGE_TYPE_EVE image in IMAGE_STATUS_READY.
+
+Optional:
+
+- `activate` (Boolean) Activate the image as each node receives it. Defaults to true; false stages the image without switching nodes onto it.
+
+<a id="nestedatt--upgrade_status"></a>
+### Nested Schema for `upgrade_status`
+
+Read-Only:
+
+- `created_at` (String)
+- `node_id` (String) Id of the cluster member node
+- `status` (String) One of STATUS_UNSPECIFIED, STATUS_IN_PROGRESS, STATUS_COMPLETED, STATUS_FAILED
+- `updated_at` (String)
+- `upgradeable_eve_os` (String) The EVE-OS image this node has been asked to move to. Empty until the rollout reaches the node.
 
 <a id="nestedblock--nodes"></a>
 ### Nested Schema for `nodes`
