@@ -34,28 +34,6 @@ description: |-
 - `id` (String) System defined universally unique Id of the cluster
 - `upgrade_status` (List of Object) Per-node progress of the most recent cluster EVE-OS upgrade, as reported by the cluster reporter. (see [below for nested schema](#nestedatt--upgrade_status))
 
-<a id="nestedblock--base_image"></a>
-### Nested Schema for `base_image`
-
-Required:
-
-- `image_name` (String) Name of the EVE-OS image to roll out across the cluster, e.g. "16.5.0-k-amd64". Must be an IMAGE_TYPE_EVE image in IMAGE_STATUS_READY.
-
-Optional:
-
-- `activate` (Boolean) Activate the image as each node receives it. Defaults to true; false stages the image without switching nodes onto it.
-
-<a id="nestedatt--upgrade_status"></a>
-### Nested Schema for `upgrade_status`
-
-Read-Only:
-
-- `created_at` (String)
-- `node_id` (String) Id of the cluster member node
-- `status` (String) One of STATUS_UNSPECIFIED, STATUS_IN_PROGRESS, STATUS_COMPLETED, STATUS_FAILED
-- `updated_at` (String)
-- `upgradeable_eve_os` (String) The EVE-OS image this node has been asked to move to. Empty until the rollout reaches the node.
-
 <a id="nestedblock--nodes"></a>
 ### Nested Schema for `nodes`
 
@@ -72,3 +50,27 @@ Optional:
 Read-Only:
 
 - `cluster_prefix` (String) A cluster prefix. The system will assign a value.
+
+
+<a id="nestedblock--base_image"></a>
+### Nested Schema for `base_image`
+
+Required:
+
+- `image_name` (String) Name of the EVE-OS image to roll out across the cluster, e.g. "16.5.0-k-amd64". Must be an IMAGE_TYPE_EVE image in IMAGE_STATUS_READY.
+
+Optional:
+
+- `activate` (Boolean) Activate the image as each node receives it. Defaults to true; false stages the image without switching nodes onto it.
+
+
+<a id="nestedatt--upgrade_status"></a>
+### Nested Schema for `upgrade_status`
+
+Read-Only:
+
+- `created_at` (String)
+- `node_id` (String)
+- `status` (String)
+- `updated_at` (String)
+- `upgradeable_eve_os` (String)
