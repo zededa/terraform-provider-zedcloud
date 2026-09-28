@@ -26,11 +26,97 @@ func NodeResource() *schema.Resource {
 		UpdateContext: UpdateNode,
 		DeleteContext: DeleteNode,
 		Schema:        zschema.Node(),
-		CustomizeDiff: validateBondMemberInterfaces,
+		CustomizeDiff: customizeNodeDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
+}
+
+// customizeNodeDiff runs every plan-time validation for an edge node. The SDK
+// takes a single CustomizeDiff, and helper/customdiff is not vendored, so the
+// checks are chained here.
+func customizeNodeDiff(ctx context.Context, d *schema.ResourceDiff, m interface{}) error {
+	if err := validateBondMemberInterfaces(ctx, d, m); err != nil {
+		return err
+	}
+	return validateClusteredNodeBaseImage(ctx, d, m)
+}
+
+// validateClusteredNodeBaseImage rejects a per-node base_image on a node that
+// belongs to an edge-node cluster.
+//
+// Once a node is a cluster member the controller refuses a per-device base
+// image outright -- devBaseImageApply answers
+// "device: <name> is in cluster, device base image cannot be applied" with a
+// 400 -- because EVE-OS has to be rolled out across the cluster one node at a
+// time so workloads can migrate. Without this check the mistake only surfaces
+// as that opaque 400 halfway through an apply, so fail at plan time and say
+// where the setting actually belongs (CI-836).
+func validateClusteredNodeBaseImage(ctx context.Context, d *schema.ResourceDiff, m interface{}) error {
+	if !rawConfigHasAttr(d.GetRawConfig(), "base_image") {
+		return nil
+	}
+
+	clusterID := clusteredNodeID(d)
+	if clusterID == "" {
+		return nil
+	}
+
+	name, _ := d.Get("name").(string)
+	if name == "" {
+		name = d.Id()
+	}
+
+	return fmt.Errorf(
+		"edge node %q is a member of edge-node cluster %s, so base_image cannot be set on it: "+
+			"the controller rejects a per-node base image for a cluster member. "+
+			"Set base_image on the zedcloud_edgenode_cluster resource instead, which upgrades the "+
+			"member nodes one at a time and migrates workloads between them",
+		name, clusterID)
+}
+
+// clusteredNodeID returns the id of the edge-node cluster this node belongs to,
+// or "" when it belongs to none. Membership is established by the controller
+// when the cluster object names the node, so it is read from the merged diff
+// rather than from the config.
+func clusteredNodeID(d *schema.ResourceDiff) string {
+	raw, isSet := d.GetOk("edge_node_cluster")
+	if !isSet {
+		return ""
+	}
+	items, isList := raw.([]interface{})
+	if !isList || len(items) == 0 || items[0] == nil {
+		return ""
+	}
+	entry, isMap := items[0].(map[string]interface{})
+	if !isMap {
+		return ""
+	}
+	id, _ := entry["id"].(string)
+	return id
+}
+
+// rawConfigHasAttr reports whether the user's configuration actually sets the
+// attribute. It deliberately reads the raw config and not the merged plan:
+// after a cluster upgrade the controller puts base_image on the device object
+// and the provider refreshes it into state, and that state value must not be
+// mistaken for something the user asked for.
+func rawConfigHasAttr(rawConfig cty.Value, attr string) bool {
+	if rawConfig.IsNull() || !rawConfig.IsKnown() || !rawConfig.Type().IsObjectType() {
+		return false
+	}
+	if !rawConfig.Type().HasAttribute(attr) {
+		return false
+	}
+	v := rawConfig.GetAttr(attr)
+	if v.IsNull() || !v.IsKnown() {
+		return false
+	}
+	if v.CanIterateElements() {
+		return v.LengthInt() > 0
+	}
+	return true
 }
 
 // validateBondMemberInterfaces rejects configurations that explicitly declare
@@ -136,6 +222,9 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	// Check if base image needs to be published and applied
 	if len(newNode.BaseImage) > 0 {
+		if diags := rejectBaseImageOnClusterMember(createdNode); diags.HasError() {
+			return diags
+		}
 		// For creation, always publish and apply if base image is specified
 		if diags := publishBaseOS(ctx, d, client, newNode); len(diags) > 0 {
 			return diags
@@ -264,6 +353,9 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		}
 
 		if hasBaseImageChange {
+			if diags := rejectBaseImageOnClusterMember(existingNode); diags.HasError() {
+				return diags
+			}
 			if diags := publishBaseOS(ctx, d, client, newNode); len(diags) > 0 {
 				return diags
 			}
@@ -496,6 +588,34 @@ func publishBaseOS(ctx context.Context,
 	}
 
 	return diags
+}
+
+// rejectBaseImageOnClusterMember is the apply-time half of
+// validateClusteredNodeBaseImage. The plan-time check reads the config, which
+// covers the normal path; this one reads what the API just told us, and catches
+// the cases the plan cannot see -- a node that joined a cluster between the
+// last refresh and this apply, or a targeted apply that skipped the refresh.
+//
+// Without it the request still fails, just later and with the controller's
+// opaque 400 instead of an explanation.
+func rejectBaseImageOnClusterMember(node *models.Node) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if node == nil || node.EdgeNodeCluster == nil || node.EdgeNodeCluster.ID == "" {
+		return diags
+	}
+
+	name := ""
+	if node.Name != nil {
+		name = *node.Name
+	}
+
+	return append(diags, diag.Errorf(
+		"edge node %q is a member of edge-node cluster %s, so base_image cannot be applied to it: "+
+			"the controller rejects a per-node base image for a cluster member. "+
+			"Set base_image on the zedcloud_edgenode_cluster resource instead, which upgrades the "+
+			"member nodes one at a time and migrates workloads between them",
+		name, node.EdgeNodeCluster.ID)...)
 }
 
 // to set the base-os-image, the api requires several requests.

@@ -35,6 +35,20 @@ resource "zedcloud_edgenode_cluster" "CLUSTER" {
     node_type         = "EDGE_NODE_CLUSTER_NODE_TYPE_SERVER"
   }
 
+  # CI-836: the cluster-scoped EVE-OS upgrade. Opt in with
+  # `-var repro_ci836=true -var ci836_eve_image=<name>`; see ci836_repro.tf.
+  #
+  # Off by default the block is absent from the config entirely, which is the
+  # shape the diff half of CI-836 is about -- the controller may still put
+  # base_image on the member nodes, and the node plans must stay clean.
+  dynamic "base_image" {
+    for_each = var.repro_ci836 && var.ci836_eve_image != "" ? [1] : []
+    content {
+      image_name = var.ci836_eve_image
+      activate   = true
+    }
+  }
+
   # Depending on zedcloud_edgenode.EN alone is NOT enough -- that record exists
   # long before the VM finishes booting, and both validations above need a
   # live, kube-capable node.

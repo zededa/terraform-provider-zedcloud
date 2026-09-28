@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/davecgh/go-spew/spew"
@@ -82,6 +83,10 @@ func GetClusterByID(ctx context.Context, d *schema.ResourceData, m interface{}) 
 	respModel := resp.GetPayload()
 	zschema.SetClusterResourceData(d, respModel)
 
+	if errs := readClusterUpgradeStatus(ctx, d, m); errs.HasError() {
+		return append(diags, errs...)
+	}
+
 	return diags
 }
 
@@ -118,6 +123,14 @@ func GetClusterByName(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	respModel := resp.GetPayload()
 	zschema.SetClusterResourceData(d, respModel)
+
+	if respModel != nil && respModel.ID != "" {
+		d.SetId(respModel.ID)
+	}
+
+	if errs := readClusterUpgradeStatus(ctx, d, m); errs.HasError() {
+		return append(diags, errs...)
+	}
 
 	return diags
 }
@@ -159,6 +172,12 @@ func CreateCluster(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	}
 
 	d.SetId(responseData.ObjectID)
+
+	// Nodes are only cluster members once the cluster object exists, so the
+	// EVE-OS rollout has to come after the create, not as part of its body.
+	if errs := setClusterBaseImage(ctx, d, m); errs.HasError() {
+		return append(diags, errs...)
+	}
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
@@ -223,6 +242,10 @@ func UpdateCluster(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	d.SetId(responseData.ObjectID)
 
+	if errs := setClusterBaseImage(ctx, d, m); errs.HasError() {
+		return append(diags, errs...)
+	}
+
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
 	if errs := GetCluster(ctx, d, m); errs != nil {
@@ -230,6 +253,162 @@ func UpdateCluster(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	}
 
 	return diags
+}
+
+// setClusterBaseImage triggers a cluster-scoped EVE-OS upgrade when the
+// configured base_image differs from what the controller is already rolling
+// out.
+//
+// This mirrors setBaseImage() on the node resource: compare first, call second.
+// The comparison matters more here than it does for a node, because
+// PUT /v1/cluster/id/{id}/upgrade is not idempotent in the way Terraform wants
+// -- re-requesting an image while nodes are still moving is answered with 409.
+func setClusterBaseImage(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	desired := zschema.ClusterBaseImageModel(d)
+	if desired == nil || desired.ImageName == nil || *desired.ImageName == "" {
+		// base_image absent from the config. Terraform does not own the
+		// cluster's EVE-OS version, so leave whatever is there alone.
+		return diags
+	}
+
+	id, idIsSet := d.GetOk("id")
+	if !idIsSet || id.(string) == "" {
+		return append(diags, diag.Errorf("missing client parameter: id")...)
+	}
+	clusterID := id.(string)
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	current, statusDiags := getClusterUpgradeStatus(d, client, clusterID)
+	if statusDiags.HasError() {
+		return append(diags, statusDiags...)
+	}
+	if current != nil {
+		inProgress := false
+		alreadyRequested := false
+		for _, node := range current.Nodes {
+			if node == nil {
+				continue
+			}
+			if node.UpgradeableEveOs == *desired.ImageName {
+				alreadyRequested = true
+			}
+			if node.Status != nil && *node.Status == models.EdgeNodeClusterUpgradeStatusSTATUSINPROGRESS {
+				inProgress = true
+			}
+		}
+
+		if alreadyRequested && !inProgress {
+			// The controller already has this image; nothing to ask for.
+			return diags
+		}
+		if inProgress {
+			if alreadyRequested {
+				// Our image, still rolling. Re-requesting it would only earn a
+				// 409, and the rollout advances on its own as each node reports
+				// in, so report progress and let it run.
+				return append(diags, diag.Diagnostic{
+					Severity: diag.Warning,
+					Summary:  "edge node cluster EVE-OS upgrade still in progress",
+					Detail: fmt.Sprintf(
+						"cluster %s is still rolling out %q. The controller upgrades member nodes one at a time; "+
+							"re-run a plan later, or watch the upgrade_status attribute, to see it finish.",
+						clusterID, *desired.ImageName),
+				})
+			}
+			return append(diags, diag.Errorf(
+				"cluster %s has an EVE-OS upgrade in progress, so it cannot be asked for %q yet. "+
+					"Wait for the running rollout to reach STATUS_COMPLETED or STATUS_FAILED on every node "+
+					"(see the upgrade_status attribute) and apply again.",
+				clusterID, *desired.ImageName)...)
+		}
+	}
+
+	params := cluster.NewUpgradeParams()
+	params.ID = clusterID
+	params.SetBody(desired)
+	if xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id"); xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	resp, err := client.Cluster.UpgradeCluster(params, nil)
+	if err != nil {
+		log.Printf("[TRACE] edge node cluster upgrade error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			return append(diags, ds...)
+		}
+		return append(diags, diag.Errorf("edge node cluster upgrade error: %s", err)...)
+	}
+
+	responseData := resp.GetPayload()
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, respErr := range responseData.Error {
+			// FIXME: zedcloud api returns a response that contains and error even in case of success.
+			// remove this code once it is fixed on API side.
+			if respErr.ErrorCode != nil && *respErr.ErrorCode == models.ErrorCodeSuccess {
+				continue
+			}
+			diags = append(diags, diag.FromErr(errors.New(respErr.Details))...)
+		}
+	}
+
+	return diags
+}
+
+// readClusterUpgradeStatus refreshes upgrade_status and base_image in state.
+//
+// A cluster that has never been upgraded has no status rows at all, and older
+// controllers do not serve the endpoint. Neither is a reason to fail a read, so
+// both degrade to leaving the attributes untouched.
+func readClusterUpgradeStatus(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	id, idIsSet := d.GetOk("id")
+	if !idIsSet || id.(string) == "" {
+		return diags
+	}
+
+	client := m.(*api_client.ZedcloudAPI)
+	status, statusDiags := getClusterUpgradeStatus(d, client, id.(string))
+	if statusDiags.HasError() {
+		return statusDiags
+	}
+
+	zschema.SetClusterUpgradeResourceData(d, status)
+
+	return diags
+}
+
+func getClusterUpgradeStatus(
+	d *schema.ResourceData,
+	client *api_client.ZedcloudAPI,
+	clusterID string,
+) (*models.EdgeNodeClusterUpgradeStatusResp, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	params := cluster.NewUpgradeStatusParams()
+	params.ID = clusterID
+	if xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id"); xRequestIdIsSet {
+		params.XRequestID = xRequestIdVal.(*string)
+	}
+
+	resp, err := client.Cluster.GetClusterUpgradeStatus(params, nil)
+	if err != nil {
+		// A cluster with no rollout history, or a controller that predates the
+		// endpoint, answers 404. That is not an error for a read.
+		if isStatusNotFound(err) {
+			return nil, diags
+		}
+		log.Printf("[TRACE] edge node cluster upgrade status read error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			return nil, append(diags, ds...)
+		}
+		return nil, append(diags, diag.Errorf("edge node cluster upgrade status read error: %s", err)...)
+	}
+
+	return resp.GetPayload(), diags
 }
 
 func DeleteCluster(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
