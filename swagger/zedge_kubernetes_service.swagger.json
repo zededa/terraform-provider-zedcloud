@@ -43,6 +43,10 @@
         {
             "name": "ClusterGroups",
             "description": "APIs for managing cluster groups including creation, deletion, status monitoring, and manifest generation"
+        },
+        {
+            "name": "KubernetesSnapshots",
+            "description": "APIs for managing etcd snapshots on Kubernetes clusters"
         }
     ],
     "basePath": "/api",
@@ -1823,6 +1827,312 @@
                 ],
                 "tags": [
                     "KubernetesSecrets"
+                ]
+            }
+        },
+        "/v1/cluster/instances/kubernetes/snapshots/{clusterId}": {
+            "get": {
+                "summary": "List etcd snapshots",
+                "description": "Retrieve all etcd snapshots for the specified cluster. Returns a list of snapshot metadata including state, size, location, and k3s version.",
+                "operationId": "KubernetesSnapshots_ListSnapshots",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved snapshot list",
+                        "schema": {
+                            "$ref": "#/definitions/SnapshotListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Invalid cluster ID.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Authentication credentials are missing or invalid.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. User does not have permission to list snapshots.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "clusterId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "KubernetesSnapshots"
+                ]
+            }
+        },
+        "/v1/cluster/instances/kubernetes/snapshots/{clusterId}/create": {
+            "post": {
+                "summary": "Create an etcd snapshot",
+                "description": "Trigger an etcd snapshot on the specified cluster. Returns an async operation response. The `snapshot_timeout` field controls the retention period (TTL) in seconds \u2014 minimum 300 s, default 3600 s.",
+                "operationId": "KubernetesSnapshots_CreateSnapshot",
+                "responses": {
+                    "200": {
+                        "description": "Snapshot operation initiated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/SnapshotOperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Invalid cluster ID or request body.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Authentication credentials are missing or invalid.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. User does not have permission to create snapshots.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "clusterId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "snapshotTimeout": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "title": "HTTP wrapper for snapshot create \u2014 cluster_id is a path param, snapshot_timeout is the body field"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "KubernetesSnapshots"
+                ]
+            }
+        },
+        "/v1/cluster/instances/kubernetes/snapshots/{clusterId}/{name}": {
+            "delete": {
+                "summary": "Delete an etcd snapshot",
+                "description": "Delete a named etcd snapshot from the specified cluster. Returns an async operation response.",
+                "operationId": "KubernetesSnapshots_DeleteSnapshot",
+                "responses": {
+                    "200": {
+                        "description": "Delete operation initiated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/SnapshotOperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Invalid cluster ID or snapshot name.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Authentication credentials are missing or invalid.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. User does not have permission to delete snapshots.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Snapshot with the specified name does not exist.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "clusterId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "KubernetesSnapshots"
+                ]
+            }
+        },
+        "/v1/cluster/instances/kubernetes/snapshots/{clusterId}/{name}/restore": {
+            "post": {
+                "summary": "Restore an etcd snapshot",
+                "description": "Restore a named etcd snapshot on the specified cluster. Returns an async operation response. The `snapshot_timeout` field controls the maximum wait time in seconds \u2014 minimum 300 s, default 3600 s.",
+                "operationId": "KubernetesSnapshots_RestoreSnapshot",
+                "responses": {
+                    "200": {
+                        "description": "Restore operation initiated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/SnapshotOperationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Invalid cluster ID, snapshot name, or request body.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized. Authentication credentials are missing or invalid.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden. User does not have permission to restore snapshots.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Snapshot with the specified name does not exist.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error.",
+                        "schema": {
+                            "$ref": "#/definitions/ZsrvResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/googlerpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "clusterId",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "snapshotTimeout": {
+                                    "type": "integer",
+                                    "format": "int32"
+                                }
+                            },
+                            "title": "HTTP wrapper for snapshot restore \u2014 cluster_id and name are path params, snapshot_timeout is the body field"
+                        }
+                    },
+                    {
+                        "name": "X-Request-Id",
+                        "in": "header",
+                        "required": false,
+                        "description": "User-Agent specified id to track a request",
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "KubernetesSnapshots"
                 ]
             }
         },
@@ -4172,7 +4482,7 @@
                 },
                 "auth": {
                     "$ref": "#/definitions/GitRepoAuthConfig",
-                    "description": "Authentication configuration"
+                    "description": "Authentication configuration, required for private repositories"
                 },
                 "target": {
                     "$ref": "#/definitions/GitRepoTargetConfig",
@@ -4485,14 +4795,14 @@
             "properties": {
                 "type": {
                     "$ref": "#/definitions/SecretType",
-                    "description": "Type of secret for authentication"
+                    "description": "Type of secret for authentication(SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). For a Public Repository, set type as SECRET_TYPE_NONE"
                 },
                 "name": {
                     "type": "string",
                     "description": "Name of the secret"
                 }
             },
-            "description": "Secret configuration for GitRepo authentication",
+            "description": "Secret configuration for GitRepo authentication, required for private repositories",
             "title": "GitRepo secret configuration"
         },
         "GitRepoState": {
@@ -4742,6 +5052,16 @@
                 "repoName": {
                     "type": "string",
                     "description": "Name of the Helm chart repository"
+                },
+                "entries": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "description": "Map of chart names to list of chart version details"
                 }
             },
             "description": "Response containing a list of Helm charts with their metadata and versions",
@@ -5014,7 +5334,7 @@
             "properties": {
                 "type": {
                     "$ref": "#/definitions/SecretType",
-                    "description": "Type of the secret (SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). This field is required and must be a valid Kubernetes secret type."
+                    "description": "Type of the secret (SECRET_TYPE_SSH, SECRET_TYPE_BASIC_AUTH, SECRET_TYPE_UNSPECIFIED, SECRET_TYPE_NONE). This field is required for private repositories and must be a valid Kubernetes secret type. For a public repository, set type as SECRET_TYPE_NONE"
                 },
                 "name": {
                     "type": "string",
@@ -5056,7 +5376,7 @@
                 },
                 "auth": {
                     "$ref": "#/definitions/PrivateRepoAuthConfig",
-                    "description": "Authentication configuration"
+                    "description": "Authentication configuration, required for private repositories"
                 }
             },
             "description": "Complete specification for a private repository configuration",
@@ -5346,6 +5666,157 @@
             ],
             "default": "SECRET_TYPE_UNSPECIFIED",
             "title": "Kubernetes Secret Types"
+        },
+        "SnapshotGetResponse": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Name of the snapshot"
+                },
+                "clusterId": {
+                    "type": "string",
+                    "description": "ID of the cluster"
+                },
+                "nodeName": {
+                    "type": "string",
+                    "description": "Name of the node where the snapshot was taken"
+                },
+                "size": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "Size of the snapshot in bytes"
+                },
+                "status": {
+                    "$ref": "#/definitions/SnapshotStatusInfo",
+                    "description": "Status information for the snapshot"
+                },
+                "location": {
+                    "type": "string",
+                    "description": "Snapshot Location in ZKS server"
+                },
+                "k3sVersion": {
+                    "type": "string",
+                    "description": "k3s Version"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "int64",
+                    "description": "When the snapshot record was created"
+                }
+            },
+            "description": "Complete response for Snapshot GET operations including metadata and status",
+            "title": "Snapshot get response"
+        },
+        "SnapshotListResponse": {
+            "type": "object",
+            "properties": {
+                "totalCount": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Total count of snapshots"
+                },
+                "snapshots": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/SnapshotGetResponse"
+                    },
+                    "description": "List of snapshot entries"
+                }
+            },
+            "description": "Response for Snapshot LIST operations",
+            "title": "Snapshot list response"
+        },
+        "SnapshotOperationResponse": {
+            "type": "object",
+            "properties": {
+                "operationId": {
+                    "type": "string",
+                    "description": "Unique identifier for the async operation"
+                },
+                "operationType": {
+                    "$ref": "#/definitions/SnapshotOperationType",
+                    "description": "Type of the operation"
+                },
+                "status": {
+                    "$ref": "#/definitions/SnapshotOperationStatus",
+                    "description": "Current status of the operation"
+                },
+                "phase": {
+                    "type": "string",
+                    "description": "Current phase of the operation"
+                },
+                "clusterId": {
+                    "type": "string",
+                    "description": "Cluster ID associated with the operation"
+                },
+                "snapshotId": {
+                    "type": "string",
+                    "description": "Snapshot id generated for the operation"
+                },
+                "snapshotName": {
+                    "type": "string",
+                    "description": "Snapshot Name"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Status message"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "When the operation was created"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "When the operation was last updated"
+                }
+            },
+            "description": "Response for async snapshot operations (create, restore, delete)",
+            "title": "Snapshot operation response"
+        },
+        "SnapshotOperationStatus": {
+            "type": "string",
+            "enum": [
+                "SNAPSHOT_OPERATION_STATUS_UNSPECIFIED",
+                "SNAPSHOT_OPERATION_STATUS_IN_PROGRESS",
+                "SNAPSHOT_OPERATION_STATUS_COMPLETED",
+                "SNAPSHOT_OPERATION_STATUS_FAILED",
+                "SNAPSHOT_OPERATION_STATUS_TIMED_OUT"
+            ],
+            "default": "SNAPSHOT_OPERATION_STATUS_UNSPECIFIED",
+            "title": "Snapshot Operation Status"
+        },
+        "SnapshotOperationType": {
+            "type": "string",
+            "enum": [
+                "SNAPSHOT_OPERATION_TYPE_UNSPECIFIED",
+                "SNAPSHOT_OPERATION_TYPE_CREATE",
+                "SNAPSHOT_OPERATION_TYPE_RESTORE",
+                "SNAPSHOT_OPERATION_TYPE_DELETE"
+            ],
+            "default": "SNAPSHOT_OPERATION_TYPE_UNSPECIFIED",
+            "title": "Snapshot Operation Type"
+        },
+        "SnapshotStatusInfo": {
+            "type": "object",
+            "properties": {
+                "state": {
+                    "type": "string",
+                    "description": "Current state of the snapshot (e.g., ready, creating, error)"
+                },
+                "message": {
+                    "type": "string",
+                    "description": "Status message with additional details"
+                },
+                "readyToUse": {
+                    "type": "boolean",
+                    "description": "Whether the snapshot is ready to use for restore"
+                }
+            },
+            "description": "Status information for a snapshot",
+            "title": "Snapshot status info"
         },
         "Summary": {
             "type": "object",
