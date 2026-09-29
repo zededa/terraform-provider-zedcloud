@@ -812,3 +812,16 @@ func stringMap(v interface{}) map[string]string {
 		return nil
 	}
 }
+
+// emptyMapToNil normalises an empty map to nil before it goes into state.
+//
+// UE-168: a protobuf map field is always present on the wire, arriving as {}
+// when unset. Written into state as an empty map while the configuration omits
+// the attribute, that leaves a diff Terraform can never settle. nil is what an
+// absent optional attribute looks like.
+func emptyMapToNil(m map[string]string) map[string]string {
+	if len(m) == 0 {
+		return nil
+	}
+	return m
+}

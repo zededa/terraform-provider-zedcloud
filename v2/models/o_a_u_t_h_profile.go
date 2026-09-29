@@ -22,7 +22,14 @@ type OAUTHProfile struct {
 	OIDCEndPoint string `json:"OIDCEndPoint,omitempty"`
 
 	// pass additional url parameters during the exchange and authorization process
-	AdditionalParameters string `json:"additionalParameters,omitempty"`
+	// UE-168: this is a map<string, string> in model.proto. The OpenAPI
+	// annotation forced `type: STRING`, so the generated swagger contradicted
+	// itself and go-swagger produced a plain string here -- which made every
+	// read of an OAuth authorization profile fail to unmarshal, because the
+	// gateway marshals the field as a JSON object. The proto annotation is
+	// fixed upstream; this is what regeneration produces from the corrected
+	// swagger.
+	AdditionalParameters map[string]string `json:"additionalParameters,omitempty"`
 
 	// OAUTH client ID
 	ClientID string `json:"clientID,omitempty"`

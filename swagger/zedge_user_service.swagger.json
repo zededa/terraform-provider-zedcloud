@@ -4722,7 +4722,7 @@
                                     "description": "Scopes/Permissions associated with the role"
                                 },
                                 "projectTags": {
-                                    "type": "string",
+                                    "type": "object",
                                     "additionalProperties": {
                                         "type": "string"
                                     },
@@ -8260,7 +8260,7 @@
                     "description": "id for Vmware IDP"
                 },
                 "additionalParameters": {
-                    "type": "string",
+                    "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     },
@@ -8881,7 +8881,7 @@
                     "description": "Scopes/Permissions associated with the role"
                 },
                 "projectTags": {
-                    "type": "string",
+                    "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     },

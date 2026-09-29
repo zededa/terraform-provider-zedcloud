@@ -56,15 +56,6 @@ func TestProviderResourcesAreImportable(t *testing.T) {
 		"zedcloud_credential":                "write-only; the API never returns credential material",
 		"zedcloud_cluster_group_manifest":    "read-only projection, not a managed object",
 		"zedcloud_kubernetes_cluster_status": "read-only projection, not a managed object",
-
-		// NOT permanent. Held back pending NFR-165 §7: OAUTHProfile carries
-		// ClientSecret, CryptoKey and EncryptedSecrets, and import would write
-		// whatever the API returns into plaintext state. Confirm against a live
-		// tenant what GET /v1/authorization/profiles/id/{id} actually returns
-		// for those fields, mark them Sensitive if they come back populated,
-		// then add the Importer and delete this entry -- this test will tell
-		// you to.
-		"zedcloud_auth_profile": "pending the NFR-165 §7 secret-exposure audit",
 	}
 
 	for name, res := range Provider().ResourcesMap {
