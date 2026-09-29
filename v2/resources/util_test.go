@@ -34,3 +34,38 @@ func TestIsStatusNotFound(t *testing.T) {
 		})
 	}
 }
+
+// NFR-165 §4.1. `terraform import` takes one opaque string, and the IAM
+// resources accept either the system ID or the object's name. This is the
+// discriminator; if it misjudges, an import either queries a nonexistent name
+// or a nonexistent ID.
+func TestLooksLikeObjectID(t *testing.T) {
+	cases := []struct {
+		name string
+		raw  string
+		want bool
+	}{
+		{"real user ID", "AAGFABAEqnH4je5PHZTXSmHOs-XC", true},
+		{"ID with underscore and equals", "AAGFABAEqnH4je5PHZTXSmH_s=XC", true},
+		{"all digits, 28 long", "1234567890123456789012345678", true},
+
+		{"email username", "alice@corp.com", false},
+		{"role name", "readonly-operators", false},
+		{"empty", "", false},
+		{"27 characters", "AAGFABAEqnH4je5PHZTXSmHOs-X", false},
+		{"29 characters", "AAGFABAEqnH4je5PHZTXSmHOs-XCD", false},
+		// 28 characters, but '@' and '.' are outside the ID alphabet, so a
+		// long email address is still read as a name.
+		{"28-character email", "alice.mcname@corporate.co.uk", false},
+		{"leading space", " AGFABAEqnH4je5PHZTXSmHOs-XC", false},
+		{"embedded newline", "AAGFABAEqnH4je5PHZTXSmHOs-X\n", false},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := looksLikeObjectID(tc.raw); got != tc.want {
+				t.Errorf("looksLikeObjectID(%q) = %v, want %v", tc.raw, got, tc.want)
+			}
+		})
+	}
+}

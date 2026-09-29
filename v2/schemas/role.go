@@ -9,7 +9,7 @@ func RoleModel(d *schema.ResourceData) *models.Role {
 	description, _ := d.Get("description").(string)
 	id, _ := d.Get("id").(string)
 	name, _ := d.Get("name").(string)
-	projectTags, _ := d.Get("project_tags").(map[string]string)
+	projectTags := stringMap(d.Get("project_tags"))
 	var scopes []*models.Scope // []*Scope
 	scopesInterface, scopesIsSet := d.GetOk("scopes")
 	if scopesIsSet {
@@ -65,7 +65,7 @@ func RoleModelFromMap(m map[string]interface{}) *models.Role {
 	description := m["description"].(string)
 	id := m["id"].(string)
 	name := m["name"].(string)
-	projectTags := m["project_tags"].(map[string]string)
+	projectTags := stringMap(m["project_tags"])
 	var scopes []*models.Scope // []*Scope
 	scopesInterface, scopesIsSet := m["scopes"]
 	if scopesIsSet {
@@ -163,10 +163,14 @@ func RoleSchema() map[string]*schema.Schema {
 			Computed:    true,
 		},
 
+		// NFR-165 §3.7: the API documents this as unchangeable once created,
+		// so a rename has to plan a replacement rather than an update the
+		// server rejects. title is the mutable display name.
 		"name": {
 			Description: `User defined name of the role. Name cannot be changed once created`,
 			Type:        schema.TypeString,
 			Required:    true,
+			ForceNew:    true,
 		},
 
 		"project_tags": {

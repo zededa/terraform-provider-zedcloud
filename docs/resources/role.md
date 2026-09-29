@@ -64,3 +64,18 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+```shell
+# A custom role can be imported by its system-assigned ID.
+terraform import zedcloud_role.readonly CCGFABAEqnH4je5PHZTXSmHOs-ZE
+
+# ...or by role name. Anything that is not a 28-character system ID is
+# looked up by name and resolved to its ID.
+terraform import zedcloud_role.readonly readonly-operators
+```

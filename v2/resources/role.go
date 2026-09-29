@@ -3,7 +3,9 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -25,7 +27,48 @@ func RoleResource() *schema.Resource {
 		ReadContext:   IdentityAccessManagement_GetRole,
 		UpdateContext: IdentityAccessManagement_UpdateRole,
 		Schema:        zschema.RoleSchema(),
+		Importer: &schema.ResourceImporter{
+			StateContext: importRoleStateContext,
+		},
 	}
+}
+
+// importRoleStateContext accepts either the 28-character role ID or the role
+// name as the import ID (NFR-165 §4.1):
+//
+//	terraform import zedcloud_role.readonly readonly-operators
+//	terraform import zedcloud_role.readonly CCGFABAEqnH4je5PHZTXSmHOs-ZE
+func importRoleStateContext(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
+	raw := strings.TrimSpace(d.Id())
+	if raw == "" {
+		return nil, errors.New("import ID is empty: pass either the role ID or the role name")
+	}
+
+	if looksLikeObjectID(raw) {
+		d.SetId(raw)
+		return []*schema.ResourceData{d}, nil
+	}
+
+	params := identity_access_management.NewIdentityAccessManagementGetRoleByNameParams()
+	params.Name = raw
+
+	client := m.(*api_client.ZedcloudAPI)
+
+	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRoleByName(params, nil)
+	if err != nil {
+		if isStatusNotFound(err) {
+			return nil, fmt.Errorf("no role found with name %q", raw)
+		}
+		return nil, fmt.Errorf("could not resolve role name %q: %w", raw, err)
+	}
+
+	role := resp.GetPayload()
+	if role == nil || role.ID == "" {
+		return nil, fmt.Errorf("role %q resolved to an empty ID", raw)
+	}
+
+	d.SetId(role.ID)
+	return []*schema.ResourceData{d}, nil
 }
 
 func RoleDataSource() *schema.Resource {
@@ -39,22 +82,56 @@ func IdentityAccessManagement_GetRole(ctx context.Context, d *schema.ResourceDat
 	var diags diag.Diagnostics
 	var role *models.Role
 
-	if _, isSet := d.GetOk("name"); isSet {
+	// NFR-165 §3.2: the immutable system ID wins over the name whenever state
+	// has one, so a renamed role is still found rather than reported missing.
+	id := d.Id()
+	if id == "" {
+		if idVal, isSet := d.GetOk("id"); isSet {
+			id, _ = idVal.(string)
+		}
+	}
+
+	switch {
+	case id != "":
+		var found bool
+		role, found, diags = getRoleById(ctx, d, m, id)
+		if diags.HasError() {
+			return diags
+		}
+		// NFR-165 §3.3: deleted out of band — plan a re-create.
+		if !found {
+			log.Printf("[INFO] role %s no longer exists, removing from state", id)
+			d.SetId("")
+			return diags
+		}
+	case hasName(d):
 		role, diags = getRoleByName(ctx, d, m)
-	} else if _, isSet := d.GetOk("id"); isSet {
-		role, diags = getRoleById(ctx, d, m)
+		if diags.HasError() {
+			return diags
+		}
+	default:
+		// NFR-165 §3.1.
+		return append(diags, diag.Errorf("cannot read role: set either id or name")...)
 	}
 
-	if diags.HasError() {
-		return diags
+	if role == nil {
+		return append(diags, diag.Errorf("role read returned an empty response")...)
 	}
 
+	zschema.SetRoleResourceData(d, role)
 	d.SetId(role.ID)
 
 	return diags
 }
 
-func getRoleById(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Role, diag.Diagnostics) {
+func hasName(d *schema.ResourceData) bool {
+	_, isSet := d.GetOk("name")
+	return isSet
+}
+
+// getRoleById fetches a role by its system ID. The boolean result is false
+// when the API answered 404.
+func getRoleById(ctx context.Context, d *schema.ResourceData, m interface{}, id string) (*models.Role, bool, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	params := identity_access_management.NewIdentityAccessManagementGetRoleParams()
@@ -64,34 +141,27 @@ func getRoleById(ctx context.Context, d *schema.ResourceData, m interface{}) (*m
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-		return nil, diags
-	}
+	params.ID = id
 
 	client := m.(*api_client.ZedcloudAPI)
 
 	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRole(params, nil)
 	if err != nil {
+		if isStatusNotFound(err) {
+			return nil, false, diags
+		}
+
 		log.Printf("[TRACE] role read error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)
-			return nil, diags
+			return nil, false, diags
 		}
 
 		diags = append(diags, diag.Errorf("role read error: %s", err)...)
-		return nil, diags
+		return nil, false, diags
 	}
 
-	respModel := resp.GetPayload()
-	zschema.SetRoleResourceData(d, respModel)
-	d.SetId(respModel.ID)
-
-	return respModel, diags
+	return resp.GetPayload(), true, diags
 }
 
 func getRoleByName(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.Role, diag.Diagnostics) {
@@ -126,11 +196,7 @@ func getRoleByName(ctx context.Context, d *schema.ResourceData, m interface{}) (
 		return nil, diags
 	}
 
-	respModel := resp.GetPayload()
-	zschema.SetRoleResourceData(d, respModel)
-	d.SetId(respModel.ID)
-
-	return respModel, diags
+	return resp.GetPayload(), diags
 }
 
 func IdentityAccessManagement_CreateRole(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -192,10 +258,11 @@ func IdentityAccessManagement_UpdateRole(ctx context.Context, d *schema.Resource
 	params.SetBody(zschema.RoleModel(d))
 	// IdentityAccessManagementUpdateRoleBody
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
+	// d.Id() is authoritative for a managed resource, created or imported.
+	if id := d.Id(); id != "" {
 		params.ID = id
+	} else if idVal, isSet := d.GetOk("id"); isSet {
+		params.ID, _ = idVal.(string)
 	} else {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
 		return diags
@@ -251,10 +318,10 @@ func IdentityAccessManagement_DeleteRole(ctx context.Context, d *schema.Resource
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
+	if id := d.Id(); id != "" {
 		params.ID = id
+	} else if idVal, isSet := d.GetOk("id"); isSet {
+		params.ID, _ = idVal.(string)
 	} else {
 		diags = append(diags, diag.Errorf("missing client parameter: id")...)
 		return diags
@@ -264,6 +331,12 @@ func IdentityAccessManagement_DeleteRole(ctx context.Context, d *schema.Resource
 
 	_, err := client.IdentityAccessManagement.IdentityAccessManagementDeleteRole(params, nil)
 	if err != nil {
+		// Already gone: a delete of a missing object is a success.
+		if isStatusNotFound(err) {
+			d.SetId("")
+			return diags
+		}
+
 		log.Printf("[TRACE] role delete error: %s", spew.Sdump(err))
 		if ds, ok := ZsrvResponderToDiags(err); ok {
 			diags = append(diags, ds...)

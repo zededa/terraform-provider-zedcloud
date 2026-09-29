@@ -24,12 +24,10 @@ description: |-
 ### Optional
 
 - `allowed_enterprises` (Block List) Permitted list of enterprises with their associated roles (see [below for nested schema](#nestedblock--allowed_enterprises))
-- `custom_user_input` (Map of String) Custom user parameters
+- `custom_user_input` (Map of String) Custom user parameters. Each key must be exactly three '_'-separated segments, for example "acme_ui_theme".
 - `first_name` (String) First name of the user
 - `full_name` (String) Full name of the user
 - `hubspot_id` (String)
-- `last_login_time` (String) Last login time of the user
-- `last_logout_time` (String) Last logout time of the user
 - `locale` (String) Locale of the user
 - `notify_pref` (String) Notification preference of the user
 - `phone` (String) Phone number of the user
@@ -42,6 +40,8 @@ description: |-
 - `email_state` (String) Email state
 - `enterprise_id` (String) Origin enterprise of the user
 - `id` (String) Unique system defined user ID
+- `last_login_time` (String) Last login time of the user
+- `last_logout_time` (String) Last logout time of the user
 - `phone_state` (String) Phone state
 - `revision` (List of Object) system defined info (see [below for nested schema](#nestedatt--revision))
 - `state` (String) User state
@@ -71,3 +71,18 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+```shell
+# A user can be imported by its system-assigned ID.
+terraform import zedcloud_user.alice AAGFABAEqnH4je5PHZTXSmHOs-XC
+
+# ...or, more conveniently, by username. Anything that is not a
+# 28-character system ID is looked up by name and resolved to its ID.
+terraform import zedcloud_user.alice alice@corp.com
+```

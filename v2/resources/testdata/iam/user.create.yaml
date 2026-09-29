@@ -1,3 +1,5 @@
+customuserinput:
+  tf_provider_department: "networking"
 allowed_enterprises:
   id: "AAFlABDe6Nm63ixF5LJBbk9Keqp6"
   name: "zededa"

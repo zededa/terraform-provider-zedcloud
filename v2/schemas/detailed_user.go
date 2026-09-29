@@ -1,16 +1,90 @@
 package schemas
 
 import (
-	"github.com/go-openapi/strfmt"
+	"fmt"
+	"regexp"
+
+	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
+// customParamKeyMaxLen and customUserInputKey mirror the controller's own
+// rules for a custom user parameter (CustomParamKeyMaxLen and
+// ValidateCustomParam in zedcloud's libs/zutils/validate.go): the key is three
+// '_'-separated segments drawn from a restricted alphabet.
+//
+// Enforcing them here turns an opaque "HTTP status code: 400 / Invalid
+// characters in the key" at apply time into a plan-time error that names the
+// offending key. Found the hard way, running the acceptance suite against a
+// controller for the first time once NFR-165 §3.4 made this map reach the API
+// at all.
+const (
+	customParamKeyMaxLen = 1024
+	customParamValMaxLen = 1024
+)
+
+var customUserInputKey = regexp.MustCompile(
+	`^[a-zA-Z0-9\-.%@#:~!=]+_[a-zA-Z0-9\-.%@#:~!=]+_[a-zA-Z0-9\-.%@#:~!=]+$`)
+
+func validateCustomUserInput(v interface{}, path cty.Path) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	entries, ok := v.(map[string]interface{})
+	if !ok {
+		return diags
+	}
+
+	for key, raw := range entries {
+		value, _ := raw.(string)
+
+		switch {
+		case key == "" || value == "":
+			diags = append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "custom_user_input entry is empty",
+				Detail:        "Neither the key nor the value of a custom user parameter may be empty.",
+				AttributePath: path,
+			})
+		case len(key) > customParamKeyMaxLen:
+			diags = append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "custom_user_input key is too long",
+				Detail:        fmt.Sprintf("Key %q is %d characters; the maximum is %d.", key, len(key), customParamKeyMaxLen),
+				AttributePath: path,
+			})
+		case !customUserInputKey.MatchString(key):
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  "invalid custom_user_input key",
+				Detail: fmt.Sprintf(
+					"Key %q is not accepted by the controller. A key must be exactly three "+
+						"'_'-separated segments, each made up of letters, digits or -.%%@#:~!=  "+
+						"— for example \"acme_ui_theme\".", key),
+				AttributePath: path,
+			})
+		case len(value) > customParamValMaxLen:
+			diags = append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "custom_user_input value is too long",
+				Detail:        fmt.Sprintf("The value for key %q is %d characters; the maximum is %d.", key, len(value), customParamValMaxLen),
+				AttributePath: path,
+			})
+		}
+	}
+
+	return diags
+}
+
+// LastLoginTime and LastLogoutTime are deliberately absent from both model
+// builders below. They are server-observed and read-only; sending them back
+// would at best be ignored. See NFR-165 §3.6 — the previous code asserted
+// d.Get("last_login_time") to strfmt.DateTime, which can never succeed for a
+// TypeString attribute, so the zero value was sent on every request anyway.
+
 func DetailedUserModel(d *schema.ResourceData) *models.DetailedUser {
 	hubspotID, _ := d.Get("hubspot_id").(string)
-	lastLoginTime, _ := d.Get("last_login_time").(strfmt.DateTime)
-	lastLogoutTime, _ := d.Get("last_logout_time").(strfmt.DateTime)
 	sfdcID, _ := d.Get("sfdc_id").(string)
 	var allowedEnterprises []*models.AllowedEnterprise // []*AllowedEnterprise
 	allowedEnterprisesInterface, allowedEnterprisesIsSet := d.GetOk("allowed_enterprises")
@@ -29,17 +103,10 @@ func DetailedUserModel(d *schema.ResourceData) *models.DetailedUser {
 			allowedEnterprises = append(allowedEnterprises, m)
 		}
 	}
-	customUserInput := map[string]string{}
-	customUserInputInterface, customUserInputIsSet := d.GetOk("customUserInput")
-	if customUserInputIsSet {
-		customUserInputMap := customUserInputInterface.(map[string]interface{})
-		for k, v := range customUserInputMap {
-			if v == nil {
-				continue
-			}
-			customUserInput[k] = v.(string)
-		}
-	}
+	// NFR-165 §3.4: the schema key is snake_case. Reading "customUserInput"
+	// here always missed, so custom user parameters were dropped on every
+	// create and update and an imported user never converged.
+	customUserInput := stringMap(d.Get("custom_user_input"))
 
 	email, _ := d.Get("email").(string)
 	firstName, _ := d.Get("first_name").(string)
@@ -65,8 +132,6 @@ func DetailedUserModel(d *schema.ResourceData) *models.DetailedUser {
 	username, _ := d.Get("username").(string)
 	return &models.DetailedUser{
 		HubspotID:          hubspotID,
-		LastLoginTime:      lastLoginTime,
-		LastLogoutTime:     lastLogoutTime,
 		SfdcID:             sfdcID,
 		AllowedEnterprises: allowedEnterprises,
 		CustomUserInput:    customUserInput,
@@ -87,8 +152,6 @@ func DetailedUserModel(d *schema.ResourceData) *models.DetailedUser {
 
 func DetailedUserModelFromMap(m map[string]interface{}) *models.DetailedUser {
 	hubspotID := m["hubspot_id"].(string)
-	lastLoginTime := m["last_login_time"].(strfmt.DateTime)
-	lastLogoutTime := m["last_logout_time"].(strfmt.DateTime)
 	sfdcID := m["sfdc_id"].(string)
 	var allowedEnterprises []*models.AllowedEnterprise // []*AllowedEnterprise
 	allowedEnterprisesInterface, allowedEnterprisesIsSet := m["allowed_enterprises"]
@@ -107,17 +170,7 @@ func DetailedUserModelFromMap(m map[string]interface{}) *models.DetailedUser {
 			allowedEnterprises = append(allowedEnterprises, m)
 		}
 	}
-	customUserInput := map[string]string{}
-	customUserInputInterface, customUserInputIsSet := m["custom_user_input"]
-	if customUserInputIsSet {
-		customUserInputMap := customUserInputInterface.(map[string]interface{})
-		for k, v := range customUserInputMap {
-			if v == nil {
-				continue
-			}
-			customUserInput[k] = v.(string)
-		}
-	}
+	customUserInput := stringMap(m["custom_user_input"])
 
 	email := m["email"].(string)
 	firstName := m["first_name"].(string)
@@ -143,8 +196,6 @@ func DetailedUserModelFromMap(m map[string]interface{}) *models.DetailedUser {
 	username := m["username"].(string)
 	return &models.DetailedUser{
 		HubspotID:          hubspotID,
-		LastLoginTime:      lastLoginTime,
-		LastLogoutTime:     lastLogoutTime,
 		SfdcID:             sfdcID,
 		AllowedEnterprises: allowedEnterprises,
 		CustomUserInput:    customUserInput,
@@ -230,20 +281,19 @@ func DetailedUserSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		// NFR-165 §4.2: server-observed, never configurable. Previously
+		// Optional with a blanket DiffSuppressFunc, which hid the fact that
+		// the value could not round-trip at all.
 		"last_login_time": {
-			Description:      `Last login time of the user`,
-			Type:             schema.TypeString,
-			ValidateFunc:     validation.IsRFC3339Time,
-			Optional:         true,
-			DiffSuppressFunc: supress(),
+			Description: `Last login time of the user`,
+			Type:        schema.TypeString,
+			Computed:    true,
 		},
 
 		"last_logout_time": {
-			Description:      `Last logout time of the user`,
-			Type:             schema.TypeString,
-			ValidateFunc:     validation.IsRFC3339Time,
-			Optional:         true,
-			DiffSuppressFunc: supress(),
+			Description: `Last logout time of the user`,
+			Type:        schema.TypeString,
+			Computed:    true,
 		},
 
 		"sfdc_id": {
@@ -264,12 +314,14 @@ func DetailedUserSchema() map[string]*schema.Schema {
 		},
 
 		"custom_user_input": {
-			Description: `Custom user parameters`,
-			Type:        schema.TypeMap, //GoType: map[string]string
+			Description: `Custom user parameters. Each key must be exactly three ` +
+				`'_'-separated segments, for example "acme_ui_theme".`,
+			Type: schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Optional:         true,
+			ValidateDiagFunc: validateCustomUserInput,
 		},
 
 		"email": {
@@ -371,10 +423,14 @@ func DetailedUserSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		// NFR-165 §3.7: the account identifier. The API has no rename, so a
+		// change has to plan a replacement rather than an update that fails
+		// at apply time.
 		"username": {
 			Description: `User defined name`,
 			Type:        schema.TypeString,
 			Required:    true,
+			ForceNew:    true,
 		},
 	}
 }

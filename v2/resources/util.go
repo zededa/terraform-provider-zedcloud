@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -15,7 +16,9 @@ import (
 // (which implement Code() int) and the string-wrapped error emitted by
 // retryablehttp after it gives up retrying a 404. Used by Delete
 // handlers so a missing resource is treated as success, making deletes
-// idempotent against cascading server-side cleanup.
+// idempotent against cascading server-side cleanup, and by the IAM Read
+// handlers so that an object deleted out of band is planned for re-creation
+// instead of failing the refresh (NFR-165 §3.3).
 func isStatusNotFound(err error) bool {
 	if err == nil {
 		return false
@@ -29,9 +32,26 @@ func isStatusNotFound(err error) bool {
 	return strings.Contains(err.Error(), "404 Not Found")
 }
 
+// objectIDPattern matches a zedcloud system-assigned object ID. The swagger
+// definitions pin it for every IAM object: `[0-9A-Za-z_=-]{28}`.
+var objectIDPattern = regexp.MustCompile(`^[0-9A-Za-z_=-]{28}$`)
+
+// looksLikeObjectID reports whether raw is a system-assigned object ID rather
+// than a user-chosen name.
+//
+// NFR-165 §4.1: `terraform import` takes a single opaque string, and operators
+// know usernames and role names, not 28-character IDs. Every IAM object has a
+// by-name read endpoint, so the import ID may be either — this is how the two
+// are told apart. An ID always wins: names are emails or contain characters
+// outside the ID alphabet, so a collision is not reachable in practice, and
+// the documented rule is "ID first".
+func looksLikeObjectID(raw string) bool {
+	return objectIDPattern.MatchString(raw)
+}
+
 // HTLogger is a logger which satisfies the go-openapi/runtime/logger.Logger
 // interface using go stdlib "log". It appends a prefix to each message to make
-// them compatible with what TF expects for legacy logging 
+// them compatible with what TF expects for legacy logging
 // (see https://developer.hashicorp.com/terraform/plugin/log/writing#legacy-logging).
 type HTLogger struct{}
 
