@@ -69,6 +69,7 @@ func TestAuthProfile_CreateAndImport(t *testing.T) {
 				ImportState:             true,
 				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{"oauth_profile.0.client_secret"},
+				ImportStateCheck:        testImportedStateHasNoSecrets,
 			},
 			// Import by profile name (UE-166 §4.1).
 			{
@@ -76,6 +77,7 @@ func TestAuthProfile_CreateAndImport(t *testing.T) {
 				ImportState:             true,
 				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{"oauth_profile.0.client_secret"},
+				ImportStateCheck:        testImportedStateHasNoSecrets,
 				ImportStateIdFunc:       importIDFromAttribute("zedcloud_auth_profile.test_tf_provider", "name"),
 			},
 		},
@@ -157,6 +159,43 @@ func testAuthProfileDestroy(s *terraform.State) error {
 		if _, err := client.IdentityAccessManagement.IdentityAccessManagementGetAuthProfile(params, nil); err == nil {
 			return fmt.Errorf("auth profile %s still exists", rs.Primary.ID)
 		}
+	}
+
+	return nil
+}
+
+// testImportedStateHasNoSecrets asserts that a freshly imported auth profile
+// carries no secret material in Terraform state.
+//
+// UE-168 acceptance criterion: "no secret is written to state unmarked". The
+// ImportStateVerifyIgnore above deliberately skips comparing client_secret,
+// which means nothing there would notice if the API started returning it — so
+// this asserts the property directly rather than by omission.
+//
+// Import runs with no prior state, so preserveOAuthWriteOnlyFields has nothing
+// to carry forward: whatever ends up here came from the API. Values are never
+// logged, only their emptiness reported.
+func testImportedStateHasNoSecrets(states []*terraform.InstanceState) error {
+	if len(states) != 1 {
+		return fmt.Errorf("expected exactly one imported instance, got %d", len(states))
+	}
+	attrs := states[0].Attributes
+
+	for _, key := range []string{
+		"oauth_profile.0.client_secret",
+		"oauth_profile.0.crypto_key",
+	} {
+		if v := attrs[key]; v != "" {
+			if v == authProfileSecretSentinel {
+				return fmt.Errorf("SECURITY: %s came back from the API and was written "+
+					"verbatim into imported state", key)
+			}
+			return fmt.Errorf("SECURITY: %s is non-empty in imported state", key)
+		}
+	}
+
+	if n := attrs["oauth_profile.0.encrypted_secrets.%"]; n != "" && n != "0" {
+		return fmt.Errorf("SECURITY: imported state carries %s encrypted_secrets entries", n)
 	}
 
 	return nil
