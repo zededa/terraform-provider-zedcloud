@@ -772,3 +772,43 @@ func compareStringPointers(x, y *string) bool {
 	}
 	return normalize(x) == normalize(y)
 }
+
+// stringMap coerces a schema.TypeMap value into map[string]string.
+//
+// NFR-165 §3.4: d.Get on a TypeMap returns map[string]interface{}, never
+// map[string]string, so the generated `v, _ := d.Get(k).(map[string]string)`
+// assertion silently yields nil and the attribute is dropped from every
+// request body. The unchecked `m[k].(map[string]string)` form in the
+// ...ModelFromMap variants panics outright. This handles both shapes and
+// returns nil for an absent or empty map so that omitempty still applies.
+func stringMap(v interface{}) map[string]string {
+	switch typed := v.(type) {
+	case nil:
+		return nil
+	case map[string]string:
+		if len(typed) == 0 {
+			return nil
+		}
+		return typed
+	case map[string]interface{}:
+		if len(typed) == 0 {
+			return nil
+		}
+		out := make(map[string]string, len(typed))
+		for k, raw := range typed {
+			s, ok := raw.(string)
+			if !ok {
+				log.Printf("[WARN] stringMap: key %q holds %T, not a string; skipping", k, raw)
+				continue
+			}
+			out[k] = s
+		}
+		if len(out) == 0 {
+			return nil
+		}
+		return out
+	default:
+		log.Printf("[WARN] stringMap: unexpected type %T", v)
+		return nil
+	}
+}

@@ -48,6 +48,22 @@ func TestUser_Create(t *testing.T) {
 					testUserAttributes(t, &got, &expected),
 				),
 			},
+			// NFR-165: import by the system ID. No ImportStateVerifyIgnore —
+			// every entry that would be needed here is a round-trip defect
+			// that should be fixed instead of suppressed.
+			{
+				ResourceName:      "zedcloud_user.test_tf_provider",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			// NFR-165 §4.1: import by username. Operators know the username,
+			// not the 28-character ID, so this is the path they will use.
+			{
+				ResourceName:      "zedcloud_user.test_tf_provider",
+				ImportState:       true,
+				ImportStateVerify: true,
+				ImportStateIdFunc: importIDFromAttribute("zedcloud_user.test_tf_provider", "username"),
+			},
 		},
 	})
 }
@@ -96,7 +112,9 @@ func testUserAttributes(t *testing.T, got, expected *models.DetailedUser) resour
 			"RoleID",
 			"SfdcID",
 			"EnterpriseID",
-			"CustomUserInput",
+			// CustomUserInput is deliberately NOT ignored: it is the
+			// NFR-165 §3.4 regression guard. If it goes back on this list,
+			// the defect can return unnoticed.
 		}
 		opts := cmpopts.IgnoreFields(models.DetailedUser{}, ignoredFields...)
 		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
