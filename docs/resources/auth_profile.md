@@ -43,11 +43,11 @@ description: |-
 
 Optional:
 
-- `additional_parameters` (String) pass additional url parameters during the exchange and authorization process
+- `additional_parameters` (Map of String) pass additional url parameters during the exchange and authorization process
 - `client_id` (String) OAUTH client ID
-- `client_secret` (String) OAUTH client secret
-- `crypto_key` (String)
-- `encrypted_secrets` (Map of String)
+- `client_secret` (String, Sensitive) OAUTH client secret. Write-only: the API never returns it, so it must be supplied in configuration after importing a profile.
+- `crypto_key` (String, Sensitive) Key used to encrypt the stored secrets. Set by the controller; never returned.
+- `encrypted_secrets` (Map of String, Sensitive) Controller-encrypted secrets. Set by the controller; never returned.
 - `idp_id` (String) id for Vmware IDP
 - `jwt_auth_profile` (Block List) Config for JWT based authentication, jwks_uri is derived from OIDC Well Known Endpoints (see [below for nested schema](#nestedblock--oauth_profile--jwt_auth_profile))
 - `o_id_c_end_point` (String) OIDC endpoint for oauth validation
@@ -90,3 +90,23 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
+
+## Import
+
+Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
+```shell
+# An authorization profile can be imported by its system-assigned ID.
+terraform import zedcloud_auth_profile.okta AAGFABAEqnH4je5PHZTXSmHOs-XC
+
+# ...or by profile name. Anything that is not a 28-character system ID is
+# looked up by name and resolved to its ID.
+terraform import zedcloud_auth_profile.okta corp-okta
+
+# Note: the controller never returns oauth_profile.client_secret, so an
+# imported profile carries no secret material. Supply client_secret in your
+# configuration after importing; the first plan will show it as the only
+# change.
+```

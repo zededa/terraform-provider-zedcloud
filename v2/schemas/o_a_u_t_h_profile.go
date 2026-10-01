@@ -7,7 +7,7 @@ import (
 
 func OAUTHProfileModel(d *schema.ResourceData) *models.OAUTHProfile {
 	oIDCEndPoint, _ := d.Get("o_id_c_end_point").(string)
-	additionalParameters, _ := d.Get("additional_parameters").(string)
+	additionalParameters := stringMap(d.Get("additional_parameters"))
 	clientID, _ := d.Get("client_id").(string)
 	clientSecret, _ := d.Get("client_secret").(string)
 	cryptoKey, _ := d.Get("crypto_key").(string)
@@ -48,7 +48,7 @@ func OAUTHProfileModel(d *schema.ResourceData) *models.OAUTHProfile {
 
 func OAUTHProfileModelFromMap(m map[string]interface{}) *models.OAUTHProfile {
 	oIDCEndPoint := m["o_id_c_end_point"].(string)
-	additionalParameters := m["additional_parameters"].(string)
+	additionalParameters := stringMap(m["additional_parameters"])
 	clientID := m["client_id"].(string)
 	clientSecret := m["client_secret"].(string)
 	cryptoKey := m["crypto_key"].(string)
@@ -90,7 +90,7 @@ func OAUTHProfileModelFromMap(m map[string]interface{}) *models.OAUTHProfile {
 
 func SetOAUTHProfileResourceData(d *schema.ResourceData, m *models.OAUTHProfile) {
 	d.Set("o_id_c_end_point", m.OIDCEndPoint)
-	d.Set("additional_parameters", m.AdditionalParameters)
+	d.Set("additional_parameters", emptyMapToNil(m.AdditionalParameters))
 	d.Set("client_id", m.ClientID)
 	d.Set("client_secret", m.ClientSecret)
 	d.Set("crypto_key", m.CryptoKey)
@@ -105,7 +105,11 @@ func SetOAUTHProfileSubResourceData(m []*models.OAUTHProfile) (d []*map[string]i
 		if OAUTHProfileModel != nil {
 			properties := make(map[string]interface{})
 			properties["o_id_c_end_point"] = OAUTHProfileModel.OIDCEndPoint
-			properties["additional_parameters"] = OAUTHProfileModel.AdditionalParameters
+			// UE-168: the gateway always emits this map, as {} when unset.
+			// Writing an empty map into state where the configuration omits
+			// the attribute leaves a diff that never settles, so normalise
+			// empty to absent.
+			properties["additional_parameters"] = emptyMapToNil(OAUTHProfileModel.AdditionalParameters)
 			properties["client_id"] = OAUTHProfileModel.ClientID
 			properties["client_secret"] = OAUTHProfileModel.ClientSecret
 			properties["crypto_key"] = OAUTHProfileModel.CryptoKey
@@ -129,8 +133,11 @@ func OAUTHProfileSchema() map[string]*schema.Schema {
 
 		"additional_parameters": {
 			Description: `pass additional url parameters during the exchange and authorization process`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Type:        schema.TypeMap, //GoType: map[string]string
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional: true,
 		},
 
 		"client_id": {
@@ -139,25 +146,35 @@ func OAUTHProfileSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 
+		// UE-168: secret material. The controller encrypts client_secret on
+		// write and blanks all three on every read (fillAuthProfile in
+		// zedcloud srvs/indusv2/authprofileproc.go), so they are never
+		// returned and an imported profile carries none of them — but
+		// whatever the operator puts in configuration does land in state,
+		// hence Sensitive.
 		"client_secret": {
-			Description: `OAUTH client secret`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description: `OAUTH client secret. Write-only: the API never returns it, so it ` +
+				`must be supplied in configuration after importing a profile.`,
+			Type:      schema.TypeString,
+			Optional:  true,
+			Sensitive: true,
 		},
 
 		"crypto_key": {
-			Description: ``,
+			Description: `Key used to encrypt the stored secrets. Set by the controller; never returned.`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			Sensitive:   true,
 		},
 
 		"encrypted_secrets": {
-			Description: ``,
+			Description: `Controller-encrypted secrets. Set by the controller; never returned.`,
 			Type:        schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Optional:  true,
+			Sensitive: true,
 		},
 
 		"idp_id": {

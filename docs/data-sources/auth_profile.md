@@ -43,11 +43,11 @@ description: |-
 
 Optional:
 
-- `additional_parameters` (String) pass additional url parameters during the exchange and authorization process
+- `additional_parameters` (Map of String) pass additional url parameters during the exchange and authorization process
 - `client_id` (String) OAUTH client ID
-- `client_secret` (String) OAUTH client secret
-- `crypto_key` (String)
-- `encrypted_secrets` (Map of String)
+- `client_secret` (String, Sensitive) OAUTH client secret. Write-only: the API never returns it, so it must be supplied in configuration after importing a profile.
+- `crypto_key` (String, Sensitive) Key used to encrypt the stored secrets. Set by the controller; never returned.
+- `encrypted_secrets` (Map of String, Sensitive) Controller-encrypted secrets. Set by the controller; never returned.
 - `idp_id` (String) id for Vmware IDP
 - `jwt_auth_profile` (Block List) Config for JWT based authentication, jwks_uri is derived from OIDC Well Known Endpoints (see [below for nested schema](#nestedblock--oauth_profile--jwt_auth_profile))
 - `o_id_c_end_point` (String) OIDC endpoint for oauth validation
