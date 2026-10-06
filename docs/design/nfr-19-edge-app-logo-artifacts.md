@@ -4,7 +4,7 @@
 **Customer:** Speedcast. They manage many tenants and today set the logo on every Edge app in every tenant by hand in the UI.
 **Repos:** `zededa/terraform-provider-zedcloud` @ `d97d6b8c` (origin/main), `zededa/zedcloud` @ `f956feff70` (main),
 `zededa/zededa-services` (UI, `zedui-dev/`); UI references are relative to `zedui-dev/src/`
-**Date:** 2026-09-30 (revised 2026-10-06 with UI findings, §4.6)
+**Date:** 2026-09-30 (revised 2026-10-06 with UI findings, §4.6, and controller checks, §4.7)
 **Author:** Ivan Curachin
 **Status:** Draft
 
@@ -108,19 +108,20 @@ gives the customer one logo per tenant with no manual step.
 |---|---|---|---|
 | CreateArtifact | `POST /api/v1/artifacts` | JSON `{"name":"myapp-logo.png"}` | `200`, `Artifact{id:"<uuid>_myapp-logo.png", name}` |
 | UploadArtifact | `PUT /api/v1/artifacts/id/{id}/upload/chunked` | raw bytes; headers `Content-Type: application/octet-stream`, `Content-Range: bytes 0-<N>/<N>` (exclusive end, see below) | `202` |
-| GetArtifactSignedUrl | `GET /api/v1/artifacts/id/{id}/url` | none | `Artifact{signedUrl, ttl}` |
-| GetArtifactStream | `GET /api/v1/artifacts/id/{id}` | none | file bytes |
-| QueryArtifacts | `GET /api/v1/artifacts` | none | list |
-| DeleteArtifact | `DELETE /api/v1/artifacts/id/{id}` | none | none |
+| GetArtifactSignedUrl | `GET /api/v1/artifacts/id/{id}/url` | none | `200` `Artifact{signedUrl, ttl}`; **`307` when not found** (§4.7) |
+| GetArtifactStream | `GET /api/v1/artifacts/id/{id}` | none | `200` file bytes (`Content-Type: application/x-proto-binary`); `307` when not found |
+| QueryArtifacts | `GET /api/v1/artifacts` | none | list. **Unusable: times out with a 504 at nginx** (§4.7). Not used |
+| DeleteArtifact | `DELETE /api/v1/artifacts/id/{id}` | none | `200` always, including for missing or already-deleted ids |
 
 Constraints the client must respect:
 
 - **Name:** 3–256 characters, `[a-zA-Z0-9][a-zA-Z0-9_.-]+` (swagger `Artifact.name`, checked by `zutils.ValidateName` in niles).
 - **Content type:** the upload body **must** be `application/octet-stream` (`libs/hutils/httputils_octet_stream.go:87-100`). The published swagger doesn't say so; it declares the body as a JSON `string/byte`. Because of that, a go-swagger generated client can't be used as-is (§6.2 item 5).
-- **Content-Range end is exclusive:** the UI sends `bytes <start>-<start+len>/<total>`, not the RFC 7233 inclusive `end-1` form. A comment in the UI says the inclusive form is rejected (UI `lib/api/base.ts:1329-1345`). gilas itself only logs the end value, but the provider should match the UI exactly.
+- **Content-Range end is exclusive:** the UI sends `bytes <start>-<start+len>/<total>`, not the RFC 7233 inclusive `end-1` form (UI `lib/api/base.ts:1329-1345`). On the controller, both forms worked (§4.7), because gilas only logs the end value. The provider uses the exclusive form, as the UI does.
 - **Single chunk only:** send the whole file in one `PUT`. Multi-chunk uploads are broken today (§6.2 item 1). Logos and screenshots are small, so this costs nothing.
 - **niles, not gilas, detects completion:** niles uploads to object storage once the bytes it has received reach `fileSize`. gilas returns `202` without waiting for niles's result (§6.2 item 2), so the client should confirm the artifact is readable before reporting success.
-- **Metadata stripping:** niles strips EXIF/XMP from JPEG/PNG before storing (`srvs/niles/image_metadata.go`, ZEDCLOUD-2365). The stored bytes can therefore differ from the source file, so the provider must not compare hashes of the stored bytes against the source.
+- **Metadata stripping:** niles strips EXIF/XMP from JPEG/PNG before storing (`srvs/niles/image_metadata.go`, ZEDCLOUD-2365). This **re-encodes** the image: a 70-byte PNG came back as 74 bytes (§4.7). The provider must never compare stored bytes or hashes against the source.
+- **Not-found is `307`, not `404`:** gilas returns `307 Temporary Redirect` with no `Location` header for a missing artifact (`srvs/gilas/artifact_handlers.go:191, 258`). The client must map 307 to "not found". Go's `net/http` returns a 3xx response that has no `Location` as-is, so it won't try to follow it.
 
 ### 4.2 New provider resource: `zedcloud_artifact`
 
@@ -152,16 +153,16 @@ This limitation will be documented.
   1. Read the bytes from `source` or `content_base64`.
   2. Call `CreateArtifact(name)` to get an `id`.
   3. Call `UploadArtifact(id, bytes)` with `Content-Range: bytes 0-<N>/<N>`.
-  4. Poll `GetArtifactSignedUrl(id)`, up to the create timeout (default 2m), until it succeeds.
+  4. Poll `GetArtifactSignedUrl(id)` every 1s until it returns `200`, for up to 30s by default (make this configurable through `timeouts { create }`). It took about 2s on the controller. A `307` means the artifact is either not stored yet or **failed silently**: the controller doesn't let us tell the two apart (§6.2 item 2), so hitting the timeout is the only failure signal.
   5. `d.SetId(id)`.
   6. If the upload or the poll fails, call `DeleteArtifact(id)` on a best-effort basis and return an error.
-- **Read:** check `GetArtifactSignedUrl(id)` (or look the id up with `QueryArtifacts` if that turns out to be cheaper or more precise). On 404, clear the id so Terraform plans a re-create.
-- **Delete:** `DeleteArtifact(id)`; treat 404 as success.
+- **Read:** `GetArtifactSignedUrl(id)`. `200` means the artifact exists. `307` (or `404`, in case ENG-3009 changes it) means it's gone, so clear the id and Terraform plans a re-create. Treat any other status as an error. Don't use `QueryArtifacts`, because it times out.
+- **Delete:** `DeleteArtifact(id)`. It always returns 200, so anything that isn't 2xx is an error. Since a successful DELETE says nothing about whether the artifact existed, no read-back is needed.
 
 ### 4.4 Provider-side client
 
-This will be a small, hand-written package, `v2/client/artifact/`, with `Create`, `Upload`, `GetSignedURL`,
-`Query` and `Delete`. It uses the provider's existing go-openapi transport and bearer auth
+This will be a small, hand-written package, `v2/client/artifact/`, with `Create`, `Upload`, `GetSignedURL`
+and `Delete`. `GetSignedURL` returns a typed `ErrNotFound` for 307 and 404. It uses the provider's existing go-openapi transport and bearer auth
 (`v2/resources/provider.go:154-177`). The upload op sets `ConsumesMediaTypes: []string{"application/octet-stream"}`
 and passes `[]byte`/`io.Reader` as the body; go-openapi's built-in `ByteStreamProducer` handles it.
 The package gets wired into `v2/client/zedcloud_api.go` like the other sub-clients.
@@ -200,6 +201,37 @@ type (§4.1), and v2 clients are already hand-maintained. The precedent for a ha
 | Other logos | Brand and model logos are read the same way (`"logo"` key, signed URL), with no upload UI. The enterprise white-label logo (`$ztag.entp.zui.ux.logo`) holds an artifact id **or** an http(s) URL, and the UI handles both (`admin.ts:1288`, `useTenantBrandingHydration.ts:22-26`). Limits there: under 1 MB; PNG, JPEG, SVG or WebP | `zedcloud_artifact` ids also work for `zedcloud_brand`/`zedcloud_model` `logo = { logo = id }` and for `zedcloud_enterprise.white_labeling.logo_url` (an id is about 45 chars, which fits the 3–256 limit). The enterprise UI also uploads a separate monochrome variant (`...logo.mono`), which is out of scope |
 | licenseList | Keys are `CUSTOM_UPLOAD`, `CUSTOM_UPLOAD_2`, …; values are artifact ids from `POST {name:"license"}`. The UI shows a label and never resolves the artifact | `zedcloud_artifact` covers custom license uploads too |
 | screenshotList | Not supported by the UI | Out of scope |
+
+---
+
+### 4.7 Verified against a controller (local cluster, 2026-10-06)
+
+Run with `curl` against `zedcontrol.local.zededa.net`, using a 70-byte 1×1 PNG. All test artifacts were deleted afterwards.
+
+**Upload**
+
+| Case | Result |
+|---|---|
+| `Content-Range: bytes 0-70/70` (exclusive end, UI form) | `202`; `/url` returns `200` after ~2s |
+| `Content-Range: bytes 0-69/70` (inclusive end) | `202`; `/url` returns `200` after ~2s. gilas ignores the end value |
+| `Content-Type: application/json` (what a go-swagger client sends) | **`500`**, not 400/415 |
+| Two chunks, `bytes 0-35/70` then `bytes 35-70/70` | Both `202`, but `/url` was **still `307` after 4 minutes**. Confirms §6.2 items 1 and 2 |
+| Stored bytes compared with the source | Valid PNG with the same header, but IDAT re-compressed: **74 bytes, not 70**. Same result through the signed URL |
+
+**Existence**
+
+| Case | `GET /url` | `GET /id/{id}` (stream) |
+|---|---|---|
+| Uploaded | `200`, and the signed S3 URL fetches with `200` | `200` |
+| Never existed | `307` | `307` |
+| Created, never uploaded | `307` | — |
+| Uploaded, then deleted | `307` | `307` |
+
+| Other | Result |
+|---|---|
+| `DELETE` an existing id | `200` |
+| `DELETE` an already-deleted id, or one that never existed | `200` |
+| `GET /artifacts` (list) | No response; nginx returned **`504` after 120s**, on both attempts |
 
 ---
 
@@ -242,14 +274,18 @@ See §6.2. All of these are small and could ship in one PR owned by the storage 
 5. **The swagger is wrong for the upload.** The upload op in `zedge_storage_service.proto` declares no `consumes`, so generated clients send JSON/base64 and gilas rejects them. Fix: add `consumes: "application/octet-stream"` to the openapiv2 operation option and regenerate the swagger.
 6. **Optional:** validate `desc.logo` in `seine` `validateManifest`. Accept only `ValidateName`-valid artifact ids, and **reject URLs**, because the UI can't render a URL logo (§4.6). (The UI notes that some backends already reject the legacy `zfill` entry with "Name field contains invalid characters", so a check like this may already exist in some form. Confirm before adding one.)
 
-None of these change the API contract the provider depends on.
+7. **The JSON upload body returns `500`.** A wrong `Content-Type` should be a `415` (or `400`) with a message, not an internal error (§4.7).
+8. **Not-found is `307 Temporary Redirect`** with no `Location` header, on both `/url` and the stream (`srvs/gilas/artifact_handlers.go:191, 258`). It should be `404`. The provider accepts both, so this change is safe for it, but check UI callers first (the UI treats any failure as "no logo").
+9. **`GET /artifacts` (list) times out:** a `504` from nginx after 120s on the local cluster. It's probably an unbounded scan of the bucket or tenant prefix. Needs pagination or a bound, or the endpoint should be removed.
+
+None of these change the API contract the provider depends on. Changing 307 to 404 is the only one the provider notices, and it already handles both.
 
 ---
 
 ## 7. Testing Strategy
 
 - **Unit (no network):**
-  - Artifact client: the request has `Content-Type: application/octet-stream`, `Content-Range: bytes 0-<N>/<N>`, a raw body, and the correct path. Test with `httptest.Server`.
+  - Artifact client: the request has `Content-Type: application/octet-stream`, `Content-Range: bytes 0-<N>/<N>`, a raw body, and the correct path. `GetSignedURL` maps `307`/`404` to `ErrNotFound`, and other non-2xx responses to errors. `Delete` accepts `200`. Test with `httptest.Server`.
   - Schema: `name` validation, `ExactlyOneOf(source, content_base64)`, hashing of `content_base64` in the `StateFunc`.
   - `details.go` fixes: expand/flatten round-trip for `logo`, `screenshot_list`, `license_list`.
 - **Acceptance (`TF_ACC=1`, `make test-run case=...`):**
@@ -264,17 +300,18 @@ None of these change the API contract the provider depends on.
 
 ## 8. Open Questions
 
-### Resolved by reading the UI (2026-10-06)
+### Resolved (UI code and controller checks, 2026-10-06)
 
 - ~~Which map key does the UI read?~~ **`"logo"`**, with a fallback to the first value (§4.6). Because the key is fixed, a typed `logo_artifact_id` shortcut is not worth adding; the validator in §4.5 is enough.
 - ~~More than one logo entry?~~ **No.** Only one entry is used, so the provider warns when there is more than one.
 - ~~Does the UI clean up old artifacts?~~ **No, never.** Orphans already pile up, and Terraform destroy is an improvement.
 - ~~App profiles?~~ **No logos** in the profile UI or on app-instance pages. Out of scope.
+- ~~Existence check?~~ Settled on the controller (§4.7): use `GET /url`. `200` means it exists; `307` means missing, deleted, never uploaded, or a failed upload. The list endpoint is unusable.
+- ~~Content-Range form?~~ Both forms work, and the provider uses the exclusive one the UI sends (§4.7).
 
 ### Still open
 
 1. **Shared artifacts and destroy.** Duplicating an app in the UI copies its logo artifact id, so destroying a Terraform-managed artifact can break a duplicated app's logo. Should we add `retain_on_destroy` (skip the DELETE on destroy) to `zedcloud_artifact`, or is documenting the risk enough?
 2. **Restrict content for logos?** The UI allows only PNG/JPEG up to 5 MB for app logos (1 MB for enterprise logos). Should the generic resource check magic bytes and size, or leave that to the docs? Leaning towards docs plus a hard 10 MB cap matching the ENG-3009 server limit.
 3. **Adopting existing logos.** Speedcast already has logos uploaded by hand. Looking them up by name is useless, because the UI names every logo artifact `"logo"`. The simplest way to adopt one: read the id from the app (`manifest.desc.logo.logo` on the existing `zedcloud_application` resource or data source), or `terraform import zedcloud_artifact.x <id>`. A dedicated data source is probably unnecessary.
-4. **Existence check.** Is `GetArtifactSignedUrl` the right way to check an artifact exists, or does it return a URL even for a missing object? Verify on dev. Otherwise use `QueryArtifacts` or a `HEAD` on the stream.
-5. **Controller fixes (§6.2): who owns them, and when?** They are tracked in [ENG-3009](https://zededa.atlassian.net/browse/ENG-3009), currently unassigned. Provider work is tracked in [UE-176](https://zededa.atlassian.net/browse/UE-176).
+4. **Controller fixes (§6.2): who owns them, and when?** They are tracked in [ENG-3009](https://zededa.atlassian.net/browse/ENG-3009), currently unassigned. Provider work is tracked in [UE-176](https://zededa.atlassian.net/browse/UE-176).
