@@ -2,8 +2,9 @@
 
 **Ticket:** [NFR-19](https://zededa.atlassian.net/browse/NFR-19) — *Terraform provider: Set a logo for an Edge app*
 **Customer:** Speedcast. They manage many tenants and today set the logo on every Edge app in every tenant by hand in the UI.
-**Repos:** `zededa/terraform-provider-zedcloud` @ `d97d6b8c` (origin/main), `zededa/zedcloud` @ `f956feff70` (main)
-**Date:** 2026-09-30
+**Repos:** `zededa/terraform-provider-zedcloud` @ `d97d6b8c` (origin/main), `zededa/zedcloud` @ `f956feff70` (main),
+`zededa/zededa-services` (UI, `zedui-dev/`); UI references are relative to `zedui-dev/src/`
+**Date:** 2026-09-30 (revised 2026-10-06 with UI findings, §4.6)
 **Author:** Ivan Curachin
 **Status:** Draft
 
@@ -34,7 +35,9 @@ use that as an object for the edge app logo"*. That is the design below.
 | Thing | Actually | Where |
 |---|---|---|
 | Logo field on an Edge app | `map<string,string> logo = 11` on `Details` (`manifestJSON.desc`) | `zedcloud/libs/zmsg/zcommon/manifest.proto:96` |
-| What the value holds | An **artifact id**, `<uuid>_<name>`, keyed by the artifact name. Not a URL or base64 | `zedcloud/tests/apiTest/tests/test_app_bundle.py:420-462`, `tests/apiTest/testData/manifest.dockerCompose4.json:15` |
+| What the value holds | An **artifact id**, `<uuid>_<name>`. Not a URL or base64 | `zedcloud/tests/apiTest/tests/test_app_bundle.py:420-462`, `tests/apiTest/testData/manifest.dockerCompose4.json:15` |
+| Map key the UI writes | Always the fixed key **`"logo"`**: `desc.logo = { logo: <artifactId> }` | UI `features/marketplace/services/edge-apps.ts:1012` |
+| Map key the UI reads | `"logo"` if present, otherwise the first non-empty value whose key isn't `"zfill"`. Only one logo is ever used, and **http(s) URLs are not rendered** | UI `edge-apps.ts:960-971` |
 | Server-side validation of `desc.logo` | **None.** The value is stored as an opaque string (only `licenseList`/`agreementList` are validated) | `zedcloud/srvs/seine/appproc.go:377, 647, 775-830` |
 | Upload API | `ArtifactManager` service, `/v1/artifacts`, public, in the published swagger, no internal marker | `zedcloud/libs/zmsg/zapiservices/zedge_storage_service.proto:838-1040` |
 | Who serves it | gilas (HTTP handlers), which passes the file over gRPC to niles, which stores it in S3/Azure under `<enterpriseId>/<artifactId>` | `srvs/gilas/artifact_handlers.go:17-114`, `srvs/niles/artifact_handlers.go` |
@@ -72,7 +75,7 @@ resource "zedcloud_application" "myapp" {
     desc {
       app_category = "APP_CATEGORY_OPERATING_SYSTEM"
       logo = {
-        (zedcloud_artifact.app_logo.name) = zedcloud_artifact.app_logo.id
+        logo = zedcloud_artifact.app_logo.id   # key must be "logo" (§4.6)
       }
     }
   }
@@ -92,7 +95,7 @@ gives the customer one logo per tenant with no manual step.
 | **A. Do nothing; document "paste an artifact id into `desc.logo`".** | Still needs a manual or scripted upload per tenant, which is exactly the problem the customer has. |
 | **B. A `logo_file` convenience attribute on `zedcloud_application`** that uploads and fills `desc.logo` behind the scenes. | It ties the upload's lifecycle to the app. It can't be shared between apps, and it doesn't extend to screenshots, licenses, brands or models without adding a `*_file` attribute to each. It also makes `desc.logo` partly provider-managed, so the diff has to be suppressed to avoid a perpetual change. More code and less general than C. |
 | **C. Standalone `zedcloud_artifact` resource (chosen).** | Matches the customer's proposal, can be referenced from anywhere, and each resource maps to one API object. Its lifecycle (create, upload, delete) is ordinary Terraform. |
-| **D. A `zedcloud_artifact` data source only** (look up existing artifacts). | Useful later for adopting logos uploaded in the UI, but it doesn't upload anything. Out of scope; see §8. |
+| **D. A `zedcloud_artifact` data source only** (look up existing artifacts). | Doesn't upload anything. Looking artifacts up by name is also useless, because the UI names every logo artifact `"logo"` (§4.6). Rejected. |
 | **E. Put the image inline as a data URL in `desc.logo`.** | The backend would accept it (no validation), but the UI expects an artifact id and would break. It would also make the manifest very large. Rejected. |
 
 ---
@@ -104,7 +107,7 @@ gives the customer one logo per tenant with no manual step.
 | Operation | Route | Request | Response |
 |---|---|---|---|
 | CreateArtifact | `POST /api/v1/artifacts` | JSON `{"name":"myapp-logo.png"}` | `200`, `Artifact{id:"<uuid>_myapp-logo.png", name}` |
-| UploadArtifact | `PUT /api/v1/artifacts/id/{id}/upload/chunked` | raw bytes; headers `Content-Type: application/octet-stream`, `Content-Range: bytes 0-<N-1>/<N>` | `202` |
+| UploadArtifact | `PUT /api/v1/artifacts/id/{id}/upload/chunked` | raw bytes; headers `Content-Type: application/octet-stream`, `Content-Range: bytes 0-<N>/<N>` (exclusive end, see below) | `202` |
 | GetArtifactSignedUrl | `GET /api/v1/artifacts/id/{id}/url` | none | `Artifact{signedUrl, ttl}` |
 | GetArtifactStream | `GET /api/v1/artifacts/id/{id}` | none | file bytes |
 | QueryArtifacts | `GET /api/v1/artifacts` | none | list |
@@ -114,6 +117,7 @@ Constraints the client must respect:
 
 - **Name:** 3–256 characters, `[a-zA-Z0-9][a-zA-Z0-9_.-]+` (swagger `Artifact.name`, checked by `zutils.ValidateName` in niles).
 - **Content type:** the upload body **must** be `application/octet-stream` (`libs/hutils/httputils_octet_stream.go:87-100`). The published swagger doesn't say so; it declares the body as a JSON `string/byte`. Because of that, a go-swagger generated client can't be used as-is (§6.2 item 5).
+- **Content-Range end is exclusive:** the UI sends `bytes <start>-<start+len>/<total>`, not the RFC 7233 inclusive `end-1` form. A comment in the UI says the inclusive form is rejected (UI `lib/api/base.ts:1329-1345`). gilas itself only logs the end value, but the provider should match the UI exactly.
 - **Single chunk only:** send the whole file in one `PUT`. Multi-chunk uploads are broken today (§6.2 item 1). Logos and screenshots are small, so this costs nothing.
 - **niles, not gilas, detects completion:** niles uploads to object storage once the bytes it has received reach `fileSize`. gilas returns `202` without waiting for niles's result (§6.2 item 2), so the client should confirm the artifact is readable before reporting success.
 - **Metadata stripping:** niles strips EXIF/XMP from JPEG/PNG before storing (`srvs/niles/image_metadata.go`, ZEDCLOUD-2365). The stored bytes can therefore differ from the source file, so the provider must not compare hashes of the stored bytes against the source.
@@ -122,7 +126,7 @@ Constraints the client must respect:
 
 | Attribute | Type | Mode | Notes |
 |---|---|---|---|
-| `name` | string | Required, ForceNew | Validated against the regex above. Also a natural map key for `desc.logo`. |
+| `name` | string | Required, ForceNew | Validated against the regex above. Only becomes the id suffix; it is **not** the map key (the key is always `"logo"`, §4.6). The UI uses `"logo"`, `"license"` or `"agreement"`, and any valid name works. |
 | `source` | string | Optional, ForceNew | Path to a local file. `ExactlyOneOf` with `content_base64`. |
 | `content_base64` | string | Optional, ForceNew | For generated content or `filebase64()`. Store only a hash in state, not the content itself (use a `StateFunc`), so state stays small. |
 | `source_hash` | string | Optional, ForceNew | Recommended with `source`, set to `filesha256(...)`. Changing it re-uploads. Same pattern as `aws_s3_object.source_hash`. |
@@ -147,7 +151,7 @@ This limitation will be documented.
 - **Create:**
   1. Read the bytes from `source` or `content_base64`.
   2. Call `CreateArtifact(name)` to get an `id`.
-  3. Call `UploadArtifact(id, bytes)` with `Content-Range: bytes 0-<N-1>/<N>`.
+  3. Call `UploadArtifact(id, bytes)` with `Content-Range: bytes 0-<N>/<N>`.
   4. Poll `GetArtifactSignedUrl(id)`, up to the create timeout (default 2m), until it succeeds.
   5. `d.SetId(id)`.
   6. If the upload or the poll fails, call `DeleteArtifact(id)` on a best-effort basis and return an error.
@@ -176,7 +180,26 @@ type (§4.1), and v2 clients are already hand-maintained. The precedent for a ha
 - `v2/schemas/details.go`: fix the latent bugs found during analysis:
   - `DetailsModel(d)` calls `GetOk` with camelCase keys (`"agreementList"`, `"licenseList"`, `"screenshotList"`). This is harmless today because only the `FromMap` path is used.
   - `DetailsModelFromMap` does unchecked `m["category"].(string)` / `m["os"].(string)` type assertions.
-- Optional: add a plan-time validator on `desc.logo` values (id pattern or http(s) URL). It would be advisory only, since the backend accepts anything.
+- Add a plan-time validator on `desc.logo`, because the UI behaviour in §4.6 makes these mistakes silent (the logo just doesn't render):
+  - error if a value looks like an http(s) or `data:` URL;
+  - warn if there is more than one entry, or if the only key isn't `"logo"`.
+
+### 4.6 What the UI does (verified in `zededa-services/zedui-dev`)
+
+| Aspect | UI behaviour | Consequence for the provider |
+|---|---|---|
+| Writing the logo | `POST /artifacts {name:"logo"}`, then one chunked PUT, then read-modify-write of the app with `desc.logo = {logo: id}`. Removing the logo sets `desc.logo = null` (`edge-apps.ts:918-937, 994-1030`) | The documented and recommended form is `logo = { logo = <id> }` |
+| Reading the logo | Uses the `"logo"` key, otherwise the first non-empty value (except `"zfill"`). Never treats the value as a URL (`edge-apps.ts:960-983`) | Validator in §4.5. Values that are URLs won't render |
+| Showing the image | `GET /artifacts/id/{id}/url` → `<img src=signedUrl>`. On failure it falls back to inline `desc.svg` or a generated tile (`MarketplaceItemVisual.tsx:82-93, 193-237`) | A missing artifact is a cosmetic failure, not an error |
+| Upload limits | PNG/JPEG only, at most 5 MB (`CloudEdgeAppDetails.tsx:1084-1093, 1381`). The UI's colour sampling assumes PNG or JPEG | Document the limits. The generic resource doesn't enforce them, but the logo example uses PNG |
+| Chunking | 50 MB chunks, exclusive Content-Range end, `Content-Type: application/octet-stream`, plus an extra `data: {"name":"logo"}` header that the server ignores (`lib/api/base.ts:1299-1375`) | Logos are always one chunk, so the multi-chunk bug never affects the UI either |
+| Upload completion | No polling. The UI saves the app as soon as the PUT returns 2xx | The provider's poll (§4.3) is stricter than the UI. Keep it, with a short timeout |
+| Old artifacts | **Never deleted.** Not on replace, not on remove, not on app delete. The UI never calls `DELETE /artifacts` | Orphans already pile up from UI use. Deleting on Terraform destroy is an improvement |
+| App duplicate | The copy shares the same logo artifact id (`CloudEdgeAppDetails.tsx:980-985`) | **Destroying a Terraform-managed artifact can break the logo of an app someone duplicated in the UI.** Document this, and consider an opt-out `retain_on_destroy` attribute (§8) |
+| Create wizard | No logo step: `logo: null` (`EdgeAppCreationWizard.tsx:1261`) | Terraform will be the only way to set a logo when the app is created |
+| Other logos | Brand and model logos are read the same way (`"logo"` key, signed URL), with no upload UI. The enterprise white-label logo (`$ztag.entp.zui.ux.logo`) holds an artifact id **or** an http(s) URL, and the UI handles both (`admin.ts:1288`, `useTenantBrandingHydration.ts:22-26`). Limits there: under 1 MB; PNG, JPEG, SVG or WebP | `zedcloud_artifact` ids also work for `zedcloud_brand`/`zedcloud_model` `logo = { logo = id }` and for `zedcloud_enterprise.white_labeling.logo_url` (an id is about 45 chars, which fits the 3–256 limit). The enterprise UI also uploads a separate monochrome variant (`...logo.mono`), which is out of scope |
+| licenseList | Keys are `CUSTOM_UPLOAD`, `CUSTOM_UPLOAD_2`, …; values are artifact ids from `POST {name:"license"}`. The UI shows a label and never resolves the artifact | `zedcloud_artifact` covers custom license uploads too |
+| screenshotList | Not supported by the UI | Out of scope |
 
 ---
 
@@ -217,7 +240,7 @@ See §6.2. All of these are small and could ship in one PR owned by the storage 
 3. **A malformed `Content-Range` header crashes the handler.** `readOctetStreamLength` indexes split results without checking them (`libs/hutils/httputils_octet_stream.go:65-79`). A missing or bad header causes an index-out-of-range panic. Fix: validate the header and return 400.
 4. **No upload size limit.** `ReadOctetStream` calls `readOctetStream(..., 0)`, which means no limit, and the body is read fully into memory. Fix: set a limit for artifacts (for example 10 MB) and return 413.
 5. **The swagger is wrong for the upload.** The upload op in `zedge_storage_service.proto` declares no `consumes`, so generated clients send JSON/base64 and gilas rejects them. Fix: add `consumes: "application/octet-stream"` to the openapiv2 operation option and regenerate the swagger.
-6. **Optional:** validate `desc.logo` / `desc.screenshotList` in `seine` `validateManifest`, the same way licenses already are (URL or `ValidateName` artifact id).
+6. **Optional:** validate `desc.logo` in `seine` `validateManifest`. Accept only `ValidateName`-valid artifact ids, and **reject URLs**, because the UI can't render a URL logo (§4.6). (The UI notes that some backends already reject the legacy `zfill` entry with "Name field contains invalid characters", so a check like this may already exist in some form. Confirm before adding one.)
 
 None of these change the API contract the provider depends on.
 
@@ -226,25 +249,32 @@ None of these change the API contract the provider depends on.
 ## 7. Testing Strategy
 
 - **Unit (no network):**
-  - Artifact client: the request has `Content-Type: application/octet-stream`, `Content-Range: bytes 0-<N-1>/<N>`, a raw body, and the correct path. Test with `httptest.Server`.
+  - Artifact client: the request has `Content-Type: application/octet-stream`, `Content-Range: bytes 0-<N>/<N>`, a raw body, and the correct path. Test with `httptest.Server`.
   - Schema: `name` validation, `ExactlyOneOf(source, content_base64)`, hashing of `content_base64` in the `StateFunc`.
   - `details.go` fixes: expand/flatten round-trip for `logo`, `screenshot_list`, `license_list`.
 - **Acceptance (`TF_ACC=1`, `make test-run case=...`):**
   - `TestArtifact_Create`: upload a small PNG fixture, check that `id` has the form `<uuid>_<name>` and that the signed URL can be fetched.
   - `TestArtifact_Replace`: change `source_hash`, which should re-create the artifact with a new id and delete the old one.
   - `TestArtifact_Import`: import, then plan with `ignore_changes` or a matching hash, and expect no diff.
-  - `TestApplication_CreateWithLogo`: create an artifact and an app with `desc.logo = { name = id }`. Read the app back and assert `manifest.desc.logo[name] == artifact.id`, mirroring the zedcloud API test `test_003a_add_drop_logo_artifact_to_app`.
+  - `TestApplication_CreateWithLogo`: create an artifact and an app with `desc.logo = { logo = id }`. Read the app back and assert `manifest.desc.logo["logo"] == artifact.id`, mirroring the zedcloud API test `test_003a_add_drop_logo_artifact_to_app`.
   - Use the existing `__SUFFIX__` fixture tokens (`docs/design/ue-139-fixture-suffix-tokens.md`) so artifact names don't collide on the shared enterprise.
-- **Manual:** after apply, open the app in the UI and check the logo renders on the details page and the marketplace card. This is the only check for §8 Q1.
+- **Manual:** after apply, open the app in the UI and check the logo renders on the details page and the marketplace card.
 
 ---
 
 ## 8. Open Questions
 
-1. **Which map key does the UI read?** Is it the artifact name, a fixed key such as `"logo"`, or the first entry? API tests use the artifact name as the key. Confirm against a real app by setting a logo in the UI and running `GET /v1/apps/id/{id}`, then inspecting `manifestJSON.desc.logo`. The answer decides the recommended key in the docs, and whether the provider should also offer a typed `logo_artifact_id` shortcut.
-2. **Does the UI support more than one logo entry?** If not, should the provider warn when `len(desc.logo) > 1`?
-3. **Garbage collection.** When the UI replaces a logo, does it delete the old artifact, or is it left orphaned? Terraform's destroy handles artifacts Terraform manages. Artifacts uploaded in the UI are out of scope.
-4. **Adopting existing logos.** Speedcast already has logos uploaded by hand. Should we add a `zedcloud_artifact` data source (look up by name via `QueryArtifacts`), so they can reference existing artifacts without re-uploading? It's cheap to add and could be a follow-up.
-5. **Existence check.** Is `GetArtifactSignedUrl` the right way to check an artifact exists, or does it return a URL even for a missing object? Verify on dev. Otherwise use `QueryArtifacts` or a `HEAD` on the stream.
-6. **Controller fixes (§6.2): who owns them, and when?** Items 1–4 are small. Do they go with this work or into the storage team's backlog?
-7. **App profiles.** `zedge_app_profile_service.swagger.json:2766` has the same `Details.logo`. Is there a profile resource in scope that should get the same documentation?
+### Resolved by reading the UI (2026-10-06)
+
+- ~~Which map key does the UI read?~~ **`"logo"`**, with a fallback to the first value (§4.6). Because the key is fixed, a typed `logo_artifact_id` shortcut is not worth adding; the validator in §4.5 is enough.
+- ~~More than one logo entry?~~ **No.** Only one entry is used, so the provider warns when there is more than one.
+- ~~Does the UI clean up old artifacts?~~ **No, never.** Orphans already pile up, and Terraform destroy is an improvement.
+- ~~App profiles?~~ **No logos** in the profile UI or on app-instance pages. Out of scope.
+
+### Still open
+
+1. **Shared artifacts and destroy.** Duplicating an app in the UI copies its logo artifact id, so destroying a Terraform-managed artifact can break a duplicated app's logo. Should we add `retain_on_destroy` (skip the DELETE on destroy) to `zedcloud_artifact`, or is documenting the risk enough?
+2. **Restrict content for logos?** The UI allows only PNG/JPEG up to 5 MB for app logos (1 MB for enterprise logos). Should the generic resource check magic bytes and size, or leave that to the docs? Leaning towards docs plus a hard 10 MB cap matching the ENG-3009 server limit.
+3. **Adopting existing logos.** Speedcast already has logos uploaded by hand. Looking them up by name is useless, because the UI names every logo artifact `"logo"`. The simplest way to adopt one: read the id from the app (`manifest.desc.logo.logo` on the existing `zedcloud_application` resource or data source), or `terraform import zedcloud_artifact.x <id>`. A dedicated data source is probably unnecessary.
+4. **Existence check.** Is `GetArtifactSignedUrl` the right way to check an artifact exists, or does it return a URL even for a missing object? Verify on dev. Otherwise use `QueryArtifacts` or a `HEAD` on the stream.
+5. **Controller fixes (§6.2): who owns them, and when?** They are tracked in [ENG-3009](https://zededa.atlassian.net/browse/ENG-3009), currently unassigned. Provider work is tracked in [UE-176](https://zededa.atlassian.net/browse/UE-176).
