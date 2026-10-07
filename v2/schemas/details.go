@@ -7,14 +7,14 @@ import (
 
 func DetailsModel(d *schema.ResourceData) *models.Details {
 	agreementList := map[string]string{}
-	agreementListInterface, agreementListIsSet := d.GetOk("agreementList")
+	agreementListInterface, agreementListIsSet := d.GetOk("agreement_list")
 	if agreementListIsSet {
-		agreementListMap := agreementListInterface.(map[string]interface{})
+		agreementListMap, _ := agreementListInterface.(map[string]interface{})
 		for k, v := range agreementListMap {
 			if v == nil {
 				continue
 			}
-			agreementList[k] = v.(string)
+			agreementList[k], _ = v.(string)
 		}
 	}
 
@@ -26,39 +26,39 @@ func DetailsModel(d *schema.ResourceData) *models.Details {
 	}
 	category, _ := d.Get("category").(string)
 	licenseList := map[string]string{}
-	licenseListInterface, licenseListIsSet := d.GetOk("licenseList")
+	licenseListInterface, licenseListIsSet := d.GetOk("license_list")
 	if licenseListIsSet {
-		licenseListMap := licenseListInterface.(map[string]interface{})
+		licenseListMap, _ := licenseListInterface.(map[string]interface{})
 		for k, v := range licenseListMap {
 			if v == nil {
 				continue
 			}
-			licenseList[k] = v.(string)
+			licenseList[k], _ = v.(string)
 		}
 	}
 
 	logo := map[string]string{}
 	logoInterface, logoIsSet := d.GetOk("logo")
 	if logoIsSet {
-		logoMap := logoInterface.(map[string]interface{})
+		logoMap, _ := logoInterface.(map[string]interface{})
 		for k, v := range logoMap {
 			if v == nil {
 				continue
 			}
-			logo[k] = v.(string)
+			logo[k], _ = v.(string)
 		}
 	}
 
 	os, _ := d.Get("os").(string)
 	screenshotList := map[string]string{}
-	screenshotListInterface, screenshotListIsSet := d.GetOk("screenshotList")
+	screenshotListInterface, screenshotListIsSet := d.GetOk("screenshot_list")
 	if screenshotListIsSet {
-		screenshotListMap := screenshotListInterface.(map[string]interface{})
+		screenshotListMap, _ := screenshotListInterface.(map[string]interface{})
 		for k, v := range screenshotListMap {
 			if v == nil {
 				continue
 			}
-			screenshotList[k] = v.(string)
+			screenshotList[k], _ = v.(string)
 		}
 	}
 
@@ -79,60 +79,61 @@ func DetailsModelFromMap(m map[string]interface{}) *models.Details {
 	agreementList := map[string]string{}
 	agreementListInterface, agreementListIsSet := m["agreement_list"]
 	if agreementListIsSet {
-		agreementListMap := agreementListInterface.(map[string]interface{})
+		agreementListMap, _ := agreementListInterface.(map[string]interface{})
 		for k, v := range agreementListMap {
 			if v == nil {
 				continue
 			}
-			agreementList[k] = v.(string)
+			agreementList[k], _ = v.(string)
 		}
 	}
 
 	var appCategory *models.AppCategory // AppCategory
 	appCategoryInterface, appCategoryIsSet := m["app_category"]
 	if appCategoryIsSet {
-		appCategoryModel := appCategoryInterface.(string)
-		appCategory = models.NewAppCategory(models.AppCategory(appCategoryModel))
+		if appCategoryModel, ok := appCategoryInterface.(string); ok {
+			appCategory = models.NewAppCategory(models.AppCategory(appCategoryModel))
+		}
 	}
-	category := m["category"].(string)
+	category, _ := m["category"].(string)
 	licenseList := map[string]string{}
 	licenseListInterface, licenseListIsSet := m["license_list"]
 	if licenseListIsSet {
-		licenseListMap := licenseListInterface.(map[string]interface{})
+		licenseListMap, _ := licenseListInterface.(map[string]interface{})
 		for k, v := range licenseListMap {
 			if v == nil {
 				continue
 			}
-			licenseList[k] = v.(string)
+			licenseList[k], _ = v.(string)
 		}
 	}
 
 	logo := map[string]string{}
 	logoInterface, logoIsSet := m["logo"]
 	if logoIsSet {
-		logoMap := logoInterface.(map[string]interface{})
+		logoMap, _ := logoInterface.(map[string]interface{})
 		for k, v := range logoMap {
 			if v == nil {
 				continue
 			}
-			logo[k] = v.(string)
+			logo[k], _ = v.(string)
 		}
 	}
 
-	os := m["os"].(string)
+	os, _ := m["os"].(string)
 	screenshotList := map[string]string{}
 	screenshotListInterface, screenshotListIsSet := m["screenshot_list"]
 	if screenshotListIsSet {
-		screenshotListMap := screenshotListInterface.(map[string]interface{})
+		screenshotListMap, _ := screenshotListInterface.(map[string]interface{})
 		for k, v := range screenshotListMap {
 			if v == nil {
 				continue
 			}
-			screenshotList[k] = v.(string)
+			screenshotList[k], _ = v.(string)
 		}
 	}
 
-	support := m["support"].(string)
+	support, _ := m["support"].(string)
 	return &models.Details{
 		AgreementList:  agreementList,
 		AppCategory:    appCategory,
@@ -199,8 +200,10 @@ func Details() map[string]*schema.Schema {
 		},
 
 		"license_list": {
-			Description: `UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License`,
-			Type:        schema.TypeMap, //GoType: map[string]string
+			Description: "Licenses, keyed by license name. A value is either a URL or, for keys `CUSTOM_UPLOAD`, " +
+				"`CUSTOM_UPLOAD_2`, ..., the id of an uploaded file (see `zedcloud_artifact`). " +
+				"UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License",
+			Type: schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
@@ -208,12 +211,16 @@ func Details() map[string]*schema.Schema {
 		},
 
 		"logo": {
-			Description: `UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo`,
-			Type:        schema.TypeMap, //GoType: map[string]string
+			Description: "App logo, as `{ logo = <artifact id> }`. Upload the image with `zedcloud_artifact` and use its " +
+				"`id`. The key must be `logo` and the value must be an artifact id: the UI reads only one entry, " +
+				"preferring the `logo` key, and does not render URLs. The UI accepts PNG or JPEG images up to 5 MB. " +
+				"UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo",
+			Type: schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},
-			Optional: true,
+			Optional:         true,
+			ValidateDiagFunc: ValidateAppLogo,
 		},
 
 		"os": {
@@ -223,8 +230,9 @@ func Details() map[string]*schema.Schema {
 		},
 
 		"screenshot_list": {
-			Description: `UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields`,
-			Type:        schema.TypeMap, //GoType: map[string]string
+			Description: "Screenshots, as artifact ids (see `zedcloud_artifact`). The current UI does not display them. " +
+				"UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields",
+			Type: schema.TypeMap, //GoType: map[string]string
 			Elem: &schema.Schema{
 				Type: schema.TypeString,
 			},

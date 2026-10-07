@@ -6,7 +6,9 @@
 `zededa/zededa-services` (UI, `zedui-dev/`); UI references are relative to `zedui-dev/src/`
 **Date:** 2026-09-30 (revised 2026-10-06 with UI findings, §4.6, and controller checks, §4.7)
 **Author:** Ivan Curachin
-**Status:** Draft
+**Status:** Implemented on `nfr-19-edge-app-logo` ([UE-176](https://zededa.atlassian.net/browse/UE-176)),
+2026-10-07. See §9 for where the implementation differs from this design. Controller fixes remain
+open in [ENG-3009](https://zededa.atlassian.net/browse/ENG-3009).
 
 **Headline: the provider needs new work, and zedcloud needs no new endpoint.** The controller
 already has a public, documented upload API (the ArtifactManager API, `/v1/artifacts`). The
@@ -153,7 +155,7 @@ This limitation will be documented.
   1. Read the bytes from `source` or `content_base64`.
   2. Call `CreateArtifact(name)` to get an `id`.
   3. Call `UploadArtifact(id, bytes)` with `Content-Range: bytes 0-<N>/<N>`.
-  4. Poll `GetArtifactSignedUrl(id)` every 1s until it returns `200`, for up to 30s by default (make this configurable through `timeouts { create }`). It took about 2s on the controller. A `307` means the artifact is either not stored yet or **failed silently**: the controller doesn't let us tell the two apart (§6.2 item 2), so hitting the timeout is the only failure signal.
+  4. Poll `GetArtifactSignedUrl(id)` every 1s until it returns `200`, bounded by the create timeout (`timeouts { create }`, default 1 minute; see §9). It took about 2s on the controller. A `307` means the artifact is either not stored yet or **failed silently**: the controller doesn't let us tell the two apart (§6.2 item 2), so hitting the timeout is the only failure signal.
   5. `d.SetId(id)`.
   6. If the upload or the poll fails, call `DeleteArtifact(id)` on a best-effort basis and return an error.
 - **Read:** `GetArtifactSignedUrl(id)`. `200` means the artifact exists. `307` (or `404`, in case ENG-3009 changes it) means it's gone, so clear the id and Terraform plans a re-create. Treat any other status as an error. Don't use `QueryArtifacts`, because it times out.
@@ -311,7 +313,50 @@ None of these change the API contract the provider depends on. Changing 307 to 4
 
 ### Still open
 
-1. **Shared artifacts and destroy.** Duplicating an app in the UI copies its logo artifact id, so destroying a Terraform-managed artifact can break a duplicated app's logo. Should we add `retain_on_destroy` (skip the DELETE on destroy) to `zedcloud_artifact`, or is documenting the risk enough?
-2. **Restrict content for logos?** The UI allows only PNG/JPEG up to 5 MB for app logos (1 MB for enterprise logos). Should the generic resource check magic bytes and size, or leave that to the docs? Leaning towards docs plus a hard 10 MB cap matching the ENG-3009 server limit.
+1. ~~**Shared artifacts and destroy.**~~ Decided: added `retain_on_destroy` (default false). See §9.
+2. ~~**Restrict content for logos?**~~ Decided: the docs describe the UI's limits (PNG/JPEG, up to 5 MB), and the provider enforces only a hard 10 MB cap. It does not check file types, because the resource is generic. See §9.
 3. **Adopting existing logos.** Speedcast already has logos uploaded by hand. Looking them up by name is useless, because the UI names every logo artifact `"logo"`. The simplest way to adopt one: read the id from the app (`manifest.desc.logo.logo` on the existing `zedcloud_application` resource or data source), or `terraform import zedcloud_artifact.x <id>`. A dedicated data source is probably unnecessary.
 4. **Controller fixes (§6.2): who owns them, and when?** They are tracked in [ENG-3009](https://zededa.atlassian.net/browse/ENG-3009), currently unassigned. Provider work is tracked in [UE-176](https://zededa.atlassian.net/browse/UE-176).
+
+---
+
+## 9. Implementation notes (UE-176, 2026-10-07)
+
+This section lists what was built and where it differs from §2–§7.
+
+**Files**
+
+| Area | Files |
+|---|---|
+| Client | `v2/client/artifact/client.go` (+ `client_test.go`), wired into `v2/client/zedcloud_api.go` |
+| Resource | `v2/resources/artifact.go`, registered in `v2/resources/provider.go` |
+| Schema | `v2/schemas/artifact.go`, `v2/schemas/details_logo.go` (+ test), `v2/schemas/details.go` |
+| Tests | `v2/resources/artifact_test.go`; fixtures in `v2/resources/testdata/artifact/` and `testdata/application/{create_with_logo,logo_url_rejected}.tf` |
+| Docs | `docs/resources/artifact.md` (generated), `v2/examples/resources/zedcloud_artifact/{resource.tf,import.sh}` |
+
+**Differences from the design**
+
+- **Create timeout:** the default is 1 minute (via `timeouts { create }`), not 30s. The poll interval is 1s, and on the controller the artifact appeared after about 2s.
+- **`retain_on_destroy`:** added (resolves §8 Q1). The resource therefore has an `Update` function, which only touches state, so that this flag can change without replacing the artifact.
+- **Size cap:** content must be 1 byte to 10 MiB (`zschema.ArtifactMaxSize`), checked before calling the API. There is no file-type check (resolves §8 Q2).
+- **`GetSignedURL` treats a `200` with an empty `signedUrl` as not found.** It also maps the retrying HTTP client's "giving up on 404" transport error to `ErrNotFound`, because the provider's retry policy retries GET 404s.
+- **`Delete` also accepts `404`**, so the client keeps working after ENG-3009 item 8 lands.
+- **`desc.logo` validator:** it errors on http(s) and `data:` URLs, and warns when there is more than one entry or the only key isn't `logo`. Values not known at plan time (an artifact id before create) are skipped.
+- **`details.go`:** besides the description changes, the map and scalar type assertions in `DetailsModelFromMap` no longer panic on missing or mistyped values. The camelCase `GetOk` keys in the unused `DetailsModel(d)` are fixed.
+- **Fixtures:** new `__TESTDATA__` placeholder (the absolute path of `./testdata`), because acceptance tests run Terraform in a temp directory. It is registered in `v2/testing/fixtures_test.go`.
+
+**Verified on the local controller (2026-10-07)**
+
+| Test | Result |
+|---|---|
+| `TestArtifact_CRUD`: create from file, replace via `content_base64` (new id, old one deleted), import | PASS |
+| `TestArtifact_RetainOnDestroy`: artifact still exists after destroy | PASS |
+| `TestApplication_CreateWithLogo`: API returns `desc.logo == {logo: <artifact id>}` | PASS |
+| `TestApplication_LogoURLRejected`: plan fails on a URL logo | PASS |
+| `TestApplication_Create`, `TestApplication_Create_FromFile`: regression check after the `details.go` changes | PASS |
+| Unit: client (incl. 307 without `Location`), validator, `waitForArtifact`, `InternalValidate` | PASS |
+
+**Not done here**
+
+- Rendering in the UI was not checked by eye: the acceptance test destroys its app. Apply the example and open the app in the console to confirm the logo shows on the details page and the marketplace card.
+- The `zedcloud_enterprise` example still says `white_labeling.logo_url` must be a URL. The console also accepts an artifact id there (§4.6). Update it separately.
