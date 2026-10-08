@@ -311,10 +311,10 @@ Optional:
 
 - `agreement_list` (Map of String) UI map: AppEditPage:DeveloperPane:Developer_Agreement_Field, AppDetailsPage:DeveloperPane:Developer_Agreement_Field
 - `category` (String) UI map: AppMarketplacePage:AppCard:DescriptionField, AppEditPage:IdentityPane:CategoryField, AppDetailsPage:IdentityPane:CategoryField
-- `license_list` (Map of String) UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License
-- `logo` (Map of String) UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo
+- `license_list` (Map of String) Licenses, keyed by license name. A value is either a URL or, for keys `CUSTOM_UPLOAD`, `CUSTOM_UPLOAD_2`, ..., the id of an uploaded file (see `zedcloud_artifact`). UI map: AppMarketplacePage:AppCard:License, AppEditPage:IdentityPane:License, AppDetailsPage:IdentityPane:License
+- `logo` (Map of String) App logo, as `{ logo = <artifact id> }`. Upload the image with `zedcloud_artifact` and use its `id`. The key must be `logo` and the value must be an artifact id: the UI reads only one entry, preferring the `logo` key, and does not render URLs. The UI accepts PNG or JPEG images up to 5 MB. UI map: AppEditPage:IdentityPane:Logo, AppDetailsPage:IdentityPane:Logo
 - `os` (String)
-- `screenshot_list` (Map of String) UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields
+- `screenshot_list` (Map of String) Screenshots, as artifact ids (see `zedcloud_artifact`). The current UI does not display them. UI map: AppEditPage:IdentityPane:Screenshot_Fields, AppDetailsPage:IdentityPane:Screenshot_Fields
 - `support` (String) UI map: AppEditPage:DeveloperPane:Support_Description_Field, AppDetailsPage:DeveloperPane:Support_Description_Field
 
 

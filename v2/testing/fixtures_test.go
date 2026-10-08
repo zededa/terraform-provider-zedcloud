@@ -22,6 +22,10 @@ const fixtureRoot = "../resources/testdata"
 var knownTokens = map[string]string{
 	"SUFFIX":  "MustGetTestInput / MustGetExpectedOutput",
 	"NODE_ID": "MustGetTestInputWithVars, from testhelper.RealNode",
+	// TESTDATA is the absolute path of ./testdata, for fixtures that upload a
+	// local file (zedcloud_artifact): acceptance tests run terraform in a
+	// temporary directory, so a relative path would not resolve.
+	"TESTDATA": "MustGetTestInputWithVars, from the artifact tests",
 }
 
 var tokenRE = regexp.MustCompile(`__[A-Z][A-Z0-9_]*__`)

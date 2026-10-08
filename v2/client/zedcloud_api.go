@@ -12,6 +12,7 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/certificate_enrollment_profile"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/artifact"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/asset_group_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster_group"
@@ -104,6 +105,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.KubernetesSecret = kubernetes_secrets.New(transport, formats)
 	cli.HelmChartManagement = helm_chart_management.New(transport, formats)
 	cli.CertificateEnrollmentProfile = certificate_enrollment_profile.New(transport, formats)
+	cli.Artifact = artifact.New(transport, formats)
 	return cli
 }
 
@@ -199,6 +201,9 @@ type ZedcloudAPI struct {
 	HelmChartManagement helm_chart_management.ClientService
 
 	CertificateEnrollmentProfile certificate_enrollment_profile.ClientService
+
+	// Artifact is hand-written; see client/artifact/client.go.
+	Artifact artifact.ClientService
 }
 
 // SetTransport changes the transport on the client and all its subresources
@@ -242,4 +247,6 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.HelmChartManagement.SetTransport(transport)
 
 	c.CertificateEnrollmentProfile.SetTransport(transport)
+
+	c.Artifact.SetTransport(transport)
 }

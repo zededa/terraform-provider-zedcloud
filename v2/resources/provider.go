@@ -80,6 +80,7 @@ func Provider() *schema.Provider {
 			"zedcloud_network":                   NetworkResource(),
 			"zedcloud_network_instance":          NetworkInstanceResource(),
 			"zedcloud_application":               ApplicationResource(),
+			"zedcloud_artifact":                  ArtifactResource(),
 			"zedcloud_application_instance":      ApplicationInstanceResource(),
 			"zedcloud_image":                     ImageResource(),
 			"zedcloud_datastore":                 DatastoreResource(),
