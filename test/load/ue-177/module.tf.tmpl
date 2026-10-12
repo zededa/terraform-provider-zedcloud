@@ -1,0 +1,150 @@
+# UE-177 local load harness. Mirrors the CI-1004 / ENG-3015 setup:
+# N edge apps (VM) and N app instances (activate = false) spread over two
+# registered-only edge nodes. Rendered into new/ and old/ by setup.sh;
+# the old (2.8.0) copy has no timeouts block (2.8.0 does not support it).
+
+terraform {
+  required_providers {
+    zedcloud = {
+      source = "zededa/zedcloud"
+    }
+  }
+}
+
+variable "prefix" { type = string }
+variable "n_apps" {
+  type    = number
+  default = 0
+}
+variable "n_inst" {
+  type    = number
+  default = 0
+}
+variable "inst_timeout" {
+  type    = string
+  default = "20m"
+}
+
+resource "zedcloud_project" "p" {
+  name  = "${var.prefix}-proj"
+  title = "${var.prefix}-proj"
+  type  = "TAG_TYPE_PROJECT"
+  attestation_policy {
+    title = "title"
+    type  = "POLICY_TYPE_ATTESTATION"
+    attestation_policy {
+      type = "ATTEST_POLICY_TYPE_ACCEPT"
+    }
+  }
+  tag_level_settings {
+    flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
+    interface_ordering    = "INTERFACE_ORDERING_ENABLED"
+  }
+}
+
+resource "zedcloud_brand" "b" {
+  name        = "${var.prefix}-brand"
+  title       = "${var.prefix}-brand"
+  description = "ue-177 load"
+  origin_type = "ORIGIN_LOCAL"
+}
+
+resource "zedcloud_model" "m" {
+  brand_id    = zedcloud_brand.b.id
+  name        = "${var.prefix}-model"
+  title       = "${var.prefix}-model"
+  type        = "AMD64"
+  origin_type = "ORIGIN_LOCAL"
+  state       = "SYS_MODEL_STATE_ACTIVE"
+  attr = {
+    memory  = "8G"
+    storage = "100G"
+    Cpus    = "4"
+  }
+  io_member_list {
+    ztype        = "IO_TYPE_ETH"
+    phylabel     = "firstEth"
+    usage        = "ADAPTER_USAGE_MANAGEMENT"
+    assigngrp    = "eth0"
+    phyaddrs     = { Ifname = "eth0", PciLong = "0000:02:00.0" }
+    logicallabel = "ethernet0"
+    usage_policy = { FreeUplink = true }
+    cost         = 0
+  }
+}
+
+resource "zedcloud_edgenode" "dev" {
+  count          = 2
+  name           = "${var.prefix}-dev-${count.index}"
+  title          = "${var.prefix}-dev-${count.index}"
+  serialno       = "${var.prefix}-serial-${count.index}"
+  onboarding_key = ""
+  model_id       = zedcloud_model.m.id
+  project_id     = zedcloud_project.p.id
+  admin_state    = "ADMIN_STATE_ACTIVE"
+  interfaces {
+    cost          = 0
+    intf_usage    = "ADAPTER_USAGE_MANAGEMENT"
+    intfname      = "defaultIPv4"
+    ipaddr        = "127.0.0.1"
+    tags          = {}
+    shared_labels = []
+  }
+  tags = {
+    "chm" = "node"
+  }
+}
+
+resource "zedcloud_application" "app" {
+  count                = var.n_apps
+  name                 = "${var.prefix}-app-${count.index}"
+  title                = "${var.prefix}-app-${count.index}"
+  description          = "ue-177 load"
+  user_defined_version = "1.1"
+  origin_type          = "ORIGIN_LOCAL"
+  manifest {
+    name            = "${var.prefix}-app-${count.index}"
+    ac_version      = "1.2.0"
+    ac_kind         = "VMManifest"
+    app_type        = "APP_TYPE_VM"
+    deployment_type = "DEPLOYMENT_TYPE_STAND_ALONE"
+    cpu_pinning_enabled = false
+    desc {
+      category     = "APP_CATEGORY_OTHERS"
+      app_category = "APP_CATEGORY_OTHERS"
+      os           = "Zenix"
+      support      = "support"
+    }
+    description  = "ue-177 load"
+    display_name = "ue177"
+    enablevnc    = false
+    owner {
+      company = "Zededa Inc."
+      email   = "test@zededa.com"
+      group   = "testgroup"
+      user    = "testuser"
+      website = "http://www.zededa.com"
+    }
+    resources {
+      name  = "cpus"
+      value = "1"
+    }
+    resources {
+      name  = "memory"
+      value = "1024000"
+    }
+    vmmode = "HV_HVM"
+  }
+}
+
+# Deliberately minimal: no vminfo, logs, manifest_info or tags, so a second
+# plan shows the server-filled-field drift UE-177 reported (or its absence).
+resource "zedcloud_application_instance" "inst" {
+  count     = var.n_inst
+  name      = "${var.prefix}-inst-${count.index}"
+  title     = "${var.prefix}-inst-${count.index}"
+  activate  = false
+  app_id    = zedcloud_application.app[count.index % var.n_apps].id
+  device_id = zedcloud_edgenode.dev[count.index % 2].id
+  @@TIMEOUTS@@
+}
