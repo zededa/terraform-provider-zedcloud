@@ -285,6 +285,34 @@ func TestApplicationInstance_AsyncCreateResolvesProjectFromDevice(t *testing.T) 
 	}
 }
 
+func TestApplicationInstance_ProjectLookupIsSharedPerDevice(t *testing.T) {
+	fc := newFakeController()
+	meta := newFakeMeta(t, fc, true)
+	const n = 40
+	var wg sync.WaitGroup
+	errs := make(chan string, n)
+	for i := 0; i < n; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			d := schema.TestResourceDataRaw(t, zschema.ApplicationInstance(), map[string]interface{}{
+				"name": fmt.Sprintf("shared-%d", i), "title": "t", "app_id": "app-1", "device_id": "dev-shared",
+			})
+			if diags := CreateApplicationInstance(context.Background(), d, meta); diags.HasError() {
+				errs <- fmt.Sprint(diags)
+			}
+		}(i)
+	}
+	wg.Wait()
+	close(errs)
+	for e := range errs {
+		t.Fatal(e)
+	}
+	if got := strings.Count(fc.requestLog(), "GET /v1/devices/id/dev-shared"); got != 1 {
+		t.Fatalf("device read %d times for %d creates, want 1", got, n)
+	}
+}
+
 func TestApplicationInstance_AsyncCreateJobFailed(t *testing.T) {
 	fc := newFakeController()
 	fc.failCreate = "inst-dup"

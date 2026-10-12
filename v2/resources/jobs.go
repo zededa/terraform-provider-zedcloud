@@ -88,6 +88,13 @@ func (p *jobPoller) wait(ctx context.Context, jobID string, timeout time.Duratio
 		last       jobs.Status
 		readErrors int
 	)
+	// Do not poll right after the write: at high parallelism every write
+	// would be followed by a job read in the same burst, doubling the load
+	// on the API gateway (seen on a local controller at parallelism 160).
+	// Most jobs finish within the first interval anyway.
+	if err := p.sleep(ctx, jitter(interval)); err != nil {
+		return nil, &jobTimeoutError{JobID: jobID, Timeout: timeout}
+	}
 	for {
 		job, err := p.client.Get(ctx, jobID, p.objectType)
 		switch {
