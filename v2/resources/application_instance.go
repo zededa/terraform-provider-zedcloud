@@ -3,10 +3,14 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/davecgh/go-spew/spew"
+	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	config "github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
@@ -14,15 +18,34 @@ import (
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
 
+// Default timeouts for zedcloud_application_instance. At high parallelism a
+// single device's instance writes queue on the controller, so creates and
+// updates can take minutes (ENG-3015, UE-177).
+const (
+	appInstanceWriteTimeout = 20 * time.Minute
+	appInstanceReadTimeout  = 5 * time.Minute
+)
+
+// readAfterWriteTimeout bounds how long Create and Update wait for the
+// instance they just wrote to become readable.
+var readAfterWriteTimeout = 2 * time.Minute
+
 func ApplicationInstanceResource() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: CreateApplicationInstance,
-		ReadContext:   ReadApplicationInstance,
+		ReadContext:   resourceReadApplicationInstance,
 		UpdateContext: UpdateApplicationInstance,
 		DeleteContext: DeleteApplicationInstance,
 		Schema:        zschema.ApplicationInstance(),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
+		},
+		Timeouts: &schema.ResourceTimeout{
+			Create:  schema.DefaultTimeout(appInstanceWriteTimeout),
+			Read:    schema.DefaultTimeout(appInstanceReadTimeout),
+			Update:  schema.DefaultTimeout(appInstanceWriteTimeout),
+			Delete:  schema.DefaultTimeout(appInstanceWriteTimeout),
+			Default: schema.DefaultTimeout(appInstanceWriteTimeout),
 		},
 	}
 }
@@ -34,287 +57,256 @@ func ApplicationInstanceDataSource() *schema.Resource {
 	}
 }
 
-func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+// appInstanceAPIErrorDiags turns an API error into diagnostics.
+func appInstanceAPIErrorDiags(op string, err error) diag.Diagnostics {
+	log.Printf("[TRACE] edge application instance %s error: %s", op, spew.Sdump(err))
+	if ds, ok := ZsrvResponderToDiags(err); ok {
+		return ds
+	}
+	return diag.Errorf("edge application instance %s error: %s", op, err)
+}
+
+// zsrvResponseDiags returns the errors carried in a 200 ZsrvResponse.
+func zsrvResponseDiags(resp *models.ZsrvResponse) diag.Diagnostics {
 	var diags diag.Diagnostics
+	if resp == nil {
+		return diags
+	}
+	for _, e := range resp.Error {
+		// FIXME: zedcloud api returns a response that contains and error even in case of success.
+		// remove this code once it is fixed on API side.
+		if e == nil || (e.ErrorCode != nil && *e.ErrorCode == models.ErrorCodeSuccess) {
+			continue
+		}
+		diags = append(diags, diag.FromErr(errors.New(e.Details))...)
+	}
+	return diags
+}
 
-	model := zschema.ApplicationInstanceModel(d)
-	params := config.CreateParams()
-	params.SetBody(model)
+// isHTTPResponseError reports whether err came from an HTTP response, as
+// opposed to a transport failure (timeout, connection reset) after which the
+// controller may still have done the work.
+func isHTTPResponseError(err error) bool {
+	if _, ok := err.(ZsrvResponder); ok {
+		return true
+	}
+	type statusCoder interface{ Code() int }
+	var sc statusCoder
+	return errors.As(err, &sc)
+}
 
+func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	_, isDevIDSet := d.GetOk("device_id")
 	_, isEdgeNodeClusterSet := d.GetOk("edge_node_cluster")
 	if !isDevIDSet && !isEdgeNodeClusterSet {
-		diags = append(diags, diag.Errorf("either device_id or edge_node_cluster has to be specified")...)
-		return diags
+		return diag.Errorf("either device_id or edge_node_cluster has to be specified")
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
+	name := d.Get("name").(string)
 
-	resp, err := client.ApplicationInstance.Create(params, nil)
+	// The provider picks the id, so it knows the instance's id even if the
+	// call times out after the controller accepted it. Then the instance is
+	// tracked (tainted) in state instead of orphaned (ENG-3016, UE-177 §4.6).
+	// seine keeps a caller-supplied UUID (appInstCreateCommon).
+	id, err := uuid.GenerateUUID()
 	if err != nil {
-		log.Printf("[TRACE] edge application instance create error: %s", spew.Sdump(err))
-		if ds, ok := ZsrvResponderToDiags(err); ok {
-			diags = append(diags, ds...)
-			return diags
-		}
-
-		diags = append(diags, diag.Errorf("edge application instance create error: %s", err)...)
-		return diags
+		return diag.Errorf("generating an id for edge application instance %q: %s", name, err)
 	}
+	model := zschema.ApplicationInstanceModel(d)
+	model.ID = id
 
-	responseData := resp.GetPayload()
-	if responseData != nil && len(responseData.Error) > 0 {
-		for _, err := range responseData.Error {
-			// FIXME: zedcloud api returns a response that contains and error even in case of success.
-			// remove this code once it is fixed on API side.
-			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
-				continue
+	{
+		params := config.CreateParams().WithContext(ctx)
+		params.SetBody(model)
+
+		resp, err := client.ApplicationInstance.Create(params, nil)
+		if err != nil {
+			if !isHTTPResponseError(err) {
+				d.SetId(id)
 			}
-			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
+			return appInstanceAPIErrorDiags("create", err)
 		}
-		if diags.HasError() {
+		if diags := zsrvResponseDiags(resp.GetPayload()); diags.HasError() {
 			return diags
 		}
+		if objID := resp.GetPayload().ObjectID; objID != "" {
+			id = objID
+		}
+		d.SetId(id)
 	}
 
-	// note, we need to set the ID in any case, even GetByName endpoint seems to require the ID
-	// but doesn't return any error if it's not set.
-	d.SetId(responseData.ObjectID)
-
-	// the zedcloud API does not return the partially updated object but a custom response.
-	// thus, we need to fetch the object and populate the state.
-	if errs := readApplicationInstanceByName(ctx, d, m); err != nil {
-		return append(diags, errs...)
-	}
-
-	return diags
+	// The zedcloud API does not return the object, so read it back.
+	return readApplicationInstanceAfterWrite(ctx, d, m)
 }
 
-func ReadApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	if _, isSet := d.GetOk("name"); isSet {
-		return readApplicationInstanceByName(ctx, d, m)
-	}
-	return readApplicationInstanceByID(ctx, d, m)
-}
-
-func readApplicationInstanceByID(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	params := config.GetByIDParams()
-
-	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-	if xRequestIdIsSet {
-		params.XRequestID = xRequestIdVal.(*string)
-	}
-
-	id, isSet := d.GetOk("id")
-	if isSet {
-		params.ID = id.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-		return diags
-	}
-
+// fetchApplicationInstance reads the instance by name when name is set, else
+// by id.
+func fetchApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) (*models.AppInstance, error) {
 	client := m.(*api_client.ZedcloudAPI)
 
+	if name, ok := d.GetOk("name"); ok {
+		params := config.GetByNameParams().WithContext(ctx)
+		params.Name = name.(string)
+		resp, err := client.ApplicationInstance.GetByName(params, nil)
+		if err != nil {
+			return nil, err
+		}
+		return resp.GetPayload(), nil
+	}
+
+	id, ok := d.GetOk("id")
+	if !ok || id.(string) == "" {
+		return nil, errors.New("missing client parameter: name or id")
+	}
+	params := config.GetByIDParams().WithContext(ctx)
+	params.ID = id.(string)
 	resp, err := client.ApplicationInstance.GetByID(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] edge application instance read error: %s", spew.Sdump(err))
-		if ds, ok := ZsrvResponderToDiags(err); ok {
-			diags = append(diags, ds...)
-			return diags
-		}
-
-		diags = append(diags, diag.Errorf("edge application instance read error: %s", err)...)
-		return diags
+		return nil, err
 	}
-
-	appInstance := resp.GetPayload()
-	zschema.SetApplicationInstanceResourceData(d, appInstance)
-	d.SetId(appInstance.ID)
-
-	return diags
-
+	return resp.GetPayload(), nil
 }
 
-func readApplicationInstanceByName(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	params := config.GetByNameParams()
-
-	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-	if xRequestIdIsSet {
-		params.XRequestID = xRequestIdVal.(*string)
-	}
-
-	nameVal, nameIsSet := d.GetOk("name")
-	if nameIsSet {
-		params.Name = nameVal.(string)
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: name")...)
-		return diags
-	}
-
-	client := m.(*api_client.ZedcloudAPI)
-
-	resp, err := client.ApplicationInstance.GetByName(params, nil)
+// ReadApplicationInstance is the data source read: a missing instance is an
+// error.
+func ReadApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	appInstance, err := fetchApplicationInstance(ctx, d, m)
 	if err != nil {
-		log.Printf("[TRACE] edge application instance read error: %s", spew.Sdump(err))
-		if ds, ok := ZsrvResponderToDiags(err); ok {
-			diags = append(diags, ds...)
-			return diags
-		}
-
-		diags = append(diags, diag.Errorf("edge application instance read error: %s", err)...)
-		return diags
+		return appInstanceAPIErrorDiags("read", err)
 	}
-
-	appInstance := resp.GetPayload()
+	if appInstance == nil || appInstance.ID == "" {
+		return diag.Errorf("edge application instance read error: the controller returned no instance")
+	}
 	zschema.SetApplicationInstanceResourceData(d, appInstance)
 	d.SetId(appInstance.ID)
+	return nil
+}
 
-	return diags
+// resourceReadApplicationInstance is the resource refresh: an instance that no
+// longer exists is removed from state, so Terraform plans to create it again
+// instead of failing every run until `terraform state rm` (UE-177 §4.2).
+func resourceReadApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	appInstance, err := fetchApplicationInstance(ctx, d, m)
+	if err != nil {
+		if isStatusNotFound(err) {
+			log.Printf("[WARN] edge application instance %q (%s) not found, removing it from state", d.Get("name"), d.Id())
+			d.SetId("")
+			return nil
+		}
+		return appInstanceAPIErrorDiags("read", err)
+	}
+	if appInstance == nil || appInstance.ID == "" {
+		log.Printf("[WARN] edge application instance %q (%s): the controller returned no instance, removing it from state", d.Get("name"), d.Id())
+		d.SetId("")
+		return nil
+	}
+	zschema.SetApplicationInstanceResourceData(d, appInstance)
+	d.SetId(appInstance.ID)
+	return nil
+}
 
+// readApplicationInstanceAfterWrite reads back the instance Create or Update
+// just wrote. Under load the write can become visible a moment later, so
+// not-found is retried for a while. It never removes the resource from state
+// (UE-177 §4.3).
+func readApplicationInstanceAfterWrite(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	wantID := d.Id()
+	err := resource.RetryContext(ctx, readAfterWriteTimeout, func() *resource.RetryError {
+		appInstance, err := fetchApplicationInstance(ctx, d, m)
+		if err != nil {
+			if isStatusNotFound(err) {
+				return resource.RetryableError(err)
+			}
+			return resource.NonRetryableError(err)
+		}
+		if appInstance == nil || appInstance.ID == "" {
+			return resource.RetryableError(errors.New("the controller returned no instance yet"))
+		}
+		if wantID != "" && appInstance.ID != wantID {
+			return resource.NonRetryableError(fmt.Errorf(
+				"name %q belongs to another edge application instance (id %s, expected %s). "+
+					"Import it with `terraform import` or choose another name",
+				d.Get("name"), appInstance.ID, wantID))
+		}
+		zschema.SetApplicationInstanceResourceData(d, appInstance)
+		d.SetId(appInstance.ID)
+		return nil
+	})
+	if err != nil {
+		return appInstanceAPIErrorDiags("read after write", err)
+	}
+	return nil
 }
 
 func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	params := config.UpdateParams()
-
-	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-	if xRequestIdIsSet {
-		params.XRequestID = xRequestIdVal.(*string)
+	client := m.(*api_client.ZedcloudAPI)
+	id := d.Id()
+	if id == "" {
+		return diag.Errorf("missing client parameter: id")
 	}
 
 	model := zschema.ApplicationInstanceModel(d)
-
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-		return diags
-	}
-
-	client := m.(*api_client.ZedcloudAPI)
+	model.ID = id
 
 	// CI-752 / CI-790: lock on the server's current revision, not the state's.
 	// See the comment on currentVolumeInstanceRevision.
-	if rev, ds := currentApplicationInstanceRevision(d, m); ds.HasError() {
-		return append(diags, ds...)
-	} else if rev != nil {
+	if rev := currentApplicationInstanceRevision(ctx, client, id); rev != nil {
 		model.Revision = rev
 	}
 
-	params.SetBody(model)
+	{
+		params := config.UpdateParams().WithContext(ctx)
+		params.ID = id
+		params.SetBody(model)
 
-	resp, err := client.ApplicationInstance.Update(params, nil)
-	if err != nil {
-		log.Printf("[TRACE] edge application instance update error: %s", spew.Sdump(err))
-		if ds, ok := ZsrvResponderToDiags(err); ok {
-			diags = append(diags, ds...)
-			return diags
+		resp, err := client.ApplicationInstance.Update(params, nil)
+		if err != nil {
+			return appInstanceAPIErrorDiags("update", err)
 		}
-
-		diags = append(diags, diag.Errorf("edge application instance update error: %s", err)...)
-		return diags
-	}
-
-	responseData := resp.GetPayload()
-	if responseData != nil && len(responseData.Error) > 0 {
-		for _, err := range responseData.Error {
-			// FIXME: zedcloud api returns a response that contains and error even in case of success.
-			// remove this code once it is fixed on API side.
-			if err.ErrorCode != nil && *err.ErrorCode == models.ErrorCodeSuccess {
-				continue
-			}
-			diags = append(diags, diag.FromErr(errors.New(err.Details))...)
-		}
-		if diags.HasError() {
+		if diags := zsrvResponseDiags(resp.GetPayload()); diags.HasError() {
 			return diags
 		}
 	}
 
-	// note, we need to set the ID in any case, even GetByName endpoint seems to require items
-	// but doesn't return any error if it's not set.
-	d.SetId(responseData.ObjectID)
-
-	// the zedcloud API does not return the partially updated object but a custom response.
-	// thus, we need to fetch the object and populate the state.
-	if errs := readApplicationInstanceByName(ctx, d, m); err != nil {
-		return append(diags, errs...)
-	}
-
-	return diags
+	return readApplicationInstanceAfterWrite(ctx, d, m)
 }
 
 // currentApplicationInstanceRevision fetches the app instance's revision as the
-// server holds it now. nil with no error means "could not determine"; see
+// server holds it now. nil means "could not determine"; see
 // currentVolumeInstanceRevision.
-func currentApplicationInstanceRevision(d *schema.ResourceData, m interface{}) (*models.ObjectRevision, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	id, isSet := d.GetOk("id")
-	if !isSet {
-		return nil, diags
-	}
-
-	params := config.GetByIDParams()
-	params.ID = id.(string)
-
-	client := m.(*api_client.ZedcloudAPI)
+func currentApplicationInstanceRevision(ctx context.Context, client *api_client.ZedcloudAPI, id string) *models.ObjectRevision {
+	params := config.GetByIDParams().WithContext(ctx)
+	params.ID = id
 
 	resp, err := client.ApplicationInstance.GetByID(params, nil)
 	if err != nil {
 		log.Printf("[TRACE] application instance revision read error: %s", spew.Sdump(err))
-		return nil, diags
+		return nil
 	}
-
 	if payload := resp.GetPayload(); payload != nil {
-		return payload.Revision, diags
+		return payload.Revision
 	}
-	return nil, diags
+	return nil
 }
 
 func DeleteApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	params := config.DeleteParams()
-
-	xRequestIdVal, xRequestIdIsSet := d.GetOk("x_request_id")
-	if xRequestIdIsSet {
-		params.XRequestID = xRequestIdVal.(*string)
-	}
-
-	idVal, idIsSet := d.GetOk("id")
-	if idIsSet {
-		id, _ := idVal.(string)
-		params.ID = id
-	} else {
-		diags = append(diags, diag.Errorf("missing client parameter: id")...)
-		return diags
-	}
-
 	client := m.(*api_client.ZedcloudAPI)
+	id := d.Id()
+	if id == "" {
+		return diag.Errorf("missing client parameter: id")
+	}
 
-	_, err := client.ApplicationInstance.Delete(params, nil)
-	if err != nil {
+	params := config.DeleteParams().WithContext(ctx)
+	params.ID = id
+	if _, err := client.ApplicationInstance.Delete(params, nil); err != nil {
 		if isStatusNotFound(err) {
 			d.SetId("")
-			return diags
+			return nil
 		}
-		log.Printf("[TRACE] edge application instance delete error: %s", spew.Sdump(err))
-		if ds, ok := ZsrvResponderToDiags(err); ok {
-			diags = append(diags, ds...)
-			return diags
-		}
-
-		diags = append(diags, diag.Errorf("edge application instance delete error: %s", err)...)
-		return diags
+		return appInstanceAPIErrorDiags("delete", err)
 	}
 
 	d.SetId("")
-	return diags
+	return nil
 }
