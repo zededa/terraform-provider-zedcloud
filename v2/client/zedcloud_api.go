@@ -12,6 +12,7 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/certificate_enrollment_profile"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance_v2"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/artifact"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/asset_group_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
@@ -22,6 +23,7 @@ import (
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/helm_chart_management"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/identity_access_management"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/image"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/jobs"
 	kubernetes_deployment "github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_deployment"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_git_ops"
 	kubernetes_secrets "github.com/zededa/terraform-provider-zedcloud/v2/client/kubernetes_secret"
@@ -106,6 +108,9 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.HelmChartManagement = helm_chart_management.New(transport, formats)
 	cli.CertificateEnrollmentProfile = certificate_enrollment_profile.New(transport, formats)
 	cli.Artifact = artifact.New(transport, formats)
+	cli.ApplicationInstanceV2 = application_instance_v2.New(transport, formats)
+	cli.Jobs = jobs.New(transport, formats)
+	cli.Settings = DefaultSettings()
 	return cli
 }
 
@@ -204,6 +209,15 @@ type ZedcloudAPI struct {
 
 	// Artifact is hand-written; see client/artifact/client.go.
 	Artifact artifact.ClientService
+
+	// ApplicationInstanceV2 is hand-written; see client/application_instance_v2/client.go.
+	ApplicationInstanceV2 application_instance_v2.ClientService
+
+	// Jobs is hand-written; see client/jobs/client.go.
+	Jobs jobs.ClientService
+
+	// Settings holds provider-level options; see settings.go.
+	Settings *Settings
 }
 
 // SetTransport changes the transport on the client and all its subresources
@@ -249,4 +263,8 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.CertificateEnrollmentProfile.SetTransport(transport)
 
 	c.Artifact.SetTransport(transport)
+
+	c.ApplicationInstanceV2.SetTransport(transport)
+
+	c.Jobs.SetTransport(transport)
 }

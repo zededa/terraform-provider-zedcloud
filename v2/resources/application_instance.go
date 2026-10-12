@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	config "github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/jobs"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
@@ -55,6 +56,23 @@ func ApplicationInstanceDataSource() *schema.Resource {
 		ReadContext: ReadApplicationInstance,
 		Schema:      zschema.ApplicationInstance(),
 	}
+}
+
+func appInstancePoller(c *api_client.ZedcloudAPI) *jobPoller {
+	s := c.Settings
+	if s == nil {
+		s = api_client.DefaultSettings()
+	}
+	return &jobPoller{
+		client:      c.Jobs,
+		objectType:  jobs.ObjectTypeEdgeAppInstance,
+		intervalMin: s.JobPollIntervalMin,
+		intervalMax: s.JobPollIntervalMax,
+	}
+}
+
+func asyncWrites(c *api_client.ZedcloudAPI) bool {
+	return c.Settings == nil || c.Settings.AsyncWrites
 }
 
 // appInstanceAPIErrorDiags turns an API error into diagnostics.
@@ -116,7 +134,26 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	model := zschema.ApplicationInstanceModel(d)
 	model.ID = id
 
-	{
+	if asyncWrites(client) {
+		jobID, err := client.ApplicationInstanceV2.Create(ctx, model)
+		if err != nil {
+			if !isHTTPResponseError(err) {
+				// The request may have reached the controller.
+				d.SetId(id)
+			}
+			return appInstanceAPIErrorDiags("create", err)
+		}
+		d.SetId(id)
+
+		if _, err := appInstancePoller(client).wait(ctx, jobID, d.Timeout(schema.TimeoutCreate)); err != nil {
+			var failed *jobFailedError
+			if errors.As(err, &failed) && !applicationInstanceExists(ctx, client, id) {
+				// Nothing was created; do not leave a tainted resource behind.
+				d.SetId("")
+			}
+			return diag.Errorf("edge application instance %q create: %s", name, err)
+		}
+	} else {
 		params := config.CreateParams().WithContext(ctx)
 		params.SetBody(model)
 
@@ -239,6 +276,18 @@ func readApplicationInstanceAfterWrite(ctx context.Context, d *schema.ResourceDa
 	return nil
 }
 
+// applicationInstanceExists reports whether an instance with id exists. It
+// answers true when it cannot tell, so callers keep tracking the resource.
+func applicationInstanceExists(ctx context.Context, client *api_client.ZedcloudAPI, id string) bool {
+	params := config.GetByIDParams().WithContext(ctx)
+	params.ID = id
+	_, err := client.ApplicationInstance.GetByID(params, nil)
+	if err == nil {
+		return true
+	}
+	return !isStatusNotFound(err)
+}
+
 func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	client := m.(*api_client.ZedcloudAPI)
 	id := d.Id()
@@ -255,7 +304,15 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 		model.Revision = rev
 	}
 
-	{
+	if asyncWrites(client) {
+		jobID, err := client.ApplicationInstanceV2.Update(ctx, id, model)
+		if err != nil {
+			return appInstanceAPIErrorDiags("update", err)
+		}
+		if _, err := appInstancePoller(client).wait(ctx, jobID, d.Timeout(schema.TimeoutUpdate)); err != nil {
+			return diag.Errorf("edge application instance %q update: %s", d.Get("name"), err)
+		}
+	} else {
 		params := config.UpdateParams().WithContext(ctx)
 		params.ID = id
 		params.SetBody(model)
@@ -295,6 +352,23 @@ func DeleteApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	id := d.Id()
 	if id == "" {
 		return diag.Errorf("missing client parameter: id")
+	}
+
+	if asyncWrites(client) {
+		jobID, err := client.ApplicationInstanceV2.Delete(ctx, id)
+		if err != nil {
+			if isStatusNotFound(err) {
+				d.SetId("")
+				return nil
+			}
+			return appInstanceAPIErrorDiags("delete", err)
+		}
+		// A COMPLETED delete job is authoritative; no read-back needed.
+		if _, err := appInstancePoller(client).wait(ctx, jobID, d.Timeout(schema.TimeoutDelete)); err != nil {
+			return diag.Errorf("edge application instance %q delete: %s", d.Get("name"), err)
+		}
+		d.SetId("")
+		return nil
 	}
 
 	params := config.DeleteParams().WithContext(ctx)
