@@ -16,6 +16,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/jobs"
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
 
@@ -24,7 +25,7 @@ import (
 type fakeController struct {
 	mu        sync.Mutex
 	instances map[string]map[string]interface{} // by name
-	jobs      map[string][]string               // job id -> remaining statuses
+	jobs      map[string][]jobs.Status          // job id -> remaining statuses
 	jobErr    map[string]string
 	requests  []string
 	nextJob   int
@@ -38,12 +39,12 @@ type fakeController struct {
 func newFakeController() *fakeController {
 	return &fakeController{
 		instances: map[string]map[string]interface{}{},
-		jobs:      map[string][]string{},
+		jobs:      map[string][]jobs.Status{},
 		jobErr:    map[string]string{},
 	}
 }
 
-func (f *fakeController) newJob(statuses ...string) string {
+func (f *fakeController) newJob(statuses ...jobs.Status) string {
 	f.nextJob++
 	id := fmt.Sprintf("00000000-0000-0000-0000-%012d", f.nextJob)
 	f.jobs[id] = statuses
@@ -97,13 +98,13 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case r.Method == http.MethodPost && path == "/v2/apps/instances":
 		name, _ := body["name"].(string)
 		if f.failCreate == name {
-			job := f.newJob("JOB_STATUS_INPROGRESS", "JOB_STATUS_FAILED")
+			job := f.newJob(jobs.StatusInProgress, jobs.StatusFailed)
 			f.jobErr[job] = "app instance " + name + " already exists"
 			writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": job})
 			return
 		}
 		f.instances[name] = body
-		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob("JOB_STATUS_INPROGRESS", "JOB_STATUS_COMPLETED")})
+		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob(jobs.StatusInProgress, jobs.StatusCompleted)})
 
 	case r.Method == http.MethodPost && path == "/v1/apps/instances":
 		name, _ := body["name"].(string)
@@ -113,7 +114,7 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case strings.HasPrefix(path, "/v1/jobs/id/"):
 		parts := strings.Split(strings.TrimPrefix(path, "/v1/jobs/id/"), "/")
 		statuses, ok := f.jobs[parts[0]]
-		if !ok || len(parts) != 3 || parts[2] != "OBJECT_TYPE_EDGE_APP_INSTANCE" {
+		if !ok || len(parts) != 3 || parts[2] != jobs.ObjectTypeEdgeAppInstance {
 			writeJSON(w, http.StatusInternalServerError, map[string]interface{}{"httpStatusCode": 500})
 			return
 		}
@@ -155,7 +156,7 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		for k, v := range body {
 			inst[k] = v
 		}
-		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob("JOB_STATUS_COMPLETED")})
+		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob(jobs.StatusCompleted)})
 
 	case r.Method == http.MethodDelete && strings.HasPrefix(path, "/v2/apps/instances/id/"):
 		inst := f.byID(strings.TrimPrefix(path, "/v2/apps/instances/id/"))
@@ -164,7 +165,7 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		delete(f.instances, inst["name"].(string))
-		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob("JOB_STATUS_INPROGRESS", "JOB_STATUS_COMPLETED")})
+		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob(jobs.StatusInProgress, jobs.StatusCompleted)})
 
 	case r.Method == http.MethodDelete && strings.HasPrefix(path, "/v1/apps/instances/id/"):
 		inst := f.byID(strings.TrimPrefix(path, "/v1/apps/instances/id/"))
@@ -189,7 +190,7 @@ func (f *fakeController) requestLog() string {
 // newFakeMeta wires a ZedcloudAPI to fc the way ProviderConfigure does: the
 // retrying client with checkRetry, the transport wrapper that rewrites
 // non-JSON errors, https and the /api base path.
-func newFakeMeta(t *testing.T, fc *fakeController) *api_client.ZedcloudAPI {
+func newFakeMeta(t *testing.T, fc *fakeController, async bool) *api_client.ZedcloudAPI {
 	t.Helper()
 	t.Setenv("TF_INSECURE_SKIP_TLS_VERIFY", "true")
 	srv := httptest.NewTLSServer(fc)
@@ -200,7 +201,13 @@ func newFakeMeta(t *testing.T, fc *fakeController) *api_client.ZedcloudAPI {
 	std.Transport = NewHttpTransportWrapper(std.Transport)
 	transport := httptransport.NewWithClient(strings.TrimPrefix(srv.URL, "https://"), "/api", []string{"https"}, std)
 
-	return api_client.New(transport, strfmt.Default)
+	c := api_client.New(transport, strfmt.Default)
+	c.Settings = &api_client.Settings{
+		AsyncWrites:        async,
+		JobPollIntervalMin: time.Millisecond,
+		JobPollIntervalMax: 5 * time.Millisecond,
+	}
+	return c
 }
 
 func newInstanceData(t *testing.T, name string) *schema.ResourceData {
@@ -214,9 +221,59 @@ func newInstanceData(t *testing.T, name string) *schema.ResourceData {
 	})
 }
 
-func TestApplicationInstance_CreateSendsProviderID(t *testing.T) {
+func TestApplicationInstance_AsyncCreateUpdateDelete(t *testing.T) {
 	fc := newFakeController()
-	meta := newFakeMeta(t, fc)
+	meta := newFakeMeta(t, fc, true)
+	ctx := context.Background()
+	d := newInstanceData(t, "inst-a")
+
+	if diags := CreateApplicationInstance(ctx, d, meta); diags.HasError() {
+		t.Fatalf("create: %v\n%s", diags, fc.requestLog())
+	}
+	sent := fc.instances["inst-a"]
+	if sent == nil || sent["id"] == "" || sent["id"] != d.Id() {
+		t.Fatalf("the provider must send the id it picked: sent %v, state id %q", sent["id"], d.Id())
+	}
+	if !strings.Contains(fc.requestLog(), "POST /v2/apps/instances") {
+		t.Fatalf("expected the async route:\n%s", fc.requestLog())
+	}
+
+	if err := d.Set("title", "new title"); err != nil {
+		t.Fatal(err)
+	}
+	if diags := UpdateApplicationInstance(ctx, d, meta); diags.HasError() {
+		t.Fatalf("update: %v\n%s", diags, fc.requestLog())
+	}
+	if fc.instances["inst-a"]["title"] != "new title" {
+		t.Fatalf("update not applied: %v", fc.instances["inst-a"]["title"])
+	}
+
+	if diags := DeleteApplicationInstance(ctx, d, meta); diags.HasError() {
+		t.Fatalf("delete: %v\n%s", diags, fc.requestLog())
+	}
+	if d.Id() != "" || len(fc.instances) != 0 {
+		t.Fatalf("delete: id %q, instances %v", d.Id(), fc.instances)
+	}
+}
+
+func TestApplicationInstance_AsyncCreateJobFailed(t *testing.T) {
+	fc := newFakeController()
+	fc.failCreate = "inst-dup"
+	meta := newFakeMeta(t, fc, true)
+	d := newInstanceData(t, "inst-dup")
+
+	diags := CreateApplicationInstance(context.Background(), d, meta)
+	if !diags.HasError() || !strings.Contains(fmt.Sprint(diags), "already exists") {
+		t.Fatalf("diags = %v, want the job's error", diags)
+	}
+	if d.Id() != "" {
+		t.Fatalf("nothing was created, so the id must be cleared, got %q", d.Id())
+	}
+}
+
+func TestApplicationInstance_SyncCreate(t *testing.T) {
+	fc := newFakeController()
+	meta := newFakeMeta(t, fc, false)
 	d := newInstanceData(t, "inst-sync")
 
 	if diags := CreateApplicationInstance(context.Background(), d, meta); diags.HasError() {
@@ -233,7 +290,7 @@ func TestApplicationInstance_CreateSendsProviderID(t *testing.T) {
 
 func TestApplicationInstance_RefreshRemovesMissing(t *testing.T) {
 	fc := newFakeController()
-	meta := newFakeMeta(t, fc)
+	meta := newFakeMeta(t, fc, true)
 	d := newInstanceData(t, "gone")
 	d.SetId("11111111-1111-1111-1111-111111111111")
 
@@ -247,7 +304,7 @@ func TestApplicationInstance_RefreshRemovesMissing(t *testing.T) {
 
 func TestApplicationInstance_DataSourceErrorsOnMissing(t *testing.T) {
 	fc := newFakeController()
-	meta := newFakeMeta(t, fc)
+	meta := newFakeMeta(t, fc, true)
 	d := newInstanceData(t, "gone")
 
 	if diags := ReadApplicationInstance(context.Background(), d, meta); !diags.HasError() {
@@ -257,7 +314,7 @@ func TestApplicationInstance_DataSourceErrorsOnMissing(t *testing.T) {
 
 func TestApplicationInstance_DeleteMissingIsSuccess(t *testing.T) {
 	fc := newFakeController()
-	meta := newFakeMeta(t, fc)
+	meta := newFakeMeta(t, fc, true)
 	d := newInstanceData(t, "gone")
 	d.SetId("11111111-1111-1111-1111-111111111111")
 
@@ -275,7 +332,7 @@ func TestApplicationInstance_ReadAfterWriteRetriesNotFound(t *testing.T) {
 	t.Cleanup(func() { readAfterWriteTimeout = old })
 
 	fc := newFakeController()
-	meta := newFakeMeta(t, fc)
+	meta := newFakeMeta(t, fc, true)
 	d := newInstanceData(t, "late")
 	d.SetId("22222222-2222-2222-2222-222222222222")
 
@@ -298,7 +355,7 @@ func TestApplicationInstance_ReadAfterWriteRetriesNotFound(t *testing.T) {
 func TestApplicationInstance_ReadAfterWriteRejectsOtherID(t *testing.T) {
 	fc := newFakeController()
 	fc.instances["taken"] = map[string]interface{}{"id": "33333333-3333-3333-3333-333333333333", "name": "taken"}
-	meta := newFakeMeta(t, fc)
+	meta := newFakeMeta(t, fc, true)
 	d := newInstanceData(t, "taken")
 	d.SetId("44444444-4444-4444-4444-444444444444")
 
@@ -314,7 +371,7 @@ func TestApplicationInstance_ReadAfterWriteRejectsOtherID(t *testing.T) {
 func TestApplicationInstance_GatewayHTMLErrorIsReported(t *testing.T) {
 	fc := newFakeController()
 	fc.gatewayHTML = true
-	meta := newFakeMeta(t, fc)
+	meta := newFakeMeta(t, fc, false)
 	d := newInstanceData(t, "x")
 	d.SetId("55555555-5555-5555-5555-555555555555")
 

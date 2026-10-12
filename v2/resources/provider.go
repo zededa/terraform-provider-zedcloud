@@ -63,6 +63,23 @@ func Provider() *schema.Provider {
 				DefaultFunc:      schema.EnvDefaultFunc("ZEDCLOUD_RETRY_WAIT_MAX", "30s"),
 				ValidateDiagFunc: validatePositiveDuration,
 			},
+			"async_writes": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Description: "Create, update and delete `zedcloud_application_instance` through the job-based " +
+					"`/v2/apps/instances` API and wait for the job, instead of a synchronous call that can time out " +
+					"under load. Defaults to `true`, or the `ZEDCLOUD_ASYNC_WRITES` environment variable.",
+				DefaultFunc: schema.EnvDefaultFunc("ZEDCLOUD_ASYNC_WRITES", true),
+			},
+			"job_poll_interval_max": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Description: "Advanced. Longest interval between job status polls when `async_writes` is on, as a " +
+					"Go duration. Polls start at 2s and back off to this value. Defaults to `10s`, or the " +
+					"`ZEDCLOUD_JOB_POLL_INTERVAL_MAX` environment variable.",
+				DefaultFunc:      schema.EnvDefaultFunc("ZEDCLOUD_JOB_POLL_INTERVAL_MAX", "10s"),
+				ValidateDiagFunc: validatePositiveDuration,
+			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"zedcloud_edgenode":                  NodeDataSource(),
@@ -191,7 +208,7 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		return nil, diag.FromErr(errors.New("zedcloud API key must be set"))
 	}
 
-	opts, diags := providerOptions(d)
+	opts, settings, diags := providerOptions(d)
 	if diags.HasError() {
 		return nil, diags
 	}
@@ -212,12 +229,16 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 	transport.DefaultAuthentication = BearerToken(token)
 
-	return client.New(transport, strfmt.Default), nil
+	c := client.New(transport, strfmt.Default)
+	c.Settings = settings
+	return c, nil
 }
 
-// providerOptions reads the HTTP settings from the provider block.
-func providerOptions(d *schema.ResourceData) (httpOptions, diag.Diagnostics) {
+// providerOptions reads the HTTP and async-write settings from the provider
+// block.
+func providerOptions(d *schema.ResourceData) (httpOptions, *client.Settings, diag.Diagnostics) {
 	opts := defaultHTTPOptions()
+	settings := client.DefaultSettings()
 	var diags diag.Diagnostics
 
 	if v, ok := d.Get("request_timeout").(string); ok && v != "" {
@@ -243,7 +264,21 @@ func providerOptions(d *schema.ResourceData) (httpOptions, diag.Diagnostics) {
 			opts.maxRetries = v
 		}
 	}
-	return opts, diags
+	if v, ok := d.Get("async_writes").(bool); ok {
+		settings.AsyncWrites = v
+	}
+	if v, ok := d.Get("job_poll_interval_max").(string); ok && v != "" {
+		dur, err := time.ParseDuration(v)
+		if err != nil {
+			diags = append(diags, diag.Errorf("job_poll_interval_max: %s", err)...)
+		} else {
+			settings.JobPollIntervalMax = dur
+			if settings.JobPollIntervalMin > dur {
+				settings.JobPollIntervalMin = dur
+			}
+		}
+	}
+	return opts, settings, diags
 }
 
 func validatePositiveDuration(v interface{}, path cty.Path) diag.Diagnostics {
