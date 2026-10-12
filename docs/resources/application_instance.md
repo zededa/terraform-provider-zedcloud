@@ -37,8 +37,8 @@ description: |-
 - `encrypted_secrets` (Map of String, Sensitive) user encrypted secrets map
 - `interfaces` (Block List) application interfaces (see [below for nested schema](#nestedblock--interfaces))
 - `is_secret_updated` (Boolean) This field tells whether user secrets has updated or not, especially the cusotom config
-- `logs` (Block List) App Instance logs (see [below for nested schema](#nestedblock--logs))
-- `manifest_info` (Block List) app manifest Info (see [below for nested schema](#nestedblock--manifest_info))
+- `logs` (Block List) App Instance logs. Filled by the controller when omitted. (see [below for nested schema](#nestedblock--logs))
+- `manifest_info` (Block List) app manifest Info. Filled by the controller when omitted. (see [below for nested schema](#nestedblock--manifest_info))
 - `persistent_runtime_size_bytes` (String) Persistent runtime size in bytes
 - `project_id` (String) project name which the given app instance belong to
 - `purge` (Block List) Purge counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--purge))
@@ -46,9 +46,10 @@ description: |-
 - `remote_console` (Boolean) Remote console flag
 - `restart` (Block List) Restart counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--restart))
 - `start_delay_in_seconds` (Number) start delay is the time in seconds EVE should wait after boot before starting the application instance
-- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
+- `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3. When omitted on create, the controller copies the edge node's tags onto the instance; removing `tags` from the configuration later does not clear them.
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `user_data` (String) Deprecated: Application initiazation script in cloud-config format to be used by cloud-init
-- `vminfo` (Block List) virtual machine info (see [below for nested schema](#nestedblock--vminfo))
+- `vminfo` (Block List) virtual machine info. Filled by the controller from the edge app when omitted. (see [below for nested schema](#nestedblock--vminfo))
 
 ### Read-Only
 
@@ -372,3 +373,14 @@ Read-Only:
 - `prev` (String) Previous
 - `updated_at` (String) The time, in milliseconds since the epoch, when the record was last updated.
 - `updated_by` (String) User data: Updated By
+
+<a id="nestedblock--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String)
+- `default` (String)
+- `delete` (String)
+- `read` (String)
+- `update` (String)

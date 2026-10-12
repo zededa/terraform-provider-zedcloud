@@ -16,5 +16,8 @@ description: |-
 
 ### Optional
 
+- `max_retries` (Number) How many times a failed read is retried. Writes are only retried when the request provably did not reach ZEDCloud. Defaults to `4`, or the `ZEDCLOUD_MAX_RETRIES` environment variable.
+- `request_timeout` (String) Timeout for a single HTTP request to ZEDCloud, as a Go duration (for example `60s`). Resources with a `timeouts` block are bounded by it as a whole; this bounds each attempt. Defaults to `60s`, or the `ZEDCLOUD_REQUEST_TIMEOUT` environment variable.
+- `retry_wait_max` (String) Longest backoff between retries, as a Go duration. Defaults to `30s`, or the `ZEDCLOUD_RETRY_WAIT_MAX` environment variable.
 - `zedcloud_token` (String) ZEDCloud API token
 - `zedcloud_url` (String) ZEDCloud url. Ex: https://zedcontrol.zededa.net

@@ -2,17 +2,17 @@ package resources
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/go-openapi/runtime"
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-	"github.com/hashicorp/go-retryablehttp"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client"
@@ -38,6 +38,30 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Description: "ZEDCloud API token",
 				DefaultFunc: schema.EnvDefaultFunc("TF_VAR_zedcloud_token", nil),
+			},
+			"request_timeout": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Description: "Timeout for a single HTTP request to ZEDCloud, as a Go duration (for example `60s`). " +
+					"Resources with a `timeouts` block are bounded by it as a whole; this bounds each attempt. " +
+					"Defaults to `60s`, or the `ZEDCLOUD_REQUEST_TIMEOUT` environment variable.",
+				DefaultFunc:      schema.EnvDefaultFunc("ZEDCLOUD_REQUEST_TIMEOUT", "60s"),
+				ValidateDiagFunc: validatePositiveDuration,
+			},
+			"max_retries": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Description: "How many times a failed read is retried. Writes are only retried when the request " +
+					"provably did not reach ZEDCloud. Defaults to `4`, or the `ZEDCLOUD_MAX_RETRIES` environment variable.",
+				DefaultFunc: schema.EnvDefaultFunc("ZEDCLOUD_MAX_RETRIES", 4),
+			},
+			"retry_wait_max": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Description: "Longest backoff between retries, as a Go duration. Defaults to `30s`, or the " +
+					"`ZEDCLOUD_RETRY_WAIT_MAX` environment variable.",
+				DefaultFunc:      schema.EnvDefaultFunc("ZEDCLOUD_RETRY_WAIT_MAX", "30s"),
+				ValidateDiagFunc: validatePositiveDuration,
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
@@ -149,7 +173,11 @@ func (h *HttpTransportWrapper) RoundTrip(req *http.Request) (*http.Response, err
 	version = fmt.Sprintf("zededa-terraform-provider/%s", h.providerVersion)
 	req.Header.Add("User-Agent", version)
 	req.Header.Add("X-Custom-User-Agent", version)
-	return h.RoundTripper.RoundTrip(req)
+	resp, err := h.RoundTripper.RoundTrip(req)
+	if err == nil {
+		rewriteNonJSONError(resp)
+	}
+	return resp, err
 }
 
 func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
@@ -163,8 +191,18 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		return nil, diag.FromErr(errors.New("zedcloud API key must be set"))
 	}
 
+	opts, diags := providerOptions(d)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	// Calls that do not carry a Terraform context get go-openapi's
+	// DefaultTimeout as their whole budget, retries included. It used to be
+	// the library's 30s; size it from the retry settings instead (UE-177 §4.1).
+	httptransport.DefaultTimeout = opts.callBudget()
+
 	zedCloudURL = strings.TrimPrefix(zedCloudURL, "https://")
-	stdRetryClient := getRetryClient().StandardClient()
+	stdRetryClient := getRetryClient(opts).StandardClient()
 	stdRetryClient.Transport = NewHttpTransportWrapper(stdRetryClient.Transport)
 	transport := httptransport.NewWithClient(zedCloudURL, "/api", []string{"https"}, stdRetryClient)
 	httpSessionDebugEnabled := envVarIsEnabled("TF_HTTP_SESSION_DEBUG")
@@ -177,49 +215,62 @@ func ProviderConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	return client.New(transport, strfmt.Default), nil
 }
 
+// providerOptions reads the HTTP settings from the provider block.
+func providerOptions(d *schema.ResourceData) (httpOptions, diag.Diagnostics) {
+	opts := defaultHTTPOptions()
+	var diags diag.Diagnostics
+
+	if v, ok := d.Get("request_timeout").(string); ok && v != "" {
+		dur, err := time.ParseDuration(v)
+		if err != nil {
+			diags = append(diags, diag.Errorf("request_timeout: %s", err)...)
+		} else {
+			opts.requestTimeout = dur
+		}
+	}
+	if v, ok := d.Get("retry_wait_max").(string); ok && v != "" {
+		dur, err := time.ParseDuration(v)
+		if err != nil {
+			diags = append(diags, diag.Errorf("retry_wait_max: %s", err)...)
+		} else {
+			opts.retryWaitMax = dur
+		}
+	}
+	if v, ok := d.Get("max_retries").(int); ok {
+		if v < 0 {
+			diags = append(diags, diag.Errorf("max_retries must not be negative")...)
+		} else {
+			opts.maxRetries = v
+		}
+	}
+	return opts, diags
+}
+
+func validatePositiveDuration(v interface{}, path cty.Path) diag.Diagnostics {
+	s, _ := v.(string)
+	dur, err := time.ParseDuration(s)
+	if err != nil {
+		return diag.Diagnostics{{
+			Severity:      diag.Error,
+			Summary:       fmt.Sprintf("invalid duration %q", s),
+			Detail:        "Use a Go duration such as 30s or 2m.",
+			AttributePath: path,
+		}}
+	}
+	if dur <= 0 {
+		return diag.Diagnostics{{
+			Severity:      diag.Error,
+			Summary:       fmt.Sprintf("duration %q must be positive", s),
+			AttributePath: path,
+		}}
+	}
+	return nil
+}
+
 // BearerToken provides a header based oauth2 bearer access token auth info writer
 func BearerToken(token string) runtime.ClientAuthInfoWriter {
 	return runtime.ClientAuthInfoWriterFunc(func(r runtime.ClientRequest, _ strfmt.Registry) error {
 		r.SetHeaderParam("Authorization", "Bearer "+token)
 		return nil
 	})
-}
-
-func getRetryClient() *retryablehttp.Client {
-	retryClient := retryablehttp.NewClient()
-	skipTlsVerification := envVarIsEnabled("TF_INSECURE_SKIP_TLS_VERIFY")
-	if skipTlsVerification {
-		insecureTransport := retryClient.HTTPClient.Transport.(*http.Transport).Clone()
-		insecureTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-		retryClient.HTTPClient = &http.Client{
-			Transport: insecureTransport,
-		}
-	}
-	retryClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
-		// If response is nil (e.g., network error), let the default policy decide based on err
-		if resp == nil {
-			return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
-		}
-
-		// We cannot retry on other methods rather than GET. Our API is not idempotent.
-		if resp.Request == nil {
-			// Be conservative: defer to default policy if request is missing
-			return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
-		}
-
-		if resp.Request.Method != http.MethodGet {
-			return false, nil
-		}
-
-		// On GET, retry 404 to absorb read-after-write eventual consistency.
-		// For non-GET methods we never retry 404: on DELETE it is the success
-		// case, and on POST/PUT it indicates a missing parent that retries
-		// won't resolve. See CI-723.
-		if resp.StatusCode == http.StatusNotFound {
-			return true, fmt.Errorf("unexpected HTTP status %s", resp.Status)
-		}
-
-		return retryablehttp.DefaultRetryPolicy(ctx, resp, err)
-	}
-	return retryClient
 }
