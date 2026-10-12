@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
@@ -196,6 +197,57 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	return readApplicationInstanceAfterWrite(ctx, d, m)
 }
 
+// projectLookups caches, per provider process, the project of each edge node
+// or cluster that resolveAppInstanceProjectID looked up. At high
+// parallelism many instances share a few devices (CI-1004: 120 instances on
+// two), and a read per instance is load the controller does not need.
+var projectLookups = &projectCache{entries: map[string]*projectEntry{}}
+
+type projectCache struct {
+	mu      sync.Mutex
+	entries map[string]*projectEntry
+}
+
+type projectEntry struct {
+	done      chan struct{}
+	projectID string
+	err       error
+}
+
+// get returns the cached project for key, or calls fetch once for all
+// concurrent callers. Failures are not cached.
+func (c *projectCache) get(ctx context.Context, key string, fetch func() (string, error)) (string, error) {
+	c.mu.Lock()
+	if e, ok := c.entries[key]; ok {
+		c.mu.Unlock()
+		select {
+		case <-e.done:
+			if e.err == nil {
+				return e.projectID, nil
+			}
+			// The lookup that failed has already been forgotten; try again.
+			return c.get(ctx, key, fetch)
+		case <-ctx.Done():
+			return "", ctx.Err()
+		}
+	}
+	e := &projectEntry{done: make(chan struct{})}
+	c.entries[key] = e
+	c.mu.Unlock()
+
+	e.projectID, e.err = fetch()
+	if e.err != nil || e.projectID == "" {
+		if e.err == nil {
+			e.err = errors.New("no project")
+		}
+		c.mu.Lock()
+		delete(c.entries, key)
+		c.mu.Unlock()
+	}
+	close(e.done)
+	return e.projectID, e.err
+}
+
 // resolveAppInstanceProjectID fills model.ProjectID from the edge node, or
 // from the edge node cluster, when the configuration does not set
 // project_id. The synchronous v1 create does this on the controller; the
@@ -204,28 +256,42 @@ func resolveAppInstanceProjectID(ctx context.Context, client *api_client.Zedclou
 	if model.ProjectID != nil && *model.ProjectID != "" {
 		return nil
 	}
-	var projectID string
+	var (
+		projectID string
+		err       error
+	)
 	switch {
 	case model.DeviceID != nil && *model.DeviceID != "":
-		params := nodecfg.GetByIDParams().WithContext(ctx)
-		params.ID = *model.DeviceID
-		resp, err := client.Node.GetByID(params, nil)
-		if err != nil {
-			return fmt.Errorf("reading edge node %s to find its project: %w", *model.DeviceID, err)
-		}
-		if p := resp.GetPayload(); p != nil && p.ProjectID != nil {
-			projectID = *p.ProjectID
-		}
+		devID := *model.DeviceID
+		projectID, err = projectLookups.get(ctx, "device/"+devID, func() (string, error) {
+			params := nodecfg.GetByIDParams().WithContext(ctx)
+			params.ID = devID
+			resp, err := client.Node.GetByID(params, nil)
+			if err != nil {
+				return "", fmt.Errorf("reading edge node %s to find its project: %w", devID, err)
+			}
+			if p := resp.GetPayload(); p != nil && p.ProjectID != nil {
+				return *p.ProjectID, nil
+			}
+			return "", nil
+		})
 	case model.EdgeNodeCluster != nil && model.EdgeNodeCluster.ID != "":
-		params := clustercfg.NewGetParams().WithContext(ctx)
-		params.ID = model.EdgeNodeCluster.ID
-		resp, err := client.Cluster.GetCluster(params, nil)
-		if err != nil {
-			return fmt.Errorf("reading edge node cluster %s to find its project: %w", model.EdgeNodeCluster.ID, err)
-		}
-		if p := resp.GetPayload(); p != nil {
-			projectID = p.ProjectID
-		}
+		clusterID := model.EdgeNodeCluster.ID
+		projectID, err = projectLookups.get(ctx, "cluster/"+clusterID, func() (string, error) {
+			params := clustercfg.NewGetParams().WithContext(ctx)
+			params.ID = clusterID
+			resp, err := client.Cluster.GetCluster(params, nil)
+			if err != nil {
+				return "", fmt.Errorf("reading edge node cluster %s to find its project: %w", clusterID, err)
+			}
+			if p := resp.GetPayload(); p != nil {
+				return p.ProjectID, nil
+			}
+			return "", nil
+		})
+	}
+	if err != nil && err.Error() != "no project" {
+		return err
 	}
 	if projectID == "" {
 		return errors.New("project_id is not set and could not be read from the edge node or cluster")

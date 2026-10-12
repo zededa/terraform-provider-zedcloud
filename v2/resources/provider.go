@@ -159,6 +159,7 @@ func Provider() *schema.Provider {
 type HttpTransportWrapper struct {
 	http.RoundTripper
 	providerVersion string
+	userAgent       string
 }
 
 func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
@@ -182,14 +183,18 @@ func NewHttpTransportWrapper(rt http.RoundTripper) *HttpTransportWrapper {
 			wrapper.providerVersion = "testbuild"
 		}
 	}
+	wrapper.userAgent = fmt.Sprintf("zededa-terraform-provider/%s", wrapper.providerVersion)
 
 	return wrapper
 }
 
+// RoundTrip adds the provider's User-Agent. It must not write shared state:
+// it runs concurrently for every in-flight request (it used to overwrite the
+// package-level version string on each call, a data race at high
+// parallelism that also corrupted the version of later wrappers).
 func (h *HttpTransportWrapper) RoundTrip(req *http.Request) (*http.Response, error) {
-	version = fmt.Sprintf("zededa-terraform-provider/%s", h.providerVersion)
-	req.Header.Add("User-Agent", version)
-	req.Header.Add("X-Custom-User-Agent", version)
+	req.Header.Add("User-Agent", h.userAgent)
+	req.Header.Add("X-Custom-User-Agent", h.userAgent)
 	resp, err := h.RoundTripper.RoundTrip(req)
 	if err == nil {
 		rewriteNonJSONError(resp)

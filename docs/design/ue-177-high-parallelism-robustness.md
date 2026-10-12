@@ -345,6 +345,32 @@ Resource flows:
   - a second `plan` shows no changes
   - no orphans (`GET /v1/apps/instances` count matches state)
 
+### 6.1 Local results (2026-10-12, minikube controller, `-parallelism=160`)
+
+Harness: 2 registered-only edge nodes, N edge apps (VM), N instances (`activate=false`), with
+mitmproxy in front of the controller for fault injection. Registry 2.8.0 vs this branch.
+
+| Scenario | 2.8.0 | branch |
+|---|---|---|
+| 200 apps / 120 instances: create, re-apply, delete | ok | ok |
+| `plan` right after apply | **120 to change** (perpetual diff) | no changes |
+| 35 s response latency on writes (server completes) | 40/40 creates time out, 40 orphans, re-apply 409 ×40 | creates take ~38 s, no errors |
+| Deletes under 35 s latency | 10 time out; every later plan, apply and destroy fails with 404 | ok |
+| 30% Cloudflare-style HTML 504 on reads (48 injected) | – | clean plan (retried) |
+| 10 instances deleted out of band | – | plan: 10 to add, converges |
+| Job reads delayed past a 10 s `timeouts.create` | – | 20 job-timeout errors → tainted → next apply replaces 20, no orphans |
+
+Found and fixed during these runs:
+- The local `znginx` `istio-proxy` sidecar (128 MiB) is OOM-killed by bursts from both versions;
+  raised to 512 MiB locally for the comparison. Async mode made the bursts worse, so the first job
+  poll is now delayed by a jittered interval, and the device→project lookup for v2 creates is cached
+  per provider run, with concurrent lookups for the same device sharing one read.
+- `HttpTransportWrapper.RoundTrip` wrote the package-level `version` on every request: a data race
+  under parallelism (`go test -race`). The User-Agent is now built once.
+
+Not covered locally: real controller latency (the local controller answers in milliseconds), which
+still needs hummingbird.
+
 ## 7. Open questions
 1. ~~What exactly does #8516 add?~~ **Answered (§3.1):** seine-only throughput fixes (atomic VNC claim, batched
    policy reads, 8-worker keyed pool for bundle writes). No new routes, and the v2 instance routes are
