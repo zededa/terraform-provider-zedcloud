@@ -2,19 +2,21 @@ package resources
 
 import (
 	"context"
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"log"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	config "github.com/zededa/terraform-provider-zedcloud/v2/client/application_instance"
+	clustercfg "github.com/zededa/terraform-provider-zedcloud/v2/client/cluster"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/jobs"
+	nodecfg "github.com/zededa/terraform-provider-zedcloud/v2/client/node"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
@@ -113,6 +115,18 @@ func isHTTPResponseError(err error) bool {
 	return errors.As(err, &sc)
 }
 
+// newAppInstanceID returns a random RFC 4122 version 4 UUID, the form the
+// controller generates itself (uuid.New in seine).
+func newAppInstanceID() (string, error) {
+	var b [16]byte
+	if _, err := rand.Read(b[:]); err != nil {
+		return "", err
+	}
+	b[6] = (b[6] & 0x0f) | 0x40 // version 4
+	b[8] = (b[8] & 0x3f) | 0x80 // RFC 4122 variant
+	return fmt.Sprintf("%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:16]), nil
+}
+
 func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	_, isDevIDSet := d.GetOk("device_id")
 	_, isEdgeNodeClusterSet := d.GetOk("edge_node_cluster")
@@ -127,7 +141,7 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	// call times out after the controller accepted it. Then the instance is
 	// tracked (tainted) in state instead of orphaned (ENG-3016, UE-177 §4.6).
 	// seine keeps a caller-supplied UUID (appInstCreateCommon).
-	id, err := uuid.GenerateUUID()
+	id, err := newAppInstanceID()
 	if err != nil {
 		return diag.Errorf("generating an id for edge application instance %q: %s", name, err)
 	}
@@ -135,6 +149,11 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	model.ID = id
 
 	if asyncWrites(client) {
+		// v1 derives the project from the device; v2 rejects a create
+		// without projectId up front (seine appInstCreateV2).
+		if err := resolveAppInstanceProjectID(ctx, client, model); err != nil {
+			return diag.Errorf("edge application instance %q create: %s", name, err)
+		}
 		jobID, err := client.ApplicationInstanceV2.Create(ctx, model)
 		if err != nil {
 			if !isHTTPResponseError(err) {
@@ -175,6 +194,44 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 
 	// The zedcloud API does not return the object, so read it back.
 	return readApplicationInstanceAfterWrite(ctx, d, m)
+}
+
+// resolveAppInstanceProjectID fills model.ProjectID from the edge node, or
+// from the edge node cluster, when the configuration does not set
+// project_id. The synchronous v1 create does this on the controller; the
+// async v2 create requires it in the request.
+func resolveAppInstanceProjectID(ctx context.Context, client *api_client.ZedcloudAPI, model *models.AppInstance) error {
+	if model.ProjectID != nil && *model.ProjectID != "" {
+		return nil
+	}
+	var projectID string
+	switch {
+	case model.DeviceID != nil && *model.DeviceID != "":
+		params := nodecfg.GetByIDParams().WithContext(ctx)
+		params.ID = *model.DeviceID
+		resp, err := client.Node.GetByID(params, nil)
+		if err != nil {
+			return fmt.Errorf("reading edge node %s to find its project: %w", *model.DeviceID, err)
+		}
+		if p := resp.GetPayload(); p != nil && p.ProjectID != nil {
+			projectID = *p.ProjectID
+		}
+	case model.EdgeNodeCluster != nil && model.EdgeNodeCluster.ID != "":
+		params := clustercfg.NewGetParams().WithContext(ctx)
+		params.ID = model.EdgeNodeCluster.ID
+		resp, err := client.Cluster.GetCluster(params, nil)
+		if err != nil {
+			return fmt.Errorf("reading edge node cluster %s to find its project: %w", model.EdgeNodeCluster.ID, err)
+		}
+		if p := resp.GetPayload(); p != nil {
+			projectID = p.ProjectID
+		}
+	}
+	if projectID == "" {
+		return errors.New("project_id is not set and could not be read from the edge node or cluster")
+	}
+	model.ProjectID = &projectID
+	return nil
 }
 
 // fetchApplicationInstance reads the instance by name when name is set, else

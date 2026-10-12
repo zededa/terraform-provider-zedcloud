@@ -288,6 +288,10 @@ Resource flows:
   1. DELETE v2. 404 → done.
   2. Wait (Delete timeout).
   3. Confirm with GET by id → 404 (short retry).
+- **projectId (found on the local controller):** v2 create rejects a request without `projectId` up
+  front with 400 "project id is empty". v1 derives the project from the device. When `project_id` isn't
+  configured, the provider reads it from the edge node (or the edge node cluster) before the v2 POST.
+- **Id format:** the minted id is an RFC 4122 v4 UUID, like the ones the controller generates.
 - **Response parsing:** take the job id from `ZsrvResponse.objectId`. Also accept `jobID` when the body
   is an `AppInstanceServiceResp`. gilas returns that shape whenever seine fills `jobID`
   (`appinstance_handlers.go:345-347`). Today seine doesn't fill it on these paths, but it costs nothing to

@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"strings"
 	"sync"
 	"testing"
@@ -97,6 +98,13 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case r.Method == http.MethodPost && path == "/v2/apps/instances":
 		name, _ := body["name"].(string)
+		if pid, _ := body["projectId"].(string); pid == "" {
+			// seine appInstCreateV2 rejects this up front; v1 derives it.
+			writeJSON(w, http.StatusBadRequest, map[string]interface{}{
+				"httpStatusCode": 400, "error": []map[string]string{{"details": "project id is empty"}},
+			})
+			return
+		}
 		if f.failCreate == name {
 			job := f.newJob(jobs.StatusInProgress, jobs.StatusFailed)
 			f.jobErr[job] = "app instance " + name + " already exists"
@@ -110,6 +118,12 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		name, _ := body["name"].(string)
 		f.instances[name] = body
 		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": body["id"]})
+
+	case r.Method == http.MethodGet && strings.HasPrefix(path, "/v1/devices/id/"):
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"id": strings.TrimPrefix(path, "/v1/devices/id/"), "name": "dev", "title": "dev",
+			"modelId": "m", "projectId": "proj-of-device",
+		})
 
 	case strings.HasPrefix(path, "/v1/jobs/id/"):
 		parts := strings.Split(strings.TrimPrefix(path, "/v1/jobs/id/"), "/")
@@ -256,6 +270,21 @@ func TestApplicationInstance_AsyncCreateUpdateDelete(t *testing.T) {
 	}
 }
 
+func TestApplicationInstance_AsyncCreateResolvesProjectFromDevice(t *testing.T) {
+	fc := newFakeController()
+	meta := newFakeMeta(t, fc, true)
+	d := schema.TestResourceDataRaw(t, zschema.ApplicationInstance(), map[string]interface{}{
+		"name": "no-project", "title": "t", "app_id": "app-1", "device_id": "dev-1",
+	})
+
+	if diags := CreateApplicationInstance(context.Background(), d, meta); diags.HasError() {
+		t.Fatalf("create: %v\n%s", diags, fc.requestLog())
+	}
+	if got := fc.instances["no-project"]["projectId"]; got != "proj-of-device" {
+		t.Fatalf("projectId sent = %v, want the device's project", got)
+	}
+}
+
 func TestApplicationInstance_AsyncCreateJobFailed(t *testing.T) {
 	fc := newFakeController()
 	fc.failCreate = "inst-dup"
@@ -379,6 +408,18 @@ func TestApplicationInstance_GatewayHTMLErrorIsReported(t *testing.T) {
 	msg := fmt.Sprint(diags)
 	if !diags.HasError() || strings.Contains(msg, "invalid character") || !strings.Contains(msg, "504") {
 		t.Fatalf("diags = %s, want the HTTP 504 status, not a JSON decode error", msg)
+	}
+}
+
+func TestNewAppInstanceID_IsUUIDv4(t *testing.T) {
+	re := regexp.MustCompile("^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$")
+	seen := map[string]bool{}
+	for i := 0; i < 100; i++ {
+		id, err := newAppInstanceID()
+		if err != nil || !re.MatchString(id) || seen[id] {
+			t.Fatalf("id %q (err %v) is not a fresh UUID v4", id, err)
+		}
+		seen[id] = true
 	}
 }
 
