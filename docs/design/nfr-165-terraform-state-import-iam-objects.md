@@ -4,11 +4,25 @@
 **Driven by:** [NFR-165](https://zededa.atlassian.net/browse/NFR-165) — *Support Terraform state import for user accounts and custom roles*
 **Follow-ups:** [UE-167](https://zededa.atlassian.net/browse/UE-167) (regenerate stale models, §12.1/§12.2),
 [UE-168](https://zededa.atlassian.net/browse/UE-168) (auth_profile import, §7/§12.6)
-**Repo:** `zededa/terraform-provider-zedcloud`, checked against branch `CI-836-cluster-eve-os-upgrade` @ `8b633ead`
-**Date:** 2026-09-28
+**Repo:** `zededa/terraform-provider-zedcloud`, originally written against branch
+`CI-836-cluster-eve-os-upgrade` @ `8b633ead`
+**Date:** 2026-09-28 (status updated 2026-10-05)
 **Author:** Ivan Curachin
-**Status:** Implemented on `nfr-165-iam-state-import`, except §3.5 and §7 — see §12 for
-what implementation changed about this design
+**Status:** **Shipped.** Everything in this document is on `main` except §3.5, which is
+deferred to [UE-167](https://zededa.atlassian.net/browse/UE-167) — see §12 for what
+implementation changed about this design.
+
+| Delivered | Merged as |
+|---|---|
+| Users and custom roles — [UE-166](https://zededa.atlassian.net/browse/UE-166), [#239](https://github.com/zededa/terraform-provider-zedcloud/pull/239) | `c6c0a5ad` |
+| Authorization profiles — [UE-168](https://zededa.atlassian.net/browse/UE-168), [#240](https://github.com/zededa/terraform-provider-zedcloud/pull/240) | `e9100d5a` |
+| OpenAPI map-type fix — [zededa/zedcloud#8504](https://github.com/zededa/zedcloud/pull/8504) | `f956feff70` (zedcloud) |
+
+§7 and §12.6 read as open questions about auth profiles because that is how they were
+written. They were answered during UE-168: the controller blanks `ClientSecret`,
+`CryptoKey` and `EncryptedSecrets` on every read, so importing a profile leaks nothing.
+That is now enforced by two assertions in `TestAuthProfile_CreateAndImport` rather than
+assumed. The evidence is on UE-168.
 
 **Goal.** Make `terraform import zedcloud_user.alice …` and `terraform import zedcloud_role.readonly …`
 work, and work *cleanly* — an import followed by `terraform plan` must produce an empty diff.
@@ -595,5 +609,60 @@ by ID, while every refresh goes straight to `/v1/users/id/{id}`.
 ### 12.9 Effort
 
 Steps 1–6 and 8 landed in well under the 4–4.5 day estimate, because §3.5 — the one item that
-needed model regeneration — turned out to be the deferred one. Step 7 (`auth_profile`) remains
-blocked on the §11.1 secret audit, which needs a live tenant.
+needed model regeneration — turned out to be the deferred one.
+
+Step 7 (`auth_profile`) followed as UE-168, and cost more than the half-day estimated here.
+The §11.1 secret audit itself was cheap and came back clean, but running it required
+creating an OAuth profile against a controller, which is how we discovered the resource
+could not be read *at all* — a `map<string, string>` field annotated `type: STRING` in
+`model.proto` made every OAuth profile fail to unmarshal, so even a plain `terraform apply`
+creating one was broken. Fixing that meant a zedcloud change
+([#8504](https://github.com/zededa/zedcloud/pull/8504)), waiting for it to merge and ship,
+and rebuilding the local cluster before UE-168 could be verified end to end.
+
+The lesson worth keeping: the estimate assumed the audit was the hard part. The audit was
+trivial; *performing* it is what surfaced a shipped bug that no one had hit because the
+resource had no acceptance coverage. §12.10 generalises this.
+
+### 12.10 What this work actually taught us
+
+Recorded because the pattern recurred four times and is likely to recur again.
+
+**Every significant defect here was found by running something, not by reading it.** The
+code audit that produced §1–§11 was accurate about what the code said and wrong about
+what it did:
+
+| Found by | Defect |
+|---|---|
+| Running the acceptance suite | `custom_user_input` keys must be three `_`-separated segments — a controller rule enforced nowhere in the provider and reported as a bare HTTP 400 (§12.7) |
+| Running it again after that fix | `zedcloud_auth_profile` could not be read at all for OAuth — a shipped bug, invisible for as long as the resource had no test |
+| Terraform's own post-apply empty-plan check | The read erased the configured `client_secret`; `additional_parameters` never settled |
+| Writing a test for a schema guard | `node["type"]` is not always a string, so an earlier verification scan of this very PR had been passing by luck |
+
+**Absence of a test is not absence of a bug — it is absence of evidence.** Three of the
+four resources touched here had no acceptance coverage whatsoever. Each one, once covered,
+turned out to be broken in a way that would have affected any user who tried it. The
+provider's test suite was not thin because the code was simple; it was thin in exactly the
+places the code was worst.
+
+**Guards are worth more than fixes.** The two artefacts most likely to still be earning
+their keep in a year are not the importers, but:
+
+- `TestProviderResourcesAreImportable`, which fails when a resource is added without an
+  importer unless it is on an exclusion list carrying a written reason. It is what forced
+  UE-168 to be dealt with rather than quietly forgotten, and it fired during the UE-168
+  merge conflict exactly as intended.
+- The scalar-vs-container check in zedcloud's `validate_swagger.sh`, which fails
+  `make proto-test` on the schema shape that caused all of this. `swagger validate` accepts
+  that shape, which is why it shipped in the first place.
+
+**Verify the verifier.** Two checks written during this work would have passed vacuously:
+the swagger scan (wrong assumption about `type` always being a string) and the
+imported-state secret assertion (would have passed on misspelled attribute keys). Both
+were caught by deliberately inverting them and confirming they failed. A check that has
+never been seen to fail has not been shown to work.
+
+**A conflict is a question, not a chore.** The UE-168 merge conflict in `provider_test.go`
+was the exclusion-list entry. Resolving it the lazy way — keeping either side wholesale —
+would have produced a failing test. The conflict was the design asking whether the audit
+had actually been done.
