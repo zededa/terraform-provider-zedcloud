@@ -16,5 +16,10 @@ description: |-
 
 ### Optional
 
+- `async_writes` (Boolean) Create, update and delete `zedcloud_application_instance` through the job-based `/v2/apps/instances` API and wait for the job, instead of a synchronous call that can time out under load. Defaults to `true`, or the `ZEDCLOUD_ASYNC_WRITES` environment variable.
+- `job_poll_interval_max` (String) Advanced. Longest interval between job status polls when `async_writes` is on, as a Go duration. Polls start at 2s and back off to this value. Defaults to `10s`, or the `ZEDCLOUD_JOB_POLL_INTERVAL_MAX` environment variable.
+- `max_retries` (Number) How many times a failed read is retried. Writes are only retried when the request provably did not reach ZEDCloud. Defaults to `4`, or the `ZEDCLOUD_MAX_RETRIES` environment variable.
+- `request_timeout` (String) Timeout for a single HTTP request to ZEDCloud, as a Go duration (for example `60s`). Resources with a `timeouts` block are bounded by it as a whole; this bounds each attempt. Defaults to `60s`, or the `ZEDCLOUD_REQUEST_TIMEOUT` environment variable.
+- `retry_wait_max` (String) Longest backoff between retries, as a Go duration. Defaults to `30s`, or the `ZEDCLOUD_RETRY_WAIT_MAX` environment variable.
 - `zedcloud_token` (String) ZEDCloud API token
 - `zedcloud_url` (String) ZEDCloud url. Ex: https://zedcontrol.zededa.net

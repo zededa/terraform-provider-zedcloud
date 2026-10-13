@@ -675,6 +675,8 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: AppInstanceLogsSchema(),
 			},
 			Optional: true,
+			// UE-177: the controller fills logs when the config omits it.
+			Computed: true,
 		},
 
 		"manifest_info": {
@@ -684,6 +686,9 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Schema: ManifestInfoSchema(),
 			},
 			Optional: true,
+			// UE-177: the controller fills manifest_info (bundle_version,
+			// next_bundle_version, ...) when the config omits it.
+			Computed: true,
 		},
 
 		"name": {
@@ -759,6 +764,11 @@ func ApplicationInstance() map[string]*schema.Schema {
 				Type: schema.TypeString,
 			},
 			Optional: true,
+			// UE-177: when a create sends no tags, the controller copies the
+			// device's tags onto the instance and stores them there
+			// (seine appInstCreateCommon). A PUT without tags clears them, so
+			// keep the stored value instead of planning it away.
+			Computed: true,
 		},
 
 		"title": {
@@ -785,7 +795,10 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: VMSchema(),
 			},
-			Optional:         true,
+			Optional: true,
+			// UE-177: the controller fills vminfo (cpus, memory, mode, ...)
+			// from the edge app when the config omits it.
+			Computed:         true,
 			DiffSuppressFunc: diffSuppressIfFieldValueEqual("app_type", "APP_TYPE_DOCKER_COMPOSE"),
 		},
 

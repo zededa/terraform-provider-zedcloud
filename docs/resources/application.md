@@ -32,6 +32,7 @@ description: |-
 - `origin_type` (String) origin of object
 - `parent_detail` (Block List) origin and parent related details (see [below for nested schema](#nestedblock--parent_detail))
 - `project_access_list` (List of String) project access list of the app bundle
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `user_defined_version` (String) User defined version for the given edge-app
 
 ### Read-Only
@@ -333,3 +334,14 @@ Read-Only:
 - `prev` (String)
 - `updated_at` (String)
 - `updated_by` (String)
+
+<a id="nestedblock--timeouts"></a>
+### Nested Schema for `timeouts`
+
+Optional:
+
+- `create` (String)
+- `default` (String)
+- `delete` (String)
+- `read` (String)
+- `update` (String)
