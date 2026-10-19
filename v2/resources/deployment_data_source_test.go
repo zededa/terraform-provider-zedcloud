@@ -22,7 +22,10 @@ func TestDeployment_DataSource(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:             combined,
-				ExpectNonEmptyPlan: true,
+				// The deployment must plan clean after apply: an update creates a
+				// new deployment version (NFR-249), so a perpetual diff would
+				// create one per apply.
+				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"data.zedcloud_deployment.by_name",
