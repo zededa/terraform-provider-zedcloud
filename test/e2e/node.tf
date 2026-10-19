@@ -78,8 +78,31 @@ resource "zedamigo_eve_installer" "eve" {
 # by grepping the install console log for "EVE-OS installation completed".
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Optional software TPM (var.vtpm).
+#
+# Without a TPM, EVE keeps its vault unsealed and never escrows a key, so
+# anything that depends on the TPM -- attestation with PCR values, sealing the
+# vault key to a PCR policy (zedcloud_project/zedcloud_edgenode `pcr_policy`)
+# -- cannot be exercised. With it, EVE seals the vault key in the TPM and the
+# controller sends the PCR policy back with the escrowed key on attestation.
+#
+# The same TPM must serve the install VM and the run VM: the installer creates
+# the TPM-backed identity that the installed system then uses. zedamigo keeps
+# the swtpm process (and its state) alive across both VMs.
+#
+# zedamigo starts `swtpm`, which is not installed on h-m-dl20. Run OpenTofu
+# under `nix shell nixpkgs#swtpm -c tofu ...` so it is on PATH; see README.
+# ---------------------------------------------------------------------------
+
+resource "zedamigo_swtpm" "TPM" {
+  count = var.vtpm ? 1 : 0
+  name  = "tf_e2e_tpm_${var.run_id}"
+}
+
 resource "zedamigo_installed_edge_node" "INSTALL" {
   name            = "tf_e2e_install_${var.run_id}"
+  swtpm_socket    = var.vtpm ? zedamigo_swtpm.TPM[0].socket : null
   serial_no       = zedcloud_edgenode.EN.serialno
   installer_iso   = zedamigo_eve_installer.eve.filename
   disk_image_base = zedamigo_disk_image.empty.filename
@@ -106,6 +129,7 @@ resource "zedamigo_edge_node" "VM" {
   disk_image_base    = zedamigo_installed_edge_node.INSTALL.disk_image
   ovmf_vars_src      = zedamigo_installed_edge_node.INSTALL.ovmf_vars
   serial_port_server = true
+  swtpm_socket       = var.vtpm ? zedamigo_swtpm.TPM[0].socket : null
 
   depends_on = [
     zedcloud_edgenode.EN,

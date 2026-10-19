@@ -107,3 +107,17 @@ variable "reservations_path" {
   description = "Reservation tree root on the target"
   default     = "/var/lib/zedamigo/reservations"
 }
+
+variable "vtpm" {
+  type        = bool
+  description = <<-EOT
+    Give the node a software TPM (zedamigo_swtpm), so EVE seals its vault key in
+    the TPM and TPM-dependent features (attestation, PCR policies) can be
+    tested. Needs `swtpm` on PATH on the target; on h-m-dl20 run OpenTofu under
+    `nix shell nixpkgs#swtpm -c ...`. Set it when the node is created: zedamigo
+    would apply a change in place, but the TPM is part of the installed
+    identity and EVE's sealed vault does not survive it -- use a new run_id.
+  EOT
+  default     = false
+}
+
