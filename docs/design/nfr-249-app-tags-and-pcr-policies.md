@@ -18,7 +18,7 @@ implementation differs from this design. Controller gaps are tracked as non-bloc
 - new attributes on four existing resources: `zedcloud_application.tags`, `zedcloud_project.pcr_policy`,
   `zedcloud_edgenode.pcr_policy` (the customer's must-have), and the `zedcloud_deployment` PCR device policy;
 - **in-place `zedcloud_deployment` update** (today a stub that does nothing), using the API's "new version" PUT (§4.5);
-- one small new client (job status, used to wait for deployment updates). No new resources.
+- no new clients or resources: deployment updates wait on their job with the jobs client added by UE-177 (#244).
 
 Minimum controller: **zedcloud 20.0.7 / 21.0.0+** for tags; 19.2.24+ for PCR policies. Estimate **9–11 days**.
 
@@ -422,7 +422,7 @@ Estimate: **2–3 d** (update path, job client and wait, error mapping, acceptan
 | Models | `v2/models/app.go`, `app_summary.go`, `policy_config.go`, `pcr_policy.go` (new), `tag.go`, `policy_type.go`; `device_policy.go`, `device_p_c_r_policy.go` (new), `device_policy_type.go`. Hand-edit, as with PNAC, rather than regenerating all of v2 |
 | Schemas | `v2/schemas/application.go`, `pcr_policy.go` (new), `policy_config.go`, `tag.go`, `node.go` (+ small `node_pcr_policy.go`), `device_policy.go` |
 | Resources | `v2/resources/application.go` (tags preserve), `node.go` (pcr preserve/reset in `UpdateNode`, `publishBaseOS`, `applyBaseOS`), `project.go` (`CustomizeDiff`); fix `project.go:224` (`err != nil` should be `errs != nil`) while there |
-| Deployment update (§4.5) | `v2/resources/deployment.go` (`UpdateDeployment`, timeouts, description), `v2/schemas/deployment.go` (`project_id` ForceNew, `deployment_tag`), `v2/client/job/` (new, small: get job by id), `v2/client/zedcloud_api.go` |
+| Deployment update (§4.5) | `v2/resources/deployment.go` (`UpdateDeployment`, timeouts, description), `v2/schemas/deployment.go` (`project_id` ForceNew, `deployment_tag`), the jobs client and poller from UE-177 (`v2/client/jobs`, `v2/resources/jobs.go`) |
 | Tests | see §7 |
 | Docs | `v2/examples/resources/{zedcloud_application,zedcloud_project,zedcloud_edgenode}/resource.tf`, then `make docs` |
 
@@ -527,8 +527,8 @@ This section lists what was built and where it differs from §2–§7.
 | Models | `v2/models/app.go`, `app_summary.go` (`Tags`); `p_c_r_policy.go`, `device_p_c_r_policy.go` (new); `policy_config.go`, `tag.go`, `device_policy.go` (`PcrPolicy`); `policy_type.go` (+`POLICY_TYPE_PCR`, `_LOC`, `_CONFIGURATION_LOCK`), `device_policy_type.go` (+`DEVICE_POLICY_TYPE_PCR`) |
 | Schemas | `v2/schemas/app_tags.go` (validator), `pcr_policy.go` (PCR schemas, validation, version rule, node wrapping), `deployment_diff.go` (diff suppression), plus wiring in `application.go`, `policy_config.go`, `tag.go`, `node.go`, `device_policy.go`, `deployment.go` |
 | Resources | `v2/resources/managed.go` (managed-only helpers), `application.go`, `project.go`, `node.go`, `deployment.go` |
-| Client | `v2/client/job/` (new, hand-written: `Get`, `Wait`), wired into `v2/client/zedcloud_api.go` |
-| Tests | Unit: `schemas/app_tags_test.go`, `schemas/pcr_policy_test.go`, `resources/pcr_policy_test.go`, `client/job/client_test.go`. Acceptance: `resources/nfr249_test.go` with fixtures in `resources/testdata/nfr249/` |
+| Client | Deployment jobs are awaited with `v2/client/jobs` and `jobPoller` (`v2/resources/jobs.go`) from UE-177 (#244), objectType `OBJECT_TYPE_DEPLOYMENT`. A separate job client written for NFR-249 was dropped when rebasing onto #244 |
+| Tests | Unit: `schemas/app_tags_test.go`, `schemas/pcr_policy_test.go`, `resources/pcr_policy_test.go`. Acceptance: `resources/nfr249_test.go` with fixtures in `resources/testdata/nfr249/` |
 | Docs | `v2/examples/resources/{zedcloud_application,zedcloud_project,zedcloud_edgenode,zedcloud_deployment}/resource.tf`, regenerated `docs/resources/` and `docs/data-sources/` for those four (`make docs`) |
 
 **Differences from the design**
@@ -575,7 +575,7 @@ This section lists what was built and where it differs from §2–§7.
 | `TestNode_PCRPolicy`: zcli-style policy set out of band survives an unrelated apply; Terraform takes over at zcli's version + 1; reorder keeps the version; removing the block resets the node | PASS |
 | `TestDeployment_UpdateInPlace`: create; change without a new tag rejected at plan; two in-place updates (new id each, clean plan); out-of-band newer version gives the "not the latest version" error; destroy removes all versions and the project | PASS |
 | Regression: `TestApplication_*`, `TestArtifact_*`, `TestProject_*`, `TestNode_*` (incl. `TestNode_PNAC_Onboard`), `TestDeployment_Create` | PASS |
-| Unit: validators, version rule, node update decision, job client (complete, fail with decoded per-object status, timeout), schema round-trips, `TestProvider_InternalValidate`, fixture token checks | PASS |
+| Unit: validators, version rule, node update decision, schema round-trips, `TestProvider_InternalValidate`, fixture token checks | PASS |
 
 **Verified end to end on a virtual EVE node with a vTPM (Berlin lab + alpha, 2026-10-19)**
 
