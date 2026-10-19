@@ -73,6 +73,9 @@ type Application struct {
 	// user defined storage for bundle
 	Storage int64 `json:"storage,omitempty"`
 
+	// User defined tags for the edge application. Requires zedcloud 20.0.7+ / 21.0.0+.
+	Tags map[string]string `json:"tags,omitempty"`
+
 	// User defined title of the edge application. Title can be changed at any time
 	// Required: true
 	// Max Length: 256

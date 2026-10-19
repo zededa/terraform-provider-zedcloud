@@ -166,7 +166,13 @@ func ReadApplication(ctx context.Context, d *schema.ResourceData, m interface{})
 
 // resourceReadApplication is the resource refresh: an edge app that no longer
 // exists is removed from state (UE-177 §4.2).
+//
+// Tags are only tracked in state once Terraform manages them (they are in
+// state before the read, i.e. they came from config; see managed.go). Tags set
+// outside Terraform (UI, API) on an app whose config has no tags argument stay
+// out of state, so they cause no diff, and UpdateApplication carries them over.
 func resourceReadApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	tagsManaged := isManagedMap(d, "tags")
 	app, err := fetchApplication(ctx, d, m)
 	if err != nil {
 		if isStatusNotFound(err) {
@@ -183,6 +189,19 @@ func resourceReadApplication(ctx context.Context, d *schema.ResourceData, m inte
 	}
 	zschema.SetApplicationResourceData(d, app)
 	d.SetId(app.ID)
+	return unsetUnmanagedAppTags(d, tagsManaged)
+}
+
+// unsetUnmanagedAppTags drops tags from state when Terraform doesn't manage
+// them. An empty map, not nil: the SDK's map writer only clears previously
+// written keys for a non-nil value.
+func unsetUnmanagedAppTags(d *schema.ResourceData, managed bool) diag.Diagnostics {
+	if managed {
+		return nil
+	}
+	if err := d.Set("tags", map[string]interface{}{}); err != nil {
+		return diag.FromErr(err)
+	}
 	return nil
 }
 
@@ -191,6 +210,7 @@ func resourceReadApplication(ctx context.Context, d *schema.ResourceData, m inte
 // state (UE-177 §4.3).
 func readApplicationAfterWrite(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	wantID := d.Id()
+	tagsManaged := isManagedMap(d, "tags") // the planned value: tags are in config
 	err := resource.RetryContext(ctx, readAfterWriteTimeout, func() *resource.RetryError {
 		app, err := fetchApplication(ctx, d, m)
 		if err != nil {
@@ -213,7 +233,7 @@ func readApplicationAfterWrite(ctx context.Context, d *schema.ResourceData, m in
 	if err != nil {
 		return applicationAPIErrorDiags("read after write", err)
 	}
-	return nil
+	return unsetUnmanagedAppTags(d, tagsManaged)
 }
 
 func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -250,10 +270,23 @@ func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 	}
 	params := config.UpdateParams().WithContext(ctx)
 	params.ID = id
+	client := m.(*api_client.ZedcloudAPI)
+
+	// The update replaces the whole app and the controller treats a missing
+	// tags field as "clear". When Terraform doesn't manage tags (not in config
+	// before or after this change), send the tags the app has now so that tags
+	// set in the UI or through the API survive the apply.
+	oldTags, newTags := d.GetChange("tags")
+	if len(asMap(oldTags)) == 0 && len(asMap(newTags)) == 0 {
+		current, err := getApplicationByID(ctx, client, params.ID)
+		if err != nil {
+			return applicationAPIErrorDiags("read before update", err)
+		}
+		model.Tags = current.Tags
+	}
 	params.SetBody(model)
 
 	// makes a bulk update for all properties that were changed
-	client := m.(*api_client.ZedcloudAPI)
 	resp, err := client.Application.Update(params, nil)
 	if err != nil {
 		return applicationAPIErrorDiags("update", err)
@@ -266,6 +299,16 @@ func UpdateApplication(ctx context.Context, d *schema.ResourceData, m interface{
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
 	return readApplicationAfterWrite(ctx, d, m)
+}
+
+func getApplicationByID(ctx context.Context, client *api_client.ZedcloudAPI, id string) (*models.Application, error) {
+	params := config.GetByIDParams().WithContext(ctx)
+	params.ID = id
+	resp, err := client.Application.GetByID(params, nil)
+	if err != nil {
+		return nil, err
+	}
+	return resp.GetPayload(), nil
 }
 
 func DeleteApplication(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

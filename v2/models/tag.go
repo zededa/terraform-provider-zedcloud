@@ -77,6 +77,9 @@ type Tag struct {
 	// Port based network access control (802.1X) policy to enforce on all devices of this project
 	PortBasedNetworkAccessControlPolicy *Policy `json:"portBasedNetworkAccessControlPolicy,omitempty"`
 
+	// PCR policy for TPM key sealing on devices of this project
+	PcrPolicy *Policy `json:"pcrPolicy,omitempty"`
+
 	// Number of edge nodes in this resource group
 	// Read Only: true
 	Numdevices int64 `json:"numdevices,omitempty"`
@@ -152,6 +155,10 @@ func (m *Tag) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validatePortBasedNetworkAccessControlPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePcrPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -400,6 +407,25 @@ func (m *Tag) validatePortBasedNetworkAccessControlPolicy(formats strfmt.Registr
 	return nil
 }
 
+func (m *Tag) validatePcrPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.PcrPolicy) { // not required
+		return nil
+	}
+
+	if m.PcrPolicy != nil {
+		if err := m.PcrPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("pcrPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("pcrPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (m *Tag) validateRevision(formats strfmt.Registry) error {
 	if swag.IsZero(m.Revision) { // not required
 		return nil
@@ -528,6 +554,10 @@ func (m *Tag) ContextValidate(ctx context.Context, formats strfmt.Registry) erro
 	}
 
 	if err := m.contextValidatePortBasedNetworkAccessControlPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePcrPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -711,6 +741,22 @@ func (m *Tag) contextValidatePortBasedNetworkAccessControlPolicy(ctx context.Con
 				return ve.ValidateName("portBasedNetworkAccessControlPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("portBasedNetworkAccessControlPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *Tag) contextValidatePcrPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.PcrPolicy != nil {
+		if err := m.PcrPolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("pcrPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("pcrPolicy")
 			}
 			return err
 		}

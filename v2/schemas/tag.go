@@ -78,6 +78,14 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 			portBasedNetworkAccessControlPolicy = PolicyConfigModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var pcrPolicy *models.Policy // PolicyConfig
+	pcrPolicyInterface, pcrPolicyIsSet := d.GetOk("pcr_policy")
+	if pcrPolicyIsSet && pcrPolicyInterface != nil {
+		pcrPolicyMap := pcrPolicyInterface.([]interface{})
+		if len(pcrPolicyMap) > 0 {
+			pcrPolicy = PolicyConfigModelFromMap(pcrPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	var tagLevelSettings *models.TagLevelSettings // TagLevelSettings
 	tagLevelSettingsInterface, tagLevelSettingsIsSet := d.GetOk("tag_level_settings")
 	if tagLevelSettingsIsSet && tagLevelSettingsInterface != nil {
@@ -123,6 +131,7 @@ func TagModel(d *schema.ResourceData) *models.Tag {
 		Name:                                &name, // string
 		NetworkPolicy:                       networkPolicy,
 		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
+		PcrPolicy:                           pcrPolicy,
 		Revision:                            revision,
 		TagLevelSettings:                    tagLevelSettings,
 		Tags:                                tags,
@@ -208,6 +217,14 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 			portBasedNetworkAccessControlPolicy = PolicyConfigModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var pcrPolicy *models.Policy // PolicyConfig
+	pcrPolicyInterface, pcrPolicyIsSet := m["pcr_policy"]
+	if pcrPolicyIsSet && pcrPolicyInterface != nil {
+		pcrPolicyMap := pcrPolicyInterface.([]interface{})
+		if len(pcrPolicyMap) > 0 {
+			pcrPolicy = PolicyConfigModelFromMap(pcrPolicyMap[0].(map[string]interface{}))
+		}
+	}
 	//
 	var tagLevelSettings *models.TagLevelSettings // TagLevelSettings
 	tagLevelSettingsInterface, tagLevelSettingsIsSet := m["tag_level_settings"]
@@ -257,6 +274,7 @@ func TagModelFromMap(m map[string]interface{}) *models.Tag {
 		Name:                                &name,
 		NetworkPolicy:                       networkPolicy,
 		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
+		PcrPolicy:                           pcrPolicy,
 		Revision:                            revision,
 		TagLevelSettings:                    tagLevelSettings,
 		Tags:                                tags,
@@ -280,6 +298,7 @@ func SetTagResourceData(d *schema.ResourceData, m *models.Tag) {
 	d.Set("network_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.NetworkPolicy}))
 	d.Set("numdevices", m.Numdevices)
 	d.Set("port_based_network_access_control_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.PortBasedNetworkAccessControlPolicy}))
+	d.Set("pcr_policy", SetPolicyConfigSubResourceData([]*models.Policy{m.PcrPolicy}))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("tag_level_settings", SetTagLevelSettingsSubResourceData([]*models.TagLevelSettings{m.TagLevelSettings}))
 	d.Set("tags", m.Tags)
@@ -305,6 +324,7 @@ func SetTagSubResourceData(m []*models.Tag) (d []*map[string]interface{}) {
 			properties["network_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.NetworkPolicy})
 			properties["numdevices"] = TagModel.Numdevices
 			properties["port_based_network_access_control_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.PortBasedNetworkAccessControlPolicy})
+			properties["pcr_policy"] = SetPolicyConfigSubResourceData([]*models.Policy{TagModel.PcrPolicy})
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{TagModel.Revision})
 			properties["tag_level_settings"] = SetTagLevelSettingsSubResourceData([]*models.TagLevelSettings{TagModel.TagLevelSettings})
 			properties["tags"] = TagModel.Tags
@@ -434,6 +454,19 @@ func Project() map[string]*schema.Schema {
 			},
 			MaxItems: 1,
 			Optional: true,
+		},
+
+		"pcr_policy": {
+			Description: `PCR policy for TPM volume key sealing on all devices of this project. Set type = "POLICY_TYPE_PCR" and a nested pcr_policy block. ` +
+				`Device-level policies (zedcloud_edgenode.pcr_policy) override it. ` +
+				`The controller cannot remove a project PCR policy once it is set, so removing this block leaves the policy in place.`,
+			Type: schema.TypeList, // GoType: PolicyConfig
+			Elem: &schema.Resource{
+				Schema: Policy(),
+			},
+			MaxItems: 1,
+			Optional: true,
+			Computed: true,
 		},
 
 		"revision": {

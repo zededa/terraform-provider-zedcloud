@@ -66,6 +66,7 @@ func ApplicationModel(d *schema.ResourceData) *models.Application {
 	}
 	storageInt, _ := d.Get("storage").(int)
 	storage := int64(storageInt)
+	tags := mapStringFromInterface(d.Get("tags"))
 	title, _ := d.Get("title").(string)
 	userDefinedVersion, _ := d.Get("user_defined_version").(string)
 	appInstCountInt, _ := d.Get("app_inst_count").(int)
@@ -100,6 +101,7 @@ func ApplicationModel(d *schema.ResourceData) *models.Application {
 		ProjectAccessList:  projectAccessList,
 		Revision:           revision,
 		Storage:            storage,
+		Tags:               tags,
 		Title:              &title, // string true false false
 		UserDefinedVersion: userDefinedVersion,
 		AppInstCount:       appInstCount,
@@ -165,6 +167,7 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 	}
 	//
 	storage := int64(m["storage"].(int)) // int64
+	tags := mapStringFromInterface(m["tags"])
 	title := m["title"].(string)
 	userDefinedVersion := m["user_defined_version"].(string)
 	appInstCount := int32(m["app_inst_count"].(int)) // int32
@@ -198,6 +201,7 @@ func EdgeApplicationModelFromMap(m map[string]interface{}) *models.Application {
 		ProjectAccessList:  projectAccessList,
 		Revision:           revision,
 		Storage:            storage,
+		Tags:               tags,
 		Title:              &title,
 		UserDefinedVersion: userDefinedVersion,
 		AppInstCount:       appInstCount,
@@ -220,6 +224,7 @@ func SetApplicationResourceData(d *schema.ResourceData, m *models.Application) {
 	d.Set("project_access_list", m.ProjectAccessList)
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("storage", m.Storage)
+	d.Set("tags", m.Tags)
 	d.Set("title", m.Title)
 	d.Set("user_defined_version", m.UserDefinedVersion)
 	d.Set("app_inst_count", m.AppInstCount)
@@ -244,6 +249,7 @@ func SetApplicationSubResourceData(m []*models.Application) (d []*map[string]int
 			properties["project_access_list"] = AppModel.ProjectAccessList
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{AppModel.Revision})
 			properties["storage"] = AppModel.Storage
+			properties["tags"] = AppModel.Tags
 			properties["title"] = AppModel.Title
 			properties["user_defined_version"] = AppModel.UserDefinedVersion
 			properties["app_inst_count"] = AppModel.AppInstCount
@@ -372,6 +378,21 @@ func Application() map[string]*schema.Schema {
 			Computed:    true,
 		},
 
+		"tags": {
+			Description: `User defined tags (name/value pairs) for the edge application, used to categorize and filter apps in the marketplace. ` +
+				`At most 32 tags; keys 3-512 characters, values 3-256 characters. ` +
+				`Keys must not contain < > % & ? / \ ' " and backtick; values must not contain ' " \ and backtick. ` +
+				`Requires zedcloud 20.0.7+ (20.0 line) or 21.0.0+. ` +
+				`Tags are managed by Terraform only once this argument is set: tags set outside Terraform (e.g. in the UI) are kept ` +
+				`while the argument is absent, and removing the argument after it was set clears them.`,
+			Type: schema.TypeMap, // GoType: map[string]string
+			Elem: &schema.Schema{
+				Type: schema.TypeString,
+			},
+			Optional:         true,
+			ValidateDiagFunc: ValidateAppTags,
+		},
+
 		"title": {
 			Description: `User defined title of the edge application. Title can be changed at any time`,
 			Type:        schema.TypeString,
@@ -419,6 +440,7 @@ func GetApplicationPropertyFields() (t []string) {
 		"project_access_list",
 		"revision",
 		"storage",
+		"tags",
 		"title",
 		"user_defined_version",
 		"app_inst_count",

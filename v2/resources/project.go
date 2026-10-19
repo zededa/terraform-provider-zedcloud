@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/davecgh/go-spew/spew"
@@ -20,6 +21,7 @@ func ProjectResource() *schema.Resource {
 		ReadContext:   GetProject,
 		UpdateContext: UpdateProject,
 		DeleteContext: DeleteProject,
+		CustomizeDiff: customizeProjectDiff,
 		Schema:        zschema.Project(),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
@@ -38,6 +40,7 @@ func CreateProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 	var diags diag.Diagnostics
 
 	model := zschema.TagModel(d)
+	setProjectPCRPolicyVersion(d, model, true)
 	params := project.CreateParams()
 	params.SetBody(model)
 
@@ -180,7 +183,9 @@ func UpdateProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 		params.XRequestID = xRequestIdVal.(*string)
 	}
 
-	params.SetBody(zschema.TagModel(d))
+	model := zschema.TagModel(d)
+	setProjectPCRPolicyVersion(d, model, false)
+	params.SetBody(model)
 
 	idVal, idIsSet := d.GetOk("id")
 	if idIsSet {
@@ -221,7 +226,7 @@ func UpdateProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	// the zedcloud API does not return the partially updated object but a custom response.
 	// thus, we need to fetch the object and populate the state.
-	if errs := GetProject(ctx, d, m); err != nil {
+	if errs := GetProject(ctx, d, m); errs != nil {
 		return append(diags, errs...)
 	}
 
@@ -267,4 +272,69 @@ func DeleteProject(ctx context.Context, d *schema.ResourceData, m interface{}) d
 
 	d.SetId("")
 	return diags
+}
+
+// customizeProjectDiff validates pcr_policy at plan time: the policy type must
+// be POLICY_TYPE_PCR, the nested pcr_policy block must be present, and the
+// indices must satisfy the controller's rules (PCR 0 required, no PCR 5, 0-15).
+func customizeProjectDiff(ctx context.Context, d *schema.ResourceDiff, m interface{}) error {
+	pol := asList(d.Get("pcr_policy"))
+	if len(pol) == 0 || pol[0] == nil {
+		return nil
+	}
+	pm := pol[0].(map[string]interface{})
+	if t, _ := pm["type"].(string); t != "" && t != string(models.PolicyTypePOLICYTYPEPCR) {
+		return fmt.Errorf("pcr_policy.type must be %q, got %q", models.PolicyTypePOLICYTYPEPCR, t)
+	}
+	inner := asList(pm["pcr_policy"])
+	if len(inner) == 0 || inner[0] == nil {
+		return fmt.Errorf("pcr_policy requires a nested pcr_policy { pcr_indices = [...] } block")
+	}
+	if !d.NewValueKnown("pcr_policy") {
+		return nil
+	}
+	indices := zschema.PCRIndicesFromInterface(inner[0].(map[string]interface{})["pcr_indices"])
+	if err := zschema.ValidatePCRIndices(int64sToInts(indices)); err != nil {
+		return fmt.Errorf("pcr_policy.pcr_policy.pcr_indices: %w", err)
+	}
+	return nil
+}
+
+// setProjectPCRPolicyVersion fills in the type and version of the project PCR
+// policy before it is sent. The controller doesn't manage the version for
+// project policies (zcli sends whatever is in its file), so the provider does:
+// 1 on create, +1 when the indices change, unchanged otherwise.
+func setProjectPCRPolicyVersion(d *schema.ResourceData, model *models.Tag, create bool) {
+	if model.PcrPolicy == nil || model.PcrPolicy.PcrPolicy == nil {
+		return
+	}
+	if model.PcrPolicy.Type == nil || *model.PcrPolicy.Type == "" {
+		model.PcrPolicy.Type = models.NewPolicyType(models.PolicyTypePOLICYTYPEPCR)
+	}
+	newIndices := model.PcrPolicy.PcrPolicy.PcrIndices
+	if create {
+		model.PcrPolicy.PcrPolicy.PolicyVersion = 1
+		return
+	}
+	oldVal, _ := d.GetChange("pcr_policy")
+	var oldIndices []int64
+	var oldVersion int64
+	if old := asList(oldVal); len(old) > 0 && old[0] != nil {
+		if inner := asList(old[0].(map[string]interface{})["pcr_policy"]); len(inner) > 0 && inner[0] != nil {
+			im := inner[0].(map[string]interface{})
+			oldIndices = zschema.PCRIndicesFromInterface(im["pcr_indices"])
+			if v, ok := im["policy_version"].(int); ok {
+				oldVersion = int64(v)
+			}
+		}
+	}
+	model.PcrPolicy.PcrPolicy.PolicyVersion = zschema.NextPCRPolicyVersion(oldIndices, oldVersion, newIndices)
+}
+
+func int64sToInts(in []int64) []int {
+	out := make([]int, len(in))
+	for i, v := range in {
+		out[i] = int(v)
+	}
+	return out
 }

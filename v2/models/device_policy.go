@@ -29,6 +29,9 @@ type DevicePolicy struct {
 
 	// port based network access control (802.1X) policy to enforce on devices of this project
 	PortBasedNetworkAccessControlPolicy *DevicePortBasedNetworkAccessControlPolicy `json:"portBasedNetworkAccessControlPolicy,omitempty"`
+
+	// PCR policy for TPM volume key sealing
+	PcrPolicy *DevicePCRPolicy `json:"pcrPolicy,omitempty"`
 }
 
 // Validate validates this device policy
@@ -48,6 +51,10 @@ func (m *DevicePolicy) Validate(formats strfmt.Registry) error {
 	}
 
 	if err := m.validatePortBasedNetworkAccessControlPolicy(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validatePcrPolicy(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -133,6 +140,25 @@ func (m *DevicePolicy) validatePortBasedNetworkAccessControlPolicy(formats strfm
 	return nil
 }
 
+func (m *DevicePolicy) validatePcrPolicy(formats strfmt.Registry) error {
+	if swag.IsZero(m.PcrPolicy) { // not required
+		return nil
+	}
+
+	if m.PcrPolicy != nil {
+		if err := m.PcrPolicy.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("pcrPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("pcrPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ContextValidate validate this device policy based on the context it is used
 func (m *DevicePolicy) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -150,6 +176,10 @@ func (m *DevicePolicy) ContextValidate(ctx context.Context, formats strfmt.Regis
 	}
 
 	if err := m.contextValidatePortBasedNetworkAccessControlPolicy(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.contextValidatePcrPolicy(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -215,6 +245,22 @@ func (m *DevicePolicy) contextValidatePortBasedNetworkAccessControlPolicy(ctx co
 				return ve.ValidateName("portBasedNetworkAccessControlPolicy")
 			} else if ce, ok := err.(*errors.CompositeError); ok {
 				return ce.ValidateName("portBasedNetworkAccessControlPolicy")
+			}
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *DevicePolicy) contextValidatePcrPolicy(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.PcrPolicy != nil {
+		if err := m.PcrPolicy.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("pcrPolicy")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("pcrPolicy")
 			}
 			return err
 		}

@@ -559,6 +559,7 @@ Optional:
 
 - `attestation_policy` (Block List) device attestation policy (see [below for nested schema](#nestedblock--device_policies--attestation_policy))
 - `meta_data` (Block List) all the required metadata for a policy like id, name, different types of tags (see [below for nested schema](#nestedblock--device_policies--meta_data))
+- `pcr_policy` (Block List, Max: 1) PCR policy for TPM volume key sealing on matching devices (set with policy_sub_type = "DEVICE_POLICY_TYPE_PCR"). For nodes in the deployment's project it takes precedence over a node-level policy; the project-level policy is not used for them. (see [below for nested schema](#nestedblock--device_policies--pcr_policy))
 - `policy_sub_type` (String) device policy type
 - `port_based_network_access_control_policy` (Block List, Max: 1) port based network access control (802.1X) policy to enforce on devices of this project (see [below for nested schema](#nestedblock--device_policies--port_based_network_access_control_policy))
 
@@ -599,6 +600,18 @@ Read-Only:
 - `updated_at` (String)
 - `updated_by` (String)
 
+
+
+<a id="nestedblock--device_policies--pcr_policy"></a>
+### Nested Schema for `device_policies.pcr_policy`
+
+Required:
+
+- `pcr_indices` (Set of Number) PCR indices (0-15) used to seal the TPM volume key. PCR 0 is required; PCR 5 is volatile and not allowed. Recommended set: [0, 1, 2, 3, 4, 6, 7, 8, 9, 13, 14]. Warning: a set that includes PCRs which change on firmware or bootloader updates can leave the node unable to unseal its vault after such an update.
+
+Read-Only:
+
+- `policy_version` (Number) Policy version. Managed by the controller for deployment policies (1, then +1 on each update).
 
 
 <a id="nestedblock--device_policies--port_based_network_access_control_policy"></a>

@@ -35,8 +35,10 @@ func TestDeployment_Create(t *testing.T) {
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:             inputCreate,
-				ExpectNonEmptyPlan: true,
+				Config: inputCreate,
+				// The plan after apply must be empty: an update now creates a new
+				// deployment version, so a perpetual diff would create one per apply.
+				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeTestCheckFunc(
 					testDeploymentExists("zedcloud_deployment.tf_deployment", &gotCreated),
 					resource.TestCheckResourceAttr("zedcloud_deployment.tf_deployment", "name", suffixed("test_tf_provider-deployment")),

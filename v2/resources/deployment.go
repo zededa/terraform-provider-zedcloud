@@ -5,8 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,14 +23,23 @@ import (
 func DeploymentResource() *schema.Resource {
 	return &schema.Resource{
 		Description: `Resource "zedcloud_deployment" manages deployments in ZedCloud. A deployment is a collection of policies applied to a device.
-The api design does not support updates on a deployment. If you want to add changes to a deployment, you need to create a new version.
-When you create a new version of a deployment, it makes sense to show that it depends on the previous version.
-It will help create a proper dependency graph for the Terraform plan.`,
+The controller versions deployments: every change creates a new version of the deployment with a new id, and only the latest
+version of a project's deployment can be changed. Changing this resource in place does exactly that: the provider asks the
+controller for the next version, waits until its policies are applied, and the resource then tracks the new version (its id changes).
+Each version needs its own deployment_tag (the controller requires the tag to be unique per project), so a change must come with
+a new deployment_tag. Edge nodes select a version by its tag: they keep running the version whose tag they carry until their
+deployment_tag is moved to the new one, which allows a staged rollout. Older versions stay on the controller until the
+resource is destroyed; destroy removes the current version and the older ones. Declaring a second zedcloud_deployment for a
+project that already has one also creates a new version (kept for compatibility); in-place changes are the recommended way.`,
 		CreateContext: CreateDeployment,
 		DeleteContext: DeleteDeployment,
 		ReadContext:   GetDeploymentByID,
 		UpdateContext: UpdateDeployment,
+		CustomizeDiff: customizeDeploymentDiff,
 		Schema:        zschema.Deployment(),
+		Timeouts: &schema.ResourceTimeout{
+			Update: schema.DefaultTimeout(deploymentUpdateTimeout),
+		},
 		Importer: &schema.ResourceImporter{
 			StateContext: deploymentImportStateContext,
 		},
@@ -274,6 +285,28 @@ func DeleteDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	client := m.(*api_client.ZedcloudAPI)
 
+	// Updates create a new version and leave the older ones on the
+	// controller (nodes may still be using them). On destroy, remove the
+	// versions this resource went through as well: while any exists, the
+	// project cannot be deleted (409). Newer versions, created outside
+	// Terraform, are left alone.
+	var older []deploymentVersion
+	if versions, err := listProjectDeploymentVersions(ctx, client, params.ProjectID); err == nil {
+		mine := -1
+		for _, v := range versions {
+			if v.ID == params.ID {
+				mine = v.Version
+			}
+		}
+		for _, v := range versions {
+			if mine >= 0 && v.Version < mine {
+				older = append(older, v)
+			}
+		}
+	} else {
+		log.Printf("[WARN] deployment delete: listing versions of project %s: %s", params.ProjectID, err)
+	}
+
 	resp, err := client.Deployment.Delete(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
@@ -287,6 +320,18 @@ func DeleteDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 			return diags
 		}
 		diags = append(diags, diag.Errorf("unexpected: %s", err)...)
+		return diags
+	}
+
+	for _, v := range older { // newest first
+		p := deployment.NewDeleteParams()
+		p.ProjectID = params.ProjectID
+		p.ID = v.ID
+		if _, err := client.Deployment.Delete(p, nil); err != nil && !isStatusNotFound(err) {
+			diags = append(diags, diag.Errorf("deleting older version %d (%s) of the deployment: %s", v.Version, v.ID, err)...)
+		}
+	}
+	if diags.HasError() {
 		return diags
 	}
 
@@ -339,40 +384,254 @@ func GetDeploymentByID(ctx context.Context, d *schema.ResourceData, m interface{
 	return diags
 }
 
-// UpdateDeployment updates a deployment in ZedCloud.
+// UpdateDeployment changes a deployment in place. The controller has no
+// in-place update: PUT /v2/projects/id/{projectId}/deployments/id/{id} creates
+// the next version (new id, version+1) from the latest one, answers 202 with
+// the new id and a job id, and applies the policies asynchronously. The
+// resource moves to the new version once that job completes. If the job
+// fails, the controller deletes the new version, so the resource keeps the old
+// id and the error is returned.
 func UpdateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
-	diags = append(diags, diag.Diagnostic{
-		Severity: diag.Warning,
-		Summary:  "Update not supported for deployment, you need to create a new version instead",
-	})
+
+	client := m.(*api_client.ZedcloudAPI)
+	model := zschema.DeploymentModel(d)
+	oldID := d.Id()
+	model.ID = oldID
+	// Send the user's device policy names: the controller returns them
+	// decorated ("<name>-pcr") and would decorate them again.
+	for _, p := range model.DevicePolicies {
+		if p != nil && p.MetaData != nil {
+			p.MetaData.Name = zschema.StripDevicePolicyNameDecoration(p.MetaData.Name)
+		}
+	}
+
+	if model.DeploymentTag == "" {
+		return diag.Errorf("deployment_tag must be set to update a deployment: the controller rejects a new deployment version without it")
+	}
+
+	// The controller only accepts a new version from the latest one, and its
+	// error for anything else carries no message, so check first.
+	latestID, err := getLatestProjectDeployment(ctx, client, model.ProjectID)
+	if err != nil {
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			return append(diags, ds...)
+		}
+		return append(diags, diag.Errorf("deployment update: listing deployment versions: %s", err)...)
+	}
+	if latestID != "" && latestID != oldID {
+		return append(diags, notLatestDeploymentDiag(oldID, latestID, model.ProjectID))
+	}
+
+	params := deployment.NewCreateNewVersionParams()
+	params.SetBody(model)
+	params.SetProjectID(model.ProjectID)
+	params.SetID(oldID)
+	resp, err := client.Deployment.CreateNewVersion(params, nil)
+	if err != nil {
+		log.Printf("[TRACE] deployment update error: %s", spew.Sdump(err))
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			return append(diags, explainDeploymentVersionError(ds, oldID, model.ProjectID)...)
+		}
+		return append(diags, diag.Errorf("deployment update: %s", err)...)
+	}
+	responseData := resp.GetPayload()
+	if responseData != nil && len(responseData.Error) > 0 {
+		for _, e := range responseData.Error {
+			if e.ErrorCode != nil && (*e.ErrorCode == models.ErrorCodeAccepted || *e.ErrorCode == models.ErrorCodeSuccess) {
+				continue
+			}
+			diags = append(diags, diag.FromErr(errors.New(e.Details))...)
+		}
+		if diags.HasError() {
+			return explainDeploymentVersionError(diags, oldID, model.ProjectID)
+		}
+	}
+	if responseData == nil || responseData.ObjectID == "" {
+		return append(diags, diag.Errorf("deployment update: the controller did not return the id of the new deployment version")...)
+	}
+
+	// Wait for the policies of the new version to be applied. With no
+	// policies in the request gilas sends no policy message, so no one would
+	// ever complete the job.
+	if responseData.JobID != "" && deploymentHasPolicies(model) {
+		if _, err := deploymentPoller(client).wait(ctx, responseData.JobID, d.Timeout(schema.TimeoutUpdate)); err != nil {
+			return append(diags, diag.Errorf("deployment update: applying the policies of the new version %s failed (the controller "+
+				"removes a version whose policies fail, so %s is still the current version): %s", responseData.ObjectID, oldID, err)...)
+		}
+	}
+
+	d.SetId(responseData.ObjectID)
+	if errs := GetDeploymentByID(ctx, d, m); errs != nil {
+		return append(diags, errs...)
+	}
 	return diags
 }
 
-// getLatestProjectDeployment returns the latest deployment ID for a given project.
-func getLatestProjectDeployment(ctx context.Context, client *api_client.ZedcloudAPI, projectID string) (string, error) {
+const (
+	deploymentUpdateTimeout     = 5 * time.Minute
+	deploymentNotLatestFragment = "Supported only in latest deployment version"
+	// objectType of the job a deployment update creates (seine deploymentUpdate).
+	deploymentJobObjectType = "OBJECT_TYPE_DEPLOYMENT"
+)
+
+// deploymentPoller waits for the job that applies a new deployment version's
+// policies, with the provider's job poll settings.
+func deploymentPoller(c *api_client.ZedcloudAPI) *jobPoller {
+	s := c.Settings
+	if s == nil {
+		s = api_client.DefaultSettings()
+	}
+	return &jobPoller{
+		client:      c.Jobs,
+		objectType:  deploymentJobObjectType,
+		intervalMin: s.JobPollIntervalMin,
+		intervalMax: s.JobPollIntervalMax,
+	}
+}
+
+func deploymentHasPolicies(dep *models.Deployment) bool {
+	return len(dep.AppInstPolicies) > 0 || len(dep.NetworkInstPolicies) > 0 ||
+		len(dep.VolumeInstPolicies) > 0 || len(dep.DevicePolicies) > 0 || dep.EdgeviewPolicy != nil
+}
+
+// explainDeploymentVersionError adds a hint to the controller's error when
+// the deployment is not the latest version of the project's deployment (a
+// race with a version created outside Terraform after the pre-check).
+func explainDeploymentVersionError(diags diag.Diagnostics, id, projectID string) diag.Diagnostics {
+	for i := range diags {
+		if strings.Contains(diags[i].Summary+" "+diags[i].Detail, deploymentNotLatestFragment) {
+			diags[i].Detail = strings.TrimSpace(diags[i].Detail + "\n\n" + notLatestDeploymentDiag(id, "", projectID).Detail)
+		}
+	}
+	return diags
+}
+
+func notLatestDeploymentDiag(id, latestID, projectID string) diag.Diagnostic {
+	latest := "<latest id>"
+	if latestID != "" {
+		latest = latestID
+	}
+	return diag.Diagnostic{
+		Severity: diag.Error,
+		Summary:  fmt.Sprintf("deployment %s is not the latest version in project %s", id, projectID),
+		Detail: fmt.Sprintf("The controller only creates a new version from the latest one, and a newer version (%s) was created outside "+
+			"Terraform. To manage the latest version, remove this resource from state and import it: "+
+			"terraform state rm <address> && terraform import <address> %s:%s", latest, projectID, latest),
+	}
+}
+
+// customizeDeploymentDiff validates PCR device policies at plan time: the
+// controller rejects bad indices with a 400 (gilas validateDeploymentPCRPolicies).
+func customizeDeploymentDiff(ctx context.Context, d *schema.ResourceDiff, m interface{}) error {
+	if err := validateDeploymentTagChange(d); err != nil {
+		return err
+	}
+	if !d.NewValueKnown("device_policies") {
+		return nil
+	}
+	for i, p := range asList(d.Get("device_policies")) {
+		pm, ok := p.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		pcr := asList(pm["pcr_policy"])
+		subType, _ := pm["policy_sub_type"].(string)
+		if subType == string(models.DevicePolicyTypeDEVICEPOLICYTYPEPCR) && (len(pcr) == 0 || pcr[0] == nil) {
+			return fmt.Errorf("device_policies.%d: policy_sub_type %s requires a pcr_policy block", i, subType)
+		}
+		if len(pcr) == 0 || pcr[0] == nil {
+			continue
+		}
+		if subType != string(models.DevicePolicyTypeDEVICEPOLICYTYPEPCR) {
+			return fmt.Errorf("device_policies.%d: pcr_policy requires policy_sub_type = %q", i, models.DevicePolicyTypeDEVICEPOLICYTYPEPCR)
+		}
+		indices := zschema.PCRIndicesFromInterface(pcr[0].(map[string]interface{})["pcr_indices"])
+		if err := zschema.ValidatePCRIndices(int64sToInts(indices)); err != nil {
+			return fmt.Errorf("device_policies.%d.pcr_policy.pcr_indices: %w", i, err)
+		}
+	}
+	return nil
+}
+
+// deploymentVersion is one version of a project's deployment.
+type deploymentVersion struct {
+	ID      string
+	Version int
+}
+
+// listProjectDeploymentVersions returns the deployment versions in a project,
+// newest first.
+func listProjectDeploymentVersions(ctx context.Context, client *api_client.ZedcloudAPI, projectID string) ([]deploymentVersion, error) {
 	params := deployment.NewGetListbyIdParams()
 	params.SetProjectID(projectID)
 
 	resp, err := client.Deployment.GetListByProjectID(params, nil)
 	log.Printf("[TRACE] response: %v", resp)
 	if err != nil {
+		return nil, err
+	}
+
+	var out []deploymentVersion
+	for _, dep := range resp.GetPayload().List {
+		if dep == nil || dep.Revision == nil || dep.Revision.Curr == nil {
+			continue
+		}
+		v, err := strconv.Atoi(*dep.Revision.Curr)
+		if err != nil {
+			return nil, err
+		}
+		out = append(out, deploymentVersion{ID: dep.ID, Version: v})
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].Version > out[j].Version })
+	return out, nil
+}
+
+// getLatestProjectDeployment returns the latest deployment ID for a given project.
+func getLatestProjectDeployment(ctx context.Context, client *api_client.ZedcloudAPI, projectID string) (string, error) {
+	versions, err := listProjectDeploymentVersions(ctx, client, projectID)
+	if err != nil || len(versions) == 0 {
 		return "", err
 	}
+	return versions[0].ID, nil
+}
 
-	responseData := resp.GetPayload()
-	var version int
-	var latestDeploymentID string
-	for _, dep := range responseData.List {
-		deplVersion, err := strconv.Atoi(*dep.Revision.Curr)
-		if err != nil {
-			return "", err
-		}
+// deploymentUpdatableKeys are the attributes whose change makes Terraform
+// update the deployment, i.e. create a new version.
+var deploymentUpdatableKeys = []string{
+	"app_inst_policies", "cluster_policy", "device_policies", "edgeview_policy",
+	"integration_policy", "name", "network_inst_policies", "title", "volume_inst_policies",
+}
 
-		if deplVersion > version {
-			version = deplVersion
-			latestDeploymentID = dep.ID
+// validateDeploymentTagChange fails the plan when an existing deployment is
+// changed without a new deployment_tag. Every change creates a new version,
+// and the controller requires each version in a project to have its own
+// deployment tag (unique constraint on enterprise, deployment tag, project);
+// without a new tag the update fails with a 409. Edge nodes select a version
+// by its tag, so a new tag is also how nodes are moved to the new version.
+func validateDeploymentTagChange(d *schema.ResourceDiff) error {
+	if d.Id() == "" || d.HasChange("deployment_tag") {
+		return nil
+	}
+	for _, k := range deploymentUpdatableKeys {
+		// GetChangedKeysPrefix looks at the planned diff, after the
+		// DiffSuppressFuncs; HasChange would also see suppressed differences
+		// such as the controller's decorated device policy names.
+		if changed := d.GetChangedKeysPrefix(k); len(changed) > 0 {
+			return fmt.Errorf("changing %s creates a new version of the deployment, and the controller requires every version "+
+				"in a project to have its own deployment_tag: set a new deployment_tag (for example %q). "+
+				"Edge nodes keep running the version whose tag they carry until their deployment_tag is changed to the new one",
+				k, suggestDeploymentTag(d))
+
 		}
 	}
-	return latestDeploymentID, nil
+	return nil
+}
+
+func suggestDeploymentTag(d *schema.ResourceDiff) string {
+	tag, _ := d.Get("deployment_tag").(string)
+	if tag == "" {
+		return "depl:v2"
+	}
+	return tag + "-v2"
 }

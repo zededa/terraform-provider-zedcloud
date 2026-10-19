@@ -295,6 +295,14 @@ func SetDeploymentSubResourceData(m []*models.Deployment) (d []*map[string]inter
 }
 
 func Deployment() map[string]*schema.Schema {
+	s := deploymentSchema()
+	suppressEmptyNestedMapDiffs(s, false)
+	devicePolicyMeta := s["device_policies"].Elem.(*schema.Resource).Schema["meta_data"].Elem.(*schema.Resource).Schema
+	devicePolicyMeta["name"].DiffSuppressFunc = suppressDecoratedDevicePolicyName
+	return s
+}
+
+func deploymentSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"app_inst_policies": {
 			Description: `list of app instance policies`,
@@ -372,6 +380,7 @@ func Deployment() map[string]*schema.Schema {
 			Description: `project id`,
 			Type:        schema.TypeString,
 			Required:    true,
+			ForceNew:    true,
 		},
 
 		"revision": {
