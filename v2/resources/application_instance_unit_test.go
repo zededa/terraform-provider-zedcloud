@@ -30,6 +30,10 @@ type fakeController struct {
 	jobErr    map[string]string
 	requests  []string
 	nextJob   int
+	// puts records the body of every update, in order (PLE-576).
+	puts []map[string]interface{}
+	// failUpdate makes v2 update jobs fail without applying anything.
+	failUpdate string
 
 	// failCreate makes the next v2 create job fail without creating anything.
 	failCreate string
@@ -78,7 +82,11 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	path := strings.TrimPrefix(r.URL.Path, "/api")
-	f.requests = append(f.requests, r.Method+" "+path)
+	if r.URL.RawQuery != "" {
+		f.requests = append(f.requests, r.Method+" "+path+"?"+r.URL.RawQuery)
+	} else {
+		f.requests = append(f.requests, r.Method+" "+path)
+	}
 
 	if f.gatewayHTML {
 		w.Header().Set("Content-Type", "text/html")
@@ -167,10 +175,29 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			notFound(w)
 			return
 		}
+		f.puts = append(f.puts, body)
+		if f.failUpdate != "" {
+			job := f.newJob(jobs.StatusInProgress, jobs.StatusFailed)
+			f.jobErr[job] = f.failUpdate
+			writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": job})
+			return
+		}
 		for k, v := range body {
 			inst[k] = v
 		}
 		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob(jobs.StatusCompleted)})
+
+	case r.Method == http.MethodPut && strings.HasPrefix(path, "/v1/apps/instances/id/"):
+		inst := f.byID(strings.TrimPrefix(path, "/v1/apps/instances/id/"))
+		if inst == nil {
+			notFound(w)
+			return
+		}
+		f.puts = append(f.puts, body)
+		for k, v := range body {
+			inst[k] = v
+		}
+		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": inst["id"]})
 
 	case r.Method == http.MethodDelete && strings.HasPrefix(path, "/v2/apps/instances/id/"):
 		inst := f.byID(strings.TrimPrefix(path, "/v2/apps/instances/id/"))

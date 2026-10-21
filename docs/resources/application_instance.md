@@ -24,6 +24,7 @@ description: |-
 ### Optional
 
 - `activate` (Boolean) app instance activation flag
+- `allow_snapshots` (Boolean) Allow app-update snapshots of this app instance. Removing it from the configuration keeps the current value; set it to `false` to turn it off. Not supported for docker-compose apps or app instances on an edge node cluster.
 - `app_policy_id` (String) app policy id
 - `app_type` (String) type of bundle
 - `cluster_id` (String) System defined universally unique clusterInstance ID, unique across the enterprise.
@@ -39,12 +40,14 @@ description: |-
 - `is_secret_updated` (Boolean) This field tells whether user secrets has updated or not, especially the cusotom config
 - `logs` (Block List) App Instance logs. Filled by the controller when omitted. (see [below for nested schema](#nestedblock--logs))
 - `manifest_info` (Block List) app manifest Info. Filled by the controller when omitted. (see [below for nested schema](#nestedblock--manifest_info))
+- `max_snapshots` (Number) Maximum number of app-update snapshots to keep, at least 1. When not set, the controller reports 1. Not supported for docker-compose apps or app instances on an edge node cluster.
 - `persistent_runtime_size_bytes` (String) Persistent runtime size in bytes
 - `project_id` (String) project name which the given app instance belong to
 - `purge` (Block List) Purge counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--purge))
 - `refresh` (Block List) Refresh counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--refresh))
 - `remote_console` (Boolean) Remote console flag
 - `restart` (Block List) Restart counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--restart))
+- `snapshot_on_update` (Boolean) Snapshot the current configuration before every update of this app instance (`?makeSnapshot=true`). If the snapshot fails, the update is not applied. Requires `allow_snapshots = true`. The controller records the snapshot at once, but the edge node only takes it (state `CREATED`) on an update that replaces the app's volumes, such as a purge; until then it is `CREATING` and cannot be rolled back to. Find it with `data.zedcloud_app_instance_snapshots` and roll back with `zedcloud_app_instance_snapshot_activation`. Creating a snapshot deletes the app instance's other snapshots. Changing only this setting does not update the app instance.
 - `start_delay_in_seconds` (Number) start delay is the time in seconds EVE should wait after boot before starting the application instance
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3. When omitted on create, the controller copies the edge node's tags onto the instance; removing `tags` from the configuration later does not clear them.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))

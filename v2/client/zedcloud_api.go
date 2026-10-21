@@ -8,6 +8,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 	"github.com/hashicorp/go-retryablehttp"
+	"github.com/zededa/terraform-provider-zedcloud/v2/client/app_instance_snapshot"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/app_profile_service"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/application"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/certificate_enrollment_profile"
@@ -110,6 +111,7 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *ZedcloudAP
 	cli.Artifact = artifact.New(transport, formats)
 	cli.ApplicationInstanceV2 = application_instance_v2.New(transport, formats)
 	cli.Jobs = jobs.New(transport, formats)
+	cli.AppInstanceSnapshot = app_instance_snapshot.New(transport, formats)
 	cli.Settings = DefaultSettings()
 	return cli
 }
@@ -216,6 +218,9 @@ type ZedcloudAPI struct {
 	// Jobs is hand-written; see client/jobs/client.go.
 	Jobs jobs.ClientService
 
+	// AppInstanceSnapshot is hand-written; see client/app_instance_snapshot/client.go.
+	AppInstanceSnapshot app_instance_snapshot.ClientService
+
 	// Settings holds provider-level options; see settings.go.
 	Settings *Settings
 }
@@ -267,4 +272,6 @@ func (c *ZedcloudAPI) SetTransport(transport runtime.ClientTransport) {
 	c.ApplicationInstanceV2.SetTransport(transport)
 
 	c.Jobs.SetTransport(transport)
+
+	c.AppInstanceSnapshot.SetTransport(transport)
 }

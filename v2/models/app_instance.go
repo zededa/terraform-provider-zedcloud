@@ -26,6 +26,9 @@ type AppInstance struct {
 	// Required: true
 	Activate *bool `json:"activate"`
 
+	// Flag to determine if a snapshot creation is allowed (PLE-576; hand-added, matches the swagger)
+	AllowSnapshots bool `json:"allowSnapshots,omitempty"`
+
 	// User defined name of the edge app, unique across the enterprise. Once app name is created, name can’t be changed
 	// Required: true
 	// Max Length: 256
@@ -110,6 +113,10 @@ type AppInstance struct {
 
 	// app manifest Info
 	ManifestInfo *ManifestInfo `json:"manifestInfo,omitempty"`
+
+	// Maximum number of snapshots allowed to be created. The controller reads 0 back as 1 for
+	// non-docker-compose apps (PLE-576; hand-added, matches the swagger)
+	MaxSnapshots int64 `json:"maxSnapshots,omitempty"`
 
 	// User defined name of the app instance, unique across the enterprise. Once app instance is created, name can’t be changed
 	// Required: true

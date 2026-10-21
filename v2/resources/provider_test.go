@@ -51,11 +51,14 @@ func TestProvider_InternalValidate(t *testing.T) {
 //     never returns credential material. There is nothing to import.
 //   - the manifest and status resources are read-only projections whose
 //     Create/Update/Delete are all no-ops.
+//   - zedcloud_app_instance_snapshot_activation performs a rollback on
+//     create; it is an action, not an object (PLE-576).
 func TestProviderResourcesAreImportable(t *testing.T) {
 	notImportable := map[string]string{
-		"zedcloud_credential":                "write-only; the API never returns credential material",
-		"zedcloud_cluster_group_manifest":    "read-only projection, not a managed object",
-		"zedcloud_kubernetes_cluster_status": "read-only projection, not a managed object",
+		"zedcloud_credential":                       "write-only; the API never returns credential material",
+		"zedcloud_cluster_group_manifest":           "read-only projection, not a managed object",
+		"zedcloud_kubernetes_cluster_status":        "read-only projection, not a managed object",
+		"zedcloud_app_instance_snapshot_activation": "one-shot action (a rollback); there is no object to import",
 	}
 
 	for name, res := range Provider().ResourcesMap {

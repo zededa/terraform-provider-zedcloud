@@ -40,7 +40,8 @@ func ApplicationInstanceResource() *schema.Resource {
 		ReadContext:   resourceReadApplicationInstance,
 		UpdateContext: UpdateApplicationInstance,
 		DeleteContext: DeleteApplicationInstance,
-		Schema:        zschema.ApplicationInstance(),
+		CustomizeDiff: applicationInstanceCustomizeDiff,
+		Schema:        zschema.ApplicationInstanceResourceSchema(),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -133,6 +134,10 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	_, isEdgeNodeClusterSet := d.GetOk("edge_node_cluster")
 	if !isDevIDSet && !isEdgeNodeClusterSet {
 		return diag.Errorf("either device_id or edge_node_cluster has to be specified")
+	}
+
+	if err := checkAppInstanceSnapshotSettings(d, true); err != nil {
+		return diag.FromErr(err)
 	}
 
 	client := m.(*api_client.ZedcloudAPI)
@@ -362,6 +367,8 @@ func resourceReadApplicationInstance(ctx context.Context, d *schema.ResourceData
 		return nil
 	}
 	zschema.SetApplicationInstanceResourceData(d, appInstance)
+	// snapshot_on_update lives in state only; after an import it is unset.
+	_ = d.Set("snapshot_on_update", d.Get("snapshot_on_update"))
 	d.SetId(appInstance.ID)
 	return nil
 }
@@ -418,8 +425,18 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 		return diag.Errorf("missing client parameter: id")
 	}
 
+	// snapshot_on_update lives in state only: changing just that must not
+	// send an update (which would itself take a snapshot).
+	if !d.HasChangesExcept("snapshot_on_update") {
+		return nil
+	}
+	if err := checkAppInstanceSnapshotSettings(d, true); err != nil {
+		return diag.FromErr(err)
+	}
+
 	model := zschema.ApplicationInstanceModel(d)
 	model.ID = id
+	normalizeMaxSnapshots(d, model)
 
 	// CI-752 / CI-790: lock on the server's current revision, not the state's.
 	// See the comment on currentVolumeInstanceRevision.
@@ -427,7 +444,11 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 		model.Revision = rev
 	}
 
-	if asyncWrites(client) {
+	if snapshotOnUpdate, _ := d.Get("snapshot_on_update").(bool); snapshotOnUpdate {
+		if diags := updateApplicationInstanceWithSnapshot(ctx, d, client, model); diags.HasError() {
+			return diags
+		}
+	} else if asyncWrites(client) {
 		jobID, err := client.ApplicationInstanceV2.Update(ctx, id, model)
 		if err != nil {
 			return appInstanceAPIErrorDiags("update", err)
