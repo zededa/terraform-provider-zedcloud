@@ -40,7 +40,25 @@ func customizeNodeDiff(ctx context.Context, d *schema.ResourceDiff, m interface{
 	if err := validateBondMemberInterfaces(ctx, d, m); err != nil {
 		return err
 	}
+	if err := validateNodePCRPolicy(d); err != nil {
+		return err
+	}
 	return validateClusteredNodeBaseImage(ctx, d, m)
+}
+
+// validateNodePCRPolicy checks pcr_policy.pcr_indices against the controller's
+// rules. Range and PCR 5 are checked per element by the schema; PCR 0 being
+// present needs the whole set.
+func validateNodePCRPolicy(d *schema.ResourceDiff) error {
+	pol := asList(d.Get("pcr_policy"))
+	if len(pol) == 0 || pol[0] == nil || !d.NewValueKnown("pcr_policy") {
+		return nil
+	}
+	indices := zschema.PCRIndicesFromInterface(pol[0].(map[string]interface{})["pcr_indices"])
+	if err := zschema.ValidatePCRIndices(int64sToInts(indices)); err != nil {
+		return fmt.Errorf("pcr_policy.pcr_indices: %w", err)
+	}
+	return nil
 }
 
 // validateClusteredNodeBaseImage rejects a per-node base_image on a node that
@@ -170,7 +188,7 @@ func rawConfigString(v cty.Value, attr string) string {
 
 func NodeDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext: ReadNode,
+		ReadContext: readNode,
 		Schema:      zschema.Node(),
 	}
 }
@@ -179,6 +197,9 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	var diags diag.Diagnostics
 
 	newNode := zschema.NodeModel(d)
+	if newNode.PcrPolicy != nil && newNode.PcrPolicy.PcrPolicy != nil {
+		newNode.PcrPolicy.PcrPolicy.PolicyVersion = 1
+	}
 	params := config.CreateParams()
 	params.SetBody(newNode)
 
@@ -249,11 +270,36 @@ func CreateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	zschema.SetNodeResourceData(d, finalNode)
 	d.SetId(finalNode.ID)
+	diags = append(diags, unsetUnmanagedNodePCRPolicy(d, newNode.PcrPolicy != nil)...)
 
 	return diags
 }
 
+// ReadNode is the resource read. pcr_policy is only tracked in state once
+// Terraform manages it (see managed.go), so a policy set with zcli on a node
+// whose config has no pcr_policy block causes no diff.
 func ReadNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	pcrManaged := isManagedList(d, "pcr_policy")
+	diags := readNode(ctx, d, m)
+	if !diags.HasError() {
+		diags = append(diags, unsetUnmanagedNodePCRPolicy(d, pcrManaged)...)
+	}
+	return diags
+}
+
+func unsetUnmanagedNodePCRPolicy(d *schema.ResourceData, managed bool) diag.Diagnostics {
+	if managed {
+		return nil
+	}
+	if err := d.Set("pcr_policy", []interface{}{}); err != nil {
+		return diag.FromErr(err)
+	}
+	return nil
+}
+
+// readNode reads the node into d, including the PCR policy. The data source
+// uses it as is.
+func readNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var edgeNode *models.Node
 	var diags diag.Diagnostics
 
@@ -295,6 +341,9 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		return diag.Errorf("missing client parameter: id")
 	}
 	newNode := zschema.NodeModel(d)
+	// whether Terraform manages pcr_policy after this apply (it is in config)
+	pcrConfigured := newNode.PcrPolicy != nil
+	setNodePCRPolicyForUpdate(d, newNode, existingNode)
 	// Use the revision we just fetched from the server as the optimistic-lock
 	// token instead of the (possibly stale) value cached in Terraform state.
 	// The device version can advance out-of-band between Terraform's last
@@ -386,8 +435,52 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	zschema.SetNodeResourceData(d, updatedNode)
 	d.SetId(updatedNode.ID)
+	diags = append(diags, unsetUnmanagedNodePCRPolicy(d, pcrConfigured)...)
 
 	return diags
+}
+
+// setNodePCRPolicyForUpdate decides what PCR policy the full-device PUT
+// carries. The controller treats a missing pcrPolicy as "reset", so:
+//
+//   - pcr_policy in config: send it, with the version taken from the live
+//     node (zcli's convention) and bumped only when the indices change;
+//   - pcr_policy removed from config (it was managed): send nothing, which
+//     resets the node to the project / EVE defaults;
+//   - never in config: send the node's current policy unchanged, so a policy
+//     set with zcli survives the apply.
+//
+// The live policy may come from a deployment (the device GET reports a
+// matching deployment PCR device policy in the same field). The API doesn't
+// say which, so it is preserved as fetched (design doc §4.3).
+func setNodePCRPolicyForUpdate(d *schema.ResourceData, newNode, existingNode *models.Node) {
+	oldVal, _ := d.GetChange("pcr_policy")
+	var existing *models.Policy
+	if existingNode != nil {
+		existing = existingNode.PcrPolicy
+	}
+	newNode.PcrPolicy = nodePCRPolicyForUpdate(newNode.PcrPolicy, len(asList(oldVal)) > 0, existing)
+}
+
+// nodePCRPolicyForUpdate returns the PCR policy to send, given the policy from
+// config (nil when the block is absent), whether Terraform managed the policy
+// before this apply, and the node's current policy on the controller.
+func nodePCRPolicyForUpdate(configured *models.Policy, wasManaged bool, existing *models.Policy) *models.Policy {
+	var curIndices []int64
+	var curVersion int64
+	if existing != nil && existing.PcrPolicy != nil {
+		curIndices = existing.PcrPolicy.PcrIndices
+		curVersion = existing.PcrPolicy.PolicyVersion
+	}
+	switch {
+	case configured != nil && configured.PcrPolicy != nil:
+		configured.PcrPolicy.PolicyVersion = zschema.NextPCRPolicyVersion(curIndices, curVersion, configured.PcrPolicy.PcrIndices)
+		return configured
+	case wasManaged:
+		return nil
+	default:
+		return existing
+	}
 }
 
 func DeleteNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {

@@ -36,7 +36,12 @@ func DevicePolicyModel(d *schema.ResourceData) *models.DevicePolicy {
 			portBasedNetworkAccessControlPolicy = DevicePortBasedNetworkAccessControlPolicyModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var pcrPolicy *models.DevicePCRPolicy // DevicePCRPolicy
+	if l, ok := d.Get("pcr_policy").([]interface{}); ok && len(l) > 0 && l[0] != nil {
+		pcrPolicy = DevicePCRPolicyModelFromMap(l[0].(map[string]interface{}))
+	}
 	return &models.DevicePolicy{
+		PcrPolicy:                           pcrPolicy,
 		AttestationPolicy:                   attestationPolicy,
 		MetaData:                            metaData,
 		PolicySubType:                       policySubType,
@@ -77,7 +82,12 @@ func DevicePolicyModelFromMap(m map[string]interface{}) *models.DevicePolicy {
 			portBasedNetworkAccessControlPolicy = DevicePortBasedNetworkAccessControlPolicyModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var pcrPolicy *models.DevicePCRPolicy // DevicePCRPolicy
+	if l, ok := m["pcr_policy"].([]interface{}); ok && len(l) > 0 && l[0] != nil {
+		pcrPolicy = DevicePCRPolicyModelFromMap(l[0].(map[string]interface{}))
+	}
 	return &models.DevicePolicy{
+		PcrPolicy:                           pcrPolicy,
 		AttestationPolicy:                   attestationPolicy,
 		MetaData:                            metaData,
 		PolicySubType:                       policySubType,
@@ -89,6 +99,7 @@ func SetDevicePolicyResourceData(d *schema.ResourceData, m *models.DevicePolicy)
 	d.Set("attestation_policy", SetDeviceAttestationPolicySubResourceData([]*models.DeviceAttestationPolicy{m.AttestationPolicy}))
 	d.Set("meta_data", SetPolicyCommonSubResourceData([]*models.PolicyCommon{m.MetaData}))
 	d.Set("policy_sub_type", m.PolicySubType)
+	d.Set("pcr_policy", SetDevicePCRPolicySubResourceData([]*models.DevicePCRPolicy{m.PcrPolicy}))
 	d.Set("port_based_network_access_control_policy", SetDevicePortBasedNetworkAccessControlPolicySubResourceData([]*models.DevicePortBasedNetworkAccessControlPolicy{m.PortBasedNetworkAccessControlPolicy}))
 }
 
@@ -99,6 +110,7 @@ func SetDevicePolicySubResourceData(m []*models.DevicePolicy) (d []*map[string]i
 			properties["attestation_policy"] = SetDeviceAttestationPolicySubResourceData([]*models.DeviceAttestationPolicy{DevicePolicyModel.AttestationPolicy})
 			properties["meta_data"] = SetPolicyCommonSubResourceData([]*models.PolicyCommon{DevicePolicyModel.MetaData})
 			properties["policy_sub_type"] = DevicePolicyModel.PolicySubType
+			properties["pcr_policy"] = SetDevicePCRPolicySubResourceData([]*models.DevicePCRPolicy{DevicePolicyModel.PcrPolicy})
 			properties["port_based_network_access_control_policy"] = SetDevicePortBasedNetworkAccessControlPolicySubResourceData([]*models.DevicePortBasedNetworkAccessControlPolicy{DevicePolicyModel.PortBasedNetworkAccessControlPolicy})
 			d = append(d, &properties)
 		}
@@ -126,6 +138,17 @@ func DevicePolicy() map[string]*schema.Schema {
 			Optional: true,
 		},
 
+		"pcr_policy": {
+			Description: `PCR policy for TPM volume key sealing on matching devices (set with policy_sub_type = "DEVICE_POLICY_TYPE_PCR"). ` +
+				`For nodes in the deployment's project it takes precedence over a node-level policy; the project-level policy is not used for them.`,
+			Type: schema.TypeList, //GoType: DevicePCRPolicy
+			Elem: &schema.Resource{
+				Schema: DevicePCRPolicySchema(),
+			},
+			MaxItems: 1,
+			Optional: true,
+		},
+
 		"policy_sub_type": {
 			Description: `device policy type`,
 			Type:        schema.TypeString,
@@ -148,6 +171,7 @@ func GetDevicePolicyPropertyFields() (t []string) {
 	return []string{
 		"attestation_policy",
 		"meta_data",
+		"pcr_policy",
 		"policy_sub_type",
 		"port_based_network_access_control_policy",
 	}

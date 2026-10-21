@@ -32,6 +32,7 @@ description: |-
 - `origin_type` (String) origin of object
 - `parent_detail` (Block List) origin and parent related details (see [below for nested schema](#nestedblock--parent_detail))
 - `project_access_list` (List of String) project access list of the app bundle
+- `tags` (Map of String) User defined tags (name/value pairs) for the edge application, used to categorize and filter apps in the marketplace. At most 32 tags; keys 3-512 characters, values 3-256 characters. Keys must not contain < > % & ? / \ ' " and backtick; values must not contain ' " \ and backtick. Requires zedcloud 20.0.7+ (20.0 line) or 21.0.0+. Tags are managed by Terraform only once this argument is set: tags set outside Terraform (e.g. in the UI) are kept while the argument is absent, and removing the argument after it was set clears them.
 - `user_defined_version` (String) User defined version for the given edge-app
 
 ### Read-Only

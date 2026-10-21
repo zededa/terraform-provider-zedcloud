@@ -13,8 +13,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	cep_client "github.com/zededa/terraform-provider-zedcloud/v2/client/certificate_enrollment_profile"
-	config "github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
 	depl_client "github.com/zededa/terraform-provider-zedcloud/v2/client/deployment"
+	config "github.com/zededa/terraform-provider-zedcloud/v2/client/projects"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	testhelper "github.com/zededa/terraform-provider-zedcloud/v2/testing"
 )
@@ -254,8 +254,11 @@ func TestProject_PNAC_V2_Create(t *testing.T) {
 		Providers:    testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:             inputCreate,
-				ExpectNonEmptyPlan: true,
+				Config: inputCreate,
+				// The deployment must plan clean after apply: an update creates a
+				// new deployment version (NFR-249), so a perpetual diff would
+				// create one per apply.
+				ExpectNonEmptyPlan: false,
 				Check: resource.ComposeTestCheckFunc(
 					testDeploymentPNACExists("zedcloud_deployment.test_tf_provider_pnac_v2_depl", &gotDeployment),
 					resource.TestCheckResourceAttr("zedcloud_deployment.test_tf_provider_pnac_v2_depl", "name", suffixed("test_tf_provider_pnac_v2_depl")),

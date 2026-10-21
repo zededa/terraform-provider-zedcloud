@@ -50,6 +50,7 @@ description: |-
 - `location` (String) Device location: deprecated
 - `memory` (Number) Device memory in MBs
 - `onboarding_key` (String) Object key
+- `pcr_policy` (Block List, Max: 1) Device-level PCR policy for TPM volume key sealing. Overrides the project's PCR policy for this node (for nodes in a deployment project, a matching deployment PCR device policy takes precedence over it). Managed only once set: a policy set outside Terraform (e.g. with zcli) is kept while this block is absent; removing the block after it was set resets the node to the project or EVE defaults. (see [below for nested schema](#nestedblock--pcr_policy))
 - `prepare_power_off_counter` (Number) prepare poweroff counter
 - `prepare_power_off_time` (String) prepare poweroff time
 - `reset_counter` (Number) devicereset counter
@@ -790,6 +791,18 @@ Optional:
 - `expire_sec` (String)
 - `num_inst` (Number)
 
+
+
+<a id="nestedblock--pcr_policy"></a>
+### Nested Schema for `pcr_policy`
+
+Required:
+
+- `pcr_indices` (Set of Number) PCR indices (0-15) used to seal the TPM volume key. PCR 0 is required; PCR 5 is volatile and not allowed. Recommended set: [0, 1, 2, 3, 4, 6, 7, 8, 9, 13, 14]. Warning: a set that includes PCRs which change on firmware or bootloader updates can leave the node unable to unseal its vault after such an update.
+
+Read-Only:
+
+- `policy_version` (Number) Policy version, sent to EVE as the policy id. Managed by the provider: set to 1 when the policy is created and incremented when pcr_indices change.
 
 
 <a id="nestedblock--vlan_adapters"></a>

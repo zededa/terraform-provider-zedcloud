@@ -101,6 +101,10 @@ func PolicyConfigModel(d *schema.ResourceData) *models.Policy {
 			portBasedNetworkAccessControlPolicy = PortBasedNetworkAccessControlPolicyModelFromMap(portBasedNetworkAccessControlPolicyMap[0].(map[string]interface{}))
 		}
 	}
+	var pcrPolicy *models.PCRPolicy // PCRPolicy
+	if l, ok := d.Get("pcr_policy").([]interface{}); ok && len(l) > 0 && l[0] != nil {
+		pcrPolicy = PCRPolicyModelFromMap(l[0].(map[string]interface{}))
+	}
 	statusMessage, _ := d.Get("status_message").(string)
 	title, _ := d.Get("title").(string)
 	var typeVar *models.PolicyType // PolicyType
@@ -124,6 +128,7 @@ func PolicyConfigModel(d *schema.ResourceData) *models.Policy {
 		Name:                                &name, // string
 		NetworkPolicy:                       networkPolicy,
 		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
+		PcrPolicy:                           pcrPolicy,
 		StatusMessage:                       statusMessage,
 		Title:                               &title, // string
 		Type:                                typeVar,
@@ -236,6 +241,10 @@ func PolicyConfigModelFromMap(m map[string]interface{}) *models.Policy {
 		}
 	}
 	//
+	var pcrPolicy *models.PCRPolicy // PCRPolicy
+	if l, ok := m["pcr_policy"].([]interface{}); ok && len(l) > 0 && l[0] != nil {
+		pcrPolicy = PCRPolicyModelFromMap(l[0].(map[string]interface{}))
+	}
 	statusMessage := m["status_message"].(string)
 	title := m["title"].(string)
 	var typeVar *models.PolicyType // PolicyType
@@ -259,6 +268,7 @@ func PolicyConfigModelFromMap(m map[string]interface{}) *models.Policy {
 		Name:                                &name,
 		NetworkPolicy:                       networkPolicy,
 		PortBasedNetworkAccessControlPolicy: portBasedNetworkAccessControlPolicy,
+		PcrPolicy:                           pcrPolicy,
 		StatusMessage:                       statusMessage,
 		Title:                               &title,
 		Type:                                typeVar,
@@ -280,6 +290,7 @@ func SetPolicyConfigResourceData(d *schema.ResourceData, m *models.Policy) {
 	d.Set("name", m.Name)
 	d.Set("network_policy", SetNetworkPolicySubResourceData([]*models.NetworkPolicy{m.NetworkPolicy}))
 	d.Set("port_based_network_access_control_policy", SetPortBasedNetworkAccessControlPolicySubResourceData([]*models.PortBasedNetworkAccessControlPolicy{m.PortBasedNetworkAccessControlPolicy}))
+	d.Set("pcr_policy", SetPCRPolicySubResourceData([]*models.PCRPolicy{m.PcrPolicy}))
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("status", m.Status)
 	d.Set("status_message", m.StatusMessage)
@@ -305,6 +316,7 @@ func SetPolicyConfigSubResourceData(m []*models.Policy) (d []*map[string]interfa
 			properties["name"] = PolicyConfigModel.Name
 			properties["network_policy"] = SetNetworkPolicySubResourceData([]*models.NetworkPolicy{PolicyConfigModel.NetworkPolicy})
 			properties["port_based_network_access_control_policy"] = SetPortBasedNetworkAccessControlPolicySubResourceData([]*models.PortBasedNetworkAccessControlPolicy{PolicyConfigModel.PortBasedNetworkAccessControlPolicy})
+			properties["pcr_policy"] = SetPCRPolicySubResourceData([]*models.PCRPolicy{PolicyConfigModel.PcrPolicy})
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{PolicyConfigModel.Revision})
 			properties["status"] = PolicyConfigModel.Status
 			properties["status_message"] = PolicyConfigModel.StatusMessage
@@ -438,6 +450,16 @@ func Policy() map[string]*schema.Schema {
 			Optional: true,
 		},
 
+		"pcr_policy": {
+			Description: `PCR policy for TPM key sealing on devices in this project (set with type = "POLICY_TYPE_PCR")`,
+			Type:        schema.TypeList, //GoType: PCRPolicy
+			Elem: &schema.Resource{
+				Schema: PCRPolicySchema(),
+			},
+			MaxItems: 1,
+			Optional: true,
+		},
+
 		"revision": {
 			Description: `system defined info`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
@@ -489,6 +511,7 @@ func GetPolicyConfigPropertyFields() (t []string) {
 		"name",
 		"network_policy",
 		"port_based_network_access_control_policy",
+		"pcr_policy",
 		"status_message",
 		"title",
 		"type",

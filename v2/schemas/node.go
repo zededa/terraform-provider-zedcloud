@@ -233,7 +233,9 @@ func NodeModel(d *schema.ResourceData) *models.Node {
 			vlanAdapters = append(vlanAdapters, m)
 		}
 	}
+	pcrPolicy := NodePCRPolicyModel(d.Get("pcr_policy"))
 	return &models.Node{
+		PcrPolicy:               pcrPolicy,
 		AdminState:              adminState,
 		AssetID:                 assetID,
 		BaseImage:               baseImage,
@@ -506,7 +508,9 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 			vlanAdapters = append(vlanAdapters, m)
 		}
 	}
+	pcrPolicy := NodePCRPolicyModel(m["pcr_policy"])
 	return &models.Node{
+		PcrPolicy:               pcrPolicy,
 		AdminState:              adminState,
 		AssetID:                 assetID,
 		BaseImage:               baseImage,
@@ -561,6 +565,7 @@ func EdgeNodeModelFromMap(m map[string]interface{}) *models.Node {
 func SetNodeResourceData(d *schema.ResourceData, m *models.Node) {
 	d.Set("admin_state", m.AdminState)
 	d.Set("asset_id", m.AssetID)
+	d.Set("pcr_policy", FlattenNodePCRPolicy(m.PcrPolicy))
 	d.Set("base_image", SetBaseOSImageSubResourceData(m.BaseImage))
 	d.Set("base_os_force_upgrade", m.BaseOsForceUpgrade)
 	d.Set("base_os_retry_counter", m.BaseOsRetryCounter)
@@ -615,6 +620,7 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 			properties := make(map[string]interface{})
 			properties["admin_state"] = DeviceConfigModel.AdminState
 			properties["asset_id"] = DeviceConfigModel.AssetID
+			properties["pcr_policy"] = FlattenNodePCRPolicy(DeviceConfigModel.PcrPolicy)
 			properties["base_image"] = SetBaseOSImageSubResourceData(DeviceConfigModel.BaseImage)
 			properties["base_os_force_upgrade"] = DeviceConfigModel.BaseOsForceUpgrade
 			properties["base_os_retry_counter"] = DeviceConfigModel.BaseOsRetryCounter
@@ -670,6 +676,8 @@ func SetEdgeNodeSubResourceData(m []*models.Node) (d []*map[string]interface{}) 
 // Schema mapping representing the DeviceConfig resource defined in the Terraform configuration
 func Node() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
+		"pcr_policy": NodePCRPolicySchema(),
+
 		"admin_state": {
 			Description: `administrative state of device`,
 			Type:        schema.TypeString,

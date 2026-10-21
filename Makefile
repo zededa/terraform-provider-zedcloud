@@ -45,17 +45,21 @@ build:
 	chmod a+x  ./v2/$(NAME)_$(VERSION)
 
 # acceptance tests
+#
+# The whole suite runs sequentially against one controller and took ~16 minutes
+# on CI before NFR-249 added four more acceptance tests (~3 minutes), so 20m no
+# longer fits; 40m leaves room for a slow controller.
 .PHONY: test
 test:
 	cd v2 && \
-	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v -timeout 20m ./... && \
+	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v -timeout 40m ./... && \
 	cd -
 
 .PHONY: test-run
 test-run:
 	cd v2 && \
 	go vet ./... && \
-	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v -timeout 20m ./... -run $(case) && \
+	TF_ACC=1 TF_CLI_CONFIG_FILE="${PWD}/dev.tfrc" go test -v -timeout 40m ./... -run $(case) && \
 	cd -
 
 .PHONY: udpatedeps

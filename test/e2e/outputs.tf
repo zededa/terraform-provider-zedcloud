@@ -29,3 +29,9 @@ output "onboard_wait" {
     last     = trimspace(zedamigo_wait_until.onboarded.stdout)
   }
 }
+
+output "vtpm" {
+  description = "Whether the node has a software TPM (var.vtpm)"
+  value       = var.vtpm
+}
+

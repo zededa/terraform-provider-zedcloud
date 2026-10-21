@@ -86,9 +86,14 @@ resource "zedcloud_edgenode" "EN" {
   project_id     = zedcloud_project.PROJECT.id
   admin_state    = "ADMIN_STATE_ACTIVE"
 
+  # `net_dhcp` must match the network's DHCP type. Left out, the controller
+  # fills in NETWORK_DHCP_TYPE_CLIENT from the network, and every plan then
+  # wants to set it back to NETWORK_DHCP_TYPE_UNSPECIFIED -- a permanent diff
+  # that updated the node on every apply.
   interfaces {
     intfname   = "eth0"
     intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+    net_dhcp   = zedcloud_network.mgmt_dhcp.ip[0].dhcp
     cost       = 0
     netname    = zedcloud_network.mgmt_dhcp.name
     ztype      = "IO_TYPE_ETH"

@@ -15,7 +15,7 @@ prove the node lifecycle. Running the acceptance suite against the node is itera
 | Provider | Resources |
 |---|---|
 | `zedcloud` | `brand`, `model`, `project`, `network`, `edgenode` |
-| `zedamigo` | `host_reservation`, `disk_image`, `eve_installer`, `installed_edge_node`, `edge_node`, `wait_until` |
+| `zedamigo` | `host_reservation`, `disk_image`, `eve_installer`, `installed_edge_node`, `edge_node`, `wait_until`; `swtpm` with `vtpm = true` |
 
 Every object name carries `var.run_id`, so concurrent runs and leftovers cannot
 collide — necessary on alpha, which holds ~233 devices and ~334 projects belonging
@@ -142,6 +142,40 @@ LAB "cd ~/e2e-alpha && export TF_CLI_CONFIG_FILE=\$PWD/e2e.tfrc TF_VAR_... \
 Destroying matters twice over: it stops the QEMU process **and** releases the
 capacity reservation, which is durable and survives reboots.
 
+## Optional: a software TPM (`vtpm = true`)
+
+By default the node has no TPM, so EVE never seals its vault key and anything
+TPM-dependent -- attestation with PCR values, PCR policies
+(`zedcloud_project`/`zedcloud_edgenode` `pcr_policy`) -- cannot be tested.
+`TF_VAR_vtpm=true` adds a `zedamigo_swtpm` and wires its socket into both the
+install VM and the run VM (the TPM is part of the installed identity, so the
+same TPM must serve both). Set it when the node is created: zedamigo would apply
+a change in place, but EVE's TPM-sealed vault does not survive it, so use a new
+`run_id` instead.
+
+zedamigo launches `swtpm`, which is not installed on `h-m-dl20`. Take it from
+nixpkgs for the duration of the command; it must stay on PATH for every
+command that may start the TPM (apply, and destroy/apply after a host reboot):
+
+```sh
+LAB "cd ~/e2e-alpha && export ... TF_VAR_vtpm=true \
+  && nix shell nixpkgs#swtpm -c tofu apply -auto-approve"
+```
+
+Checking what EVE received, from the lab host (`ssh -p <eve_ssh_port> root@localhost`):
+
+```sh
+# PCR policy the controller sent with the escrowed vault key (after an attestation;
+# reboot the node through the API to force one)
+cat /run/zedagent/EncryptedVaultKeyFromController/*.json   # "PolicyPcr": {...}
+cat /run/vaultmgr/VaultStatus/*.json                        # vault state
+```
+
+Verified 2026-10-19 with EVE `16.0.1-lts-kvm-amd64` on alpha: project and node PCR
+policies set by Terraform arrived on EVE with the expected indices and policy ids,
+and the vault unlocked after each reboot (NFR-249, see
+`docs/design/nfr-249-app-tags-and-pcr-policies.md` §9).
+
 ## Measured timings (h-m-dl20, 16 cores / 62 GB, EVE 16.0.1)
 
 | Step | Duration |
@@ -157,6 +191,14 @@ emulated run. This makes a per-PR trigger considerably more viable and weakens t
 argument for a warm node pool.
 
 ## Known issues
+
+**Stale lock file after the zedamigo mirror changed.** The on-host mirror
+`~/.terraform.d/plugins/localhost/andrei-zededa/zedamigo/0.13.1/linux_amd64/`
+gained `LICENSE` and `README.md` on 2026-09-17, which changes the package hash.
+Working directories initialised before that fail `tofu init`/`destroy` with
+"doesn't match any of the checksums previously recorded in the dependency lock
+file". Remove the zedamigo block from `.terraform.lock.hcl` and run `tofu init`
+again.
 
 **Capacity reservation lock is single-user.** On `h-m-dl20`,
 `/var/lib/zedamigo/reservations/.lock` is mode `0644` owned by `andrei`, while the

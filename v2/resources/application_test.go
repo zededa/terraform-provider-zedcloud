@@ -130,7 +130,9 @@ func testApplicationAttributes(t *testing.T, got, expected *models.Application) 
 			"DatastoreIDList",
 		}
 		opts := cmpopts.IgnoreFields(models.Application{}, ignoredFields...)
-		if diff := cmp.Diff(*got, *expected, opts); len(diff) != 0 {
+		// EquateEmpty: controllers with Edge app tags (20.0.7+/21.0.0+) return
+		// an empty tags map where the goldens have none.
+		if diff := cmp.Diff(*got, *expected, opts, cmpopts.EquateEmpty()); len(diff) != 0 {
 			return fmt.Errorf("%s: unexpected diff: \n%s", t.Name(), diff)
 		}
 		return nil
