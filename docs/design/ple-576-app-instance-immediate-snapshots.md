@@ -5,15 +5,15 @@
 **Reference implementation:** zcli [#1105](https://github.com/zededa/zcli/pull/1105) — *feat: Implement immediate snapshots (ple-556)*, commit `765db61`
 **Repos:** `zededa/terraform-provider-zedcloud` @ `c9a03747` (origin/main), `zededa/zedcloud` (main), `zededa/zcli` @ `79b1feb`
 **Branch:** `ple-576-app-instance-snapshots`
-**Date:** 2026-10-15 (revised 2026-10-21: D7, cluster detection fix in §4.4a)
+**Date:** 2026-10-15 (revised 2026-10-21: D7, cluster detection fix in §4.4a; D8 `snapshot_on_update`, §4.7, and v2 update route correction)
 **Author:** Ivan Curachin
-**Status:** Draft. Decided 2026-10-15: activation and the capability pre-check are in scope; edge-node-cluster app instances are not supported; a rollback shows up as ordinary drift; `allow_snapshots` / `max_snapshots` are in scope; new resources use the `zedcloud_app_instance_` prefix; snapshot settings are rejected for cluster app instances (§8.1). Remaining open questions in §8.2.
+**Status:** Draft. Decided: activation and the capability pre-check are in scope; edge-node-cluster app instances are not supported; a rollback shows up as ordinary drift; `allow_snapshots` / `max_snapshots` are in scope; new resources use the `zedcloud_app_instance_` prefix; snapshot settings are rejected for cluster app instances; `snapshot_on_update` is in scope (§8.1). No open questions left.
 
 **Headline:** zcli gained four commands (`snapshot-create`, `snapshot-activate`, `snapshot-show`,
 `snapshot-delete`) on `edge-app-instance`. The provider has none of this today. The proposal is
 one new resource for the snapshot itself, one action-style resource for activation (rollback),
-one data source for listing, and two new attributes on `zedcloud_application_instance`
-(`allow_snapshots`, `max_snapshots`) for automatic app-update snapshots. Two of the five endpoints we need are not in the published
+one data source for listing, and three new attributes on `zedcloud_application_instance`
+(`allow_snapshots`, `max_snapshots`, `snapshot_on_update`) for app-update snapshots. Two of the five endpoints we need are not in the published
 swagger, so the provider needs a small hand-written client, like the one for `zedcloud_artifact`.
 
 ---
@@ -28,7 +28,7 @@ An *immediate* snapshot is a point-in-time copy of an app instance's config and 
 on demand. *Activating* it rolls the app instance back to that copy. This is different from the
 older *app-update* snapshots, which EVE takes automatically when an app instance is updated
 (controlled by `allowSnapshots` / `maxSnapshots` on the app instance). Those two settings aren't in zcli #1105
-but are in scope for PLE-576 (D5, §4.7), so Terraform users can turn on both kinds of snapshot.
+but are in scope for PLE-576 (D5, §4.6), so Terraform users can turn on both kinds of snapshot.
 
 ### 1.1 What zcli#1105 added
 
@@ -70,7 +70,7 @@ Source: `zcli/modules/edge-app-instance.py` (`snapshot_create` … `snapshot_del
   `v2/models/app_instance.go` (generated, then hand-maintained) doesn't, and neither does `v2/schemas/application_instance.go`.
   Side effect today: the provider's app instance update is a full `PUT` without these fields, and seine copies
   them straight from the request (`appinstproc.go:228-229`), so **any Terraform update resets `allowSnapshots` to false**
-  if someone turned it on in the UI. Adding the fields (§4.7) fixes that.
+  if someone turned it on in the UI. Adding the fields (§4.6) fixes that.
 - No device-status call in `v2/`: the swagger has `EdgeNodeStatus_GetEdgeNodeStatus` (`GET /v1/devices/id/{id}/status`), and `v2/models/device_status_msg.go` already has `RawStatus`, but `v2/client/node` doesn't expose the operation. Needed for the capability pre-check (§4.4).
 - Precedent for a hand-written client: `v2/client/artifact/client.go` (NFR-19), wired into `ZedcloudAPI` in `v2/client/zedcloud_api.go`.
 - Precedent for an action-style resource: `zedcloud_patch_reference_update` (`v2/resources/patch_reference_update.go`).
@@ -80,11 +80,12 @@ Source: `zcli/modules/edge-app-instance.py` (`snapshot_create` … `snapshot_del
 ## 2. Proposed Solution
 
 ```hcl
-# Turn on automatic app-update snapshots on the app instance (§4.7).
+# Turn on automatic app-update snapshots on the app instance (§4.6).
 resource "zedcloud_application_instance" "app" {
   # ... existing attributes ...
-  allow_snapshots = true
-  max_snapshots   = 1
+  allow_snapshots    = true
+  max_snapshots      = 1
+  snapshot_on_update = true # every update first snapshots the current config (§4.7)
 }
 
 # Take an immediate snapshot. Re-taken whenever a trigger value changes.
@@ -123,6 +124,7 @@ data "zedcloud_app_instance_snapshots" "app" {
 | `snapshot-activate` | `zedcloud_app_instance_snapshot_activation` (create) |
 | `-f` on create | `skip_capability_check = true` |
 | *(UI only today)* app instance snapshot settings | `zedcloud_application_instance.allow_snapshots` / `max_snapshots` |
+| *(UI only today)* "take a snapshot" on app instance update | `zedcloud_application_instance.snapshot_on_update` |
 
 ---
 
@@ -289,7 +291,7 @@ Input `app_instance_id`. Output `snapshots` list of `{id, name, state}`; `state`
 `State()` call per snapshot (usually 1 item, since create keeps only one). Optional `name` filter
 gives `snapshot-show <name>` parity.
 
-### 4.7 `allow_snapshots` / `max_snapshots` on `zedcloud_application_instance` (in scope, D5)
+### 4.6 `allow_snapshots` / `max_snapshots` on `zedcloud_application_instance` (in scope, D5)
 
 **What they do on the controller**
 
@@ -298,7 +300,7 @@ gives `snapshot-show <name>` parity.
 | `allowSnapshots` (bool) | Stored as-is from every create/update request. Required for app-update snapshots: a non-immediate snapshot create is rejected when it's false and `maxSnapshots > 0` | `seine/appinstproc.go:228`, `aisnapproc.go:150-160` |
 | `maxSnapshots` (uint32) | Stored as-is; sent to the device. **On read, 0 is returned as 1** for non-docker-compose apps (`defaultMaxSnapshots`) | `appinstproc.go:229, 106, 409-411`; `purus/appinst.go:388` |
 | Docker-compose apps | `allowSnapshots = true` or `maxSnapshots != 0` → validation error | `appinstproc.go:6449-6462` |
-| When an app-update snapshot is taken | When an app instance update (`PUT /v2/apps/instances/id/{id}`) or refresh is sent with `?makeSnapshot=true`. The provider's update uses the v1 route and never sends it | `gilas/appinstance_handlers.go:115, 495-500, 720-725`; `seine/appinstproc.go:5379-5393` |
+| When an app-update snapshot is taken | When an app instance update (`PUT /v2/apps/instances/id/{id}`) or refresh is sent with `?makeSnapshot=true`. The v1 update route parses the parameter but ignores it. The provider sends no such parameter today (§4.7) | `gilas/appinstance_handlers.go` (`appInstanceUpdateCommon`, `appInstanceRefreshCommon`); `seine/appinstproc.go` (`processAppInstanceUpdateV2`) |
 | `availableSnapshots` | Read-only list; not exposed, `data.zedcloud_app_instance_snapshots` covers it | |
 
 **Provider changes**
@@ -325,10 +327,57 @@ gives `snapshot-show <name>` parity.
     if it is unknown, the same check runs in Create/Update before the API call.
 - **Optional+Computed caveat** (document it): removing `allow_snapshots` from the config does **not** turn it off; the old value
   stays. To turn it off, set `allow_snapshots = false` explicitly.
-- **Out of scope here:** sending `?makeSnapshot=true` from Terraform. That needs the provider to switch its update to the v2
-  route, which changes the async update path from UE-177. Listed as §8.2 Q1.
+- Actually *taking* an app-update snapshot from Terraform is `snapshot_on_update`, §4.7.
 
-### 4.6 Files
+### 4.7 `snapshot_on_update` on `zedcloud_application_instance` (in scope, D8)
+
+**Correction to the first draft:** it said the provider updates app instances through the v1 route and would have to
+move to v2 to send `makeSnapshot`. That was wrong for current main. Since UE-177 the provider updates through the
+job-based `PUT /v2/apps/instances/id/{id}` by default (`async_writes = true`; hand-written client
+`v2/client/application_instance_v2`, `UpdateApplicationInstance` in `v2/resources/application_instance.go`). The v1
+route is used only when `async_writes = false`. So **no controller change is needed**; the provider only has to send the
+query parameter.
+
+**What the controller does with `?makeSnapshot=true`** (`seine/appinstproc.go`, `processAppInstanceUpdateV2`), all inside the update job:
+1. Takes an app-update (non-immediate) snapshot of the app instance's **current, pre-update** config (`aisnapCreate`
+   with a generated name). Like any create, this deletes the app instance's existing snapshots, immediate ones included (§5.1).
+2. If the snapshot fails → the job fails and **the update is not applied**.
+3. Otherwise applies the update and completes the job.
+
+The snapshot create is rejected when `allowSnapshots` is false and `maxSnapshots > 0` (`aisnapproc.go:150-160`). Because
+`maxSnapshots` reads back as 1 by default (§4.6), in practice **`allow_snapshots` must be true**. The KubeVirt and
+run-state checks from §1.2 also apply. The job result does not return the snapshot name.
+
+**Schema**
+
+| Attribute | Type | Mode | Notes |
+|---|---|---|---|
+| `snapshot_on_update` | bool | Optional, default `false` | Provider-only setting; never sent in the body and not read back from the controller, so it can't drift |
+
+**Behaviour**
+- **Update** with `snapshot_on_update = true` → send `?makeSnapshot=true` on the v2 update. Add a `makeSnapshot bool`
+  argument (or an options struct) to `ApplicationInstanceV2.Update`; the existing job poller already turns a failed job
+  into an error.
+- **Only `snapshot_on_update` changed** (`!d.HasChangesExcept("snapshot_on_update")`) → no API call, just save state.
+  Otherwise flipping the flag would itself send an update and take a snapshot.
+- **Create:** ignored; there's no previous config to snapshot.
+- **`async_writes = false`:** the v1 route would silently drop the flag. Updates that need a snapshot always use the v2
+  route and the job poller, whatever `async_writes` says; other updates keep following the setting. Logged at INFO.
+- **`allow_snapshots` turned on in the same apply:** the controller snapshots *before* it stores the new
+  `allowSnapshots`, so a single call would fail. When the plan changes `allow_snapshots` false → true and
+  `snapshot_on_update` is true, the provider does two calls: (1) the current server config with only `allow_snapshots` /
+  `max_snapshots` changed, no snapshot; (2) the full new config with `?makeSnapshot=true`. The snapshot then still holds
+  the pre-update config.
+- **Failure:** job failed → error diagnostic that says the snapshot failed and the app instance was **not** updated;
+  state keeps the old values, so the next apply retries both.
+- **Plan-time validation** (`CustomizeDiff`):
+  - `snapshot_on_update = true` with planned `allow_snapshots` not true → error *"snapshot_on_update requires allow_snapshots = true"*.
+  - Edge-node-cluster app instance (D7) or docker-compose app → error, same rules as §4.6.
+- **Finding the snapshot:** `data.zedcloud_app_instance_snapshots` lists it (one per app instance); its name can be fed to
+  `zedcloud_app_instance_snapshot_activation` to roll back the update.
+- **Import:** `snapshot_on_update` is set to `false`.
+
+### 4.8 Files
 
 | File | Change |
 |---|---|
@@ -341,10 +390,12 @@ gives `snapshot-show <name>` parity.
 | `v2/resources/provider.go` | Register 2 resources + 1 data source |
 | `v2/examples/resources/zedcloud_app_instance_snapshot*/` | Examples |
 | `docs/resources/app_instance_snapshot*.md`, `docs/data-sources/app_instance_snapshots.md` | Docs, including §5 caveats |
-| `v2/models/app_instance.go` | `AllowSnapshots`, `MaxSnapshots` (§4.7) |
-| `v2/schemas/application_instance.go`, `v2/resources/application_instance.go` | `allow_snapshots`, `max_snapshots` schema, mapping, `CustomizeDiff` (§4.7) |
+| `v2/models/app_instance.go` | `AllowSnapshots`, `MaxSnapshots` (§4.6) |
+| `v2/schemas/application_instance.go`, `v2/resources/application_instance.go` | `allow_snapshots`, `max_snapshots` schema, mapping, `CustomizeDiff` (§4.6) |
 | `v2/resources/application_instance_test.go`, `testdata/application_instance/*.tf` | Tests for the new attributes |
 | `docs/resources/application_instance.md`, `docs/data-sources/application_instance.md` | Document the new attributes and the Optional+Computed caveat |
+| `v2/client/application_instance_v2/client.go`, `client_test.go` | `makeSnapshot` query parameter on `Update` (§4.7) |
+| `v2/resources/application_instance.go` | `snapshot_on_update`: v2 route when needed, two-step update, flag-only change is a no-op (§4.7) |
 
 ---
 
@@ -380,7 +431,7 @@ Verification: an acceptance test (§7) checks that after the activation apply, `
 shows the rolled-back values as drift, and that `apply -refresh-only` makes the plan empty.
 
 ### 5.3 App-update snapshots
-Turned on with `allow_snapshots` / `max_snapshots` (§4.7). They live in the same table as immediate snapshots, so
+Turned on with `allow_snapshots` / `max_snapshots` (§4.6). They live in the same table as immediate snapshots, so
 **creating an immediate snapshot deletes the app-update snapshots too** (§5.1); the docs warn about this. The activation
 resource and the data source work with both kinds, since they only need a snapshot name.
 
@@ -400,6 +451,7 @@ Cluster app instances are rejected by the provider before any API write (§4.4a)
 2. Fill `state` / `activate` / `immediate` in get/list responses (seine leaves them empty; zcli's table prints blanks too).
 3. Check `API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE` server-side so every client (UI, zcli, Terraform, API users) gets the same guard. The provider keeps its own check until this ships.
 4. Reject create/activate for cluster app instances server-side with an explicit error (today only the indirect KubeVirt check applies). zcli has no cluster guard either.
+5. Document the `makeSnapshot` query parameter on `PUT /v2/apps/instances/id/{id}` (and the v2 refresh routes) in swagger; gilas reads it but the swagger lists no query parameters. Documentation only, not a blocker.
 
 ---
 
@@ -413,13 +465,19 @@ Cluster app instances are rejected by the provider before any API write (§4.4a)
 - **App instance attribute tests:** create/update/read round-trip of `allow_snapshots` / `max_snapshots`; `max_snapshots`
   unset → reads back 1 with no diff; update without the attributes in config keeps the controller value (regression test for the
   reset bug in §1.3); docker-compose + `allow_snapshots = true` fails at plan; edge-node-cluster app instance + `allow_snapshots = true` or `max_snapshots = 2` fails at plan; edge-node-cluster app instance without either attribute plans cleanly even though `max_snapshots` reads back as 1; no diff for docker-compose apps; import.
+- **`snapshot_on_update` tests:** update sends `?makeSnapshot=true` on the v2 route; flag-only change sends nothing;
+  `async_writes = false` still uses v2 for a snapshot update and v1 otherwise; `allow_snapshots` false→true in the same apply
+  makes two calls in the right order; job failure → error and state unchanged; plan fails without `allow_snapshots`, for
+  docker-compose and for cluster app instances; create ignores the flag. Client test: query parameter present only when asked.
+- **Acceptance:** with `snapshot_on_update = true`, change the app instance → the data source shows one new snapshot →
+  activating it rolls back to the pre-update config (shows as drift, D4).
 - `go vet`, `golangci-lint`, `make docs` (if generated).
 
 ---
 
 ## 8. Decisions and open questions
 
-### 8.1 Decided (2026-10-15)
+### 8.1 Decided (2026-10-15 to 2026-10-21)
 
 | # | Question | Decision |
 |---|---|---|
@@ -427,13 +485,11 @@ Cluster app instances are rejected by the provider before any API write (§4.4a)
 | D2 | Capability pre-check? | **Yes.** On by default for snapshot create, same test as zcli, `skip_capability_check` as the `-f` escape hatch (§4.4). Errors instead of zcli's print-and-exit. |
 | D3 | Edge node clusters? | **Not supported.** Provider rejects snapshot create and activation for cluster app instances at plan time when possible, otherwise at apply, regardless of `skip_capability_check` (§4.4a). |
 | D4 | Rollback vs. Terraform state? | **Ordinary drift.** After a rollback, check its status; if it succeeded, the rolled-back config must show in Terraform state like any other drift (§5.2). Activation always waits for `ACTIVE`. |
-| D5 | `allow_snapshots` / `max_snapshots` in PLE-576? | **Yes.** Added to `zedcloud_application_instance` as Optional+Computed (§4.7). |
+| D5 | `allow_snapshots` / `max_snapshots` in PLE-576? | **Yes.** Added to `zedcloud_application_instance` as Optional+Computed (§4.6). |
 | D6 | Resource names? | **Shorter prefix:** `zedcloud_app_instance_snapshot`, `zedcloud_app_instance_snapshot_activation`, `data.zedcloud_app_instance_snapshots`. |
-| D7 | `allow_snapshots` / `max_snapshots` on edge-node-cluster app instances? | **Rejected**, same as D3: `CustomizeDiff` error when either is set in config for an app instance with `edge_node_cluster` (§4.7). |
+| D7 | `allow_snapshots` / `max_snapshots` on edge-node-cluster app instances? | **Rejected**, same as D3: `CustomizeDiff` error when either is set in config for an app instance with `edge_node_cluster` (§4.6). |
+| D8 | Take an app-update snapshot from Terraform? | **Yes, in PLE-576.** `snapshot_on_update` sends `?makeSnapshot=true` on the v2 update the provider already uses; no controller change needed (§4.7). |
 
 ### 8.2 Still open
 
-1. **`makeSnapshot` on update:** should Terraform be able to *take* an app-update snapshot when it updates an app instance
-   (e.g. a `snapshot_on_update` attribute that sends `?makeSnapshot=true`)? Without it, `allow_snapshots` only matters for
-   updates made from the UI or other clients. Adding it means moving the provider's update to the v2 route, so the
-   proposal is a follow-up ticket.
+None. Remaining items are zedcloud follow-ups (§6), which don't block the provider work.
