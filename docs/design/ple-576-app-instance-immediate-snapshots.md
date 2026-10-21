@@ -7,7 +7,7 @@
 **Branch:** `ple-576-app-instance-snapshots`
 **Date:** 2026-10-15 (revised 2026-10-21: D7, cluster detection fix in §4.4a; D8 `snapshot_on_update`, §4.7, and v2 update route correction)
 **Author:** Ivan Curachin
-**Status:** Draft. Decided: activation and the capability pre-check are in scope; edge-node-cluster app instances are not supported; a rollback shows up as ordinary drift; `allow_snapshots` / `max_snapshots` are in scope; new resources use the `zedcloud_app_instance_` prefix; snapshot settings are rejected for cluster app instances; `snapshot_on_update` is in scope (§8.1). No open questions left.
+**Status:** Implemented on `ple-576-app-instance-snapshots` (uncommitted as of 2026-10-21); see §9 for where the implementation differs from this design. Decided: activation and the capability pre-check are in scope; edge-node-cluster app instances are not supported; a rollback shows up as ordinary drift; `allow_snapshots` / `max_snapshots` are in scope; new resources use the `zedcloud_app_instance_` prefix; snapshot settings are rejected for cluster app instances; `snapshot_on_update` is in scope (§8.1). No open questions left.
 
 **Headline:** zcli gained four commands (`snapshot-create`, `snapshot-activate`, `snapshot-show`,
 `snapshot-delete`) on `edge-app-instance`. The provider has none of this today. The proposal is
@@ -104,7 +104,6 @@ resource "zedcloud_app_instance_snapshot" "before_upgrade" {
 resource "zedcloud_app_instance_snapshot_activation" "rollback" {
   app_instance_id = zedcloud_application_instance.app.id
   snapshot_name   = zedcloud_app_instance_snapshot.before_upgrade.name
-  force           = false
 
   triggers = { ticket = "INC-1234" }
 }
@@ -452,6 +451,12 @@ Cluster app instances are rejected by the provider before any API write (§4.4a)
 3. Check `API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE` server-side so every client (UI, zcli, Terraform, API users) gets the same guard. The provider keeps its own check until this ships.
 4. Reject create/activate for cluster app instances server-side with an explicit error (today only the indirect KubeVirt check applies). zcli has no cluster guard either.
 5. Document the `makeSnapshot` query parameter on `PUT /v2/apps/instances/id/{id}` (and the v2 refresh routes) in swagger; gilas reads it but the swagger lists no query parameters. Documentation only, not a blocker.
+6. Clear the stored device error when a snapshot is rolled back again. ganges keeps `error` from a failed rollback (`UpdateState` only rewrites `state` and `updated_at`), and `switchSnapshotState` turns any snapshot with an error into `ROLLBACK_FAILED` on the next device report, so a retry of a failed rollback can never succeed.
+7. Clear `activate` on a snapshot after the rollback completes (or fails). seine never clears it, so every later non-forced activate of that snapshot is a silent no-op.
+8. Increment `RollbackCmd.Counter` per activation. purus always sends `Counter: 1` (`srvs/purus/appinst.go`), and EVE rolls back only when the counter changes, so a snapshot can be rolled back to only once; a second activate rewrites the config but leaves the volumes, and ganges stays `ROLLING_BACK` (found in the e2e run, §10).
+9. Check what seine stores as a snapshot's config: snapshots taken at revision 3 (`description = v2`) carried `description = v1` (§10).
+10. ganges drops the state row of a snapshot the device has not reported yet (`processDeviceSnapshots`) and never recreates it; the state endpoint then answers 404 for good (§10).
+11. zcli `snapshot-create` tests `rawStatus` for the exact name `API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE`, but EVE reports the highest capability level it implements, so zcli refuses every EVE newer than level 13 (zcli fix, not zedcloud).
 
 ---
 
@@ -493,3 +498,50 @@ Cluster app instances are rejected by the provider before any API write (§4.4a)
 ### 8.2 Still open
 
 None. Remaining items are zedcloud follow-ups (§6), which don't block the provider work.
+
+---
+
+## 9. Where the implementation differs from this design
+
+Found in review of the implementation (2026-10-21), checked against zedcloud main.
+
+| Design | Implementation | Why |
+|---|---|---|
+| §4.3: `force` attribute (default `false`); force only after `ROLLBACK_FAILED` | No `force` attribute. Activation is **always** sent with `?force=true` | seine never clears a snapshot's `activate` flag (§6.7) and answers a non-forced activate of a flagged snapshot with a silent no-op, for example after an earlier attempt failed before reaching the device. For a snapshot never activated, `force` changes nothing. Snapshots that were actually rolled back to are refused (row below). |
+| §4.3: retry after `ROLLBACK_FAILED` | Refused, with "take a new snapshot" | ganges keeps the earlier device error (§6.6) and EVE would not roll back again anyway (§6.8). |
+| §4.2: Delete polls until gone or `DELETE_FAILED`; `delete` timeout 10m | No poll, no `delete` timeout | seine removes the snapshot row at once; `DELETE_FAILED` only appears later in ganges, after the row is gone from seine. |
+| §4.2/§4.3: a non-404 error ends the state wait | 5xx and transport errors are retried until the timeout; 4xx still end it | One 5xx left after the HTTP client's retries should not end a 20-minute wait. |
+| §4.6: `max_snapshots` `IntAtLeast(0)` | `IntAtLeast(1)` | The controller reads 0 back as 1, so a configured 0 would plan a change forever. |
+| §4.6: send `max_snapshots` from state | When `max_snapshots` is not in the config, unchanged, and 1, it is sent as 0 (omitted) | A stored 0 reads back as 1. Sending the 1 would change what the controller stores, and seine rejects app-update snapshots when `allowSnapshots` is false and `maxSnapshots > 0`, so existing app instances would change behaviour after their first Terraform update. Values other than 1 are sent unchanged. |
+| §4.6 / D7: check the raw config for cluster and docker-compose rules | The rules fire when a setting is **being turned on** (`allow_snapshots` true and changed, `max_snapshots` > 0 and changed) or `snapshot_on_update = true` | `max_snapshots` is Computed and reads back as 1, and SDKv2 legacy test paths have no raw config. Effect: a cluster app instance that already has `allow_snapshots = true` (set in the UI, or imported) and keeps it is not rejected; new requests are. |
+| §4.6: `DiffSuppressFunc` for docker-compose apps | Not added | The plan-time error covers it; untouched Computed values produce no diff. |
+| §4.7: "state keeps the old values" on a failed `snapshot_on_update` update | SDKv2 keeps the planned values in state when Update fails; the next refresh restores the controller's values, so the next apply retries | SDKv2 behaviour. Does not hold with `-refresh=false`. |
+| Docs | `allow_snapshots` description no longer mentions `snapshot_on_update` | The description is shared with the data source, which has no `snapshot_on_update`. |
+| Docs | Warn not to combine `zedcloud_app_instance_snapshot` and `snapshot_on_update` on one app instance; note that import can't recover `triggers` | Each would delete the other's snapshot (§5.1); after import, configured `triggers` plan a replacement. |
+
+| §4.4: substring test of `rawStatus` for `API_CAPABILITY_VOLUME_SNAPSHOTS_IMMEDIATE` (as zcli) | Parse `apiCapability` and compare levels: supported when >= 13; a name newer than the provider's table counts as supported | `APICapability` is a level ("a controller must compare with >=", `info.proto`). The e2e node reported `API_CAPABILITY_REPORT_TPM_EVENTLOG` (21); the substring test would have refused it. |
+| §4.3: activate any existing snapshot | Refuse unless the snapshot is `CREATED`; refuse `ACTIVE` / `ROLLING_BACK` / `ROLLBACK_FAILED` (already rolled back to) | Found on a device (§10): a second rollback to the same snapshot never reaches EVE (§6.8), and rolling back to a `CREATING` snapshot makes EVE reject the app config. Both refused before anything is sent. |
+
+`zedcloud_app_instance_snapshot_activation` has no importer (it is an action); it is listed in the provider's not-importable exclusions.
+
+---
+
+## 10. End-to-end run, 2026-10-21
+
+Harness: `test/e2e-snapshot-macos` (one virtual EVE `17.0.0-lts-kvm-arm64` node on vfkit,
+local zedcloud, CirrOS VM app). Its README lists the stages and full results. Summary:
+
+| Check | Result |
+|---|---|
+| Capability check on a real node | passes; node reports level 21 (led to the level comparison in §9) |
+| Immediate snapshot create / read / delete | `CREATED` in ~1 min (EVE restarts the app); clean plan afterwards |
+| Rollback | `ACTIVE` in ~30 s; controller config back to the snapshot's; drift shown on `zedcloud_application_instance` (D4) |
+| `apply -refresh-only` after a rollback | records it in state; the plan still reverts it until the configuration matches (docs corrected) |
+| Second rollback to the same snapshot | never completes (§6.8); now refused by the provider |
+| Rollback to a `CREATING` snapshot | EVE rejects the app config until the snapshot is deleted; now refused by the provider |
+| `allow_snapshots` / `max_snapshots` | round trip, `max_snapshots` 1 → 2, clean plans; unset `max_snapshots` reads back 1 with no diff |
+| `snapshot_on_update` | flag-only change sends nothing; an update sends `?makeSnapshot=true` and records a snapshot of the pre-update config |
+| App-update snapshot taken by EVE | only on an update that replaces volumes (a purge); description and cpu changes did not take it |
+
+Teardown left no device, app instance or VM behind.
+
