@@ -5,9 +5,9 @@
 **Reference implementation:** zcli [#1105](https://github.com/zededa/zcli/pull/1105) — *feat: Implement immediate snapshots (ple-556)*, commit `765db61`
 **Repos:** `zededa/terraform-provider-zedcloud` @ `c9a03747` (origin/main), `zededa/zedcloud` (main), `zededa/zcli` @ `79b1feb`
 **Branch:** `ple-576-app-instance-snapshots`
-**Date:** 2026-10-15
+**Date:** 2026-10-15 (revised 2026-10-21: D7, cluster detection fix in §4.4a)
 **Author:** Ivan Curachin
-**Status:** Draft. Decided 2026-10-15: activation and the capability pre-check are in scope; edge-node-cluster app instances are not supported; a rollback shows up as ordinary drift; `allow_snapshots` / `max_snapshots` are in scope; new resources use the `zedcloud_app_instance_` prefix (§8.1). Remaining open questions in §8.2.
+**Status:** Draft. Decided 2026-10-15: activation and the capability pre-check are in scope; edge-node-cluster app instances are not supported; a rollback shows up as ordinary drift; `allow_snapshots` / `max_snapshots` are in scope; new resources use the `zedcloud_app_instance_` prefix; snapshot settings are rejected for cluster app instances (§8.1). Remaining open questions in §8.2.
 
 **Headline:** zcli gained four commands (`snapshot-create`, `snapshot-activate`, `snapshot-show`,
 `snapshot-delete`) on `edge-app-instance`. The provider has none of this today. The proposal is
@@ -270,13 +270,15 @@ Immediate snapshots are **not supported for app instances deployed to an edge-no
 (The controller does reject KubeVirt devices, §1.2, and cluster nodes usually run KubeVirt, but that is a side
 effect, not a cluster rule, and the error it returns doesn't mention clusters.)
 
-- **Test:** the app instance's `clusterID` is non-empty (`models.AppInstance.ClusterID`, already in `v2/models/app_instance.go`).
+- **Test:** the app instance's `edgeNodeCluster.id` is non-empty (`models.AppInstance.EdgeNodeCluster.ID`; Terraform attribute
+  `edge_node_cluster[0].id`). This is what seine stores as `EdgeNodeClusterID` (`seine/appinstproc.go:232`).
+  **Not** `clusterID`: despite the name, that field is the system-defined *cluster instance* ID (`appinst.proto:45`), not the edge node cluster.
 - **Where:**
   - `zedcloud_app_instance_snapshot` Create and `zedcloud_app_instance_snapshot_activation` Create.
   - Also in `CustomizeDiff` of both resources **when `app_instance_id` is known at plan time** (existing app instance),
     so `terraform plan` already fails. When the ID is unknown (app instance created in the same apply), the Create check catches it.
 - **Not bypassable:** `skip_capability_check` does not skip it. It is a product rule, not a device-capability guess.
-- **Error:** *"application instance <name> is deployed to edge node cluster <clusterID>; immediate snapshots are not supported for edge node clusters"*.
+- **Error:** *"application instance <name> is deployed to edge node cluster <edgeNodeCluster.id>; immediate snapshots are not supported for edge node clusters"*.
 - **Read / Delete:** no guard, so a snapshot that somehow exists (e.g. created before the app instance was moved to a
   cluster) can still be refreshed and destroyed.
 - **Data source:** no guard; listing is read-only and returns whatever the controller has (normally nothing).
@@ -314,11 +316,17 @@ gives `snapshot-show <name>` parity.
 - **Plan-time validation** (`CustomizeDiff`), when `app_type` is known:
   - `APP_TYPE_DOCKER_COMPOSE` with `allow_snapshots = true` or `max_snapshots > 0` → error (the controller rejects it anyway; this fails at `plan`).
     For docker-compose apps both attributes also get a `DiffSuppressFunc` like the existing `diffSuppressIfFieldValueEqual("app_type", "APP_TYPE_DOCKER_COMPOSE")`, so the Computed values don't cause noise.
-  - Edge-node-cluster app instances with `allow_snapshots = true` → error, by extension of D3 (§8.2 Q1 asks to confirm).
+  - Edge-node-cluster app instances (`edge_node_cluster[0].id` set, same test as §4.4a) with `allow_snapshots = true`
+    or `max_snapshots > 0` in the **config** → error (D7). Checked against the raw config (`d.GetRawConfig()`), not the
+    planned value, because `max_snapshots` is Computed and the controller reads 0 back as 1: a cluster app instance that
+    never set it must still plan cleanly. Error: *"application instance <name> is deployed to edge node cluster <id>;
+    snapshots (allow_snapshots / max_snapshots) are not supported for edge node clusters"*.
+    The edge node cluster is usually known at plan time (literal or reference to an existing `zedcloud_edgenode_cluster`);
+    if it is unknown, the same check runs in Create/Update before the API call.
 - **Optional+Computed caveat** (document it): removing `allow_snapshots` from the config does **not** turn it off; the old value
   stays. To turn it off, set `allow_snapshots = false` explicitly.
 - **Out of scope here:** sending `?makeSnapshot=true` from Terraform. That needs the provider to switch its update to the v2
-  route, which changes the async update path from UE-177. Listed as §8.2 Q2.
+  route, which changes the async update path from UE-177. Listed as §8.2 Q1.
 
 ### 4.6 Files
 
@@ -404,7 +412,7 @@ Cluster app instances are rejected by the provider before any API write (§4.4a)
 - **Acceptance** (real node, gated like `application_instance_real_node_test.go`): create → change app instance → activate (wait for `ACTIVE`) → `plan` shows the rolled-back values as drift on `zedcloud_application_instance` → `apply -refresh-only` → empty plan → destroy on an EVE with the immediate-snapshot capability; second create replaces the first; activation with `force = true` re-applies.
 - **App instance attribute tests:** create/update/read round-trip of `allow_snapshots` / `max_snapshots`; `max_snapshots`
   unset → reads back 1 with no diff; update without the attributes in config keeps the controller value (regression test for the
-  reset bug in §1.3); docker-compose + `allow_snapshots = true` fails at plan; no diff for docker-compose apps; import.
+  reset bug in §1.3); docker-compose + `allow_snapshots = true` fails at plan; edge-node-cluster app instance + `allow_snapshots = true` or `max_snapshots = 2` fails at plan; edge-node-cluster app instance without either attribute plans cleanly even though `max_snapshots` reads back as 1; no diff for docker-compose apps; import.
 - `go vet`, `golangci-lint`, `make docs` (if generated).
 
 ---
@@ -421,13 +429,11 @@ Cluster app instances are rejected by the provider before any API write (§4.4a)
 | D4 | Rollback vs. Terraform state? | **Ordinary drift.** After a rollback, check its status; if it succeeded, the rolled-back config must show in Terraform state like any other drift (§5.2). Activation always waits for `ACTIVE`. |
 | D5 | `allow_snapshots` / `max_snapshots` in PLE-576? | **Yes.** Added to `zedcloud_application_instance` as Optional+Computed (§4.7). |
 | D6 | Resource names? | **Shorter prefix:** `zedcloud_app_instance_snapshot`, `zedcloud_app_instance_snapshot_activation`, `data.zedcloud_app_instance_snapshots`. |
+| D7 | `allow_snapshots` / `max_snapshots` on edge-node-cluster app instances? | **Rejected**, same as D3: `CustomizeDiff` error when either is set in config for an app instance with `edge_node_cluster` (§4.7). |
 
 ### 8.2 Still open
 
-1. **`allow_snapshots` on edge-node-cluster app instances:** D3 rules out immediate snapshots for clusters. Should the provider
-   also reject `allow_snapshots = true` for cluster app instances (current proposal, §4.7), or are app-update snapshots
-   allowed there?
-2. **`makeSnapshot` on update:** should Terraform be able to *take* an app-update snapshot when it updates an app instance
+1. **`makeSnapshot` on update:** should Terraform be able to *take* an app-update snapshot when it updates an app instance
    (e.g. a `snapshot_on_update` attribute that sends `?makeSnapshot=true`)? Without it, `allow_snapshots` only matters for
    updates made from the UI or other clients. Adding it means moving the provider's update to the v2 route, so the
    proposal is a follow-up ticket.
