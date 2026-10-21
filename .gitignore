@@ -22,6 +22,7 @@ __pycache__/
 test/e2e/e2e.tfrc
 test/e2e-cluster/*.tfrc
 test/e2e-cluster-macos/*.tfrc
+test/e2e-snapshot-macos/*.tfrc
 
 # OpenTofu writes timestamped state backups (terraform.tfstate.<epoch>.backup)
 # on some operations, which the plain terraform.tfstate.backup entry above does
