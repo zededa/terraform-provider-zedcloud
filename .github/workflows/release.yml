@@ -1,3 +1,6 @@
+
+permissions:
+  contents: write
 # Copyright (c) 2018-2021 Zededa, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
