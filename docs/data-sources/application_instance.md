@@ -24,6 +24,7 @@ description: |-
 ### Optional
 
 - `activate` (Boolean) app instance activation flag
+- `allow_snapshots` (Boolean) Allow app-update snapshots of this app instance. Removing it from the configuration keeps the current value; set it to `false` to turn it off. Not supported for docker-compose apps or app instances on an edge node cluster.
 - `app_policy_id` (String) app policy id
 - `app_type` (String) type of bundle
 - `cluster_id` (String) System defined universally unique clusterInstance ID, unique across the enterprise.
@@ -39,6 +40,7 @@ description: |-
 - `is_secret_updated` (Boolean) This field tells whether user secrets has updated or not, especially the cusotom config
 - `logs` (Block List) App Instance logs (see [below for nested schema](#nestedblock--logs))
 - `manifest_info` (Block List) app manifest Info (see [below for nested schema](#nestedblock--manifest_info))
+- `max_snapshots` (Number) Maximum number of app-update snapshots to keep, at least 1. When not set, the controller reports 1. Not supported for docker-compose apps or app instances on an edge node cluster.
 - `persistent_runtime_size_bytes` (String) Persistent runtime size in bytes
 - `project_id` (String) project name which the given app instance belong to
 - `purge` (Block List) Purge counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--purge))

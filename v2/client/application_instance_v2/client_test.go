@@ -16,8 +16,8 @@ import (
 )
 
 type recorded struct {
-	method, path string
-	body         []byte
+	method, path, query string
+	body                []byte
 }
 
 func newTestClient(t *testing.T, status int, body string) (ClientService, *recorded) {
@@ -26,6 +26,7 @@ func newTestClient(t *testing.T, status int, body string) (ClientService, *recor
 	srv := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		rec.method = r.Method
 		rec.path = r.URL.EscapedPath()
+		rec.query = r.URL.RawQuery
 		rec.body, _ = io.ReadAll(r.Body)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(status)
@@ -85,8 +86,20 @@ func TestUpdate(t *testing.T) {
 	if err != nil || jobID != "job-3" {
 		t.Fatalf("jobID = %q, err = %v", jobID, err)
 	}
-	if rec.method != http.MethodPut || rec.path != "/api/v2/apps/instances/id/id-1" {
-		t.Errorf("request = %s %s", rec.method, rec.path)
+	if rec.method != http.MethodPut || rec.path != "/api/v2/apps/instances/id/id-1" || rec.query != "" {
+		t.Errorf("request = %s %s?%s", rec.method, rec.path, rec.query)
+	}
+}
+
+func TestUpdateWithOptions_MakeSnapshot(t *testing.T) {
+	c, rec := newTestClient(t, http.StatusOK, `{"objectId":"job-4"}`)
+	jobID, err := c.UpdateWithOptions(context.Background(), "id-1", &models.AppInstance{ID: "id-1"},
+		UpdateOptions{MakeSnapshot: true})
+	if err != nil || jobID != "job-4" {
+		t.Fatalf("jobID = %q, err = %v", jobID, err)
+	}
+	if rec.method != http.MethodPut || rec.path != "/api/v2/apps/instances/id/id-1" || rec.query != "makeSnapshot=true" {
+		t.Errorf("request = %s %s?%s", rec.method, rec.path, rec.query)
 	}
 }
 

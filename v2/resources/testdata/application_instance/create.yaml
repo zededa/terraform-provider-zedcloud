@@ -35,6 +35,8 @@ manifestinfo:
     nextbundleversion: "1"
     params: {}
     transitionaction: INSTANCE_TA_NONE
+# PLE-576: the controller reports maxSnapshots 0 as 1 for non-docker-compose apps.
+maxsnapshots: 1
 name: test_tf_provider__SUFFIX__
 projectid: 4754cd0f-82d7-4e06-a68f-ff9e23e75ccf
 purge:

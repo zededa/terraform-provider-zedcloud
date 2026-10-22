@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 )
 
@@ -173,6 +174,8 @@ func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 		}
 	}
 	persistentRuntimeSizeBytes, _ := d.Get("persistent_runtime_size_bytes").(string)
+	allowSnapshots, _ := d.Get("allow_snapshots").(bool)
+	maxSnapshots, _ := d.Get("max_snapshots").(int)
 	return &models.AppInstance{
 		Activate:                   &activate, // string true false false
 		AppID:                      &appID,    // string true false false
@@ -208,6 +211,8 @@ func ApplicationInstanceModel(d *schema.ResourceData) *models.AppInstance {
 		UserDefinedVersion:         userDefinedVersion,
 		Vminfo:                     vminfo,
 		PersistentRuntimeSizeBytes: persistentRuntimeSizeBytes,
+		AllowSnapshots:             allowSnapshots,
+		MaxSnapshots:               int64(maxSnapshots),
 	}
 }
 
@@ -383,6 +388,8 @@ func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstan
 		}
 	}
 	persistentRuntimeSizeBytes := m["persistent_runtime_size_bytes"].(string)
+	allowSnapshots, _ := m["allow_snapshots"].(bool)
+	maxSnapshots, _ := m["max_snapshots"].(int)
 	//
 	return &models.AppInstance{
 		Activate:                   &activate,
@@ -419,6 +426,8 @@ func ApplicationInstanceModelFromMap(m map[string]interface{}) *models.AppInstan
 		UserDefinedVersion:         userDefinedVersion,
 		Vminfo:                     vminfo,
 		PersistentRuntimeSizeBytes: persistentRuntimeSizeBytes,
+		AllowSnapshots:             allowSnapshots,
+		MaxSnapshots:               int64(maxSnapshots),
 	}
 }
 
@@ -459,6 +468,8 @@ func SetApplicationInstanceResourceData(d *schema.ResourceData, m *models.AppIns
 	d.Set("docker_compose_tar_image_name", m.DockerComposeTarImageName)
 	d.Set("docker_compose_yaml_text", m.DockerComposeYamlText)
 	d.Set("persistent_runtime_size_bytes", m.PersistentRuntimeSizeBytes)
+	d.Set("allow_snapshots", m.AllowSnapshots)
+	d.Set("max_snapshots", m.MaxSnapshots)
 }
 
 func SetApplicationInstanceSubResourceData(m []*models.AppInstance) (d []*map[string]interface{}) {
@@ -501,6 +512,8 @@ func SetApplicationInstanceSubResourceData(m []*models.AppInstance) (d []*map[st
 			properties["docker_compose_tar_image_name"] = AppInstanceModel.DockerComposeTarImageName
 			properties["docker_compose_yaml_text"] = AppInstanceModel.DockerComposeYamlText
 			properties["persistent_runtime_size_bytes"] = AppInstanceModel.PersistentRuntimeSizeBytes
+			properties["allow_snapshots"] = AppInstanceModel.AllowSnapshots
+			properties["max_snapshots"] = AppInstanceModel.MaxSnapshots
 			d = append(d, &properties)
 		}
 	}
@@ -820,7 +833,52 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Optional:    true,
 			Default:     "0",
 		},
+
+		// PLE-576: Optional + Computed. The controller copies both fields from
+		// every update request, so before they were in the schema any Terraform
+		// update switched off snapshots enabled in the UI. Computed keeps the
+		// stored value when the config omits them, and covers the controller
+		// reading max_snapshots 0 back as 1.
+		"allow_snapshots": {
+			Description: "Allow app-update snapshots of this app instance. " +
+				"Removing it from the configuration keeps the current value; set it to `false` to turn it off. " +
+				"Not supported for docker-compose apps or app instances on an edge node cluster.",
+			Type:     schema.TypeBool,
+			Optional: true,
+			Computed: true,
+		},
+
+		"max_snapshots": {
+			Description: "Maximum number of app-update snapshots to keep, at least 1. When not set, the " +
+				"controller reports 1. Not supported for docker-compose apps or app instances on an edge node cluster.",
+			Type:     schema.TypeInt,
+			Optional: true,
+			Computed: true,
+			// 0 is not accepted: the controller reads it back as 1, so a
+			// configured 0 would show a diff on every plan.
+			ValidateFunc: validation.IntAtLeast(1),
+		},
 	}
+}
+
+// ApplicationInstanceResourceSchema is the zedcloud_application_instance
+// resource schema: the shared schema plus settings that only make sense on a
+// write (PLE-576).
+func ApplicationInstanceResourceSchema() map[string]*schema.Schema {
+	s := ApplicationInstance()
+	s["snapshot_on_update"] = &schema.Schema{
+		Description: "Snapshot the current configuration before every update of this app instance " +
+			"(`?makeSnapshot=true`). If the snapshot fails, the update is not applied. Requires " +
+			"`allow_snapshots = true`. The controller records the snapshot at once, but the edge node only takes it " +
+			"(state `CREATED`) on an update that replaces the app's volumes, such as a purge; until then it is " +
+			"`CREATING` and cannot be rolled back to. Find it with `data.zedcloud_app_instance_snapshots` and roll " +
+			"back with `zedcloud_app_instance_snapshot_activation`. Creating a snapshot deletes the app instance's " +
+			"other snapshots. Changing only this setting does not update the app instance.",
+		Type:     schema.TypeBool,
+		Optional: true,
+		Default:  false,
+	}
+	return s
 }
 
 // Retrieve property field names for updating the AppInstance resource
@@ -860,5 +918,7 @@ func GetApplicationInstancePropertyFields() (t []string) {
 		"user_defined_version",
 		"vminfo",
 		"persistent_runtime_size_bytes",
+		"allow_snapshots",
+		"max_snapshots",
 	}
 }

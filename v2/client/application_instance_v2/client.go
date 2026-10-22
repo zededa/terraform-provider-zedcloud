@@ -22,6 +22,10 @@
 //     that to know the instance id before the job finishes.
 //   - Update requires the body id to equal the path id (400 otherwise).
 //   - Delete of an id that does not exist answers 404 synchronously.
+//   - Update with ?makeSnapshot=true makes the job snapshot the current
+//     config before applying the update; if the snapshot fails the job fails
+//     and the update is not applied (seine processAppInstanceUpdateV2,
+//     PLE-576). The v1 update route parses the parameter but ignores it.
 //   - A create whose name or id already exists still answers 200; the
 //     conflict is reported by the job failing.
 package application_instance_v2
@@ -86,6 +90,7 @@ func (e *APIError) String() string { return e.Error() }
 type ClientService interface {
 	Create(ctx context.Context, body *models.AppInstance) (string, error)
 	Update(ctx context.Context, id string, body *models.AppInstance) (string, error)
+	UpdateWithOptions(ctx context.Context, id string, body *models.AppInstance, opts UpdateOptions) (string, error)
 	Delete(ctx context.Context, id string) (string, error)
 
 	SetTransport(transport runtime.ClientTransport)
@@ -111,10 +116,20 @@ func (c *Client) Create(ctx context.Context, body *models.AppInstance) (string, 
 	if body == nil {
 		return "", errors.New("app instance create: body must not be nil")
 	}
-	return c.submit(ctx, "create", http.MethodPost, "/v2/apps/instances", "", body)
+	return c.submit(ctx, "create", http.MethodPost, "/v2/apps/instances", "", body, nil)
+}
+
+// UpdateOptions are the optional query parameters of an update.
+type UpdateOptions struct {
+	// MakeSnapshot sends ?makeSnapshot=true.
+	MakeSnapshot bool
 }
 
 func (c *Client) Update(ctx context.Context, id string, body *models.AppInstance) (string, error) {
+	return c.UpdateWithOptions(ctx, id, body, UpdateOptions{})
+}
+
+func (c *Client) UpdateWithOptions(ctx context.Context, id string, body *models.AppInstance, opts UpdateOptions) (string, error) {
 	if id == "" {
 		return "", errors.New("app instance update: id must not be empty")
 	}
@@ -124,14 +139,18 @@ func (c *Client) Update(ctx context.Context, id string, body *models.AppInstance
 	if body.ID != id {
 		return "", fmt.Errorf("app instance update: body id %q does not match id %q", body.ID, id)
 	}
-	return c.submit(ctx, "update", http.MethodPut, "/v2/apps/instances/id/{id}", id, body)
+	var query map[string]string
+	if opts.MakeSnapshot {
+		query = map[string]string{"makeSnapshot": "true"}
+	}
+	return c.submit(ctx, "update", http.MethodPut, "/v2/apps/instances/id/{id}", id, body, query)
 }
 
 func (c *Client) Delete(ctx context.Context, id string) (string, error) {
 	if id == "" {
 		return "", errors.New("app instance delete: id must not be empty")
 	}
-	return c.submit(ctx, "delete", http.MethodDelete, "/v2/apps/instances/id/{id}", id, nil)
+	return c.submit(ctx, "delete", http.MethodDelete, "/v2/apps/instances/id/{id}", id, nil, nil)
 }
 
 // jobResponse covers both success shapes: ZsrvResponse (job id in objectId)
@@ -153,7 +172,7 @@ func (r *jobResponse) jobID() string {
 	}
 }
 
-func (c *Client) submit(ctx context.Context, op, method, path, id string, body *models.AppInstance) (string, error) {
+func (c *Client) submit(ctx context.Context, op, method, path, id string, body *models.AppInstance, query map[string]string) (string, error) {
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -167,6 +186,11 @@ func (c *Client) submit(ctx context.Context, op, method, path, id string, body *
 		Params: runtime.ClientRequestWriterFunc(func(r runtime.ClientRequest, _ strfmt.Registry) error {
 			if id != "" {
 				if err := r.SetPathParam("id", id); err != nil {
+					return err
+				}
+			}
+			for k, v := range query {
+				if err := r.SetQueryParam(k, v); err != nil {
 					return err
 				}
 			}
