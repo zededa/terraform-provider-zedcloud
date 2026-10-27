@@ -153,6 +153,7 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	}
 	model := zschema.ApplicationInstanceModel(d)
 	model.ID = id
+	sentInterfaces, _ := d.Get("interfaces").([]interface{})
 
 	if asyncWrites(client) {
 		// v1 derives the project from the device; v2 rejects a create
@@ -199,7 +200,11 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	}
 
 	// The zedcloud API does not return the object, so read it back.
-	return readApplicationInstanceAfterWrite(ctx, d, m)
+	diags := readApplicationInstanceAfterWrite(ctx, d, m)
+	if diags.HasError() {
+		return diags
+	}
+	return append(diags, aclReadBackDiags(ctx, d, m, sentInterfaces)...)
 }
 
 // projectLookups caches, per provider process, the project of each edge node
@@ -437,6 +442,7 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	model := zschema.ApplicationInstanceModel(d)
 	model.ID = id
 	normalizeMaxSnapshots(d, model)
+	sentInterfaces, _ := d.Get("interfaces").([]interface{})
 
 	// CI-752 / CI-790: lock on the server's current revision, not the state's.
 	// See the comment on currentVolumeInstanceRevision.
@@ -470,7 +476,11 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 		}
 	}
 
-	return readApplicationInstanceAfterWrite(ctx, d, m)
+	diags := readApplicationInstanceAfterWrite(ctx, d, m)
+	if diags.HasError() {
+		return diags
+	}
+	return append(diags, aclReadBackDiags(ctx, d, m, sentInterfaces)...)
 }
 
 // currentApplicationInstanceRevision fetches the app instance's revision as the

@@ -1,0 +1,31 @@
+
+Warning: Provider development overrides are in effect
+
+The following provider development overrides are set in the CLI
+configuration:
+ - zededa/zedcloud in /Users/ikurakin/go/src/github.com/zededa/terraform-provider-zedcloud/test/eng3000-repro/.bin
+
+The behavior may therefore not match any released version of the provider and
+applying changes may cause the state to become incompatible with published
+releases.
+zedcloud_brand.B: Refreshing state... [id=a5991e66-cf1b-41d0-9549-d98fb1cc4e28]
+zedcloud_project.P: Refreshing state... [id=a0b159a4-87e4-48ea-bc5a-3dac61a2e28e]
+zedcloud_model.M: Refreshing state... [id=8ccb3f8e-1b07-4c0c-a198-2cb53da629df]
+zedcloud_datastore.DS: Refreshing state... [id=e857fed0-60fc-43a6-9164-7b4a1fc61a04]
+zedcloud_network.N: Refreshing state... [id=1055ca5e-53bc-4862-825c-355230932f9a]
+zedcloud_image.IMG: Refreshing state... [id=97c8a479-3c6d-4e8e-b49a-5e3db8453847]
+zedcloud_edgenode.EN["c"]: Refreshing state... [id=cf9ca9d7-6ea8-4871-aa7e-bd5aef8e7c5c]
+zedcloud_edgenode.EN["b"]: Refreshing state... [id=f3e5b373-9319-416c-a721-76cca5cf6e68]
+zedcloud_edgenode.EN["a"]: Refreshing state... [id=ef92cf04-4c5a-48ce-91c9-7218f5e9d3cf]
+zedcloud_application.APP: Refreshing state... [id=299c8deb-083c-4bd6-a824-a43cc1b1e6e7]
+zedcloud_network_instance.NI["c"]: Refreshing state... [id=338c5515-86ea-4183-a76c-5aae2fc18c89]
+zedcloud_network_instance.NI["a"]: Refreshing state... [id=cfe3620d-c403-4c90-9510-dbe60df28b3a]
+zedcloud_network_instance.NI["b"]: Refreshing state... [id=a8bf7b2e-7331-49df-b5e4-21606fd1ec65]
+zedcloud_application_instance.AI["b"]: Refreshing state... [id=4c6d3ee2-7dbb-4e88-9348-781a57b22fb5]
+zedcloud_application_instance.AI["c"]: Refreshing state... [id=8de6ee8c-3cd1-4f8a-ab7a-b9db120bcf43]
+zedcloud_application_instance.AI["a"]: Refreshing state... [id=3a28b92d-3920-4b65-82a4-21aafbb5055d]
+
+No changes. Your infrastructure matches the configuration.
+
+OpenTofu has compared your real infrastructure against your configuration and
+found no differences, so no changes are needed.

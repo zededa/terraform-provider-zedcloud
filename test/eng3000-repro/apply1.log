@@ -1,0 +1,816 @@
+
+Warning: Provider development overrides are in effect
+
+The following provider development overrides are set in the CLI
+configuration:
+ - zededa/zedcloud in /Users/ikurakin/go/src/github.com/zededa/terraform-provider-zedcloud/test/eng3000-repro/.bin
+
+The behavior may therefore not match any released version of the provider and
+applying changes may cause the state to become incompatible with published
+releases.
+
+OpenTofu used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+OpenTofu will perform the following actions:
+
+  # zedcloud_application.APP will be created
+  + resource "zedcloud_application" "APP" {
+      + cpus                 = (known after apply)
+      + drives               = (known after apply)
+      + id                   = (known after apply)
+      + memory               = (known after apply)
+      + name                 = "eng3000_app"
+      + networks             = (known after apply)
+      + origin_type          = "ORIGIN_LOCAL"
+      + project_access_list  = (known after apply)
+      + revision             = (known after apply)
+      + storage              = (known after apply)
+      + title                = "eng3000_app"
+      + user_defined_version = "1.0"
+
+      + manifest {
+          + ac_kind                       = "VMManifest"
+          + ac_version                    = "1.2.0"
+          + app_type                      = "APP_TYPE_VM"
+          + deployment_type               = "DEPLOYMENT_TYPE_STAND_ALONE"
+          + enablevnc                     = false
+          + name                          = "eng3000_app"
+          + persistent_runtime_size_bytes = "0"
+          + runtime_protocol_version      = "RuntimeProtocolVersion_Unknown"
+          + runtime_version               = "RuntimeVersion_Unknown"
+          + vmmode                        = "HV_HVM"
+
+          + configuration {
+              + custom_config {
+                  + add = false
+                }
+            }
+
+          + desc {
+              + app_category = "APP_CATEGORY_OTHERS"
+              + category     = "APP_CATEGORY_OTHERS"
+            }
+
+          + images {
+              + cleartext   = false
+              + drvtype     = "HDD"
+              + ignorepurge = false
+              + imageformat = "QCOW2"
+              + imageid     = (known after apply)
+              + imagename   = "eng3000_img"
+              + maxsize     = "0"
+              + preserve    = false
+              + readonly    = false
+              + target      = "Disk"
+            }
+
+          + interfaces {
+              + directattach = false
+              + name         = "eth0"
+
+              + acls {
+                  + matches {
+                      + type  = "ip"
+                      + value = "0.0.0.0/0"
+                    }
+                }
+              + acls {
+                  + actions {
+                      + portmap = true
+
+                      + portmapto {
+                          + app_port = 22
+                        }
+                    }
+                  + matches {
+                      + type  = "protocol"
+                      + value = "tcp"
+                    }
+                  + matches {
+                      + type  = "lport"
+                      + value = "9022"
+                    }
+                  + matches {
+                      + type  = "ip"
+                      + value = "0.0.0.0/0"
+                    }
+                }
+              + acls {
+                  + actions {
+                      + portmap = true
+
+                      + portmapto {
+                          + app_port = 80
+                        }
+                    }
+                  + matches {
+                      + type  = "protocol"
+                      + value = "tcp"
+                    }
+                  + matches {
+                      + type  = "lport"
+                      + value = "9080"
+                    }
+                  + matches {
+                      + type  = "ip"
+                      + value = "0.0.0.0/0"
+                    }
+                }
+            }
+
+          + owner {
+              + email   = "noreply@zededa.com"
+              + user    = "ENG-3000 repro"
+              + website = "www.zededa.com"
+            }
+
+          + resources {
+              + name  = "resourceType"
+              + value = "Tiny"
+            }
+          + resources {
+              + name  = "cpus"
+              + value = "1"
+            }
+          + resources {
+              + name  = "memory"
+              + value = "262144.00"
+            }
+        }
+
+      + parent_detail (known after apply)
+    }
+
+  # zedcloud_application_instance.AI["a"] will be created
+  + resource "zedcloud_application_instance" "AI" {
+      + activate                      = true
+      + allow_snapshots               = (known after apply)
+      + app_id                        = (known after apply)
+      + app_type                      = "APP_TYPE_VM"
+      + bundleversion                 = (known after apply)
+      + cluster_id                    = (known after apply)
+      + crypto_key                    = (sensitive value)
+      + deployment_type               = (known after apply)
+      + device_id                     = (known after apply)
+      + docker_compose_tar_image_name = (known after apply)
+      + docker_compose_yaml_text      = (known after apply)
+      + encrypted_secrets             = (sensitive value)
+      + id                            = (known after apply)
+      + is_secret_updated             = false
+      + max_snapshots                 = (known after apply)
+      + name                          = "eng3000_ai_a"
+      + persistent_runtime_size_bytes = "0"
+      + project_id                    = (known after apply)
+      + remote_console                = false
+      + snapshot_on_update            = false
+      + tags                          = (known after apply)
+      + title                         = "eng3000_ai_a"
+      + user_defined_version          = (known after apply)
+
+      + custom_config (known after apply)
+
+      + drives {
+          + drvtype   = "HDD"
+          + imagename = "eng3000_img"
+          + imvolname = (known after apply)
+          + maxsize   = "0"
+          + mvolname  = (known after apply)
+          + preserve  = false
+          + readonly  = false
+          + target    = "Disk"
+        }
+
+      + interfaces {
+          + directattach = false
+          + intfname     = "eth0"
+          + intforder    = 1
+          + netinstid    = (known after apply)
+          + netinstname  = "eng3000_ni_a"
+          + privateip    = false
+
+          + acls {
+              + id = (known after apply)
+
+              + matches {
+                  + type  = "ip"
+                  + value = "0.0.0.0/0"
+                }
+            }
+          + acls {
+              + id = (known after apply)
+
+              + actions {
+                  + portmap = true
+
+                  + mapparams {
+                      + port = 22
+                    }
+                }
+
+              + matches {
+                  + type  = "protocol"
+                  + value = "tcp"
+                }
+              + matches {
+                  + type  = "lport"
+                  + value = "8022"
+                }
+              + matches {
+                  + type  = "ip"
+                  + value = "0.0.0.0/0"
+                }
+            }
+          + acls {
+              + id = (known after apply)
+
+              + actions {
+                  + portmap = true
+
+                  + mapparams {
+                      + port = 80
+                    }
+                }
+
+              + matches {
+                  + type  = "protocol"
+                  + value = "tcp"
+                }
+              + matches {
+                  + type  = "lport"
+                  + value = "9080"
+                }
+              + matches {
+                  + type  = "ip"
+                  + value = "0.0.0.0/0"
+                }
+            }
+        }
+
+      + logs {
+          + access = false
+        }
+
+      + manifest_info {
+          + bundle_version      = (known after apply)
+          + next_bundle_version = (known after apply)
+          + params              = (known after apply)
+          + transition_action   = "INSTANCE_TA_NONE"
+        }
+
+      + purge (known after apply)
+
+      + refresh (known after apply)
+
+      + restart (known after apply)
+
+      + revision (known after apply)
+
+      + vminfo {
+          + cpus        = 1
+          + memory      = (known after apply)
+          + mode        = "HV_HVM"
+          + vnc         = false
+          + vnc_display = (known after apply)
+        }
+    }
+
+  # zedcloud_application_instance.AI["b"] will be created
+  + resource "zedcloud_application_instance" "AI" {
+      + activate                      = true
+      + allow_snapshots               = (known after apply)
+      + app_id                        = (known after apply)
+      + app_type                      = "APP_TYPE_VM"
+      + bundleversion                 = (known after apply)
+      + cluster_id                    = (known after apply)
+      + crypto_key                    = (sensitive value)
+      + deployment_type               = (known after apply)
+      + device_id                     = (known after apply)
+      + docker_compose_tar_image_name = (known after apply)
+      + docker_compose_yaml_text      = (known after apply)
+      + encrypted_secrets             = (sensitive value)
+      + id                            = (known after apply)
+      + is_secret_updated             = false
+      + max_snapshots                 = (known after apply)
+      + name                          = "eng3000_ai_b"
+      + persistent_runtime_size_bytes = "0"
+      + project_id                    = (known after apply)
+      + remote_console                = false
+      + snapshot_on_update            = false
+      + tags                          = (known after apply)
+      + title                         = "eng3000_ai_b"
+      + user_defined_version          = (known after apply)
+
+      + custom_config (known after apply)
+
+      + drives {
+          + drvtype   = "HDD"
+          + imagename = "eng3000_img"
+          + imvolname = (known after apply)
+          + maxsize   = "0"
+          + mvolname  = (known after apply)
+          + preserve  = false
+          + readonly  = false
+          + target    = "Disk"
+        }
+
+      + interfaces {
+          + directattach = false
+          + intfname     = "eth0"
+          + intforder    = 1
+          + netinstid    = (known after apply)
+          + netinstname  = "eng3000_ni_b"
+          + privateip    = false
+        }
+
+      + logs {
+          + access = false
+        }
+
+      + manifest_info {
+          + bundle_version      = (known after apply)
+          + next_bundle_version = (known after apply)
+          + params              = (known after apply)
+          + transition_action   = "INSTANCE_TA_NONE"
+        }
+
+      + purge (known after apply)
+
+      + refresh (known after apply)
+
+      + restart (known after apply)
+
+      + revision (known after apply)
+
+      + vminfo {
+          + cpus        = 1
+          + memory      = (known after apply)
+          + mode        = "HV_HVM"
+          + vnc         = false
+          + vnc_display = (known after apply)
+        }
+    }
+
+  # zedcloud_application_instance.AI["c"] will be created
+  + resource "zedcloud_application_instance" "AI" {
+      + activate                      = true
+      + allow_snapshots               = (known after apply)
+      + app_id                        = (known after apply)
+      + app_type                      = "APP_TYPE_VM"
+      + bundleversion                 = (known after apply)
+      + cluster_id                    = (known after apply)
+      + crypto_key                    = (sensitive value)
+      + deployment_type               = (known after apply)
+      + device_id                     = (known after apply)
+      + docker_compose_tar_image_name = (known after apply)
+      + docker_compose_yaml_text      = (known after apply)
+      + encrypted_secrets             = (sensitive value)
+      + id                            = (known after apply)
+      + is_secret_updated             = false
+      + max_snapshots                 = (known after apply)
+      + name                          = "eng3000_ai_c"
+      + persistent_runtime_size_bytes = "0"
+      + project_id                    = (known after apply)
+      + remote_console                = false
+      + snapshot_on_update            = false
+      + tags                          = (known after apply)
+      + title                         = "eng3000_ai_c"
+      + user_defined_version          = (known after apply)
+
+      + custom_config (known after apply)
+
+      + drives {
+          + drvtype   = "HDD"
+          + imagename = "eng3000_img"
+          + imvolname = (known after apply)
+          + maxsize   = "0"
+          + mvolname  = (known after apply)
+          + preserve  = false
+          + readonly  = false
+          + target    = "Disk"
+        }
+
+      + interfaces {
+          + directattach = false
+          + intfname     = "eth0"
+          + intforder    = 1
+          + netinstid    = (known after apply)
+          + netinstname  = "eng3000_ni_c"
+          + privateip    = false
+
+          + acls {
+              + id = (known after apply)
+
+              + matches {
+                  + type  = "ip"
+                  + value = "0.0.0.0/0"
+                }
+            }
+          + acls {
+              + id = (known after apply)
+
+              + actions {
+                  + portmap = true
+
+                  + mapparams {
+                      + port = 22
+                    }
+                }
+
+              + matches {
+                  + type  = "protocol"
+                  + value = "tcp"
+                }
+              + matches {
+                  + type  = "lport"
+                  + value = "9022"
+                }
+              + matches {
+                  + type  = "ip"
+                  + value = "0.0.0.0/0"
+                }
+            }
+          + acls {
+              + id = (known after apply)
+
+              + actions {
+                  + portmap = true
+
+                  + mapparams {
+                      + port = 80
+                    }
+                }
+
+              + matches {
+                  + type  = "protocol"
+                  + value = "tcp"
+                }
+              + matches {
+                  + type  = "lport"
+                  + value = "9080"
+                }
+              + matches {
+                  + type  = "ip"
+                  + value = "0.0.0.0/0"
+                }
+            }
+        }
+
+      + logs {
+          + access = false
+        }
+
+      + manifest_info {
+          + bundle_version      = (known after apply)
+          + next_bundle_version = (known after apply)
+          + params              = (known after apply)
+          + transition_action   = "INSTANCE_TA_NONE"
+        }
+
+      + purge (known after apply)
+
+      + refresh (known after apply)
+
+      + restart (known after apply)
+
+      + revision (known after apply)
+
+      + vminfo {
+          + cpus        = 1
+          + memory      = (known after apply)
+          + mode        = "HV_HVM"
+          + vnc         = false
+          + vnc_display = (known after apply)
+        }
+    }
+
+  # zedcloud_brand.B will be created
+  + resource "zedcloud_brand" "B" {
+      + id          = (known after apply)
+      + name        = "eng3000_brand"
+      + origin_type = "ORIGIN_LOCAL"
+      + title       = "eng3000_brand"
+    }
+
+  # zedcloud_datastore.DS will be created
+  + resource "zedcloud_datastore" "DS" {
+      + crypto_key          = (known after apply)
+      + ds_fqdn             = "https://download.cirros-cloud.net"
+      + ds_path             = "0.6.2"
+      + ds_status           = (known after apply)
+      + ds_type             = "DATASTORE_TYPE_HTTPS"
+      + encrypted_secrets   = (sensitive value)
+      + id                  = (known after apply)
+      + name                = "eng3000_ds"
+      + origin_type         = (known after apply)
+      + project_access_list = (known after apply)
+      + title               = "eng3000_ds"
+
+      + certificate_chain (known after apply)
+
+      + revision (known after apply)
+    }
+
+  # zedcloud_edgenode.EN["a"] will be created
+  + resource "zedcloud_edgenode" "EN" {
+      + admin_state       = "ADMIN_STATE_ACTIVE"
+      + cluster_interface = (known after apply)
+      + config_lock       = "DEVICE_CONFIG_LOCK_DISABLED"
+      + debug_knob        = (sensitive value)
+      + edge_node_cluster = (known after apply)
+      + id                = (known after apply)
+      + identity          = (known after apply)
+      + model_id          = (known after apply)
+      + name              = "eng3000_en_a"
+      + onboarding_key    = "5d0767ee-0547-4569-b530-387e526f8cb9"
+      + project_id        = (known after apply)
+      + reset_counter     = (known after apply)
+      + reset_time        = (known after apply)
+      + serialno          = "eng3000-serial-a"
+      + title             = "eng3000_en_a"
+      + utype             = (known after apply)
+
+      + interfaces {
+          + cost       = 0
+          + intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+          + intfname   = "eth0"
+          + net_dhcp   = "NETWORK_DHCP_TYPE_CLIENT"
+          + netid      = (known after apply)
+          + netname    = "eng3000_net"
+          + ztype      = "IO_TYPE_ETH"
+        }
+
+      + revision (known after apply)
+    }
+
+  # zedcloud_edgenode.EN["b"] will be created
+  + resource "zedcloud_edgenode" "EN" {
+      + admin_state       = "ADMIN_STATE_ACTIVE"
+      + cluster_interface = (known after apply)
+      + config_lock       = "DEVICE_CONFIG_LOCK_DISABLED"
+      + debug_knob        = (sensitive value)
+      + edge_node_cluster = (known after apply)
+      + id                = (known after apply)
+      + identity          = (known after apply)
+      + model_id          = (known after apply)
+      + name              = "eng3000_en_b"
+      + onboarding_key    = "5d0767ee-0547-4569-b530-387e526f8cb9"
+      + project_id        = (known after apply)
+      + reset_counter     = (known after apply)
+      + reset_time        = (known after apply)
+      + serialno          = "eng3000-serial-b"
+      + title             = "eng3000_en_b"
+      + utype             = (known after apply)
+
+      + interfaces {
+          + cost       = 0
+          + intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+          + intfname   = "eth0"
+          + net_dhcp   = "NETWORK_DHCP_TYPE_CLIENT"
+          + netid      = (known after apply)
+          + netname    = "eng3000_net"
+          + ztype      = "IO_TYPE_ETH"
+        }
+
+      + revision (known after apply)
+    }
+
+  # zedcloud_edgenode.EN["c"] will be created
+  + resource "zedcloud_edgenode" "EN" {
+      + admin_state       = "ADMIN_STATE_ACTIVE"
+      + cluster_interface = (known after apply)
+      + config_lock       = "DEVICE_CONFIG_LOCK_DISABLED"
+      + debug_knob        = (sensitive value)
+      + edge_node_cluster = (known after apply)
+      + id                = (known after apply)
+      + identity          = (known after apply)
+      + model_id          = (known after apply)
+      + name              = "eng3000_en_c"
+      + onboarding_key    = "5d0767ee-0547-4569-b530-387e526f8cb9"
+      + project_id        = (known after apply)
+      + reset_counter     = (known after apply)
+      + reset_time        = (known after apply)
+      + serialno          = "eng3000-serial-c"
+      + title             = "eng3000_en_c"
+      + utype             = (known after apply)
+
+      + interfaces {
+          + cost       = 0
+          + intf_usage = "ADAPTER_USAGE_MANAGEMENT"
+          + intfname   = "eth0"
+          + net_dhcp   = "NETWORK_DHCP_TYPE_CLIENT"
+          + netid      = (known after apply)
+          + netname    = "eng3000_net"
+          + ztype      = "IO_TYPE_ETH"
+        }
+
+      + revision (known after apply)
+    }
+
+  # zedcloud_image.IMG will be created
+  + resource "zedcloud_image" "IMG" {
+      + datastore_id        = (known after apply)
+      + id                  = (known after apply)
+      + image_arch          = "ARM64"
+      + image_error         = (known after apply)
+      + image_format        = "QCOW2"
+      + image_local         = (known after apply)
+      + image_rel_url       = "cirros-0.6.2-aarch64-disk.img"
+      + image_sha256        = "6a2222bd7ba89384d35378b5065bd5e838857f25db08c7abbff99b6d9bb48986"
+      + image_size_bytes    = "24969728"
+      + image_status        = (known after apply)
+      + image_type          = "IMAGE_TYPE_APPLICATION"
+      + name                = "eng3000_img"
+      + origin_type         = (known after apply)
+      + project_access_list = (known after apply)
+      + revision            = (known after apply)
+      + title               = "eng3000_img"
+    }
+
+  # zedcloud_model.M will be created
+  + resource "zedcloud_model" "M" {
+      + attr           = {
+          + "Cpus"    = "2"
+          + "memory"  = "4096M"
+          + "storage" = "20000M"
+        }
+      + brand_id       = (known after apply)
+      + id             = (known after apply)
+      + name           = "eng3000_model"
+      + origin_type    = "ORIGIN_LOCAL"
+      + product_status = "production"
+      + state          = "SYS_MODEL_STATE_ACTIVE"
+      + title          = "eng3000_model"
+      + type           = "ARM64"
+
+      + io_member_list {
+          + assigngrp    = "eth0"
+          + cost         = 0
+          + logicallabel = "eth0"
+          + phyaddrs     = {
+              + "Ifname" = "eth0"
+            }
+          + phylabel     = "eth0"
+          + usage        = "ADAPTER_USAGE_MANAGEMENT"
+          + ztype        = "IO_TYPE_ETH"
+        }
+
+      + revision (known after apply)
+    }
+
+  # zedcloud_network.N will be created
+  + resource "zedcloud_network" "N" {
+      + enterprise_default = false
+      + id                 = (known after apply)
+      + kind               = "NETWORK_KIND_V4"
+      + mtu                = 1500
+      + name               = "eng3000_net"
+      + project_id         = (known after apply)
+      + title              = "eng3000_net"
+
+      + ip {
+          + dhcp = "NETWORK_DHCP_TYPE_CLIENT"
+        }
+
+      + revision (known after apply)
+
+      + wireless (known after apply)
+    }
+
+  # zedcloud_network_instance.NI["a"] will be created
+  + resource "zedcloud_network_instance" "NI" {
+      + cluster_id     = (known after apply)
+      + device_default = false
+      + device_id      = (known after apply)
+      + dhcp           = false
+      + id             = (known after apply)
+      + kind           = "NETWORK_INSTANCE_KIND_LOCAL"
+      + lisp           = (known after apply)
+      + name           = "eng3000_ni_a"
+      + port           = "eth0"
+      + project_id     = (known after apply)
+      + revision       = (known after apply)
+      + title          = "eng3000_ni_a"
+      + type           = "NETWORK_INSTANCE_DHCP_TYPE_V4"
+
+      + ip (known after apply)
+    }
+
+  # zedcloud_network_instance.NI["b"] will be created
+  + resource "zedcloud_network_instance" "NI" {
+      + cluster_id     = (known after apply)
+      + device_default = false
+      + device_id      = (known after apply)
+      + dhcp           = false
+      + id             = (known after apply)
+      + kind           = "NETWORK_INSTANCE_KIND_LOCAL"
+      + lisp           = (known after apply)
+      + name           = "eng3000_ni_b"
+      + port           = "eth0"
+      + project_id     = (known after apply)
+      + revision       = (known after apply)
+      + title          = "eng3000_ni_b"
+      + type           = "NETWORK_INSTANCE_DHCP_TYPE_V4"
+
+      + ip (known after apply)
+    }
+
+  # zedcloud_network_instance.NI["c"] will be created
+  + resource "zedcloud_network_instance" "NI" {
+      + cluster_id     = (known after apply)
+      + device_default = false
+      + device_id      = (known after apply)
+      + dhcp           = false
+      + id             = (known after apply)
+      + kind           = "NETWORK_INSTANCE_KIND_LOCAL"
+      + lisp           = (known after apply)
+      + name           = "eng3000_ni_c"
+      + port           = "eth0"
+      + project_id     = (known after apply)
+      + revision       = (known after apply)
+      + title          = "eng3000_ni_c"
+      + type           = "NETWORK_INSTANCE_DHCP_TYPE_V4"
+
+      + ip (known after apply)
+    }
+
+  # zedcloud_project.P will be created
+  + resource "zedcloud_project" "P" {
+      + attr          = (known after apply)
+      + cloud_policy  = (known after apply)
+      + id            = (known after apply)
+      + module_policy = (known after apply)
+      + name          = "eng3000_project"
+      + numdevices    = (known after apply)
+      + revision      = (known after apply)
+      + title         = "eng3000_project"
+      + type          = "TAG_TYPE_PROJECT"
+
+      + attestation_policy (known after apply)
+
+      + pcr_policy (known after apply)
+
+      + tag_level_settings {
+          + flow_log_transmission = "NETWORK_INSTANCE_FLOW_LOG_TRANSMISSION_UNSPECIFIED"
+          + interface_ordering    = "INTERFACE_ORDERING_ENABLED"
+        }
+    }
+
+Plan: 16 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + instance_ids = {
+      + a = (known after apply)
+      + b = (known after apply)
+      + c = (known after apply)
+    }
+zedcloud_brand.B: Creating...
+zedcloud_project.P: Creating...
+zedcloud_project.P: Creation complete after 0s [id=a0b159a4-87e4-48ea-bc5a-3dac61a2e28e]
+zedcloud_network.N: Creating...
+zedcloud_datastore.DS: Creating...
+zedcloud_datastore.DS: Creation complete after 5s [id=e857fed0-60fc-43a6-9164-7b4a1fc61a04]
+zedcloud_network.N: Creation complete after 5s [id=1055ca5e-53bc-4862-825c-355230932f9a]
+zedcloud_image.IMG: Creating...
+zedcloud_brand.B: Creation complete after 6s [id=a5991e66-cf1b-41d0-9549-d98fb1cc4e28]
+zedcloud_model.M: Creating...
+zedcloud_model.M: Creation complete after 0s [id=8ccb3f8e-1b07-4c0c-a198-2cb53da629df]
+zedcloud_edgenode.EN["b"]: Creating...
+zedcloud_edgenode.EN["c"]: Creating...
+zedcloud_edgenode.EN["a"]: Creating...
+zedcloud_image.IMG: Still creating... [10s elapsed]
+zedcloud_edgenode.EN["c"]: Still creating... [10s elapsed]
+zedcloud_edgenode.EN["b"]: Still creating... [10s elapsed]
+zedcloud_edgenode.EN["a"]: Still creating... [10s elapsed]
+zedcloud_edgenode.EN["a"]: Creation complete after 10s [id=ef92cf04-4c5a-48ce-91c9-7218f5e9d3cf]
+zedcloud_image.IMG: Creation complete after 11s [id=97c8a479-3c6d-4e8e-b49a-5e3db8453847]
+zedcloud_application.APP: Creating...
+zedcloud_edgenode.EN["b"]: Creation complete after 10s [id=f3e5b373-9319-416c-a721-76cca5cf6e68]
+zedcloud_edgenode.EN["c"]: Creation complete after 11s [id=cf9ca9d7-6ea8-4871-aa7e-bd5aef8e7c5c]
+zedcloud_network_instance.NI["a"]: Creating...
+zedcloud_network_instance.NI["c"]: Creating...
+zedcloud_network_instance.NI["b"]: Creating...
+zedcloud_network_instance.NI["c"]: Creation complete after 0s [id=338c5515-86ea-4183-a76c-5aae2fc18c89]
+zedcloud_network_instance.NI["b"]: Creation complete after 0s [id=a8bf7b2e-7331-49df-b5e4-21606fd1ec65]
+zedcloud_network_instance.NI["a"]: Creation complete after 0s [id=cfe3620d-c403-4c90-9510-dbe60df28b3a]
+zedcloud_application.APP: Creation complete after 9s [id=299c8deb-083c-4bd6-a824-a43cc1b1e6e7]
+zedcloud_application_instance.AI["b"]: Creating...
+zedcloud_application_instance.AI["a"]: Creating...
+zedcloud_application_instance.AI["c"]: Creating...
+zedcloud_application_instance.AI["b"]: Still creating... [10s elapsed]
+zedcloud_application_instance.AI["a"]: Still creating... [10s elapsed]
+zedcloud_application_instance.AI["c"]: Still creating... [10s elapsed]
+zedcloud_application_instance.AI["b"]: Creation complete after 11s [id=4c6d3ee2-7dbb-4e88-9348-781a57b22fb5]
+zedcloud_application_instance.AI["a"]: Creation complete after 11s [id=3a28b92d-3920-4b65-82a4-21aafbb5055d]
+zedcloud_application_instance.AI["c"]: Creation complete after 11s [id=8de6ee8c-3cd1-4f8a-ab7a-b9db120bcf43]
+
+Apply complete! Resources: 16 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+instance_ids = {
+  "a" = "3a28b92d-3920-4b65-82a4-21aafbb5055d"
+  "b" = "4c6d3ee2-7dbb-4e88-9348-781a57b22fb5"
+  "c" = "8de6ee8c-3cd1-4f8a-ab7a-b9db120bcf43"
+}

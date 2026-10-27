@@ -878,6 +878,28 @@ func ApplicationInstanceResourceSchema() map[string]*schema.Schema {
 		Optional: true,
 		Default:  false,
 	}
+	s["interfaces"].Elem = &schema.Resource{Schema: appInstanceInterfaceSchema()}
+	return s
+}
+
+// appInstanceInterfaceSchema is the interface schema of the
+// zedcloud_application_instance resource. It differs from the shared
+// AppInterface() (also used by deployments and app profiles) only in acls,
+// which is Computed (ENG-3000, UE-203): on projects with interface ordering
+// enabled the controller treats the bundle's ACLs as defaults, so an omitted
+// acls block means "the controller's list" (the bundle defaults after create)
+// rather than "no ACLs".
+func appInstanceInterfaceSchema() map[string]*schema.Schema {
+	s := AppInterface()
+	acls := *s["acls"]
+	acls.Computed = true
+	acls.Description = "Interface ACLs. On projects with interface ordering enabled, the app bundle's ACLs for " +
+		"this interface are defaults: omit `acls` to use them, or list the rules the interface should have. A " +
+		"listed set replaces the defaults completely, so repeat any bundle rule you want to keep. Removing the " +
+		"block later keeps the current rules; to go back to the defaults, list the bundle's rules. On projects " +
+		"with interface ordering disabled, the controller ignores ACL changes after create, and they are not " +
+		"shown in plans."
+	s["acls"] = &acls
 	return s
 }
 
