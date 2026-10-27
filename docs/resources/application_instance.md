@@ -175,7 +175,7 @@ Required:
 Optional:
 
 - `access_vlan_id` (Number) access port VLAN ID, vlan id of zero will be treated as trunk port and vlan id 1 is implicitly used by linux bridges
-- `acls` (Block List) app Acls (see [below for nested schema](#nestedblock--interfaces--acls))
+- `acls` (Block List) Interface ACLs. On projects with interface ordering enabled, the app bundle's ACLs for this interface are defaults: omit `acls` to use them, or list the rules the interface should have. A listed set replaces the defaults completely, so repeat any bundle rule you want to keep. Removing the block later keeps the current rules; to go back to the defaults, list the bundle's rules. On projects with interface ordering disabled, the controller ignores ACL changes after create, and they are not shown in plans. (see [below for nested schema](#nestedblock--interfaces--acls))
 - `default_net_instance` (Boolean) default instance flag
 - `directattach` (Boolean) direct attach flag
 - `eidregister` (Block List) EID register details (see [below for nested schema](#nestedblock--interfaces--eidregister))

@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -264,9 +266,21 @@ func diffSuppressInterfaceListOrder(mapKey string) schema.SchemaDiffSuppressFunc
 	}
 }
 
+// appInstanceACLKey matches the diff keys of an app instance interface's ACL
+// list ("interfaces.0.acls.#", "interfaces.1.acls.2.matches.0.value", ...) and
+// captures the interface index.
+var appInstanceACLKey = regexp.MustCompile(`^interfaces\.(\d+)\.acls(\.|$)`)
+
 // suppressAppInterfacesChangeAfterCreation checks whether we have the newly created AppInterface
-// or not. It suppress any differences after an AppInstance is created.
-// AppInterfaces are never updated after they have been created
+// or not. It suppress any differences after an AppInstance is created (CI-201):
+// the controller fills in interface fields the configuration does not carry.
+//
+// The exception is an interface's ACL list (ENG-3000, UE-203): on projects
+// with interface ordering enabled the controller stores the list as sent, so
+// ACL changes of an interface that is still at the same position under the
+// same name are planned like any other change. CustomizeDiff clears them again
+// on projects where the controller ignores them (see
+// resources/application_instance_acls.go).
 func suppressAppInterfacesChangeAfterCreation(mapKey string) schema.SchemaDiffSuppressFunc {
 	return func(key, oldValue, newValue string, d *schema.ResourceData) bool {
 		oldData, newData := d.GetChange(mapKey)
@@ -287,8 +301,37 @@ func suppressAppInterfacesChangeAfterCreation(mapKey string) schema.SchemaDiffSu
 			return false
 		}
 
+		if isEditableAppInterfaceACLKey(key, o, n) {
+			return false
+		}
+
 		return true
 	}
+}
+
+// isEditableAppInterfaceACLKey reports whether key belongs to the ACL list of
+// an interface that exists in both the old and the new interface list at the
+// same index under the same name. Interface adds, removes and moves stay
+// suppressed (NFR-116 is not supported by the provider yet).
+func isEditableAppInterfaceACLKey(key string, o, n []interface{}) bool {
+	m := appInstanceACLKey.FindStringSubmatch(key)
+	if m == nil || len(o) != len(n) {
+		return false
+	}
+	i, err := strconv.Atoi(m[1])
+	if err != nil || i >= len(o) {
+		return false
+	}
+	return appInterfaceName(o[i]) != "" && appInterfaceName(o[i]) == appInterfaceName(n[i])
+}
+
+func appInterfaceName(v interface{}) string {
+	m, ok := v.(map[string]interface{})
+	if !ok {
+		return ""
+	}
+	name, _ := m["intfname"].(string)
+	return name
 }
 
 // In most cases it's not allowed to change the resources' name after creation.

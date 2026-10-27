@@ -7,7 +7,7 @@
 **Repro:** `test/eng3000-repro/` on branch `eng-3000-tf-acl-repro`
 **Date:** 2026-10-27
 **Author:** Ivan Curachin
-**Status:** Draft — decisions D1–D5 proposed, not yet agreed
+**Status:** Implemented as proposed (D1–D5) on `ue-203-app-instance-acls` ([UE-203](https://zededa.atlassian.net/browse/UE-203)); local-cluster results in `test/ue-203-acls/README.md`. Open questions in §8.2 remain open.
 
 **Headline:** after #8548 the controller stores an instance's interface ACL list exactly as
 sent (empty list = bundle defaults) on projects with interface ordering enabled. The provider
