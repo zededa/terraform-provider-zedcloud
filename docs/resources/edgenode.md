@@ -44,7 +44,7 @@ resource "zedcloud_edgenode" "node17" {
 ### Required
 
 - `interfaces` (Block List, Min: 1) System Interface list (see [below for nested schema](#nestedblock--interfaces))
-- `model_id` (String) device model
+- `model_id` (String) device model. Set when the edge node is created; it cannot be changed afterwards, because the hardware model is fixed at onboarding
 - `name` (String) user specified device name
 - `project_id` (String) project name
 - `title` (String) user specified title
