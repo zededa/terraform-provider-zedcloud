@@ -904,7 +904,7 @@ func Node() map[string]*schema.Schema {
 		},
 
 		"model_id": {
-			Description: `device model`,
+			Description: `device model. Set when the edge node is created; it cannot be changed afterwards, because the hardware model is fixed at onboarding`,
 			Type:        schema.TypeString,
 			Required:    true,
 		},

@@ -40,10 +40,61 @@ func customizeNodeDiff(ctx context.Context, d *schema.ResourceDiff, m interface{
 	if err := validateBondMemberInterfaces(ctx, d, m); err != nil {
 		return err
 	}
+	if err := validateNodeModelImmutable(d); err != nil {
+		return err
+	}
 	if err := validateNodePCRPolicy(d); err != nil {
 		return err
 	}
 	return validateClusteredNodeBaseImage(ctx, d, m)
+}
+
+// nodeModelChangeError is the error for an attempt to change the hardware
+// model of an existing edge node. It names both ids so the same message also
+// explains drift and import mismatches, where the fix is to bring the
+// configuration back in line with the node's actual model.
+func nodeModelChangeError(name, from, to string) error {
+	return fmt.Errorf(
+		"edge node %q: model_id cannot be changed from %s to %s: the hardware model is fixed when the node "+
+			"is created and the controller ignores a different one. Set model_id back to %s, or offboard and "+
+			"re-onboard the device to use a different model",
+		name, from, to, from)
+}
+
+// validateNodeModelImmutable rejects a change of model_id on an existing node
+// at plan time (CI-1026).
+//
+// The controller accepts a different modelId in the node update, never applies
+// it and reports no error. Without this check the apply "succeeds", the node
+// keeps its model, and every later plan proposes the same change again.
+//
+// ForceNew is deliberately not used: it would destroy and re-create the node,
+// which offboards it, and one shared configuration can manage a whole fleet.
+//
+// When the new value is unknown at plan time (it refers to something created
+// in the same apply) it cannot be judged here; UpdateNode checks it before it
+// sends anything.
+func validateNodeModelImmutable(d *schema.ResourceDiff) error {
+	if d.Id() == "" || !d.HasChange("model_id") || !d.NewValueKnown("model_id") {
+		return nil
+	}
+	oldVal, newVal := d.GetChange("model_id")
+	from, _ := oldVal.(string)
+	to, _ := newVal.(string)
+	if from == "" || from == to {
+		return nil
+	}
+	name, _ := d.Get("name").(string)
+	if name == "" {
+		name = d.Id()
+	}
+	return nodeModelChangeError(name, from, to)
+}
+
+// nodeModelDiffers reports whether two node model ids are both set and
+// different. A missing id on either side (a model-less node) is not a change.
+func nodeModelDiffers(a, b *string) bool {
+	return a != nil && b != nil && *a != "" && *b != "" && *a != *b
 }
 
 // validateNodePCRPolicy checks pcr_policy.pcr_indices against the controller's
@@ -348,6 +399,14 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		return diag.Errorf("missing client parameter: id")
 	}
 	newNode := zschema.NodeModel(d)
+	// The plan-time check cannot judge a model_id that was unknown at plan
+	// time, so check against the node as the controller has it now, before
+	// anything is sent. Partial keeps the old model in state on this error.
+	if nodeModelDiffers(existingNode.ModelID, newNode.ModelID) {
+		d.Partial(true)
+		name, _ := d.Get("name").(string)
+		return diag.FromErr(nodeModelChangeError(name, *existingNode.ModelID, *newNode.ModelID))
+	}
 	// whether Terraform manages pcr_policy after this apply (it is in config)
 	pcrConfigured := newNode.PcrPolicy != nil
 	setNodePCRPolicyForUpdate(d, newNode, existingNode)
@@ -451,6 +510,15 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	updatedNode, diags := readNodeByID(ctx, d, m)
 	if diags.HasError() {
 		return diags
+	}
+
+	// Never report success for a model change the controller did not apply.
+	if nodeModelDiffers(newNode.ModelID, updatedNode.ModelID) {
+		d.Partial(true)
+		name, _ := d.Get("name").(string)
+		return append(diags, diag.Errorf(
+			"edge node %q: requested model_id %s but the controller reports %s after the update",
+			name, *newNode.ModelID, *updatedNode.ModelID)...)
 	}
 
 	zschema.SetNodeResourceData(d, updatedNode)
