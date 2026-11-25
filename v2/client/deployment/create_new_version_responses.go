@@ -52,6 +52,24 @@ func (o *CreateNewVersionReader) ReadResponse(response runtime.ClientResponse, c
 			return nil, err
 		}
 		return nil, result
+	case 400:
+		result := NewCreateNewVersionBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 404:
+		result := NewCreateNewVersionNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 409:
+		result := NewCreateNewVersionConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewCreateNewVersionInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -345,6 +363,216 @@ func (o *CreateNewVersionForbidden) GetPayload() *models.ZsrvResponse {
 }
 
 func (o *CreateNewVersionForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateNewVersionBadRequest creates a CreateNewVersionBadRequest with default headers values
+func NewCreateNewVersionBadRequest() *CreateNewVersionBadRequest {
+	return &CreateNewVersionBadRequest{}
+}
+
+/*
+CreateNewVersionBadRequest describes a response with status code 400, with default header values.
+
+Bad request. The controller rejected the request, for example because a field has an invalid value. The reason is in httpStatusMsg and error[].
+*/
+type CreateNewVersionBadRequest struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 2xx status code
+func (o *CreateNewVersionBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 3xx status code
+func (o *CreateNewVersionBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 4xx status code
+func (o *CreateNewVersionBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 5xx status code
+func (o *CreateNewVersionBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this resource group CreateNewVersion resource group v2 forbidden response a status code equal to that given
+func (o *CreateNewVersionBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the resource group CreateNewVersion resource group v2 forbidden response
+func (o *CreateNewVersionBadRequest) Code() int {
+	return 400
+}
+
+func (o *CreateNewVersionBadRequest) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /v2/projects/id/{projectId}/deployments/id/{id}][%d] projectDeploymentCreateNewVersionBadRequest %s", 400, payload)
+}
+
+func (o *CreateNewVersionBadRequest) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /v2/projects/id/{projectId}/deployments/id/{id}][%d] projectDeploymentCreateNewVersionBadRequest %s", 400, payload)
+}
+
+func (o *CreateNewVersionBadRequest) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *CreateNewVersionBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateNewVersionNotFound creates a CreateNewVersionNotFound with default headers values
+func NewCreateNewVersionNotFound() *CreateNewVersionNotFound {
+	return &CreateNewVersionNotFound{}
+}
+
+/*
+CreateNewVersionNotFound describes a response with status code 404, with default header values.
+
+Not found. The project or deployment does not exist, or the requestor cannot see it.
+*/
+type CreateNewVersionNotFound struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 2xx status code
+func (o *CreateNewVersionNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 3xx status code
+func (o *CreateNewVersionNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 4xx status code
+func (o *CreateNewVersionNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 5xx status code
+func (o *CreateNewVersionNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this resource group CreateNewVersion resource group v2 forbidden response a status code equal to that given
+func (o *CreateNewVersionNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the resource group CreateNewVersion resource group v2 forbidden response
+func (o *CreateNewVersionNotFound) Code() int {
+	return 404
+}
+
+func (o *CreateNewVersionNotFound) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /v2/projects/id/{projectId}/deployments/id/{id}][%d] projectDeploymentCreateNewVersionNotFound %s", 404, payload)
+}
+
+func (o *CreateNewVersionNotFound) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /v2/projects/id/{projectId}/deployments/id/{id}][%d] projectDeploymentCreateNewVersionNotFound %s", 404, payload)
+}
+
+func (o *CreateNewVersionNotFound) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *CreateNewVersionNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateNewVersionConflict creates a CreateNewVersionConflict with default headers values
+func NewCreateNewVersionConflict() *CreateNewVersionConflict {
+	return &CreateNewVersionConflict{}
+}
+
+/*
+CreateNewVersionConflict describes a response with status code 409, with default header values.
+
+Conflict. The request conflicts with the current state, for example a deployment tag that is already used in the project.
+*/
+type CreateNewVersionConflict struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 2xx status code
+func (o *CreateNewVersionConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 3xx status code
+func (o *CreateNewVersionConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 4xx status code
+func (o *CreateNewVersionConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this resource group CreateNewVersion resource group v2 forbidden response has a 5xx status code
+func (o *CreateNewVersionConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this resource group CreateNewVersion resource group v2 forbidden response a status code equal to that given
+func (o *CreateNewVersionConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the resource group CreateNewVersion resource group v2 forbidden response
+func (o *CreateNewVersionConflict) Code() int {
+	return 409
+}
+
+func (o *CreateNewVersionConflict) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /v2/projects/id/{projectId}/deployments/id/{id}][%d] projectDeploymentCreateNewVersionConflict %s", 409, payload)
+}
+
+func (o *CreateNewVersionConflict) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[PUT /v2/projects/id/{projectId}/deployments/id/{id}][%d] projectDeploymentCreateNewVersionConflict %s", 409, payload)
+}
+
+func (o *CreateNewVersionConflict) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *CreateNewVersionConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 
