@@ -366,7 +366,7 @@ func resourceReadApplicationInstance(ctx context.Context, d *schema.ResourceData
 		d.SetId("")
 		return nil
 	}
-	zschema.SetApplicationInstanceResourceData(d, appInstance)
+	setApplicationInstanceState(d, appInstance)
 	// snapshot_on_update lives in state only; after an import it is unset.
 	_ = d.Set("snapshot_on_update", d.Get("snapshot_on_update"))
 	d.SetId(appInstance.ID)
@@ -396,7 +396,7 @@ func readApplicationInstanceAfterWrite(ctx context.Context, d *schema.ResourceDa
 					"Import it with `terraform import` or choose another name",
 				d.Get("name"), appInstance.ID, wantID))
 		}
-		zschema.SetApplicationInstanceResourceData(d, appInstance)
+		setApplicationInstanceState(d, appInstance)
 		d.SetId(appInstance.ID)
 		return nil
 	})
@@ -438,10 +438,23 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 	model.ID = id
 	normalizeMaxSnapshots(d, model)
 
+	// ENG-3114: the controller ignores purge.counter in an update and keeps its
+	// own counter, which only PUT .../refresh/purge moves. Send back what the
+	// controller holds so the update neither fakes nor resets a purge, and
+	// request the purge itself once the update is in.
+	purgeRequested := purgeCounterIncreased(d)
+	oldPurge, _ := d.GetChange("purge")
+
 	// CI-752 / CI-790: lock on the server's current revision, not the state's.
 	// See the comment on currentVolumeInstanceRevision.
-	if rev := currentApplicationInstanceRevision(ctx, client, id); rev != nil {
-		model.Revision = rev
+	cur := currentApplicationInstance(ctx, client, id)
+	if cur != nil && cur.Revision != nil {
+		model.Revision = cur.Revision
+	}
+	if cur != nil {
+		model.Purge = cur.Purge
+	} else {
+		model.Purge = nil
 	}
 
 	if snapshotOnUpdate, _ := d.Get("snapshot_on_update").(bool); snapshotOnUpdate {
@@ -470,23 +483,83 @@ func UpdateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 		}
 	}
 
+	if purgeRequested {
+		if diags := purgeApplicationInstance(ctx, client, id); diags.HasError() {
+			// The update is in but the purge is not. Keep the old counter in
+			// state so the next plan still asks for it.
+			_ = d.Set("purge", oldPurge)
+			return diags
+		}
+	}
+
 	return readApplicationInstanceAfterWrite(ctx, d, m)
 }
 
-// currentApplicationInstanceRevision fetches the app instance's revision as the
-// server holds it now. nil means "could not determine"; see
-// currentVolumeInstanceRevision.
-func currentApplicationInstanceRevision(ctx context.Context, client *api_client.ZedcloudAPI, id string) *models.ObjectRevision {
+// purgeCounterOf returns the counter of a purge block as the SDK hands it
+// over (a list of at most one map), or 0.
+func purgeCounterOf(v interface{}) int {
+	l, _ := v.([]interface{})
+	if len(l) == 0 {
+		return 0
+	}
+	m, _ := l[0].(map[string]interface{})
+	n, _ := m["counter"].(int)
+	return n
+}
+
+// purgeCounterIncreased reports whether the configuration raised purge.counter.
+// The counter is a trigger: raising it purges once, whatever the step.
+func purgeCounterIncreased(d *schema.ResourceData) bool {
+	oldV, newV := d.GetChange("purge")
+	return purgeCounterOf(newV) > purgeCounterOf(oldV)
+}
+
+// purgeApplicationInstance asks the controller to purge the instance
+// (PUT /v1/apps/instances/id/{id}/refresh/purge). It is the only call that
+// purges; the counter in an update body is ignored (ENG-3114).
+func purgeApplicationInstance(ctx context.Context, client *api_client.ZedcloudAPI, id string) diag.Diagnostics {
+	params := config.NewEdgeApplicationInstanceConfigurationRefreshPurgeEdgeApplicationInstanceParams().WithContext(ctx)
+	params.ID = id
+
+	resp, err := client.ApplicationInstance.EdgeApplicationInstanceConfigurationRefreshPurgeEdgeApplicationInstance(params, nil)
+	if err != nil {
+		return appInstanceAPIErrorDiags("purge", err)
+	}
+	return zsrvResponseDiags(resp.GetPayload())
+}
+
+// setApplicationInstanceState writes the controller's view of the instance
+// into d, except for purge.counter: that counter is the controller's own (each
+// purge adds one, whatever the configuration says), so the configured value is
+// kept and plans converge once the purge has been requested (ENG-3114). After
+// an import there is no configured value and the controller's is used.
+func setApplicationInstanceState(d *schema.ResourceData, appInstance *models.AppInstance) {
+	prior, _ := d.Get("purge").([]interface{})
+	zschema.SetApplicationInstanceResourceData(d, appInstance)
+	if len(prior) > 0 {
+		_ = d.Set("purge", prior)
+	}
+}
+
+// currentApplicationInstance fetches the app instance as the server holds it
+// now. nil means "could not determine"; see currentVolumeInstanceRevision.
+func currentApplicationInstance(ctx context.Context, client *api_client.ZedcloudAPI, id string) *models.AppInstance {
 	params := config.GetByIDParams().WithContext(ctx)
 	params.ID = id
 
 	resp, err := client.ApplicationInstance.GetByID(params, nil)
 	if err != nil {
-		log.Printf("[TRACE] application instance revision read error: %s", spew.Sdump(err))
+		log.Printf("[TRACE] application instance read error: %s", spew.Sdump(err))
 		return nil
 	}
-	if payload := resp.GetPayload(); payload != nil {
-		return payload.Revision
+	return resp.GetPayload()
+}
+
+// currentApplicationInstanceRevision fetches the app instance's revision as the
+// server holds it now. nil means "could not determine".
+func currentApplicationInstanceRevision(ctx context.Context, client *api_client.ZedcloudAPI, id string) *models.ObjectRevision {
+	if cur := currentApplicationInstance(ctx, client, id); cur != nil {
+		return cur.Revision
 	}
 	return nil
 }
