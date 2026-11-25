@@ -7,6 +7,8 @@ description: |-
   The controller versions deployments: every change creates a new version of the deployment with a new id, and only the latest
   version of a project's deployment can be changed. Changing this resource in place does exactly that: the provider asks the
   controller for the next version, waits until its policies are applied, and the resource then tracks the new version (its id changes).
+  Terraform cannot plan a new id for an in-place update, so id still shows the old version's id in the plan and in outputs and other
+  resources of the same run, until the next refresh. Use version_id wherever the new version's id is needed in the same apply.
   Each version needs its own deployment_tag (the controller requires the tag to be unique per project), so a change must come with
   a new deployment_tag. Edge nodes select a version by its tag: they keep running the version whose tag they carry until their
   deployment_tag is moved to the new one, which allows a staged rollout. Older versions stay on the controller until the
@@ -20,6 +22,8 @@ Resource "zedcloud_deployment" manages deployments in ZedCloud. A deployment is 
 The controller versions deployments: every change creates a new version of the deployment with a new id, and only the latest
 version of a project's deployment can be changed. Changing this resource in place does exactly that: the provider asks the
 controller for the next version, waits until its policies are applied, and the resource then tracks the new version (its id changes).
+Terraform cannot plan a new id for an in-place update, so id still shows the old version's id in the plan and in outputs and other
+resources of the same run, until the next refresh. Use version_id wherever the new version's id is needed in the same apply.
 Each version needs its own deployment_tag (the controller requires the tag to be unique per project), so a change must come with
 a new deployment_tag. Edge nodes select a version by its tag: they keep running the version whose tag they carry until their
 deployment_tag is moved to the new one, which allows a staged rollout. Older versions stay on the controller until the
@@ -84,6 +88,7 @@ resource "zedcloud_deployment" "fleet" {
 
 - `id` (String) system generated unique id for an deployment
 - `revision` (List of Object) object revision (see [below for nested schema](#nestedatt--revision))
+- `version_id` (String) id of the deployment version this resource currently tracks. It is the same value as id, but Terraform plans it as "known after apply" on every update, which creates a new version with a new id. Use version_id, not id, in outputs and in other resources that must see the new version in the same apply; id keeps the old version's id until the next refresh.
 
 <a id="nestedblock--app_inst_policies"></a>
 ### Nested Schema for `app_inst_policies`
