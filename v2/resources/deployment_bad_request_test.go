@@ -136,10 +136,11 @@ func TestDeploymentSchema_NamingSchemeIsValidated(t *testing.T) {
 		value string
 		ok    bool
 	}{
-		{"APP_NAMING_SCHEME_BOGUS", false},
-		{"app_naming_scheme_device", false},
-		{"APP_NAMING_SCHEME_PROJECT_APP_DEVICE", true},
-		{"APP_NAMING_SCHEME_DEVICE", true},
+		{"APP_NAMING_SCHEMEV2_BOGUS", false},
+		{"app_namingschemev2_device", false},
+		{"APP_NAMING_SCHEME_DEVICE", false},              // the V1 enum is not valid here
+		{"APP_NAMING_SCHEMEV2_PROJECT_APP_DEVICE", true}, // used by the deployment tests
+		{"APP_NAMING_SCHEMEV2_DEVICE", true},
 		{"", true},
 	} {
 		diags := zschemaValidateNamingScheme(tc.value)
@@ -148,6 +149,19 @@ func TestDeploymentSchema_NamingSchemeIsValidated(t *testing.T) {
 		}
 		if !tc.ok && !diags.HasError() {
 			t.Errorf("%q must be rejected at plan time", tc.value)
+		}
+	}
+}
+
+func TestAppConfigSchema_NamingSchemeIsValidated(t *testing.T) {
+	cfg := zschema.AppConfig()["naming_scheme"]
+	for v, ok := range map[string]bool{
+		"APP_NAMING_SCHEME_PROJECT_APP_DEVICE": true,
+		"APP_NAMING_SCHEME_BOGUS":              false,
+		"":                                     true,
+	} {
+		if got := !cfg.ValidateDiagFunc(v, cty.GetAttrPath("naming_scheme")).HasError(); got != ok {
+			t.Errorf("%q accepted=%v, want %v", v, got, ok)
 		}
 	}
 }

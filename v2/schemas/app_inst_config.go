@@ -360,7 +360,7 @@ func AppInstConfig() map[string]*schema.Schema {
 			Description:      `app naming scheme`,
 			Type:             schema.TypeString,
 			Optional:         true,
-			ValidateDiagFunc: validateAppNamingScheme,
+			ValidateDiagFunc: validateAppNamingSchemeV2,
 		},
 
 		"networks": {
