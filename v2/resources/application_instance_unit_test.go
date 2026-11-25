@@ -39,6 +39,8 @@ type fakeController struct {
 	failCreate string
 	// gatewayHTML makes every request answer 504 with an HTML page.
 	gatewayHTML bool
+	// failPurge makes PUT .../refresh/purge answer 500 without purging.
+	failPurge bool
 }
 
 func newFakeController() *fakeController {
@@ -182,10 +184,28 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": job})
 			return
 		}
-		for k, v := range body {
-			inst[k] = v
-		}
+		applyUpdateBody(inst, body)
 		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob(jobs.StatusCompleted)})
+
+	case r.Method == http.MethodPut && strings.HasPrefix(path, "/v1/apps/instances/id/") && strings.HasSuffix(path, "/refresh/purge"):
+		// Like the real controller: each call adds one to its own counter.
+		inst := f.byID(strings.TrimSuffix(strings.TrimPrefix(path, "/v1/apps/instances/id/"), "/refresh/purge"))
+		if inst == nil {
+			notFound(w)
+			return
+		}
+		if f.failPurge {
+			writeJSON(w, http.StatusInternalServerError, map[string]interface{}{
+				"httpStatusCode": 500, "error": []map[string]string{{"details": "purge failed"}},
+			})
+			return
+		}
+		counter := 0.0
+		if p, ok := inst["purge"].(map[string]interface{}); ok {
+			counter, _ = p["counter"].(float64)
+		}
+		inst["purge"] = map[string]interface{}{"counter": counter + 1}
+		writeJSON(w, http.StatusOK, map[string]interface{}{"operationType": "OPS_TYPE_UPDATE", "operationStatus": "OPS_STATUS_COMPLETE"})
 
 	case r.Method == http.MethodPut && strings.HasPrefix(path, "/v1/apps/instances/id/"):
 		inst := f.byID(strings.TrimPrefix(path, "/v1/apps/instances/id/"))
@@ -194,9 +214,7 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		f.puts = append(f.puts, body)
-		for k, v := range body {
-			inst[k] = v
-		}
+		applyUpdateBody(inst, body)
 		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": inst["id"]})
 
 	case r.Method == http.MethodDelete && strings.HasPrefix(path, "/v2/apps/instances/id/"):
@@ -219,6 +237,17 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		writeJSON(w, http.StatusNotImplemented, map[string]interface{}{"httpStatusCode": 501})
+	}
+}
+
+// applyUpdateBody stores an update body on inst. The controller ignores purge
+// in it: only PUT .../refresh/purge moves the counter (ENG-3114).
+func applyUpdateBody(inst, body map[string]interface{}) {
+	for k, v := range body {
+		if k == "purge" {
+			continue
+		}
+		inst[k] = v
 	}
 }
 
