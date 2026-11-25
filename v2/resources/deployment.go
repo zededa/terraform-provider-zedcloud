@@ -527,6 +527,17 @@ func customizeDeploymentDiff(ctx context.Context, d *schema.ResourceDiff, m inte
 	if err := validateDeploymentTagChange(d); err != nil {
 		return err
 	}
+	// An update creates a new deployment version with a new id and revision.
+	// Plan them as unknown, or outputs and dependants keep the old version's
+	// id until a second apply (ENG-3118).
+	if deploymentUpdateCreatesVersion(d) {
+		if err := d.SetNewComputed("id"); err != nil {
+			return err
+		}
+		if err := d.SetNewComputed("revision"); err != nil {
+			return err
+		}
+	}
 	if !d.NewValueKnown("device_policies") {
 		return nil
 	}
@@ -601,6 +612,24 @@ func getLatestProjectDeployment(ctx context.Context, client *api_client.Zedcloud
 var deploymentUpdatableKeys = []string{
 	"app_inst_policies", "cluster_policy", "device_policies", "edgeview_policy",
 	"integration_policy", "name", "network_inst_policies", "title", "volume_inst_policies",
+}
+
+// deploymentUpdateCreatesVersion reports whether the planned change of an
+// existing deployment is an update, which the controller turns into a new
+// version.
+func deploymentUpdateCreatesVersion(d *schema.ResourceDiff) bool {
+	if d.Id() == "" {
+		return false
+	}
+	if d.HasChange("deployment_tag") {
+		return true
+	}
+	for _, k := range deploymentUpdatableKeys {
+		if len(d.GetChangedKeysPrefix(k)) > 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // validateDeploymentTagChange fails the plan when an existing deployment is
