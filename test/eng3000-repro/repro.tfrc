@@ -1,0 +1,6 @@
+provider_installation {
+  dev_overrides {
+    "zededa/zedcloud" = "/Users/ikurakin/go/src/github.com/zededa/terraform-provider-zedcloud/test/eng3000-repro/.bin"
+  }
+  direct {}
+}

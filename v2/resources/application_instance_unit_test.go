@@ -39,6 +39,9 @@ type fakeController struct {
 	failCreate string
 	// gatewayHTML makes every request answer 504 with an HTML page.
 	gatewayHTML bool
+	// projectOrdering is the interfaceOrdering of each project served by
+	// GET /v1/projects/id/{id} (UE-203); absent projects answer 404.
+	projectOrdering map[string]string
 }
 
 func newFakeController() *fakeController {
@@ -216,6 +219,18 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		delete(f.instances, inst["name"].(string))
 		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": inst["id"]})
+
+	case r.Method == http.MethodGet && strings.HasPrefix(path, "/v1/projects/id/"):
+		id := strings.TrimPrefix(path, "/v1/projects/id/")
+		ordering, ok := f.projectOrdering[id]
+		if !ok {
+			notFound(w)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"id": id, "name": id, "title": id, "type": "TAG_TYPE_PROJECT",
+			"tagLevelSettings": map[string]interface{}{"interfaceOrdering": ordering},
+		})
 
 	default:
 		writeJSON(w, http.StatusNotImplemented, map[string]interface{}{"httpStatusCode": 501})

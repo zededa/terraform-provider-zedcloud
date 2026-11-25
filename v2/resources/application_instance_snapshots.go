@@ -88,9 +88,13 @@ func normalizeMaxSnapshots(d *schema.ResourceData, model *models.AppInstance) {
 }
 
 // applicationInstanceCustomizeDiff fails the plan for snapshot settings the
-// controller would reject.
-func applicationInstanceCustomizeDiff(_ context.Context, d *schema.ResourceDiff, _ interface{}) error {
-	return checkAppInstanceSnapshotSettings(d, d.NewValueKnown("allow_snapshots"))
+// controller would reject, and drops interface ACL changes the controller
+// would ignore (UE-203).
+func applicationInstanceCustomizeDiff(ctx context.Context, d *schema.ResourceDiff, m interface{}) error {
+	if err := checkAppInstanceSnapshotSettings(d, d.NewValueKnown("allow_snapshots")); err != nil {
+		return err
+	}
+	return gateInterfaceACLDiffs(ctx, d, m)
 }
 
 // updateApplicationInstanceWithSnapshot sends the update with

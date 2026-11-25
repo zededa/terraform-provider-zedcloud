@@ -1,0 +1,21 @@
+# OpenTofu CLI config for this directory. Copy to e2e-acl-macos.tfrc (gitignored)
+# and fix the absolute mirror path. Same scheme as test/e2e-snapshot-macos:
+# the locally built provider is staged into the mirror as zededa/zedcloud
+# 99.0.0, because dev_overrides breaks `tofu init` for zedamigo.
+provider_installation {
+  filesystem_mirror {
+    # REQUIRED EDIT: absolute path, no ~ expansion.
+    path = "/Users/CHANGEME/.terraform.d/plugins"
+    include = [
+      "localhost/andrei-zededa/zedamigo",
+      "registry.opentofu.org/zededa/zedcloud",
+    ]
+  }
+
+  direct {
+    exclude = [
+      "localhost/andrei-zededa/zedamigo",
+      "registry.opentofu.org/zededa/zedcloud",
+    ]
+  }
+}
