@@ -659,7 +659,7 @@ Required:
 
 Read-Only:
 
-- `policy_version` (Number) Policy version. Managed by the controller for deployment policies (1, then +1 on each update).
+- `policy_version` (Number) Policy version, sent to EVE as the policy id. Managed by the provider: set to 1 when the policy is created and incremented when pcr_indices change.
 
 
 <a id="nestedblock--device_policies--port_based_network_access_control_policy"></a>

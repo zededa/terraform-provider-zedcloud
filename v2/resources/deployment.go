@@ -180,6 +180,7 @@ func CreateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 
 	client := m.(*api_client.ZedcloudAPI)
 	model := zschema.DeploymentModel(d)
+	setDeploymentPCRPolicyVersions(model, nil)
 
 	latestDeploymentID, err := getLatestProjectDeployment(ctx, client, model.ProjectID)
 	if err != nil {
@@ -405,6 +406,9 @@ func UpdateDeployment(ctx context.Context, d *schema.ResourceData, m interface{}
 			p.MetaData.Name = zschema.StripDevicePolicyNameDecoration(p.MetaData.Name)
 		}
 	}
+
+	oldPolicies, _ := d.GetChange("device_policies")
+	setDeploymentPCRPolicyVersions(model, asList(oldPolicies))
 
 	if model.DeploymentTag == "" {
 		return diag.Errorf("deployment_tag must be set to update a deployment: the controller rejects a new deployment version without it")
@@ -634,4 +638,35 @@ func suggestDeploymentTag(d *schema.ResourceDiff) string {
 		return "depl:v2"
 	}
 	return tag + "-v2"
+}
+
+// setDeploymentPCRPolicyVersions sets the policyVersion of the PCR device
+// policies before they are sent. The controller does not manage it for
+// deployment policies, it stores whatever it gets, so a policy sent with 0
+// is never applied to the nodes (ENG-3116). Same rule as for project and node
+// PCR policies: 1 for a new policy, +1 when the indices change, unchanged
+// otherwise. oldPolicies is the device_policies list from state (nil on create).
+func setDeploymentPCRPolicyVersions(model *models.Deployment, oldPolicies []interface{}) {
+	var oldIndices []int64
+	var oldVersion int64
+	for _, op := range oldPolicies {
+		om, ok := op.(map[string]interface{})
+		if !ok || om["policy_sub_type"] != string(models.DevicePolicyTypeDEVICEPOLICYTYPEPCR) {
+			continue
+		}
+		if l := asList(om["pcr_policy"]); len(l) > 0 && l[0] != nil {
+			pm := l[0].(map[string]interface{})
+			oldIndices = zschema.PCRIndicesFromInterface(pm["pcr_indices"])
+			if v, ok := pm["policy_version"].(int); ok {
+				oldVersion = int64(v)
+			}
+		}
+		break
+	}
+	for _, p := range model.DevicePolicies {
+		if p == nil || p.PcrPolicy == nil {
+			continue
+		}
+		p.PcrPolicy.PolicyVersion = zschema.NextPCRPolicyVersion(oldIndices, oldVersion, p.PcrPolicy.PcrIndices)
+	}
 }

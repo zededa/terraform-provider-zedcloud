@@ -197,7 +197,7 @@ func DevicePCRPolicySchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"pcr_indices": pcrIndicesSchema(),
 		"policy_version": {
-			Description: `Policy version. Managed by the controller for deployment policies (1, then +1 on each update).`,
+			Description: pcrPolicyVersionDescription,
 			Type:        schema.TypeInt,
 			Computed:    true,
 		},
