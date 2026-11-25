@@ -313,8 +313,15 @@ func readNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag.D
 		return diags
 	}
 
+	priorReset, _ := d.Get("reset_counter").(int)
 	zschema.SetNodeResourceData(d, edgeNode)
 	d.SetId(edgeNode.ID)
+	// The controller adds 1 per reboot, so a configured counter that jumped
+	// by more than 1 stays ahead of it. Keep it, or every refresh would bring
+	// the diff back. A counter the controller moved past state is taken as is.
+	if priorReset > int(edgeNode.ResetCounter) {
+		_ = d.Set("reset_counter", priorReset)
+	}
 
 	return diags
 }
@@ -351,6 +358,11 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 	// the update with HTTP 409 "Version mismatch".
 	newNode.Revision = existingNode.Revision
 	params.SetBody(newNode)
+
+	// reset_counter is a trigger owned by the controller: the update body
+	// cannot move it, only the reboot endpoint does (ENG-3115).
+	oldReset, newReset := nodeResetCounterChange(d)
+	rebootRequested := newReset > oldReset
 
 	// Call node update
 	client := m.(*api_client.ZedcloudAPI)
@@ -427,6 +439,14 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 		}
 	}
 
+	if rebootRequested {
+		if ds := rebootNode(ctx, d, client); ds.HasError() {
+			// Keep the old counter in state so the next apply retries.
+			_ = d.Set("reset_counter", oldReset)
+			return append(diags, ds...)
+		}
+	}
+
 	// Fetch latest node data and update state
 	updatedNode, diags := readNodeByID(ctx, d, m)
 	if diags.HasError() {
@@ -435,9 +455,39 @@ func UpdateNode(ctx context.Context, d *schema.ResourceData, m interface{}) diag
 
 	zschema.SetNodeResourceData(d, updatedNode)
 	d.SetId(updatedNode.ID)
+	if rebootRequested {
+		// The controller adds 1 per reboot, whatever the configured jump was.
+		// Keep the configured value so the plan is clean afterwards.
+		_ = d.Set("reset_counter", newReset)
+	}
 	diags = append(diags, unsetUnmanagedNodePCRPolicy(d, pcrConfigured)...)
 
 	return diags
+}
+
+// nodeResetCounterChange returns the prior and the planned reset_counter.
+func nodeResetCounterChange(d *schema.ResourceData) (oldVal, newVal int) {
+	o, n := d.GetChange("reset_counter")
+	oldVal, _ = o.(int)
+	newVal, _ = n.(int)
+	return oldVal, newVal
+}
+
+// rebootNode reboots the node through the dedicated endpoint.
+func rebootNode(ctx context.Context, d *schema.ResourceData, client *api_client.ZedcloudAPI) diag.Diagnostics {
+	params := config.NewEdgeNodeConfigurationRebootParamsWithContext(ctx)
+	params.ID = d.Id()
+	if v, ok := d.GetOk("x_request_id"); ok {
+		params.XRequestID = v.(*string)
+	}
+	resp, err := client.Node.EdgeNodeConfigurationReboot(params, nil)
+	if err != nil {
+		if ds, ok := ZsrvResponderToDiags(err); ok {
+			return ds
+		}
+		return diag.Errorf("edge node reboot error: %s", err)
+	}
+	return zsrvResponseDiags(resp.GetPayload())
 }
 
 // setNodePCRPolicyForUpdate decides what PCR policy the full-device PUT
