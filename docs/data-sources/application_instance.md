@@ -347,11 +347,11 @@ Optional:
 
 Required:
 
-- `cpus` (Number) CPUs
 - `vnc` (Boolean) VNC
 
 Optional:
 
+- `cpus` (Number, Deprecated) Ignored by the controller: the CPU count of an application instance comes from the application bundle manifest. The value read back from the controller is kept in state.
 - `cpu_pinning_enabled` (Boolean) Enable CpuPinning
 - `disable_v_t_p_m` (Boolean) Disable vTPM for virtual machines (VM)
 - `enable_oem_win_license_key` (Boolean) Enable device which has VM to receive the Windows license embedded in the ACPI tables
