@@ -335,9 +335,10 @@ func AppConfig() map[string]*schema.Schema {
 		},
 
 		"naming_scheme": {
-			Description: `app naming scheme`,
-			Type:        schema.TypeString,
-			Optional:    true,
+			Description:      `app naming scheme`,
+			Type:             schema.TypeString,
+			Optional:         true,
+			ValidateDiagFunc: validateAppNamingScheme,
 		},
 
 		"networks": {

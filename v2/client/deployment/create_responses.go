@@ -42,6 +42,24 @@ func (o *CreateReader) ReadResponse(response runtime.ClientResponse, consumer ru
 			return nil, err
 		}
 		return nil, result
+	case 400:
+		result := NewCreateBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 404:
+		result := NewCreateNotFound()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
+	case 409:
+		result := NewCreateConflict()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 500:
 		result := NewCreateInternalServerError()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -265,6 +283,216 @@ func (o *CreateForbidden) GetPayload() *models.ZsrvResponse {
 }
 
 func (o *CreateForbidden) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateBadRequest creates a CreateBadRequest with default headers values
+func NewCreateBadRequest() *CreateBadRequest {
+	return &CreateBadRequest{}
+}
+
+/*
+CreateBadRequest describes a response with status code 400, with default header values.
+
+Bad request. The controller rejected the request, for example because a field has an invalid value. The reason is in httpStatusMsg and error[].
+*/
+type CreateBadRequest struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this resource group create deployment forbidden response has a 2xx status code
+func (o *CreateBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this resource group create deployment forbidden response has a 3xx status code
+func (o *CreateBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this resource group create deployment forbidden response has a 4xx status code
+func (o *CreateBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this resource group create deployment forbidden response has a 5xx status code
+func (o *CreateBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this resource group create deployment forbidden response a status code equal to that given
+func (o *CreateBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the resource group create deployment forbidden response
+func (o *CreateBadRequest) Code() int {
+	return 400
+}
+
+func (o *CreateBadRequest) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /v2/projects/id/{projectId}/deployments][%d] CreateBadRequest %s", 400, payload)
+}
+
+func (o *CreateBadRequest) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /v2/projects/id/{projectId}/deployments][%d] CreateBadRequest %s", 400, payload)
+}
+
+func (o *CreateBadRequest) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *CreateBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateNotFound creates a CreateNotFound with default headers values
+func NewCreateNotFound() *CreateNotFound {
+	return &CreateNotFound{}
+}
+
+/*
+CreateNotFound describes a response with status code 404, with default header values.
+
+Not found. The project or deployment does not exist, or the requestor cannot see it.
+*/
+type CreateNotFound struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this resource group create deployment forbidden response has a 2xx status code
+func (o *CreateNotFound) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this resource group create deployment forbidden response has a 3xx status code
+func (o *CreateNotFound) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this resource group create deployment forbidden response has a 4xx status code
+func (o *CreateNotFound) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this resource group create deployment forbidden response has a 5xx status code
+func (o *CreateNotFound) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this resource group create deployment forbidden response a status code equal to that given
+func (o *CreateNotFound) IsCode(code int) bool {
+	return code == 404
+}
+
+// Code gets the status code for the resource group create deployment forbidden response
+func (o *CreateNotFound) Code() int {
+	return 404
+}
+
+func (o *CreateNotFound) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /v2/projects/id/{projectId}/deployments][%d] CreateNotFound %s", 404, payload)
+}
+
+func (o *CreateNotFound) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /v2/projects/id/{projectId}/deployments][%d] CreateNotFound %s", 404, payload)
+}
+
+func (o *CreateNotFound) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *CreateNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewCreateConflict creates a CreateConflict with default headers values
+func NewCreateConflict() *CreateConflict {
+	return &CreateConflict{}
+}
+
+/*
+CreateConflict describes a response with status code 409, with default header values.
+
+Conflict. The request conflicts with the current state, for example a deployment tag that is already used in the project.
+*/
+type CreateConflict struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this resource group create deployment forbidden response has a 2xx status code
+func (o *CreateConflict) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this resource group create deployment forbidden response has a 3xx status code
+func (o *CreateConflict) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this resource group create deployment forbidden response has a 4xx status code
+func (o *CreateConflict) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this resource group create deployment forbidden response has a 5xx status code
+func (o *CreateConflict) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this resource group create deployment forbidden response a status code equal to that given
+func (o *CreateConflict) IsCode(code int) bool {
+	return code == 409
+}
+
+// Code gets the status code for the resource group create deployment forbidden response
+func (o *CreateConflict) Code() int {
+	return 409
+}
+
+func (o *CreateConflict) Error() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /v2/projects/id/{projectId}/deployments][%d] CreateConflict %s", 409, payload)
+}
+
+func (o *CreateConflict) String() string {
+	payload, _ := json.Marshal(o.Payload)
+	return fmt.Sprintf("[POST /v2/projects/id/{projectId}/deployments][%d] CreateConflict %s", 409, payload)
+}
+
+func (o *CreateConflict) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *CreateConflict) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 
