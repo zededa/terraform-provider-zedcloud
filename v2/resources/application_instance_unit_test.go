@@ -15,6 +15,7 @@ import (
 
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	"github.com/zededa/terraform-provider-zedcloud/v2/client/jobs"
@@ -41,6 +42,16 @@ type fakeController struct {
 	gatewayHTML bool
 	// failPurge makes PUT .../refresh/purge answer 500 without purging.
 	failPurge bool
+	// afterCreate runs right after a v2 create was accepted (ENG-3127: a test
+	// presses Ctrl-C there).
+	afterCreate func()
+	// onJobRead runs on every job read (ENG-3127: Ctrl-C while the job runs).
+	onJobRead func()
+	// stuckJobs keeps every job IN_PROGRESS.
+	stuckJobs bool
+	// hideReads makes every instance read answer 404, like an instance whose
+	// create job has not produced the object yet.
+	hideReads bool
 }
 
 func newFakeController() *fakeController {
@@ -122,6 +133,9 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		f.instances[name] = body
+		if f.afterCreate != nil {
+			f.afterCreate()
+		}
 		writeJSON(w, http.StatusOK, map[string]interface{}{"objectId": f.newJob(jobs.StatusInProgress, jobs.StatusCompleted)})
 
 	case r.Method == http.MethodPost && path == "/v1/apps/instances":
@@ -143,8 +157,14 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		st := statuses[0]
-		if len(statuses) > 1 {
+		if len(statuses) > 1 && !f.stuckJobs {
 			f.jobs[parts[0]] = statuses[1:]
+		}
+		if f.stuckJobs {
+			st = jobs.StatusInProgress
+		}
+		if f.onJobRead != nil {
+			f.onJobRead()
 		}
 		writeJSON(w, http.StatusOK, map[string]interface{}{
 			"id": parts[0], "status": st, "errorDetailOfJob": f.jobErr[parts[0]],
@@ -152,7 +172,7 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case r.Method == http.MethodGet && strings.HasPrefix(path, "/v1/apps/instances/name/"):
 		inst, ok := f.instances[strings.TrimPrefix(path, "/v1/apps/instances/name/")]
-		if !ok {
+		if !ok || f.hideReads {
 			notFound(w)
 			return
 		}
@@ -160,7 +180,7 @@ func (f *fakeController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	case r.Method == http.MethodGet && strings.HasPrefix(path, "/v1/apps/instances/id/"):
 		inst := f.byID(strings.TrimPrefix(path, "/v1/apps/instances/id/"))
-		if inst == nil {
+		if inst == nil || f.hideReads {
 			notFound(w)
 			return
 		}
@@ -523,5 +543,93 @@ func TestApplicationInstanceResource_Timeouts(t *testing.T) {
 	}
 	if ApplicationResource().Timeouts == nil {
 		t.Fatal("zedcloud_application has no timeouts")
+	}
+}
+
+// ENG-3127: Ctrl-C during a bulk create. Terraform cancels the context; the
+// instance exists on the controller and must stay in state, not tainted, so
+// the next apply does not destroy and re-create it. Two moments matter: the
+// create request is in flight, or the create job is running.
+func TestApplicationInstance_InterruptedCreateKeepsInstanceInState(t *testing.T) {
+	for _, when := range []string{"request in flight", "job running"} {
+		t.Run(when, func(t *testing.T) {
+			fc := newFakeController()
+			meta := newFakeMeta(t, fc, true)
+			ctx, ctrlC := context.WithCancel(context.Background())
+			defer ctrlC()
+			if when == "request in flight" {
+				fc.afterCreate = ctrlC
+			} else {
+				fc.stuckJobs = true
+				fc.onJobRead = ctrlC
+			}
+			d := newInstanceData(t, "inst-ctrlc")
+
+			diags := CreateApplicationInstance(ctx, d, meta)
+
+			if diags.HasError() {
+				t.Fatalf("an error would taint the instance and the next apply would replace it: %v", diags)
+			}
+			if want := fc.instances["inst-ctrlc"]["id"]; d.Id() == "" || d.Id() != want {
+				t.Fatalf("state id %q, controller id %v", d.Id(), want)
+			}
+			if got := d.Get("name"); got != "inst-ctrlc" {
+				t.Errorf("state must hold the instance that was read back, name = %v", got)
+			}
+			if len(diags) != 1 || diags[0].Severity != diag.Warning || !strings.Contains(fmt.Sprint(diags), "interrupted") {
+				t.Errorf("want one warning that says what happened, got %v", diags)
+			}
+			if strings.Contains(fmt.Sprint(diags), "did not finish within") {
+				t.Errorf("the interrupt must not be reported as a timeout: %v", diags)
+			}
+		})
+	}
+}
+
+// When the instance cannot be read back its state is unknown: keep the old
+// behaviour (tainted, so nothing is orphaned), with a message that says what
+// happened.
+func TestApplicationInstance_InterruptedCreateNotYetReadableIsTainted(t *testing.T) {
+	old := interruptReadTimeout
+	interruptReadTimeout = 100 * time.Millisecond
+	defer func() { interruptReadTimeout = old }()
+
+	fc := newFakeController()
+	meta := newFakeMeta(t, fc, true)
+	ctx, ctrlC := context.WithCancel(context.Background())
+	defer ctrlC()
+	fc.afterCreate = func() { fc.hideReads = true; ctrlC() }
+	d := newInstanceData(t, "inst-ctrlc2")
+
+	diags := CreateApplicationInstance(ctx, d, meta)
+
+	if !diags.HasError() || d.Id() == "" {
+		t.Fatalf("want an error with the id kept (tainted), got id %q, diags %v", d.Id(), diags)
+	}
+	got := fmt.Sprint(diags)
+	if !strings.Contains(got, "interrupted") || !strings.Contains(got, "tainted") || strings.Contains(got, "did not finish within") {
+		t.Errorf("message = %s", got)
+	}
+}
+
+// A real timeout stays an error and tainted, as designed (UE-177), but the
+// message no longer promises that a re-run picks up the result: the next apply
+// replaces the instance.
+func TestApplicationInstance_CreateTimeoutSaysItTaints(t *testing.T) {
+	fc := newFakeController()
+	fc.stuckJobs = true
+	meta := newFakeMeta(t, fc, true)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel()
+	d := newInstanceData(t, "inst-slow")
+
+	diags := CreateApplicationInstance(ctx, d, meta)
+
+	got := fmt.Sprint(diags)
+	if !diags.HasError() || d.Id() == "" {
+		t.Fatalf("want an error with the id kept, got id %q, diags %v", d.Id(), diags)
+	}
+	if !strings.Contains(got, "did not finish within") || !strings.Contains(got, "tainted") || strings.Contains(got, "re-run terraform apply to pick up") {
+		t.Errorf("message = %s", got)
 	}
 }

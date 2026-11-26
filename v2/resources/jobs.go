@@ -36,12 +36,39 @@ type jobTimeoutError struct {
 }
 
 func (e *jobTimeoutError) Error() string {
-	status := string(e.LastStatus)
-	if status == "" {
-		status = "unknown"
-	}
 	return fmt.Sprintf("job %s did not finish within %s (last status: %s). It is still running on ZEDCloud; "+
-		"re-run terraform apply to pick up the result, or raise the resource's timeouts", e.JobID, e.Timeout, status)
+		"raise the resource's timeouts, or run terraform plan later to see the object's state",
+		e.JobID, e.Timeout, jobStatusText(e.LastStatus))
+}
+
+// jobInterruptedError is returned by waitForJob when its context was cancelled,
+// which is what Terraform does on Ctrl-C. It says nothing about the timeout:
+// the wait ended early because the user stopped it. The job keeps running on
+// the controller.
+type jobInterruptedError struct {
+	JobID      string
+	LastStatus jobs.Status
+}
+
+func (e *jobInterruptedError) Error() string {
+	return fmt.Sprintf("terraform was interrupted while waiting for job %s (last status: %s). "+
+		"ZEDCloud accepted the job and keeps running it", e.JobID, jobStatusText(e.LastStatus))
+}
+
+func jobStatusText(s jobs.Status) string {
+	if s == "" {
+		return "unknown"
+	}
+	return string(s)
+}
+
+// jobWaitStopped maps the end of a cancelled context to an error: a deadline
+// is the resource's timeout, anything else is an interrupt.
+func jobWaitStopped(ctx context.Context, jobID string, last jobs.Status, timeout time.Duration) error {
+	if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+		return &jobTimeoutError{JobID: jobID, LastStatus: last, Timeout: timeout}
+	}
+	return &jobInterruptedError{JobID: jobID, LastStatus: last}
 }
 
 // jobPoller polls one job until it reaches a final state.
@@ -75,7 +102,8 @@ func jitter(d time.Duration) time.Duration {
 }
 
 // wait polls jobID until it is COMPLETED (nil), FAILED or ABORTED
-// (*jobFailedError), or timeout passes (*jobTimeoutError). Transient read
+// (*jobFailedError), timeout passes (*jobTimeoutError), or ctx is cancelled
+// before that (*jobInterruptedError). Transient read
 // errors are tolerated up to maxJobPollErrors in a row; 401 and 403 fail at
 // once.
 func (p *jobPoller) wait(ctx context.Context, jobID string, timeout time.Duration) (*jobs.Job, error) {
@@ -93,14 +121,14 @@ func (p *jobPoller) wait(ctx context.Context, jobID string, timeout time.Duratio
 	// on the API gateway (seen on a local controller at parallelism 160).
 	// Most jobs finish within the first interval anyway.
 	if err := p.sleep(ctx, jitter(interval)); err != nil {
-		return nil, &jobTimeoutError{JobID: jobID, Timeout: timeout}
+		return nil, jobWaitStopped(ctx, jobID, last, timeout)
 	}
 	for {
 		job, err := p.client.Get(ctx, jobID, p.objectType)
 		switch {
 		case err != nil:
 			if ctx.Err() != nil {
-				return nil, &jobTimeoutError{JobID: jobID, LastStatus: last, Timeout: timeout}
+				return nil, jobWaitStopped(ctx, jobID, last, timeout)
 			}
 			var apiErr *jobs.APIError
 			if errors.As(err, &apiErr) && (apiErr.Status == http.StatusUnauthorized || apiErr.Status == http.StatusForbidden) {
@@ -130,7 +158,7 @@ func (p *jobPoller) wait(ctx context.Context, jobID string, timeout time.Duratio
 			return nil, &jobTimeoutError{JobID: jobID, LastStatus: last, Timeout: timeout}
 		}
 		if err := p.sleep(ctx, wait); err != nil {
-			return nil, &jobTimeoutError{JobID: jobID, LastStatus: last, Timeout: timeout}
+			return nil, jobWaitStopped(ctx, jobID, last, timeout)
 		}
 		interval *= 2
 		if interval > p.intervalMax {
