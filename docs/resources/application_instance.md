@@ -32,7 +32,7 @@ description: |-
 - `crypto_key` (String, Sensitive) Crypto Key for decrypting user secret information
 - `custom_config` (Block List) Application initialization script template in cloud-config format and user specified values (see [below for nested schema](#nestedblock--custom_config))
 - `description` (String) Detailed description of the app instance
-- `device_id` (String) User defined name of the device name, unique across the enterprise. Once device name is defined, name can’t be changed
+- `device_id` (String) ID of the device on which the application instance runs. An application instance cannot be moved to another device: changing this forces a new application instance
 - `drives` (Block List) drive details (see [below for nested schema](#nestedblock--drives))
 - `edge_node_cluster` (Block List) edge node cluster (see [below for nested schema](#nestedblock--edge_node_cluster))
 - `encrypted_secrets` (Map of String, Sensitive) user encrypted secrets map

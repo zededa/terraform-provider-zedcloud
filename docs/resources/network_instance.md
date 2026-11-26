@@ -33,7 +33,7 @@ NETWORK_INSTANCE_KIND_HONEYPOT
 - `cluster_id` (String) ID of the Cluster in which the network instance is configured
 - `description` (String) Detailed description of the network instance
 - `device_default` (Boolean) Flag to indicate if this is the default network instance for the device
-- `device_id` (String) ID of the device on which network instance is created
+- `device_id` (String) ID of the device on which network instance is created. A network instance cannot be moved to another device: changing this forces a new network instance
 - `dhcp` (Boolean) Deprecated
 - `dns_list` (Block List) List of Static DNS entries (see [below for nested schema](#nestedblock--dns_list))
 - `edge_node_cluster` (Block List) Edge Node Cluster (see [below for nested schema](#nestedblock--edge_node_cluster))

@@ -619,10 +619,11 @@ func ApplicationInstance() map[string]*schema.Schema {
 		// config value must not plan as `device_id -> null`. Same defect and fix
 		// as network_instance.device_id -- see the long comment there.
 		"device_id": {
-			Description: `User defined name of the device name, unique across the enterprise. Once device name is defined, name can’t be changed`,
+			Description: `ID of the device on which the application instance runs. An application instance cannot be moved to another device: changing this forces a new application instance`,
 			Type:        schema.TypeString,
 			Optional:    true,
 			Computed:    true,
+			ForceNew:    true,
 		},
 
 		"drives": {

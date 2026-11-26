@@ -438,10 +438,11 @@ func NetworkInstance() map[string]*schema.Schema {
 		// from config no longer produces a diff. That is correct here -- the
 		// field is controller-owned whenever the object is cluster-scoped.
 		"device_id": {
-			Description: `ID of the device on which network instance is created`,
+			Description: `ID of the device on which network instance is created. A network instance cannot be moved to another device: changing this forces a new network instance`,
 			Type:        schema.TypeString,
 			Optional:    true,
 			Computed:    true,
+			ForceNew:    true,
 		},
 
 		"dhcp": {
