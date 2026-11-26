@@ -10,9 +10,9 @@ import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	api_client "github.com/zededa/terraform-provider-zedcloud/v2/client"
 	identity_access_management "github.com/zededa/terraform-provider-zedcloud/v2/client/identity_access_management"
+	"github.com/zededa/terraform-provider-zedcloud/v2/models"
 	zschema "github.com/zededa/terraform-provider-zedcloud/v2/schemas"
 )
 
@@ -38,43 +38,80 @@ func RoleResource() *schema.Resource {
 //
 //	terraform import zedcloud_role.readonly readonly-operators
 //	terraform import zedcloud_role.readonly CCGFABAEqnH4je5PHZTXSmHOs-ZE
+//
+// Built-in roles (system-defined and cluster roles such as SysAdmin) are
+// refused: the controller lets only SysRoot change them, so Terraform would
+// plan updates and deletes that can never be applied (ENG-3120).
 func importRoleStateContext(ctx context.Context, d *schema.ResourceData, m interface{}) ([]*schema.ResourceData, error) {
 	raw := strings.TrimSpace(d.Id())
 	if raw == "" {
 		return nil, errors.New("import ID is empty: pass either the role ID or the role name")
 	}
 
-	if looksLikeObjectID(raw) {
-		d.SetId(raw)
-		return []*schema.ResourceData{d}, nil
-	}
-
-	params := identity_access_management.NewIdentityAccessManagementGetRoleByNameParams()
-	params.Name = raw
-
 	client := m.(*api_client.ZedcloudAPI)
 
-	resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRoleByName(params, nil)
-	if err != nil {
-		if isStatusNotFound(err) {
-			return nil, fmt.Errorf("no role found with name %q", raw)
+	var role *models.Role
+	if looksLikeObjectID(raw) {
+		params := identity_access_management.NewIdentityAccessManagementGetRoleParams()
+		params.ID = raw
+
+		resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRole(params, nil)
+		if err != nil {
+			if isStatusNotFound(err) {
+				return nil, fmt.Errorf("no role found with ID %q", raw)
+			}
+			return nil, fmt.Errorf("could not read role %q: %w", raw, err)
 		}
-		return nil, fmt.Errorf("could not resolve role name %q: %w", raw, err)
+		role = resp.GetPayload()
+	} else {
+		params := identity_access_management.NewIdentityAccessManagementGetRoleByNameParams()
+		params.Name = raw
+
+		resp, err := client.IdentityAccessManagement.IdentityAccessManagementGetRoleByName(params, nil)
+		if err != nil {
+			if isStatusNotFound(err) {
+				return nil, fmt.Errorf("no role found with name %q", raw)
+			}
+			return nil, fmt.Errorf("could not resolve role name %q: %w", raw, err)
+		}
+		role = resp.GetPayload()
 	}
 
-	role := resp.GetPayload()
 	if role == nil || role.ID == "" {
 		return nil, fmt.Errorf("role %q resolved to an empty ID", raw)
+	}
+	if err := checkRoleImportable(role); err != nil {
+		return nil, err
 	}
 
 	d.SetId(role.ID)
 	return []*schema.ResourceData{d}, nil
 }
 
+// checkRoleImportable returns an error for built-in roles. Only user-defined
+// roles (and, for objects created before the type was set, unspecified ones)
+// can be managed with zedcloud_role.
+func checkRoleImportable(role *models.Role) error {
+	if role.Type == nil {
+		return nil
+	}
+	switch *role.Type {
+	case models.UserRoleUSERROLESYSTEMDEFINED, models.UserRoleUSERROLECLUSTER:
+		name := role.ID
+		if role.Name != nil && *role.Name != "" {
+			name = *role.Name
+		}
+		return fmt.Errorf("role %q is a built-in role (type %s) and cannot be managed by Terraform: "+
+			"only the platform root user can change or delete it. "+
+			"Use the zedcloud_role data source to reference it instead", name, *role.Type)
+	}
+	return nil
+}
+
 func RoleDataSource() *schema.Resource {
 	return &schema.Resource{
-		ReadContext:   IdentityAccessManagement_GetRole,
-		Schema: zschema.RoleSchema(),
+		ReadContext: IdentityAccessManagement_GetRole,
+		Schema:      zschema.RoleSchema(),
 	}
 }
 
