@@ -32,6 +32,12 @@ func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceReader) ReadRe
 			return nil, err
 		}
 		return result, nil
+	case 400:
+		result := NewEdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest()
+		if err := result.readResponse(response, consumer, o.formats); err != nil {
+			return nil, err
+		}
+		return nil, result
 	case 401:
 		result := NewEdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceUnauthorized()
 		if err := result.readResponse(response, consumer, o.formats); err != nil {
@@ -341,6 +347,74 @@ func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceNotFound) GetP
 }
 
 func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceNotFound) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
+
+	o.Payload = new(models.ZsrvResponse)
+
+	// response payload
+	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
+		return err
+	}
+
+	return nil
+}
+
+// NewEdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest creates a EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest with default headers values
+func NewEdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest() *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest {
+	return &EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest{}
+}
+
+/*
+EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest describes a response with status code 400, with default header values.
+
+The controller rejected the request, for example because the change is not supported for this network instance. The reason is in httpStatusMsg and error[].
+*/
+type EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest struct {
+	Payload *models.ZsrvResponse
+}
+
+// IsSuccess returns true when this edge network instance configuration update edge network instance bad request response has a 2xx status code
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) IsSuccess() bool {
+	return false
+}
+
+// IsRedirect returns true when this edge network instance configuration update edge network instance bad request response has a 3xx status code
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) IsRedirect() bool {
+	return false
+}
+
+// IsClientError returns true when this edge network instance configuration update edge network instance bad request response has a 4xx status code
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) IsClientError() bool {
+	return true
+}
+
+// IsServerError returns true when this edge network instance configuration update edge network instance bad request response has a 5xx status code
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) IsServerError() bool {
+	return false
+}
+
+// IsCode returns true when this edge network instance configuration update edge network instance bad request response a status code equal to that given
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) IsCode(code int) bool {
+	return code == 400
+}
+
+// Code gets the status code for the edge network instance configuration update edge network instance bad request response
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) Code() int {
+	return 400
+}
+
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) Error() string {
+	return fmt.Sprintf("[PUT /v1/netinsts/id/{id}][%d] edgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) String() string {
+	return fmt.Sprintf("[PUT /v1/netinsts/id/{id}][%d] edgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest  %+v", 400, o.Payload)
+}
+
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) GetPayload() *models.ZsrvResponse {
+	return o.Payload
+}
+
+func (o *EdgeNetworkInstanceConfigurationUpdateEdgeNetworkInstanceBadRequest) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
 	o.Payload = new(models.ZsrvResponse)
 
