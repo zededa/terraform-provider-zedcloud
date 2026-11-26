@@ -791,9 +791,14 @@ func ApplicationInstance() map[string]*schema.Schema {
 		},
 
 		"user_data": {
-			Description: `Deprecated: Application initiazation script in cloud-config format to be used by cloud-init`,
+			Description: `Deprecated: Application initialization script in cloud-config format to be used by cloud-init. The controller stores it on create only and ignores changes on update, so changing it replaces the app instance. To change cloud-init settings of a running instance use custom_config.`,
 			Type:        schema.TypeString,
 			Optional:    true,
+			// ENG-3122: the controller stores userData on create and ignores it
+			// on update (the PUT returns 200 and keeps the old value, a purge does
+			// not apply it either), so an in-place update was a silent no-op and a
+			// permanent diff.
+			ForceNew: true,
 		},
 
 		"user_defined_version": {
