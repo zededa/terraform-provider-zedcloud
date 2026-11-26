@@ -25,6 +25,9 @@ import (
 
 const resetNodeID = "7da54ab0-dcf2-403d-8f0f-115c2695ed23"
 
+// resetNodeModelID is the model id the reset-counter tests give their node.
+const resetNodeModelID = "b4e7f3cf-e720-4f33-83ba-7cb8a28b2a6d"
+
 type fakeNodeController struct {
 	mu          sync.Mutex
 	node        map[string]interface{}
@@ -36,7 +39,7 @@ type fakeNodeController struct {
 func newFakeNodeController(counter int) *fakeNodeController {
 	return &fakeNodeController{node: map[string]interface{}{
 		"id": resetNodeID, "name": "eng3115", "title": "eng3115",
-		"modelId": testModelA, "projectId": "proj-1", "serialno": "SN-1",
+		"modelId": resetNodeModelID, "projectId": "proj-1", "serialno": "SN-1",
 		"adminState": "ADMIN_STATE_ACTIVE", "resetCounter": counter,
 		"revision": map[string]interface{}{
 			"curr": "1", "createdAt": "2026-11-25T00:00:00Z", "createdBy": "tf",
@@ -102,12 +105,12 @@ func resetUpdateData(t *testing.T, oldCounter, newCounter int) *schema.ResourceD
 	t.Helper()
 	r := &schema.Resource{Schema: zschema.Node()}
 	state := &terraform.InstanceState{ID: resetNodeID, Attributes: map[string]string{
-		"id": resetNodeID, "name": "eng3115", "title": "eng3115", "model_id": testModelA,
+		"id": resetNodeID, "name": "eng3115", "title": "eng3115", "model_id": resetNodeModelID,
 		"project_id": "proj-1", "serialno": "SN-1", "admin_state": "ADMIN_STATE_ACTIVE",
 		"reset_counter": itoa(oldCounter),
 	}}
 	cfg := terraform.NewResourceConfigRaw(map[string]interface{}{
-		"name": "eng3115", "title": "eng3115", "model_id": testModelA, "project_id": "proj-1",
+		"name": "eng3115", "title": "eng3115", "model_id": resetNodeModelID, "project_id": "proj-1",
 		"serialno": "SN-1", "admin_state": "ADMIN_STATE_ACTIVE", "reset_counter": newCounter,
 	})
 	diff, err := r.Diff(context.Background(), state, cfg, nil)
