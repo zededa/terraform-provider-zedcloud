@@ -807,7 +807,7 @@ func ApplicationInstance() map[string]*schema.Schema {
 			Description: `virtual machine info`,
 			Type:        schema.TypeList, //GoType: VM
 			Elem: &schema.Resource{
-				Schema: VMSchema(),
+				Schema: appInstanceVMSchema(),
 			},
 			Optional: true,
 			// UE-177: the controller fills vminfo (cpus, memory, mode, ...)
@@ -922,4 +922,26 @@ func GetApplicationInstancePropertyFields() (t []string) {
 		"allow_snapshots",
 		"max_snapshots",
 	}
+}
+
+// appInstanceVMSchema is VMSchema() with vminfo.cpus adapted to what the
+// controller does with it on an application instance (ENG-3123): the CPU
+// count comes from the application bundle manifest and vminfo.cpus is ignored
+// on create and update. Left as a plain required attribute it produced a
+// permanent diff whenever the configured value differed from the bundle's.
+func appInstanceVMSchema() map[string]*schema.Schema {
+	s := VMSchema()
+	s["cpus"] = &schema.Schema{
+		Description: `Ignored by the controller: the CPU count of an application instance comes from the application bundle manifest. The value read back from the controller is kept in state.`,
+		Type:        schema.TypeInt,
+		Optional:    true,
+		Computed:    true,
+		Deprecated:  "The controller takes the CPU count of an application instance from the application bundle manifest and ignores this value. Set the CPUs in the manifest of the zedcloud_application resource instead.",
+		// Never plan a change for an existing instance: the controller would
+		// ignore it and the diff would come back on every plan.
+		DiffSuppressFunc: func(_, _, _ string, d *schema.ResourceData) bool {
+			return d.Id() != ""
+		},
+	}
+	return s
 }
