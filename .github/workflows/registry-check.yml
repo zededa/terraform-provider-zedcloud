@@ -48,9 +48,16 @@ jobs:
           fi
           
           if [ "$VERSION" = "latest" ]; then
+            # The registry returns versions in no particular order, so
+            # versions[0] is arbitrary. Pick the highest stable semver.
             VERSION=$(curl ${{ env.CURL_OPTS }} \
               "https://registry.terraform.io/v1/providers/${{ env.PROVIDER }}/versions" \
-              | jq -r '.versions[0].version') || exit 1
+              | jq -r '[.versions[].version | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))]
+                       | sort_by(split(".") | map(tonumber)) | last // empty') || exit 1
+            if [ -z "$VERSION" ]; then
+              echo "::error::could not resolve latest stable version from the registry"
+              exit 1
+            fi
           fi
           
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -61,10 +68,15 @@ jobs:
         run: |
           VERSION="${{ steps.resolve.outputs.version }}"
           
-          # Get all available platforms from registry
+          # Get the platforms of the resolved version from the registry
           PLATFORMS=$(curl ${{ env.CURL_OPTS }} \
             "https://registry.terraform.io/v1/providers/${{ env.PROVIDER }}/versions" \
-            | jq -c '[.versions[0].platforms[] | {os: .os, arch: .arch}]')
+            | jq -c --arg v "$VERSION" \
+              '[.versions[] | select(.version == $v) | .platforms[] | {os: .os, arch: .arch}]')
+          if [ -z "$PLATFORMS" ] || [ "$PLATFORMS" = "[]" ]; then
+            echo "::error::version $VERSION not found in the registry"
+            exit 1
+          fi
           
           echo "matrix=$PLATFORMS" >> $GITHUB_OUTPUT
           echo "📦 Platforms: $PLATFORMS"
