@@ -166,6 +166,10 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 				// The request may have reached the controller.
 				d.SetId(id)
 			}
+			if errors.Is(ctx.Err(), context.Canceled) {
+				return keepInterruptedAppInstance(d, m, name, errors.New(
+					"terraform was interrupted while the create request was in flight; ZEDCloud may have accepted it"))
+			}
 			return appInstanceAPIErrorDiags("create", err)
 		}
 		d.SetId(id)
@@ -175,6 +179,15 @@ func CreateApplicationInstance(ctx context.Context, d *schema.ResourceData, m in
 			if errors.As(err, &failed) && !applicationInstanceExists(ctx, client, id) {
 				// Nothing was created; do not leave a tainted resource behind.
 				d.SetId("")
+			}
+			var interrupted *jobInterruptedError
+			if errors.As(err, &interrupted) {
+				return keepInterruptedAppInstance(d, m, name, interrupted)
+			}
+			var timedOut *jobTimeoutError
+			if errors.As(err, &timedOut) {
+				return diag.Errorf("edge application instance %q create: %s. The instance is recorded in state "+
+					"as tainted, so the next apply replaces it; raise timeouts.create to avoid that", name, err)
 			}
 			return diag.Errorf("edge application instance %q create: %s", name, err)
 		}
@@ -404,6 +417,34 @@ func readApplicationInstanceAfterWrite(ctx context.Context, d *schema.ResourceDa
 		return appInstanceAPIErrorDiags("read after write", err)
 	}
 	return nil
+}
+
+// interruptReadTimeout bounds the read of an instance after Ctrl-C. Terraform
+// waits for the provider to stop, so it must be short.
+var interruptReadTimeout = 5 * time.Second
+
+// keepInterruptedAppInstance runs when Terraform was interrupted while an
+// instance was being created: during the create request or while its job ran. Returning an error would taint the
+// instance, and the next apply would destroy and re-create it although it is
+// fine. So read it back, on a context that is not cancelled, and when it is
+// there record it in state with a warning. Nothing downstream can run after an
+// interrupt, and the next refresh shows the instance's real state. When the
+// instance cannot be read yet, the resource is tainted as before: its state is
+// unknown.
+func keepInterruptedAppInstance(d *schema.ResourceData, m interface{}, name string, interrupted error) diag.Diagnostics {
+	ctx, cancel := context.WithTimeout(context.Background(), interruptReadTimeout)
+	defer cancel()
+
+	if diags := readApplicationInstanceAfterWrite(ctx, d, m); diags.HasError() {
+		return append(diag.Errorf("edge application instance %q create: %s. It could not be read back, "+
+			"so it is recorded in state as tainted and the next apply replaces it", name, interrupted), diags...)
+	}
+	return diag.Diagnostics{{
+		Severity: diag.Warning,
+		Summary:  fmt.Sprintf("edge application instance %q was recorded in state after the interrupt", name),
+		Detail: fmt.Sprintf("%s. The instance exists on ZEDCloud and is not tainted. "+
+			"Run terraform plan to refresh its status.", interrupted),
+	}}
 }
 
 // applicationInstanceExists reports whether an instance with id exists. It

@@ -118,12 +118,33 @@ func TestJobPoller_Timeout(t *testing.T) {
 	}
 }
 
-func TestJobPoller_ContextCancelled(t *testing.T) {
+func TestJobPoller_ContextCancelledIsAnInterrupt(t *testing.T) {
 	f := &fakeJobs{script: []fakeJobResult{{status: jobs.StatusInProgress}}}
 	p := testPoller(f)
 	p.sleep = sleepCtx
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
+	_, err := p.wait(ctx, "job-1", 20*time.Minute)
+	var ie *jobInterruptedError
+	if !errors.As(err, &ie) || ie.JobID != "job-1" {
+		t.Fatalf("err = %v, want a jobInterruptedError", err)
+	}
+	// ENG-3127: an interrupt after seconds must not claim the 20 minute timeout.
+	if strings.Contains(err.Error(), "20m") || strings.Contains(err.Error(), "did not finish") {
+		t.Errorf("an interrupt is not a timeout: %s", err)
+	}
+	if !strings.Contains(err.Error(), "interrupted") {
+		t.Errorf("the message must say what happened: %s", err)
+	}
+}
+
+func TestJobPoller_ContextDeadlineIsATimeout(t *testing.T) {
+	f := &fakeJobs{script: []fakeJobResult{{status: jobs.StatusInProgress}}}
+	p := testPoller(f)
+	p.sleep = sleepCtx
+	ctx, cancel := context.WithTimeout(context.Background(), time.Nanosecond)
+	defer cancel()
+	<-ctx.Done()
 	_, err := p.wait(ctx, "job-1", time.Minute)
 	var te *jobTimeoutError
 	if !errors.As(err, &te) {

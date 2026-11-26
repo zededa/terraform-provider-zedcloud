@@ -275,7 +275,10 @@ Resource flows:
      (`:6331`). app-profiles already does this for its v2 creates (`deployment.go`, `zutils.GenerateId()`).
   2. `d.SetId(uuid)` **before** waiting, so the instance is never orphaned. If the wait times out or
      the job fails, return the error. The SDK keeps the resource in state as tainted, and the next apply
-     refreshes it by id and replaces it or adopts the result.
+     replaces it (Terraform never adopts a tainted resource). **Exception (ENG-3127):** when Terraform is
+     interrupted (Ctrl-C), the instance is read back on a fresh context; if it is there it is recorded in
+     state with a warning and is not tainted, so the next apply does not destroy and re-create it. If it
+     cannot be read yet, it stays tainted.
   3. `waitForJob(d.Timeout(Create))`, then `readAfterWrite` (by name, cross-checked against the minted id).
   - If the job fails because the name already exists and `GET by name` returns a **different** id, it's
     a real collision. Raise an error that asks for `terraform import`. Never adopt by name.
