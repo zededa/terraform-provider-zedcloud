@@ -26,6 +26,8 @@ func DeploymentResource() *schema.Resource {
 The controller versions deployments: every change creates a new version of the deployment with a new id, and only the latest
 version of a project's deployment can be changed. Changing this resource in place does exactly that: the provider asks the
 controller for the next version, waits until its policies are applied, and the resource then tracks the new version (its id changes).
+Terraform cannot plan a new id for an in-place update, so id still shows the old version's id in the plan and in outputs and other
+resources of the same run, until the next refresh. Use version_id wherever the new version's id is needed in the same apply.
 Each version needs its own deployment_tag (the controller requires the tag to be unique per project), so a change must come with
 a new deployment_tag. Edge nodes select a version by its tag: they keep running the version whose tag they carry until their
 deployment_tag is moved to the new one, which allows a staged rollout. Older versions stay on the controller until the
@@ -531,6 +533,19 @@ func customizeDeploymentDiff(ctx context.Context, d *schema.ResourceDiff, m inte
 	if err := validateDeploymentTagChange(d); err != nil {
 		return err
 	}
+	// An update creates a new deployment version with a new id and revision.
+	// id itself cannot be planned as unknown: the plugin SDK then forces
+	// replacement, and destroying the resource removes every version. So
+	// version_id carries the new id in the plan, for outputs and dependants
+	// (ENG-3118).
+	if deploymentUpdateCreatesVersion(d) {
+		if err := d.SetNewComputed("version_id"); err != nil {
+			return err
+		}
+		if err := d.SetNewComputed("revision"); err != nil {
+			return err
+		}
+	}
 	if !d.NewValueKnown("device_policies") {
 		return nil
 	}
@@ -605,6 +620,24 @@ func getLatestProjectDeployment(ctx context.Context, client *api_client.Zedcloud
 var deploymentUpdatableKeys = []string{
 	"app_inst_policies", "cluster_policy", "device_policies", "edgeview_policy",
 	"integration_policy", "name", "network_inst_policies", "title", "volume_inst_policies",
+}
+
+// deploymentUpdateCreatesVersion reports whether the planned change of an
+// existing deployment is an update, which the controller turns into a new
+// version.
+func deploymentUpdateCreatesVersion(d *schema.ResourceDiff) bool {
+	if d.Id() == "" {
+		return false
+	}
+	if d.HasChange("deployment_tag") {
+		return true
+	}
+	for _, k := range deploymentUpdatableKeys {
+		if len(d.GetChangedKeysPrefix(k)) > 0 {
+			return true
+		}
+	}
+	return false
 }
 
 // validateDeploymentTagChange fails the plan when an existing deployment is

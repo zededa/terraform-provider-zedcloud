@@ -36,6 +36,7 @@ Data source "zedcloud_deployment" reads an existing deployment from ZedCloud. Lo
 ### Read-Only
 
 - `revision` (List of Object) object revision (see [below for nested schema](#nestedatt--revision))
+- `version_id` (String) id of the deployment version this resource currently tracks. It is the same value as id, but Terraform plans it as "known after apply" on every update, which creates a new version with a new id. Use version_id, not id, in outputs and in other resources that must see the new version in the same apply; id keeps the old version's id until the next refresh.
 
 <a id="nestedblock--app_inst_policies"></a>
 ### Nested Schema for `app_inst_policies`

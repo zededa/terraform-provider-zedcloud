@@ -268,6 +268,7 @@ func SetDeploymentResourceData(d *schema.ResourceData, m *models.Deployment) {
 	d.Set("project_id", m.ProjectID)
 	d.Set("revision", SetObjectRevisionSubResourceData([]*models.ObjectRevision{m.Revision}))
 	d.Set("title", m.Title)
+	d.Set("version_id", m.ID)
 	d.Set("volume_inst_policies", SetVolumeInstPolicySubResourceData(m.VolumeInstPolicies))
 }
 
@@ -287,6 +288,7 @@ func SetDeploymentSubResourceData(m []*models.Deployment) (d []*map[string]inter
 			properties["project_id"] = DeploymentModel.ProjectID
 			properties["revision"] = SetObjectRevisionSubResourceData([]*models.ObjectRevision{DeploymentModel.Revision})
 			properties["title"] = DeploymentModel.Title
+			properties["version_id"] = DeploymentModel.ID
 			properties["volume_inst_policies"] = SetVolumeInstPolicySubResourceData(DeploymentModel.VolumeInstPolicies)
 			d = append(d, &properties)
 		}
@@ -383,6 +385,14 @@ func deploymentSchema() map[string]*schema.Schema {
 			ForceNew:    true,
 		},
 
+		"version_id": {
+			Description: `id of the deployment version this resource currently tracks. It is the same value as id, but Terraform plans it ` +
+				`as "known after apply" on every update, which creates a new version with a new id. Use version_id, not id, in outputs ` +
+				`and in other resources that must see the new version in the same apply; id keeps the old version's id until the next refresh.`,
+			Type:     schema.TypeString,
+			Computed: true,
+		},
+
 		"revision": {
 			Description: `object revision`,
 			Type:        schema.TypeList, //GoType: ObjectRevision
@@ -423,6 +433,7 @@ func GetDeploymentPropertyFields() (t []string) {
 		"project_id",
 		"revision",
 		"title",
+		"version_id",
 		"volume_inst_policies",
 	}
 }
