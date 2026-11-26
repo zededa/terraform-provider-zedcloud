@@ -49,7 +49,7 @@ description: |-
 - `restart` (Block List) Restart counter: ZedCloudOpsCmd (see [below for nested schema](#nestedblock--restart))
 - `start_delay_in_seconds` (Number) start delay is the time in seconds EVE should wait after boot before starting the application instance
 - `tags` (Map of String) Tags are name/value pairs that enable you to categorize resources. Tag names are case insensitive with max_length 512 and min_length 3. Tag values are case sensitive with max_length 256 and min_length 3.
-- `user_data` (String) Deprecated: Application initiazation script in cloud-config format to be used by cloud-init
+- `user_data` (String) Deprecated: Application initialization script in cloud-config format to be used by cloud-init. The controller stores it on create only and ignores changes on update, so changing it replaces the app instance. To change cloud-init settings of a running instance use custom_config.
 - `vminfo` (Block List) virtual machine info (see [below for nested schema](#nestedblock--vminfo))
 
 ### Read-Only
