@@ -26,8 +26,11 @@ func PCRValueModel(d *schema.ResourceData) *models.PCRValue {
 }
 
 func PCRValueModelFromMap(m map[string]interface{}) *models.PCRValue {
-	index := int64(m["index"].(int))       // int64 true false false
-	typeVar := m["type"].(*models.PCRType) // PCRType
+	index := int64(m["index"].(int)) // int64 true false false
+	var typeVar *models.PCRType      // PCRType
+	if typeModel, ok := m["type"].(string); ok && typeModel != "" {
+		typeVar = models.NewPCRType(models.PCRType(typeModel))
+	}
 	value := m["value"].(string)
 	return &models.PCRValue{
 		Index: &index,

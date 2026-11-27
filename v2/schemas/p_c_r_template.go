@@ -9,7 +9,7 @@ import (
 // (1) Translate PCRTemplate resource data into a schema model struct that will sent to the LM API for resource creation/updating
 // (2) Translate LM API response object from (1) or from a READ operation into a model that can be used to mofify the underlying resource data in the Terrraform configuration
 func PCRTemplateModel(d *schema.ResourceData) *models.PCRTemplate {
-	pCRValues, _ := d.Get("p_c_r_values").([]*models.PCRValue) // []*PCRValue
+	pCRValues := pcrValuesFromList(d.Get("p_c_r_values")) // []*PCRValue
 	eveVersion, _ := d.Get("eve_version").(string)
 	firmwareVersion, _ := d.Get("firmware_version").(string)
 	id, _ := d.Get("id").(string)
@@ -24,7 +24,7 @@ func PCRTemplateModel(d *schema.ResourceData) *models.PCRTemplate {
 }
 
 func PCRTemplateModelFromMap(m map[string]interface{}) *models.PCRTemplate {
-	pCRValues := m["p_c_r_values"].([]*models.PCRValue) // []*PCRValue
+	pCRValues := pcrValuesFromList(m["p_c_r_values"]) // []*PCRValue
 	eveVersion := m["eve_version"].(string)
 	firmwareVersion := m["firmware_version"].(string)
 	id := m["id"].(string)
@@ -36,6 +36,21 @@ func PCRTemplateModelFromMap(m map[string]interface{}) *models.PCRTemplate {
 		ID:              id,
 		Name:            name,
 	}
+}
+
+// pcrValuesFromList converts the p_c_r_values block list. The SDK returns it as
+// []interface{} of maps, never as []*models.PCRValue.
+func pcrValuesFromList(v interface{}) []*models.PCRValue {
+	items, _ := v.([]interface{})
+	var pCRValues []*models.PCRValue
+	for _, item := range items {
+		m, ok := item.(map[string]interface{})
+		if !ok {
+			continue
+		}
+		pCRValues = append(pCRValues, PCRValueModelFromMap(m))
+	}
+	return pCRValues
 }
 
 // Update the underlying PCRTemplate resource data in the Terraform configuration using the resource model built from the CREATE/UPDATE/READ LM API request response
